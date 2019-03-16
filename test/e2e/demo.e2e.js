@@ -3,7 +3,7 @@ import { PageObjectSkeleton } from './skeleton.po';
 const config = require('../protractor.conf').config;
 
 
-describe('combined-front', () => {
+describe('joshandmariamusic.com', () => {
   // let poWelcome;
   let poSkeleton;
 
@@ -17,32 +17,32 @@ describe('combined-front', () => {
     await poSkeleton.sleep(1000);
   });
 
-  it('should load the page and display the initial page title', async () => {
-    await expect(poSkeleton.getCurrentPageTitle()).toBe('Web Jam LLC');
-  });
+  // it('should load the page and display the initial page title', async () => {
+  //   await expect(poSkeleton.getCurrentPageTitle()).toBe('Web Jam LLC');
+  // });
 
   it('should navigate to Music page', async () => {
-    await poSkeleton.navigateTo('/music');
-    await expect(poSkeleton.getCurrentPageTitle()).toBe('Music | Web Jam LLC');
+    await poSkeleton.navigateTo('/buymusic');
+    await expect(poSkeleton.getCurrentPageTitle()).toBe('Buy Music | Web Jam LLC');
   });
 
-  it('should navigate to OHAF page', async () => {
-    await poSkeleton.navigateTo('/ohaf');
-    await expect(poSkeleton.getCurrentPageTitle()).toBe('OHAF | Web Jam LLC');
-  });
-
-  it('should navigate to SC2RS page', async () => {
-    await poSkeleton.navigateTo('/sc2rs');
-    await expect(poSkeleton.getCurrentPageTitle()).toBe('SC2RS | Web Jam LLC');
-  });
-
-  it('should navigate to Library page', async () => {
-    await poSkeleton.navigateTo('/library');
-    await expect(poSkeleton.getCurrentPageTitle()).toBe('Library | Web Jam LLC');
-  });
-
-  it('should navigate to Login page', async () => {
-    await poSkeleton.navigateTo('/login');
-    await expect(poSkeleton.getCurrentPageTitle()).toBe('Login | Web Jam LLC');
-  });
+  // it('should navigate to OHAF page', async () => {
+  //   await poSkeleton.navigateTo('/ohaf');
+  //   await expect(poSkeleton.getCurrentPageTitle()).toBe('OHAF | Web Jam LLC');
+  // });
+  //
+  // it('should navigate to SC2RS page', async () => {
+  //   await poSkeleton.navigateTo('/sc2rs');
+  //   await expect(poSkeleton.getCurrentPageTitle()).toBe('SC2RS | Web Jam LLC');
+  // });
+  //
+  // it('should navigate to Library page', async () => {
+  //   await poSkeleton.navigateTo('/library');
+  //   await expect(poSkeleton.getCurrentPageTitle()).toBe('Library | Web Jam LLC');
+  // });
+  //
+  // it('should navigate to Login page', async () => {
+  //   await poSkeleton.navigateTo('/login');
+  //   await expect(poSkeleton.getCurrentPageTitle()).toBe('Login | Web Jam LLC');
+  // });
 });
