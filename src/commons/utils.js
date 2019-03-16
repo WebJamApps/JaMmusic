@@ -1,6 +1,5 @@
 const csvjson = require('csvjson');
 const filesaver = require('file-saver');
-const showSlides = require('./showSlides');
 
 exports.updateCanSubmit = function updateCanSubmit(validationResults, controller) {
   let valid = true;
@@ -143,24 +142,6 @@ exports.filterSelected = function filterSelected(myModule) {
     return;
   }
   this.finishFiltering(myModule);
-};
-
-exports.startSlides = function startSlides(idArray1, errorMsg, idArray2, doc) {
-  const slideshowTimer = setInterval(() => {
-    let foundElement = false;
-    idArray1.forEach((id) => {
-      const tempMS = document.getElementById(id);
-      if (tempMS !== null && tempMS !== undefined) {
-        tempMS.style.display = 'none';
-      } else {
-        foundElement = true;
-      }
-    });
-    if (!(foundElement)) {
-      return clearInterval(slideshowTimer);
-    }
-    return showSlides.showSlides(idArray2, doc);
-  }, 5400);
 };
 
 exports.showCheckboxes = function showCheckboxes(id, forceOpen) {

@@ -1,5 +1,3 @@
-const showSlides = require('./commons/showSlides');
-
 export class Music {
   slideshowImages = [
     '../static/imgs/martinsville2017.png',
