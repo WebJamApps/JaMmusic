@@ -74,19 +74,10 @@ export class App {
   configHttpClient() {
     this.backend = '';
     /* istanbul ignore else */
-    if (process.env.NODE_ENV !== 'production') {
-      this.backend = process.env.BackendUrl;
-    }
+    if (process.env.NODE_ENV !== 'production') this.backend = process.env.BackendUrl;
     this.httpClient.configure((httpConfig) => {
-      httpConfig
-        .withDefaults({
-          mode: 'cors',
-          credentials: 'same-origin',
-          headers: {
-            Accept: 'application/json'
-          }
-        })
-        .useStandardConfiguration()
+      httpConfig.useStandardConfiguration()
+        .withDefaults({ mode: 'cors', credentials: 'same-origin', headers: { Accept: 'application/json' } })
         .withBaseUrl(this.backend)
         .withInterceptor(this.auth.tokenInterceptor); // Adds bearer token to every HTTP request.
     });
@@ -113,9 +104,7 @@ export class App {
       run(routingContext, next) {
         if (!routingContext.config.settings.noScrollToTop) {
           const top = document.getElementsByClassName('material-header')[0];
-          if (top !== null && top !== undefined) {
-            top.scrollIntoView();
-          }
+          if (top !== null && top !== undefined) top.scrollIntoView();
         }
         return next();
       }
@@ -171,61 +160,6 @@ export class App {
     nl.style.width = this.drawerWidth;
   }
 
-  ohafLogin() {
-    this.menu = 'ohaf';
-    this.appState.isOhafLogin = true;
-    this.router.navigate('/login');
-  }
-
-  wjLogin() {
-    this.menu = 'wj';
-    this.appState.isOhafLogin = false;
-    this.router.navigate('/login');
-  }
-
-  async logout() {
-    this.appState.setUser({});
-    this.authenticated = false;
-    localStorage.clear();
-    if (this.role !== 'Charity' && this.role !== 'Volunteer') {
-      await this.auth.logout('/');
-    } else await this.auth.logout('/ohaf');
-    this.role = '';
-    this.appState.isOhafLogin = false;
-  }
-
-  get currentRoute() {
-    if (this.router.currentInstruction) return this.router.currentInstruction.config.name;
-    return null;
-  }
-
-  get currentRouteFrag() {
-    if (this.router.currentInstruction) return this.router.currentInstruction.fragment;
-    return null;
-  }
-
-  checkNavMenu() {
-    this.Menu = 'wj';
-    if (this.currentRoute === 'ohaf' || this.currentRouteFrag === '/ohaf') this.Menu = 'ohaf';
-    else if (this.currentRoute === 'music-router') this.Menu = 'music';
-    else if (this.currentRoute === 'library') this.Menu = 'library';
-    else if (this.currentRoute === 'login') {
-      if (this.appState.isOhafLogin) this.Menu = 'ohaf';
-      else this.Menu = 'wj';
-    } else if (this.currentRouteFrag === '/dashboard') this.Menu = 'dashboard';
-    else if (this.currentRouteFrag === '/bookshelf') this.Menu = 'bookshelf';
-    else if (this.currentRouteFrag === '/dashboard/developer') this.Menu = 'developer';
-    else if (this.currentRouteFrag === '/dashboard/reader') this.Menu = 'reader';
-    else if (this.currentRouteFrag === '/dashboard/librarian') this.Menu = 'librarian';
-    else if (this.currentRouteFrag === '/dashboard/charity') this.Menu = 'charity';
-    else if (this.currentRouteFrag === '/dashboard/volunteer') this.Menu = 'volunteer';
-    else if (this.currentRouteFrag === '/dashboard/user-account') this.Menu = 'user-account';
-    else if (this.currentRouteFrag) {
-      if (this.currentRouteFrag.indexOf('vol-ops/') !== -1) this.Menu = 'charity';
-      else this.Menu = 'wj';
-    } else this.Menu = 'wj';
-  }
-
   setFooter() {
     const footer = document.getElementById('wjfooter');
     let color = '';
@@ -254,7 +188,6 @@ export class App {
   get currentStyles() {
     let result = {};
     this.style = 'wj';
-    this.checkNavMenu();
     if (this.Menu === 'charity' || this.Menu === 'ohaf' || this.Menu === 'volunteer' || this.role === 'Charity' || this.role === 'Volunteer') {
       this.style = 'ohaf';
       result = {
@@ -288,72 +221,11 @@ export class App {
     const menuDrawer = document.getElementsByClassName('drawer')[0];
     const navList = document.getElementsByClassName('nav-list')[0];
     const mobilemenutoggle = document.getElementById('mobilemenutoggle');
-    if (menuDrawer !== undefined) {
-      if (this.style === 'ohaf') {
-        menuDrawer.style.backgroundColor = '#c09580';
-        navList.style.backgroundColor = '#c09580';
-        if (mobilemenutoggle !== null) {
-          mobilemenutoggle.style.backgroundColor = '#565656';
-        }
-      } else {
-        if (menuDrawer !== null && menuDrawer !== undefined) {
-          menuDrawer.style.backgroundColor = '#c0c0c0';
-          navList.style.backgroundColor = '#c0c0c0';
-        }
-        if (mobilemenutoggle !== null) {
-          mobilemenutoggle.style.backgroundColor = '#2a222a';
-        }
-      }
+    if (menuDrawer !== null && menuDrawer !== undefined) {
+      menuDrawer.style.backgroundColor = '#c0c0c0';
+      navList.style.backgroundColor = '#c0c0c0';
     }
-  }
-
-  buildPTag(object, objectSelector, objectSelectorOther, objectStoreResult) {
-    for (let l = 0; l < object.length; l += 1) {
-      let typeHtml = '';
-      for (let i = 0; i < object[l][objectSelector].length; i += 1) {
-        if (object[l][objectSelector][i] !== '') {
-          if (object[l][objectSelector][i] !== 'other') {
-            typeHtml = `${typeHtml}<p style="font-size:10pt; padding-top:4px; margin-bottom:4px">${object[l][objectSelector][i]}</p>`;
-          } else {
-            typeHtml = `${typeHtml}<p style="font-size:10pt; padding-top:4px; margin-bottom:4px">${object[l][objectSelectorOther]}</p>`;
-          }
-        }
-      }
-      if (typeHtml === '') {
-        typeHtml = '<p style="font-size:10pt">not specified</p>';
-      }
-      object[l][objectStoreResult] = typeHtml;
-    }
-  }
-
-  selectPickedChange(selectorObj, thisObj, mainSelectedList, selectorOtherVariable, otherVariable, selectorUseThis = false, userVariable) {
-    if (userVariable) {
-      selectorObj[userVariable] = thisObj[mainSelectedList];
-    }
-    let exists = false;
-    if (selectorUseThis === true) {
-      if (thisObj[mainSelectedList].includes('other')) {
-        exists = true;
-      }
-    } else if (selectorObj[mainSelectedList].includes('other')) {
-      exists = true;
-    }
-    if (exists === true) {
-      thisObj[otherVariable] = true;
-    } else {
-      thisObj[otherVariable] = false;
-      selectorObj[selectorOtherVariable] = '';
-    }
-  }
-
-  async updateById(route, id, dataObj) {
-    try {
-      const cb = await this.httpClient.fetch(route + id, {
-        method: 'put',
-        body: json(dataObj)
-      });
-      return cb.json();
-    } catch (e) { return e; }
+    if (mobilemenutoggle !== null) mobilemenutoggle.style.backgroundColor = '#2a222a';
   }
 
   get widescreen() {
