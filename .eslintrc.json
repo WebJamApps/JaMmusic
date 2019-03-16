@@ -1,0 +1,46 @@
+{
+  "plugins": ["node", "security", "jest", "react", "html"],
+  "extends": ["./node_modules/aurelia-tools/.eslintrc.json", "airbnb",
+    "plugin:jest/recommended", "plugin:security/recommended", "plugin:node/recommended"
+  ],
+  "rules": {
+    "security/detect-possible-timing-attacks": 0,
+    "lines-between-class-members": "off",
+    "node/no-extraneous-require": 0,
+    "react/button-has-type": 0,
+    "global-require": 0,
+    "import/no-extraneous-dependencies": 0,
+    "no-unused-vars": 0,
+    "security/detect-object-injection": 0,
+    "node/no-unsupported-features/es-syntax": 0,
+    "no-mixed-operators": 0,
+    "no-useless-escape": 0,
+    "no-multi-assign": "off",
+    "comma-dangle": [0, "never"],
+    "no-undef": [0, "never"],
+    "react/jsx-filename-extension": 0,
+    "no-underscore-dangle": [0, "never"],
+    "no-restricted-globals": "off",
+    "nonblock-statement-body-position": "off",
+    "no-alert": [0, "never"],
+    "class-methods-use-this": [0, "never"],
+    "no-restricted-syntax": [0, "never"],
+    "newline-per-chained-call": "off",
+    "object-curly-newline": "off",
+    "prefer-destructuring": 0,
+    "curly": "off",
+    "no-param-reassign": [0, "never"],
+    "jest/valid-expect-in-promise": "off",
+    "jest/no-jasmine-globals": "off",
+    "import/prefer-default-export": [0, "never"],
+    "max-len": ["error", {
+      "code": 150
+    }],
+    "one-var-declaration-per-line": [0, "never"],
+    "one-var": [2, {
+      "var": "never",
+      "let": "always",
+      "const": "never"
+    }]
+  }
+}
