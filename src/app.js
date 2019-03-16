@@ -221,53 +221,11 @@ export class App {
     const menuDrawer = document.getElementsByClassName('drawer')[0];
     const navList = document.getElementsByClassName('nav-list')[0];
     const mobilemenutoggle = document.getElementById('mobilemenutoggle');
-    if (menuDrawer !== undefined) {
-      if (this.style === 'ohaf') {
-        menuDrawer.style.backgroundColor = '#c09580';
-        navList.style.backgroundColor = '#c09580';
-        if (mobilemenutoggle !== null) {
-          mobilemenutoggle.style.backgroundColor = '#565656';
-        }
-      } else {
-        if (menuDrawer !== null && menuDrawer !== undefined) {
-          menuDrawer.style.backgroundColor = '#c0c0c0';
-          navList.style.backgroundColor = '#c0c0c0';
-        }
-        if (mobilemenutoggle !== null) {
-          mobilemenutoggle.style.backgroundColor = '#2a222a';
-        }
-      }
+    if (menuDrawer !== null && menuDrawer !== undefined) {
+      menuDrawer.style.backgroundColor = '#c0c0c0';
+      navList.style.backgroundColor = '#c0c0c0';
     }
-  }
-
-  selectPickedChange(selectorObj, thisObj, mainSelectedList, selectorOtherVariable, otherVariable, selectorUseThis = false, userVariable) {
-    if (userVariable) {
-      selectorObj[userVariable] = thisObj[mainSelectedList];
-    }
-    let exists = false;
-    if (selectorUseThis === true) {
-      if (thisObj[mainSelectedList].includes('other')) {
-        exists = true;
-      }
-    } else if (selectorObj[mainSelectedList].includes('other')) {
-      exists = true;
-    }
-    if (exists === true) {
-      thisObj[otherVariable] = true;
-    } else {
-      thisObj[otherVariable] = false;
-      selectorObj[selectorOtherVariable] = '';
-    }
-  }
-
-  async updateById(route, id, dataObj) {
-    try {
-      const cb = await this.httpClient.fetch(route + id, {
-        method: 'put',
-        body: json(dataObj)
-      });
-      return cb.json();
-    } catch (e) { return e; }
+    if (mobilemenutoggle !== null) mobilemenutoggle.style.backgroundColor = '#2a222a';
   }
 
   get widescreen() {
