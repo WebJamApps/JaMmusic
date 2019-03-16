@@ -4,7 +4,7 @@
   "setupFiles": [
     "@babel/polyfill"
   ],
-  "testPathIgnorePatterns": ["/node_modules/", "/test/karma-unit/", "/test/react-unit/"],
+  "testPathIgnorePatterns": ["/node_modules/", "/test/react-unit/"],
   "coverageDirectory": "coverage/jest",
   "collectCoverageFrom": ["src/classes/*.{js,jsx}", "src/commons/*.{js,jsx}", "!**/node_modules/**", "!src/commons/slideshow.js",
     "!src/classes/AppState.js", "!src/classes/UserAccess.js", "!src/classes/FormValidator.js"

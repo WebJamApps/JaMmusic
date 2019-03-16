@@ -8,7 +8,7 @@
   "moduleNameMapper": {
     "\\.(css|less|scss|sass)$": "identity-obj-proxy"
   },
-  "testPathIgnorePatterns": ["/node_modules/", "/test/karma-unit/", "/test/jest-unit"],
+  "testPathIgnorePatterns": ["/node_modules/", "/test/jest-unit"],
   "coverageDirectory": "coverage/jest-react",
   "collectCoverageFrom": ["src/components/*.{js,jsx}", "!src/classes/*.{js,jsx}", "!src/commons/*.{js,jsx}", "!**/node_modules/**"],
   "collectCoverage": true,

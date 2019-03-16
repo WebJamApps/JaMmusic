@@ -16,14 +16,6 @@ module.exports = {
         accept: crossEnv('BABEL_TARGET=node jest -u'),
         watch: crossEnv('BABEL_TARGET=node jest --watch'),
       },
-      karma: {
-        default: series(
-          rimraf('test/coverage-karma'),
-          'karma start test/karma.conf.js'
-        ),
-        watch: 'karma start test/karma.conf.js --auto-watch --no-single-run',
-        debug: 'karma start test/karma.conf.js --auto-watch --no-single-run --debug'
-      },
       lint: {
         default: 'eslint . --ext .html,.js',
         fix: 'eslint . --ext .html,.js --fix'
@@ -34,7 +26,7 @@ module.exports = {
         watch: crossEnv('BABEL_TARGET=node jest --watch --no-cache --config jest.React.json --notify')
       },
       all: concurrent({
-        browser: series.nps('test.karma', 'e2e'),
+        browser: series.nps('test.lint', 'test.jest', 'test.react', 'e2e'),
         jest: 'nps test.jest',
         lint: 'nps test.lint'
       })
