@@ -1,7 +1,6 @@
 const sinon = require('sinon');
 const filesaver = require('file-saver');
 const utils = require('../../src/commons/utils');
-const showSlides = require('../../src/commons/showSlides');
 
 const event = [{
   _id: '234',
@@ -30,14 +29,6 @@ describe('the common utils', () => {
     done();
   });
   it('does nothing', (done) => {
-    done();
-  });
-  it('starts a slide show', (done) => {
-    sMock = sinon.mock(showSlides);
-    sMock.expects('showSlides').returns(true);
-    utils.startSlides(['1', '2', '3']);
-    jest.advanceTimersByTime(5400);
-    sMock.restore();
     done();
   });
   it('should test util compareTime functions', () => {

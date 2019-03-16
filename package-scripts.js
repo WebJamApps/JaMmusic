@@ -25,8 +25,8 @@ module.exports = {
         debug: 'karma start test/karma.conf.js --auto-watch --no-single-run --debug'
       },
       lint: {
-        default: 'eslint --ext .html,.js .',
-        fix: 'eslint --ext .html,.js --fix'
+        default: 'eslint . --ext .html,.js',
+        fix: 'eslint . --ext .html,.js --fix'
       },
       react: {
         default: crossEnv('BABEL_TARGET=node jest --no-cache --config jest.React.json --notify'),
