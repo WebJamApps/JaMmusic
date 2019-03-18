@@ -28,6 +28,7 @@
     "newline-per-chained-call": "off",
     "object-curly-newline": "off",
     "prefer-destructuring": 0,
+    "spaced-comment": "off",
     "curly": "off",
     "no-param-reassign": [0, "never"],
     "jest/valid-expect-in-promise": "off",
@@ -41,6 +42,11 @@
       "var": "never",
       "let": "always",
       "const": "never"
-    }]
+    }],
+    "react/jsx-curly-spacing": "off",
+    "react/jsx-tag-spacing": "off",
+    "react/no-array-index-key": "off",
+    "react/jsx-one-expression-per-line": "off",
+    "jsx-a11y/img-redundant-alt": "off"
   }
 }
