@@ -1,18 +1,9 @@
-import {
-  noView,
-  inject,
-  customElement,
-  bindable
-} from 'aurelia-framework';
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 import ReactPlayer from 'react-player';
 
-@noView()
-@inject(Element)
-@bindable('data')
-@bindable('copy')
-@customElement('music-player')
+
 export class MusicPlayer {
   constructor(element) {
     this.element = element;
@@ -39,16 +30,18 @@ export class MusicPlayer {
   }
 
   reactPlayer() {
-    return (<ReactPlayer
-      style={{ backgroundColor: '#eee', textAlign: 'center' }}
-      url={this.url.url}
-      playing={this.playing}
-      controls
-      onEnded={this.playEnd}
-      width="100%"
-      id="mainPlayer"
-      config={{ file: { attributes: { controlsList: 'nodownload' } } }}
-    />)
+    return (
+      <ReactPlayer
+        style={{ backgroundColor: '#eee', textAlign: 'center' }}
+        url={this.url.url}
+        playing={this.playing}
+        controls
+        onEnded={this.playEnd}
+        width="100%"
+        id="mainPlayer"
+        config={{ file: { attributes: { controlsList: 'nodownload' } } }}
+      />
+    );
   }
 
   buttons() {
@@ -63,7 +56,7 @@ export class MusicPlayer {
           <a id="homeLink" href="/?reload=true">Home</a>
         </button>
       </section>
-    )
+    );
   }
 
   get html() {

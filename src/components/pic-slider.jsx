@@ -1,14 +1,11 @@
-import { noView, inject, customElement, bindable } from 'aurelia-framework';
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
-@noView()
-@inject(Element)
-@customElement('picture-slider')
-@bindable('data')
+
 export class PicSlider {
   constructor(element) {
     this.element = element;
@@ -27,11 +24,11 @@ export class PicSlider {
   html() {
     return (
       <Slider {...this.settings}>
-        {this.data.map((data, key) => {
-          return <div key={key}><img width='100%' height='100%' src={data}/></div>
-        })}
+        {
+          this.data.map((data, key) => <div key={key}> <img width="100%" height="100%" src={data} alt="Image"/> </div>)
+        }
       </Slider>
-    )
+    );
   }
 
   render() {
