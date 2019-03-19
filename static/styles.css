@@ -27,13 +27,12 @@ div.dropdown-content {
 }
 
 div.page-host {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  overflow-x: hidden;
-  overflow-y: auto;
+  /*left: 0;*/
+  /*right: 0;*/
+  /*top: 0;*/
+  /*bottom: 0;*/
+  /*overflow-x: hidden;*/
+  /*overflow-y: auto;*/
 }
 
 div.page-content {
@@ -469,11 +468,11 @@ audio::-webkit-media-controls-panel {
 }
 
 .overSelect {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
+  /*position: absolute;*/
+  /*left: 0;*/
+  /*right: 0;*/
+  /*top: 0;*/
+  /*bottom: 0;*/
 }
 
 .question {
@@ -489,8 +488,9 @@ audio::-webkit-media-controls-panel {
 /* splash is in the index.ejs file, used for the initial page load animation */
 .splash {
   text-align: center;
-  margin: 10% 0 0;
+  margin: 0;
   box-sizing: border-box;
+  min-height: 100vh;
 }
 
 .splash .message {
@@ -499,6 +499,10 @@ audio::-webkit-media-controls-panel {
   text-shadow: rgba(0, 0, 0, 0.5) 0 0 15px;
   text-transform: uppercase;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+#App {
+  min-height: 100vh;
 }
 
 .splash .fa-spinner {
@@ -569,13 +573,12 @@ audio::-webkit-media-controls-panel {
 
 @media print {
   .page-host {
-    position: absolute;
-    left: 10px;
-    right: 0;
-    top: 50px;
-    bottom: 0;
-    overflow-y: inherit;
-    overflow-x: inherit;
+    /*left: 10px;*/
+    /*right: 0;*/
+    /*top: 50px;*/
+    /*bottom: 0;*/
+    /*overflow-y: inherit;*/
+    /*overflow-x: inherit;*/
   }
 }
 
@@ -685,11 +688,11 @@ a:hover {
   }
 
   .content-block {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
+    /*position: absolute;*/
+    /*top: 0;*/
+    /*bottom: 0;*/
+    /*left: 0;*/
+    /*right: 0;*/
     overflow: auto;
     margin-top: 91px;
     margin-right: inherit;
