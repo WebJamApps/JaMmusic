@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import AppIndex from './pages/app';
+import AppTemp from './components/app-main';
 
 
 export default class App extends Component {
@@ -14,12 +15,12 @@ export default class App extends Component {
     return (
       <div id="App" className="App">
         <Router>
-          <div id="homepage">
+          <AppTemp id="homepage">
             <Switch>
               <Route exact path="/" component={ AppIndex }/>
               {/*<Route path="/home" component={ Home }/>*/}
             </Switch>
-          </div>
+          </AppTemp>
         </Router>
       </div>
     );
