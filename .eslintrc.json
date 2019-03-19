@@ -29,13 +29,14 @@
     "object-curly-newline": "off",
     "prefer-destructuring": 0,
     "spaced-comment": "off",
+    "no-template-curly-in-string": "off",
     "curly": "off",
     "no-param-reassign": [0, "never"],
     "jest/valid-expect-in-promise": "off",
     "jest/no-jasmine-globals": "off",
     "import/prefer-default-export": [0, "never"],
     "max-len": ["error", {
-      "code": 150
+      "code": 200
     }],
     "one-var-declaration-per-line": [0, "never"],
     "one-var": [2, {
@@ -47,6 +48,11 @@
     "react/jsx-tag-spacing": "off",
     "react/no-array-index-key": "off",
     "react/jsx-one-expression-per-line": "off",
-    "jsx-a11y/img-redundant-alt": "off"
+    "react/jsx-closing-bracket-location": "off",
+    "react/destructuring-assignment": "off",
+    "react/prop-types": "off",
+    "react/sort-comp": "off",
+    "jsx-a11y/img-redundant-alt": "off",
+    "jsx-a11y/mouse-events-have-key-events": "off"
   }
 }
