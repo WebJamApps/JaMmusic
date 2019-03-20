@@ -64,36 +64,25 @@ export class AppTemplate extends Component {
   render() {
     return (
       <div className="page-host">
-        <div className={`${this.currentStyles.sidebarClass} drawer-container`} style={{ display: 'none' }}>
+        <div className={`${this.currentStyles.sidebarClass} drawer-container`}>
           <div className="drawer" style={{ backgroundColor: '#c0c0c0' }}>
             <div className="navImage">
-              <img
-                alt="wjsidelogo"
-                id="webjamwidelogo"
-                src={`${this.currentStyles.sidebarImagePath}`}
-                style={{ width: '182px', marginRight: 0 }}
-                bind="Menu !== 'charity' && Menu !== 'volunteer' && Menu !== 'ohaf' && role !== 'Charity' && role !=='Volunteer'"
-              />
-              <img
-                alt="ohafwidelogo"
-                id="ohafbutterflies"
-                src={`${this.currentStyles.sidebarImagePath}`}
-                style={{ width: '182px', marginRight: 0, marginTop: '-4px' }}
-                bind="Menu === 'charity' || Menu === 'volunteer' || Menu === 'ohaf' || role === 'Charity' || role ==='Volunteer'"
-              />
+              {
+                ['charity', 'volunteer', 'ohaf'].includes(this.props.menu) && ['Volunteer', 'Charity'].includes(this.props.role)
+                  ? <img
+                    alt="wjsidelogo"
+                    id="webjamwidelogo"
+                    src={`${this.currentStyles.sidebarImagePath}`}
+                    style={{ width: '182px', marginRight: 0 }}
+                  />
+                  : <img
+                    alt="ohafwidelogo"
+                    id="ohafbutterflies"
+                    src={`${this.currentStyles.sidebarImagePath}`}
+                    style={{ width: '182px', marginRight: 0, marginTop: '-4px' }}
+                  />
+              }
             </div>
-
-            <div
-              bind="!fullmenu && (Menu !== 'charity' && Menu !== 'volunteer' && Menu !== 'ohaf' && role !== 'Charity' && role !=='Volunteer')"
-              style={{ backgroundColor: '#2a222a', width: '50px', height: '91px' }}
-              className="navImage"
-            />
-
-            <div
-              bind="!fullmenu && (Menu === 'charity' || Menu === 'volunteer' || Menu === 'ohaf' || role === 'Charity' || role ==='Volunteer')"
-              style={{ backgroundColor: '#565656', width: '50px', height: '91px' }}
-              className="navImage"
-            />
 
             <div
               bind="!fullmenu"
@@ -122,31 +111,34 @@ export class AppTemplate extends Component {
           </div>
         </div>
         <div className="main-panel">
-          <i
-            onClick={ this.toggleMobileMenu }
-            id="mobilemenutoggle"
-            className="fa fa-bars pull-right fa-1.5x mobile-menu-toggle"
-            aria-hidden="true"
-            bind="!widescreen"
-          />
+          {
+            !this.props.widescreen
+            && <i
+              onClick={ this.toggleMobileMenu }
+              id="mobilemenutoggle"
+              className="fa fa-bars pull-right fa-1.5x mobile-menu-toggle"
+              aria-hidden="true"
+            />
+          }
 
           <div className="mainPanel">
             <div className="swipe-area"/>
             <div className={`material-header ${this.currentStyles.headerClass}`}>
 
-              <div
-                bind="Menu !== 'charity' && Menu !== 'volunteer' && Menu !== 'ohaf' && role !== 'Charity' && role !=='Volunteer'"
-                className="headercontent">
-                <img alt="ohafHeader" src={`${this.currentStyles.headerImagePath}`} className={`${this.currentStyles.headerImageClass}`} />
-              </div>
+              {
+                ['charity', 'volunteer', 'ohaf'].includes(this.props.menu) && ['Volunteer', 'Charity'].includes(this.props.role)
+                  ? <div className="headercontent">
+                    <img alt="ohafHeader" src={`${this.currentStyles.headerImagePath}`} className={`${this.currentStyles.headerImageClass}`} />
+                  </div>
+                  : <div
+                    id="ohaflogo"
+                    className="headercontent"
+                    style={{ top: '-23px', left: '3px' }}>
+                    <img alt="ohaflogo" src={`${this.currentStyles.headerImagePath}`} className={`${this.currentStyles.headerImageClass}`} />
+                  </div>
+              }
 
-              <div
-                id="ohaflogo"
-                bind="Menu === 'charity' || Menu === 'volunteer' || Menu === 'ohaf' || role === 'Charity' || role ==='Volunteer'"
-                className="headercontent"
-                style={{ top: '-23px', left: '3px' }}>
-                <img alt="ohaflogo" src={`${this.currentStyles.headerImagePath}`} className={`${this.currentStyles.headerImageClass}`} />
-              </div>
+
 
               <div
                 className={`headercontent ${this.currentStyles.headerClass} header-text-card`}
