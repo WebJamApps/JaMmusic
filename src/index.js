@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import AppIndex from './pages/app';
+import AppBuyMusic from './pages/buymusic';
 import AppTemp from './components/app-main';
 
 
@@ -18,7 +19,7 @@ export default class App extends Component {
           <AppTemp id="homepage">
             <Switch>
               <Route exact path="/" component={ AppIndex }/>
-              {/*<Route path="/home" component={ Home }/>*/}
+              <Route path="/buymusic" component={ AppBuyMusic }/>
             </Switch>
           </AppTemp>
         </Router>
