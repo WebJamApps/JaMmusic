@@ -23,7 +23,7 @@ describe('joshandmariamusic.com', () => {
 
   it('should navigate to Music page', async () => {
     await poSkeleton.navigateTo('/buymusic');
-    await expect(poSkeleton.getCurrentPageTitle()).toBe('Buy Music | Web Jam LLC');
+    await expect(poSkeleton.getCurrentPageTitle()).toBe('Web Jam LLC');
   });
 
   // it('should navigate to OHAF page', async () => {
