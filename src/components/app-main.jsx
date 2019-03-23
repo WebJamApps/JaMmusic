@@ -79,20 +79,12 @@ export class AppTemplate extends Component {
                     alt="ohafwidelogo"
                     id="ohafbutterflies"
                     src={`${this.currentStyles.sidebarImagePath}`}
-                    style={{ width: '182px', marginRight: 0, marginTop: '-4px' }}
+                    style={{ width: '183px', marginRight: 0, marginTop: 0 }}
                   />
               }
             </div>
 
-            <div
-              bind="!fullmenu"
-              className={`material-header ${this.currentStyles.headerClass}`}
-              style={{ width: '63px', height: '91px' }}
-            />
-
             <div className="nav-list">
-
-              <p bind="fullmenu" style={{ fontSize: '1px' }}> &nbsp; </p>
 
               <div id="musTT" style={{ display: 'none', position: 'absolute', top: '305px', right: '68px', backgroundColor: 'white', padding: '3px' }}> Music </div>
               <div className="menu-item">
@@ -137,28 +129,26 @@ export class AppTemplate extends Component {
                     <img alt="ohaflogo" src={`${this.currentStyles.headerImagePath}`} className={`${this.currentStyles.headerImageClass}`} />
                   </div>
               }
-
-
-
-              <div
-                className={`headercontent ${this.currentStyles.headerClass} header-text-card`}
-                style={{ top: '7px', height: '10px', bottom: 0 }}
-                bind="Menu !== 'charity' && Menu !== 'volunteer' && Menu !== 'ohaf' && role !== 'Charity' && role !=='Volunteer'">
-                <h3 className="header-text">
-                  {this.currentStyles.headerText1}
-                </h3>
-              </div>
-
-              <div
-                className={`headercontent ${this.currentStyles.headerClass} header-text-card`}
-                style={{ top: '7px', height: '81px', paddingLeft: '2px' }}
-                bind="Menu === 'charity' || Menu === 'volunteer' || Menu === 'ohaf' || role === 'Charity' || role ==='Volunteer'">
-                <h3 className="header-text" style={{ marginTop: 0 }}>
-                  {this.currentStyles.headerText1}
-                  <br/> {this.currentStyles.headerText2}
-                  <br/> {this.currentStyles.headerText3}
-                </h3>
-              </div>
+              {
+                ['charity', 'volunteer', 'ohaf'].includes(this.props.menu) && ['Volunteer', 'Charity'].includes(this.props.role)
+                  ? <div
+                    className="headercontent header-text-card"
+                    style={{ top: '7px', bottom: 0 }}
+                    bind="Menu !== 'charity' && Menu !== 'volunteer' && Menu !== 'ohaf' && role !== 'Charity' && role !=='Volunteer'">
+                    <h3 className="header-text">
+                      {this.currentStyles.headerText1}
+                      <br/> {this.currentStyles.headerText2}
+                      <br/> {this.currentStyles.headerText3}
+                    </h3>
+                  </div>
+                  : <div
+                    className="headercontent header-text-card"
+                    style={{ top: '7px', paddingLeft: '2px' }}>
+                    <h3 className="header-text" style={{ marginTop: 0 }}>
+                      {this.currentStyles.headerText1}
+                    </h3>
+                  </div>
+              }
 
             </div>
 
