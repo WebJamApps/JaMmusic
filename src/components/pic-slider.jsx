@@ -1,14 +1,13 @@
 
-import React from 'react';
-import ReactDOM from 'react-dom';
+import React, { Component } from 'react';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
 
-export class PicSlider {
-  constructor(element) {
-    this.element = element;
+export class PicSlider extends Component {
+  constructor(props) {
+    super(props);
     this.settings = {
       autoplay: true,
       autoplaySpeed: 2000,
@@ -21,21 +20,13 @@ export class PicSlider {
     };
   }
 
-  html() {
+  render() {
     return (
       <Slider {...this.settings}>
         {
-          this.data.map((data, key) => <div key={key}> <img width="100%" height="100%" src={data} alt="Image"/> </div>)
+          this.props.data.map((data, key) => <div key={key}> <img width="100%" height="100%" src={data} alt="Image"/> </div>)
         }
       </Slider>
     );
-  }
-
-  render() {
-    ReactDOM.render(this.html(), this.element);
-  }
-
-  bind() {
-    this.render();
   }
 }
