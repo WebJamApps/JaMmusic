@@ -62,6 +62,7 @@ export class AppTemplate extends Component {
   }
 
   render() {
+    const color = '#c09580';
     return (
       <div className="page-host">
         <div className={`${this.currentStyles.sidebarClass} drawer-container`}>
@@ -156,9 +157,34 @@ export class AppTemplate extends Component {
 
               { this.props.children }
 
-              <div id="wjfooter" className="footer"/>
             </div>
 
+          </div>
+
+          <div id="wjfooter" className="footer" style={{ backgroundColor: '#565656' }}>
+            <div style={{ textAlign: 'center', padding: '6px' }}>
+              <a target="_blank" rel="noopener noreferrer" style={{ color, paddingRight: '5px' }} href="https://github.com/WebJamApps">
+                <i className="fa fa-github fa-2x footerIcon" aria-hidden="true" />
+              </a>
+              <a target="_blank" rel="noopener noreferrer" style={{ color, paddingRight: '5px' }} href="https://www.linkedin.com/company/webjam/">
+                <i className="fa fa-linkedin fa-2x footerIcon" aria-hidden="true" />
+              </a>
+              <a target="_blank" rel="noopener noreferrer" style={{ color, paddingRight: '5px' }} href="https://twitter.com/WebJamLLC">
+                <i className="fa fa-twitter fa-2x footerIcon" aria-hidden="true" />
+              </a>
+              <a target="_blank" rel="noopener noreferrer" style={{ color, paddingRight: '5px' }} href="https://www.facebook.com/WebJamLLC/">
+                <i className="fa fa-facebook-square fa-2x footerIcon" aria-hidden="true" />
+              </a>
+              <a target="_blank" rel="noopener noreferrer" style={{ color, paddingRight: '5px' }} href="https://www.instagram.com/joshua.v.sherman/">
+                <i className="fa fa-instagram fa-2x footerIcon" aria-hidden="true" />
+              </a>
+              <a target="_blank" rel="noopener noreferrer" style={{ color, paddingRight: '5px' }} href="https://plus.google.com/u/1/109586499331294076292">
+                <i className="fa fa-google-plus-square fa-2x footerIcon" aria-hidden="true" />
+              </a>
+              <p style={{ color: 'white', fontSize: '9pt', marginBottom: 0 }}>
+                Powered by <a className="wjllc" target="_blank" rel="noopener noreferrer" href="https://www.web-jam.com">Web Jam LLC</a>
+              </p>
+            </div>
           </div>
         </div>
       </div>
