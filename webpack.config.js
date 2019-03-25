@@ -28,7 +28,7 @@ module.exports = ({ production, server, extractCss, coverage, analyze } = {}) =>
 
   entry: {
     app: ['./main.js'],
-    vendor: ['bluebird', 'jquery', 'bootstrap', 'whatwg-fetch', 'isomorphic-fetch']
+    // vendor: ['bootstrap', 'whatwg-fetch', 'isomorphic-fetch']
   },
 
   mode: production ? 'production' : 'development',
