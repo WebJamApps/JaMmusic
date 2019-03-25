@@ -1,8 +1,6 @@
 {
   "plugins": ["node", "security", "jest", "react", "html"],
-  "extends": ["./node_modules/aurelia-tools/.eslintrc.json", "airbnb",
-    "plugin:jest/recommended", "plugin:security/recommended", "plugin:node/recommended"
-  ],
+  "extends": ["airbnb", "plugin:jest/recommended", "plugin:security/recommended", "plugin:node/recommended"],
   "rules": {
     "security/detect-possible-timing-attacks": 0,
     "lines-between-class-members": "off",
