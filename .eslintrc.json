@@ -26,6 +26,7 @@
     "newline-per-chained-call": "off",
     "object-curly-newline": "off",
     "prefer-destructuring": 0,
+    "prefer-rest-params": "off",
     "spaced-comment": "off",
     "no-template-curly-in-string": "off",
     "curly": "off",
@@ -52,8 +53,11 @@
     "react/jsx-indent": "off",
     "react/destructuring-assignment": "off",
     "react/prop-types": "off",
+    "react/no-access-state-in-setstate": "off",
     "react/sort-comp": "off",
     "jsx-a11y/img-redundant-alt": "off",
-    "jsx-a11y/mouse-events-have-key-events": "off"
+    "jsx-a11y/mouse-events-have-key-events": "off",
+    "jsx-a11y/no-static-element-interactions": "off",
+    "jsx-a11y/click-events-have-key-events": "off"
   }
 }
