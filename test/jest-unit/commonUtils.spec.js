@@ -1,6 +1,6 @@
-const sinon = require('sinon');
-const filesaver = require('file-saver');
-const utils = require('../../src/commons/utils');
+import sinon from 'sinon';
+import filesaver from 'file-saver';
+import * as utils from '../../src/commons/utils';
 
 const event = [{
   _id: '234',
