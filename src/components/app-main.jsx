@@ -2,29 +2,28 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { throttle } from '../commons/utils';
 
 
 export class AppTemplate extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = { menuOpen: false };
     this.close = this.close.bind(this);
+    this.dispatchWindowResize = this.dispatchWindowResize.bind(this);
+    this.toggleMobileMenu = this.toggleMobileMenu.bind(this);
   }
 
-  close() {
-    console.log('close');
-  }
-
-  showTT(selector) {
-    console.log(selector);
-  }
-
-  hideTT(selector) {
-    console.log(selector);
+  close(e) {
+    const menuOpen = false;
+    if (!e.target.classList.contains('nav-list')) {
+      this.setState({ menuOpen });
+    }
   }
 
   toggleMobileMenu() {
-    console.log('somehting american');
+    const menuOpen = !this.state.menuOpen;
+    this.setState({ menuOpen });
   }
 
   get currentStyles() {
@@ -57,15 +56,19 @@ export class AppTemplate extends Component {
     return result;
   }
 
+  dispatchWindowResize() {
+    console.log(window.innerWidth);
+  }
+
   componentDidMount() {
-    console.log(this.props);
+    window.addEventListener('resize', throttle(this.dispatchWindowResize, 100, { leading: false }), false);
   }
 
   render() {
     const color = '#c09580';
     return (
       <div className="page-host">
-        <div className={`${this.currentStyles.sidebarClass} drawer-container`}>
+        <div onClick={ this.close } className={`${this.currentStyles.sidebarClass} ${this.state.menuOpen ? 'open' : 'close'} drawer-container`}>
           <div className="drawer" style={{ backgroundColor: '#c0c0c0' }}>
             <div className="navImage">
               {
@@ -86,33 +89,26 @@ export class AppTemplate extends Component {
             </div>
 
             <div className="nav-list">
-
               <div id="musTT" style={{ display: 'none', position: 'absolute', top: '305px', right: '68px', backgroundColor: 'white', padding: '3px' }}> Music </div>
               <div className="menu-item">
                 <Link to="/" className="nav-link" onClick={this.close}>
-                  <span onMouseOver={ this.showTT('musTT') } onMouseOut={this.hideTT('musTT')} className="fa fa-music"/>
-                  { this.props.fullMenu && <span className="nav-item">Music</span> }
+                  <span onMouseOver={ this.showTT } onMouseOut={this.hideTT} className="fa fa-music"/>
+                  <span className="nav-item">Music</span>
                 </Link>
               </div>
               <div className="menu-item">
                 <Link to="/buymusic" className="nav-link" onClick={this.close}>
                   <span className="fa fa-money"/>
-                  <span className="nav-item" bind="fullmenu">Buy Music</span>
+                  <span className="nav-item">Buy Music</span>
                 </Link>
               </div>
             </div>
           </div>
         </div>
         <div className="main-panel">
-          {
-            !this.props.widescreen
-            && <i
-              onClick={ this.toggleMobileMenu }
-              id="mobilemenutoggle"
-              className="fa fa-bars pull-right fa-1.5x mobile-menu-toggle"
-              aria-hidden="true"
-            />
-          }
+          <span onClick={ this.toggleMobileMenu } id="mobilemenutoggle">
+            <img src="../../static/icons/menu.svg" alt="menu"/>
+          </span>
 
           <div className="mainPanel">
             <div className="swipe-area"/>
@@ -123,28 +119,20 @@ export class AppTemplate extends Component {
                   ? <div className="headercontent">
                     <img alt="ohafHeader" src={`${this.currentStyles.headerImagePath}`} className={`${this.currentStyles.headerImageClass}`} />
                   </div>
-                  : <div
-                    id="ohaflogo"
-                    className="headercontent"
-                    style={{ top: '-23px', left: '3px' }}>
+                  : <div id="ohaflogo" className="headercontent">
                     <img alt="ohaflogo" src={`${this.currentStyles.headerImagePath}`} className={`${this.currentStyles.headerImageClass}`} />
                   </div>
               }
               {
                 ['charity', 'volunteer', 'ohaf'].includes(this.props.menu) && ['Volunteer', 'Charity'].includes(this.props.role)
-                  ? <div
-                    className="headercontent header-text-card"
-                    style={{ top: '7px', bottom: 0 }}
-                    bind="Menu !== 'charity' && Menu !== 'volunteer' && Menu !== 'ohaf' && role !== 'Charity' && role !=='Volunteer'">
+                  ? <div className="headercontent header-text-card">
                     <h3 className="header-text">
                       {this.currentStyles.headerText1}
                       <br/> {this.currentStyles.headerText2}
                       <br/> {this.currentStyles.headerText3}
                     </h3>
                   </div>
-                  : <div
-                    className="headercontent header-text-card"
-                    style={{ top: '7px', paddingLeft: '2px' }}>
+                  : <div className="headercontent header-text-card">
                     <h3 className="header-text" style={{ marginTop: 0 }}>
                       {this.currentStyles.headerText1}
                     </h3>
@@ -164,23 +152,31 @@ export class AppTemplate extends Component {
           <div id="wjfooter" className="footer" style={{ backgroundColor: '#565656' }}>
             <div style={{ textAlign: 'center', padding: '6px' }}>
               <a target="_blank" rel="noopener noreferrer" style={{ color, paddingRight: '5px' }} href="https://github.com/WebJamApps">
-                <i className="fa fa-github fa-2x footerIcon" aria-hidden="true" />
+                <span>
+                  <img src="../../static/icons/github.svg" alt="menu"/>
+                </span>
               </a>
               <a target="_blank" rel="noopener noreferrer" style={{ color, paddingRight: '5px' }} href="https://www.linkedin.com/company/webjam/">
-                <i className="fa fa-linkedin fa-2x footerIcon" aria-hidden="true" />
-              </a>
-              <a target="_blank" rel="noopener noreferrer" style={{ color, paddingRight: '5px' }} href="https://twitter.com/WebJamLLC">
-                <i className="fa fa-twitter fa-2x footerIcon" aria-hidden="true" />
-              </a>
-              <a target="_blank" rel="noopener noreferrer" style={{ color, paddingRight: '5px' }} href="https://www.facebook.com/WebJamLLC/">
-                <i className="fa fa-facebook-square fa-2x footerIcon" aria-hidden="true" />
+                <span>
+                  <img src="../../static/icons/linkedin.svg" alt="menu"/>
+                </span>
               </a>
               <a target="_blank" rel="noopener noreferrer" style={{ color, paddingRight: '5px' }} href="https://www.instagram.com/joshua.v.sherman/">
-                <i className="fa fa-instagram fa-2x footerIcon" aria-hidden="true" />
+                <span>
+                  <img src="../../static/icons/instagram.svg" alt="menu"/>
+                </span>
               </a>
-              <a target="_blank" rel="noopener noreferrer" style={{ color, paddingRight: '5px' }} href="https://plus.google.com/u/1/109586499331294076292">
-                <i className="fa fa-google-plus-square fa-2x footerIcon" aria-hidden="true" />
+              <a target="_blank" rel="noopener noreferrer" style={{ color, paddingRight: '5px' }} href="https://twitter.com/WebJamLLC">
+                <span>
+                  <img src="../../static/icons/twitter.svg" alt="menu"/>
+                </span>
               </a>
+              <a target="_blank" rel="noopener noreferrer" style={{ color, paddingRight: '5px' }} href="https://www.facebook.com/WebJamLLC/">
+                <span>
+                  <img src="../../static/icons/facebook.svg" alt="menu"/>
+                </span>
+              </a>
+              <br/>
               <p style={{ color: 'white', fontSize: '9pt', marginBottom: 0 }}>
                 Powered by <a className="wjllc" target="_blank" rel="noopener noreferrer" href="https://www.web-jam.com">Web Jam LLC</a>
               </p>
