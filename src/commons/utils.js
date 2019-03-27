@@ -1,7 +1,7 @@
 const csvjson = require('csvjson');
 const filesaver = require('file-saver');
 
-exports.updateCanSubmit = function updateCanSubmit(validationResults, controller) {
+export function updateCanSubmit(validationResults, controller) {
   let valid = true;
   const nub = document.getElementsByClassName('updateButton')[0];
   if (nub !== undefined) nub.style.display = 'none';
@@ -29,9 +29,9 @@ exports.updateCanSubmit = function updateCanSubmit(validationResults, controller
     }
   }
   return null;
-};
+}
 
-exports.fixDates = function fixDates(myevents) {
+export function fixDates(myevents) {
   for (let i = 0; i < myevents.length; i += 1) {
     const startDate = myevents[i].voStartDate;
     const endDate = myevents[i].voEndDate;
@@ -43,9 +43,9 @@ exports.fixDates = function fixDates(myevents) {
     }
   }
   return myevents;
-};
+}
 
-exports.formatDate = function formatDate(today) {
+export function formatDate(today) {
   const mm = today.getMonth() + 1; // getMonth() is zero-based
   const dd = today.getDate();
   today = [today.getFullYear(),
@@ -53,9 +53,10 @@ exports.formatDate = function formatDate(today) {
     (dd > 9 ? '' : '0') + dd
   ].join('');
   return today;
-};
+}
 
-exports.getTime = function getTime(a, b) {
+export function getTime(a, b) {
+  let zone, offset;
   if (a > 11 && a !== 0) {
     zone = 'pm';
   } else {
@@ -69,9 +70,9 @@ exports.getTime = function getTime(a, b) {
     offset = a;
   }
   return `${offset}:${b} ${zone}`;
-};
+}
 
-exports.compareTime = function compareTime(a, b) {
+export function compareTime(a, b) {
   if (!a || !b) return false;
   const [aHour, aRest] = a.split(':');
   const [bHour, bRest] = b.split(':');
@@ -85,11 +86,11 @@ exports.compareTime = function compareTime(a, b) {
     else if (parseInt(aMin, 0) > parseInt(bMin, 0)) value = true;
     else if (parseInt(aMin, 0) < parseInt(bMin, 0)) value = false;
   return value;
-};
+}
 
-exports.markPast = function markPast(myEvents, formatDate) {
-  let testDate, today = date = new Date();
-  today = formatDate(today);
+export function markPast(myEvents, fDate) {
+  let testDate, date, today = date = new Date();
+  today = fDate(today);
   for (let i = 0; i < myEvents.length; i += 1) {
     if (myEvents[i].voStartDate === undefined || myEvents[i].voStartDate === null || myEvents[i].voStartDate === '') {
       myEvents[i].voStartDate = today;
@@ -105,9 +106,9 @@ exports.markPast = function markPast(myEvents, formatDate) {
       myEvents[i].past = false;
     }
   }
-};
+}
 
-exports.makeFilterDropdown = function makeFilterDropdown(filterName, model, attrib) {
+export function makeFilterDropdown(filterName, model, attrib) {
   filterName.push('');
   for (const next of model) {
     const nextType = next[attrib];
@@ -115,9 +116,9 @@ exports.makeFilterDropdown = function makeFilterDropdown(filterName, model, attr
       filterName.push(nextType);
     }
   }
-};
+}
 
-exports.finishFiltering = function finishFiltering(myModule) {
+export function finishFiltering(myModule) {
   for (let s = 0; s < myModule.selectedFilter.length; s += 1) {
     for (let u = 0; u < myModule.filters.length; u += 1) {
       if (myModule.filters[u].filterby === myModule.selectedFilter[s]) {
@@ -131,9 +132,9 @@ exports.finishFiltering = function finishFiltering(myModule) {
       myModule.filters[a].value = '';
     }
   }
-};
+}
 
-exports.filterSelected = function filterSelected(myModule) {
+export function filterSelected(myModule) {
   if (myModule.selectedFilter.length === 0) {
     for (let i = 0; i < myModule.filters.length; i += 1) {
       myModule.filters[i].value = '';
@@ -142,9 +143,9 @@ exports.filterSelected = function filterSelected(myModule) {
     return;
   }
   this.finishFiltering(myModule);
-};
+}
 
-exports.showCheckboxes = function showCheckboxes(id, forceOpen) {
+export function showCheckboxes(id, forceOpen) {
   let fo = false;
   if (forceOpen !== null && forceOpen !== undefined) {
     fo = forceOpen;
@@ -156,16 +157,16 @@ exports.showCheckboxes = function showCheckboxes(id, forceOpen) {
   }
   checkboxes.style.display = 'block';
   return true;
-};
+}
 
-exports.nevermind = function nevermind(className) {
+export function nevermind(className) {
   const regform1 = document.getElementsByClassName(className);
   if (regform1[0] !== undefined) {
     regform1[0].style.display = 'none';
   }
-};
+}
 
-exports.textFileValidate = function textFileValidate() {
+export function textFileValidate() {
   const nub = document.getElementById('deleteCreateButton');
   document.getElementsByClassName('errorMessage')[0].innerHTML = '';
   nub.style.display = 'none';
@@ -184,9 +185,9 @@ exports.textFileValidate = function textFileValidate() {
     }
   }
   return valid;
-};
+}
 
-exports.makeCSVfile = function makeCSVfile(fetchClient, route, fileName) {
+export function makeCSVfile(fetchClient, route, fileName) {
   return fetchClient.fetch(route)
     .then(response => response.json())
     .then((data) => {
@@ -200,4 +201,46 @@ exports.makeCSVfile = function makeCSVfile(fetchClient, route, fileName) {
       });
       return filesaver.saveAs(file);
     });
-};
+}
+
+export function throttle(func, wait, options) {
+  let timeout, context, args, result, previous = 0,
+    now = Date.now || new Date().getTime;
+
+  if (!options) options = {};
+
+  const later = () => {
+    previous = options.leading === false ? 0 : Date.now();
+    timeout = null;
+    result = func.apply(context, args);
+    if (!timeout) context = args = null;
+  };
+
+  const throttled = () => {
+    now = Date.now();
+    if (!previous && options.leading === false) previous = now;
+    const remaining = wait - (now - previous);
+    context = this;
+    args = arguments;
+    if (remaining <= 0 || remaining > wait) {
+      if (timeout) {
+        clearTimeout(timeout);
+        timeout = null;
+      }
+      previous = now;
+      result = func.apply(context, args);
+      if (!timeout) context = args = null;
+    } else if (!timeout && options.trailing !== false) {
+      timeout = setTimeout(later, remaining);
+    }
+    return result;
+  };
+
+  throttled.cancel = () => {
+    clearTimeout(timeout);
+    previous = 0;
+    timeout = context = args = null;
+  };
+
+  return throttled;
+}
