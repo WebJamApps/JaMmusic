@@ -102,6 +102,30 @@ export class AppTemplate extends Component {
                   <span className="nav-item">Buy Music</span>
                 </Link>
               </div>
+              <div className="menu-item">
+                <a rel="noopener noreferrer" target="_blank" href="http://web-jam.com/music/" className="nav-link" onClick={this.close}>
+                  <i className="far fa-lightbulb"/>&nbsp;
+                  <span className="nav-item">Originals</span>
+                </a>
+              </div>
+              <div className="menu-item">
+                <a rel="noopener noreferrer" target="_blank" href="http://web-jam.com/music/" className="nav-link" onClick={this.close}>
+                  <i className="fas fa-crosshairs"/>&nbsp;
+                  <span className="nav-item">Mission Music</span>
+                </a>
+              </div>
+              <div className="menu-item">
+                <a rel="noopener noreferrer" target="_blank" href="http://web-jam.com/music/" className="nav-link" onClick={this.close}>
+                  <i className="fas fa-beer"/>&nbsp;
+                  <span className="nav-item">Pub Songs</span>
+                </a>
+              </div>
+              <div className="menu-item">
+                <a rel="noopener noreferrer" target="_blank" href="http://web-jam.com" className="nav-link" onClick={this.close}>
+                  <i className="fas fa-home"/>&nbsp;
+                  <span className="nav-item">Web Jam LLC</span>
+                </a>
+              </div>
             </div>
           </div>
         </div>
@@ -145,42 +169,43 @@ export class AppTemplate extends Component {
 
               { this.props.children }
 
+              <div id="wjfooter" className="footer" style={{ backgroundColor: '#565656' }}>
+                <div style={{ textAlign: 'center', padding: '6px' }}>
+                  <a target="_blank" rel="noopener noreferrer" style={{ color, paddingRight: '5px' }} href="https://github.com/WebJamApps">
+                    <span>
+                      <i className="fab fa-github" />
+                    </span>
+                  </a>
+                  <a target="_blank" rel="noopener noreferrer" style={{ color, paddingRight: '5px' }} href="https://www.linkedin.com/company/webjam/">
+                    <span>
+                      <i className="fab fa-linkedin" />
+                    </span>
+                  </a>
+                  <a target="_blank" rel="noopener noreferrer" style={{ color, paddingRight: '5px' }} href="https://www.instagram.com/joshua.v.sherman/">
+                    <span>
+                      <i className="fab fa-instagram" />
+                    </span>
+                  </a>
+                  <a target="_blank" rel="noopener noreferrer" style={{ color, paddingRight: '5px' }} href="https://twitter.com/WebJamLLC">
+                    <span>
+                      <i className="fab fa-twitter" />
+                    </span>
+                  </a>
+                  <a target="_blank" rel="noopener noreferrer" style={{ color, paddingRight: '5px' }} href="https://www.facebook.com/WebJamLLC/">
+                    <span>
+                      <i className="fab fa-facebook" />
+                    </span>
+                  </a>
+                  <p style={{ color: 'white', fontSize: '9pt', marginBottom: 0 }}>
+                    Powered by <a className="wjllc" target="_blank" rel="noopener noreferrer" href="https://www.web-jam.com">Web Jam LLC</a>
+                  </p>
+                </div>
+              </div>
+
             </div>
 
           </div>
 
-          <div id="wjfooter" className="footer" style={{ backgroundColor: '#565656' }}>
-            <div style={{ textAlign: 'center', padding: '6px' }}>
-              <a target="_blank" rel="noopener noreferrer" style={{ color, paddingRight: '5px' }} href="https://github.com/WebJamApps">
-                <span>
-                  <i className="fab fa-github" />
-                </span>
-              </a>
-              <a target="_blank" rel="noopener noreferrer" style={{ color, paddingRight: '5px' }} href="https://www.linkedin.com/company/webjam/">
-                <span>
-                  <i className="fab fa-linkedin" />
-                </span>
-              </a>
-              <a target="_blank" rel="noopener noreferrer" style={{ color, paddingRight: '5px' }} href="https://www.instagram.com/joshua.v.sherman/">
-                <span>
-                  <i className="fab fa-instagram" />
-                </span>
-              </a>
-              <a target="_blank" rel="noopener noreferrer" style={{ color, paddingRight: '5px' }} href="https://twitter.com/WebJamLLC">
-                <span>
-                  <i className="fab fa-twitter" />
-                </span>
-              </a>
-              <a target="_blank" rel="noopener noreferrer" style={{ color, paddingRight: '5px' }} href="https://www.facebook.com/WebJamLLC/">
-                <span>
-                  <i className="fab fa-facebook" />
-                </span>
-              </a>
-              <p style={{ color: 'white', fontSize: '9pt', marginBottom: 0 }}>
-                Powered by <a className="wjllc" target="_blank" rel="noopener noreferrer" href="https://www.web-jam.com">Web Jam LLC</a>
-              </p>
-            </div>
-          </div>
         </div>
       </div>
     );
