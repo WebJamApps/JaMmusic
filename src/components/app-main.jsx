@@ -92,13 +92,13 @@ export class AppTemplate extends Component {
               <div id="musTT" style={{ display: 'none', position: 'absolute', top: '305px', right: '68px', backgroundColor: 'white', padding: '3px' }}> Music </div>
               <div className="menu-item">
                 <Link to="/" className="nav-link" onClick={this.close}>
-                  <span onMouseOver={ this.showTT } onMouseOut={this.hideTT} className="fa fa-music"/>
+                  <i onMouseOver={ this.showTT } onMouseOut={this.hideTT} className="fas fa-music"/>&nbsp;
                   <span className="nav-item">Music</span>
                 </Link>
               </div>
               <div className="menu-item">
                 <Link to="/buymusic" className="nav-link" onClick={this.close}>
-                  <span className="fa fa-money"/>
+                  <i className="far fa-money-bill-alt"/>&nbsp;
                   <span className="nav-item">Buy Music</span>
                 </Link>
               </div>
@@ -107,7 +107,7 @@ export class AppTemplate extends Component {
         </div>
         <div className="main-panel">
           <span onClick={ this.toggleMobileMenu } id="mobilemenutoggle">
-            <img src="../../static/icons/menu.svg" alt="menu"/>
+            <i className="fas fa-bars"/>
           </span>
 
           <div className="mainPanel">
@@ -153,30 +153,29 @@ export class AppTemplate extends Component {
             <div style={{ textAlign: 'center', padding: '6px' }}>
               <a target="_blank" rel="noopener noreferrer" style={{ color, paddingRight: '5px' }} href="https://github.com/WebJamApps">
                 <span>
-                  <img src="../../static/icons/github.svg" alt="menu"/>
+                  <i className="fab fa-github" />
                 </span>
               </a>
               <a target="_blank" rel="noopener noreferrer" style={{ color, paddingRight: '5px' }} href="https://www.linkedin.com/company/webjam/">
                 <span>
-                  <img src="../../static/icons/linkedin.svg" alt="menu"/>
+                  <i className="fab fa-linkedin" />
                 </span>
               </a>
               <a target="_blank" rel="noopener noreferrer" style={{ color, paddingRight: '5px' }} href="https://www.instagram.com/joshua.v.sherman/">
                 <span>
-                  <img src="../../static/icons/instagram.svg" alt="menu"/>
+                  <i className="fab fa-instagram" />
                 </span>
               </a>
               <a target="_blank" rel="noopener noreferrer" style={{ color, paddingRight: '5px' }} href="https://twitter.com/WebJamLLC">
                 <span>
-                  <img src="../../static/icons/twitter.svg" alt="menu"/>
+                  <i className="fab fa-twitter" />
                 </span>
               </a>
               <a target="_blank" rel="noopener noreferrer" style={{ color, paddingRight: '5px' }} href="https://www.facebook.com/WebJamLLC/">
                 <span>
-                  <img src="../../static/icons/facebook.svg" alt="menu"/>
+                  <i className="fab fa-facebook" />
                 </span>
               </a>
-              <br/>
               <p style={{ color: 'white', fontSize: '9pt', marginBottom: 0 }}>
                 Powered by <a className="wjllc" target="_blank" rel="noopener noreferrer" href="https://www.web-jam.com">Web Jam LLC</a>
               </p>
