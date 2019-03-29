@@ -2,10 +2,7 @@ const path = require('path');
 const dotenv = require('dotenv');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-// require('autoprefixer');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const { AureliaPlugin, ModuleDependenciesPlugin } = require('aurelia-webpack-plugin');
-const { ProvidePlugin } = require('webpack');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const webpack = require('webpack');
 
@@ -20,23 +17,22 @@ const outDir = path.resolve(__dirname, 'dist');
 const srcDir = path.resolve(__dirname, 'src');
 const nodeModulesDir = path.resolve(__dirname, 'node_modules');
 const baseUrl = '/';
+const cssRules = [{ loader: 'css-loader' }];
 
-const cssRules = [
-  { loader: 'css-loader' }
-];
 
-module.exports = ({
-  production, server, extractCss, coverage, analyze
-} = {}) => ({
+module.exports = ({ production, server, extractCss, coverage, analyze } = {}) => ({
   resolve: {
     extensions: ['.js', '.jsx'],
     modules: [srcDir, 'node_modules'],
   },
+
   entry: {
-    app: ['aurelia-bootstrapper'],
-    vendor: ['bluebird', 'jquery', 'bootstrap', 'whatwg-fetch', 'isomorphic-fetch']
+    app: ['./main.js'],
+    // vendor: ['bootstrap', 'whatwg-fetch', 'isomorphic-fetch']
   },
+
   mode: production ? 'production' : 'development',
+
   output: {
     path: outDir,
     publicPath: baseUrl,
@@ -44,14 +40,18 @@ module.exports = ({
     sourceMapFilename: production ? '[name].[chunkhash].bundle.map' : '[name].[hash].bundle.map',
     chunkFilename: production ? '[name].[chunkhash].chunk.js' : '[name].[hash].chunk.js'
   },
+
   performance: { hints: false },
+
   devServer: {
     contentBase: outDir,
     // serve index.html for all 404 (required for push-state)
     historyApiFallback: true,
     port: parseInt(process.env.PORT, 10)
   },
+
   devtool: production ? 'nosources-source-map' : 'cheap-module-eval-source-map',
+
   module: {
     rules: [
       // CSS required in JS/TS files should use the style-loader that auto-injects it into the website
@@ -87,52 +87,18 @@ module.exports = ({
       { test: /\.(ttf|eot|svg|otf)(\?v=[0-9]\.[0-9]\.[0-9])?$/i, loader: 'file-loader' },
     ]
   },
+
   plugins: [
-    new AureliaPlugin(),
-    new ProvidePlugin({
-      Promise: 'bluebird',
-      $: 'jquery',
-      jQuery: 'jquery',
-      'window.jQuery': 'jquery',
-      Popper: ['popper.js', 'default']
-    }),
-    new ModuleDependenciesPlugin({
-      'aurelia-testing': ['./compile-spy', './view-spy'],
-      'aurelia-auth': ['./auth-filter'],
-      'aurelia-config': ['./aurelia-config'],
-      'au-table': ['./au-table', './au-table-select', './au-table-sort', './au-table-pagination'],
-      'aurelia-validation': [
-        './aurelia-validation',
-        './controller-validate-result',
-        './get-target-dom-element',
-        './property-info',
-        './validate-binding-behavior-base',
-        './validate-binding-behavior',
-        './validate-instruction',
-        './validate-result',
-        './validate-trigger',
-        './validation-controller-factory',
-        './validation-controller',
-        './validation-errors-custom-attribute',
-        './validation-renderer-custom-attribute',
-        './validation-renderer',
-        './validator'
-      ]
-    }),
     new HtmlWebpackPlugin({
       template: 'index.ejs',
-      minify: production ? {
-        removeComments: true,
-        collapseWhitespace: true
-      } : undefined,
-      metadata: {
-        // available in index.ejs //
-        title, server, baseUrl
-      }
+      minify: production ? { removeComments: true, collapseWhitespace: true } : undefined,
+      metadata: { title, server, baseUrl }
     }),
     new CopyWebpackPlugin([
       { from: 'static/favicon.ico', to: 'favicon.ico' },
-      { from: 'static/imgs', to: 'static/imgs' }]),
+      { from: 'static/imgs', to: 'static/imgs' },
+      { from: 'static/icons', to: 'static/icons' }
+    ]),
     new webpack.EnvironmentPlugin(['NODE_ENV', 'AuthProductionBaseURL', 'PORT', 'BackendUrl', 'GoogleClientId', 'userRoles']),
     new webpack.DefinePlugin({
       'process.env': Object.keys(process.env).reduce((o, k) => {

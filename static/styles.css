@@ -27,21 +27,12 @@ div.dropdown-content {
 }
 
 div.page-host {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  overflow-x: hidden;
-  overflow-y: auto;
-}
-
-div.page-content {
-  border-right: 1px solid black;
-}
-
-div#drawer.style-scope.paper-drawer-panel.iron-selected {
-  z-index: 2147483647;
+  /*left: 0;*/
+  /*right: 0;*/
+  /*top: 0;*/
+  /*bottom: 0;*/
+  /*overflow-x: hidden;*/
+  /*overflow-y: auto;*/
 }
 
 form {
@@ -65,7 +56,7 @@ h3 {
 
 h3.au-target.header-text.ohaf-header {
   padding: 0;
-  margin: 5px;
+  /*margin: 5px;*/
 }
 
 h4 {
@@ -278,11 +269,20 @@ audio::-webkit-media-controls-panel {
 
 .headercontent {
   top: 2px;
-  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
   display: inline-block;
   position: relative;
   box-sizing: border-box;
   border-radius: 2px;
+}
+
+.headercontent img {
+  position: relative;
+  left: 5px;
+}
+
+.headercontent h3 {
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 .header-text {
@@ -291,7 +291,8 @@ audio::-webkit-media-controls-panel {
 }
 
 .header-text-card {
-  left: 5px;
+  left: 15px;
+  top: -32px;
   text-align: center;
 }
 
@@ -363,11 +364,10 @@ audio::-webkit-media-controls-panel {
 }
 
 .material-header {
-  /*height: 88px;*/
-  margin-left: auto;
   min-height: 88px;
   background-color: #2a222a;
-  margin-bottom: auto;
+  z-index: 93;
+  top: 0;
 }
 
 .material-header-content {
@@ -424,6 +424,18 @@ audio::-webkit-media-controls-panel {
 
 #mobilemenutoggle {
   cursor: pointer;
+  position: fixed;
+  right: 25px;
+  top: 32px;
+  z-index: 95;
+  color: #ffffff;
+  background-color: #2a222a;
+  padding: 3px 5px;
+}
+
+#mobilemenutoggle img {
+  width: 30px;
+  height: 20px;
 }
 
 .mobile-menu-toggle {
@@ -469,11 +481,11 @@ audio::-webkit-media-controls-panel {
 }
 
 .overSelect {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
+  /*position: absolute;*/
+  /*left: 0;*/
+  /*right: 0;*/
+  /*top: 0;*/
+  /*bottom: 0;*/
 }
 
 .question {
@@ -486,26 +498,8 @@ audio::-webkit-media-controls-panel {
   height: 0;
 }
 
-/* splash is in the index.ejs file, used for the initial page load animation */
-.splash {
-  text-align: center;
-  margin: 10% 0 0;
-  box-sizing: border-box;
-}
-
-.splash .message {
-  font-size: 72px;
-  line-height: 72px;
-  text-shadow: rgba(0, 0, 0, 0.5) 0 0 15px;
-  text-transform: uppercase;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-}
-
-.splash .fa-spinner {
-  text-align: center;
-  display: inline-block;
-  font-size: 72px;
-  margin-top: 50px;
+#App {
+  /*min-height: 100vh;*/
 }
 
 .spaceUnderSlideShow {
@@ -569,13 +563,12 @@ audio::-webkit-media-controls-panel {
 
 @media print {
   .page-host {
-    position: absolute;
-    left: 10px;
-    right: 0;
-    top: 50px;
-    bottom: 0;
-    overflow-y: inherit;
-    overflow-x: inherit;
+    /*left: 10px;*/
+    /*right: 0;*/
+    /*top: 50px;*/
+    /*bottom: 0;*/
+    /*overflow-y: inherit;*/
+    /*overflow-x: inherit;*/
   }
 }
 
@@ -621,13 +614,11 @@ a {
   text-decoration: underline;
   text-align: center;
   cursor: pointer;
-  cursor: hand;
   border: none !important;
 }
 
 button {
   cursor: pointer;
-  cursor: hand;
 }
 
 button:hover {
@@ -664,6 +655,24 @@ a:hover {
   color: white;
 }
 
+.footer {
+  background-color: #2a222a !important;
+}
+
+.footer span {
+  color: #367aff;
+  cursor: pointer;
+}
+
+.footer span:hover {
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.footer span i {
+  font-size: 2em;
+}
+
 .mySlides {
   display: none;
 }
@@ -673,52 +682,57 @@ a:hover {
     float: right;
     position: fixed;
     right: 0;
-    /* display:inline-block; */
+    z-index: 100;
   }
 
   .main-panel {
-    overflow: hidden;
     position: relative;
-    height: 100%;
+    float: left;
+    clear: both;
+    height: 100vh;
+    width: 87vw;
     display: block;
-    margin-right: 182px;
+    overflow: hidden;
+  }
+
+  .material-header {
+    width: 86.5vw;
   }
 
   .content-block {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    overflow: auto;
-    margin-top: 91px;
-    margin-right: inherit;
+    height: calc(100vh - 88px);
+    overflow-y: scroll;
   }
 
-  /* .footer {
-    width: 100%;
-  } */
+  ::-webkit-scrollbar:vertical {
+    width: 0;
+  }
 }
 
 .drawer-container {
-  z-index: 999;
-  height: 100%;
+  height: 100vh;
+  position: fixed;
+  float: right;
+  z-index: 100;
+  width: 13.5vw;
 }
 
 .nav-list {
   position: fixed;
   top: 91px;
   right: 0;
-  width: 182px;
+  width: 13.5vw;
   height: 100%;
   z-index: 90000;
   background-color: rgb(192, 192, 192);
 }
 
 .navImage {
-  position: fixed;
+  /*position: fixed;*/
   top: 0;
   right: 0;
+  width: 13.5vw;
+  background-color: #2a222a;
 }
 
 ::-webkit-scrollbar {
@@ -736,8 +750,6 @@ a:hover {
 
 ::-webkit-scrollbar-thumb {
   background-color: rgba(0, 0, 0, 0.5);
-  border-radius: 10px;
-  border: 2px solid #ffffff;
 }
 
 ::-webkit-scrollbar-track {
@@ -752,15 +764,41 @@ a:hover {
     height: 100%;
   }
 
-  .drawer-container {
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    position: fixed;
-    width: 100%;
+  .main-panel {
+    position: relative;
+    float: left;
+    clear: both;
+    height: 100vh;
+    width: 100vw;
+    display: block;
+    /*overflow: hidden;*/
+  }
+
+  .material-header {
+    width: 100vw;
+  }
+
+  .drawer-container.close {
+    display: none;
+  }
+
+  .drawer-container.open {
+    display: block !important;
+    width: 100vw !important;
+    z-index: 100 !important;
+    cursor: pointer;
+    background-color: rgba(42, 34, 42, 0.67);
   }
 
   .content-block {
-    overflow-x: hidden;
+    width: 100vw !important;
+    margin: 0 auto;
+    height: calc(100vh - 88px);
+    /*overflow-y: scroll;*/
+  }
+
+  .navImage, .nav-list {
+    width: 180px !important;
   }
 
   .swipe-area {

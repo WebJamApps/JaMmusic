@@ -1,21 +1,11 @@
-import {
-  noView,
-  inject,
-  customElement,
-  bindable
-} from 'aurelia-framework';
-import React from 'react';
-import ReactDOM from 'react-dom';
+
+import React, { Component } from 'react';
 import ReactPlayer from 'react-player';
 
-@noView()
-@inject(Element)
-@bindable('data')
-@bindable('copy')
-@customElement('music-player')
-export class MusicPlayer {
-  constructor(element) {
-    this.element = element;
+
+export class MusicPlayer extends Component {
+  constructor(props) {
+    super(props);
     this.play = this.play.bind(this);
     this.index = 0;
     this.playing = false;
@@ -30,6 +20,7 @@ export class MusicPlayer {
     this.navigator = navigator;
     this.isShuffleOn = false;
     this.first = true;
+    this.urls = this.data = this.props.data;
 
     // after the component is bound to the DOM. remove the swiping-area from the DOM.
     const swipe = document.getElementsByClassName('swipe-area');
@@ -39,16 +30,18 @@ export class MusicPlayer {
   }
 
   reactPlayer() {
-    return (<ReactPlayer
-      style={{ backgroundColor: '#eee', textAlign: 'center' }}
-      url={this.url.url}
-      playing={this.playing}
-      controls
-      onEnded={this.playEnd}
-      width="100%"
-      id="mainPlayer"
-      config={{ file: { attributes: { controlsList: 'nodownload' } } }}
-    />)
+    return (
+      <ReactPlayer
+        style={{ backgroundColor: '#eee', textAlign: 'center' }}
+        url={this.url.url}
+        playing={this.playing}
+        controls
+        onEnded={this.playEnd}
+        width="100%"
+        id="mainPlayer"
+        config={{ file: { attributes: { controlsList: 'nodownload' } } }}
+      />
+    );
   }
 
   buttons() {
@@ -63,10 +56,10 @@ export class MusicPlayer {
           <a id="homeLink" href="/?reload=true">Home</a>
         </button>
       </section>
-    )
+    );
   }
 
-  get html() {
+  render() {
     return (
       <div className="container-fluid">
         <div id="player" className="mb-2 row justify-content-md-center">
@@ -168,10 +161,6 @@ export class MusicPlayer {
     this.playTrue();
   }
 
-  render() {
-    ReactDOM.render(this.html, this.element);
-  }
-
   share() {
     const el = document.getElementById('copier');
     if (this.shown) {
@@ -195,28 +184,5 @@ export class MusicPlayer {
         el.classList.add('d-none');
       }, 1500);
     });
-  }
-
-  bind() {
-    // look for the id of the song and then filter the song from the rest of the list.
-    const search = window.location.search;
-    const oneplayer = search.includes('oneplayer=true');
-
-    // if there is no song data, then use data from aurelia binding.
-    if (!this.urls || !this._urls) {
-      this.urls = this.data;
-      this._urls = this.copy;
-    }
-
-    // if it's not in one player mode, then just go on as normal.
-    if (!oneplayer) {
-      this.url = this.urls[this.index];
-    } else if (this.first) {
-      const id = search.match(/id=.+/g)[0].slice(3);
-      this.url = this.urls.filter(song => song.id === id)[0];
-      this.first = false;
-    }
-
-    this.render();
   }
 }

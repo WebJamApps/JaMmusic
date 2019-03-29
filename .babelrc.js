@@ -26,7 +26,7 @@ module.exports = (api) => {
           ]
         },
         "loose": true,
-        "modules": process.env.BABEL_TARGET === 'node' ? 'commonjs' : false,
+        "modules": 'commonjs', // process.env.BABEL_TARGET === 'node' ? 'commonjs' : false,
         "useBuiltIns": false
       }
       ]
