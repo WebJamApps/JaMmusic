@@ -57,7 +57,7 @@ export class AppTemplate extends Component {
   }
 
   dispatchWindowResize() {
-    console.log(window.innerWidth);
+    console.log(window.innerWidth);//eslint-disable-line no-console
   }
 
   componentDidMount() {
@@ -103,19 +103,19 @@ export class AppTemplate extends Component {
                 </Link>
               </div>
               <div className="menu-item">
-                <a rel="noopener noreferrer" target="_blank" href="http://web-jam.com/music/" className="nav-link" onClick={this.close}>
+                <a rel="noopener noreferrer" target="_blank" href="http://web-jam.com/music/originals" className="nav-link" onClick={this.close}>
                   <i className="far fa-lightbulb"/>&nbsp;
                   <span className="nav-item">Originals</span>
                 </a>
               </div>
               <div className="menu-item">
-                <a rel="noopener noreferrer" target="_blank" href="http://web-jam.com/music/" className="nav-link" onClick={this.close}>
+                <a rel="noopener noreferrer" target="_blank" href="http://web-jam.com/music/mission" className="nav-link" onClick={this.close}>
                   <i className="fas fa-crosshairs"/>&nbsp;
                   <span className="nav-item">Mission Music</span>
                 </a>
               </div>
               <div className="menu-item">
-                <a rel="noopener noreferrer" target="_blank" href="http://web-jam.com/music/" className="nav-link" onClick={this.close}>
+                <a rel="noopener noreferrer" target="_blank" href="http://web-jam.com/music/pub" className="nav-link" onClick={this.close}>
                   <i className="fas fa-beer"/>&nbsp;
                   <span className="nav-item">Pub Songs</span>
                 </a>
