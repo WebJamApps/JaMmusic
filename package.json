@@ -1,15 +1,15 @@
 {
-  "name": "combined-front",
-  "version": "0.8.2",
-  "description": "Front End of web-jam.com App",
+  "name": "JaMmusic",
+  "version": "0.0.1",
+  "description": "joshandmariamusic.com",
   "main": "dist/index.html",
   "repository": {
-    "url": "git+ssh://git@github.com/WebJamApps/combined-front.git",
+    "url": "git+ssh://git@github.com/WebJamApps/JaMmusic.git",
     "type": "git"
   },
-  "author": "HandlersAndKickers",
+  "author": "https://github.com/orgs/WebJamApps/teams/handlersandkickers",
   "engines": {
-    "node": ">=11.10.0"
+    "node": ">=11.11.0"
   },
   "files": [
     "webpack.config.js",
@@ -119,12 +119,11 @@
     "protest": "nps test",
     "test:jest-react": "nps test.react",
     "test:jest-react-u": "nps test.react.accept",
-    "installglobals": "npm i -g npm@latest && npm i -g yarn@latest",
+    "installglobals": "npm i -g npm@next",
     "cleaninstall": "rm -rf yarn.lock && rm -rf node_modules && yarn cache clean && yarn install",
     "snyk-protect": "snyk protect",
     "eslint:fix": "./node_modules/eslint/bin/eslint.js --fix .",
-    "fix:aurelia-val": "rm -rf ./node_modules/aurelia-validation/node_modules",
-    "postinstall": "npm run fix:aurelia-val && npm start -- build",
+    "postinstall": "yarn start -- build",
     "protractor": "nps e2e",
     "test:stylelint": "stylelint \"src/**/*.html\" && stylelint \"static/**/*.css\"",
     "test:html": "htmlhint src/**/*.html"
