@@ -30,7 +30,7 @@
     "bluebird": "latest",
     "bootstrap": "latest",
     "copy-webpack-plugin": "^4.5.1",
-    "css-loader": "^0.28.11",
+    "css-loader": "^1.0.0",
     "csvjson": "latest",
     "dotenv": "latest",
     "expose-loader": "^0.7.5",
