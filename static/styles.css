@@ -638,6 +638,8 @@ button.nav-link {
   border: none;
   padding-top: 14px;
   padding-bottom: 14px;
+  padding-left: 0;
+  padding-right: 0;
 }
 
 button.nav-link:hover {
@@ -698,13 +700,13 @@ button.nav-link:hover {
     float: left;
     clear: both;
     height: 100vh;
-    width: 87vw;
+    width: 91%;
     display: block;
     overflow: hidden;
   }
 
   .material-header {
-    width: 86.5vw;
+    width: 100%;
   }
 
   .content-block {
@@ -722,14 +724,14 @@ button.nav-link:hover {
   position: fixed;
   float: right;
   z-index: 100;
-  width: 13.5vw;
+  width: 180px;
 }
 
 .nav-list {
   position: fixed;
   top: 91px;
   right: 0;
-  width: 13.5vw;
+  width: 180px;
   height: 100%;
   z-index: 90000;
   background-color: rgb(192, 192, 192);
