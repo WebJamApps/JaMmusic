@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+
+<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# music: http://ogp.me/ns/music#">
+  <meta property="og:title" content="Web Jam LLC" />
+  <meta property="og:description" content="Try out our music player today!" />
+  <meta property="og:image" content="https://web-jam.com/static/imgs/webjamlogo1.png" />
+  <meta property="og:url" content="https://web-jam.com/music/originals" />
+  <meta property="og:type" content="music.playlist" />
+  <meta property="fb:app_id" content="2207148322688942" />
+  <title>
+    <%- htmlWebpackPlugin.options.metadata.title %>
+  </title>
+  <base href="<%- htmlWebpackPlugin.options.metadata.baseUrl %>">
+  <link href="//fonts.googleapis.com/css?family=PT Sans Caption" rel="stylesheet">
+  <link href="//fonts.googleapis.com/css?family=Habibi" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<body>
+  <div>
+    <div id="root">
+      <%- htmlWebpackPlugin.options.metadata.title %>
+    </div>
+  </div>
+</body>
+
+</html>

@@ -1,0 +1,42 @@
+version:                  "2"
+checks:
+  return-statements:
+    config:
+      threshold:          5
+  method-lines:
+    config:
+      threshold:          30
+  similar-code:
+    config:
+      threshold:          100
+  method-complexity:
+    config:
+      threshold:          10
+  argument-count:
+    config:
+      threshold:          5
+plugins:
+  duplication:
+    enabled:              true
+    checks:
+      Similar Code:
+        enabled:          true
+    config:
+      languages:
+        javascript:
+          mass_threshold: 80
+  stylelint:
+    enabled:              true
+  htmlhint:
+    enabled:              true
+  fixme:
+    enabled:              true
+ratings:
+  paths:
+  - "**.js"
+  - "**.jsx"
+exclude_paths:
+- test/
+- node_modules/
+- coverage/
+- dist/
