@@ -91,13 +91,13 @@ export class AppTemplate extends Component {
             <div className="nav-list">
               <div id="musTT" style={{ display: 'none', position: 'absolute', top: '305px', right: '68px', backgroundColor: 'white', padding: '3px' }}> Music </div>
               <div className="menu-item">
-                <Link to="/" className="nav-link" onClick={this.close}>
+                <Link to="/music" className="nav-link" onClick={this.close}>
                   <i onMouseOver={ this.showTT } onMouseOut={this.hideTT} className="fas fa-music"/>&nbsp;
                   <span className="nav-item">Music</span>
                 </Link>
               </div>
               <div className="menu-item">
-                <Link to="/buymusic" className="nav-link" onClick={this.close}>
+                <Link to="/music/buymusic" className="nav-link" onClick={this.close}>
                   <i className="far fa-money-bill-alt"/>&nbsp;
                   <span className="nav-item">Buy Music</span>
                 </Link>
