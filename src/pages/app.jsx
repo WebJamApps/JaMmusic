@@ -15,6 +15,7 @@ export default class App extends Component {
       '../static/imgs/hiddenValleyTalentShow.png',
       '../static/imgs/ourWedding.png'
     ];
+    this.originals = `${process.env.BackendUrl}/wj-music/originals`;
   }
 
   render() {
@@ -28,7 +29,7 @@ export default class App extends Component {
         <div className="material-content elevation2" style={{ maxWidth: '998px', margin: 'auto' }}>
           <p style={{ marginTop: '10px' }}>Josh and Maria have been performing their music together for over six years now!
             Whether it is at church, charity events, public venues, or outdoor festivals, this couple will blow your socks off.
-            Click <a rel="noopener noreferrer" target="_blank" href="https://web-jam.com/music/originals">here</a> to listen.</p>
+            Click <a rel="noopener noreferrer" href={this.originals}>here</a> to listen.</p>
           <h4 style={{ textAlign: 'center' }}><strong>Tour</strong></h4>
           <div className="search-table-outer" style={{ position: 'relative', overflowX: 'auto' }}>
             <TourTable/>

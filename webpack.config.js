@@ -16,7 +16,7 @@ const title = 'Web Jam LLC';
 const outDir = path.resolve(__dirname, 'dist');
 const srcDir = path.resolve(__dirname, 'src');
 const nodeModulesDir = path.resolve(__dirname, 'node_modules');
-const baseUrl = '/';
+const baseUrl = '/music';
 const cssRules = [{ loader: 'css-loader' }];
 
 
@@ -99,12 +99,6 @@ module.exports = ({ production, server, extractCss, coverage, analyze } = {}) =>
       { from: 'static/imgs', to: 'static/imgs' }
     ]),
     new webpack.EnvironmentPlugin(['NODE_ENV', 'AuthProductionBaseURL', 'PORT', 'BackendUrl', 'GoogleClientId', 'userRoles']),
-    new webpack.DefinePlugin({
-      'process.env': Object.keys(process.env).reduce((o, k) => {
-        o[k] = JSON.stringify(process.env[k]);
-        return o;
-      }, {})
-    }),
     ...when(extractCss, new ExtractTextPlugin({
       filename: production ? '[md5:contenthash:hex:20].css' : '[id].css',
       allChunks: true

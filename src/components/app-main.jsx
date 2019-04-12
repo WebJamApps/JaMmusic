@@ -12,13 +12,17 @@ export class AppTemplate extends Component {
     this.close = this.close.bind(this);
     this.dispatchWindowResize = this.dispatchWindowResize.bind(this);
     this.toggleMobileMenu = this.toggleMobileMenu.bind(this);
+    this.changeNav = this.changeNav.bind(this);
   }
 
   close(e) {
     const menuOpen = false;
+    //console.log(e.target.classList);
     if (!e.target.classList.contains('nav-list')) {
       this.setState({ menuOpen });
     }
+    if (e.target.classList.length > 1) return this.changeNav(e.target.classList[1]);
+    return true;
   }
 
   toggleMobileMenu() {
@@ -64,6 +68,12 @@ export class AppTemplate extends Component {
     window.addEventListener('resize', throttle(this.dispatchWindowResize, 100, { leading: false }), false);
   }
 
+  changeNav(where) {
+    let subpath = '/wj-music/';
+    if (where === 'home') subpath = '/';
+    return window.location.assign(`${process.env.BackendUrl}${subpath}${where}`);
+  }
+
   render() {
     const color = '#c09580';
     return (
@@ -91,40 +101,40 @@ export class AppTemplate extends Component {
             <div className="nav-list">
               <div id="musTT" style={{ display: 'none', position: 'absolute', top: '305px', right: '68px', backgroundColor: 'white', padding: '3px' }}> Music </div>
               <div className="menu-item">
-                <Link to="/" className="nav-link" onClick={this.close}>
-                  <i onMouseOver={ this.showTT } onMouseOut={this.hideTT} className="fas fa-music"/>&nbsp;
+                <Link to="/music" className="nav-link" onClick={this.close}>
+                  <i className="fas fa-music"/>&nbsp;
                   <span className="nav-item">Music</span>
                 </Link>
               </div>
               <div className="menu-item">
-                <Link to="/buymusic" className="nav-link" onClick={this.close}>
+                <Link to="/music/buymusic" className="nav-link" onClick={this.close}>
                   <i className="far fa-money-bill-alt"/>&nbsp;
                   <span className="nav-item">Buy Music</span>
                 </Link>
               </div>
               <div className="menu-item">
-                <a rel="noopener noreferrer" target="_blank" href="http://web-jam.com/music/originals" className="nav-link" onClick={this.close}>
+                <button className="nav-link originals" onClick={this.close}>
                   <i className="far fa-lightbulb"/>&nbsp;
-                  <span className="nav-item">Originals</span>
-                </a>
+                  <span className="nav-item originals">Originals</span>
+                </button>
               </div>
               <div className="menu-item">
-                <a rel="noopener noreferrer" target="_blank" href="http://web-jam.com/music/mission" className="nav-link" onClick={this.close}>
+                <button className="nav-link mission" onClick={this.close}>
                   <i className="fas fa-crosshairs"/>&nbsp;
-                  <span className="nav-item">Mission Music</span>
-                </a>
+                  <span className="nav-item mission">Mission Music</span>
+                </button>
               </div>
               <div className="menu-item">
-                <a rel="noopener noreferrer" target="_blank" href="http://web-jam.com/music/pub" className="nav-link" onClick={this.close}>
+                <button className="nav-link pub" onClick={this.close}>
                   <i className="fas fa-beer"/>&nbsp;
-                  <span className="nav-item">Pub Songs</span>
-                </a>
+                  <span className="nav-item pub">Pub Songs</span>
+                </button>
               </div>
               <div className="menu-item">
-                <a rel="noopener noreferrer" target="_blank" href="http://web-jam.com" className="nav-link" onClick={this.close}>
+            <button className="nav-link home" onClick={this.close}>
                   <i className="fas fa-home"/>&nbsp;
-                  <span className="nav-item">Web Jam LLC</span>
-                </a>
+                  <span className="nav-item home">Web Jam LLC</span>
+                </button>
               </div>
             </div>
           </div>
