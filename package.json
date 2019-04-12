@@ -9,7 +9,7 @@
   },
   "author": "https://github.com/orgs/WebJamApps/teams/handlersandkickers",
   "engines": {
-    "node": ">=11.12.0"
+    "node": ">=11.13.0"
   },
   "files": [
     "webpack.config.js",
@@ -39,15 +39,15 @@
     "file-saver": "latest",
     "font-awesome": "4.7.0",
     "global": "^4.3.2",
-    "hammerjs": "^2.0.8",
+    "hammerjs": "latest",
     "html-loader": "latest",
     "html-webpack-plugin": "latest",
-    "jquery": "^3.3.1",
+    "jquery": "latest",
     "material-ui-time-picker": "latest",
     "minimatch": "^3.0.4",
     "nps": "latest",
     "nps-utils": "latest",
-    "popper.js": "^1.15.0",
+    "popper.js": "latest",
     "postcss": "^6.0.14",
     "postcss-loader": "latest",
     "postcss-sass": "^0.2.0",
