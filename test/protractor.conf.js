@@ -1,4 +1,4 @@
-const SpecReporter = require('jasmine-spec-reporter').SpecReporter;
+const { SpecReporter } = require('jasmine-spec-reporter');
 
 const port = 19876;
 

@@ -100,12 +100,6 @@ module.exports = ({ production, server, extractCss, coverage, analyze } = {}) =>
       { from: 'static/icons', to: 'static/icons' }
     ]),
     new webpack.EnvironmentPlugin(['NODE_ENV', 'AuthProductionBaseURL', 'PORT', 'BackendUrl', 'GoogleClientId', 'userRoles']),
-    new webpack.DefinePlugin({
-      'process.env': Object.keys(process.env).reduce((o, k) => {
-        o[k] = JSON.stringify(process.env[k]);
-        return o;
-      }, {})
-    }),
     ...when(extractCss, new ExtractTextPlugin({
       filename: production ? '[md5:contenthash:hex:20].css' : '[id].css',
       allChunks: true

@@ -34,7 +34,7 @@ describe('++MusicPlayer tests', () => {
     mp.copy = mp.props.data;
     mp.urls = mp.props.data;
     mp._urls = mp.props.data;
-    mp.url = mp.props.data[0];
+    mp.url = mp.props.data[0];//eslint-disable-line prefer-destructuring
   });
 
   it('should bind empty', () => {
