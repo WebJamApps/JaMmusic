@@ -1,6 +1,6 @@
 import { PageObjectSkeleton } from './skeleton.po';
 
-const config = require('../protractor.conf').config;
+const { config } = require('../protractor.conf');
 
 
 describe('joshandmariamusic.com', () => {
