@@ -26,14 +26,15 @@ div.dropdown-content {
   border: 1px #dadada solid;
 }
 
-/* div.page-host { */
-/*left: 0;*/
-/*right: 0;*/
-/*top: 0;*/
-/*bottom: 0;*/
-/*overflow-x: hidden;*/
-/*overflow-y: auto;*/
-/* } */
+div.page-host {
+  /*left: 0;*/
+  /*right: 0;*/
+  /*top: 0;*/
+  /*bottom: 0;*/
+  /*overflow-x: hidden;*/
+  /*overflow-y: auto;*/
+}
+
 form {
   max-width: 350px;
   margin: 0 auto;
@@ -479,13 +480,14 @@ audio::-webkit-media-controls-panel {
   color: white;
 }
 
-/* .overSelect { */
-/*position: absolute;*/
-/*left: 0;*/
-/*right: 0;*/
-/*top: 0;*/
-/*bottom: 0;*/
-/* } */
+.overSelect {
+  /*position: absolute;*/
+  /*left: 0;*/
+  /*right: 0;*/
+  /*top: 0;*/
+  /*bottom: 0;*/
+}
+
 .question {
   margin-bottom: 0;
   margin-left: 10px;
@@ -496,9 +498,10 @@ audio::-webkit-media-controls-panel {
   height: 0;
 }
 
-/* #App { */
-/*min-height: 100vh;*/
-/* } */
+#App {
+  /*min-height: 100vh;*/
+}
+
 .spaceUnderSlideShow {
   margin-top: auto;
 }
@@ -558,16 +561,17 @@ audio::-webkit-media-controls-panel {
   }
 }
 
-/* @media print { */
-/* .page-host { */
-/*left: 10px;*/
-/*right: 0;*/
-/*top: 50px;*/
-/*bottom: 0;*/
-/*overflow-y: inherit;*/
-/*overflow-x: inherit;*/
-/* } */
-/* } */
+@media print {
+  .page-host {
+    /*left: 10px;*/
+    /*right: 0;*/
+    /*top: 50px;*/
+    /*bottom: 0;*/
+    /*overflow-y: inherit;*/
+    /*overflow-x: inherit;*/
+  }
+}
+
 @-webkit-keyframes fadeIn {
   0% {
     opacity: 0;
@@ -632,25 +636,15 @@ a:hover {
   outline: none !important;
 }
 
-button.nav-link {
-  background-color: rgb(192, 192, 192);
-  font-size: 16px;
-  border: none;
-  padding-top: 14px;
-  padding-bottom: 14px;
-  padding-left: 0;
-  padding-right: 0;
-}
-
-button.nav-link:hover {
-  background-color: white;
-}
-
 .nav-item {
   color: #23527c;
   text-decoration: underline;
   padding-right: 0;
   margin-right: 0;
+}
+
+div.fof {
+  height: 80vh;
 }
 
 .regularLink {
@@ -700,13 +694,13 @@ button.nav-link:hover {
     float: left;
     clear: both;
     height: 100vh;
-    width: 91%;
+    width: 87vw;
     display: block;
     overflow: hidden;
   }
 
   .material-header {
-    width: 100%;
+    width: 86.5vw;
   }
 
   .content-block {
@@ -724,14 +718,14 @@ button.nav-link:hover {
   position: fixed;
   float: right;
   z-index: 100;
-  width: 180px;
+  width: 13.5vw;
 }
 
 .nav-list {
   position: fixed;
   top: 91px;
   right: 0;
-  width: 180px;
+  width: 13.5vw;
   height: 100%;
   z-index: 90000;
   background-color: rgb(192, 192, 192);
