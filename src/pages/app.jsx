@@ -17,13 +17,13 @@ export default class App extends Component {
     ];
     this.originals = `${process.env.BackendUrl}/wj-music/originals`;
   }
-
+  // <PicSlider caption="Music picture slider" data={ this.slideshowImages } />
   render() {
     return (
       <div className="page-content">
         <div style={{ paddingTop: '1px', paddingBottom: 0, marginBottom: 0 }}>
           <div id="musicSlide1">
-            <PicSlider caption="Music picture slider" data={ this.slideshowImages } />
+                    <PicSlider data={ this.slideshowImages } />
           </div>
         </div>
         <div className="material-content elevation2" style={{ maxWidth: '998px', margin: 'auto' }}>

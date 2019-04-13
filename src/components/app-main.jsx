@@ -21,7 +21,7 @@ export class AppTemplate extends Component {
     if (!e.target.classList.contains('nav-list')) {
       this.setState({ menuOpen });
     }
-    // if (e.target.classList.length > 1) return this.changeNav(e.target.classList[1]);
+    if (e.target.classList.length > 1) return this.changeNav(e.target.classList[1]);
     return true;
   }
 
@@ -113,28 +113,28 @@ export class AppTemplate extends Component {
                 </Link>
               </div>
               <div className="menu-item">
-                <Link to="/wj-music/originals" className="nav-link originals" onClick={this.close}>
+                <button className="nav-link originals" onClick={this.close}>
                   <i className="far fa-lightbulb"/>&nbsp;
                   <span className="nav-item originals">Originals</span>
-                </Link>
+                </button>
               </div>
               <div className="menu-item">
-                <Link to="/wj-music/mission" className="nav-link mission" onClick={this.close}>
+                <button className="nav-link mission" onClick={this.close}>
                   <i className="fas fa-crosshairs"/>&nbsp;
                   <span className="nav-item mission">Mission Music</span>
-                </Link>
+                </button>
               </div>
               <div className="menu-item">
-                <Link to="/wj-music/pub" className="nav-link pub" onClick={this.close}>
+                <button className="nav-link pub" onClick={this.close}>
                   <i className="fas fa-beer"/>&nbsp;
                   <span className="nav-item pub">Pub Songs</span>
-                </Link>
+                </button>
               </div>
               <div className="menu-item">
-                <Link to="/home" className="nav-link home" onClick={this.close}>
+            <button className="nav-link home" onClick={this.close}>
                   <i className="fas fa-home"/>&nbsp;
                   <span className="nav-item home">Web Jam LLC</span>
-                </Link>
+                </button>
               </div>
             </div>
           </div>
