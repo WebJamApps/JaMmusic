@@ -704,7 +704,7 @@ div.fof {
     float: left;
     clear: both;
     height: 100vh;
-    width: 91%;
+    width: calc(100% - 180px);
     display: block;
     overflow: hidden;
   }
@@ -716,6 +716,10 @@ div.fof {
   .content-block {
     height: calc(100vh - 88px);
     overflow-y: scroll;
+  }
+
+  .page-content {
+    border-right: 1px solid #000000;
   }
 
   ::-webkit-scrollbar:vertical {
@@ -742,7 +746,6 @@ div.fof {
 }
 
 .navImage {
-  /*position: fixed;*/
   top: 0;
   right: 0;
   width: 13.5vw;
@@ -764,6 +767,8 @@ div.fof {
 
 ::-webkit-scrollbar-thumb {
   background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 10px;
+  border: 2px solid #ffffff;
 }
 
 ::-webkit-scrollbar-track {
@@ -785,7 +790,6 @@ div.fof {
     height: 100vh;
     width: 100vw;
     display: block;
-    /*overflow: hidden;*/
   }
 
   .material-header {
@@ -808,7 +812,6 @@ div.fof {
     width: 100vw !important;
     margin: 0 auto;
     height: calc(100vh - 88px);
-    /*overflow-y: scroll;*/
   }
 
   .navImage, .nav-list {
