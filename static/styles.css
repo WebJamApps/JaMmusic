@@ -653,6 +653,10 @@ button.nav-link:hover {
   margin-right: 0;
 }
 
+div.fof {
+  height: 80vh;
+}
+
 .regularLink {
   text-decoration: underline;
 }
@@ -700,7 +704,7 @@ button.nav-link:hover {
     float: left;
     clear: both;
     height: 100vh;
-    width: 91%;
+    width: calc(100% - 180px);
     display: block;
     overflow: hidden;
   }
@@ -712,6 +716,10 @@ button.nav-link:hover {
   .content-block {
     height: calc(100vh - 88px);
     overflow-y: scroll;
+  }
+
+  .page-content {
+    border-right: 1px solid #000000;
   }
 
   ::-webkit-scrollbar:vertical {
@@ -738,7 +746,6 @@ button.nav-link:hover {
 }
 
 .navImage {
-  /*position: fixed;*/
   top: 0;
   right: 0;
   width: 13.5vw;
@@ -760,6 +767,8 @@ button.nav-link:hover {
 
 ::-webkit-scrollbar-thumb {
   background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 10px;
+  border: 2px solid #ffffff;
 }
 
 ::-webkit-scrollbar-track {
@@ -781,7 +790,6 @@ button.nav-link:hover {
     height: 100vh;
     width: 100vw;
     display: block;
-    /*overflow: hidden;*/
   }
 
   .material-header {
@@ -804,7 +812,6 @@ button.nav-link:hover {
     width: 100vw !important;
     margin: 0 auto;
     height: calc(100vh - 88px);
-    /*overflow-y: scroll;*/
   }
 
   .navImage, .nav-list {

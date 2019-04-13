@@ -48,7 +48,6 @@ module.exports = {
         )
       },
       whenReady: series(
-        `wait-on --timeout 120000 http-get://localhost:${E2E_PORT}/index.html`,
         'nps e2e.protractor'
       )
     },
