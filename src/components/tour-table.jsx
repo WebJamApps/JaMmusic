@@ -28,26 +28,6 @@ export class TourTable extends Component {
       <div>
         <table>
           <thead>
-            <tr>
-              {
-                this.data.header.map((head, key) => <th key={key}>{head}</th>)
-              }
-            </tr>
-          </thead>
-          <tbody>
-            {
-              this.data.body.map((row, rkey) => (
-                <tr>
-                  {
-                    row.map((data, dkey) => <td key={rkey + dkey}>{data}</td>)
-                  }
-                </tr>
-              ))
-            }
-          </tbody>
-        </table>
-        <table>
-          <thead>
           <tr>
             <th style={{ minWidth: '120px' }}>Date</th>
             <th style={{ minWidth: '75px' }}>Time</th>
