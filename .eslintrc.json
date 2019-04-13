@@ -25,7 +25,6 @@
     "no-restricted-syntax": [0, "never"],
     "newline-per-chained-call": "off",
     "object-curly-newline": "off",
-    "prefer-destructuring": 0,
     "prefer-rest-params": "off",
     "spaced-comment": "off",
     "no-template-curly-in-string": "off",

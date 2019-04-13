@@ -18,8 +18,8 @@ export default class App extends Component {
         <Router>
           <AppTemp id="homepage">
             <Switch>
-              <Route exact path="/" component={ AppIndex }/>
-              <Route path="/buymusic" component={ AppBuyMusic }/>
+              <Route exact path="/music" component={ AppIndex }/>
+              <Route path="/music/buymusic" component={ AppBuyMusic }/>
             </Switch>
           </AppTemp>
         </Router>
