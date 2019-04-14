@@ -1,6 +1,6 @@
 {
-  "name": "ja_music",
-  "version": "0.0.1",
+  "name": "JaMmusic",
+  "version": "0.0.2",
   "description": "joshandmariamusic.com",
   "main": "dist/index.html",
   "repository": {
