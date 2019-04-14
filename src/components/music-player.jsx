@@ -21,7 +21,7 @@ export class MusicPlayer extends Component {
     this.isShuffleOn = false;
     this.first = true;
     this.urls = this.data = this.props.data;
-
+    this.url = this.urls[0];
     // after the component is bound to the DOM. remove the swiping-area from the DOM.
     const swipe = document.getElementsByClassName('swipe-area');
     if (swipe.length) {

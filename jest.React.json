@@ -10,7 +10,7 @@
   },
   "testPathIgnorePatterns": ["/node_modules/", "/test/jest-unit"],
   "coverageDirectory": "coverage/jest-react",
-  "collectCoverageFrom": ["src/components/*.{js,jsx}", "!src/classes/*.{js,jsx}", "!src/commons/*.{js,jsx}", "!**/node_modules/**"],
+  "collectCoverageFrom": ["src/**/*.{js,jsx}"],
   "collectCoverage": true,
   "transform": {
     "^.+\\.jsx?$": "babel-jest"

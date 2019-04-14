@@ -96,8 +96,7 @@ module.exports = ({ production, server, extractCss, coverage, analyze } = {}) =>
     }),
     new CopyWebpackPlugin([
       { from: 'static/favicon.ico', to: 'favicon.ico' },
-      { from: 'static/imgs', to: 'static/imgs' },
-      { from: 'static/icons', to: 'static/icons' }
+      { from: 'static/imgs', to: 'static/imgs' }
     ]),
     new webpack.EnvironmentPlugin(['NODE_ENV', 'AuthProductionBaseURL', 'PORT', 'BackendUrl', 'GoogleClientId', 'userRoles']),
     ...when(extractCss, new ExtractTextPlugin({

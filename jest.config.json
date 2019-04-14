@@ -2,13 +2,19 @@
   "verbose": true,
   "bail": true,
   "setupFiles": [
-    "@babel/polyfill"
+    "@babel/polyfill",
+    "enzyme-react-16-adapter-setup",
+    "<rootDir>/test/jest-pretest.js"
   ],
-  "testPathIgnorePatterns": ["/node_modules/", "/test/react-unit/"],
+  "moduleNameMapper": {
+    "\\.(css|less|scss|sass)$": "identity-obj-proxy"
+  },
+  "transform": {
+    "^.+\\.jsx?$": "babel-jest"
+  },
+  "testPathIgnorePatterns": ["/node_modules/"],
   "coverageDirectory": "coverage/jest",
-  "collectCoverageFrom": ["src/classes/*.{js,jsx}", "src/commons/*.{js,jsx}", "!**/node_modules/**", "!src/commons/slideshow.js",
-    "!src/classes/AppState.js", "!src/classes/UserAccess.js", "!src/classes/FormValidator.js"
-  ],
+  "collectCoverageFrom": ["src/**/*.{js,jsx}"],
   "collectCoverage": true,
   "testEnvironment": "jest-environment-jsdom",
   "testURL": "http://localhost/"
