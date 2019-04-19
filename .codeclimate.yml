@@ -27,8 +27,6 @@ plugins:
           mass_threshold: 80
   stylelint:
     enabled:              true
-  htmlhint:
-    enabled:              true
   fixme:
     enabled:              true
 ratings:
