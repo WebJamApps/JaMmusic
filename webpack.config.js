@@ -27,7 +27,7 @@ module.exports = ({ production, server, extractCss, coverage, analyze } = {}) =>
   },
 
   entry: {
-    app: ['./main.js'],
+    app: ['./src/main.js'],
     // vendor: ['bootstrap', 'whatwg-fetch', 'isomorphic-fetch']
   },
 
