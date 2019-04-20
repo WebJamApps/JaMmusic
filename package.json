@@ -132,7 +132,7 @@
     "eslint:fix": "./node_modules/eslint/bin/eslint.js --fix .",
     "postinstall": "yarn start -- build",
     "protractor": "nps e2e",
-    "test:stylelint": "stylelint \"src/**/*.html\" && stylelint \"static/**/*.css\"",
+    "test:stylelint": "stylelint \"static/**/*.css\"",
     "test:html": "htmlhint src/**/*.html"
   },
   "snyk": true
