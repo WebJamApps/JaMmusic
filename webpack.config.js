@@ -27,7 +27,7 @@ module.exports = ({ production, server, extractCss, coverage, analyze } = {}) =>
   },
 
   entry: {
-    app: ['./src/main.js'],
+    app: [`${srcDir}/main.js`],
     // vendor: ['bootstrap', 'whatwg-fetch', 'isomorphic-fetch']
   },
 
@@ -90,7 +90,7 @@ module.exports = ({ production, server, extractCss, coverage, analyze } = {}) =>
 
   plugins: [
     new HtmlWebpackPlugin({
-      template: 'index.ejs',
+      template: `${srcDir}/index.ejs`,
       minify: production ? { removeComments: true, collapseWhitespace: true } : undefined,
       metadata: { title, server, baseUrl }
     }),
