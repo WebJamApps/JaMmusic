@@ -1,9 +1,9 @@
 import React from 'react';
+import { shallow } from 'enzyme';
 import { PicSlider } from '../../src/components/pic-slider';
 
-describe('the App module', () => {
-  let ps;
 
+<<<<<<< HEAD
   beforeEach(() => {
     document.body.innerHTML = '<div id="renderer" class="swipe-area"></div>';
     ps = new PicSlider();
@@ -27,4 +27,8 @@ describe('the App module', () => {
   //   expect(typeof html).toBe('object');
   //   done();
   // });
+=======
+test('picture slider component test setup', () => {
+  const ps = shallow(<PicSlider data={[]} caption="this is it" />);
+>>>>>>> 41fe18346aca9ca41f4fa0768946e63244c2058b
 });

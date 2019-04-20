@@ -1,6 +1,6 @@
 {
   "name": "JaMmusic",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "joshandmariamusic.com",
   "main": "dist/index.html",
   "repository": {
@@ -61,8 +61,10 @@
     "react-redux": "latest",
     "react-router-dom": "latest",
     "react-slick": "latest",
+    "react-table": "^6.9.2",
     "redux": "latest",
     "redux-logger": "latest",
+    "redux-thunk": "^2.3.0",
     "slick-carousel": "latest",
     "snyk": "latest",
     "style-loader": "latest",
