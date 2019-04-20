@@ -24,11 +24,4 @@ describe('picture slider component test setup', () => {
   it('does nothing', (done) => {
     done();
   });
-
-// it('get html text', (done) => {
-//   const html = ps.html();
-//   expect(typeof html).toBe('object');
-//   done();
-// });
-//
 });
