@@ -3,10 +3,10 @@ import { shallow } from 'enzyme';
 import { PicSlider } from '../../src/components/pic-slider';
 
 
-<<<<<<< HEAD
-test('picture slider component test setup', () => {
-  const ps = shallow(<PicSlider data={[]} caption="this is it" />);
-=======
+describe('picture slider component test setup', () => {
+  let ps;
+  //   let ps = shallow(<PicSlider data={[]} caption="this is it" />);
+
   beforeEach(() => {
     document.body.innerHTML = '<div id="renderer" class="swipe-area"></div>';
     ps = new PicSlider();
@@ -25,10 +25,10 @@ test('picture slider component test setup', () => {
     done();
   });
 
-  // it('get html text', (done) => {
-  //   const html = ps.html();
-  //   expect(typeof html).toBe('object');
-  //   done();
-  // });
->>>>>>> 9c59d0887b1ee5747b88720138011f9c18296049
+// it('get html text', (done) => {
+//   const html = ps.html();
+//   expect(typeof html).toBe('object');
+//   done();
+// });
+//
 });
