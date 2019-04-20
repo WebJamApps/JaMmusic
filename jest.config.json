@@ -13,7 +13,6 @@
     "^.+\\.jsx?$": "babel-jest"
   },
   "testPathIgnorePatterns": ["/node_modules/"],
-  "coverageDirectory": "coverage/jest",
   "collectCoverageFrom": ["src/**/*.{js,jsx}"],
   "collectCoverage": true,
   "testEnvironment": "jest-environment-jsdom",
