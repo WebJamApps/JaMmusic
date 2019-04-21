@@ -1,8 +1,6 @@
-
 import React, { Component } from 'react';
 import { PicSlider } from '../components/pic-slider';
 import { TourTable } from '../components/tour-table';
-
 
 export default class Music extends Component {
   constructor(props) {

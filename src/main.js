@@ -8,3 +8,5 @@ import store from './store';
 import '../static/styles.css';
 
 render(<Provider store={store}><App /></Provider>, document.getElementById('root'));
+/* istanbul ignore if */
+if (process.env.NODE_ENV !== 'production') module.hot.accept();

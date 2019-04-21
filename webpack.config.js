@@ -1,5 +1,5 @@
+require('dotenv').config();
 const path = require('path');
-const dotenv = require('dotenv');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
@@ -7,7 +7,6 @@ const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const webpack = require('webpack');
 
 // config helpers:
-dotenv.config({ path: '.env' });
 const ensureArray = config => config && (Array.isArray(config) ? config : [config]) || [];
 const when = (condition, config, negativeConfig) => (condition ? ensureArray(config) : ensureArray(negativeConfig));
 
@@ -19,8 +18,7 @@ const nodeModulesDir = path.resolve(__dirname, 'node_modules');
 const baseUrl = '/music';
 const cssRules = [{ loader: 'css-loader' }];
 
-
-module.exports = ({ production, server, extractCss, coverage, analyze } = {}) => ({
+module.exports = ({ production, extractCss, coverage, analyze } = {}) => ({
   resolve: {
     extensions: ['.js', '.jsx'],
     modules: [srcDir, 'node_modules'],
@@ -28,7 +26,6 @@ module.exports = ({ production, server, extractCss, coverage, analyze } = {}) =>
 
   entry: {
     app: [`${srcDir}/main.js`],
-    // vendor: ['bootstrap', 'whatwg-fetch', 'isomorphic-fetch']
   },
 
   mode: production ? 'production' : 'development',
@@ -45,8 +42,9 @@ module.exports = ({ production, server, extractCss, coverage, analyze } = {}) =>
 
   devServer: {
     contentBase: outDir,
-    // serve index.html for all 404 (required for push-state)
-    historyApiFallback: true,
+    hot: true,
+    // // serve index.html for all 404 (required for push-state)
+    // historyApiFallback: true,
     port: parseInt(process.env.PORT, 10)
   },
 
@@ -92,7 +90,7 @@ module.exports = ({ production, server, extractCss, coverage, analyze } = {}) =>
     new HtmlWebpackPlugin({
       template: `${srcDir}/index.ejs`,
       minify: production ? { removeComments: true, collapseWhitespace: true } : undefined,
-      metadata: { title, server, baseUrl }
+      metadata: { title, baseUrl }
     }),
     new CopyWebpackPlugin([
       { from: 'static/favicon.ico', to: 'favicon.ico' },
