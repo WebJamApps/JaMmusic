@@ -1,5 +1,5 @@
 {
-  "plugins": ["node", "security", "jest", "react", "html"],
+  "plugins": ["node", "security", "jest", "react"],
   "extends": ["airbnb", "plugin:jest/recommended", "plugin:security/recommended", "plugin:node/recommended"],
   "rules": {
     "security/detect-possible-timing-attacks": 0,
@@ -54,9 +54,11 @@
     "react/prop-types": "off",
     "react/no-access-state-in-setstate": "off",
     "react/sort-comp": "off",
+    "react/self-closing-comp": 0,
     "jsx-a11y/img-redundant-alt": "off",
     "jsx-a11y/mouse-events-have-key-events": "off",
     "jsx-a11y/no-static-element-interactions": "off",
-    "jsx-a11y/click-events-have-key-events": "off"
+    "jsx-a11y/click-events-have-key-events": "off",
+    "jsx-a11y/anchor-has-content": 0
   }
 }
