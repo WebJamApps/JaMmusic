@@ -44,7 +44,13 @@ module.exports = ({ production, extractCss, coverage, analyze } = {}) => ({
     contentBase: outDir,
     hot: true,
     // // serve index.html for all 404 (required for push-state)
-    // historyApiFallback: true,
+    historyApiFallback: {
+      rewrites: [
+        { from: /^\/$/, to: '/music' },
+        { from: /^\/music/, to: '/music' },
+        { from: /./, to: '/music' }
+      ]
+    },
     port: parseInt(process.env.PORT, 10)
   },
 
