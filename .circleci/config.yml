@@ -27,12 +27,9 @@ jobs:
           command:     'yarn install'
       - run:
           name:        run all tests
-          command:     yarn test
-      - run:
-          name:        Generate code coverage
           command:     |
             ./cc-test-reporter before-build
-            sudo vendor/bin/phpunit --coverage-clover clover.xml
+            yarn test
             ./cc-test-reporter after-build --coverage-input-type clover --exit-code $?
       - store_artifacts:
           path:        coverage
