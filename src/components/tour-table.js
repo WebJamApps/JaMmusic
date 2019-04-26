@@ -13,12 +13,13 @@ export class TourTable extends Component {
         ['Dec 7, 2018', '6:00 pm', 'Salem, VA', 'College Lutheran Church front porch, prior to the Salem Christmas parade', 'Free'],
         ['Nov 29, 2018', '5:45 pm', 'Salem, VA', 'Dinner to Honor Volunteers/Supporters of the Salem Clothes Closet', 'Private'],
         ['Nov 24, 2018', '4:45 pm', 'Moneta, VA', 'Resurrection Catholic Church', 'Freewill'],
-        ['Sept 29, 2018', '5:30 pm', 'Marion, VA', 'Hungry Mother Lutheran Retreat Center Beer & Brats Fundraiser - \n Contact for more info.', 'Donation'],
+        ['Sept 29, 2018', '5:30 pm', 'Marion, VA',
+          'Hungry Mother Lutheran Retreat Center Beer & Brats Fundraiser - \n Contact for more info.', 'Donation'],
         ['Sept 1, 2018', '4:00 pm', 'Bent Mountain, VA', '33rd Annual Pig Roast', 'Sold Out'],
         ['Aug 4, 2018', '9:00 am', 'Salem, VA', 'Farmers Market', 'Free'],
         ['July 30, 2018', '6:00 pm', 'Salem, VA', 'Parkway Brewery', 'Free'],
         ['July 21, 2018', '5:00 pm', 'Salem, VA', 'Web Jam LLC', 'Private'],
-        ['July 15, 2018', '9:45 am', 'Salem, VA', 'College Lutheran Church', 'Freewill'],
+        ['July 15, 2018', '9:45 am', 'Salem, VA', 'College Lutheran Church', 'Freewill']
       ]
     };
   }
@@ -55,7 +56,8 @@ export class TourTable extends Component {
             <td>Dec 7, 2018</td>
             <td>6:00 pm</td>
             <td>Salem, VA</td>
-            <td><a href="http://collegelutheran.org/" rel="noopener noreferrer" target="_blank">College Lutheran Church</a> front porch, prior to the Salem Christmas parade</td>
+            <td><a href="http://collegelutheran.org/" rel="noopener noreferrer" target="_blank">College Lutheran Church</a>
+            front porch, prior to the Salem Christmas parade</td>
             <td>Free</td>
           </tr>
           <tr>
@@ -77,7 +79,8 @@ export class TourTable extends Component {
             <td>5:30 pm</td>
             <td>Marion, VA</td>
             <td>Hungry Mother Lutheran Retreat Center
-              <br/>Beer & Brats Fundraiser - <a target="_blank" rel="noopener noreferrer" href="http://hungrymother.org/contact-us/">Contact</a> for more info.</td>
+              <br/>Beer & Brats Fundraiser -
+              <a target="_blank" rel="noopener noreferrer" href="http://hungrymother.org/contact-us/">Contact</a> for more info.</td>
             <td><a target="_blank" rel="noopener noreferrer" href="http://hungrymother.org/give/">Donation</a></td>
           </tr>
           <tr>
@@ -99,7 +102,10 @@ export class TourTable extends Component {
             <td>6:00 pm</td>
             <td>Salem, VA</td>
             <td>
-              <a href="https://www.facebook.com/pages/biz/Majestic-Mic-at-Parkway-Brewery-1146829528673810/" rel="noopener noreferrer" target="_blank">Parkway Brewery</a>
+              <a
+                href="https://www.facebook.com/pages/biz/Majestic-Mic-at-Parkway-Brewery-1146829528673810/"
+                rel="noopener noreferrer"
+                target="_blank">Parkway Brewery</a>
             </td>
             <td>Free</td>
           </tr>

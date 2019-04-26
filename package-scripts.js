@@ -1,7 +1,7 @@
 const {
   series, crossEnv, concurrent, rimraf
 } = require('nps-utils');
-const { config: { port: E2E_PORT } } = require('./test/protractor.conf');
+//const { config: { port: E2E_PORT } } = require('./test/protractor.conf');
 
 module.exports = {
   scripts: {
@@ -14,11 +14,11 @@ module.exports = {
           crossEnv('BABEL_TARGET=node jest')
         ),
         accept: crossEnv('BABEL_TARGET=node jest -u'),
-        watch: crossEnv('BABEL_TARGET=node jest --watch'),
+        watch: crossEnv('BABEL_TARGET=node jest --watch')
       },
       lint: {
-        default: 'eslint . --ext .html,.js',
-        fix: 'eslint . --ext .html,.js --fix'
+        default: 'eslint . --ext .js',
+        fix: 'eslint . --ext .js --fix'
       },
       react: {
         default: crossEnv('BABEL_TARGET=node jest --no-cache --config jest.React.json --notify'),
@@ -33,7 +33,7 @@ module.exports = {
     },
     e2e: {
       default: `${concurrent({
-        webpack: `webpack-dev-server --inline --port=${E2E_PORT}`,
+        //webpack: `webpack-dev-server --inline --port=${E2E_PORT}`,
         protractor: 'nps e2e.whenReady'
       })} --kill-others --success first`,
       protractor: {

@@ -15,6 +15,7 @@ export default class Music extends Component {
     ];
     this.originals = `${process.env.BackendUrl}/wj-music/originals`;
   }
+
   // <PicSlider caption="Music picture slider" data={ this.slideshowImages } />
   render() {
     return (
@@ -104,9 +105,11 @@ export default class Music extends Component {
             </article>
             <br/>
             <hr/>
-            <p style={{ textAlign: 'left' }}>The Web Jam Band formed at the beginning of 2017, with a performance at a summer wedding anniversary house party, and performances at the annual Bent
+            <p style={{ textAlign: 'left' }}>The Web Jam Band formed at the beginning of 2017,
+            with a performance at a summer wedding anniversary house party, and performances at the annual Bent
               Mountain Pig Roast.
-              Recording sessions were completed at Flat Five Studios, and songs will be made available for streaming in the near future. We are currently seeking a new drummer as Brian has moved
+              Recording sessions were completed at Flat Five Studios, and songs will be made available for streaming in the near future.
+              We are currently seeking a new drummer as Brian has moved
               to Austin, Tx.
             </p>
             <h4 style={{ textAlign: 'center', marginBottom: '5px', marginTop: '10px' }}><strong>Who are these classy people?</strong></h4>
@@ -150,18 +153,24 @@ export default class Music extends Component {
                   In 1969, I was 12 years old, I heard Jimi Hendrix on the radio and decided I had to learn to play guitar. Self taught for
                   48 years now. Play lead and rhythm guitar. Favorite axe is
                   still a Fender Stratocaster!
-                  Influences: Jimi Hendrix, Rolling Stones, Sex Pistols, Ramones, X, Talking Heads, BB King, Buddy Guy, Neil Young……. Can work a harmonica and acoustic guitar on demand.
+                  Influences: Jimi Hendrix, Rolling Stones, Sex Pistols, Ramones, X, Talking Heads, BB King, Buddy Guy, Neil Young…….
+                  Can work a harmonica and acoustic guitar on demand.
                 </p>
-                <img alt="young emerson" src="../static/imgs/emersonY.jpg" style={{ width: '288px', display: 'block', margin: 'auto', textAlign: 'center' }}/>
+                <img
+                  alt="young emerson"
+                  src="../static/imgs/emersonY.jpg"
+                  style={{ width: '288px', display: 'block', margin: 'auto', textAlign: 'center' }}/>
             </article>
             <hr/>
             <article>
               <h4 id="brianbio">Brian Lilienthal</h4>
               <img alt="brian" src="../static/imgs/BrianL.png" style={{ width: '288px', display: 'block', margin: 'auto', textAlign: 'center' }}/>
                 <p style={{ maxWidth: '98%', margin: 'auto', textAlign: 'left' }}>
-                  Brian has been playing drums for 13 years and his main set is a Pearl Masters MCX. His favorite music is Ska music, and his drumming influences are Vinnie Fiorello from
+                  Brian has been playing drums for 13 years and his main set is a Pearl Masters MCX.
+                  His favorite music is Ska music, and his drumming influences are Vinnie Fiorello from
                   Less Than Jake, Chris Thatcher from Streetlight Manifesto, Travis
-                  Barker from Blink-182, Tre Cool from Green Day, and The Rabbit from Reel Big Fish. His man crushes are Roger Lima, Gerard Way, and Barack Obama. Looking for a nice girl
+                  Barker from Blink-182, Tre Cool from Green Day, and The Rabbit from Reel Big Fish.
+                  His man crushes are Roger Lima, Gerard Way, and Barack Obama. Looking for a nice girl
                   between 23 and 29. Also, Go Hokies!
                 </p>
             </article>
