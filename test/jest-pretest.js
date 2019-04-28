@@ -1,9 +1,5 @@
-import 'aurelia-polyfills';
-import { Options } from 'aurelia-loader-nodejs';
-import { globalize } from 'aurelia-pal-nodejs';
-import * as path from 'path';
-
-Options.relativeToDir = path.join(__dirname, 'react-unit');
+import { configure } from 'enzyme';
+import Adapter from 'enzyme-adapter-react-16';
 
 window.matchMedia = window.matchMedia || function match() {
   return {
@@ -12,3 +8,5 @@ window.matchMedia = window.matchMedia || function match() {
     removeListener: function rmlistener() {}
   };
 };
+
+configure({ adapter: new Adapter() });
