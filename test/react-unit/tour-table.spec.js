@@ -10,7 +10,7 @@ function setup() {
 }
 
 
-describe('picture slider component test setup', () => {
+describe('tour-table component test', () => {
   it('renders the component', () => {
     const { wrapper } = setup();
     expect(wrapper.find('table').exists()).toBe(true);

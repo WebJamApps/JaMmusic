@@ -20,7 +20,7 @@ function setup() {
 }
 
 
-describe('picture slider component test setup', () => {
+describe('picture slider component test', () => {
   it('renders the component', () => {
     const { wrapper } = setup();
     expect(wrapper.find('div').exists()).toBe(true);

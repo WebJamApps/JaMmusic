@@ -10,7 +10,7 @@ function setup() {
 }
 
 
-describe('picture slider component test setup', () => {
+describe('/music', () => {
   it('renders the component', () => {
     const { wrapper } = setup();
     expect(wrapper.find('div.page-content').exists()).toBe(true);
