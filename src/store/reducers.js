@@ -54,5 +54,5 @@ export default combineReducers({
   role: roleReducer,
   widescreen: widescreenReducer,
   fullMenu: fullmenuReducer,
-  menu: menuReducer,
+  menu: menuReducer
 });

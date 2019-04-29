@@ -13,7 +13,7 @@ function setup() {
   ];
 
   const props = {
-    data,
+    data
   };
   const wrapper = shallow(<PicSlider data={data} />);
   return { wrapper, props };

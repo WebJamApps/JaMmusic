@@ -1,4 +1,3 @@
-
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -99,7 +98,12 @@ export class AppTemplate extends Component {
             </div>
 
             <div className="nav-list">
-              <div id="musTT" style={{ display: 'none', position: 'absolute', top: '305px', right: '68px', backgroundColor: 'white', padding: '3px' }}> Music </div>
+              <div
+                id="musTT"
+                style={{ display: 'none', position: 'absolute', top: '305px', right: '68px', backgroundColor: 'white', padding: '3px'
+                }}>
+              Music
+              </div>
               <div className="menu-item">
                 <Link to="/music" className="nav-link" onClick={this.close}>
                   <i className="fas fa-music"/>&nbsp;
@@ -113,25 +117,25 @@ export class AppTemplate extends Component {
                 </Link>
               </div>
               <div className="menu-item">
-                <button className="nav-link originals out-link" onClick={this.close}>
+                <button type="button" className="nav-link originals out-link" onClick={this.close}>
                   <i className="far fa-lightbulb"/>&nbsp;
                   <span className="nav-item originals out-link">Originals</span>
                 </button>
               </div>
               <div className="menu-item">
-                <button className="nav-link mission out-link" onClick={this.close}>
+                <button type="button" className="nav-link mission out-link" onClick={this.close}>
                   <i className="fas fa-crosshairs"/>&nbsp;
                   <span className="nav-item mission out-link">Mission Music</span>
                 </button>
               </div>
               <div className="menu-item">
-                <button className="nav-link pub out-link" onClick={this.close}>
+                <button type="button" className="nav-link pub out-link" onClick={this.close}>
                   <i className="fas fa-beer"/>&nbsp;
                   <span className="nav-item pub out-link">Pub Songs</span>
                 </button>
               </div>
               <div className="menu-item">
-                <button className="nav-link home out-link" onClick={this.close}>
+                <button type="button" className="nav-link home out-link" onClick={this.close}>
                   <i className="fas fa-home"/>&nbsp;
                   <span className="nav-item home out-link">Web Jam LLC</span>
                 </button>
@@ -191,7 +195,11 @@ export class AppTemplate extends Component {
                       <i className="fab fa-linkedin" />
                     </span>
                   </a>
-                  <a target="_blank" rel="noopener noreferrer" style={{ color, paddingRight: '5px' }} href="https://www.instagram.com/joshua.v.sherman/">
+                  <a
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ color, paddingRight: '5px' }}
+                    href="https://www.instagram.com/joshua.v.sherman/">
                     <span>
                       <i className="fab fa-instagram" />
                     </span>
@@ -211,11 +219,8 @@ export class AppTemplate extends Component {
                   </p>
                 </div>
               </div>
-
             </div>
-
           </div>
-
         </div>
       </div>
     );

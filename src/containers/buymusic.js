@@ -22,7 +22,8 @@ export default class BuyMusic extends Component {
               rel="noopener noreferrer"
               style={{
                 display: 'inline-block',
-                background: 'url(http://CDBaby.name/j/s/jshermanband.jpg) 18px 2px no-repeat, url(http://content.cdbaby.com/img/links/link-artwork-cart-dark-buy-now.png) 0px 0px no-repeat',
+                background: 'url(http://CDBaby.name/j/s/jshermanband.jpg) 18px 2px no-repeat, '
+                + 'url(http://content.cdbaby.com/img/links/link-artwork-cart-dark-buy-now.png) 0px 0px no-repeat',
                 backgroundSize: '175px, 211px',
                 height: '233px',
                 width: '211px'
@@ -43,7 +44,8 @@ export default class BuyMusic extends Component {
               style={{
                 textAlign: 'center',
                 display: 'inline-block',
-                background: 'url(http://CDBaby.name/s/h/shermanjosh.jpg) 18px 2px no-repeat, url(http://content.cdbaby.com/img/links/link-artwork-cart-light-buy-now.png) 0px 0px no-repeat',
+                background: 'url(http://CDBaby.name/s/h/shermanjosh.jpg) 18px 2px no-repeat, '
+                + 'url(http://content.cdbaby.com/img/links/link-artwork-cart-light-buy-now.png) 0px 0px no-repeat',
                 backgroundSize: '175px, 211px',
                 height: '233px',
                 width: '211px'

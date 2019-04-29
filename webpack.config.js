@@ -7,7 +7,7 @@ const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const webpack = require('webpack');
 
 // config helpers:
-const ensureArray = config => config && (Array.isArray(config) ? config : [config]) || [];
+const ensureArray = config => config && (Array.isArray(config) ? config : [config]) || []; //eslint-disable-line no-mixed-operators
 const when = (condition, config, negativeConfig) => (condition ? ensureArray(config) : ensureArray(negativeConfig));
 
 // primary config:
@@ -21,11 +21,11 @@ const cssRules = [{ loader: 'css-loader' }];
 module.exports = ({ production, extractCss, coverage, analyze } = {}) => ({
   resolve: {
     extensions: ['.js', '.jsx'],
-    modules: [srcDir, 'node_modules'],
+    modules: [srcDir, 'node_modules']
   },
 
   entry: {
-    app: [`${srcDir}/main.js`],
+    app: [`${srcDir}/main.js`]
   },
 
   mode: production ? 'production' : 'development',
@@ -66,7 +66,7 @@ module.exports = ({ production, extractCss, coverage, analyze } = {}) => ({
         use: extractCss ? ExtractTextPlugin.extract({
           fallback: 'style-loader',
           use: cssRules
-        }) : ['style-loader', ...cssRules],
+        }) : ['style-loader', ...cssRules]
       },
       {
         test: /\.css$/i,
@@ -80,7 +80,7 @@ module.exports = ({ production, extractCss, coverage, analyze } = {}) => ({
         test: /\.jsx?$/i,
         loader: 'babel-loader',
         exclude: nodeModulesDir,
-        options: coverage ? { sourceMap: 'inline', plugins: ['istanbul'] } : {},
+        options: coverage ? { sourceMap: 'inline', plugins: ['istanbul'] } : {}
       },
       { test: /[\/\\]node_modules[\/\\]bluebird[\/\\].+\.js$/, loader: 'expose-loader?Promise' },
       // embed small images and fonts as Data Urls and larger ones as files:
@@ -88,7 +88,7 @@ module.exports = ({ production, extractCss, coverage, analyze } = {}) => ({
       { test: /\.woff2(\?v=[0-9]\.[0-9]\.[0-9])?$/i, loader: 'url-loader', options: { limit: 10000, mimetype: 'application/font-woff2' } },
       { test: /\.woff(\?v=[0-9]\.[0-9]\.[0-9])?$/i, loader: 'url-loader', options: { limit: 10000, mimetype: 'application/font-woff' } },
       // load these fonts normally, as files:
-      { test: /\.(ttf|eot|svg|otf)(\?v=[0-9]\.[0-9]\.[0-9])?$/i, loader: 'file-loader' },
+      { test: /\.(ttf|eot|svg|otf)(\?v=[0-9]\.[0-9]\.[0-9])?$/i, loader: 'file-loader' }
     ]
   },
 
