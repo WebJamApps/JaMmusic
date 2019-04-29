@@ -9,9 +9,6 @@
   "moduleNameMapper": {
     "\\.(css|less|scss|sass)$": "identity-obj-proxy"
   },
-  "transform": {
-    "^.+\\.jsx?$": "babel-jest"
-  },
   "moduleFileExtensions": ["js", "json", "jsx"],
   "testPathIgnorePatterns": ["/node_modules/"],
   "collectCoverageFrom": ["src/**/*.{js,jsx}"],

@@ -77,8 +77,6 @@
     "wj-common-front": "latest"
   },
   "devDependencies": {
-    "babel-eslint": "latest",
-    "babel-jest": "latest",
     "enzyme": "latest",
     "enzyme-adapter-react-16": "latest",
     "enzyme-react-16-adapter-setup": "latest",
