@@ -24,7 +24,7 @@
     "test:lint": "yarn test:stylelint && nps test.lint",
     "test": "yarn test:lint && yarn test:jest",
     "test:local": "yarn test:lint-fix && yarn test:jest && yarn cc",
-    "test:jest": "cross-env NODE_ENV=test && jest --no-cache --config jest.config.json --notify",
+    "test:jest": "jest --no-cache --config jest.config.json --notify",
     "protest": "nps test",
     "test:jest-react-u": "nps test.react.accept",
     "installglobals": "npm i -g npm@next",
