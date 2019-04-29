@@ -81,7 +81,7 @@ module.exports = ({ production, extractCss, coverage, analyze } = {}) => ({
         loader: 'babel-loader',
         exclude: nodeModulesDir,
         options: coverage ? { sourceMap: 'inline', plugins: ['istanbul'] } : {}
-      },
+      }, //eslint-disable-next-line no-useless-escape
       { test: /[\/\\]node_modules[\/\\]bluebird[\/\\].+\.js$/, loader: 'expose-loader?Promise' },
       // embed small images and fonts as Data Urls and larger ones as files:
       { test: /\.(png|gif|jpg|cur)$/i, loader: 'url-loader', options: { limit: 8192 } },

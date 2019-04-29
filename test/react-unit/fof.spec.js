@@ -2,13 +2,11 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import FourOhFour from '../../src/containers/404';
 
-
 function setup() {
   const props = {};
   const wrapper = shallow(<FourOhFour />);
   return { wrapper, props };
 }
-
 
 describe('/404', () => {
   it('renders the component', () => {

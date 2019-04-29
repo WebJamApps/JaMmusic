@@ -2,7 +2,6 @@
 import { combineReducers } from 'redux';
 import { UPDATE_NAME, UPDATE_ROLE, UPDATE_WIDESCREEN, UPDATE_MENU, UPDATE_FULLMENU } from './actions';
 
-
 const nameReducer = (state = 'WebJAM LLC', action) => {
   switch (action.type) {
     case UPDATE_NAME:
@@ -47,7 +46,6 @@ const fullmenuReducer = (state = true, action) => {
       return state;
   }
 };
-
 
 export default combineReducers({
   name: nameReducer,

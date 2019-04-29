@@ -1,7 +1,6 @@
 
 import React, { Component } from 'react';
 
-
 export class TourTable extends Component {
   constructor(props) {
     super(props);

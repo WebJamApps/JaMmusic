@@ -1,7 +1,6 @@
 
 import React, { Component } from 'react';
 
-
 export default class BuyMusic extends Component {
   constructor(props) {
     super(props);

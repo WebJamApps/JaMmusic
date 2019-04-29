@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { throttle } from '../commons/utils';
 
-
 export class AppTemplate extends Component {
   constructor(props) {
     super(props);
@@ -226,7 +225,6 @@ export class AppTemplate extends Component {
     );
   }
 }
-
 
 const mapStateToProps = state => ({
   ...state

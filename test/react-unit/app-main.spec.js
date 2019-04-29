@@ -2,13 +2,11 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import { AppTemplate } from '../../src/components/app-main';
 
-
 function setup() {
   const props = {};
   const wrapper = shallow(<AppTemplate />);
   return { wrapper, props };
 }
-
 
 describe('app-main component test setup', () => {
   it('renders the component', () => {
