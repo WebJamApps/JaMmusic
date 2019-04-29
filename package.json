@@ -23,7 +23,7 @@
     "test:lint-fix": "yarn test:stylelint && nps test.lint.fix",
     "test:lint": "yarn test:stylelint && nps test.lint",
     "test:unit": "rm -rf coverage && npm run test:jest",
-    "test": "yarn test:lint && yarn test:unit",
+    "test": "yarn test:lint && yarn test:unit && yarn test:jest",
     "test:local": "yarn test:lint-fix && yarn test:unit && yarn cc",
     "test:jest": "cross-env NODE_ENV=test && jest --no-cache --config jest.config.json --notify",
     "protest": "nps test",
