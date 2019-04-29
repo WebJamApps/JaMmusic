@@ -12,6 +12,7 @@
   "transform": {
     "^.+\\.jsx?$": "babel-jest"
   },
+  "moduleFileExtensions": ["js", "json", "jsx"],
   "testPathIgnorePatterns": ["/node_modules/"],
   "collectCoverageFrom": ["src/**/*.{js,jsx}"],
   "collectCoverage": true,

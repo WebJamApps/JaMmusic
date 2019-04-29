@@ -15,12 +15,12 @@ export class AppTemplate extends Component {
   }
 
   close(e) {
-    const menuOpen = false;
-    //console.log(e.target.classList);
-    if (!e.target.classList.contains('nav-list')) {
-      this.setState({ menuOpen });
+    this.setState({ menuOpen: false });
+
+    if (e.target.classList.contains('out-link')) {
+      return this.changeNav(e.target.classList[1]);
     }
-    if (e.target.classList.length > 1) return this.changeNav(e.target.classList[1]);
+
     return true;
   }
 
@@ -117,27 +117,27 @@ export class AppTemplate extends Component {
                 </Link>
               </div>
               <div className="menu-item">
-                <button type="button" className="nav-link originals" onClick={this.close}>
+                <button type="button" className="nav-link originals out-link" onClick={this.close}>
                   <i className="far fa-lightbulb"/>&nbsp;
-                  <span className="nav-item originals">Originals</span>
+                  <span className="nav-item originals out-link">Originals</span>
                 </button>
               </div>
               <div className="menu-item">
-                <button type="button" className="nav-link mission" onClick={this.close}>
+                <button type="button" className="nav-link mission out-link" onClick={this.close}>
                   <i className="fas fa-crosshairs"/>&nbsp;
-                  <span className="nav-item mission">Mission Music</span>
+                  <span className="nav-item mission out-link">Mission Music</span>
                 </button>
               </div>
               <div className="menu-item">
-                <button type="button" className="nav-link pub" onClick={this.close}>
+                <button type="button" className="nav-link pub out-link" onClick={this.close}>
                   <i className="fas fa-beer"/>&nbsp;
-                  <span className="nav-item pub">Pub Songs</span>
+                  <span className="nav-item pub out-link">Pub Songs</span>
                 </button>
               </div>
               <div className="menu-item">
-            <button type="button" className="nav-link home" onClick={this.close}>
+                <button type="button" className="nav-link home out-link" onClick={this.close}>
                   <i className="fas fa-home"/>&nbsp;
-                  <span className="nav-item home">Web Jam LLC</span>
+                  <span className="nav-item home out-link">Web Jam LLC</span>
                 </button>
               </div>
             </div>
