@@ -1,7 +1,7 @@
 const {
   series, crossEnv, concurrent, rimraf
 } = require('nps-utils');
-//const { config: { port: E2E_PORT } } = require('./test/protractor.conf');
+// const { config: { port: E2E_PORT } } = require('./test/protractor.conf');
 
 module.exports = {
   scripts: {
@@ -33,7 +33,7 @@ module.exports = {
     },
     e2e: {
       default: `${concurrent({
-        //webpack: `webpack-dev-server --inline --port=${E2E_PORT}`,
+        // webpack: `webpack-dev-server --inline --port=${E2E_PORT}`,
         protractor: 'nps e2e.whenReady'
       })} --kill-others --success first`,
       protractor: {

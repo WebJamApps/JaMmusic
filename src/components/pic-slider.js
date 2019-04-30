@@ -3,7 +3,7 @@ import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
-export class PicSlider extends Component {
+export class PicSlider extends Component { // eslint-disable-line import/prefer-default-export
   constructor(props) {
     super(props);
     this.settings = {
@@ -23,7 +23,13 @@ export class PicSlider extends Component {
       <div>
         <Slider {...this.settings}>
           {
-            this.props.data.map((data, key) => <div key={key}> <img width="100%" height="100%" src={data} alt="Image"/> </div>)
+            this.props.data.map((data, key) => (
+              <div key={key}> 
+                {' '}
+                <img width="100%" height="100%" src={data} alt="Image" />
+                {' '}
+              </div>
+            ))
           }
         </Slider>
         <div
@@ -35,7 +41,14 @@ export class PicSlider extends Component {
             boxShadow: '0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.14)',
             backgroundColor: '#fff',
             marginBottom: '10px',
-            marginTop: '-5px' }}> {this.props.caption} </div>
+            marginTop: '-5px'
+          }}
+        > 
+          {' '}
+          {this.props.caption}
+          {' '}
+ 
+        </div>
       </div>
     );
   }
