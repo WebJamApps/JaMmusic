@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Slider from 'react-slick';
+import PropTypes from 'prop-types';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
@@ -55,3 +56,12 @@ export class PicSlider extends Component { // eslint-disable-line import/prefer-
     );
   }
 }
+PicSlider.defaultProps = {
+  data: [''],
+  caption: ''
+};
+
+PicSlider.propTypes = {
+  data: PropTypes.arrayOf(PropTypes.string),
+  caption: PropTypes.string
+};

@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import throttle from '../commons/utils';
 
 export class AppTemplate extends Component {
   constructor(props) {
     super(props);
-    this.menu = props.menu;
-    this.role = props.role;
     this.children = props.children;
     this.state = { menuOpen: false };
     this.close = this.close.bind(this);
@@ -19,30 +18,15 @@ export class AppTemplate extends Component {
   get currentStyles() {
     let result = {};
     this.style = 'wj';
-    if (['charity', 'ohaf', 'volunteer'].includes(this.menu) || ['Charity', 'Volunteer'].includes(this.role)) {
-      this.style = 'ohaf';
-      result = {
-        headerImagePath: '../static/imgs/ohaf/charitylogo.png',
-        headerText1: 'Our',
-        headerText2: 'Hands And',
-        headerText3: 'Feet',
-        headerClass: 'ohaf-header',
-        headerImageClass: 'ohaf-header-image',
-        sidebarClass: 'ohaf-sidebar',
-        menuToggleClass: 'ohaf-menu-toggle'
-      };
-      result.sidebarImagePath = '../static/imgs/ohaf/butterfly.png';
-    } else {
-      result = {
-        headerImagePath: '../static/imgs/webjamicon7.png',
-        headerText1: 'Web Jam LLC',
-        headerClass: 'home-header',
-        headerImageClass: 'home-header-image',
-        sidebarClass: 'home-sidebar',
-        menuToggleClass: 'home-menu-toggle'
-      };
-      result.sidebarImagePath = '../static/imgs/webjamlogo1.png';
-    }
+    result = {
+      headerImagePath: '../static/imgs/webjamicon7.png',
+      headerText1: 'Web Jam LLC',
+      headerClass: 'home-header',
+      headerImageClass: 'home-header-image',
+      sidebarClass: 'home-sidebar',
+      menuToggleClass: 'home-menu-toggle'
+    };
+    result.sidebarImagePath = '../static/imgs/webjamlogo1.png';
     return result;
   }
 
@@ -80,27 +64,13 @@ export class AppTemplate extends Component {
         <div onClick={this.close} className={`${this.currentStyles.sidebarClass} ${menuOpen ? 'open' : 'close'} drawer-container`}>
           <div className="drawer" style={{ backgroundColor: '#c0c0c0' }}>
             <div className="navImage">
-              {
-                ['charity', 'volunteer', 'ohaf'].includes(this.menu) && ['Volunteer', 'Charity'].includes(this.role)
-                  ? (
-                    <img
-                      alt="wjsidelogo"
-                      id="webjamwidelogo"
-                      src={`${this.currentStyles.sidebarImagePath}`}
-                      style={{ width: '182px', marginRight: 0 }}
-                    />
-                  )
-                  : (
-                    <img
-                      alt="ohafwidelogo"
-                      id="ohafbutterflies"
-                      src={`${this.currentStyles.sidebarImagePath}`}
-                      style={{ width: '183px', marginRight: 0, marginTop: 0 }}
-                    />
-                  )
-              }
+              <img
+                alt="wjsidelogo"
+                id="webjamwidelogo"
+                src={`${this.currentStyles.sidebarImagePath}`}
+                style={{ width: '182px', marginRight: 0 }}
+              />
             </div>
-
             <div className="nav-list">
               <div
                 id="musTT"
@@ -165,40 +135,19 @@ export class AppTemplate extends Component {
             <div className={`material-header ${this.currentStyles.headerClass}`}>
 
               {
-                ['charity', 'volunteer', 'ohaf'].includes(this.menu) && ['Volunteer', 'Charity'].includes(this.role)
-                  ? (
-                    <div className="headercontent">
-                      <img alt="ohafHeader" src={`${this.currentStyles.headerImagePath}`} className={`${this.currentStyles.headerImageClass}`} />
-                    </div>
-                  )
-                  : (
-                    <div id="ohaflogo" className="headercontent">
-                      <img alt="ohaflogo" src={`${this.currentStyles.headerImagePath}`} className={`${this.currentStyles.headerImageClass}`} />
-                    </div>
-                  )
+
+                <div id="ohaflogo" className="headercontent">
+                  <img alt="ohaflogo" src={`${this.currentStyles.headerImagePath}`} className={`${this.currentStyles.headerImageClass}`} />
+                </div>
               }
               {
-                ['charity', 'volunteer', 'ohaf'].includes(this.menu) && ['Volunteer', 'Charity'].includes(this.role)
-                  ? (
-                    <div className="headercontent header-text-card">
-                      <h3 className="header-text">
-                        {this.currentStyles.headerText1}
-                        <br />
-                        {' '}
-                        {this.currentStyles.headerText2}
-                        <br />
-                        {' '}
-                        {this.currentStyles.headerText3}
-                      </h3>
-                    </div>
-                  )
-                  : (
-                    <div className="headercontent header-text-card">
-                      <h3 className="header-text" style={{ marginTop: 0 }}>
-                        {this.currentStyles.headerText1}
-                      </h3>
-                    </div>
-                  )
+
+                <div className="headercontent header-text-card">
+                  <h3 className="header-text" style={{ marginTop: 0 }}>
+                    {this.currentStyles.headerText1}
+                  </h3>
+                </div>
+
               }
 
             </div>
@@ -253,6 +202,10 @@ export class AppTemplate extends Component {
     );
   }
 }
+
+AppTemplate.propTypes = {
+  children: PropTypes.element.isRequired
+};
 
 const mapStateToProps = state => ({
   ...state
