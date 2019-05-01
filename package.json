@@ -14,10 +14,16 @@
   "files": [
     "webpack.config.js",
     "src/",
-    "static/"
+    "static/", "server.js"
+  ],
+  "keywords": [
+    "React",
+    "Babel",
+    "Webpack"
   ],
   "license": "MIT",
   "scripts": {
+    "start:dist": "node server.js",
     "cc": "codeclimate analyze -f html > codeclimate.html",
     "start": "nps",
     "test:lint-fix": "yarn test:stylelint && nps test.lint.fix",
@@ -25,14 +31,11 @@
     "test": "yarn test:lint && yarn test:jest",
     "test:local": "yarn test:lint-fix && yarn test:jest && yarn cc",
     "test:jest": "jest --no-cache --config jest.config.json --notify",
-    "protest": "nps test",
-    "test:jest-react-u": "nps test.react.accept",
     "installglobals": "npm i -g npm@next",
     "cleaninstall": "rm -rf yarn.lock && rm -rf node_modules && yarn cache clean && yarn install",
     "snyk-protect": "snyk protect",
     "eslint:fix": "./node_modules/eslint/bin/eslint.js --fix .",
     "postinstall": "yarn start -- build",
-    "protractor": "nps e2e",
     "test:stylelint": "stylelint \"static/**/*.css\""
   },
   "dependencies": {
@@ -46,6 +49,8 @@
     "copy-webpack-plugin": "latest",
     "css-loader": "latest",
     "dotenv": "latest",
+    "express": "latest",
+    "express-sslify": "latest",
     "expose-loader": "latest",
     "extract-text-webpack-plugin": "next",
     "file-loader": "latest",
@@ -57,6 +62,7 @@
     "nps": "latest",
     "nps-utils": "latest",
     "popper.js": "latest",
+    "prop-types": "latest",
     "react": "latest",
     "react-dom": "latest",
     "react-player": "latest",
@@ -65,8 +71,10 @@
     "react-slick": "latest",
     "redux": "latest",
     "redux-logger": "latest",
+    "redux-persist": "latest",
     "redux-thunk": "latest",
     "slick-carousel": "latest",
+    "superagent": "latest",
     "snyk": "latest",
     "style-loader": "latest",
     "url-loader": "latest",
@@ -90,9 +98,10 @@
     "eslint-plugin-security": "latest",
     "identity-obj-proxy": "latest",
     "jest": "latest",
-    "json-loader": "latest",
-    "protractor": "^5.4.1",
+    "jest-puppeteer": "latest",
+    "puppeteer": "latest",
     "react-hot-loader": "latest",
+    "redux-mock-store": "latest",
     "sinon": "latest",
     "stylelint": "latest",
     "stylelint-config-standard": "latest",
