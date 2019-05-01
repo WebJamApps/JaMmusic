@@ -2,7 +2,6 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import { PicSlider } from '../../src/components/pic-slider';
 
-
 function setup() {
   const data = [
     '../static/imgs/ohaf/slideshow2.png',
@@ -19,8 +18,7 @@ function setup() {
   return { wrapper, props };
 }
 
-
-describe('picture slider component test setup', () => {
+describe('picture slider component test', () => {
   it('renders the component', () => {
     const { wrapper } = setup();
     expect(wrapper.find('div').exists()).toBe(true);

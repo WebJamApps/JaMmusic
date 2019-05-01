@@ -1,7 +1,6 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import App from '../../src/index';
-
+import App from '../../src/App';
 
 function setup() {
   const props = {};
@@ -9,8 +8,7 @@ function setup() {
   return { wrapper, props };
 }
 
-
-describe('picture slider component test setup', () => {
+describe('App component', () => {
   it('renders the component', () => {
     const { wrapper } = setup();
     expect(wrapper.find('div#App').exists()).toBe(true);

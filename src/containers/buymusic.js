@@ -1,7 +1,6 @@
 
 import React, { Component } from 'react';
 
-
 export default class BuyMusic extends Component {
   constructor(props) {
     super(props);
@@ -51,8 +50,7 @@ export default class BuyMusic extends Component {
                 width: '211px'
               }}
               title="Josh Sherman: Solo Acoustic"
-              >
-            </a>
+            />
           </div>
         </div>
         <p>&nbsp;</p>

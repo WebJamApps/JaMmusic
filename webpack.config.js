@@ -7,7 +7,7 @@ const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const webpack = require('webpack');
 
 // config helpers:
-const ensureArray = config => config && (Array.isArray(config) ? config : [config]) || []; //eslint-disable-line no-mixed-operators
+const ensureArray = config => config && (Array.isArray(config) ? config : [config]) || []; // eslint-disable-line no-mixed-operators
 const when = (condition, config, negativeConfig) => (condition ? ensureArray(config) : ensureArray(negativeConfig));
 
 // primary config:
@@ -18,7 +18,9 @@ const nodeModulesDir = path.resolve(__dirname, 'node_modules');
 const baseUrl = '/music';
 const cssRules = [{ loader: 'css-loader' }];
 
-module.exports = ({ production, extractCss, coverage, analyze } = {}) => ({
+module.exports = ({
+  production, extractCss, coverage, analyze 
+} = {}) => ({
   resolve: {
     extensions: ['.js', '.jsx'],
     modules: [srcDir, 'node_modules']
@@ -81,7 +83,7 @@ module.exports = ({ production, extractCss, coverage, analyze } = {}) => ({
         loader: 'babel-loader',
         exclude: nodeModulesDir,
         options: coverage ? { sourceMap: 'inline', plugins: ['istanbul'] } : {}
-      },
+      }, // eslint-disable-next-line no-useless-escape
       { test: /[\/\\]node_modules[\/\\]bluebird[\/\\].+\.js$/, loader: 'expose-loader?Promise' },
       // embed small images and fonts as Data Urls and larger ones as files:
       { test: /\.(png|gif|jpg|cur)$/i, loader: 'url-loader', options: { limit: 8192 } },
