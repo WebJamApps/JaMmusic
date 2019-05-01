@@ -10,9 +10,15 @@ export class AppTemplate extends Component {
     this.children = props.children;
     this.state = { menuOpen: false };
     this.close = this.close.bind(this);
+    this.handleKeyPress = this.handleKeyPress.bind(this);
+    this.handleKeyMenu = this.handleKeyMenu.bind(this);
     this.dispatchWindowResize = this.dispatchWindowResize.bind(this);
     this.toggleMobileMenu = this.toggleMobileMenu.bind(this);
     this.changeNav = this.changeNav.bind(this);
+  }
+
+  componentDidMount() {
+    window.addEventListener('resize', throttle(this.dispatchWindowResize, 100, { leading: false }), false);
   }
 
   get currentStyles() {
@@ -46,14 +52,18 @@ export class AppTemplate extends Component {
     console.log(window.innerWidth);// eslint-disable-line no-console
   }
 
-  componentDidMount() {
-    window.addEventListener('resize', throttle(this.dispatchWindowResize, 100, { leading: false }), false);
-  }
-
   changeNav(where) { // eslint-disable-line class-methods-use-this
     let subpath = '/wj-music/';
     if (where === 'home') subpath = '/';
     return window.location.assign(`${process.env.BackendUrl}${subpath}${where}`);
+  }
+
+  handleKeyPress(e) { // eslint-disable-line class-methods-use-this
+    if (e.key === 'Escape') this.setState({ menuOpen: false });
+  }
+
+  handleKeyMenu(e) { // eslint-disable-line class-methods-use-this
+    if (e.key === 'Enter') this.toggleMobileMenu();
   }
 
   render() {
@@ -61,7 +71,13 @@ export class AppTemplate extends Component {
     const { menuOpen } = this.state;
     return (
       <div className="page-host">
-        <div onClick={this.close} className={`${this.currentStyles.sidebarClass} ${menuOpen ? 'open' : 'close'} drawer-container`}>
+        <div
+          tabIndex={0}
+          role="button"
+          onClick={this.close}
+          onKeyPress={this.handleKeyPress}
+          className={`${this.currentStyles.sidebarClass} ${menuOpen ? 'open' : 'close'} drawer-container`}
+        >
           <div className="drawer" style={{ backgroundColor: '#c0c0c0' }}>
             <div className="navImage">
               <img
@@ -126,7 +142,13 @@ export class AppTemplate extends Component {
           </div>
         </div>
         <div className="main-panel">
-          <span onClick={this.toggleMobileMenu} id="mobilemenutoggle">
+          <span
+            onClick={this.toggleMobileMenu}
+            onKeyPress={this.handleKeyMenu}
+            id="mobilemenutoggle"
+            tabIndex={0}
+            role="button"
+          >
             <i className="fas fa-bars" />
           </span>
 

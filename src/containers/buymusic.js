@@ -28,7 +28,9 @@ export default class BuyMusic extends Component {
                 width: '211px'
               }}
               title="Josh Sherman Band: live from central Florida, 2001 - 2005"
-            />
+            >
+              <span style={{ display: 'none' }}>Buy Josh Sherman Band</span>
+            </a>
           </div>
         </div>
         <p>&nbsp;</p>
@@ -50,7 +52,9 @@ export default class BuyMusic extends Component {
                 width: '211px'
               }}
               title="Josh Sherman: Solo Acoustic"
-            />
+            >
+              <span style={{ display: 'none' }}>Buy Solo Acoustic</span>
+            </a>
           </div>
         </div>
         <p>&nbsp;</p>

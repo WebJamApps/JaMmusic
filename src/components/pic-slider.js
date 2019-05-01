@@ -26,10 +26,10 @@ export class PicSlider extends Component { // eslint-disable-line import/prefer-
       <div>
         <Slider {...this.settings}>
           {
-            this.data.map((data, key) => (
-              <div key={key}>
+            this.data.map(data => (
+              <div key={data.id}>
                 {' '}
-                <img width="100%" height="100%" src={data} alt="Image" />
+                <img width="100%" height="100%" src={data.url} alt={data.title} />
                 {' '}
               </div>
             ))
@@ -57,11 +57,11 @@ export class PicSlider extends Component { // eslint-disable-line import/prefer-
   }
 }
 PicSlider.defaultProps = {
-  data: [''],
+  data: [{ url: '', title: '', id: 0 }],
   caption: ''
 };
 
 PicSlider.propTypes = {
-  data: PropTypes.arrayOf(PropTypes.string),
+  data: PropTypes.arrayOf(PropTypes.shape),
   caption: PropTypes.string
 };
