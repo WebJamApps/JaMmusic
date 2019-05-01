@@ -6,6 +6,9 @@ import throttle from '../commons/utils';
 export class AppTemplate extends Component {
   constructor(props) {
     super(props);
+    this.menu = props.menu;
+    this.role = props.role;
+    this.children = props.children;
     this.state = { menuOpen: false };
     this.close = this.close.bind(this);
     this.dispatchWindowResize = this.dispatchWindowResize.bind(this);
@@ -16,7 +19,7 @@ export class AppTemplate extends Component {
   get currentStyles() {
     let result = {};
     this.style = 'wj';
-    if (['charity', 'ohaf', 'volunteer'].includes(this.props.menu) || ['Charity', 'Volunteer'].includes(this.props.role)) {
+    if (['charity', 'ohaf', 'volunteer'].includes(this.menu) || ['Charity', 'Volunteer'].includes(this.role)) {
       this.style = 'ohaf';
       result = {
         headerImagePath: '../static/imgs/ohaf/charitylogo.png',
@@ -44,8 +47,9 @@ export class AppTemplate extends Component {
   }
 
   toggleMobileMenu() {
-    const menuOpen = !this.state.menuOpen;
-    this.setState({ menuOpen });
+    const { menuOpen } = this.state;
+    const mO = !menuOpen;
+    this.setState({ menuOpen: mO });
   }
 
   close(e) {
@@ -70,13 +74,14 @@ export class AppTemplate extends Component {
 
   render() {
     const color = '#c09580';
+    const { menuOpen } = this.state;
     return (
       <div className="page-host">
-        <div onClick={this.close} className={`${this.currentStyles.sidebarClass} ${this.state.menuOpen ? 'open' : 'close'} drawer-container`}>
+        <div onClick={this.close} className={`${this.currentStyles.sidebarClass} ${menuOpen ? 'open' : 'close'} drawer-container`}>
           <div className="drawer" style={{ backgroundColor: '#c0c0c0' }}>
             <div className="navImage">
               {
-                ['charity', 'volunteer', 'ohaf'].includes(this.props.menu) && ['Volunteer', 'Charity'].includes(this.props.role)
+                ['charity', 'volunteer', 'ohaf'].includes(this.menu) && ['Volunteer', 'Charity'].includes(this.role)
                   ? (
                     <img
                       alt="wjsidelogo"
@@ -160,7 +165,7 @@ export class AppTemplate extends Component {
             <div className={`material-header ${this.currentStyles.headerClass}`}>
 
               {
-                ['charity', 'volunteer', 'ohaf'].includes(this.props.menu) && ['Volunteer', 'Charity'].includes(this.props.role)
+                ['charity', 'volunteer', 'ohaf'].includes(this.menu) && ['Volunteer', 'Charity'].includes(this.role)
                   ? (
                     <div className="headercontent">
                       <img alt="ohafHeader" src={`${this.currentStyles.headerImagePath}`} className={`${this.currentStyles.headerImageClass}`} />
@@ -173,7 +178,7 @@ export class AppTemplate extends Component {
                   )
               }
               {
-                ['charity', 'volunteer', 'ohaf'].includes(this.props.menu) && ['Volunteer', 'Charity'].includes(this.props.role)
+                ['charity', 'volunteer', 'ohaf'].includes(this.menu) && ['Volunteer', 'Charity'].includes(this.role)
                   ? (
                     <div className="headercontent header-text-card">
                       <h3 className="header-text">
@@ -200,7 +205,7 @@ export class AppTemplate extends Component {
 
             <div style={{ width: 'auto' }} className="content-block">
 
-              { this.props.children }
+              { this.children }
 
               <div id="wjfooter" className="footer" style={{ backgroundColor: '#565656' }}>
                 <div style={{ textAlign: 'center', padding: '6px' }}>

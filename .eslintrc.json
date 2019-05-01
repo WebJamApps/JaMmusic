@@ -2,7 +2,6 @@
   "plugins": ["node", "security", "jest", "react"],
   "extends": ["airbnb", "plugin:jest/recommended", "plugin:security/recommended", "plugin:node/recommended"],
   "rules": {
-    "react/destructuring-assignment": 0,
     "react/prop-types": 0,
     "react/no-access-state-in-setstate": 0,
     "react/sort-comp": 0,
