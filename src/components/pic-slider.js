@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
 import Slider from 'react-slick';
+import PropTypes from 'prop-types';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
 export class PicSlider extends Component { // eslint-disable-line import/prefer-default-export
   constructor(props) {
     super(props);
+    this.data = props.data;
+    this.caption = props.caption;
     this.settings = {
       autoplay: true,
       autoplaySpeed: 2000,
@@ -23,10 +26,10 @@ export class PicSlider extends Component { // eslint-disable-line import/prefer-
       <div>
         <Slider {...this.settings}>
           {
-            this.props.data.map((data, key) => (
-              <div key={key}> 
+            this.data.map(data => (
+              <div key={data.id}>
                 {' '}
-                <img width="100%" height="100%" src={data} alt="Image" />
+                <img width="100%" height="100%" src={data.url} alt={data.title} />
                 {' '}
               </div>
             ))
@@ -43,13 +46,22 @@ export class PicSlider extends Component { // eslint-disable-line import/prefer-
             marginBottom: '10px',
             marginTop: '-5px'
           }}
-        > 
+        >
           {' '}
-          {this.props.caption}
+          {this.caption}
           {' '}
- 
+
         </div>
       </div>
     );
   }
 }
+PicSlider.defaultProps = {
+  data: [{ url: '', title: '', id: 0 }],
+  caption: ''
+};
+
+PicSlider.propTypes = {
+  data: PropTypes.arrayOf(PropTypes.shape),
+  caption: PropTypes.string
+};

@@ -1,4 +1,3 @@
-
 import React, { Component } from 'react';
 
 export class TourTable extends Component {// eslint-disable-line import/prefer-default-export

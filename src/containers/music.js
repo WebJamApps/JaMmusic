@@ -7,11 +7,11 @@ export default class Music extends Component {
     super(props);
     this.state = {};
     this.slideshowImages = [
-      '../static/imgs/martinsville2017.png',
-      '../static/imgs/fifthWedAnniversary.png',
-      '../static/imgs/prom2015.png',
-      '../static/imgs/hiddenValleyTalentShow.png',
-      '../static/imgs/ourWedding.png'
+      { id: 1, url: '../static/imgs/martinsville2017.png' },
+      { id: 2, url: '../static/imgs/fifthWedAnniversary.png' },
+      { id: 3, url: '../static/imgs/prom2015.png' },
+      { id: 4, url: '../static/imgs/hiddenValleyTalentShow.png' },
+      { id: 5, url: '../static/imgs/ourWedding.png' }
     ];
     this.originals = `${process.env.BackendUrl}/wj-music/originals`;
   }
@@ -30,6 +30,7 @@ export default class Music extends Component {
 Josh and Maria have been performing their music together for over six years now!
             Whether it is at church, charity events, public venues, or outdoor festivals, this couple will blow your socks off.
             Click
+            {' '}
             <a rel="noopener noreferrer" href={this.originals}>here</a>
             {' '}
 to listen.
@@ -57,7 +58,7 @@ to listen.
               in July of 2012. Vive l’amore!
             </p>
             <blockquote style={{
-              fontStyle: 'italic', textAlign: 'left', marginTop: '5px', fontSize: '9pt' 
+              fontStyle: 'italic', textAlign: 'left', marginTop: '5px', fontSize: '9pt'
             }}
             >
               <p>
@@ -96,7 +97,7 @@ And whenever the harmful spirit from God was upon Saul, David took the lyre
                 force for the couple; Maria is a fabulous wife and is the organization behind the duo.
               </p>
               <blockquote style={{
-                fontStyle: 'italic', textAlign: 'left', marginTop: '5px', fontSize: '9pt' 
+                fontStyle: 'italic', textAlign: 'left', marginTop: '5px', fontSize: '9pt'
               }}
               >
                 <p>
@@ -134,13 +135,13 @@ The Web Jam Band formed at the beginning of 2017,
                 <tr>
                   <td style={{ textAlign: 'center', backgroundColor: '#e6ffe6' }}>
                     <a href="#joshbio">
-                      <img src="/static/imgs/josh01thumb.jpg" alt="Josh image" width="96" style={{ cursor: 'pointer' }} />
+                      <img src="/static/imgs/josh01thumb.jpg" alt="Josh Sherman" width="96" style={{ cursor: 'pointer' }} />
                     </a>
                     <p>Josh Sherman – rhythm guitarist and baritone vocalist</p>
                   </td>
                   <td style={{ textAlign: 'center', backgroundColor: '#e6ffe6' }}>
                     <a href="#mariabio">
-                      <img src="/static/imgs/maria01thumb.jpg" alt="Maria image" width="96" align="center" style={{ cursor: 'pointer' }} />
+                      <img src="/static/imgs/maria01thumb.jpg" alt="Maria Sherman" width="96" align="center" style={{ cursor: 'pointer' }} />
                     </a>
                     <p>Maria Sherman – primo soprano and bass guitarist</p>
                   </td>
@@ -148,7 +149,7 @@ The Web Jam Band formed at the beginning of 2017,
                 <tr>
                   <td style={{ textAlign: 'center', backgroundColor: '#e6ffe6' }}>
                     <a href="#brianbio">
-                      <img src="/static/imgs/brianThumb.png" alt="Brian image" width="96" align="center" style={{ cursor: 'pointer' }} />
+                      <img src="/static/imgs/brianThumb.png" alt="Brian Lilienthal" width="96" align="center" style={{ cursor: 'pointer' }} />
                     </a>
                     <p>
 Brian Lilienthal – our
@@ -159,7 +160,7 @@ drummer and remixer
                   </td>
                   <td style={{ textAlign: 'center', backgroundColor: '#e6ffe6' }}>
                     <a href="#emersonbio">
-                      <img src="../static/imgs/emerson.jpg" alt="Emerson image" height="67" align="center" style={{ cursor: 'pointer' }} />
+                      <img src="../static/imgs/emerson.jpg" alt="Emerson Harvey" height="67" align="center" style={{ cursor: 'pointer' }} />
                     </a>
                     <p>Emerson Harvey – lead guitarist and world traveler</p>
                   </td>
@@ -173,7 +174,7 @@ drummer and remixer
                 alt="emerson"
                 src="../static/imgs/emerson.jpg"
                 style={{
-                  width: '288px', display: 'block', margin: 'auto', textAlign: 'center' 
+                  width: '288px', display: 'block', margin: 'auto', textAlign: 'center'
                 }}
               />
               <p style={{ maxWidth: '98%', margin: 'auto', textAlign: 'left' }}>
@@ -187,7 +188,7 @@ drummer and remixer
                 alt="young emerson"
                 src="../static/imgs/emersonY.jpg"
                 style={{
-                  width: '288px', display: 'block', margin: 'auto', textAlign: 'center' 
+                  width: '288px', display: 'block', margin: 'auto', textAlign: 'center'
                 }}
               />
             </article>
@@ -198,7 +199,7 @@ drummer and remixer
                 alt="brian"
                 src="../static/imgs/BrianL.png"
                 style={{
-                  width: '288px', display: 'block', margin: 'auto', textAlign: 'center' 
+                  width: '288px', display: 'block', margin: 'auto', textAlign: 'center'
                 }}
               />
               <p style={{ maxWidth: '98%', margin: 'auto', textAlign: 'left' }}>
