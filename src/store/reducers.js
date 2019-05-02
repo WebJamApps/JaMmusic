@@ -1,10 +1,18 @@
 
 import { combineReducers } from 'redux';
 import {
-  UPDATE_NAME, UPDATE_ROLE, UPDATE_WIDESCREEN, UPDATE_MENU, UPDATE_FULLMENU 
+  UPDATE_NAME, UPDATE_ROLE, UPDATE_WIDESCREEN, UPDATE_MENU, UPDATE_FULLMENU
 } from './actions';
 
-const nameReducer = (state = 'WebJAM LLC', action) => {
+// const store = {
+//   name: 'Web JAM LLC',
+//   menu: '',
+//   fullMenu: true,
+//   role: '',
+//   widescreen: true
+// };
+
+const nameReducer = (state = 'Web JAM LLC', action) => {
   switch (action.type) {
   case UPDATE_NAME:
     return action.name;
