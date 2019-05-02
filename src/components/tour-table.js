@@ -59,6 +59,7 @@ export class TourTable extends Component {// eslint-disable-line import/prefer-d
               <td>Salem, VA</td>
               <td>
                 <a href="http://collegelutheran.org/" rel="noopener noreferrer" target="_blank">College Lutheran Church</a>
+                {' '}
             front porch, prior to the Salem Christmas parade
               </td>
               <td>Free</td>
@@ -84,7 +85,9 @@ export class TourTable extends Component {// eslint-disable-line import/prefer-d
               <td>
 Hungry Mother Lutheran Retreat Center
                 <br />
-Beer & Brats Fundraiser -
+Beer & Brats Fundraiser -      
+                {' '}
+                {' '}
                 <a target="_blank" rel="noopener noreferrer" href="http://hungrymother.org/contact-us/">Contact</a>
                 {' '}
 for more info.
