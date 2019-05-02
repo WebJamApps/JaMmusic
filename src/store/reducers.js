@@ -1,13 +1,11 @@
-
 import { combineReducers } from 'redux';
 import {
-  UPDATE_NAME, UPDATE_ROLE, UPDATE_WIDESCREEN, UPDATE_MENU, UPDATE_FULLMENU
+  UPDATE_NAME, UPDATE_ROLE, UPDATE_WIDESCREEN, UPDATE_MENU
 } from './actions';
 
 // const store = {
 //   name: 'Web JAM LLC',
 //   menu: '',
-//   fullMenu: true,
 //   role: '',
 //   widescreen: true
 // };
@@ -48,19 +46,19 @@ const menuReducer = (state = '', action) => {
   }
 };
 
-const fullmenuReducer = (state = true, action) => {
-  switch (action.type) {
-  case UPDATE_FULLMENU:
-    return action.fullmenu;
-  default:
-    return state;
-  }
-};
+// const fullmenuReducer = (state = true, action) => {
+//   switch (action.type) {
+//   case UPDATE_FULLMENU:
+//     return action.fullmenu;
+//   default:
+//     return state;
+//   }
+// };
 
 export default combineReducers({
   name: nameReducer,
   role: roleReducer,
   widescreen: widescreenReducer,
-  fullMenu: fullmenuReducer,
+  // fullMenu: fullmenuReducer,
   menu: menuReducer
 });

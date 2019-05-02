@@ -9,8 +9,10 @@ const persistConfig = {
   key: 'root',
   storage
 };
-
+let mWares = applyMiddleware(thunk);
+/* istanbul ignore if */
+if (process.env.NODE_ENV === 'development') mWares = applyMiddleware(thunk, logger);
 const persistedReducer = persistReducer(persistConfig, reducers);
-const store = createStore(persistedReducer, applyMiddleware(logger, thunk));
+const store = createStore(persistedReducer, mWares);
 const persistor = persistStore(store);
 export default { store, persistor };
