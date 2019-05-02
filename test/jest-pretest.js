@@ -10,3 +10,4 @@ window.matchMedia = window.matchMedia || function match() {
 };
 
 configure({ adapter: new Adapter() });
+document.body.innerHTML = '<div id="root"></div>';

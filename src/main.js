@@ -15,4 +15,4 @@ render(
   </Provider>, document.getElementById('root')
 );
 /* istanbul ignore if */
-if (process.env.NODE_ENV !== 'production') module.hot.accept();
+if (process.env.NODE_ENV === 'development') module.hot.accept();
