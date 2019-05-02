@@ -3,8 +3,8 @@ import { shallow } from 'enzyme';
 import { AppTemplate } from '../../src/components/app-main';
 
 function setup() {
-  const props = {};
-  const wrapper = shallow(<AppTemplate />);
+  const props = { children: '<div></div>' };
+  const wrapper = shallow(<AppTemplate><div /></AppTemplate>);
   return { wrapper, props };
 }
 

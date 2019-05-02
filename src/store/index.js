@@ -1,15 +1,16 @@
-
 import { createStore, applyMiddleware } from 'redux';
+import { persistStore, persistReducer } from 'redux-persist';
 import logger from 'redux-logger';
 import thunk from 'redux-thunk';
-import appState from './reducers';
+import storage from 'redux-persist/lib/storage';
+import reducers from './reducers';
 
-const store = {
-  name: 'Web JAM LLC',
-  menu: '',
-  fullMenu: true,
-  role: '',
-  widescreen: true
+const persistConfig = {
+  key: 'root',
+  storage
 };
 
-export default createStore(appState, store, applyMiddleware(logger, thunk));
+const persistedReducer = persistReducer(persistConfig, reducers);
+const store = createStore(persistedReducer, applyMiddleware(logger, thunk));
+const persistor = persistStore(store);
+export default { store, persistor };
