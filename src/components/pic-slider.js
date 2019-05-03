@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 import React, { Component } from 'react';
 import Slider from 'react-slick';
 import PropTypes from 'prop-types';
@@ -27,7 +28,7 @@ class PicSlider extends Component {
         <Slider {...this.settings}>
           {
             this.data.map(data => (
-              <div key={data.id}>
+              <div key={data._id}>
                 {' '}
                 <img width="100%" height="100%" src={data.url} alt={data.title} />
                 {' '}
@@ -41,7 +42,7 @@ class PicSlider extends Component {
   }
 }
 PicSlider.defaultProps = {
-  data: [{ url: '', title: '', id: 0 }]
+  data: [{ url: '', title: '', _id: 0 }]
 };
 
 PicSlider.propTypes = {

@@ -3,7 +3,7 @@ import {
   UPDATE_NAME, UPDATE_ROLE, UPDATE_WIDESCREEN, UPDATE_MENU
 } from './actions';
 
-// const store = {
+// const initialState = {
 //   name: 'Web JAM LLC',
 //   menu: '',
 //   role: '',
@@ -46,19 +46,9 @@ const menuReducer = (state = '', action) => {
   }
 };
 
-// const fullmenuReducer = (state = true, action) => {
-//   switch (action.type) {
-//   case UPDATE_FULLMENU:
-//     return action.fullmenu;
-//   default:
-//     return state;
-//   }
-// };
-
 export default combineReducers({
   name: nameReducer,
   role: roleReducer,
   widescreen: widescreenReducer,
-  // fullMenu: fullmenuReducer,
   menu: menuReducer
 });

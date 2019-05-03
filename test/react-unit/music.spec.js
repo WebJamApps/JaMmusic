@@ -1,9 +1,9 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import Music from '../../src/containers/music';
+import { Music } from '../../src/containers/music';
 
 function setup() {
-  const props = {};
+  const props = { dispatch() {} };
   const wrapper = shallow(<Music />);
   return { wrapper, props };
 }

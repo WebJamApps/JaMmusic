@@ -17,12 +17,13 @@ export const receiveError = e => ({
 
 const getImages = () => (dispatch, getState) => {
   const { images } = getState();
-  if (images.length > 0) return Promise.resolve(true);
+  const type = 'JaMmusic-music';
+  if (images.length > 0) return dispatch(receiveImages(images));
   store.store.dispatch(fetchImages());
-  return request.get('https://api.github.com/users/JoshuaVSherman').set('Accept', 'application/json')
+  return request.get(`${process.env.BackendUrl}/book?type=${type}`).set('Accept', 'application/json')
     .then((data) => {
-      if (data.body.message === 'Not Found') return dispatch(receiveError(new Error('No such user found!!')));
-      return dispatch(receiveImages([data.body]));
+      if (data.body.message === 'Not Found') return dispatch(receiveError(new Error('No pictures found!!')));
+      return dispatch(receiveImages(data.body));
     })
     .catch(err => dispatch(receiveError(err)));
 };

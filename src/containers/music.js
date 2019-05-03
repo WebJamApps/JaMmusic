@@ -11,10 +11,10 @@ import Wjband from './Music/wjBand';
 import Intro from './Music/intro';
 import getImages from '../store/fetchActions';
 
-class Music extends Component {
+export class Music extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = { };
     // this.images = props.images;
     this.slideshowImages = [
       { id: 1, url: 'https://dl.dropboxusercontent.com/s/ukewrrbwx07n9mw/fifthWedAnniversary.png?dl=0', title: 'Fifth Wedding Anniversary 2017' },
@@ -28,13 +28,13 @@ class Music extends Component {
       { id: 5, url: 'https://dl.dropboxusercontent.com/s/zfrwmc9dsore9u5/ourWedding.png?dl=0', title: 'Our Wedding' }
     ];
     this.originals = `${process.env.BackendUrl}/wj-music/originals`;
+    const { dispatch } = this.props;
+    dispatch(getImages());
   }
 
   render() {
-    const { dispatch } = this.props;
-    dispatch(getImages());
     const { data } = this.props;
-    console.log(data.images);
+    // console.log(data.images);
     return (
       <div className="page-content">
         <div style={{ paddingTop: '1px', paddingBottom: 0, marginBottom: 0 }}>
@@ -44,10 +44,8 @@ class Music extends Component {
               <h3 id="appErr" className="error">{data.error}</h3>
             ) : null}
             {Object.keys(data.images).length > 0 ? (
-              <PicSlider data={this.slideshowImages} />
+              <PicSlider data={data.images} />
             ) : null}
-
-            {/* <PicSlider data={this.slideshowImages} /> */}
           </div>
         </div>
         <div className="material-content elevation2" style={{ maxWidth: '998px', margin: 'auto' }}>
