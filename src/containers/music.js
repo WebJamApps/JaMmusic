@@ -20,6 +20,10 @@ export class Music extends Component {
     dispatch(getImages());
   }
 
+  componentDidMount() {
+    document.title = 'Music | Web Jam LLC';
+  }
+
   render() {
     const { data } = this.props;
     return (
