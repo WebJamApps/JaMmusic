@@ -15,18 +15,6 @@ export class Music extends Component {
   constructor(props) {
     super(props);
     this.state = { };
-    // this.images = props.images;
-    this.slideshowImages = [
-      { id: 1, url: 'https://dl.dropboxusercontent.com/s/ukewrrbwx07n9mw/fifthWedAnniversary.png?dl=0', title: 'Fifth Wedding Anniversary 2017' },
-      { id: 2, url: 'https://dl.dropboxusercontent.com/s/l2n6dvunfyupdv3/Martinsville2017.png?dl=0', title: 'Martinsville 2017' },
-      {
-        id: 3,
-        url: 'https://dl.dropboxusercontent.com/s/7ru06rcgv21xhkz/hiddenValleyTalentShow.png?dl=0',
-        title: 'Hidden Valley Highschool Talent Show'
-      },
-      { id: 4, url: 'https://dl.dropboxusercontent.com/s/tjap0dmegfsjtu5/prom2015.png?dl=0', title: 'Prom 2015' },
-      { id: 5, url: 'https://dl.dropboxusercontent.com/s/zfrwmc9dsore9u5/ourWedding.png?dl=0', title: 'Our Wedding' }
-    ];
     this.originals = `${process.env.BackendUrl}/wj-music/originals`;
     const { dispatch } = this.props;
     dispatch(getImages());
@@ -34,18 +22,13 @@ export class Music extends Component {
 
   render() {
     const { data } = this.props;
-    // console.log(data.images);
     return (
       <div className="page-content">
         <div style={{ paddingTop: '1px', paddingBottom: 0, marginBottom: 0 }}>
           <div id="musicSlide1">
             {data.isFetching ? <h3 id="appLoading">Loading...</h3> : null}
-            {data.isError ? (
-              <h3 id="appErr" className="error">{data.error}</h3>
-            ) : null}
-            {Object.keys(data.images).length > 0 ? (
-              <PicSlider data={data.images} />
-            ) : null}
+            {data.isError ? (<h3 id="appErr" className="error">{data.error}</h3>) : null}
+            {Object.keys(data.images).length > 0 ? (<PicSlider data={data.images} />) : null}
           </div>
         </div>
         <div className="material-content elevation2" style={{ maxWidth: '998px', margin: 'auto' }}>
