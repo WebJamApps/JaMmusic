@@ -13,7 +13,7 @@ export default class Music extends Component {
     super(props);
     this.state = {};
     this.slideshowImages = [
-      { id: 1, url: '../static/imgs/martinsville2017.png' },
+      { id: 1, url: 'https://dl.dropboxusercontent.com/s/fn0sghlem6gkol5/fifthWedAnniversary.png?dl=0', title: 'Our Wedding' },
       { id: 2, url: '../static/imgs/fifthWedAnniversary.png' },
       { id: 3, url: '../static/imgs/prom2015.png' },
       { id: 4, url: '../static/imgs/hiddenValleyTalentShow.png' },
