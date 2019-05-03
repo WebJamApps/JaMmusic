@@ -8,11 +8,11 @@ const app = express();
 /* istanbul ignore if */
 if (process.env.NODE_ENV === 'production') app.use(enforce.HTTPS({ trustProtoHeader: true }));
 
-// app.use(express.static(path.normalize(path.join(__dirname, 'dist'))));
-app.use('/music', express.static(path.normalize(path.join(__dirname, 'dist'))));
-// app.get('*', (request, response) => {
-//   response.sendFile(path.normalize(path.join(__dirname, 'dist/index.html')));
-// });
+app.use(express.static(path.normalize(path.join(__dirname, 'dist'))));
+app.use('/music/', express.static(path.normalize(path.join(__dirname, 'dist'))));
+app.get('/music/*', (request, response) => {
+  response.sendFile(path.normalize(path.join(__dirname, 'dist/index.html')));
+});
 // app.get('/music', (request, response) => {
 //   response.sendFile(path.normalize(path.join(__dirname, 'dist/index.html')));
 // });
