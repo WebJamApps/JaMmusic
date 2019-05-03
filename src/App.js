@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import Music from './containers/music';
+import DefaultMusic from './containers/music';
 import BuyMusic from './containers/buymusic';
 import AppFourOhFour from './containers/404';
 import AppTemp from './components/app-main';
@@ -17,9 +17,9 @@ export default class App extends Component {
         <Router>
           <AppTemp id="homepage">
             <Switch>
-              <Route exact path="/music" component={ Music }/>
-              <Route path="/music/buymusic" component={ BuyMusic }/>
-              <Route component={ AppFourOhFour }/>
+              <Route exact path="/music" component={DefaultMusic} />
+              <Route path="/music/buymusic" component={BuyMusic} />
+              <Route component={AppFourOhFour} />
             </Switch>
           </AppTemp>
         </Router>

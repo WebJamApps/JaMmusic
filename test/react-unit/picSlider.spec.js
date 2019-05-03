@@ -1,27 +1,29 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import { PicSlider } from '../../src/components/pic-slider';
+import PicSlider from '../../src/components/pic-slider';
 
+function setup() {
+  const data = [
+    { _id: 1, url: '../static/imgs/ohaf/slideshow2.png' },
+    { _id: 2, url: '../static/imgs/ohaf/slideshow3.png' },
+    { _id: 3, url: '../static/imgs/ohaf/slideshow4.png' },
+    { _id: 4, url: '../static/imgs/ohaf/slideshow5.png' },
+    { _id: 5, url: '../static/imgs/ohaf/slideshow6.png' }
+  ];
 
-describe('picture slider component test setup', () => {
-  let ps;
-  //   let ps = shallow(<PicSlider data={[]} caption="this is it" />);
+  const props = {
+    data
+  };
+  const wrapper = shallow(<PicSlider data={data} />);
+  return { wrapper, props };
+}
 
-  beforeEach(() => {
-    document.body.innerHTML = '<div id="renderer" class="swipe-area"></div>';
-    ps = new PicSlider();
-    console.log(ps);//eslint-disable-line no-console
-    ps.data = [
-      '../static/imgs/ohaf/slideshow2.png',
-      '../static/imgs/ohaf/slideshow3.png',
-      '../static/imgs/ohaf/slideshow4.png',
-      '../static/imgs/ohaf/slideshow5.png',
-      '../static/imgs/ohaf/slideshow6.png'
-    ];
-    ps.element = document.getElementById('renderer');
-  });
-
-  it('does nothing', (done) => {
-    done();
+describe('picture slider component test', () => {
+  it('renders the component', () => {
+    const { wrapper } = setup();
+    // console.log(wrapper.debug());
+    expect(wrapper.find('div').exists()).toBe(true);
+    expect(wrapper.find('Caption').first().dive().find('.slider-caption')
+      .exists()).toBe(true);
   });
 });

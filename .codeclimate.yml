@@ -8,7 +8,10 @@ checks:
       threshold:          30
   similar-code:
     config:
-      threshold:          100
+      threshold:          90
+  identical-code:
+    config:
+      threshold:          30
   method-complexity:
     config:
       threshold:          10
@@ -24,7 +27,10 @@ plugins:
     config:
       languages:
         javascript:
-          mass_threshold: 80
+          mass_threshold: 30
+  eslint:
+    enabled:              true
+    channel: "eslint-5"
   stylelint:
     enabled:              true
   fixme:
@@ -38,3 +44,4 @@ exclude_paths:
 - node_modules/
 - coverage/
 - dist/
+- codeclimate.html
