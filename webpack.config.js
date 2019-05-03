@@ -19,8 +19,9 @@ const baseUrl = '/music';
 const cssRules = [{ loader: 'css-loader' }];
 
 module.exports = ({
-  production, extractCss, coverage, analyze 
-} = {}) => ({
+  production, extractCss, coverage, analyze
+} = {
+}) => ({
   resolve: {
     extensions: ['.js', '.jsx'],
     modules: [srcDir, 'node_modules']
@@ -109,8 +110,8 @@ module.exports = ({
       filename: production ? '[md5:contenthash:hex:20].css' : '[id].css',
       allChunks: true
     })),
-    ...when(production, new CopyWebpackPlugin([
-      { from: 'static/favicon.ico', to: 'favicon.ico' }])),
+    // ...when(production, new CopyWebpackPlugin([
+    //   { from: 'static/favicon.ico', to: 'favicon.ico' }])),
     ...when(analyze, new BundleAnalyzerPlugin())
   ]
 });
