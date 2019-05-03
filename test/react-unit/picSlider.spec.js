@@ -4,11 +4,11 @@ import PicSlider from '../../src/components/pic-slider';
 
 function setup() {
   const data = [
-    { id: 1, url: '../static/imgs/ohaf/slideshow2.png' },
-    { id: 2, url: '../static/imgs/ohaf/slideshow3.png' },
-    { id: 3, url: '../static/imgs/ohaf/slideshow4.png' },
-    { id: 4, url: '../static/imgs/ohaf/slideshow5.png' },
-    { id: 5, url: '../static/imgs/ohaf/slideshow6.png' }
+    { _id: 1, url: '../static/imgs/ohaf/slideshow2.png' },
+    { _id: 2, url: '../static/imgs/ohaf/slideshow3.png' },
+    { _id: 3, url: '../static/imgs/ohaf/slideshow4.png' },
+    { _id: 4, url: '../static/imgs/ohaf/slideshow5.png' },
+    { _id: 5, url: '../static/imgs/ohaf/slideshow6.png' }
   ];
 
   const props = {
