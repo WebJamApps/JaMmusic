@@ -38,6 +38,29 @@ export class AppTemplate extends Component {
     return result;
   }
 
+  get menus() { // eslint-disable-line class-methods-use-this
+    return [
+      {
+        className: '', type: 'link', iconClass: 'fas fa-music', link: '/music', name: 'Music'
+      },
+      {
+        className: '', type: 'link', iconClass: 'far fa-money-bill-alt', link: '/music/buymusic', name: 'Buy Music'
+      },
+      {
+        className: 'originals', type: 'button', iconClass: 'far fa-lightbulb', link: '', name: 'Originals'
+      },
+      {
+        className: 'mission', type: 'button', iconClass: 'fas fa-crosshairs', link: '', name: 'Mission Music'
+      },
+      {
+        className: 'pub', type: 'button', iconClass: 'fas fa-beer', link: '', name: 'Pub Songs'
+      },
+      {
+        className: 'home', type: 'button', iconClass: 'fas fa-home', link: '', name: 'Web Jam LLC'
+      }
+    ];
+  }
+
   toggleMobileMenu() {
     const { menuOpen } = this.state;
     const mO = !menuOpen;
@@ -92,26 +115,6 @@ export class AppTemplate extends Component {
   }
 
   navLinks() {
-    const menus = [
-      {
-        className: '', type: 'link', iconClass: 'fas fa-music', link: '/music', name: 'Music'
-      },
-      {
-        className: '', type: 'link', iconClass: 'far fa-money-bill-alt', link: '/music/buymusic', name: 'Buy Music'
-      },
-      {
-        className: 'originals', type: 'button', iconClass: 'far fa-lightbulb', link: '', name: 'Originals'
-      },
-      {
-        className: 'mission', type: 'button', iconClass: 'fas fa-crosshairs', link: '', name: 'Mission Music'
-      },
-      {
-        className: 'pub', type: 'button', iconClass: 'fas fa-beer', link: '', name: 'Pub Songs'
-      },
-      {
-        className: 'home', type: 'button', iconClass: 'fas fa-home', link: '', name: 'Web Jam LLC'
-      }
-    ];
     return (
       <div className="nav-list">
         <div
@@ -122,7 +125,7 @@ export class AppTemplate extends Component {
         >
           Music
         </div>
-        {menus.map((menu, index) => (
+        {this.menus.map((menu, index) => (
           this.menuItem(menu, index)
         ))}
       </div>
