@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import MUIDataTable from 'mui-datatables';
-import tour from '../tour';
+import $ from 'jquery';
+// import tour from '../tour';
 
 export class TourTable extends Component {// eslint-disable-line import/prefer-default-export
   constructor(props) {
     super(props);
-    this.tour = tour;
+    // this.tour = tour;
     this.columns = [
       {
         name: 'Date',
@@ -48,6 +49,11 @@ export class TourTable extends Component {// eslint-disable-line import/prefer-d
         }
       }
     ];
+    this.jsonArr = [];
+    $.getJSON('/music/tour.json', (json) => {
+      this.jsonArr = json;
+      console.log(this.jsonArr);
+    });
     this.data = {
       header: ['Date', 'Time', 'Location', 'Venue', 'Tickets'],
       body: [
@@ -74,7 +80,7 @@ export class TourTable extends Component {// eslint-disable-line import/prefer-d
           <MUIDataTable
             options={{ filterType: 'checkbox' }}
             columns={this.columns}
-            data={this.tour}
+            data={this.jsonArr}
             title="Tour"
           />
         </div>

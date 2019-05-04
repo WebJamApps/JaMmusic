@@ -36,6 +36,7 @@
     "node": true
   },
   "globals": {
+    "$": true,
     "page": true,
     "browser": true,
     "context": true,
