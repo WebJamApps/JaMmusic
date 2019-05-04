@@ -67,8 +67,51 @@ export class AppTemplate extends Component {
   handleKeyMenu(e) { // eslint-disable-line class-methods-use-this
     if (e.key === 'Enter') this.toggleMobileMenu();
   }
+  
+  menuItem(menu, index) {
+    if (menu.type === 'link') {
+      return (
+        <div key={index} className="menu-item">
+          <Link to={menu.link} className="nav-link" onClick={this.close}>
+            <i className={`${menu.iconClass}`} />
+            &nbsp;
+            <span className="nav-item">{menu.name}</span>
+          </Link>
+        </div>
+      );
+    }
+    return (
+      <div key={index} className="menu-item">
+        <button type="button" className={`nav-link ${menu.className} out-link`} onClick={this.close}>
+          <i className={`${menu.iconClass}`} />
+          &nbsp;
+          <span className={`nav-item ${menu.className} out-link`}>{menu.name}</span>
+        </button>
+      </div>
+    );
+  }
 
   navLinks() {
+    const menus = [
+      {
+        className: '', type: 'link', iconClass: 'fas fa-music', link: '/music', name: 'Music'
+      },
+      {
+        className: '', type: 'link', iconClass: 'far fa-money-bill-alt', link: '/music/buymusic', name: 'Buy Music'
+      },
+      {
+        className: 'originals', type: 'button', iconClass: 'far fa-lightbulb', link: '', name: 'Originals'
+      },
+      {
+        className: 'mission', type: 'button', iconClass: 'fas fa-crosshairs', link: '', name: 'Mission Music'
+      },
+      {
+        className: 'pub', type: 'button', iconClass: 'fas fa-beer', link: '', name: 'Pub Songs'
+      },
+      {
+        className: 'home', type: 'button', iconClass: 'fas fa-home', link: '', name: 'Web Jam LLC'
+      }
+    ];
     return (
       <div className="nav-list">
         <div
@@ -79,86 +122,33 @@ export class AppTemplate extends Component {
         >
           Music
         </div>
-        <div className="menu-item">
-          <Link to="/music" className="nav-link" onClick={this.close}>
-            <i className="fas fa-music" />
-            &nbsp;
-            <span className="nav-item">Music</span>
-          </Link>
-        </div>
-        <div className="menu-item">
-          <Link to="/music/buymusic" className="nav-link" onClick={this.close}>
-            <i className="far fa-money-bill-alt" />
-            &nbsp;
-            <span className="nav-item">Buy Music</span>
-          </Link>
-        </div>
-        <div className="menu-item">
-          <button type="button" className="nav-link originals out-link" onClick={this.close}>
-            <i className="far fa-lightbulb" />
-            &nbsp;
-            <span className="nav-item originals out-link">Originals</span>
-          </button>
-        </div>
-        <div className="menu-item">
-          <button type="button" className="nav-link mission out-link" onClick={this.close}>
-            <i className="fas fa-crosshairs" />
-            &nbsp;
-            <span className="nav-item mission out-link">Mission Music</span>
-          </button>
-        </div>
-        <div className="menu-item">
-          <button type="button" className="nav-link pub out-link" onClick={this.close}>
-            <i className="fas fa-beer" />
-            &nbsp;
-            <span className="nav-item pub out-link">Pub Songs</span>
-          </button>
-        </div>
-        <div className="menu-item">
-          <button type="button" className="nav-link home out-link" onClick={this.close}>
-            <i className="fas fa-home" />
-            &nbsp;
-            <span className="nav-item home out-link">Web Jam LLC</span>
-          </button>
-        </div>
+        {menus.map((menu, index) => (
+          this.menuItem(menu, index)
+        ))}
       </div>
     );
   }
 
   footerLinks() { // eslint-disable-line class-methods-use-this
     const color = '#c09580';
+    const links = [
+      { href: 'https://github.com/WebJamApps', name: 'github' },
+      { href: 'https://www.linkedin.com/company/webjam/', name: 'linkedin' },
+      { href: 'https://www.instagram.com/joshua.v.sherman/', name: 'instagram' },
+      { href: 'https://twitter.com/WebJamLLC', name: 'twitter' },
+      { href: 'https://www.facebook.com/WebJamLLC/', name: 'facebook' }
+    ];
     return (
       <div style={{ textAlign: 'center', padding: '6px' }}>
-        <a target="_blank" rel="noopener noreferrer" style={{ color, paddingRight: '5px' }} href="https://github.com/WebJamApps">
-          <span>
-            <i className="fab fa-github" />
-          </span>
-        </a>
-        <a target="_blank" rel="noopener noreferrer" style={{ color, paddingRight: '5px' }} href="https://www.linkedin.com/company/webjam/">
-          <span>
-            <i className="fab fa-linkedin" />
-          </span>
-        </a>
-        <a
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{ color, paddingRight: '5px' }}
-          href="https://www.instagram.com/joshua.v.sherman/"
-        >
-          <span>
-            <i className="fab fa-instagram" />
-          </span>
-        </a>
-        <a target="_blank" rel="noopener noreferrer" style={{ color, paddingRight: '5px' }} href="https://twitter.com/WebJamLLC">
-          <span>
-            <i className="fab fa-twitter" />
-          </span>
-        </a>
-        <a target="_blank" rel="noopener noreferrer" style={{ color, paddingRight: '5px' }} href="https://www.facebook.com/WebJamLLC/">
-          <span>
-            <i className="fab fa-facebook" />
-          </span>
-        </a>
+        {
+          links.map(link => (
+            <a key={Math.random().toString()} target="_blank" rel="noopener noreferrer" style={{ color, paddingRight: '5px' }} href={link.href}>
+              <span>
+                <i className={`fab fa-${link.name}`} />
+              </span>
+            </a>
+          ))
+        }
         <p style={{ color: 'white', fontSize: '9pt', marginBottom: 0 }}>
           Powered by
           {' '}
