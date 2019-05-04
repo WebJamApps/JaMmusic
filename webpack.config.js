@@ -4,6 +4,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+const { ProvidePlugin } = require('webpack');
 const webpack = require('webpack');
 
 // config helpers:
@@ -28,7 +29,8 @@ module.exports = ({
   },
 
   entry: {
-    app: [`${srcDir}/main.js`]
+    app: [`${srcDir}/main.js`],
+    vendor: ['jquery', 'bootstrap']
   },
 
   mode: production ? 'production' : 'development',
@@ -96,6 +98,12 @@ module.exports = ({
   },
 
   plugins: [
+    new ProvidePlugin({
+      $: 'jquery',
+      jQuery: 'jquery',
+      'window.jQuery': 'jquery',
+      Popper: ['popper.js', 'default']
+    }),
     new HtmlWebpackPlugin({
       template: `${srcDir}/index.ejs`,
       minify: production ? { removeComments: true, collapseWhitespace: true } : undefined,
@@ -103,6 +111,7 @@ module.exports = ({
     }),
     new CopyWebpackPlugin([
       { from: 'static/favicon.ico', to: 'favicon.ico' },
+      { from: 'static/tour.json', to: 'tour.json' },
       { from: 'static/imgs', to: 'static/imgs' }
     ]),
     new webpack.EnvironmentPlugin(['NODE_ENV', 'AuthProductionBaseURL', 'PORT', 'BackendUrl', 'GoogleClientId', 'userRoles']),
