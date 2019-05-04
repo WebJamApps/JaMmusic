@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import PicSlider from '../components/pic-slider';
-import { TourTable } from '../components/tour-table';
+// import { TourTable } from '../components/tour-table';
+import DefaultTable from '../components/tour-table';
 import JoshBio from './Music/joshBio';
 import MariaBio from './Music/mariaBio';
 import EmersonBio from './Music/emersonBio';
@@ -32,13 +33,13 @@ export class Music extends Component {
           <div id="musicSlide1">
             {data.isFetching ? <h3 id="appLoading">Loading...</h3> : null}
             {data.isError ? (<h3 id="appErr" className="error">{data.error}</h3>) : null}
-            {Object.keys(data.images).length > 0 ? (<PicSlider data={data.images} />) : null}
+            {data.images.length > 0 ? (<PicSlider data={data.images} />) : null}
           </div>
         </div>
         <div className="material-content elevation2" style={{ maxWidth: '998px', margin: 'auto' }}>
           <Intro originals={this.originals} />
-          <h4 style={{ textAlign: 'center', marginBottom: '4px' }}><strong>Tour</strong></h4>
-          <div className="search-table-outer" style={{ position: 'relative', overflowX: 'auto' }}><TourTable /></div>
+          {/* <h4 style={{ textAlign: 'center', marginBottom: '4px' }}><strong>Tour</strong></h4> */}
+          <div className="search-table-outer" style={{ position: 'relative', overflowX: 'auto' }}><DefaultTable /></div>
           <section className="afterTable">
             <JoshBio />
             <hr />

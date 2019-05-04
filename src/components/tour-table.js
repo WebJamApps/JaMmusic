@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
 import MUIDataTable from 'mui-datatables';
+import PropTypes from 'prop-types';
+import '@babel/polyfill';
+import { connect } from 'react-redux';
 import $ from 'jquery';
 // import tour from '../tour';
 
 export class TourTable extends Component {// eslint-disable-line import/prefer-default-export
   constructor(props) {
     super(props);
-    // this.tour = tour;
+    this.state = { data: {} };
     this.columns = [
       {
         name: 'Date',
@@ -49,42 +52,78 @@ export class TourTable extends Component {// eslint-disable-line import/prefer-d
         }
       }
     ];
-    this.jsonArr = [];
-    $.getJSON('/music/tour.json', (json) => {
-      this.jsonArr = json;
-      console.log(this.jsonArr);
+    this.fetchJson = this.fetchJson.bind(this);
+    this.sleep = this.sleep.bind(this);
+    // this.jsonArr = [];
+    // $.getJSON('/music/tour.json', (json) => {
+    //   this.props.data.tourArr = json;
+    //   console.log(this.props.data.tourArr);
+    // );
+    this.fetchJson();
+  }
+
+  shouldComponentUpdate() {
+    return true;
+  }
+
+  async fetchJson() {
+    let json;
+    try { json = await $.getJSON('/music/tour.json'); } catch (e) { console.log(e.message); }// eslint-disable-line no-console
+    console.log(json); // eslint-disable-line no-console
+    this.setState({ data: { tourArr: json } });
+    this.shouldComponentUpdate();
+  }
+
+  // fetchJson() {
+  //   $.getJSON('/music/tour.json', (json) => {
+  //     console.log(json);
+  //     this.setState({ data: { tourArr: json } });
+  //     this.shouldComponentUpdate();
+  //   });
+  // }
+
+  // this.data = {
+  //   header: ['Date', 'Time', 'Location', 'Venue', 'Tickets'],
+  //   body: [
+  //     ['Dec 24, 2018', '4:30 pm', 'Salem, VA', 'College Lutheran Church', 'Freewill'],
+  //     ['Dec 16, 2018', '6:00 pm', 'Martinsville, VA', 'St. Joseph Catholic Church, Christmas party', 'Private'],
+  //     ['Dec 7, 2018', '6:00 pm', 'Salem, VA', 'College Lutheran Church front porch, prior to the Salem Christmas parade', 'Free'],
+  //     ['Nov 29, 2018', '5:45 pm', 'Salem, VA', 'Dinner to Honor Volunteers/Supporters of the Salem Clothes Closet', 'Private'],
+  //     ['Nov 24, 2018', '4:45 pm', 'Moneta, VA', 'Resurrection Catholic Church', 'Freewill'],
+  //     ['Sept 29, 2018', '5:30 pm', 'Marion, VA',
+  //       'Hungry Mother Lutheran Retreat Center Beer & Brats Fundraiser - \n Contact for more info.', 'Donation'],
+  //     ['Sept 1, 2018', '4:00 pm', 'Bent Mountain, VA', '33rd Annual Pig Roast', 'Sold Out'],
+  //     ['Aug 4, 2018', '9:00 am', 'Salem, VA', 'Farmers Market', 'Free'],
+  //     ['July 30, 2018', '6:00 pm', 'Salem, VA', 'Parkway Brewery', 'Free'],
+  //     ['July 21, 2018', '5:00 pm', 'Salem, VA', 'Web Jam LLC', 'Private'],
+  //     ['July 15, 2018', '9:45 am', 'Salem, VA', 'College Lutheran Church', 'Freewill']
+  //   ]
+  // };
+  // }
+  sleep(ms) { // eslint-disable-line class-methods-use-this
+    return new Promise((resolve) => {
+      setTimeout(resolve, ms);
     });
-    this.data = {
-      header: ['Date', 'Time', 'Location', 'Venue', 'Tickets'],
-      body: [
-        ['Dec 24, 2018', '4:30 pm', 'Salem, VA', 'College Lutheran Church', 'Freewill'],
-        ['Dec 16, 2018', '6:00 pm', 'Martinsville, VA', 'St. Joseph Catholic Church, Christmas party', 'Private'],
-        ['Dec 7, 2018', '6:00 pm', 'Salem, VA', 'College Lutheran Church front porch, prior to the Salem Christmas parade', 'Free'],
-        ['Nov 29, 2018', '5:45 pm', 'Salem, VA', 'Dinner to Honor Volunteers/Supporters of the Salem Clothes Closet', 'Private'],
-        ['Nov 24, 2018', '4:45 pm', 'Moneta, VA', 'Resurrection Catholic Church', 'Freewill'],
-        ['Sept 29, 2018', '5:30 pm', 'Marion, VA',
-          'Hungry Mother Lutheran Retreat Center Beer & Brats Fundraiser - \n Contact for more info.', 'Donation'],
-        ['Sept 1, 2018', '4:00 pm', 'Bent Mountain, VA', '33rd Annual Pig Roast', 'Sold Out'],
-        ['Aug 4, 2018', '9:00 am', 'Salem, VA', 'Farmers Market', 'Free'],
-        ['July 30, 2018', '6:00 pm', 'Salem, VA', 'Parkway Brewery', 'Free'],
-        ['July 21, 2018', '5:00 pm', 'Salem, VA', 'Web Jam LLC', 'Private'],
-        ['July 15, 2018', '9:45 am', 'Salem, VA', 'College Lutheran Church', 'Freewill']
-      ]
-    };
   }
 
   render() {
+    // this.sleep(30000);
+    const { data } = this.state;
+    // if (data.tourArr === undefined || data.tourArr.length === 0) return this.fetchJson();
     return (
       <div>
         <div style={{ maxWidth: '100%' }}>
+          {/* {data.tourArr !== undefined && data.tourArr.length > 0
+            ? ( */}
           <MUIDataTable
             options={{ filterType: 'checkbox' }}
             columns={this.columns}
-            data={this.jsonArr}
+            data={data.tourArr}
             title="Tour"
           />
+          {/* ) : null} */}
         </div>
-        <div>
+        {/* <div>
           <table>
             <thead>
               <tr>
@@ -201,8 +240,27 @@ Parkway Brewery
               </tr>
             </tbody>
           </table>
-        </div>
+        </div> */}
       </div>
     );
   }
 }
+/* istanbul ignore next */
+TourTable.defaultProps = { data: { tourArr: [] } };
+TourTable.propTypes = {
+  // dispatch: PropTypes.func,
+  data: PropTypes.shape({
+    // isFetching: PropTypes.bool,
+    // isError: PropTypes.bool,
+    tourArr: PropTypes.arrayOf(PropTypes.shape({
+      Date: PropTypes.string,
+      Time: PropTypes.string,
+      Location: PropTypes.string,
+      Venue: PropTypes.string,
+      Tickets: PropTypes.string
+    }))
+  })
+};
+/* istanbul ignore next */
+const mapStateToProps = state => ({ data: state });
+export default connect(mapStateToProps)(TourTable);
