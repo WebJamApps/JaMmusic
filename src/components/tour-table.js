@@ -3,12 +3,13 @@ import MUIDataTable from 'mui-datatables';
 import PropTypes from 'prop-types';
 import '@babel/polyfill';
 import { connect } from 'react-redux';
-import $ from 'jquery';
+import jquery from 'jquery';
 // import tour from '../tour';
 
 export class TourTable extends Component {// eslint-disable-line import/prefer-default-export
   constructor(props) {
     super(props);
+    this.jquery = jquery;
     this.state = { data: {} };
     this.columns = [];
     this.setColumns = this.setColumns.bind(this);
@@ -22,56 +23,26 @@ export class TourTable extends Component {// eslint-disable-line import/prefer-d
   }
 
   setColumns() {
-    this.columns = [
-      {
-        name: 'Date',
-        label: 'Date',
-        options: {
-          filter: true,
-          sort: true
-        }
-      },
-      {
-        name: 'Time',
-        label: 'Time',
-        options: {
-          filter: true,
-          sort: false
-        }
-      },
-      {
-        name: 'Location',
-        label: 'Location',
-        options: {
-          filter: true,
-          sort: false
-        }
-      },
-      {
-        name: 'Venue',
-        label: 'Venue',
-        options: {
-          filter: true,
-          sort: false
-        }
-      },
-      {
-        name: 'Tickets',
-        label: 'Tickets',
-        options: {
-          filter: true,
-          sort: false
-        }
-      }
-    ];
+    const titles = ['Date', 'Time', 'Location', 'Venue', 'Tickets'];
+    for (let i = 0; i < titles.length; i += 1) {
+      this.columns.push({
+        name: titles[i], // eslint-disable-line security/detect-object-injection
+        label: titles[i], // eslint-disable-line security/detect-object-injection
+        options: { filter: true, sort: true }
+      });
+    }
   }
 
   async fetchJson() {
     let json;
-    try { json = await $.getJSON('/music/tour.json'); } catch (e) { console.log(e.message); }// eslint-disable-line no-console
+    try { json = await this.jquery.getJSON('/music/tour.json'); } catch (e) {
+      console.log(e.message); // eslint-disable-line no-console
+      return Promise.resolve(false);
+    }
     console.log(json); // eslint-disable-line no-console
     this.setState({ data: { tourArr: json } });
     this.shouldComponentUpdate();
+    return Promise.resolve(true);
   }
 
   render() {
