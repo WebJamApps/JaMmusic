@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { GoogleLogin, GoogleLogout } from 'react-google-login';
 import { connect } from 'react-redux';
 import throttle from '../commons/utils';
 
@@ -21,6 +22,12 @@ export class AppTemplate extends Component {
 
   componentDidMount() {
     window.addEventListener('resize', throttle(this.dispatchWindowResize, 100, { leading: false }), false);
+    const username = localStorage.getItem('username');
+    // console.log(typeof username);
+    if (typeof username === 'string') {
+      document.getElementsByClassName('googleLogin')[0].style.display = 'none';
+      document.getElementsByClassName('googleLogout')[0].style.display = 'block';
+    }
   }
 
   get currentStyles() {
@@ -57,6 +64,12 @@ export class AppTemplate extends Component {
       },
       {
         className: 'home', type: 'button', iconClass: 'fas fa-home', link: '', name: 'Web Jam LLC'
+      },
+      {
+        className: 'login', type: 'googleLogin', iconClass: 'fas fa-login', link: '', name: 'Login'
+      },
+      {
+        className: 'logout', type: 'googleLogout', iconClass: 'fas fa-logout', link: '', name: 'Logout'
       }
     ];
   }
@@ -67,9 +80,28 @@ export class AppTemplate extends Component {
     this.setState({ menuOpen: mO });
   }
 
+  responseGoogleLogin(response) { // eslint-disable-line class-methods-use-this
+    console.log(response);// eslint-disable-line no-console
+    localStorage.setItem('username', response.w3.ig);
+    document.getElementsByClassName('googleLogin')[0].style.display = 'none';
+    document.getElementsByClassName('googleLogout')[0].style.display = 'block';
+  }
+
+  responseGoogleFailLogin(response) { // eslint-disable-line class-methods-use-this
+    console.log(response);// eslint-disable-line no-console
+  }
+
+  responseGoogleLogout(response) { // eslint-disable-line class-methods-use-this
+    console.log('logged out');// eslint-disable-line no-console
+    console.log(response);// eslint-disable-line no-console
+    localStorage.removeItem('username');
+    window.location.reload();
+  }
+
   close(e) {
     this.setState({ menuOpen: false });
     if (e.target.classList.contains('out-link')) return this.changeNav(e.target.classList[1]);
+    if (e.target.classList.contains('loginGoogle')) return this.loginGoogle();
     return true;
   }
 
@@ -90,7 +122,7 @@ export class AppTemplate extends Component {
   handleKeyMenu(e) { // eslint-disable-line class-methods-use-this
     if (e.key === 'Enter') this.toggleMobileMenu();
   }
-  
+
   menuItem(menu, index) {
     if (menu.type === 'link') {
       return (
@@ -103,9 +135,34 @@ export class AppTemplate extends Component {
         </div>
       );
     }
+    if (menu.type === 'googleLogin') {
+      return (
+        <div key={index} className="menu-item googleLogin">
+          <GoogleLogin
+            clientId={process.env.GoogleClientId}
+            buttonText="Login"
+            onSuccess={this.responseGoogleLogin}
+            onFailure={this.responseGoogleFailLogin}
+            cookiePolicy="single_host_origin"
+          />
+        </div>
+      );
+    }
+    if (menu.type === 'googleLogout') {
+      return (
+        <div key={index} className="menu-item googleLogout" style={{ display: 'none' }}>
+          <GoogleLogout
+            clientId={process.env.GoogleClientId}
+            buttonText="Logout"
+            onLogoutSuccess={this.responseGoogleLogout}
+            cookiePolicy="single_host_origin"
+          />
+        </div>
+      );
+    }
     return (
       <div key={index} className="menu-item">
-        <button type="button" className={`nav-link ${menu.className} out-link`} onClick={this.close}>
+        <button type="button" className={`nav-link ${menu.className} loginGoogle`} onClick={this.close}>
           <i className={`${menu.iconClass}`} />
           &nbsp;
           <span className={`nav-item ${menu.className} out-link`}>{menu.name}</span>

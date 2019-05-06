@@ -70,6 +70,7 @@
     "prop-types": "latest",
     "react": "latest",
     "react-dom": "latest",
+    "react-google-login": "latest",
     "react-player": "latest",
     "react-redux": "latest",
     "react-router-dom": "latest",
