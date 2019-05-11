@@ -29,10 +29,10 @@ const Instruments = (props) => {
   );
 };
 Instruments.defaultProps = {
-  type: ''
+  type: '',
 };
 
 Instruments.propTypes = {
-  type: PropTypes.string
+  type: PropTypes.string,
 };
 export default Instruments;

@@ -7,7 +7,7 @@ const EmersonBio = () => (
       alt="emerson"
       src="../static/imgs/emerson.jpg"
       style={{
-        width: '288px', display: 'block', margin: 'auto', textAlign: 'center'
+        width: '288px', display: 'block', margin: 'auto', textAlign: 'center',
       }}
     />
     <p className="bioText">
@@ -21,7 +21,7 @@ const EmersonBio = () => (
       alt="young emerson"
       src="../static/imgs/emersonY.jpg"
       style={{
-        width: '288px', display: 'block', margin: 'auto', textAlign: 'center'
+        width: '288px', display: 'block', margin: 'auto', textAlign: 'center',
       }}
     />
   </div>

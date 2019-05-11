@@ -39,7 +39,7 @@ export class AppTemplate extends Component {
       headerClass: 'home-header',
       headerImageClass: 'home-header-image',
       sidebarClass: 'home-sidebar',
-      menuToggleClass: 'home-menu-toggle'
+      menuToggleClass: 'home-menu-toggle',
     };
     result.sidebarImagePath = '../static/imgs/webjamlogo1.png';
     return result;
@@ -48,29 +48,29 @@ export class AppTemplate extends Component {
   get menus() { // eslint-disable-line class-methods-use-this
     return [
       {
-        className: '', type: 'link', iconClass: 'fas fa-music', link: '/music', name: 'Music'
+        className: '', type: 'link', iconClass: 'fas fa-music', link: '/music', name: 'Music',
       },
       {
-        className: '', type: 'link', iconClass: 'far fa-money-bill-alt', link: '/music/buymusic', name: 'Buy Music'
+        className: '', type: 'link', iconClass: 'far fa-money-bill-alt', link: '/music/buymusic', name: 'Buy Music',
       },
       {
-        className: 'originals', type: 'button', iconClass: 'far fa-lightbulb', link: '', name: 'Originals'
+        className: 'originals', type: 'button', iconClass: 'far fa-lightbulb', link: '', name: 'Originals',
       },
       {
-        className: 'mission', type: 'button', iconClass: 'fas fa-crosshairs', link: '', name: 'Mission Music'
+        className: 'mission', type: 'button', iconClass: 'fas fa-crosshairs', link: '', name: 'Mission Music',
       },
       {
-        className: 'pub', type: 'button', iconClass: 'fas fa-beer', link: '', name: 'Pub Songs'
+        className: 'pub', type: 'button', iconClass: 'fas fa-beer', link: '', name: 'Pub Songs',
       },
       {
-        className: 'home', type: 'button', iconClass: 'fas fa-home', link: '', name: 'Web Jam LLC'
+        className: 'home', type: 'button', iconClass: 'fas fa-home', link: '', name: 'Web Jam LLC',
       },
       {
-        className: 'login', type: 'googleLogin', iconClass: 'fas fa-login', link: '', name: 'Login'
+        className: 'login', type: 'googleLogin', iconClass: 'fas fa-login', link: '', name: 'Login',
       },
       {
-        className: 'logout', type: 'googleLogout', iconClass: 'fas fa-logout', link: '', name: 'Logout'
-      }
+        className: 'logout', type: 'googleLogout', iconClass: 'fas fa-logout', link: '', name: 'Logout',
+      },
     ];
   }
 
@@ -177,7 +177,7 @@ export class AppTemplate extends Component {
         <div
           id="musTT"
           style={{
-            display: 'none', position: 'absolute', top: '305px', right: '68px', backgroundColor: 'white', padding: '3px'
+            display: 'none', position: 'absolute', top: '305px', right: '68px', backgroundColor: 'white', padding: '3px',
           }}
         >
           Music
@@ -196,7 +196,7 @@ export class AppTemplate extends Component {
       { href: 'https://www.linkedin.com/company/webjam/', name: 'linkedin' },
       { href: 'https://www.instagram.com/joshua.v.sherman/', name: 'instagram' },
       { href: 'https://twitter.com/WebJamLLC', name: 'twitter' },
-      { href: 'https://www.facebook.com/WebJamLLC/', name: 'facebook' }
+      { href: 'https://www.facebook.com/WebJamLLC/', name: 'facebook' },
     ];
     return (
       <div style={{ textAlign: 'center', padding: '6px' }}>
@@ -261,11 +261,11 @@ export class AppTemplate extends Component {
 }
 
 AppTemplate.propTypes = {
-  children: PropTypes.element.isRequired
+  children: PropTypes.element.isRequired,
 };
 
 const mapStateToProps = state => ({
-  ...state
+  ...state,
 });
 
 export default connect(mapStateToProps)(AppTemplate);

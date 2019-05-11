@@ -65,9 +65,9 @@ Music.propTypes = {
     isError: PropTypes.bool,
     images: PropTypes.arrayOf(PropTypes.shape({
       url: PropTypes.string,
-      title: PropTypes.string
-    }))
-  })
+      title: PropTypes.string,
+    })),
+  }),
 };
 /* istanbul ignore next */
 const mapStateToProps = state => ({ data: state });

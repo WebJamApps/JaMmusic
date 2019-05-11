@@ -2,17 +2,17 @@ import request from 'superagent';
 import store from '.';
 
 export const fetchImages = () => ({
-  type: 'FETCH_IMAGES'
+  type: 'FETCH_IMAGES',
 });
 
 export const receiveImages = docs => ({
   type: 'FETCHED_IMAGES',
-  data: docs
+  data: docs,
 });
 
 export const receiveError = e => ({
   type: 'RECEIVE_ERROR',
-  error: e
+  error: e,
 });
 
 const getImages = () => (dispatch, getState) => {

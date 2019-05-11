@@ -23,7 +23,7 @@ describe('tour-table component test', () => {
       Time: '6:00 pm',
       Location: 'Salem, VA',
       Venue: 'College Lutheran Church front porch, prior to the Salem Christmas parade',
-      Tickets: 'Free'
+      Tickets: 'Free',
     }]);
     const sMock = sinon.mock(tt);
     sMock.expects('setState').returns(true);

@@ -8,7 +8,7 @@ import fetchReducers from './fetchReducers';
 
 const persistConfig = {
   key: 'root',
-  storage
+  storage,
 };
 let mWares = applyMiddleware(thunk);
 /* istanbul ignore if */

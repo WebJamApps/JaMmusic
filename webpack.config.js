@@ -20,17 +20,17 @@ const baseUrl = '/music';
 const cssRules = [{ loader: 'css-loader' }];
 
 module.exports = ({
-  production, extractCss, coverage, analyze
+  production, extractCss, coverage, analyze,
 } = {
 }) => ({
   resolve: {
     extensions: ['.js', '.jsx'],
-    modules: [srcDir, 'node_modules']
+    modules: [srcDir, 'node_modules'],
   },
 
   entry: {
     app: [`${srcDir}/main.js`],
-    vendor: ['jquery', 'bootstrap']
+    vendor: ['jquery', 'bootstrap'],
   },
 
   mode: production ? 'production' : 'development',
@@ -40,7 +40,7 @@ module.exports = ({
     publicPath: baseUrl,
     filename: production ? '[name].[chunkhash].bundle.js' : '[name].[hash].bundle.js',
     sourceMapFilename: production ? '[name].[chunkhash].bundle.map' : '[name].[hash].bundle.map',
-    chunkFilename: production ? '[name].[chunkhash].chunk.js' : '[name].[hash].chunk.js'
+    chunkFilename: production ? '[name].[chunkhash].chunk.js' : '[name].[hash].chunk.js',
   },
 
   performance: { hints: false },
@@ -53,10 +53,10 @@ module.exports = ({
       rewrites: [
         { from: /^\/$/, to: '/music' },
         { from: /^\/music/, to: '/music' },
-        { from: /./, to: '/music' }
-      ]
+        { from: /./, to: '/music' },
+      ],
     },
-    port: parseInt(process.env.PORT, 10)
+    port: parseInt(process.env.PORT, 10),
   },
 
   devtool: production ? 'nosources-source-map' : 'cheap-module-eval-source-map',
@@ -70,22 +70,22 @@ module.exports = ({
         issuer: [{ not: [{ test: /\.html$/i }] }],
         use: extractCss ? ExtractTextPlugin.extract({
           fallback: 'style-loader',
-          use: cssRules
-        }) : ['style-loader', ...cssRules]
+          use: cssRules,
+        }) : ['style-loader', ...cssRules],
       },
       {
         test: /\.css$/i,
         issuer: [{ test: /\.html$/i }],
         // CSS required in templates cannot be extracted safely
         // because Aurelia would try to require it again in runtime
-        use: cssRules
+        use: cssRules,
       },
       { test: /\.html$/i, loader: 'html-loader' },
       {
         test: /\.jsx?$/i,
         loader: 'babel-loader',
         exclude: nodeModulesDir,
-        options: coverage ? { sourceMap: 'inline', plugins: ['istanbul'] } : {}
+        options: coverage ? { sourceMap: 'inline', plugins: ['istanbul'] } : {},
       }, // eslint-disable-next-line no-useless-escape
       { test: /[\/\\]node_modules[\/\\]bluebird[\/\\].+\.js$/, loader: 'expose-loader?Promise' },
       // embed small images and fonts as Data Urls and larger ones as files:
@@ -93,8 +93,8 @@ module.exports = ({
       { test: /\.woff2(\?v=[0-9]\.[0-9]\.[0-9])?$/i, loader: 'url-loader', options: { limit: 10000, mimetype: 'application/font-woff2' } },
       { test: /\.woff(\?v=[0-9]\.[0-9]\.[0-9])?$/i, loader: 'url-loader', options: { limit: 10000, mimetype: 'application/font-woff' } },
       // load these fonts normally, as files:
-      { test: /\.(ttf|eot|svg|otf)(\?v=[0-9]\.[0-9]\.[0-9])?$/i, loader: 'file-loader' }
-    ]
+      { test: /\.(ttf|eot|svg|otf)(\?v=[0-9]\.[0-9]\.[0-9])?$/i, loader: 'file-loader' },
+    ],
   },
 
   plugins: [
@@ -102,25 +102,25 @@ module.exports = ({
       $: 'jquery',
       jQuery: 'jquery',
       'window.jQuery': 'jquery',
-      Popper: ['popper.js', 'default']
+      Popper: ['popper.js', 'default'],
     }),
     new HtmlWebpackPlugin({
       template: `${srcDir}/index.ejs`,
       minify: production ? { removeComments: true, collapseWhitespace: true } : undefined,
-      metadata: { title, baseUrl }
+      metadata: { title, baseUrl },
     }),
     new CopyWebpackPlugin([
       { from: 'static/favicon.ico', to: 'favicon.ico' },
       { from: 'static/tour.json', to: 'tour.json' },
-      { from: 'static/imgs', to: 'static/imgs' }
+      { from: 'static/imgs', to: 'static/imgs' },
     ]),
     new webpack.EnvironmentPlugin(['NODE_ENV', 'AuthProductionBaseURL', 'PORT', 'BackendUrl', 'GoogleClientId', 'userRoles']),
     ...when(extractCss, new ExtractTextPlugin({
       filename: production ? '[md5:contenthash:hex:20].css' : '[id].css',
-      allChunks: true
+      allChunks: true,
     })),
     // ...when(production, new CopyWebpackPlugin([
     //   { from: 'static/favicon.ico', to: 'favicon.ico' }])),
-    ...when(analyze, new BundleAnalyzerPlugin())
-  ]
+    ...when(analyze, new BundleAnalyzerPlugin()),
+  ],
 });

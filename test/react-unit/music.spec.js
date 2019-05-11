@@ -33,7 +33,7 @@ describe('/music', () => {
   });
   it('renders with error', (done) => {
     const { wrapper } = setup({
-      isFetching: false, images: [], error: 'bad', isError: true
+      isFetching: false, images: [], error: 'bad', isError: true,
     });
     expect(wrapper.find('h3#appErr').exists()).toBe(true);
     done();

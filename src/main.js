@@ -12,7 +12,7 @@ render(
     <PersistGate loading={null} persistor={store.persistor}>
       <App />
     </PersistGate>
-  </Provider>, document.getElementById('root')
+  </Provider>, document.getElementById('root'),
 );
 /* istanbul ignore if */
 if (process.env.NODE_ENV === 'development') module.hot.accept();
