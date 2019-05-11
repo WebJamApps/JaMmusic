@@ -19,7 +19,7 @@ const authFunc = body => (dispatch, getState) => {
   // const type = 'JaMmusic-music';
   if (auth.isAuthenticated) return Promise.resolve(true);
   // dispatch(fetchImages());
-  return request.post(`${process.env.BackendUrl}/user/auth/google`).set('Accept', 'application/json').send(body)
+  return request.post(`${process.env.BackendUrl}/user/auth/react-google`).set('Accept', 'application/json').send(body)
     .then((data) => {
       if (!data.body) return dispatch(authError(new Error('authentication failed')));
       // console.log(data.body);

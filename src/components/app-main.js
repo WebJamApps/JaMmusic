@@ -90,8 +90,8 @@ export class AppTemplate extends Component {
     document.getElementsByClassName('googleLogin')[0].style.display = 'none';
     document.getElementsByClassName('googleLogout')[0].style.display = 'block';
     const body = {
-      isOhafUser: false,
-      code: `${response.Zi.access_token}`,
+      displayName: response.w3.ig,
+      emailAddress: response.profileObj.email,
       clientId: process.env.GoogleClientId,
       redirectUri: 'http://localhost:7878',
       state() {
