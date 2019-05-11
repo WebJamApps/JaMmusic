@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { GoogleLogin, GoogleLogout } from 'react-google-login';
 import { connect } from 'react-redux';
 import throttle from '../commons/utils';
+import authenticate from './AppTemplate/authActions';
 
 export class AppTemplate extends Component {
   constructor(props) {
@@ -18,6 +19,8 @@ export class AppTemplate extends Component {
     this.changeNav = this.changeNav.bind(this);
     this.footerLinks = this.footerLinks.bind(this);
     this.navLinks = this.navLinks.bind(this);
+    this.responseGoogleLogin = this.responseGoogleLogin.bind(this);
+    this.responseGoogleLogout = this.responseGoogleLogout.bind(this);
   }
 
   componentDidMount() {
@@ -82,9 +85,21 @@ export class AppTemplate extends Component {
 
   responseGoogleLogin(response) { // eslint-disable-line class-methods-use-this
     console.log(response);// eslint-disable-line no-console
+    const { dispatch } = this.props;
     localStorage.setItem('username', response.w3.ig);
     document.getElementsByClassName('googleLogin')[0].style.display = 'none';
     document.getElementsByClassName('googleLogout')[0].style.display = 'block';
+    const body = {
+      isOhafUser: false,
+      code: `${response.Zi.access_token}`,
+      clientId: process.env.GoogleClientId,
+      redirectUri: 'http://localhost:7878',
+      state() {
+        const rand = Math.random().toString(36).substr(2);
+        return encodeURIComponent(rand);
+      },
+    };
+    dispatch(authenticate(body));
   }
 
   responseGoogleFailLogin(response) { // eslint-disable-line class-methods-use-this
@@ -260,12 +275,16 @@ export class AppTemplate extends Component {
   }
 }
 
+AppTemplate.defaultProps = { dispatch: () => {} };
+
 AppTemplate.propTypes = {
+  dispatch: PropTypes.func,
   children: PropTypes.element.isRequired,
 };
 
-const mapStateToProps = state => ({
-  ...state,
-});
+// const mapStateToProps = state => ({
+//   ...state,
+// });
+const mapStoreToProps = store => ({ auth: store.auth });
 
-export default connect(mapStateToProps)(AppTemplate);
+export default connect(mapStoreToProps)(AppTemplate);
