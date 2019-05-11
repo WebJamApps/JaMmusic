@@ -11,6 +11,18 @@ describe('fetch reducer', () => {
       },
     );
   });
+  it('should handle fetch images', () => {
+    expect(
+      reducer(undefined, { type: 'FETCH_IMAGES' }),
+    ).toEqual(
+      {
+        images: [],
+        isFetching: true,
+        isError: false,
+        error: '',
+      },
+    );
+  });
   it('should handle fetched images', () => {
     expect(
       reducer(undefined, {

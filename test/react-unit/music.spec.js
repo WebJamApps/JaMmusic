@@ -3,13 +3,11 @@ import { shallow } from 'enzyme';
 import { Music } from '../../src/containers/music';
 
 function setup(data) {
-  const props = { dispatch() {} };
   let wrapper;
   if (data !== null && data !== undefined) {
-    props.data = data;
-    wrapper = shallow(<Music data={data} />);
+    wrapper = shallow(<Music images={data} />);
   } else wrapper = shallow(<Music />);
-  return { wrapper, props };
+  return { wrapper };
 }
 
 describe('/music', () => {
@@ -40,6 +38,7 @@ describe('/music', () => {
   });
   it('renders with images', (done) => {
     const { wrapper } = setup({ isFetching: false, images: [{ _id: 1, url: '', title: '' }], isError: false });
+    // console.log(wrapper.debug());
     expect(wrapper.find('PicSlider').exists()).toBe(true);
     done();
   });
