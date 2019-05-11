@@ -6,6 +6,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const { ProvidePlugin } = require('webpack');
 const webpack = require('webpack');
+const TerserPlugin = require('terser-webpack-plugin');
 
 // config helpers:
 const ensureArray = config => config && (Array.isArray(config) ? config : [config]) || []; // eslint-disable-line no-mixed-operators
@@ -60,6 +61,24 @@ module.exports = ({
   },
 
   devtool: production ? 'nosources-source-map' : 'cheap-module-eval-source-map',
+
+  optimization: {
+    minimizer: production ? [
+      new TerserPlugin({
+        extractComments: true,
+        cache: true,
+        parallel: true,
+        sourceMap: true,
+        terserOptions: {
+        // https://github.com/webpack-contrib/terser-webpack-plugin#terseroptions
+          extractComments: 'all',
+          compress: {
+            drop_console: true,
+          },
+        },
+      }),
+    ] : [],
+  },
 
   module: {
     rules: [

@@ -83,6 +83,7 @@
     "snyk": "latest",
     "style-loader": "latest",
     "superagent": "latest",
+    "terser-webpack-plugin": "latest",
     "url-loader": "latest",
     "url-search-params-polyfill": "latest",
     "webpack": "latest",
