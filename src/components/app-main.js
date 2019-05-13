@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { GoogleLogin, GoogleLogout } from 'react-google-login';
 import { connect } from 'react-redux';
 import throttle from '../commons/utils';
-import authenticate from './AppTemplate/authActions';
+import authenticate, { logout } from './AppTemplate/authActions';
 
 export class AppTemplate extends Component {
   constructor(props) {
@@ -86,14 +86,15 @@ export class AppTemplate extends Component {
   responseGoogleLogin(response) { // eslint-disable-line class-methods-use-this
     console.log(response);// eslint-disable-line no-console
     const { dispatch } = this.props;
-    localStorage.setItem('username', response.w3.ig);
+    // localStorage.setItem('username', response.w3.ig);
     document.getElementsByClassName('googleLogin')[0].style.display = 'none';
     document.getElementsByClassName('googleLogout')[0].style.display = 'block';
+    const uri = window.location.href;
+    const baseUri = uri.split('/')[2];
     const body = {
-      displayName: response.w3.ig,
-      emailAddress: response.profileObj.email,
       clientId: process.env.GoogleClientId,
-      redirectUri: 'http://localhost:7878',
+      redirectUri: `http://${baseUri}`,
+      code: `${response.code}`,
       state() {
         const rand = Math.random().toString(36).substr(2);
         return encodeURIComponent(rand);
@@ -110,6 +111,10 @@ export class AppTemplate extends Component {
     console.log('logged out');// eslint-disable-line no-console
     console.log(response);// eslint-disable-line no-console
     localStorage.removeItem('username');
+    const { auth } = this.props;
+    const { dispatch } = this.props;
+    auth.isAuthenticated = false;
+    dispatch(logout());
     window.location.reload();
   }
 
@@ -154,6 +159,7 @@ export class AppTemplate extends Component {
       return (
         <div key={index} className="menu-item googleLogin">
           <GoogleLogin
+            responseType="code"
             clientId={process.env.GoogleClientId}
             buttonText="Login"
             onSuccess={this.responseGoogleLogin}
@@ -275,9 +281,15 @@ export class AppTemplate extends Component {
   }
 }
 
-AppTemplate.defaultProps = { dispatch: () => {} };
+AppTemplate.defaultProps = {
+  dispatch: () => {},
+  auth: { isAuthenticated: false },
+};
 
 AppTemplate.propTypes = {
+  auth: PropTypes.shape({
+    isAuthenticated: PropTypes.bool,
+  }),
   dispatch: PropTypes.func,
   children: PropTypes.element.isRequired,
 };
