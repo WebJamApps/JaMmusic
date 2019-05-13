@@ -8,7 +8,7 @@ const mockStore = configureMockStore(middlewares);
 
 describe('async actions', () => {
   it('creates fetches', async () => {
-    const store = mockStore({ images: [] });
+    const store = mockStore({ images: { images: [] } });
     let result;
     try {
       result = await store.dispatch(getImages());
@@ -16,7 +16,7 @@ describe('async actions', () => {
     expect(result.type).toBe('FETCHED_IMAGES');
   });
   it('does not fetch already have images', async () => {
-    const store = mockStore({ images: [{ _id: 1, url: '', title: 'empty' }] });
+    const store = mockStore({ images: { images: [{ _id: 1, url: '', title: 'empty' }] } });
     let result;
     try {
       result = await store.dispatch(getImages());
@@ -24,7 +24,7 @@ describe('async actions', () => {
     expect(result).toBe(true);
   });
   it('returns a not found error', async () => {
-    const store = mockStore({ images: [] });
+    const store = mockStore({ images: { images: [] } });
     let result;
     request.setMockResponse({ body: { message: 'Not Found' } });
     try {
@@ -33,7 +33,7 @@ describe('async actions', () => {
     expect(result.type).toBe('RECEIVE_ERROR');
   });
   it('returns a fetch error', async () => {
-    const store = mockStore({ images: [] });
+    const store = mockStore({ images: { images: [] } });
     let result;
     request.setMockError(new Error('bad'));
     try {

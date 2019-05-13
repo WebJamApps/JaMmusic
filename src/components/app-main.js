@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { GoogleLogin, GoogleLogout } from 'react-google-login';
 import { connect } from 'react-redux';
 import throttle from '../commons/utils';
+import authUtils from './AppTemplate/authUtils';
 
 export class AppTemplate extends Component {
   constructor(props) {
@@ -17,10 +19,19 @@ export class AppTemplate extends Component {
     this.changeNav = this.changeNav.bind(this);
     this.footerLinks = this.footerLinks.bind(this);
     this.navLinks = this.navLinks.bind(this);
+    this.responseGoogleLogin = this.responseGoogleLogin.bind(this);
+    this.responseGoogleLogout = this.responseGoogleLogout.bind(this);
+    this.googleButtons = this.googleButtons.bind(this);
+    this.authUtils = authUtils;
   }
 
   componentDidMount() {
     window.addEventListener('resize', throttle(this.dispatchWindowResize, 100, { leading: false }), false);
+    const username = localStorage.getItem('username');
+    if (typeof username === 'string') {
+      document.getElementsByClassName('googleLogin')[0].style.display = 'none';
+      document.getElementsByClassName('googleLogout')[0].style.display = 'block';
+    }
   }
 
   get currentStyles() {
@@ -32,7 +43,7 @@ export class AppTemplate extends Component {
       headerClass: 'home-header',
       headerImageClass: 'home-header-image',
       sidebarClass: 'home-sidebar',
-      menuToggleClass: 'home-menu-toggle'
+      menuToggleClass: 'home-menu-toggle',
     };
     result.sidebarImagePath = '../static/imgs/webjamlogo1.png';
     return result;
@@ -41,23 +52,29 @@ export class AppTemplate extends Component {
   get menus() { // eslint-disable-line class-methods-use-this
     return [
       {
-        className: '', type: 'link', iconClass: 'fas fa-music', link: '/music', name: 'Music'
+        className: '', type: 'link', iconClass: 'fas fa-music', link: '/music', name: 'Music',
       },
       {
-        className: '', type: 'link', iconClass: 'far fa-money-bill-alt', link: '/music/buymusic', name: 'Buy Music'
+        className: '', type: 'link', iconClass: 'far fa-money-bill-alt', link: '/music/buymusic', name: 'Buy Music',
       },
       {
-        className: 'originals', type: 'button', iconClass: 'far fa-lightbulb', link: '', name: 'Originals'
+        className: 'originals', type: 'button', iconClass: 'far fa-lightbulb', link: '', name: 'Originals',
       },
       {
-        className: 'mission', type: 'button', iconClass: 'fas fa-crosshairs', link: '', name: 'Mission Music'
+        className: 'mission', type: 'button', iconClass: 'fas fa-crosshairs', link: '', name: 'Mission Music',
       },
       {
-        className: 'pub', type: 'button', iconClass: 'fas fa-beer', link: '', name: 'Pub Songs'
+        className: 'pub', type: 'button', iconClass: 'fas fa-beer', link: '', name: 'Pub Songs',
       },
       {
-        className: 'home', type: 'button', iconClass: 'fas fa-home', link: '', name: 'Web Jam LLC'
-      }
+        className: 'home', type: 'button', iconClass: 'fas fa-home', link: '', name: 'Web Jam LLC',
+      },
+      {
+        className: 'login', type: 'googleLogin', iconClass: 'fas fa-login', link: '', name: 'Login',
+      },
+      {
+        className: 'logout', type: 'googleLogout', iconClass: 'fas fa-logout', link: '', name: 'Logout',
+      },
     ];
   }
 
@@ -67,9 +84,16 @@ export class AppTemplate extends Component {
     this.setState({ menuOpen: mO });
   }
 
+  // eslint-disable-next-line react/destructuring-assignment
+  responseGoogleLogin(response) { return this.authUtils.responseGoogleLogin(response, this.props.dispatch); }
+
+  // eslint-disable-next-line react/destructuring-assignment
+  responseGoogleLogout(response) { return this.authUtils.responseGoogleLogout(response, this.props.dispatch); }
+
   close(e) {
     this.setState({ menuOpen: false });
     if (e.target.classList.contains('out-link')) return this.changeNav(e.target.classList[1]);
+    if (e.target.classList.contains('loginGoogle')) return this.loginGoogle();
     return true;
   }
 
@@ -90,7 +114,33 @@ export class AppTemplate extends Component {
   handleKeyMenu(e) { // eslint-disable-line class-methods-use-this
     if (e.key === 'Enter') this.toggleMobileMenu();
   }
-  
+
+  googleButtons(type, index) {
+    if (type === 'login') {
+      return (
+        <div key={index} className="menu-item googleLogin">
+          <GoogleLogin
+            responseType="code"
+            clientId={process.env.GoogleClientId}
+            buttonText="Login"
+            onSuccess={this.responseGoogleLogin}
+            onFailure={this.authUtils.responseGoogleFailLogin}
+            cookiePolicy="single_host_origin"
+          />
+        </div>
+      );
+    } return (
+      <div key={index} className="menu-item googleLogout" style={{ display: 'none' }}>
+        <GoogleLogout
+          clientId={process.env.GoogleClientId}
+          buttonText="Logout"
+          onLogoutSuccess={this.responseGoogleLogout}
+          cookiePolicy="single_host_origin"
+        />
+      </div>
+    );
+  }
+
   menuItem(menu, index) {
     if (menu.type === 'link') {
       return (
@@ -103,9 +153,11 @@ export class AppTemplate extends Component {
         </div>
       );
     }
+    if (menu.type === 'googleLogin') return this.googleButtons('login', index);
+    if (menu.type === 'googleLogout') return this.googleButtons('logout', index);
     return (
       <div key={index} className="menu-item">
-        <button type="button" className={`nav-link ${menu.className} out-link`} onClick={this.close}>
+        <button type="button" className={`nav-link ${menu.className} loginGoogle`} onClick={this.close}>
           <i className={`${menu.iconClass}`} />
           &nbsp;
           <span className={`nav-item ${menu.className} out-link`}>{menu.name}</span>
@@ -120,7 +172,7 @@ export class AppTemplate extends Component {
         <div
           id="musTT"
           style={{
-            display: 'none', position: 'absolute', top: '305px', right: '68px', backgroundColor: 'white', padding: '3px'
+            display: 'none', position: 'absolute', top: '305px', right: '68px', backgroundColor: 'white', padding: '3px',
           }}
         >
           Music
@@ -139,7 +191,7 @@ export class AppTemplate extends Component {
       { href: 'https://www.linkedin.com/company/webjam/', name: 'linkedin' },
       { href: 'https://www.instagram.com/joshua.v.sherman/', name: 'instagram' },
       { href: 'https://twitter.com/WebJamLLC', name: 'twitter' },
-      { href: 'https://www.facebook.com/WebJamLLC/', name: 'facebook' }
+      { href: 'https://www.facebook.com/WebJamLLC/', name: 'facebook' },
     ];
     return (
       <div style={{ textAlign: 'center', padding: '6px' }}>
@@ -203,12 +255,19 @@ export class AppTemplate extends Component {
   }
 }
 
-AppTemplate.propTypes = {
-  children: PropTypes.element.isRequired
+AppTemplate.defaultProps = {
+  dispatch: () => {},
+  auth: { isAuthenticated: false },
 };
 
-const mapStateToProps = state => ({
-  ...state
-});
+AppTemplate.propTypes = {
+  auth: PropTypes.shape({
+    isAuthenticated: PropTypes.bool,
+  }),
+  dispatch: PropTypes.func,
+  children: PropTypes.element.isRequired,
+};
 
-export default connect(mapStateToProps)(AppTemplate);
+const mapStoreToProps = store => ({ auth: store.auth });
+
+export default connect(mapStoreToProps)(AppTemplate);

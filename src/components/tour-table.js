@@ -28,7 +28,7 @@ export class TourTable extends Component {// eslint-disable-line import/prefer-d
       this.columns.push({
         name: titles[i], // eslint-disable-line security/detect-object-injection
         label: titles[i], // eslint-disable-line security/detect-object-injection
-        options: { filter: true, sort: true }
+        options: { filter: true, sort: true },
       });
     }
   }
@@ -69,9 +69,9 @@ TourTable.propTypes = {
       Time: PropTypes.string,
       Location: PropTypes.string,
       Venue: PropTypes.string,
-      Tickets: PropTypes.string
-    }))
-  })
+      Tickets: PropTypes.string,
+    })),
+  }),
 };
 /* istanbul ignore next */
 const mapStateToProps = state => ({ data: state });

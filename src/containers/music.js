@@ -26,14 +26,14 @@ export class Music extends Component {
   }
 
   render() {
-    const { data } = this.props;
+    const { images } = this.props;
     return (
       <div className="page-content">
         <div style={{ paddingTop: '1px', paddingBottom: 0, marginBottom: 0 }}>
           <div id="musicSlide1">
-            {data.isFetching ? <h3 id="appLoading">Loading...</h3> : null}
-            {data.isError ? (<h3 id="appErr" className="error">{data.error}</h3>) : null}
-            {data.images.length > 0 ? (<PicSlider data={data.images} />) : null}
+            {images.isFetching ? <h3 id="appLoading">Loading...</h3> : null}
+            {images.isError ? (<h3 id="appErr" className="error">{images.error}</h3>) : null}
+            {images.images.length > 0 ? (<PicSlider data={images.images} />) : null}
           </div>
         </div>
         <div className="material-content elevation2" style={{ maxWidth: '998px', margin: 'auto' }}>
@@ -57,18 +57,18 @@ export class Music extends Component {
   }
 }
 /* istanbul ignore next */
-Music.defaultProps = { dispatch: () => {}, data: { images: [] } };
+Music.defaultProps = { dispatch: () => {}, images: { images: [] } };
 Music.propTypes = {
   dispatch: PropTypes.func,
-  data: PropTypes.shape({
+  images: PropTypes.shape({
     isFetching: PropTypes.bool,
     isError: PropTypes.bool,
     images: PropTypes.arrayOf(PropTypes.shape({
       url: PropTypes.string,
-      title: PropTypes.string
-    }))
-  })
+      title: PropTypes.string,
+    })),
+  }),
 };
 /* istanbul ignore next */
-const mapStateToProps = state => ({ data: state });
-export default connect(mapStateToProps)(Music);
+const mapStoreToProps = store => ({ images: store.images });
+export default connect(mapStoreToProps)(Music);

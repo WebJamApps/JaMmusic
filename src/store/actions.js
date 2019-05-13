@@ -12,5 +12,5 @@ const updateMenu = menu => ({ type: UPDATE_MENU, menu });
 
 export {
   UPDATE_NAME, UPDATE_MENU, UPDATE_ROLE, UPDATE_WIDESCREEN,
-  updateName, updateWidescreen, updateRole, updateMenu
+  updateName, updateWidescreen, updateRole, updateMenu,
 };
