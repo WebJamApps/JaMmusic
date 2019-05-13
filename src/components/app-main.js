@@ -4,7 +4,8 @@ import PropTypes from 'prop-types';
 import { GoogleLogin, GoogleLogout } from 'react-google-login';
 import { connect } from 'react-redux';
 import throttle from '../commons/utils';
-import authenticate, { logout } from './AppTemplate/authActions';
+// import authenticate, { logout } from './AppTemplate/authActions';
+import authUtils from './AppTemplate/authUtils';
 
 export class AppTemplate extends Component {
   constructor(props) {
@@ -21,6 +22,8 @@ export class AppTemplate extends Component {
     this.navLinks = this.navLinks.bind(this);
     this.responseGoogleLogin = this.responseGoogleLogin.bind(this);
     this.responseGoogleLogout = this.responseGoogleLogout.bind(this);
+    this.googleButtons = this.googleButtons.bind(this);
+    this.authUtils = authUtils;
   }
 
   componentDidMount() {
@@ -83,40 +86,42 @@ export class AppTemplate extends Component {
     this.setState({ menuOpen: mO });
   }
 
-  responseGoogleLogin(response) { // eslint-disable-line class-methods-use-this
-    console.log(response);// eslint-disable-line no-console
-    const { dispatch } = this.props;
-    // localStorage.setItem('username', response.w3.ig);
-    document.getElementsByClassName('googleLogin')[0].style.display = 'none';
-    document.getElementsByClassName('googleLogout')[0].style.display = 'block';
-    const uri = window.location.href;
-    const baseUri = uri.split('/')[2];
-    const body = {
-      clientId: process.env.GoogleClientId,
-      redirectUri: `http://${baseUri}`,
-      code: `${response.code}`,
-      state() {
-        const rand = Math.random().toString(36).substr(2);
-        return encodeURIComponent(rand);
-      },
-    };
-    dispatch(authenticate(body));
-  }
+  // eslint-disable-next-line react/destructuring-assignment
+  responseGoogleLogin(response) { return this.authUtils.responseGoogleLogin(response, this.props.dispatch); }
 
-  responseGoogleFailLogin(response) { // eslint-disable-line class-methods-use-this
-    console.log(response);// eslint-disable-line no-console
-  }
-
-  responseGoogleLogout(response) { // eslint-disable-line class-methods-use-this
-    console.log('logged out');// eslint-disable-line no-console
-    console.log(response);// eslint-disable-line no-console
-    localStorage.removeItem('username');
-    const { auth } = this.props;
-    const { dispatch } = this.props;
-    auth.isAuthenticated = false;
-    dispatch(logout());
-    window.location.reload();
-  }
+  // responseGoogleLogin(response) { // eslint-disable-line class-methods-use-this
+  //   console.log(response);// eslint-disable-line no-console
+  //   const { dispatch } = this.props;
+  //   document.getElementsByClassName('googleLogin')[0].style.display = 'none';
+  //   document.getElementsByClassName('googleLogout')[0].style.display = 'block';
+  //   const uri = window.location.href;
+  //   const baseUri = uri.split('/')[2];
+  //   const body = {
+  //     clientId: process.env.GoogleClientId,
+  //     redirectUri: `http://${baseUri}`,
+  //     code: `${response.code}`,
+  //     state() {
+  //       const rand = Math.random().toString(36).substr(2);
+  //       return encodeURIComponent(rand);
+  //     },
+  //   };
+  //   dispatch(authenticate(body));
+  // }
+  //
+  // responseGoogleFailLogin(response) { // eslint-disable-line class-methods-use-this
+  //   console.log(response);// eslint-disable-line no-console
+  // }
+  // eslint-disable-next-line react/destructuring-assignment
+  responseGoogleLogout(response) { return this.authUtils.responseGoogleLogout(response, this.props.dispatch); }
+  // responseGoogleLogout(response) { // eslint-disable-line class-methods-use-this
+  //   console.log('logged out');// eslint-disable-line no-console
+  //   console.log(response);// eslint-disable-line no-console
+  //   const { auth } = this.props;
+  //   const { dispatch } = this.props;
+  //   auth.isAuthenticated = false;
+  //   dispatch(logout());
+  //   window.location.reload();
+  // }
 
   close(e) {
     this.setState({ menuOpen: false });
@@ -143,6 +148,32 @@ export class AppTemplate extends Component {
     if (e.key === 'Enter') this.toggleMobileMenu();
   }
 
+  googleButtons(type, index) {
+    if (type === 'login') {
+      return (
+        <div key={index} className="menu-item googleLogin">
+          <GoogleLogin
+            responseType="code"
+            clientId={process.env.GoogleClientId}
+            buttonText="Login"
+            onSuccess={this.responseGoogleLogin}
+            onFailure={this.authUtils.responseGoogleFailLogin}
+            cookiePolicy="single_host_origin"
+          />
+        </div>
+      );
+    } return (
+      <div key={index} className="menu-item googleLogout" style={{ display: 'none' }}>
+        <GoogleLogout
+          clientId={process.env.GoogleClientId}
+          buttonText="Logout"
+          onLogoutSuccess={this.responseGoogleLogout}
+          cookiePolicy="single_host_origin"
+        />
+      </div>
+    );
+  }
+
   menuItem(menu, index) {
     if (menu.type === 'link') {
       return (
@@ -155,32 +186,8 @@ export class AppTemplate extends Component {
         </div>
       );
     }
-    if (menu.type === 'googleLogin') {
-      return (
-        <div key={index} className="menu-item googleLogin">
-          <GoogleLogin
-            responseType="code"
-            clientId={process.env.GoogleClientId}
-            buttonText="Login"
-            onSuccess={this.responseGoogleLogin}
-            onFailure={this.responseGoogleFailLogin}
-            cookiePolicy="single_host_origin"
-          />
-        </div>
-      );
-    }
-    if (menu.type === 'googleLogout') {
-      return (
-        <div key={index} className="menu-item googleLogout" style={{ display: 'none' }}>
-          <GoogleLogout
-            clientId={process.env.GoogleClientId}
-            buttonText="Logout"
-            onLogoutSuccess={this.responseGoogleLogout}
-            cookiePolicy="single_host_origin"
-          />
-        </div>
-      );
-    }
+    if (menu.type === 'googleLogin') return this.googleButtons('login', index);
+    if (menu.type === 'googleLogout') return this.googleButtons('logout', index);
     return (
       <div key={index} className="menu-item">
         <button type="button" className={`nav-link ${menu.className} loginGoogle`} onClick={this.close}>
