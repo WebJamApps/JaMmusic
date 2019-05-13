@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import { GoogleLogin, GoogleLogout } from 'react-google-login';
 import { connect } from 'react-redux';
 import throttle from '../commons/utils';
-// import authenticate, { logout } from './AppTemplate/authActions';
 import authUtils from './AppTemplate/authUtils';
 
 export class AppTemplate extends Component {
@@ -29,7 +28,6 @@ export class AppTemplate extends Component {
   componentDidMount() {
     window.addEventListener('resize', throttle(this.dispatchWindowResize, 100, { leading: false }), false);
     const username = localStorage.getItem('username');
-    // console.log(typeof username);
     if (typeof username === 'string') {
       document.getElementsByClassName('googleLogin')[0].style.display = 'none';
       document.getElementsByClassName('googleLogout')[0].style.display = 'block';
@@ -89,39 +87,8 @@ export class AppTemplate extends Component {
   // eslint-disable-next-line react/destructuring-assignment
   responseGoogleLogin(response) { return this.authUtils.responseGoogleLogin(response, this.props.dispatch); }
 
-  // responseGoogleLogin(response) { // eslint-disable-line class-methods-use-this
-  //   console.log(response);// eslint-disable-line no-console
-  //   const { dispatch } = this.props;
-  //   document.getElementsByClassName('googleLogin')[0].style.display = 'none';
-  //   document.getElementsByClassName('googleLogout')[0].style.display = 'block';
-  //   const uri = window.location.href;
-  //   const baseUri = uri.split('/')[2];
-  //   const body = {
-  //     clientId: process.env.GoogleClientId,
-  //     redirectUri: `http://${baseUri}`,
-  //     code: `${response.code}`,
-  //     state() {
-  //       const rand = Math.random().toString(36).substr(2);
-  //       return encodeURIComponent(rand);
-  //     },
-  //   };
-  //   dispatch(authenticate(body));
-  // }
-  //
-  // responseGoogleFailLogin(response) { // eslint-disable-line class-methods-use-this
-  //   console.log(response);// eslint-disable-line no-console
-  // }
   // eslint-disable-next-line react/destructuring-assignment
   responseGoogleLogout(response) { return this.authUtils.responseGoogleLogout(response, this.props.dispatch); }
-  // responseGoogleLogout(response) { // eslint-disable-line class-methods-use-this
-  //   console.log('logged out');// eslint-disable-line no-console
-  //   console.log(response);// eslint-disable-line no-console
-  //   const { auth } = this.props;
-  //   const { dispatch } = this.props;
-  //   auth.isAuthenticated = false;
-  //   dispatch(logout());
-  //   window.location.reload();
-  // }
 
   close(e) {
     this.setState({ menuOpen: false });
@@ -301,9 +268,6 @@ AppTemplate.propTypes = {
   children: PropTypes.element.isRequired,
 };
 
-// const mapStateToProps = state => ({
-//   ...state,
-// });
 const mapStoreToProps = store => ({ auth: store.auth });
 
 export default connect(mapStoreToProps)(AppTemplate);

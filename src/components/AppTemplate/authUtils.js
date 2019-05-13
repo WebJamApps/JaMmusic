@@ -21,6 +21,7 @@ const responseGoogleLogin = (response, dispatch) => { // eslint-disable-line cla
 
 const responseGoogleFailLogin = (response) => { // eslint-disable-line class-methods-use-this
   console.log(response);// eslint-disable-line no-console
+  return false;
 };
 
 const responseGoogleLogout = (response, dispatch) => { // eslint-disable-line class-methods-use-this

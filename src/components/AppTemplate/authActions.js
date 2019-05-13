@@ -14,9 +14,7 @@ export const logout = () => dispatch => dispatch({ type: 'LOGOUT' });
 
 const authFunc = body => (dispatch, getState) => {
   const { auth } = getState();
-  // const type = 'JaMmusic-music';
   if (auth.isAuthenticated) return Promise.resolve(true);
-  // dispatch(fetchImages());
   return request.post(`${process.env.BackendUrl}/user/auth/google`)
     .set({ Accept: 'application/json' }).send(body)
     .then((data) => {
