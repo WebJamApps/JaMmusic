@@ -140,14 +140,14 @@ class MusicPlayer extends Component {
   }
 
   prev() {
-    console.log('prev');
+    // console.log('prev');
     const { index } = this.state;
     const minusIndex = index - 1;
     const { songs } = this.state;
-    console.log(minusIndex);
+    // console.log(minusIndex);
     if (minusIndex < 0) {
       const newIndex = songs.length - 1;
-      console.log(newIndex);
+      // console.log(newIndex);
       this.setState({
         index: newIndex,
         song: songs[newIndex], // eslint-disable-line security/detect-object-injection
@@ -162,7 +162,7 @@ class MusicPlayer extends Component {
       // this.state.song = songs[minusIndex];// eslint-disable-line security/detect-object-injection
       // this.state.index = minusIndex;
     }
-    console.log(this.state.song);
+    // console.log(this.state.song);
     this.updatePlayer();
   }
 
