@@ -1,16 +1,22 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
+// import { connect } from 'react-redux';
 import ReactPlayer from 'react-player';
 import PropTypes from 'prop-types';
 
 class MusicPlayer extends Component {
   constructor(props) {
     super(props);
-    this.state = { data: {} };
+    this.state = {
+      song: props.songs[0],
+      player: {
+        playing: false, shown: false, isShuffleOn: false,
+      },
+    };
+    this.state.songs = props.songs;
+    this.state.copy = props.copy;
     this.play = this.play.bind(this);
-    this.index = 0;
-    this.state.playing = false;
-    this.state.playEnd = this.playEnd.bind(this);
+    this.state.index = 0;
+    this.playEnd = this.playEnd.bind(this);
     this.pause = this.pause.bind(this);
     this.shuffle = this.shuffle.bind(this);
     this.share = this.share.bind(this);
@@ -18,10 +24,10 @@ class MusicPlayer extends Component {
     this.next = this.next.bind(this);
     this.prev = this.prev.bind(this);
     this.updatePlayer = this.updatePlayer.bind(this);
-    this.shown = false;
+    // this.shown = false;
     this.navigator = navigator;
-    this.isShuffleOn = false;
-    this.first = true;
+    // this.isShuffleOn = false;
+    // this.first = true;
     // this.urls = props.urls;
     // this.copy = props.copy;
     // this.state.url = this.urls[0];// eslint-disable-line prefer-destructuring
@@ -32,25 +38,27 @@ class MusicPlayer extends Component {
   }
 
   shouldComponentUpdate() {
-    console.log('shouldComponentUpdate');
+    // console.log('shouldComponentUpdate');
     return true;
   }
 
   get playUrl() {
-    const { data } = this.state;
-    const song = data.urls[0];
+    const { song } = this.state;
+    // const song = data.urls[0];
     return `${document.location.origin}/wj-music/${song.category}?oneplayer=true&id=${song.id}`;
   }
 
   reactPlayer() {
-    console.log(this.playing);
+    const { song } = this.state;
+    const { player } = this.state;
+    // console.log(this.playing);
     return (
       <ReactPlayer
         style={{ backgroundColor: '#eee', textAlign: 'center' }}
-        url={this.state.url.url}
-        playing={this.state.playing}
+        url={song.url}
+        playing={player.playing}
         controls
-        onEnded={this.state.playEnd}
+        onEnded={this.playEnd}
         width="100%"
         id="mainPlayer"
         config={{ file: { attributes: { controlsList: 'nodownload' } } }}
@@ -73,22 +81,53 @@ class MusicPlayer extends Component {
 
   pressKey() {}// eslint-disable-line class-methods-use-this
 
+  updatePlayer() {
+    // look for the id of the song and then filter the song from the rest of the list.
+    const { search } = window.location;
+    const { index } = this.state;
+    const { songs } = this.state;
+    // const { first } = this.state;
+    const oneplayer = search.includes('oneplayer=true');
+    // if it's not in one player mode, then just go on as normal.
+    if (!oneplayer) {
+      this.state.song = songs[index];// eslint-disable-line security/detect-object-injection
+      // console.log(this.url);
+    }
+    // else if (first) {
+    //   const id = search.match(/id=.+/g)[0].slice(3);
+    //   this.state.song = songs.filter(song => song.id === id)[0];// eslint-disable-line prefer-destructuring
+    //   // console.log(this.url);
+    //   this.state.first = false;
+    // }
+    this.shouldComponentUpdate();
+  }
+
   shuffle() {
-    if (this.isShuffleOn) {
-      this.urls = this.copy;
-      this.isShuffleOn = false;
+    const { player } = this.state;
+    const { copy } = this.state;
+    const { songs } = this.state;
+    if (player.isShuffleOn) {
+      this.setState({
+        songs: copy,
+        player: { isShuffleOn: false },
+        song: copy[0],
+        index: 0,
+      });
       document.getElementById('shuffle').classList.remove('on');
     } else {
-      this.urls = this.urls.slice();
-      for (let i = this.urls.length - 1; i > 0; i -= 1) {
+      const shuffled = songs;
+      for (let i = shuffled.length - 1; i > 0; i -= 1) {
         const j = Math.floor(Math.random() * (i + 1));
-        [this.urls[i], this.urls[j]] = [this.urls[j], this.urls[i]];// eslint-disable-line security/detect-object-injection
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];// eslint-disable-line security/detect-object-injection
       }
       document.getElementById('shuffle').classList.add('on');
-      this.isShuffleOn = true;
+      this.setState({
+        songs: shuffled,
+        player: { isShuffleOn: true },
+        song: shuffled[0],
+        index: 0,
+      });
     }
-    this.index = 0;
-    this.url = this.urls[this.index];
     this.updatePlayer();
   }
 
@@ -101,19 +140,40 @@ class MusicPlayer extends Component {
   }
 
   prev() {
-    this.index -= 1;
-    if (this.index < 0) {
-      this.index = this.urls.length - 1;
-      this.url = this.urls[this.index];
+    console.log('prev');
+    const { index } = this.state;
+    const minusIndex = index - 1;
+    const { songs } = this.state;
+    console.log(minusIndex);
+    if (minusIndex < 0) {
+      const newIndex = songs.length - 1;
+      console.log(newIndex);
+      this.setState({
+        index: newIndex,
+        song: songs[newIndex], // eslint-disable-line security/detect-object-injection
+      });
+      // this.state.index = newIndex;
+      // this.state.song = songs[newIndex];// eslint-disable-line security/detect-object-injection
     } else {
-      this.url = this.urls[this.index];
+      this.setState({
+        song: songs[minusIndex], // eslint-disable-line security/detect-object-injection
+        index: minusIndex,
+      });
+      // this.state.song = songs[minusIndex];// eslint-disable-line security/detect-object-injection
+      // this.state.index = minusIndex;
     }
-    this.playTrue();
+    console.log(this.state.song);
+    this.updatePlayer();
   }
 
   play() {
-    this.playing = !this.playing;
-    if (this.playing) {
+    const { player } = this.state;
+    const isPlaying = !player.playing;
+    this.setState({
+      player: { playing: isPlaying },
+    });
+    // this.state.player.playing = !player.playing;
+    if (isPlaying) {
       document.getElementById('play-pause').classList.remove('off');
       document.getElementById('play-pause').classList.add('on');
     } else {
@@ -124,29 +184,41 @@ class MusicPlayer extends Component {
   }
 
   pause() {
-    this.playing = false;
+    this.setState({
+      player: { playing: false },
+    });
     this.updatePlayer();
   }
 
   next() {
-    this.index += 1;
-    if (this.index >= this.urls.length) {
-      this.index = 0;
-      this.url = this.urls[this.index];
+    this.state.index += 1;
+    const { index } = this.state;
+    const { songs } = this.state;
+    if (index >= songs.length) {
+      this.setState({
+        index: 0,
+        song: songs[0],
+      });
+      // this.state.index = 0;
+      // this.state.song = songs[0];// eslint-disable-line security/detect-object-injection
     } else {
-      this.url = this.urls[this.index];
+      this.setState({
+        song: songs[index], // eslint-disable-line security/detect-object-injection
+      });
+      // this.url = this.urls[this.index];
     }
-    this.playTrue();
+    this.updatePlayer();
   }
 
   share() {
+    const { shown } = this.state;
     const el = document.getElementById('copier');
-    if (this.shown) {
+    if (shown) {
       el.classList.add('d-none');
-      this.shown = false;
+      this.state.shown = false;
     } else {
       el.classList.remove('d-none');
-      this.shown = true;
+      this.state.shown = true;
     }
   }
 
@@ -161,25 +233,9 @@ class MusicPlayer extends Component {
     });
   }
 
-  updatePlayer() {
-    // look for the id of the song and then filter the song from the rest of the list.
-    const { search } = window.location;
-    const oneplayer = search.includes('oneplayer=true');
-    // if it's not in one player mode, then just go on as normal.
-    if (!oneplayer) {
-      this.state.url = this.urls[this.index];
-      console.log(this.url);
-    } else if (this.first) {
-      const id = search.match(/id=.+/g)[0].slice(3);
-      this.state.url = this.urls.filter(song => song.id === id)[0];// eslint-disable-line prefer-destructuring
-      console.log(this.url);
-      this.first = false;
-    }
-    this.shouldComponentUpdate();
-  }
-
   render() {
-    console.log('render');
+    const { song } = this.state;
+    // console.log('render');
     return (
       <div className="container-fluid">
         <div id="player" className="mb-2 row justify-content-md-center">
@@ -198,7 +254,7 @@ class MusicPlayer extends Component {
             <span className="text-success" style={{ fontSize: '0.8em' }}>Url copied Url to clipboard</span>
           </section>
           <section className="col-12 col-md-7 mt-1" style={{ fontSize: '0.8em' }}>
-            {this.state.url.title}
+            {song.title}
           </section>
           {this.buttons()}
         </div>
@@ -207,15 +263,16 @@ class MusicPlayer extends Component {
   }
 }
 MusicPlayer.defaultProps = {
-  urls: [{ url: '' }],
+  songs: [{ url: '' }],
   copy: [{ url: '' }],
 };
 
 MusicPlayer.propTypes = {
-  urls: PropTypes.arrayOf(PropTypes.shape),
+  songs: PropTypes.arrayOf(PropTypes.shape),
   copy: PropTypes.arrayOf(PropTypes.shape),
 };
 
 /* istanbul ignore next */
-const mapStateToProps = state => ({ data: state });
-export default connect(mapStateToProps)(MusicPlayer);
+// const mapStoreToProps = store => ({ songs: store.songs.songs });
+// export default connect(mapStoreToProps)(MusicPlayer);
+export default MusicPlayer;

@@ -15,12 +15,12 @@ export default class Originals extends Component {
   }
 
   render() {
-    console.log(this.urls);
-    console.log(this.copy);
+    // console.log(this.urls);
+    // console.log(this.copy);
     return (
       <div className="page-content">
         <h3 style={{ textAlign: 'center', margin: '20px', fontWeight: 'bold' }}>Original Songs</h3>
-        <MusicPlayer urls={this.urls} copy={this.copy} />
+        <MusicPlayer songs={this.urls} copy={this.copy} />
       </div>
     );
   }
