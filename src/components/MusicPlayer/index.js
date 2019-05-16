@@ -68,13 +68,13 @@ class MusicPlayer extends Component {
 
   buttons() {
     return (
-      <section className="mt-0 col-12 col-md-7">
+      <section className="mt-0 col-12 col-md-7" style={{ marginTop: '4px' }}>
         <button type="button" id="play-pause" role="menu" onClick={this.play}>Play/Pause</button>
         <button type="button" role="menu" onClick={this.next}>Next</button>
         <button type="button" role="menu" onClick={this.prev}>Prev</button>
         <button type="button" id="shuffle" role="menu" onClick={this.shuffle}>Shuffle</button>
-        <button type="button" role="menu" onClick={this.share}>Share</button>
-        <button type="button" role="menu"><a id="homeLink" href="/?reload=true">Home</a></button>
+        {/* <button type="button" role="menu" onClick={this.share}>Share</button>
+        <button type="button" role="menu"><a id="homeLink" href="/?reload=true">Home</a></button> */}
       </section>
     );
   }
@@ -239,25 +239,26 @@ class MusicPlayer extends Component {
     return (
       <div className="container-fluid">
         <div id="player" className="mb-2 row justify-content-md-center">
-          <section id="playSection" className="col-12 mt-2 mr-0 col-md-7" style={{ display: 'inline', textAlign: 'center' }}>
+          <section id="playSection" className="col-12 mt-2 mr-0 col-md-7" style={{ display: 'inline', textAlign: 'center', marginBottom: '0' }}>
             {this.reactPlayer()}
           </section>
-          <section className="col-12 row col-md-7 m-0 mt-2 d-none" id="copier">
-            <div id="copyInput">
+          {/* <section className="col-12 row col-md-7 m-0 mt-2 d-none" id="copier"> */}
+          {/* <div id="copyInput">
               <input id="copyUrl" disabled value={this.playUrl} style={{ backgroundColor: '#fff' }} className="" />
-            </div>
-            <div id="copyButton" onKeyPress={this.pressKey} role="presentation" onClick={this.copyShare} style={{ cursor: 'pointer' }}>
+            </div> */}
+          {/* <div id="copyButton" onKeyPress={this.pressKey} role="presentation" onClick={this.copyShare} style={{ cursor: 'pointer' }}>
               <span id="inputGroup" style={{ fontSize: '0.8em' }}>Copy URL</span>
-            </div>
-          </section>
-          <section id="copyMessage" className="col-12 col-md-7 d-none m-0">
+            </div> */}
+          {/* </section> */}
+          {/* <section id="copyMessage" className="col-12 col-md-7 d-none m-0">
             <span className="text-success" style={{ fontSize: '0.8em' }}>Url copied Url to clipboard</span>
-          </section>
-          <section className="col-12 col-md-7 mt-1" style={{ fontSize: '0.8em' }}>
-            {song.title}
+          </section> */}
+          <section className="col-12 col-md-7 mt-1" style={{ fontSize: '0.8em', marginTop: '-10px', marginBottom: '0' }}>
+            <strong>{song.title}</strong>
           </section>
           {this.buttons()}
         </div>
+        <div id="sectionUnderButtons" style={{ minHeight: '3in' }}>&nbsp;</div>
       </div>
     );
   }

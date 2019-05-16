@@ -19,8 +19,15 @@ export default class Originals extends Component {
     // console.log(this.copy);
     return (
       <div className="page-content">
-        <h3 style={{ textAlign: 'center', margin: '20px', fontWeight: 'bold' }}>Original Songs</h3>
-        <MusicPlayer songs={this.urls} copy={this.copy} />
+        <div style={{ maxWidth: '4in', margin: 'auto', textAlign: 'center' }}>
+          <h4 style={{
+            textAlign: 'center', margin: '20px', fontWeight: 'bold', marginBottom: '0',
+          }}
+          >
+Original Songs
+          </h4>
+          <MusicPlayer songs={this.urls} copy={this.copy} />
+        </div>
       </div>
     );
   }

@@ -244,7 +244,7 @@ export class AppTemplate extends Component {
             </div>
             <div style={{ width: 'auto' }} className="content-block">
               { this.children }
-              <div id="wjfooter" className="footer" style={{ backgroundColor: '#565656' }}>
+              <div id="wjfooter" className="footer" style={{ backgroundColor: '#565656', paddingTop: '20px', paddingBottom: '40px' }}>
                 { this.footerLinks() }
               </div>
             </div>

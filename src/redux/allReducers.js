@@ -5,7 +5,7 @@ import authReducer from './reducers/authReducer';
 const reducer = combineReducers({
   images: imagesReducer,
   auth: authReducer,
-  songs: [],
+  songs: { songs: [] },
 });
 
 export default reducer;
