@@ -58,7 +58,7 @@ export class AppTemplate extends Component {
         className: '', type: 'link', iconClass: 'far fa-money-bill-alt', link: '/music/buymusic', name: 'Buy Music',
       },
       {
-        className: 'originals', type: 'button', iconClass: 'far fa-lightbulb', link: '', name: 'Originals',
+        className: 'originals', type: 'link', iconClass: 'far fa-lightbulb', link: '/music/originals', name: 'Originals',
       },
       {
         className: 'mission', type: 'button', iconClass: 'fas fa-crosshairs', link: '', name: 'Mission Music',
@@ -244,7 +244,7 @@ export class AppTemplate extends Component {
             </div>
             <div style={{ width: 'auto' }} className="content-block">
               { this.children }
-              <div id="wjfooter" className="footer" style={{ backgroundColor: '#565656' }}>
+              <div id="wjfooter" className="footer" style={{ backgroundColor: '#565656', paddingTop: '20px', paddingBottom: '40px' }}>
                 { this.footerLinks() }
               </div>
             </div>

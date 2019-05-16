@@ -4,6 +4,7 @@ import DefaultMusic from './containers/music';
 import BuyMusic from './containers/buymusic';
 import AppFourOhFour from './containers/404';
 import AppTemp from './components/app-main';
+import Originals from './containers/Originals';
 
 export default class App extends Component {
   constructor(props) {
@@ -19,6 +20,7 @@ export default class App extends Component {
             <Switch>
               <Route exact path="/music" component={DefaultMusic} />
               <Route path="/music/buymusic" component={BuyMusic} />
+              <Route path="/music/originals" component={Originals} />
               <Route component={AppFourOhFour} />
             </Switch>
           </AppTemp>
