@@ -869,7 +869,7 @@ div.fof {
 }
 
 #playSection audio {
-  background-image: url("../static/imgs/webjamlogo1.png");
+  background-image: url("/static/imgs/webjamlogo1.png");
   background-position: center;
   background-size: 80%;
   background-repeat: no-repeat;
