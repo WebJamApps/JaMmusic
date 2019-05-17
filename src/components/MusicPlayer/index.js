@@ -45,7 +45,7 @@ class MusicPlayer extends Component {
   get playUrl() {
     const { song } = this.state;
     // const song = data.urls[0];
-    return `${document.location.origin}/wj-music/${song.category}?oneplayer=true&id=${song.id}`;
+    return `${document.location.origin}/wj-music/${song.category}?oneplayer=true&id=${song._id}`;
   }
 
   reactPlayer() {

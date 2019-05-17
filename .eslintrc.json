@@ -16,6 +16,7 @@
     "no-trailing-spaces": [0, {
       "skipBlankLines": true
     }],
+    "no-underscore-dangle": 0,
     "one-var-declaration-per-line": [0, "never"],
     "one-var": [2, {
       "var": "never",
