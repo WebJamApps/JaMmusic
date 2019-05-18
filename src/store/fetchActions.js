@@ -18,7 +18,7 @@ export const receiveError = e => ({
 const getImages = () => (dispatch, getState) => {
   const { images } = getState();
   const type = 'JaMmusic-music';
-  if (images.images.length > 0) return Promise.resolve(true);
+  if (images.images !== undefined && images.images.length > 0) return Promise.resolve(true);
   dispatch(fetchImages());
   return request.get(`${process.env.BackendUrl}/book?type=${type}`).set('Accept', 'application/json')
     .then((data) => {
