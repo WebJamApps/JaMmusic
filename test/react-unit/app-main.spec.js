@@ -31,4 +31,16 @@ describe('app-main component test setup', () => {
     try { await aT.responseGoogleLogout(true); } catch (e) { throw e; }
     expect(window.location.reload).toHaveBeenCalled();
   });
+  it('displays logout if user is logged in already', (done) => {
+    document.body.innerHTML = '<button class="googleLogin"/><button class="googleLogout"/>';
+    const aT = new AppTemplate({ dispatch: () => Promise.resolve(true) });
+    Object.defineProperty(window.location, 'reload', {
+      configurable: true,
+    });
+    window.location.reload = jest.fn();
+    Storage.prototype.getItem = jest.fn(() => 'bla');
+    try { aT.componentDidMount(); } catch (e) { throw e; }
+    expect(document.getElementsByClassName('googleLogout')[0].style.display).toBe('block');
+    done();
+  });
 });
