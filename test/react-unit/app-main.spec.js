@@ -43,4 +43,12 @@ describe('app-main component test setup', () => {
     expect(document.getElementsByClassName('googleLogout')[0].style.display).toBe('block');
     done();
   });
+  it('closes the menu without navigating away', (done) => {
+    document.body.innerHTML = '<button class="googleLogin"/><button class="googleLogout"/>';
+    const aT = new AppTemplate({ dispatch: () => Promise.resolve(true) });
+    aT.setState = () => {};
+    const result = aT.close({ target: { classList: { contains() { return false; } } } });
+    expect(result).toBe(true);
+    done();
+  });
 });
