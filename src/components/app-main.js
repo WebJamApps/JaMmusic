@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { GoogleLogin, GoogleLogout } from 'react-google-login';
 import { connect } from 'react-redux';
-import throttle from '../commons/utils';
+// import throttle from '../commons/utils';
 import authUtils from './AppTemplate/authUtils';
 
 export class AppTemplate extends Component {
@@ -14,7 +14,7 @@ export class AppTemplate extends Component {
     this.close = this.close.bind(this);
     this.handleKeyPress = this.handleKeyPress.bind(this);
     this.handleKeyMenu = this.handleKeyMenu.bind(this);
-    this.dispatchWindowResize = this.dispatchWindowResize.bind(this);
+    // this.dispatchWindowResize = this.dispatchWindowResize.bind(this);
     this.toggleMobileMenu = this.toggleMobileMenu.bind(this);
     this.changeNav = this.changeNav.bind(this);
     this.footerLinks = this.footerLinks.bind(this);
@@ -26,7 +26,7 @@ export class AppTemplate extends Component {
   }
 
   componentDidMount() {
-    window.addEventListener('resize', throttle(this.dispatchWindowResize, 100, { leading: false }), false);
+    // window.addEventListener('resize', throttle(this.dispatchWindowResize, 100, { leading: false }), false);
     const username = localStorage.getItem('username');
     if (typeof username === 'string') {
       document.getElementsByClassName('googleLogin')[0].style.display = 'none';
@@ -97,9 +97,9 @@ export class AppTemplate extends Component {
     return true;
   }
 
-  dispatchWindowResize() { // eslint-disable-line class-methods-use-this
-    console.log(window.innerWidth);// eslint-disable-line no-console
-  }
+  // dispatchWindowResize() { // eslint-disable-line class-methods-use-this
+  //   console.log(window.innerWidth);// eslint-disable-line no-console
+  // }
 
   changeNav(where) { // eslint-disable-line class-methods-use-this
     let subpath = '/wj-music/';
@@ -107,13 +107,9 @@ export class AppTemplate extends Component {
     return window.location.assign(`${process.env.BackendUrl}${subpath}${where}`);
   }
 
-  handleKeyPress(e) { // eslint-disable-line class-methods-use-this
-    if (e.key === 'Escape') this.setState({ menuOpen: false });
-  }
+  handleKeyPress(e) { if (e.key === 'Escape') this.setState({ menuOpen: false }); }
 
-  handleKeyMenu(e) { // eslint-disable-line class-methods-use-this
-    if (e.key === 'Enter') this.toggleMobileMenu();
-  }
+  handleKeyMenu(e) { if (e.key === 'Enter') this.toggleMobileMenu(); }
 
   googleButtons(type, index) {
     if (type === 'login') {
@@ -177,9 +173,7 @@ export class AppTemplate extends Component {
         >
           Music
         </div>
-        {this.menus.map((menu, index) => (
-          this.menuItem(menu, index)
-        ))}
+        {this.menus.map((menu, index) => (this.menuItem(menu, index)))}
       </div>
     );
   }
@@ -213,6 +207,19 @@ export class AppTemplate extends Component {
     );
   }
 
+  headerSection() {
+    return (
+      <div className={`material-header ${this.currentStyles.headerClass}`}>
+        <div id="ohaflogo" className="headercontent">
+          <img alt="ohaflogo" src={`${this.currentStyles.headerImagePath}`} className={`${this.currentStyles.headerImageClass}`} />
+        </div>
+        <div className="headercontent header-text-card">
+          <h3 className="header-text" style={{ marginTop: 0 }}>{this.currentStyles.headerText1}</h3>
+        </div>
+      </div>
+    );
+  }
+
   render() {
     const { menuOpen } = this.state;
     const style = `${this.currentStyles.sidebarClass} ${menuOpen ? 'open' : 'close'}`;
@@ -232,16 +239,7 @@ export class AppTemplate extends Component {
           </span>
           <div className="mainPanel">
             <div className="swipe-area" />
-            <div className={`material-header ${this.currentStyles.headerClass}`}>
-              <div id="ohaflogo" className="headercontent">
-                <img alt="ohaflogo" src={`${this.currentStyles.headerImagePath}`} className={`${this.currentStyles.headerImageClass}`} />
-              </div>
-              <div className="headercontent header-text-card">
-                <h3 className="header-text" style={{ marginTop: 0 }}>
-                  {this.currentStyles.headerText1}
-                </h3>
-              </div>
-            </div>
+            {this.headerSection()}
             <div style={{ width: 'auto' }} className="content-block">
               { this.children }
               <div id="wjfooter" className="footer" style={{ backgroundColor: '#565656', paddingTop: '20px', paddingBottom: '40px' }}>
@@ -255,10 +253,7 @@ export class AppTemplate extends Component {
   }
 }
 
-AppTemplate.defaultProps = {
-  dispatch: () => {},
-  auth: { isAuthenticated: false },
-};
+AppTemplate.defaultProps = { dispatch: () => {}, auth: { isAuthenticated: false } };
 
 AppTemplate.propTypes = {
   auth: PropTypes.shape({
