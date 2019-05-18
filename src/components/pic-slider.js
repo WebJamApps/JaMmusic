@@ -18,7 +18,7 @@ class PicSlider extends Component {
       slidesToShow: 1,
       slidesToScroll: 1,
       arrows: false,
-      fade: true
+      fade: true,
     };
   }
 
@@ -42,11 +42,11 @@ class PicSlider extends Component {
   }
 }
 PicSlider.defaultProps = {
-  data: [{ url: '', title: '', _id: 0 }]
+  data: [{ url: '', title: '', _id: 0 }],
 };
 
 PicSlider.propTypes = {
-  data: PropTypes.arrayOf(PropTypes.shape)
+  data: PropTypes.arrayOf(PropTypes.shape),
 };
 
 export default PicSlider;

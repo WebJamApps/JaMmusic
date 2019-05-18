@@ -9,7 +9,7 @@
   },
   "author": "https://github.com/orgs/WebJamApps/teams/handlersandkickers",
   "engines": {
-    "node": ">=12.0.0"
+    "node": ">=12.1.0"
   },
   "files": [
     "webpack.config.js",
@@ -70,6 +70,7 @@
     "prop-types": "latest",
     "react": "latest",
     "react-dom": "latest",
+    "react-google-login": "latest",
     "react-player": "latest",
     "react-redux": "latest",
     "react-router-dom": "latest",
@@ -82,6 +83,7 @@
     "snyk": "latest",
     "style-loader": "latest",
     "superagent": "latest",
+    "terser-webpack-plugin": "latest",
     "url-loader": "latest",
     "url-search-params-polyfill": "latest",
     "webpack": "latest",

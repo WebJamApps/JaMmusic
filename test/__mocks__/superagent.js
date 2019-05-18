@@ -5,7 +5,7 @@ let mockDelay,
     ok: true,
     get: jest.fn(),
     toError: jest.fn(),
-    body: {}
+    body: {},
   };
 
 const Request = {
@@ -46,7 +46,7 @@ const Request = {
   },
   __setMockResponseBody: (body) => {
     mockResponse.body = body;
-  }
+  },
 };
 
 export default Request;

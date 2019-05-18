@@ -1,7 +1,7 @@
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import {
-  updateName, updateWidescreen, updateRole, updateMenu
+  updateName, updateWidescreen, updateRole, updateMenu,
 } from '../../src/store/actions';
 
 const middlewares = [thunk];
@@ -13,7 +13,7 @@ describe('actions', () => {
       name: 'Web JAM LLC',
       menu: '',
       role: '',
-      widescreen: true
+      widescreen: true,
     });
     expect(store).not.toBe(undefined);
     done();
@@ -23,7 +23,7 @@ describe('actions', () => {
       name: 'Web JAM LLC',
       menu: '',
       role: '',
-      widescreen: true
+      widescreen: true,
     });
     const result = store.dispatch(updateName('booya'));
     expect(result.type).toBe('UPDATE_NAME');
@@ -34,7 +34,7 @@ describe('actions', () => {
       name: 'Web JAM LLC',
       menu: '',
       role: '',
-      widescreen: true
+      widescreen: true,
     });
     const result = store.dispatch(updateWidescreen(false));
     expect(result.type).toBe('UPDATE_WIDESCREEN');
@@ -45,7 +45,7 @@ describe('actions', () => {
       name: 'Web JAM LLC',
       menu: '',
       role: '',
-      widescreen: true
+      widescreen: true,
     });
     const result = store.dispatch(updateRole('supreme commander'));
     expect(result.type).toBe('UPDATE_ROLE');
@@ -56,7 +56,7 @@ describe('actions', () => {
       name: 'Web JAM LLC',
       menu: '',
       role: '',
-      widescreen: true
+      widescreen: true,
     });
     const result = store.dispatch(updateMenu('wj'));
     expect(result.type).toBe('UPDATE_MENU');

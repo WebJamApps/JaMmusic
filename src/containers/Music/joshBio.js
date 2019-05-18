@@ -21,7 +21,7 @@ const JoshBio = () => (
     in July of 2012. Vive l’amore!
     </p>
     <blockquote style={{
-      fontStyle: 'italic', textAlign: 'left', marginTop: '5px', fontSize: '9pt'
+      fontStyle: 'italic', textAlign: 'left', marginTop: '5px', fontSize: '9pt',
     }}
     >
       <p>

@@ -18,10 +18,10 @@ to listen.
   );
 };
 Intro.defaultProps = {
-  originals: ''
+  originals: '',
 };
 
 Intro.propTypes = {
-  originals: PropTypes.string
+  originals: PropTypes.string,
 };
 export default Intro;

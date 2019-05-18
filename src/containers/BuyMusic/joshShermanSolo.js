@@ -15,7 +15,7 @@ const JoshShermanSolo = () => (
           + 'url(http://content.cdbaby.com/img/links/link-artwork-cart-light-buy-now.png) 0px 0px no-repeat',
           backgroundSize: '175px, 211px',
           height: '233px',
-          width: '211px'
+          width: '211px',
         }}
         title="Josh Sherman: Solo Acoustic"
       >
