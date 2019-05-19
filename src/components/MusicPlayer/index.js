@@ -266,10 +266,7 @@ class MusicPlayer extends Component {
             </div>
           </section>
           <section id="copyMessage" className="col-12 col-md-7 m-0">
-            <span
-              className="text-success"
-              style={{ fontSize: '0.8em', display: player.displayCopyMessage || 'none' }}
-            >
+            <span className="text-success" style={{ fontSize: '0.8em', display: player.displayCopyMessage || 'none' }}>
               Url copied Url to clipboard
             </span>
           </section>
