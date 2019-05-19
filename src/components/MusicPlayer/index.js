@@ -9,7 +9,7 @@ class MusicPlayer extends Component {
     this.state = {
       song: props.songs[0],
       player: {
-        playing: false, shown: false, isShuffleOn: false,
+        playing: false, shown: false, isShuffleOn: false, displayCopier: 'none', displayCopyMessage: 'none',
       },
     };
     this.state.songs = props.songs;
@@ -23,6 +23,7 @@ class MusicPlayer extends Component {
     this.copyShare = this.copyShare.bind(this);
     this.next = this.next.bind(this);
     this.prev = this.prev.bind(this);
+    this.buttons = this.buttons.bind(this);
     this.updatePlayer = this.updatePlayer.bind(this);
     // this.shown = false;
     this.navigator = navigator;
@@ -67,12 +68,13 @@ class MusicPlayer extends Component {
   }
 
   buttons() {
+    const { player } = this.state;
     return (
       <section className="mt-0 col-12 col-md-7" style={{ marginTop: '4px' }}>
-        <button type="button" id="play-pause" role="menu" onClick={this.play}>Play/Pause</button>
-        <button type="button" role="menu" onClick={this.next}>Next</button>
-        <button type="button" role="menu" onClick={this.prev}>Prev</button>
-        <button type="button" id="shuffle" role="menu" onClick={this.shuffle}>Shuffle</button>
+        <button type="button" id="play-pause" role="menu" className={player.playing ? 'on' : 'off'} onClick={this.play}>Play/Pause</button>
+        <button type="button" role="menu" id="next" onClick={this.next}>Next</button>
+        <button type="button" role="menu" id="prev" onClick={this.prev}>Prev</button>
+        <button type="button" id="shuffle" role="menu" className={player.isShuffleOn ? 'on' : 'off'} onClick={this.shuffle}>Shuffle</button>
         {/* <button type="button" role="menu" onClick={this.share}>Share</button>
         <button type="button" role="menu"><a id="homeLink" href="/?reload=true">Home</a></button> */}
       </section>
@@ -113,14 +115,14 @@ class MusicPlayer extends Component {
         song: copy[0],
         index: 0,
       });
-      document.getElementById('shuffle').classList.remove('on');
+      // document.getElementById('shuffle').classList.remove('on');
     } else {
       const shuffled = songs;
       for (let i = shuffled.length - 1; i > 0; i -= 1) {
         const j = Math.floor(Math.random() * (i + 1));
         [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];// eslint-disable-line security/detect-object-injection
       }
-      document.getElementById('shuffle').classList.add('on');
+      // document.getElementById('shuffle').classList.add('on');
       this.setState({
         songs: shuffled,
         player: { isShuffleOn: true },
@@ -173,13 +175,13 @@ class MusicPlayer extends Component {
       player: { playing: isPlaying },
     });
     // this.state.player.playing = !player.playing;
-    if (isPlaying) {
-      document.getElementById('play-pause').classList.remove('off');
-      document.getElementById('play-pause').classList.add('on');
-    } else {
-      document.getElementById('play-pause').classList.remove('on');
-      document.getElementById('play-pause').classList.add('off');
-    }
+    // if (isPlaying) {
+    //   document.getElementById('play-pause').classList.remove('off');
+    //   document.getElementById('play-pause').classList.add('on');
+    // } else {
+    //   document.getElementById('play-pause').classList.remove('on');
+    //   document.getElementById('play-pause').classList.add('off');
+    // }
     this.updatePlayer();
   }
 
@@ -211,52 +213,61 @@ class MusicPlayer extends Component {
   }
 
   share() {
-    const { shown } = this.state;
-    const el = document.getElementById('copier');
-    if (shown) {
-      el.classList.add('d-none');
-      this.state.shown = false;
+    const { player } = this.state;
+    
+    if (player.displayCopier === 'none') {
+      this.setState({ player: { ...player, displayCopier: 'block' } });
     } else {
-      el.classList.remove('d-none');
-      this.state.shown = true;
+      this.setState({ player: { ...player, displayCopier: 'none' } });
     }
+
+    // const el = document.getElementById('copier');
+    // if (shown) {
+    //   el.classList.add('d-none');
+    //   this.state.shown = false;
+    // } else {
+    //   el.classList.remove('d-none');
+    //   this.state.shown = true;
+    // }
   }
 
   copyShare() {
+    const { player } = this.state;
+
     this.navigator.clipboard.writeText(this.playUrl).then(() => {
       this.share();
-      const el = document.getElementById('copyMessage');
-      el.classList.remove('d-none');
+  
+      this.setState({ player: { ...player, displayCopier: 'block' } });
+      
       setTimeout(() => {
-        el.classList.add('d-none');
+        this.setState({ player: { ...player, displayCopier: 'none' } });
       }, 1500);
     });
   }
 
   render() {
-    const { song } = this.state;
-    // console.log('render');
+    const { song, player } = this.state;
     return (
       <div className="container-fluid">
         <div id="player" className="mb-2 row justify-content-md-center">
           <section id="playSection" className="col-12 mt-2 mr-0 col-md-7" style={{ display: 'inline', textAlign: 'center', marginBottom: '0' }}>
             {this.reactPlayer()}
           </section>
-          {/* <section className="col-12 row col-md-7 m-0 mt-2 d-none" id="copier"> */}
-          {/* <div id="copyInput">
-              <input id="copyUrl" disabled value={this.playUrl} style={{ backgroundColor: '#fff' }} className="" />
-            </div> */}
-          {/* <div id="copyButton" onKeyPress={this.pressKey} role="presentation" onClick={this.copyShare} style={{ cursor: 'pointer' }}>
-              <span id="inputGroup" style={{ fontSize: '0.8em' }}>Copy URL</span>
-            </div> */}
-          {/* </section> */}
-          {/* <section id="copyMessage" className="col-12 col-md-7 d-none m-0">
-            <span className="text-success" style={{ fontSize: '0.8em' }}>Url copied Url to clipboard</span>
-          </section> */}
           <section className="col-12 col-md-7 mt-1" style={{ fontSize: '0.8em', marginTop: '-10px', marginBottom: '0' }}>
             <strong>{song.title}</strong>
           </section>
           {this.buttons()}
+          <section className="row m-0 mt-2" id="copier" style={{ display: player.displayCopier }}>
+            <div id="copyInput" className="col-9">
+              <input id="copyUrl" disabled value={this.playUrl} style={{ backgroundColor: '#fff' }} className="" />
+            </div>
+            <div id="copyButton" className="col-3" role="presentation" onClick={this.copyShare} style={{ cursor: 'pointer' }}>
+              <span id="inputGroup" style={{ fontSize: '0.8em' }}>Copy URL</span>
+            </div>
+          </section>
+          <section id="copyMessage" className="col-12 col-md-7 m-0">
+            <span className="text-success" style={{ fontSize: '0.8em', display: player.displayCopyMessage }}>Url copied Url to clipboard</span>
+          </section>
         </div>
         <div id="sectionUnderButtons" style={{ minHeight: '3in' }}>&nbsp;</div>
       </div>
