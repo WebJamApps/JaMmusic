@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { GoogleLogin, GoogleLogout } from 'react-google-login';
 import { connect } from 'react-redux';
-// import throttle from '../commons/utils';
 import authUtils from './AppTemplate/authUtils';
 
 export class AppTemplate extends Component {
@@ -14,7 +13,6 @@ export class AppTemplate extends Component {
     this.close = this.close.bind(this);
     this.handleKeyPress = this.handleKeyPress.bind(this);
     this.handleKeyMenu = this.handleKeyMenu.bind(this);
-    // this.dispatchWindowResize = this.dispatchWindowResize.bind(this);
     this.toggleMobileMenu = this.toggleMobileMenu.bind(this);
     this.changeNav = this.changeNav.bind(this);
     this.footerLinks = this.footerLinks.bind(this);
@@ -26,7 +24,6 @@ export class AppTemplate extends Component {
   }
 
   componentDidMount() {
-    // window.addEventListener('resize', throttle(this.dispatchWindowResize, 100, { leading: false }), false);
     const username = localStorage.getItem('username');
     if (typeof username === 'string') {
       document.getElementsByClassName('googleLogin')[0].style.display = 'none';
@@ -97,19 +94,21 @@ export class AppTemplate extends Component {
     return true;
   }
 
-  // dispatchWindowResize() { // eslint-disable-line class-methods-use-this
-  //   console.log(window.innerWidth);// eslint-disable-line no-console
-  // }
-
   changeNav(where) { // eslint-disable-line class-methods-use-this
     let subpath = '/wj-music/';
     if (where === 'home') subpath = '/';
     return window.location.assign(`${process.env.BackendUrl}${subpath}${where}`);
   }
 
-  handleKeyPress(e) { if (e.key === 'Escape') this.setState({ menuOpen: false }); }
+  handleKeyPress(e) {
+    if (e.key === 'Escape') return this.setState({ menuOpen: false });
+    return null;
+  }
 
-  handleKeyMenu(e) { if (e.key === 'Enter') this.toggleMobileMenu(); }
+  handleKeyMenu(e) {
+    if (e.key === 'Enter') return this.toggleMobileMenu();
+    return null;
+  }
 
   googleButtons(type, index) {
     if (type === 'login') {
@@ -252,7 +251,7 @@ export class AppTemplate extends Component {
     );
   }
 }
-
+/* istanbul ignore next */
 AppTemplate.defaultProps = { dispatch: () => {}, auth: { isAuthenticated: false } };
 
 AppTemplate.propTypes = {
