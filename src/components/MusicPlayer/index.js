@@ -257,7 +257,7 @@ class MusicPlayer extends Component {
             <strong>{song.title}</strong>
           </section>
           {this.buttons()}
-          <section className="row m-0 mt-2" id="copier" style={{ display: player.displayCopier }}>
+          <section className="row m-0 mt-2" id="copier" style={{ display: player.displayCopier || 'none' }}>
             <div id="copyInput" className="col-9">
               <input id="copyUrl" disabled value={this.playUrl} style={{ backgroundColor: '#fff' }} className="" />
             </div>
@@ -266,7 +266,12 @@ class MusicPlayer extends Component {
             </div>
           </section>
           <section id="copyMessage" className="col-12 col-md-7 m-0">
-            <span className="text-success" style={{ fontSize: '0.8em', display: player.displayCopyMessage }}>Url copied Url to clipboard</span>
+            <span
+              className="text-success"
+              style={{ fontSize: '0.8em', display: player.displayCopyMessage || 'none' }}
+            >
+              Url copied Url to clipboard
+            </span>
           </section>
         </div>
         <div id="sectionUnderButtons" style={{ minHeight: '3in' }}>&nbsp;</div>
