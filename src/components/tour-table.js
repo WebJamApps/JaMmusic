@@ -32,11 +32,15 @@ export class TourTable extends Component {// eslint-disable-line import/prefer-d
         options: {
           filter: false,
           sort: true,
-          customBodyRender: (value, tableMeta, updateValue) => (
-            <p>
-              { ReactHtmlParser(value) }
-            </p>
-          ),
+          customBodyRender: (value, tableMeta, updateValue) => {
+            console.log(tableMeta);// eslint-disable-line no-console
+            console.log(updateValue);// eslint-disable-line no-console
+            return (
+              <p>
+                { ReactHtmlParser(value) }
+              </p>
+            );
+          },
         },
       });
     }
