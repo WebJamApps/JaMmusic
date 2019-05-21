@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import MUIDataTable from 'mui-datatables';
+import ReactHtmlParser from 'react-html-parser';
 import PropTypes from 'prop-types';
 import '@babel/polyfill';
 import { connect } from 'react-redux';
@@ -28,7 +29,15 @@ export class TourTable extends Component {// eslint-disable-line import/prefer-d
       this.columns.push({
         name: titles[i], // eslint-disable-line security/detect-object-injection
         label: titles[i], // eslint-disable-line security/detect-object-injection
-        options: { filter: true, sort: true },
+        options: {
+          filter: false,
+          sort: true,
+          customBodyRender: (value, tableMeta, updateValue) => (
+            <p>
+              { ReactHtmlParser(value) }
+            </p>
+          ),
+        },
       });
     }
   }

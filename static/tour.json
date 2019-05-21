@@ -1,9 +1,8 @@
-[
-  {
+[{
     "Date": "Dec 24, 2018",
     "Time": "4:30 pm",
     "Location": "Salem, VA",
-    "Venue": "College Lutheran Church",
+    "Venue": "<a href=\"http://collegelutheran.org/\" rel=\"noopener noreferrer\" target=\"_blank\">College Lutheran Church<\/a>",
     "Tickets": "Freewill"
   },
   {
