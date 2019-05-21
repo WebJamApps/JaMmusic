@@ -19,7 +19,6 @@ const authFunc = body => (dispatch, getState) => {
     .set({ Accept: 'application/json' }).send(body)
     .then((data) => {
       if (!data.body) return dispatch(authError(new Error('authentication failed')));
-      // console.log(data.body);
       return dispatch(gotToken(data.body));
     })
     .catch(err => dispatch(authError(err)));

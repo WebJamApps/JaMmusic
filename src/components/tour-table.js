@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import MUIDataTable from 'mui-datatables';
+import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 import ReactHtmlParser from 'react-html-parser';
 import PropTypes from 'prop-types';
 import '@babel/polyfill';
 import { connect } from 'react-redux';
 import jquery from 'jquery';
-// import tour from '../tour';
 
 export class TourTable extends Component {// eslint-disable-line import/prefer-default-export
   constructor(props) {
@@ -15,12 +15,35 @@ export class TourTable extends Component {// eslint-disable-line import/prefer-d
     this.columns = [];
     this.setColumns = this.setColumns.bind(this);
     this.fetchJson = this.fetchJson.bind(this);
+    this.getMuiTheme = this.getMuiTheme.bind(this);
     this.setColumns();
     this.fetchJson();
   }
 
   shouldComponentUpdate() {
     return true;
+  }
+
+  getMuiTheme() { // eslint-disable-line class-methods-use-this
+    return createMuiTheme({
+      overrides: {
+        MUIDataTableHeadCell: {
+          root: {
+            padding: '4px',
+          },
+        },
+        MuiTableRow: {
+          head: {
+            height: '40px',
+          },
+        },
+        MuiTableCell: {
+          root: {
+            padding: '4px',
+          },
+        },
+      },
+    });
   }
 
   setColumns() {
@@ -31,16 +54,12 @@ export class TourTable extends Component {// eslint-disable-line import/prefer-d
         label: titles[i], // eslint-disable-line security/detect-object-injection
         options: {
           filter: false,
-          sort: true,
-          customBodyRender: (value, tableMeta, updateValue) => {
-            console.log(tableMeta);// eslint-disable-line no-console
-            console.log(updateValue);// eslint-disable-line no-console
-            return (
-              <p>
-                { ReactHtmlParser(value) }
-              </p>
-            );
-          },
+          sort: false,
+          customBodyRender: value => (
+            <p style={{ margin: 0, fontSize: 'inherit' }}>
+              { ReactHtmlParser(value) }
+            </p>
+          ),
         },
       });
     }
@@ -63,12 +82,25 @@ export class TourTable extends Component {// eslint-disable-line import/prefer-d
     return (
       <div className="tourTable">
         <div style={{ maxWidth: '100%' }}>
-          <MUIDataTable
-            options={{ filterType: 'checkbox' }}
-            columns={this.columns}
-            data={data.tourArr}
-            title="Tour"
-          />
+          <MuiThemeProvider theme={this.getMuiTheme()}>
+            <MUIDataTable
+              options={{
+                filterType: 'dropdown',
+                pagination: false,
+                responsive: 'scroll',
+                filter: false,
+                download: false,
+                search: false,
+                print: false,
+                viewColumns: false,
+                selectableRows: 'none',
+                fixedHeader: false,
+              }}
+              columns={this.columns}
+              data={data.tourArr}
+              title="Tour"
+            />
+          </MuiThemeProvider>
         </div>
       </div>
     );
