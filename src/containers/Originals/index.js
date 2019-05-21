@@ -28,6 +28,7 @@ Original Songs
           </h4>
           <MusicPlayer songs={this.urls} copy={this.copy} />
         </div>
+        <div style={{ minHeight: '.5in' }}>&nbsp;</div>
       </div>
     );
   }
