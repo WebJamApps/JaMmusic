@@ -1,7 +1,7 @@
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import request from '../__mocks__/superagent';
-import getImages from '../../src/store/fetchActions';
+import getImages from '../../src/containers/Music/musicActions';
 
 const middlewares = [thunk];
 const mockStore = configureMockStore(middlewares);

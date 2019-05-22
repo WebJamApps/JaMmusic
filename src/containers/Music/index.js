@@ -1,29 +1,25 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import PicSlider from '../components/pic-slider';
-// import { TourTable } from '../components/tour-table';
-import DefaultTable from '../components/tour-table';
-import JoshBio from './Music/joshBio';
-import MariaBio from './Music/mariaBio';
-import EmersonBio from './Music/emersonBio';
-import BrianBio from './Music/brianBio';
-import Wjband from './Music/wjBand';
-import Intro from './Music/intro';
-import getImages from '../store/fetchActions';
+import PicSlider from '../../components/pic-slider';
+import DefaultTable from '../../components/tour-table';
+import JoshBio from './joshBio';
+import MariaBio from './mariaBio';
+import EmersonBio from './emersonBio';
+import BrianBio from './brianBio';
+import Wjband from './wjBand';
+import Intro from './intro';
+import getImages from './musicActions';
 
 export class Music extends Component {
   constructor(props) {
     super(props);
     this.state = { };
-    this.originals = `${process.env.BackendUrl}/wj-music/originals`;
     const { dispatch } = this.props;
     dispatch(getImages());
   }
 
-  componentDidMount() {
-    document.title = 'Music | Web Jam LLC';
-  }
+  componentDidMount() { document.title = 'Music | Web Jam LLC'; }
 
   render() {
     const { images } = this.props;
@@ -37,8 +33,7 @@ export class Music extends Component {
           </div>
         </div>
         <div className="material-content elevation2" style={{ maxWidth: '998px', margin: 'auto' }}>
-          <Intro originals={this.originals} />
-          {/* <h4 style={{ textAlign: 'center', marginBottom: '4px' }}><strong>Tour</strong></h4> */}
+          <Intro originals="/music/originals" />
           <div className="search-table-outer" style={{ position: 'relative', overflowX: 'auto' }}><DefaultTable /></div>
           <section className="afterTable">
             <JoshBio />
