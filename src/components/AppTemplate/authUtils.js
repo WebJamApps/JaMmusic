@@ -2,7 +2,6 @@ import authenticate, { logout } from './authActions';
 
 const responseGoogleLogin = (response, dispatch) => { // eslint-disable-line class-methods-use-this
   console.log(response);// eslint-disable-line no-console
-  // const { dispatch } = this.props;
   document.getElementsByClassName('googleLogin')[0].style.display = 'none';
   document.getElementsByClassName('googleLogout')[0].style.display = 'block';
   const uri = window.location.href;
@@ -27,9 +26,6 @@ const responseGoogleFailLogin = (response) => { // eslint-disable-line class-met
 const responseGoogleLogout = (response, dispatch) => { // eslint-disable-line class-methods-use-this
   console.log('logged out');// eslint-disable-line no-console
   console.log(response);// eslint-disable-line no-console
-  // const { auth } = this.props;
-  // const { dispatch } = this.props;
-  // auth.isAuthenticated = false;
   dispatch(logout());
   window.location.reload();
 };

@@ -75,6 +75,7 @@
     "react-redux": "latest",
     "react-router-dom": "latest",
     "react-slick": "latest",
+    "react-html-parser": "latest",
     "redux": "latest",
     "redux-logger": "latest",
     "redux-persist": "latest",

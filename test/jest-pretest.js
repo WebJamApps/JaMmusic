@@ -11,3 +11,8 @@ window.matchMedia = window.matchMedia || function match() {
 
 configure({ adapter: new Adapter() });
 document.body.innerHTML = '<div id="root"></div>';
+
+window.HTMLMediaElement.prototype.load = () => { /* do nothing */ };
+window.HTMLMediaElement.prototype.play = () => { /* do nothing */ };
+window.HTMLMediaElement.prototype.pause = () => { /* do nothing */ };
+window.HTMLMediaElement.prototype.addTextTrack = () => { /* do nothing */ };

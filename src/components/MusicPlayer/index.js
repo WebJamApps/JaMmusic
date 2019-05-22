@@ -81,20 +81,19 @@ class MusicPlayer extends Component {
     );
   }
 
-  pressKey() {}// eslint-disable-line class-methods-use-this
-
   updatePlayer() {
     // look for the id of the song and then filter the song from the rest of the list.
-    const { search } = window.location;
+    // const { search } = window.location;
     const { index } = this.state;
     const { songs } = this.state;
+    const song = songs[parseInt(index, 0)];
+    this.setState({ song });
     // const { first } = this.state;
-    const oneplayer = search.includes('oneplayer=true');
+    // const oneplayer = search.includes('oneplayer=true');
     // if it's not in one player mode, then just go on as normal.
-    if (!oneplayer) {
-      this.state.song = songs[index];// eslint-disable-line security/detect-object-injection
-      // console.log(this.url);
-    }
+    // if (!oneplayer) {
+    // console.log(this.url);
+    // }
     // else if (first) {
     //   const id = search.match(/id=.+/g)[0].slice(3);
     //   this.state.song = songs.filter(song => song.id === id)[0];// eslint-disable-line prefer-destructuring
@@ -135,10 +134,6 @@ class MusicPlayer extends Component {
 
   playEnd() {
     this.next();
-  }
-
-  playTrue() {
-    this.updatePlayer();
   }
 
   prev() {
