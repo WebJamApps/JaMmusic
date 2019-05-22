@@ -37,16 +37,16 @@ form {
 }
 
 h1 {
-  font-size: 34px;
+  font-size: 34pt;
 }
 
 h2 {
-  font-size: 30px;
+  font-size: 30pt;
 }
 
 h3 {
   font-weight: bold;
-  font-size: 24px;
+  font-size: 24pt;
 }
 
 h3.au-target.header-text.ohaf-header {
@@ -55,11 +55,11 @@ h3.au-target.header-text.ohaf-header {
 }
 
 h4 {
-  font-size: 18px;
+  font-size: 18pt;
 }
 
 h5 {
-  font-size: 16px;
+  font-size: 16pt;
   margin-bottom: 20px;
   margin-top: 0;
 }
@@ -173,6 +173,18 @@ aside.instrumentList {
 td.wjBand {
   text-align: center;
   background-color: #e6ffe6;
+}
+
+td p a {
+  font-size: inherit
+}
+
+h6 {
+  text-align: center;
+  margin-bottom: 0;
+  font-weight: 'bold';
+  color: 'black';
+  font-style: 'italic';
 }
 
 /* Slideshow container */
