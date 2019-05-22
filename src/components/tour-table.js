@@ -29,37 +29,14 @@ export class TourTable extends Component {// eslint-disable-line import/prefer-d
       overrides: {
         MUIDataTableHeadCell: {
           root: {
-            padding: '4px', fontWeight: 'bold', color: 'black', fontSize: '11pt',
-          },
+            padding: '4px', fontWeight: 'bold', color: 'black', fontSize: '11pt', 
+          }, 
         },
-        MuiTableRow: {
-          head: {
-            height: '40px',
-          },
-        },
-        MuiTableCell: {
-          root: {
-            padding: '4px',
-          },
-        },
-        MUIDataTableToolbar: {
-          actions: {
-            display: 'none',
-          },
-          root: {
-            paddingLeft: 0, minHeight: 'inherit',
-          },
-        },
-        MUIDataTable: {
-          responsiveScroll: {
-            maxHeight: '2.75in',
-          },
-        },
-        MuiTypography: {
-          h6: {
-            color: 'black', fontWeight: 'bold', fontStyle: 'italic',
-          },
-        },
+        MuiTableRow: { head: { height: '40px' } },
+        MuiTableCell: { root: { padding: '4px' } },
+        MUIDataTableToolbar: { actions: { display: 'none' }, root: { paddingLeft: 0, minHeight: 'inherit' } },
+        MUIDataTable: { responsiveScroll: { maxHeight: '2.75in' } },
+        MuiTypography: { h6: { color: 'black', fontWeight: 'bold', fontStyle: 'italic' } },
       },
     });
   }
