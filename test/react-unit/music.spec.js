@@ -1,6 +1,6 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import { Music } from '../../src/containers/music';
+import { Music } from '../../src/containers/Music';
 
 function setup(data) {
   let wrapper;

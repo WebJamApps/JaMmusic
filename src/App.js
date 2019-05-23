@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import DefaultMusic from './containers/music';
+import DefaultMusic from './containers/Music';
 import BuyMusic from './containers/buymusic';
 import AppFourOhFour from './containers/404';
 import AppTemp from './components/app-main';

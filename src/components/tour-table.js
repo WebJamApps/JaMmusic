@@ -26,11 +26,14 @@ export class TourTable extends Component {// eslint-disable-line import/prefer-d
 
   getMuiTheme() { // eslint-disable-line class-methods-use-this
     return createMuiTheme({
+      typography: {
+        useNextVariants: true,
+      },
       overrides: {
         MUIDataTableHeadCell: {
           root: {
-            padding: '4px', fontWeight: 'bold', color: 'black', fontSize: '11pt', 
-          }, 
+            padding: '4px', fontWeight: 'bold', color: 'black', fontSize: '11pt',
+          },
         },
         MuiTableRow: { head: { height: '40px' } },
         MuiTableCell: { root: { padding: '4px' } },
