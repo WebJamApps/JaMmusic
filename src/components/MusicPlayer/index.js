@@ -46,7 +46,7 @@ class MusicPlayer extends Component {
   get playUrl() {
     const { song } = this.state;
     // const song = data.urls[0];
-    return `${document.location.origin}/wj-music/${song.category}?oneplayer=true&id=${song._id}`;
+    return `${document.location.origin}/music/${song.category}?oneplayer=true&id=${song._id}`;
   }
 
   reactPlayer() {
@@ -129,7 +129,7 @@ class MusicPlayer extends Component {
         index: 0,
       });
     }
-    this.updatePlayer();
+    return this.updatePlayer();
   }
 
   playEnd() {
@@ -188,8 +188,9 @@ class MusicPlayer extends Component {
   }
 
   next() {
-    this.state.index += 1;
-    const { index } = this.state;
+    let { index } = this.state;
+    index += 1;
+    // const { index } = this.state;
     const { songs } = this.state;
     if (index >= songs.length) {
       this.setState({
@@ -201,15 +202,16 @@ class MusicPlayer extends Component {
     } else {
       this.setState({
         song: songs[index], // eslint-disable-line security/detect-object-injection
+        index,
       });
       // this.url = this.urls[this.index];
     }
-    this.updatePlayer();
+    return this.updatePlayer();
   }
 
   share() {
     const { player } = this.state;
-    
+
     if (player.displayCopier === 'none') {
       this.setState({ player: { ...player, displayCopier: 'block' } });
     } else {
@@ -231,9 +233,9 @@ class MusicPlayer extends Component {
 
     this.navigator.clipboard.writeText(this.playUrl).then(() => {
       this.share();
-  
+
       this.setState({ player: { ...player, displayCopier: 'block' } });
-      
+
       setTimeout(() => {
         this.setState({ player: { ...player, displayCopier: 'none' } });
       }, 1500);
