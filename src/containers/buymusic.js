@@ -8,6 +8,10 @@ export default class BuyMusic extends Component {
     this.state = {};
   }
 
+  componentDidMount() {
+    document.title = 'Buy Music | Web Jam LLC';
+  }
+
   render() {
     return (
       <div className="page-content">

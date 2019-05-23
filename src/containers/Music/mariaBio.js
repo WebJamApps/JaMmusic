@@ -16,7 +16,7 @@ const MariaBio = () => (
       force for the couple; Maria is a fabulous wife and is the organization behind the duo.
     </p>
     <blockquote style={{
-      fontStyle: 'italic', textAlign: 'left', marginTop: '5px', fontSize: '9pt'
+      fontStyle: 'italic', textAlign: 'left', marginTop: '5px', fontSize: '9pt',
     }}
     >
       <p>

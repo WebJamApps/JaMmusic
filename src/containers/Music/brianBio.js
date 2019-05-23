@@ -7,7 +7,7 @@ const BrianBio = () => (
       alt="brian"
       src="../static/imgs/BrianL.png"
       style={{
-        width: '288px', display: 'block', margin: 'auto', textAlign: 'center'
+        width: '288px', display: 'block', margin: 'auto', textAlign: 'center',
       }}
     />
     <p className="bioText">
