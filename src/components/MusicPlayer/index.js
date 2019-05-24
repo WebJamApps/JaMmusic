@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-// import { connect } from 'react-redux';
 import ReactPlayer from 'react-player';
 import PropTypes from 'prop-types';
 
@@ -35,24 +34,21 @@ class MusicPlayer extends Component {
   }
 
   componentDidMount() {
-    this.updatePlayer();
+    return this.updatePlayer();
   }
 
   shouldComponentUpdate() {
-    // console.log('shouldComponentUpdate');
     return true;
   }
 
   get playUrl() {
     const { song } = this.state;
-    // const song = data.urls[0];
     return `${document.location.origin}/music/${song.category}?oneplayer=true&id=${song._id}`;
   }
 
   reactPlayer() {
     const { song } = this.state;
     const { player } = this.state;
-    // console.log(this.playing);
     return (
       <ReactPlayer
         style={{ backgroundColor: '#eee', textAlign: 'center' }}
@@ -88,6 +84,7 @@ class MusicPlayer extends Component {
     const { songs } = this.state;
     const song = songs[parseInt(index, 0)];
     this.setState({ song });
+    // console.log(song);
     // const { first } = this.state;
     // const oneplayer = search.includes('oneplayer=true');
     // if it's not in one player mode, then just go on as normal.
@@ -114,14 +111,12 @@ class MusicPlayer extends Component {
         song: copy[0],
         index: 0,
       });
-      // document.getElementById('shuffle').classList.remove('on');
     } else {
       const shuffled = songs;
       for (let i = shuffled.length - 1; i > 0; i -= 1) {
         const j = Math.floor(Math.random() * (i + 1));
         [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];// eslint-disable-line security/detect-object-injection
       }
-      // document.getElementById('shuffle').classList.add('on');
       this.setState({
         songs: shuffled,
         player: { isShuffleOn: true },
@@ -132,34 +127,24 @@ class MusicPlayer extends Component {
     return this.updatePlayer();
   }
 
-  playEnd() {
-    this.next();
-  }
+  playEnd() { this.next(); }
 
   prev() {
-    // console.log('prev');
     const { index } = this.state;
     const minusIndex = index - 1;
     const { songs } = this.state;
-    // console.log(minusIndex);
     if (minusIndex < 0) {
       const newIndex = songs.length - 1;
-      // console.log(newIndex);
       this.setState({
         index: newIndex,
         song: songs[newIndex], // eslint-disable-line security/detect-object-injection
       });
-      // this.state.index = newIndex;
-      // this.state.song = songs[newIndex];// eslint-disable-line security/detect-object-injection
     } else {
       this.setState({
         song: songs[minusIndex], // eslint-disable-line security/detect-object-injection
         index: minusIndex,
       });
-      // this.state.song = songs[minusIndex];// eslint-disable-line security/detect-object-injection
-      // this.state.index = minusIndex;
     }
-    // console.log(this.state.song);
     this.updatePlayer();
   }
 
@@ -169,14 +154,6 @@ class MusicPlayer extends Component {
     this.setState({
       player: { playing: isPlaying },
     });
-    // this.state.player.playing = !player.playing;
-    // if (isPlaying) {
-    //   document.getElementById('play-pause').classList.remove('off');
-    //   document.getElementById('play-pause').classList.add('on');
-    // } else {
-    //   document.getElementById('play-pause').classList.remove('on');
-    //   document.getElementById('play-pause').classList.add('off');
-    // }
     this.updatePlayer();
   }
 
@@ -190,34 +167,28 @@ class MusicPlayer extends Component {
   next() {
     let { index } = this.state;
     index += 1;
-    // const { index } = this.state;
     const { songs } = this.state;
     if (index >= songs.length) {
       this.setState({
         index: 0,
         song: songs[0],
       });
-      // this.state.index = 0;
-      // this.state.song = songs[0];// eslint-disable-line security/detect-object-injection
     } else {
       this.setState({
         song: songs[index], // eslint-disable-line security/detect-object-injection
         index,
       });
-      // this.url = this.urls[this.index];
     }
     return this.updatePlayer();
   }
 
   share() {
     const { player } = this.state;
-
     if (player.displayCopier === 'none') {
       this.setState({ player: { ...player, displayCopier: 'block' } });
     } else {
       this.setState({ player: { ...player, displayCopier: 'none' } });
     }
-
     // const el = document.getElementById('copier');
     // if (shown) {
     //   el.classList.add('d-none');
@@ -230,12 +201,9 @@ class MusicPlayer extends Component {
 
   copyShare() {
     const { player } = this.state;
-
     this.navigator.clipboard.writeText(this.playUrl).then(() => {
       this.share();
-
       this.setState({ player: { ...player, displayCopier: 'block' } });
-
       setTimeout(() => {
         this.setState({ player: { ...player, displayCopier: 'none' } });
       }, 1500);
@@ -277,13 +245,8 @@ MusicPlayer.defaultProps = {
   songs: [{ url: '' }],
   copy: [{ url: '' }],
 };
-
 MusicPlayer.propTypes = {
   songs: PropTypes.arrayOf(PropTypes.shape),
   copy: PropTypes.arrayOf(PropTypes.shape),
 };
-
-/* istanbul ignore next */
-// const mapStoreToProps = store => ({ songs: store.songs.songs });
-// export default connect(mapStoreToProps)(MusicPlayer);
 export default MusicPlayer;
