@@ -35,11 +35,11 @@ class MusicPlayer extends Component {
   }
 
   componentDidMount() {
-    console.log(window.location);
-    if (window.location.href.includes('http:')) {
-      console.log(true);
-      return this.fixLocalUtube();
-    }
+    // console.log(window.location);
+    // if (window.location.href.includes('http:')) {
+    //   console.log(true);
+    //   return this.fixLocalUtube();
+    // }
     return this.updatePlayer();
   }
 
@@ -57,7 +57,7 @@ class MusicPlayer extends Component {
   reactPlayer() {
     const { song } = this.state;
     const { player } = this.state;
-    console.log(song);
+    // console.log(song);
     return (
       <ReactPlayer
         style={{ backgroundColor: '#eee', textAlign: 'center' }}
@@ -86,28 +86,28 @@ class MusicPlayer extends Component {
     );
   }
 
-  fixLocalUtube() {
-    const { songs } = this.state;
-    for (let i = 0; i < songs.length; i += 1) { // eslint-disable-next-line security/detect-object-injection
-      if (songs[i].url.includes('https://www.youtube'))songs[i].url = songs[i].url.replace('https:', 'http:');
-    }
-    console.log(songs);
-    this.setState({ songs });
-    return this.shouldComponentUpdate();
-  }
+  // fixLocalUtube() {
+  //   const { songs } = this.state;
+  //   for (let i = 0; i < songs.length; i += 1) { // eslint-disable-next-line security/detect-object-injection
+  //     if (songs[i].url.includes('https://www.youtube'))songs[i].url = songs[i].url.replace('https:', 'http:');
+  //   }
+  //   console.log(songs);
+  //   this.setState({ songs });
+  //   return this.shouldComponentUpdate();
+  // }
 
   updatePlayer() {
-    if (window.location.href.includes('http:')) {
-      console.log(true);
-      this.fixLocalUtube();
-    }
+    // if (window.location.href.includes('http:')) {
+    //   console.log(true);
+    //   this.fixLocalUtube();
+    // }
     // look for the id of the song and then filter the song from the rest of the list.
     // const { search } = window.location;
     const { index } = this.state;
     const { songs } = this.state;
     const song = songs[parseInt(index, 0)];
     this.setState({ song });
-    console.log(song);
+    // console.log(song);
     // const { first } = this.state;
     // const oneplayer = search.includes('oneplayer=true');
     // if it's not in one player mode, then just go on as normal.
@@ -210,11 +210,11 @@ class MusicPlayer extends Component {
   next() {
     let { index } = this.state;
     index += 1;
-    this.fixLocalUtube();
+    // this.fixLocalUtube();
     // const { index } = this.state;
     const { songs } = this.state;
-    console.log('inside next');
-    console.log(songs);
+    // console.log('inside next');
+    // console.log(songs);
     if (index >= songs.length) {
       this.setState({
         index: 0,
