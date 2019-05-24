@@ -8,7 +8,7 @@ export class Originals extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      songs: [{ url: '' }],
+      songs: props.songs.songs,
       // copy: [{ url: '' }],
     };
     this.populateSongs = this.populateSongs.bind(this);
@@ -106,7 +106,7 @@ Original Songs
 }
 Originals.propTypes = {
   dispatch: PropTypes.func,
-  songs: PropTypes.shape({}),
+  songs: PropTypes.shape({ songs: PropTypes.arrayOf(PropTypes.shape({})) }),
 };
 /* istanbul ignore next */
 Originals.defaultProps = { dispatch: () => {}, songs: { songs: [{ url: '' }] } };

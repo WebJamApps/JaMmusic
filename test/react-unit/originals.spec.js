@@ -1,11 +1,11 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import Originals from '../../src/containers/Originals';
+import { Originals } from '../../src/containers/Originals';
 import MusicPlayer from '../../src/components/MusicPlayer';
 
 function setup() {
-  const props = {};
-  
+  const props = { songs: { songs: [{ url: '' }, { url: '' }] } };
+
   const wrapper = shallow(<Originals {...props} />);
   return { wrapper, props };
 }
