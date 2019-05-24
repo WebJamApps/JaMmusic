@@ -7,86 +7,33 @@ import getSongs from '../songsActions';
 export class Originals extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      songs: props.songs.songs,
-      // copy: [{ url: '' }],
-    };
+    this.state = { songs: props.songs.songs };
     this.populateSongs = this.populateSongs.bind(this);
-    // /this.sleep = this.sleep.bind(this);
-    // this.fixLocalUtube();
-    // this.urls = songData.songs.filter(song => song.category === 'originals');
-    // this.copy = Array.from(songData.songs.filter(song => song.category === 'originals'));
-    // this.populateSongs();
+    this.setStateAsync = this.setStateAsync.bind(this);
   }
 
-  async componentWillMount() {
-    await this.populateSongs();
-  }
+  componentWillMount() { return this.populateSongs(); }
 
-  componentDidMount() {
-    // const { dispatch } = this.props;
-    document.title = 'Original Songs | Web Jam LLC';
-    // const { songs } = this.state;
-    // if (songs.length === 1) return this.populateSongs();
-    // return this.shouldComponentUpdate();
-    // await dispatch(getSongs());
-    // const { songs } = this.props;
-    // this.setState({
-    //   songs: songs.songs.filter(song => song.category === 'originals'),
-    //   copy: Array.from(songs.songs.filter(song => song.category === 'originals')),
-    // });
-    // console.log(this.state);
-    // return this.shouldComponentUpdate();
-    // this.setState({
-    //   urls: this.urls,
-    //   copy: this.copy,
-    // });
-    // this.fixLocalUtube();
-  }
+  componentDidMount() { document.title = 'Original Songs | Web Jam LLC'; }
 
-  // shouldComponentUpdate() {
-  //   // console.log('shouldComponentUpdate');
-  //   return true;
-  // }
+  setStateAsync(state) {
+    return new Promise((resolve) => {
+      this.setState(state, resolve);
+    });
+  }
 
   async populateSongs() {
     const { dispatch } = this.props;
     await dispatch(getSongs());
     const { songs } = this.props;
-    this.setState({
+    await this.setStateAsync({
       songs: songs.songs.filter(song => song.category === 'originals'),
-      // copy: Array.from(songs.songs.filter(song => song.category === 'originals')),
     });
-    // const stateSongs = this.state.songs;// eslint-disable-line react/destructuring-assignment
-    // console.log(stateSongs);// eslint-disable-line no-console
-    // await this.sleep(2000);
-    return Promise.resolve(true);
+    return true;
   }
 
-  // sleep(ms) { // eslint-disable-line class-methods-use-this
-  //   console.log('sleep');// eslint-disable-line no-console
-  //   return new Promise((resolve) => {
-  //     setTimeout(resolve(true), ms);
-  //   });
-  // }
-
-  // fixLocalUtube() {
-  //   const { urls } = this.state;
-  //   for (let i = 0; i < urls.length; i += 1) { // eslint-disable-next-line security/detect-object-injection
-  //     if (urls[i].url.includes('https://www.youtube')) urls[i].url = urls[i].url.replace('https:', 'http:');
-  //   }
-  //   console.log(urls);// eslint-disable-line no-console
-  //   this.setState({ urls, copy: urls });
-  // }
-
   render() {
-    // this.fixLocalUtube();
     const { songs } = this.state;
-    // console.log(songs);// eslint-disable-line no-console
-    // const originalSongs = songs.songs.filter(song => song.category === 'originals');
-    // if (songs.length === 1) return this.populateSongs();
-    //   return this
-    // console.log(this.copy);
     return (
       <div className="page-content">
         <div style={{ maxWidth: '4in', margin: 'auto', textAlign: 'center' }}>
@@ -101,7 +48,6 @@ Original Songs
         <div style={{ minHeight: '.5in' }}>&nbsp;</div>
       </div>
     );
-    // }
   }
 }
 Originals.propTypes = {
