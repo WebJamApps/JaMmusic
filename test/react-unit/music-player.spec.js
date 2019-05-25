@@ -8,8 +8,13 @@ function setup() {
   const copy = Array.from(songData.songs.filter(song => song.category === 'originals'));
 
   const props = { songs, copy };
+  
+  window.document.body.innerHTML = '<div id="sidebar"></div><div id="header"/><div id="contentBlock"/>'
+    + '<div id="wjfooter"/><div id="mobilemenutoggle"/><div id="pageContent"/>';
 
-  const wrapper = mount(<MusicPlayer {...props} />);
+  const wrapper = mount(<MusicPlayer {...props} />, {
+    attachTo: document.getElementById('sidebar'),
+  });
   return { wrapper, props };
 }
 
@@ -17,6 +22,7 @@ describe('Music player component init', () => {
   it('does nothing', (done) => {
     done();
   });
+
   it('renders the Music Player component', () => {
     const { wrapper } = setup();
     expect(wrapper.find('#mainPlayer').exists()).toBe(true);
@@ -37,10 +43,8 @@ describe('Music player component init', () => {
   it('shuffles the songs', () => {
     const mp = new MusicPlayer({ songs: [{ _id: '123' }, { _id: '456' }], copy: [{ _id: '123' }, { _id: '456' }] });
     mp.state = { songs: [{ _id: '123' }, { _id: '456' }], copy: [{ _id: '123' }, { _id: '456' }], player: { isShuffleOn: false } };
-    mp.updatePlayer = () => true;
     mp.setState = () => {};
-    const result = mp.shuffle();
-    expect(result).toBe(true);
+    mp.shuffle();
   });
 
   it('should find and simulate stop shuffle and confirm shuffling is off', () => {
@@ -62,10 +66,8 @@ describe('Music player component init', () => {
     mp.state = {
       index: 0, songs: [{ _id: '123' }, { _id: '456' }], copy: [{ _id: '123' }, { _id: '456' }], player: { isShuffleOn: false },
     };
-    mp.updatePlayer = () => true;
     mp.setState = () => {};
-    const result = mp.next();
-    expect(result).toBe(true);
+    mp.next();
   });
 
   it('should find and simulate a previous song function', () => {
@@ -107,9 +109,40 @@ describe('Music player component init', () => {
     wrapper.instance().share();
     expect(wrapper.instance().state.player.displayCopier).toBe('none');
   });
+  
+  it('should toggle on copying/share pane', () => {
+    const { wrapper } = setup();
+    wrapper.instance().setState({ player: { displayCopier: 'none' } });
+    wrapper.instance().share();
+    expect(wrapper.instance().state.player.displayCopier).toBe('block');
+  });
 
   it('should test props passed to Music Player', () => {
     const { wrapper, props } = setup();
     expect(wrapper.props().songs).toEqual(props.copy);
+  });
+  
+  it('should test one player mode', () => {
+    const { location } = window;
+    delete window.location;
+    
+    window.location = {
+      search: '?oneplayer=true&id=28ru9weis2309urihw9098ewuis',
+      pathname: '/music/original',
+      href: '/music',
+    };
+
+    const { wrapper } = setup();
+    wrapper.update();
+    
+    // restore window
+    window.location = location;
+    expect(wrapper.instance().state.player.onePlayerMode).toBeTruthy();
+  });
+  
+  it('finish off one-player mode to home', () => {
+    const { wrapper } = setup();
+    wrapper.find('button#h').simulate('click');
+    expect(window.location.href).toBe(undefined);
   });
 });
