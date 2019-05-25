@@ -96,10 +96,7 @@ label.checkboxes-label {
 }
 
 section {
-  margin: 0 20px;
-  margin-left: 0;
   text-align: center;
-  margin-top: 40px;
 }
 
 strong {
@@ -909,6 +906,11 @@ button.on {
   border-top-right-radius: 0 !important;
   border-bottom-right-radius: 0 !important;
   font-size: 0.8em;
+}
+
+.copySuccess {
+  /*text-align: left;*/
+  color: green;
 }
 
 #play-pause.off {
