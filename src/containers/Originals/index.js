@@ -35,8 +35,8 @@ export class Originals extends Component {
   render() {
     const { songs } = this.state;
     return (
-      <div className="page-content">
-        <div style={{ maxWidth: '4in', margin: 'auto', textAlign: 'center' }}>
+      <div id="pageContent" className="page-content">
+        <div style={{ maxWidth: '5in', margin: 'auto', textAlign: 'center' }}>
           <h4 style={{
             textAlign: 'center', margin: '20px', fontWeight: 'bold', marginBottom: '0',
           }}
