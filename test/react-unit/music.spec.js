@@ -29,13 +29,13 @@ describe('/music', () => {
     expect(wrapper.find('h3#appLoading').exists()).toBe(true);
     done();
   });
-  it('renders with error', (done) => {
-    const { wrapper } = setup({
-      isFetching: false, images: [], error: 'bad', isError: true,
-    });
-    expect(wrapper.find('h3#appErr').exists()).toBe(true);
-    done();
-  });
+  // it('renders with error', (done) => {
+  //   const { wrapper } = setup({
+  //     isFetching: false, images: [], error: 'bad', isError: true,
+  //   });
+  //   expect(wrapper.find('h3#appErr').exists()).toBe(true);
+  //   done();
+  // });
   it('renders with images', (done) => {
     const { wrapper } = setup({ isFetching: false, images: [{ _id: 1, url: '', title: '' }], isError: false });
     // console.log(wrapper.debug());

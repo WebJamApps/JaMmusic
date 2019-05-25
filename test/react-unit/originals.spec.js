@@ -4,7 +4,7 @@ import { Originals } from '../../src/containers/Originals';
 import MusicPlayer from '../../src/components/MusicPlayer';
 
 function setup() {
-  const props = { songs: { songs: [{ url: '' }, { url: '' }] } };
+  const props = { songs: { songs: [{ url: '', category: 'originals' }, { url: '', category: 'originals' }] } };
 
   const wrapper = shallow(<Originals {...props} />);
   return { wrapper, props };
