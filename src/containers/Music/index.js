@@ -28,7 +28,7 @@ export class Music extends Component {
         <div style={{ paddingTop: '1px', paddingBottom: 0, marginBottom: 0 }}>
           <div id="musicSlide1">
             {images.isFetching ? <h3 id="appLoading">Loading...</h3> : null}
-            {images.isError ? (<h3 id="appErr" className="error">{images.error}</h3>) : null}
+            {/* {images.isError ? (<h3 id="appErr" className="error">{images.error}</h3>) : null} */}
             {images.images.length > 0 ? (<PicSlider data={images.images} />) : null}
           </div>
         </div>

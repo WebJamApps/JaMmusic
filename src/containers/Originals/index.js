@@ -7,12 +7,16 @@ import getSongs from '../songsActions';
 export class Originals extends Component {
   constructor(props) {
     super(props);
-    this.state = { songs: props.songs.songs };
+    this.state = { songs: props.songs.songs.filter(song => song.category === 'originals') };
     this.populateSongs = this.populateSongs.bind(this);
     this.setStateAsync = this.setStateAsync.bind(this);
   }
 
-  componentWillMount() { return this.populateSongs(); }
+  componentWillMount() {
+    const { songs } = this.state;
+    if (songs.length < 2) return this.populateSongs();
+    return true; 
+  }
 
   componentDidMount() { document.title = 'Original Songs | Web Jam LLC'; }
 
