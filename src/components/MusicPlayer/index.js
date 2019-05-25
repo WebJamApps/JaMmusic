@@ -205,9 +205,7 @@ class MusicPlayer extends Component {
           {this.buttons()}
           <section className="mt-1 col-12" id="copier" style={{ display: player.displayCopier, marginTop: '30px' }}>
             <div id="copyInput">
-              {
-                player.displayCopyMessage && <div className="copySuccess"> Url copied Url to clipboard </div>
-              }
+              { player.displayCopyMessage && <div className="copySuccess"> Url copied Url to clipboard </div> }
               <input id="copyUrl" disabled value={this.playUrl} style={{ backgroundColor: '#fff' }} className="form-control" />
               <div id="copyButton" role="presentation" onClick={this.copyShare} style={{ cursor: 'pointer', marginTop: '11px' }}>
                 <span style={{
