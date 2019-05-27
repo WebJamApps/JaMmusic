@@ -922,6 +922,11 @@ button.on {
   color: #ffffff;
 }
 
+#playerAndButtons button.on {
+  background-color: green !important;
+  color: #ffffff;
+}
+
 #homeLink {
   color: #000;
   text-decoration: None;
