@@ -48,6 +48,14 @@ class MusicPlayer extends Component {
     if (onePlayerMode) { MusicPlayer.onePlayerMode(); }
   }
 
+  componentDidUpdate() {
+    const { songs: propSongs, copy } = this.props;
+    const { songs: stateSongs } = this.state;
+    if (propSongs.length !== stateSongs.length) {
+      this.setState({ songs: propSongs, copy }); // eslint-disable-line react/no-did-update-set-state
+    }
+  }
+
   static onePlayerMode() {
     const sidebar = document.getElementById('sidebar');
     const header = document.getElementById('header');
@@ -193,6 +201,7 @@ class MusicPlayer extends Component {
 
   render() {
     const { song, player } = this.state;
+
     return (
       <div className="container-fluid">
         <div id="player" className="mb-2 row justify-content-md-center">
