@@ -23,13 +23,13 @@ export class AppTemplate extends Component {
     this.authUtils = authUtils;
   }
 
-  componentDidMount() {
-    const username = localStorage.getItem('username');
-    if (typeof username === 'string') {
-      document.getElementsByClassName('googleLogin')[0].style.display = 'none';
-      document.getElementsByClassName('googleLogout')[0].style.display = 'block';
-    }
-  }
+  // componentDidMount() {
+  //   const username = localStorage.getItem('username');
+  //   if (typeof username === 'string') {
+  //     document.getElementsByClassName('googleLogin')[0].style.display = 'none';
+  //     document.getElementsByClassName('googleLogout')[0].style.display = 'block';
+  //   }
+  // }
 
   get currentStyles() {
     let result = {};

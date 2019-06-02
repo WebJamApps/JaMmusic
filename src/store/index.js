@@ -2,13 +2,12 @@ import { createStore, applyMiddleware } from 'redux';
 import { persistStore, persistReducer } from 'redux-persist';
 import logger from 'redux-logger';
 import thunk from 'redux-thunk';
-import storage from 'redux-persist/lib/storage';
-// import reducers from './reducers';
+import storageSession from 'redux-persist/lib/storage/session';
 import allReducers from '../redux/allReducers';
 
 const persistConfig = {
   key: 'root',
-  storage,
+  storage: storageSession,
 };
 let mWares = applyMiddleware(thunk);
 /* istanbul ignore if */
