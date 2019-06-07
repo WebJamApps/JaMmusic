@@ -55,8 +55,8 @@ export class Originals extends Component {
   }
 
   render() {
-    const { songs, missionState, pubState } = this.state;
-
+    // const { songs, missionState, pubState } = this.state;
+    const { songs } = this.state;
     return (
       <div id="pageContent" className="page-content">
         <div style={{ maxWidth: '5in', margin: 'auto', textAlign: 'center' }}>
