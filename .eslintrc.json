@@ -1,6 +1,6 @@
 {
-  "plugins": ["node", "security", "jest", "react"],
-  "extends": ["airbnb", "plugin:jest/recommended", "plugin:security/recommended", "plugin:node/recommended"],
+  "plugins": ["node", "security", "react"],
+  "extends": ["airbnb", "plugin:security/recommended", "plugin:node/recommended"],
   "rules": {
     "react/jsx-filename-extension": [1, {
       "extensions": [".js"]
