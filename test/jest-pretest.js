@@ -16,3 +16,9 @@ window.HTMLMediaElement.prototype.load = () => { /* do nothing */ };
 window.HTMLMediaElement.prototype.play = () => { /* do nothing */ };
 window.HTMLMediaElement.prototype.pause = () => { /* do nothing */ };
 window.HTMLMediaElement.prototype.addTextTrack = () => { /* do nothing */ };
+window.location = {
+  search: {
+    get: () => '?oneplayer=true&id=28ru9weis2309urihw9098ewuis',
+    set: data => data,
+  },
+};

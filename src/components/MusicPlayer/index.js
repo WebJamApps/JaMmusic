@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-// import { connect } from 'react-redux';
 import ReactPlayer from 'react-player';
 import PropTypes from 'prop-types';
 
@@ -9,7 +8,12 @@ class MusicPlayer extends Component {
     this.state = {
       song: props.songs[0],
       player: {
-        playing: false, shown: false, isShuffleOn: false, displayCopier: 'none', displayCopyMessage: 'none',
+        playing: false,
+        shown: false,
+        isShuffleOn: false,
+        displayCopier: 'none',
+        displayCopyMessage: false,
+        onePlayerMode: false,
       },
     };
     this.state.songs = props.songs;
@@ -24,35 +28,58 @@ class MusicPlayer extends Component {
     this.next = this.next.bind(this);
     this.prev = this.prev.bind(this);
     this.buttons = this.buttons.bind(this);
-    this.updatePlayer = this.updatePlayer.bind(this);
-    // this.shown = false;
     this.navigator = navigator;
-    // this.isShuffleOn = false;
-    // this.first = true;
-    // this.urls = props.urls;
-    // this.copy = props.copy;
-    // this.state.url = this.urls[0];// eslint-disable-line prefer-destructuring
+  }
+
+  componentWillMount() {
+    const params = new URLSearchParams(window.location.search);
+    const { player, songs } = this.state;
+    if (params.get('oneplayer')) {
+      const song = songs.filter(s => s._id === params.get('id'));
+      const index = songs.findIndex(s => s._id === params.get('id'));
+      this.setState({ player: { ...player, onePlayerMode: true }, song: song.length ? song[0] : songs[0], index: index || 0 });
+    } else {
+      this.setState({ song: songs[0], index: 0 });
+    }
   }
 
   componentDidMount() {
-    this.updatePlayer();
+    const { player: { onePlayerMode } } = this.state;
+    if (onePlayerMode) { MusicPlayer.onePlayerMode(); }
   }
 
-  shouldComponentUpdate() {
-    // console.log('shouldComponentUpdate');
-    return true;
+  componentDidUpdate() {
+    const { songs: propSongs, copy } = this.props;
+    const { songs: stateSongs } = this.state;
+    if (propSongs.length !== stateSongs.length) {
+      this.setState({ songs: propSongs, copy }); // eslint-disable-line react/no-did-update-set-state
+    }
+  }
+
+  static onePlayerMode() {
+    const sidebar = document.getElementById('sidebar');
+    const header = document.getElementById('header');
+    const footer = document.getElementById('wjfooter');
+    const toggler = document.getElementById('mobilemenutoggle');
+    const contentBlock = document.getElementById('contentBlock');
+    const pageContent = document.getElementById('pageContent');
+
+    if (sidebar) sidebar.style.display = 'none';
+    if (header) header.style.display = 'none';
+    if (footer) footer.style.display = 'none';
+    if (toggler) toggler.style.display = 'none';
+    if (contentBlock) contentBlock.style.overflowY = 'hidden';
+    if (pageContent) pageContent.style.borderColor = '#fff';
   }
 
   get playUrl() {
     const { song } = this.state;
-    // const song = data.urls[0];
-    return `${document.location.origin}/music/${song.category}?oneplayer=true&id=${song._id}`;
+    return `${document.location.origin}/music/${window.location.pathname.split('/').pop()}?oneplayer=true&id=${song._id}`;
   }
 
   reactPlayer() {
     const { song } = this.state;
     const { player } = this.state;
-    // console.log(this.playing);
     return (
       <ReactPlayer
         style={{ backgroundColor: '#eee', textAlign: 'center' }}
@@ -68,207 +95,139 @@ class MusicPlayer extends Component {
   }
 
   buttons() {
-    const { player } = this.state;
+    const { player: { playing, isShuffleOn, onePlayerMode } } = this.state;
     return (
-      <section className="mt-0 col-12 col-md-7" style={{ marginTop: '4px' }}>
-        <button type="button" id="play-pause" role="menu" className={player.playing ? 'on' : 'off'} onClick={this.play}>Play/Pause</button>
+      <section className="mt-0 col-12 col-md-10" style={{ marginTop: '4px' }}>
+        <button type="button" id="play-pause" role="menu" className={playing ? 'on' : 'off'} onClick={this.play}>Play/Pause</button>
         <button type="button" role="menu" id="next" onClick={this.next}>Next</button>
         <button type="button" role="menu" id="prev" onClick={this.prev}>Prev</button>
-        <button type="button" id="shuffle" role="menu" className={player.isShuffleOn ? 'on' : 'off'} onClick={this.shuffle}>Shuffle</button>
-        {/* <button type="button" role="menu" onClick={this.share}>Share</button>
-        <button type="button" role="menu"><a id="homeLink" href="/?reload=true">Home</a></button> */}
+        <button type="button" id="shuffle" role="menu" className={isShuffleOn ? 'on' : 'off'} onClick={this.shuffle}>Shuffle</button>
+        {/* <button type="button" role="menu" onClick={this.share}>Share</button> */}
+        <button type="button" id="h" role="menu" onClick={() => { window.location = '/music'; }} style={{ display: onePlayerMode ? 'auto' : 'none' }}>
+          <span id="homeLink">Home</span>
+        </button>
       </section>
     );
   }
 
-  updatePlayer() {
-    // look for the id of the song and then filter the song from the rest of the list.
-    // const { search } = window.location;
-    const { index } = this.state;
-    const { songs } = this.state;
-    const song = songs[parseInt(index, 0)];
-    this.setState({ song });
-    // const { first } = this.state;
-    // const oneplayer = search.includes('oneplayer=true');
-    // if it's not in one player mode, then just go on as normal.
-    // if (!oneplayer) {
-    // console.log(this.url);
-    // }
-    // else if (first) {
-    //   const id = search.match(/id=.+/g)[0].slice(3);
-    //   this.state.song = songs.filter(song => song.id === id)[0];// eslint-disable-line prefer-destructuring
-    //   // console.log(this.url);
-    //   this.state.first = false;
-    // }
-    this.shouldComponentUpdate();
-  }
-
   shuffle() {
-    const { player } = this.state;
-    const { copy } = this.state;
-    const { songs } = this.state;
+    const { player, copy, songs } = this.state;
     if (player.isShuffleOn) {
       this.setState({
         songs: copy,
-        player: { isShuffleOn: false },
+        player: { ...player, isShuffleOn: false },
         song: copy[0],
         index: 0,
       });
-      // document.getElementById('shuffle').classList.remove('on');
     } else {
       const shuffled = songs;
       for (let i = shuffled.length - 1; i > 0; i -= 1) {
         const j = Math.floor(Math.random() * (i + 1));
         [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];// eslint-disable-line security/detect-object-injection
       }
-      // document.getElementById('shuffle').classList.add('on');
       this.setState({
         songs: shuffled,
-        player: { isShuffleOn: true },
+        player: { ...player, isShuffleOn: true },
         song: shuffled[0],
         index: 0,
       });
     }
-    return this.updatePlayer();
   }
 
-  playEnd() {
-    this.next();
-  }
+  playEnd() { this.next(); }
 
   prev() {
-    // console.log('prev');
     const { index } = this.state;
     const minusIndex = index - 1;
     const { songs } = this.state;
-    // console.log(minusIndex);
     if (minusIndex < 0) {
       const newIndex = songs.length - 1;
-      // console.log(newIndex);
       this.setState({
         index: newIndex,
-        song: songs[newIndex], // eslint-disable-line security/detect-object-injection
+        song: songs[parseInt(newIndex, 0)],
       });
-      // this.state.index = newIndex;
-      // this.state.song = songs[newIndex];// eslint-disable-line security/detect-object-injection
     } else {
       this.setState({
-        song: songs[minusIndex], // eslint-disable-line security/detect-object-injection
+        song: songs[parseInt(minusIndex, 0)],
         index: minusIndex,
       });
-      // this.state.song = songs[minusIndex];// eslint-disable-line security/detect-object-injection
-      // this.state.index = minusIndex;
     }
-    // console.log(this.state.song);
-    this.updatePlayer();
   }
 
   play() {
     const { player } = this.state;
     const isPlaying = !player.playing;
     this.setState({
-      player: { playing: isPlaying },
+      player: { ...player, playing: isPlaying },
     });
-    // this.state.player.playing = !player.playing;
-    // if (isPlaying) {
-    //   document.getElementById('play-pause').classList.remove('off');
-    //   document.getElementById('play-pause').classList.add('on');
-    // } else {
-    //   document.getElementById('play-pause').classList.remove('on');
-    //   document.getElementById('play-pause').classList.add('off');
-    // }
-    this.updatePlayer();
   }
 
   pause() {
+    const { player } = this.state;
     this.setState({
-      player: { playing: false },
+      player: { ...player, playing: false },
     });
-    this.updatePlayer();
   }
 
   next() {
     let { index } = this.state;
     index += 1;
-    // const { index } = this.state;
     const { songs } = this.state;
     if (index >= songs.length) {
-      this.setState({
-        index: 0,
-        song: songs[0],
-      });
-      // this.state.index = 0;
-      // this.state.song = songs[0];// eslint-disable-line security/detect-object-injection
+      this.setState({ index: 0, song: songs[0] });
     } else {
-      this.setState({
-        song: songs[index], // eslint-disable-line security/detect-object-injection
-        index,
-      });
-      // this.url = this.urls[this.index];
+      this.setState({ song: songs[parseInt(index, 0)], index });
     }
-    return this.updatePlayer();
   }
 
   share() {
-    const { player } = this.state;
-
-    if (player.displayCopier === 'none') {
+    const { player, player: { displayCopier } } = this.state;
+    if (displayCopier === 'none') {
       this.setState({ player: { ...player, displayCopier: 'block' } });
     } else {
       this.setState({ player: { ...player, displayCopier: 'none' } });
     }
-
-    // const el = document.getElementById('copier');
-    // if (shown) {
-    //   el.classList.add('d-none');
-    //   this.state.shown = false;
-    // } else {
-    //   el.classList.remove('d-none');
-    //   this.state.shown = true;
-    // }
   }
 
   copyShare() {
     const { player } = this.state;
-
     this.navigator.clipboard.writeText(this.playUrl).then(() => {
-      this.share();
-
-      this.setState({ player: { ...player, displayCopier: 'block' } });
-
+      this.setState({ player: { ...player, displayCopyMessage: true } });
       setTimeout(() => {
-        this.setState({ player: { ...player, displayCopier: 'none' } });
+        this.setState({ player: { ...player, displayCopier: 'none', displayCopyMessage: false } });
       }, 1500);
     });
   }
 
   render() {
     const { song, player } = this.state;
+
     return (
       <div className="container-fluid">
         <div id="player" className="mb-2 row justify-content-md-center">
           <section id="playSection" className="col-12 mt-2 mr-0 col-md-7" style={{ display: 'inline', textAlign: 'center', marginBottom: '0' }}>
             {this.reactPlayer()}
           </section>
-          <section className="col-12 col-md-7 mt-1" style={{ fontSize: '0.8em', marginTop: '-10px', marginBottom: '0' }}>
+          <section className="col-12 mt-1" style={{ fontSize: '0.8em', marginTop: '15px', marginBottom: '0' }}>
             <strong>{song.title}</strong>
           </section>
           {this.buttons()}
-          <section className="row m-0 mt-2" id="copier" style={{ display: player.displayCopier || 'none' }}>
-            <div id="copyInput" className="col-9">
-              <input id="copyUrl" disabled value={this.playUrl} style={{ backgroundColor: '#fff' }} className="" />
+          <section className="mt-1 col-12" id="copier" style={{ display: player.displayCopier, marginTop: '30px' }}>
+            <div id="copyInput">
+              { player.displayCopyMessage && <div className="copySuccess"> Url copied Url to clipboard </div> }
+              <input id="copyUrl" disabled value={this.playUrl} style={{ backgroundColor: '#fff' }} className="form-control" />
+              <div id="copyButton" role="presentation" onClick={this.copyShare} style={{ cursor: 'pointer', marginTop: '11px' }}>
+                <span style={{
+                  backgroundColor: '#ccc', padding: '4px 15px', borderRadius: '5px', fontSize: '0.8em',
+                }}
+                >
+                  Copy URL
+                </span>
+              </div>
             </div>
-            <div id="copyButton" className="col-3" role="presentation" onClick={this.copyShare} style={{ cursor: 'pointer' }}>
-              <span id="inputGroup" style={{ fontSize: '0.8em' }}>Copy URL</span>
-            </div>
-          </section>
-          <section id="copyMessage" className="col-12 col-md-7 m-0">
-            <span className="text-success" style={{ fontSize: '0.8em', display: player.displayCopyMessage || 'none' }}>
-              Url copied Url to clipboard
-            </span>
           </section>
         </div>
-        <div id="sectionUnderButtons" style={{ minHeight: '3in' }}>&nbsp;</div>
+        <div id="sectionUnderButtons" style={{ minHeight: '0.5in' }}>&nbsp;</div>
       </div>
     );
   }
@@ -277,13 +236,8 @@ MusicPlayer.defaultProps = {
   songs: [{ url: '' }],
   copy: [{ url: '' }],
 };
-
 MusicPlayer.propTypes = {
   songs: PropTypes.arrayOf(PropTypes.shape),
   copy: PropTypes.arrayOf(PropTypes.shape),
 };
-
-/* istanbul ignore next */
-// const mapStoreToProps = store => ({ songs: store.songs.songs });
-// export default connect(mapStoreToProps)(MusicPlayer);
 export default MusicPlayer;

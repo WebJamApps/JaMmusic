@@ -23,13 +23,13 @@ export class AppTemplate extends Component {
     this.authUtils = authUtils;
   }
 
-  componentDidMount() {
-    const username = localStorage.getItem('username');
-    if (typeof username === 'string') {
-      document.getElementsByClassName('googleLogin')[0].style.display = 'none';
-      document.getElementsByClassName('googleLogout')[0].style.display = 'block';
-    }
-  }
+  // componentDidMount() {
+  //   const username = localStorage.getItem('username');
+  //   if (typeof username === 'string') {
+  //     document.getElementsByClassName('googleLogin')[0].style.display = 'none';
+  //     document.getElementsByClassName('googleLogout')[0].style.display = 'block';
+  //   }
+  // }
 
   get currentStyles() {
     let result = {};
@@ -208,7 +208,7 @@ export class AppTemplate extends Component {
 
   headerSection() {
     return (
-      <div className={`material-header ${this.currentStyles.headerClass}`}>
+      <div id="header" className={`material-header ${this.currentStyles.headerClass}`}>
         <div id="ohaflogo" className="headercontent">
           <img alt="ohaflogo" src={`${this.currentStyles.headerImagePath}`} className={`${this.currentStyles.headerImageClass}`} />
         </div>
@@ -224,7 +224,7 @@ export class AppTemplate extends Component {
     const style = `${this.currentStyles.sidebarClass} ${menuOpen ? 'open' : 'close'}`;
     return (
       <div className="page-host">
-        <div tabIndex={0} role="button" onClick={this.close} onKeyPress={this.handleKeyPress} className={`${style} drawer-container`}>
+        <div tabIndex={0} role="button" id="sidebar" onClick={this.close} onKeyPress={this.handleKeyPress} className={`${style} drawer-container`}>
           <div className="drawer" style={{ backgroundColor: '#c0c0c0' }}>
             <div className="navImage">
               <img alt="wjsidelogo" id="webjamwidelogo" src={`${this.currentStyles.sidebarImagePath}`} style={{ width: '182px', marginRight: 0 }} />
@@ -239,7 +239,7 @@ export class AppTemplate extends Component {
           <div className="mainPanel">
             <div className="swipe-area" />
             {this.headerSection()}
-            <div style={{ width: 'auto' }} className="content-block">
+            <div style={{ width: 'auto' }} id="contentBlock" className="content-block">
               { this.children }
               <div id="wjfooter" className="footer" style={{ backgroundColor: '#565656', paddingTop: '20px', paddingBottom: '40px' }}>
                 { this.footerLinks() }

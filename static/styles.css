@@ -96,10 +96,7 @@ label.checkboxes-label {
 }
 
 section {
-  margin: 0 20px;
-  margin-left: 0;
   text-align: center;
-  margin-top: 40px;
 }
 
 strong {
@@ -911,11 +908,21 @@ button.on {
   font-size: 0.8em;
 }
 
+.copySuccess {
+  /*text-align: left;*/
+  color: green;
+}
+
 #play-pause.off {
   background-color: #c0c0c0 !important;
 }
 
 #play-pause.on {
+  background-color: green !important;
+  color: #ffffff;
+}
+
+#playerAndButtons button.on {
   background-color: green !important;
   color: #ffffff;
 }
