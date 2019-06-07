@@ -37,13 +37,13 @@ export class Originals extends Component {
     });
     return true;
   }
-  
+
   ToggleSongTypes(type) {
     return () => {
       let { songs } = this.state;
       const typeInState = `${type}State`;
       const typeState = this.state[typeInState.toString()]; // eslint-disable-line react/destructuring-assignment
-      
+
       if (typeState === 'off') {
         songs = [...songs, ...this.allSongs.filter(song => song.category === type)];
       } else {
@@ -71,8 +71,8 @@ export class Originals extends Component {
               ? (
                 <div id="playerAndButtons">
                   <MusicPlayer songs={songs} copy={songs} />
-                  <button type="submit" onClick={this.ToggleSongTypes('mission')} className={`mission ${missionState}`}> Mission </button>
-                  <button type="submit" onClick={this.ToggleSongTypes('pub')} className={`pub ${pubState}`}> Pub </button>
+                  {/* <button type="submit" onClick={this.ToggleSongTypes('mission')} className={`mission ${missionState}`}> Mission </button>
+                  <button type="submit" onClick={this.ToggleSongTypes('pub')} className={`pub ${pubState}`}> Pub </button> */}
                 </div>
               )
               : null

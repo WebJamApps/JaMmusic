@@ -102,7 +102,7 @@ class MusicPlayer extends Component {
         <button type="button" role="menu" id="next" onClick={this.next}>Next</button>
         <button type="button" role="menu" id="prev" onClick={this.prev}>Prev</button>
         <button type="button" id="shuffle" role="menu" className={isShuffleOn ? 'on' : 'off'} onClick={this.shuffle}>Shuffle</button>
-        <button type="button" role="menu" onClick={this.share}>Share</button>
+        {/* <button type="button" role="menu" onClick={this.share}>Share</button> */}
         <button type="button" id="h" role="menu" onClick={() => { window.location = '/music'; }} style={{ display: onePlayerMode ? 'auto' : 'none' }}>
           <span id="homeLink">Home</span>
         </button>
