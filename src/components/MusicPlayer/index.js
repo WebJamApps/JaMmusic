@@ -63,12 +63,16 @@ class MusicPlayer extends Component {
     const toggler = document.getElementById('mobilemenutoggle');
     const contentBlock = document.getElementById('contentBlock');
     const pageContent = document.getElementById('pageContent');
+    const headerTitle = document.getElementById('headerTitle');
 
     if (sidebar) sidebar.style.display = 'none';
     if (header) header.style.display = 'none';
     if (footer) footer.style.display = 'none';
     if (toggler) toggler.style.display = 'none';
-    if (contentBlock) contentBlock.style.overflowY = 'hidden';
+    if (headerTitle) headerTitle.style.display = 'none';
+    if (contentBlock) contentBlock.style.overflowY = 'auto';
+    if (contentBlock) contentBlock.style.width = '100%';
+    if (contentBlock) contentBlock.style.height = '100%';
     if (pageContent) pageContent.style.borderColor = '#fff';
   }
 
@@ -102,7 +106,7 @@ class MusicPlayer extends Component {
         <button type="button" role="menu" id="next" onClick={this.next}>Next</button>
         <button type="button" role="menu" id="prev" onClick={this.prev}>Prev</button>
         <button type="button" id="shuffle" role="menu" className={isShuffleOn ? 'on' : 'off'} onClick={this.shuffle}>Shuffle</button>
-        {/* <button type="button" role="menu" onClick={this.share}>Share</button> */}
+        <button type="button" role="menu" onClick={this.share}>Share</button>
         <button type="button" id="h" role="menu" onClick={() => { window.location = '/music'; }} style={{ display: onePlayerMode ? 'auto' : 'none' }}>
           <span id="homeLink">Home</span>
         </button>
