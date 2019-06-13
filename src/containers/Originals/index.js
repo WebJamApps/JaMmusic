@@ -55,14 +55,15 @@ export class Originals extends Component {
   }
 
   render() {
-    // const { songs, missionState, pubState } = this.state;
-    const { songs } = this.state;
+    const { songs, missionState, pubState } = this.state;
     return (
       <div id="pageContent" className="page-content">
         <div style={{ maxWidth: '5in', margin: 'auto', textAlign: 'center' }}>
-          <h4 style={{
-            textAlign: 'center', margin: '20px', fontWeight: 'bold', marginBottom: '0',
-          }}
+          <h4
+            style={{
+              textAlign: 'center', margin: '20px', fontWeight: 'bold', marginBottom: '0',
+            }}
+            id="headerTitle"
           >
             Original Songs
           </h4>
@@ -71,8 +72,8 @@ export class Originals extends Component {
               ? (
                 <div id="playerAndButtons">
                   <MusicPlayer songs={songs} copy={songs} />
-                  {/* <button type="submit" onClick={this.ToggleSongTypes('mission')} className={`mission ${missionState}`}> Mission </button>
-                  <button type="submit" onClick={this.ToggleSongTypes('pub')} className={`pub ${pubState}`}> Pub </button> */}
+                  <button type="submit" onClick={this.ToggleSongTypes('mission')} className={`mission ${missionState}`}> Mission </button>
+                  <button type="submit" onClick={this.ToggleSongTypes('pub')} className={`pub ${pubState}`}> Pub </button>
                 </div>
               )
               : null
