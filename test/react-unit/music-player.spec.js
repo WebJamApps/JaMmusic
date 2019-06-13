@@ -10,7 +10,7 @@ function setup() {
   const props = { songs, copy };
   
   window.document.body.innerHTML = '<div id="sidebar"></div><div id="header"/><div id="contentBlock"/>'
-    + '<div id="wjfooter"/><div id="mobilemenutoggle"/><div id="pageContent"/>';
+    + '<div id="wjfooter"/><div id="mobilemenutoggle"/><div id="pageContent"/><h4 id="headerTitle">';
 
   const wrapper = mount(<MusicPlayer {...props} />, {
     attachTo: document.getElementById('sidebar'),
