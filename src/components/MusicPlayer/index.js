@@ -64,6 +64,7 @@ class MusicPlayer extends Component {
     const contentBlock = document.getElementById('contentBlock');
     const pageContent = document.getElementById('pageContent');
     const headerTitle = document.getElementById('headerTitle');
+    const mainPlayer = document.getElementById('mainPlayer');
 
     if (sidebar) sidebar.style.display = 'none';
     if (header) header.style.display = 'none';
@@ -73,6 +74,7 @@ class MusicPlayer extends Component {
     if (contentBlock) contentBlock.style.overflowY = 'auto';
     if (contentBlock) contentBlock.style.width = '100%';
     if (contentBlock) contentBlock.style.height = '100%';
+    if (mainPlayer && window.outerWidth < 600) mainPlayer.style.height = '55vh';
     if (pageContent) pageContent.style.borderColor = '#fff';
   }
 
