@@ -72,8 +72,8 @@ export class Originals extends Component {
               ? (
                 <div id="playerAndButtons">
                   <MusicPlayer songs={songs} copy={songs} />
-                  <button type="submit" onClick={this.ToggleSongTypes('mission')} className={`mission ${missionState}`}> Mission </button>
-                  <button type="submit" onClick={this.ToggleSongTypes('pub')} className={`pub ${pubState}`}> Pub </button>
+                  <button type="button" onClick={this.ToggleSongTypes('mission')} className={`mission ${missionState}`}> Mission </button>
+                  <button type="button" onClick={this.ToggleSongTypes('pub')} className={`pub ${pubState}`}> Pub </button>
                 </div>
               )
               : null
