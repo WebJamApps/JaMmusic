@@ -74,7 +74,7 @@ class MusicPlayer extends Component {
     if (contentBlock) contentBlock.style.overflowY = 'auto';
     if (contentBlock) contentBlock.style.width = '100%';
     if (contentBlock) contentBlock.style.height = '100%';
-    if (mainPlayer && window.outerWidth < 600) mainPlayer.style.height = '55vh';
+    if (window.outerWidth < 600) mainPlayer.style.height = '55vh';
     if (pageContent) pageContent.style.borderColor = '#fff';
   }
 
@@ -233,7 +233,7 @@ class MusicPlayer extends Component {
             </div>
           </section>
         </div>
-        <div id="sectionUnderButtons" style={{ minHeight: '0.5in' }}>&nbsp;</div>
+        <div id="sectionUnderButtons" style={{ minHeight: '0.1in' }}>&nbsp;</div>
       </div>
     );
   }
