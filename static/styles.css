@@ -846,6 +846,10 @@ div.fof {
     height: 100vh;
   }
 
+  #playerAndButtons button {
+    border: 1px solid #cccccc;
+  }
+
   ::-webkit-scrollbar:vertical {
     width: 0;
   }
