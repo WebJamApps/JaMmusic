@@ -233,7 +233,7 @@ class MusicPlayer extends Component {
             </div>
           </section>
         </div>
-        <div id="sectionUnderButtons" style={{ minHeight: '0.1in' }}>&nbsp;</div>
+        {/* <div id="sectionUnderButtons" style={{ minHeight: '0.1in' }}>&nbsp;</div> */}
       </div>
     );
   }

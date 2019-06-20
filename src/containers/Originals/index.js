@@ -61,7 +61,7 @@ export class Originals extends Component {
         <div style={{ maxWidth: '5in', margin: 'auto', textAlign: 'center' }}>
           <h4
             style={{
-              textAlign: 'center', margin: '20px', fontWeight: 'bold', marginBottom: '0',
+              textAlign: 'center', margin: '20px', fontWeight: 'bold', marginBottom: '4px',
             }}
             id="headerTitle"
           >
@@ -79,7 +79,7 @@ export class Originals extends Component {
               : null
           }
         </div>
-        <div style={{ minHeight: '.5in' }}>&nbsp;</div>
+        <div style={{ minHeight: '2.4in' }}>&nbsp;</div>
       </div>
     );
   }
