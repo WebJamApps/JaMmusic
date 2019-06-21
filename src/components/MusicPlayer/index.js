@@ -65,7 +65,6 @@ class MusicPlayer extends Component {
     const pageContent = document.getElementById('pageContent');
     const headerTitle = document.getElementById('headerTitle');
     const mainPlayer = document.getElementById('mainPlayer');
-
     if (sidebar) sidebar.style.display = 'none';
     if (header) header.style.display = 'none';
     if (footer) footer.style.display = 'none';
@@ -188,18 +187,29 @@ class MusicPlayer extends Component {
 
   share() {
     const { player, player: { displayCopier } } = this.state;
+    const mAndP = document.getElementById('mAndP');
     if (displayCopier === 'none') {
       this.setState({ player: { ...player, displayCopier: 'block' } });
+      if (mAndP !== null) mAndP.style.display = 'none';
     } else {
+      // missionButton.style.display = 'block';
+      // pubButton.style.display = 'block';
+      if (mAndP !== null) mAndP.style.display = 'none';
       this.setState({ player: { ...player, displayCopier: 'none' } });
     }
   }
 
   copyShare() {
     const { player } = this.state;
+    // const missionButton = document.getElementsByClassName('mission')[2];
+    // const pubButton = document.getElementsByClassName('pub')[2];
+    const mAndP = document.getElementById('mAndP');
     this.navigator.clipboard.writeText(this.playUrl).then(() => {
       this.setState({ player: { ...player, displayCopyMessage: true } });
       setTimeout(() => {
+        if (mAndP !== null) mAndP.style.display = 'block';
+        // missionButton.style.display = 'block';
+        // pubButton.style.display = 'block';
         this.setState({ player: { ...player, displayCopier: 'none', displayCopyMessage: false } });
       }, 1500);
     });
@@ -207,7 +217,6 @@ class MusicPlayer extends Component {
 
   render() {
     const { song, player } = this.state;
-
     return (
       <div className="container-fluid">
         <div id="player" className="mb-2 row justify-content-md-center">
@@ -218,7 +227,7 @@ class MusicPlayer extends Component {
             <strong>{song.title}</strong>
           </section>
           {this.buttons()}
-          <section className="mt-1 col-12" id="copier" style={{ display: player.displayCopier, marginTop: '30px' }}>
+          <section className="mt-1 col-12" id="copier" style={{ display: player.displayCopier, marginTop: '0' }}>
             <div id="copyInput">
               { player.displayCopyMessage && <div className="copySuccess"> Url copied Url to clipboard </div> }
               <input id="copyUrl" disabled value={this.playUrl} style={{ backgroundColor: '#fff' }} className="form-control" />
@@ -233,7 +242,7 @@ class MusicPlayer extends Component {
             </div>
           </section>
         </div>
-        <div id="sectionUnderButtons" style={{ minHeight: '0.1in' }}>&nbsp;</div>
+        {/* <div id="sectionUnderButtons" style={{ minHeight: '0.1in' }}>&nbsp;</div> */}
       </div>
     );
   }
