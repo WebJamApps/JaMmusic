@@ -62,10 +62,6 @@ module.exports = {
             'nps webpack.build.before',
             'webpack --progress -d',
           ),
-          extractCss: series(
-            'nps webpack.build.before',
-            'webpack --progress -d --env.extractCss',
-          ),
           serve: series.nps(
             'webpack.build.development',
             'serve',
@@ -78,7 +74,7 @@ module.exports = {
           ),
           default: series(
             'nps webpack.build.before',
-            crossEnv('NODE_ENV=production webpack --progress -p --env.production --env.extractCss'),
+            crossEnv('NODE_ENV=production webpack --progress -p --env.production'),
           ),
           serve: series.nps(
             'webpack.build.production',
@@ -88,7 +84,6 @@ module.exports = {
       },
       server: {
         default: 'webpack-dev-server -d --inline --env.server',
-        extractCss: 'webpack-dev-server -d --inline --env.server --env.extractCss',
         hmr: 'webpack-dev-server -d --inline --hot --env.server',
       },
     },
