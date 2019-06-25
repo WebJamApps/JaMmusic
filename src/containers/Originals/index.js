@@ -7,8 +7,13 @@ import getSongs from '../songsActions';
 export class Originals extends Component {
   constructor(props) {
     super(props);
-    this.allSongs = props.songs.songs;
-    this.state = { songs: props.songs.songs.filter(song => song.category === 'originals'), pubState: 'off', missionState: 'off' };
+    // this.allSongs = props.songs.songs;
+    this.state = {
+      songs: props.songs.songs.filter(song => song.category === 'originals'),
+      pubState: 'off',
+      missionState: 'off',
+      allSongs: props.songs.songs,
+    };
     this.populateSongs = this.populateSongs.bind(this);
     this.setStateAsync = this.setStateAsync.bind(this);
     this.ToggleSongTypes = this.ToggleSongTypes.bind(this);
@@ -34,6 +39,7 @@ export class Originals extends Component {
     const { songs } = this.props;
     await this.setStateAsync({
       songs: songs.songs.filter(song => song.category === 'originals'),
+      allSongs: songs.songs,
     });
     return true;
   }
@@ -41,15 +47,14 @@ export class Originals extends Component {
   ToggleSongTypes(type) {
     return () => {
       let { songs } = this.state;
+      const { allSongs } = this.state;
       const typeInState = `${type}State`;
       const typeState = this.state[typeInState.toString()]; // eslint-disable-line react/destructuring-assignment
-
       if (typeState === 'off') {
-        songs = [...songs, ...this.allSongs.filter(song => song.category === type)];
+        songs = [...songs, ...allSongs.filter(song => song.category === type)];
       } else {
         songs = songs.filter(song => song.category !== type);
       }
-
       this.setState({ songs, [typeInState]: typeState === 'off' ? 'on' : 'off' });
     };
   }
@@ -61,7 +66,7 @@ export class Originals extends Component {
         <div style={{ maxWidth: '5in', margin: 'auto', textAlign: 'center' }}>
           <h4
             style={{
-              textAlign: 'center', margin: '20px', fontWeight: 'bold', marginBottom: '0',
+              textAlign: 'center', margin: '20px', fontWeight: 'bold', marginBottom: '4px',
             }}
             id="headerTitle"
           >
@@ -72,14 +77,16 @@ export class Originals extends Component {
               ? (
                 <div id="playerAndButtons">
                   <MusicPlayer songs={songs} copy={songs} />
-                  <button type="button" onClick={this.ToggleSongTypes('mission')} className={`mission ${missionState}`}> Mission </button>
-                  <button type="button" onClick={this.ToggleSongTypes('pub')} className={`pub ${pubState}`}> Pub </button>
+                  <div id="mAndP" style={{ height: '22px', margin: 'auto' }}>
+                    <button type="button" onClick={this.ToggleSongTypes('mission')} className={`mission ${missionState}`}> Mission </button>
+                    <button type="button" onClick={this.ToggleSongTypes('pub')} className={`pub ${pubState}`}> Pub </button>
+                  </div>
                 </div>
               )
               : null
           }
         </div>
-        <div style={{ minHeight: '.5in' }}>&nbsp;</div>
+        <div style={{ minHeight: '2.4in' }}>&nbsp;</div>
       </div>
     );
   }
