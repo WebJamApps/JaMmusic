@@ -2,7 +2,7 @@ require('dotenv').config();
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const { ProvidePlugin } = require('webpack');
 const webpack = require('webpack');
@@ -21,7 +21,7 @@ const baseUrl = '/music';
 const cssRules = [{ loader: 'css-loader' }];
 
 module.exports = ({
-  production, extractCss, coverage, analyze,
+  production, coverage, analyze,
 } = {
 }) => ({
   resolve: {
@@ -78,6 +78,16 @@ module.exports = ({
         },
       }),
     ] : [],
+    splitChunks: {
+      cacheGroups: {
+        styles: {
+          name: 'styles',
+          test: /\.css$/i,
+          chunks: 'all',
+          enforce: true,
+        },
+      },
+    },
   },
 
   module: {
@@ -87,10 +97,7 @@ module.exports = ({
       {
         test: /\.css$/i,
         issuer: [{ not: [{ test: /\.html$/i }] }],
-        use: extractCss ? ExtractTextPlugin.extract({
-          fallback: 'style-loader',
-          use: cssRules,
-        }) : ['style-loader', ...cssRules],
+        use: [MiniCssExtractPlugin.loader, 'css-loader'],
       },
       {
         test: /\.css$/i,
@@ -128,16 +135,17 @@ module.exports = ({
       minify: production ? { removeComments: true, collapseWhitespace: true } : undefined,
       metadata: { title, baseUrl },
     }),
+    new MiniCssExtractPlugin({
+      filename: '[name].[contenthash].css',
+      allChunks: true,
+      metadata: { title, baseUrl },
+    }),
     new CopyWebpackPlugin([
       { from: 'static/favicon.ico', to: 'favicon.ico' },
       { from: 'static/tour.json', to: 'tour.json' },
       { from: 'static/imgs', to: 'static/imgs' },
     ]),
     new webpack.EnvironmentPlugin(['NODE_ENV', 'AuthProductionBaseURL', 'PORT', 'BackendUrl', 'GoogleClientId', 'userRoles']),
-    ...when(extractCss, new ExtractTextPlugin({
-      filename: production ? '[md5:contenthash:hex:20].css' : '[id].css',
-      allChunks: true,
-    })),
     // ...when(production, new CopyWebpackPlugin([
     //   { from: 'static/favicon.ico', to: 'favicon.ico' }])),
     ...when(analyze, new BundleAnalyzerPlugin()),
