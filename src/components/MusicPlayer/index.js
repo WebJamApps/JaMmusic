@@ -34,9 +34,10 @@ class MusicPlayer extends Component {
   componentWillMount() {
     const params = new URLSearchParams(window.location.search);
     const { player, songs } = this.state;
+    const { allSongs } = this.props;
     if (params.get('oneplayer')) {
-      const song = songs.filter(s => s._id === params.get('id'));
-      const index = songs.findIndex(s => s._id === params.get('id'));
+      const song = allSongs.filter(s => s._id === params.get('id'));
+      const index = allSongs.findIndex(s => s._id === params.get('id'));
       this.setState({ player: { ...player, onePlayerMode: true }, song: song.length ? song[0] : songs[0], index: index || 0 });
     } else {
       this.setState({ song: songs[0], index: 0 });
@@ -252,7 +253,8 @@ MusicPlayer.defaultProps = {
   copy: [{ url: '' }],
 };
 MusicPlayer.propTypes = {
-  songs: PropTypes.arrayOf(PropTypes.shape),
-  copy: PropTypes.arrayOf(PropTypes.shape),
+  songs: PropTypes.arrayOf(PropTypes.shape({})),
+  copy: PropTypes.arrayOf(PropTypes.shape({})),
+  allSongs: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
 };
 export default MusicPlayer;
