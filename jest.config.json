@@ -11,7 +11,7 @@
     "\\.(css|less|scss|sass)$": "identity-obj-proxy"
   },
   "moduleFileExtensions": ["js", "json", "jsx"],
-  "testPathIgnorePatterns": ["/node_modules/", "<rootDir>/test/puppeteer/"],
+  "testPathIgnorePatterns": ["/node_modules/"],
   "collectCoverageFrom": ["src/**/*.{js,jsx}"],
   "collectCoverage": true,
   "testEnvironment": "jest-environment-jsdom",
