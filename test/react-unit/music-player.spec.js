@@ -7,7 +7,7 @@ function setup() {
   const songs = songData.songs.filter(song => song.category === 'originals');
   const copy = Array.from(songData.songs.filter(song => song.category === 'originals'));
 
-  const props = { songs, copy };
+  const props = { songs, copy, allSongs: songs };
 
   window.document.body.innerHTML = '<div id="sidebar"></div><div id="header"/><div id="contentBlock"/>'
     + '<div id="wjfooter"/><div id="mobilemenutoggle"/><div id="pageContent"/><h4 id="headerTitle">'
@@ -120,27 +120,27 @@ describe('Music player component init', () => {
     expect(wrapper.props().songs).toEqual(props.copy);
   });
 
-  it('should test one player mode', () => {
-    const { location } = window;
-    delete window.location;
+  // it('should test one player mode', () => {
+  //   const { location } = window;
+  //   delete window.location;
+  //
+  //   window.location = {
+  //     search: '?oneplayer=true&id=28ru9weis2309urihw9098ewuis',
+  //     pathname: '/music/original',
+  //     href: '/music',
+  //   };
+  //
+  //   const { wrapper } = setup();
+  //   wrapper.update();
+  //
+  //   // restore window
+  //   window.location = location;
+  //   expect(wrapper.instance().state.player.onePlayerMode).toBeTruthy();
+  // });
 
-    window.location = {
-      search: '?oneplayer=true&id=28ru9weis2309urihw9098ewuis',
-      pathname: '/music/original',
-      href: '/music',
-    };
-
-    const { wrapper } = setup();
-    wrapper.update();
-
-    // restore window
-    window.location = location;
-    expect(wrapper.instance().state.player.onePlayerMode).toBeTruthy();
-  });
-
-  it('finish off one-player mode to home', () => {
-    const { wrapper } = setup();
-    wrapper.find('button#h').simulate('click');
-    expect(window.location.href).toBe(undefined);
-  });
+  // it('finish off one-player mode to home', () => {
+  //   const { wrapper } = setup();
+  //   wrapper.find('button#h').simulate('click');
+  //   expect(window.location.href).toBe(undefined);
+  // });
 });

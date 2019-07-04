@@ -61,6 +61,7 @@ export class Originals extends Component {
 
   render() {
     const { songs, missionState, pubState } = this.state;
+    const allSongs = this.props.songs.songs//eslint-disable-line
     return (
       <div id="pageContent" className="page-content">
         <div style={{ maxWidth: '5in', margin: 'auto', textAlign: 'center' }}>
@@ -76,7 +77,7 @@ export class Originals extends Component {
             songs.length > 1
               ? (
                 <div id="playerAndButtons">
-                  <MusicPlayer songs={songs} copy={songs} />
+                  <MusicPlayer songs={songs} copy={songs} allSongs={allSongs} />
                   <div id="mAndP" style={{ height: '22px', margin: 'auto' }}>
                     <button type="button" onClick={this.ToggleSongTypes('mission')} className={`mission ${missionState}`}> Mission </button>
                     <button type="button" onClick={this.ToggleSongTypes('pub')} className={`pub ${pubState}`}> Pub </button>
