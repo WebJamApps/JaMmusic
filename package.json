@@ -37,7 +37,8 @@
     "snyk-protect": "snyk protect",
     "eslint:fix": "./node_modules/eslint/bin/eslint.js --fix .",
     "postinstall": "yarn start -- build",
-    "test:stylelint": "stylelint \"static/**/*.css\""
+    "test:stylelint": "stylelint \"static/**/*.css\"",
+    "prepublish": "npm run snyk-protect"
   },
   "dependencies": {
     "@babel/core": "^7.4.5",
@@ -83,7 +84,7 @@
     "redux-thunk": "latest",
     "regenerator-runtime": "^0.13.2",
     "slick-carousel": "latest",
-    "snyk": "latest",
+    "snyk": "^1.192.0",
     "style-loader": "latest",
     "superagent": "latest",
     "terser-webpack-plugin": "latest",
