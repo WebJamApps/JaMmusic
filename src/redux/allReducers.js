@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux';
-import imagesReducer from '../store/fetchReducers';
+import imagesReducer from './reducers/imagesReducer';
 import authReducer from './reducers/authReducer';
 import songReducer from './reducers/songReducer';
 
