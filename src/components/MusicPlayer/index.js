@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import ReactPlayer from 'react-player';
 import PropTypes from 'prop-types';
+import musicPlayerUtils from './musicPlayerUtils';
 
 class MusicPlayer extends Component {
   constructor(props) {
@@ -29,19 +30,14 @@ class MusicPlayer extends Component {
     this.prev = this.prev.bind(this);
     this.buttons = this.buttons.bind(this);
     this.navigator = navigator;
+    this.musicPlayerUtils = musicPlayerUtils;
   }
 
   componentWillMount() {
     const params = new URLSearchParams(window.location.search);
     const { player, songs } = this.state;
     const { allSongs } = this.props;
-    if (params.get('oneplayer')) {
-      const song = allSongs.filter(s => s._id === params.get('id'));
-      const index = allSongs.findIndex(s => s._id === params.get('id'));
-      this.setState({ player: { ...player, onePlayerMode: true }, song: song.length ? song[0] : songs[0], index: index || 0 });
-    } else {
-      this.setState({ song: songs[0], index: 0 });
-    }
+    return this.musicPlayerUtils.checkOnePlayer(params, player, songs, allSongs, this);
   }
 
   componentDidMount() {
