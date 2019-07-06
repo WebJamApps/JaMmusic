@@ -9,7 +9,7 @@
   },
   "author": "https://github.com/orgs/WebJamApps/teams/handlersandkickers",
   "engines": {
-    "node": ">=12.4.0"
+    "node": ">=12.5.0"
   },
   "files": [
     "webpack.config.js",
@@ -25,13 +25,15 @@
   "license": "MIT",
   "scripts": {
     "start:dist": "node server.js",
+    "build:prod": "rm -rf  dist && webpack --progress -p --env.production",
     "cc": "codeclimate analyze -f html > codeclimate.html",
     "start": "nps",
     "test:lint-fix": "yarn test:stylelint && nps test.lint.fix",
     "test:lint": "yarn test:stylelint && nps test.lint",
     "test": "yarn test:lint && yarn test:jest",
-    "test:local": "yarn test:lint-fix && yarn test:jest && yarn cc",
+    "test:local": "yarn test:lint-fix && yarn test:jest && yarn test:puppeteer && yarn cc",
     "test:jest": "jest --no-cache --config jest.config.json --notify",
+    "test:puppeteer": "jest --preset jest-puppeteer --testPathIgnorePatterns ./test/react-unit/",
     "installglobals": "yarn config set registry https://registry.yarnpkg.com -g",
     "cleaninstall": "rm -rf yarn.lock && rm -rf node_modules && yarn cache clean && yarn installglobals && yarn install",
     "snyk-protect": "snyk protect",
@@ -108,6 +110,8 @@
     "eslint-plugin-security": "latest",
     "identity-obj-proxy": "latest",
     "jest": "latest",
+    "jest-puppeteer": "latest",
+    "puppeteer": "latest",
     "react-hot-loader": "latest",
     "redux-mock-store": "latest",
     "sinon": "latest",
