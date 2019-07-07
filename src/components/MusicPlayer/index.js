@@ -29,7 +29,7 @@ class MusicPlayer extends Component {
     this.next = this.next.bind(this);
     this.prev = this.prev.bind(this);
     this.buttons = this.buttons.bind(this);
-    this.navigator = navigator;
+    this.navigator = window.navigator;
     this.musicPlayerUtils = musicPlayerUtils;
   }
 
@@ -41,37 +41,11 @@ class MusicPlayer extends Component {
   }
 
   componentDidMount() {
-    const { player: { onePlayerMode } } = this.state;
-    if (onePlayerMode) { MusicPlayer.onePlayerMode(); }
+    return this.musicPlayerUtils.runIfOnePlayer(this);
   }
 
   componentDidUpdate() {
-    const { songs: propSongs, copy } = this.props;
-    const { songs: stateSongs } = this.state;
-    if (propSongs.length !== stateSongs.length) {
-      this.setState({ songs: propSongs, copy }); // eslint-disable-line react/no-did-update-set-state
-    }
-  }
-
-  static onePlayerMode() {
-    const sidebar = document.getElementById('sidebar');
-    const header = document.getElementById('header');
-    const footer = document.getElementById('wjfooter');
-    const toggler = document.getElementById('mobilemenutoggle');
-    const contentBlock = document.getElementById('contentBlock');
-    const pageContent = document.getElementById('pageContent');
-    const headerTitle = document.getElementById('headerTitle');
-    const mainPlayer = document.getElementById('mainPlayer');
-    if (sidebar) sidebar.style.display = 'none';
-    if (header) header.style.display = 'none';
-    if (footer) footer.style.display = 'none';
-    if (toggler) toggler.style.display = 'none';
-    if (headerTitle) headerTitle.style.display = 'none';
-    if (contentBlock) contentBlock.style.overflowY = 'auto';
-    if (contentBlock) contentBlock.style.width = '100%';
-    if (contentBlock) contentBlock.style.height = '100%';
-    if (window.outerWidth < 600) mainPlayer.style.height = '55vh';
-    if (pageContent) pageContent.style.borderColor = '#fff';
+    return this.musicPlayerUtils.resetSongs(this);
   }
 
   get playUrl() {
@@ -105,9 +79,7 @@ class MusicPlayer extends Component {
         <button type="button" role="menu" id="prev" onClick={this.prev}>Prev</button>
         <button type="button" id="shuffle" role="menu" className={isShuffleOn ? 'on' : 'off'} onClick={this.shuffle}>Shuffle</button>
         <button type="button" role="menu" onClick={this.share}>Share</button>
-        <button type="button" id="h" role="menu" onClick={() => { window.location = '/music'; }} style={{ display: onePlayerMode ? 'auto' : 'none' }}>
-          <span id="homeLink">Home</span>
-        </button>
+        {this.musicPlayerUtils.homeButton(onePlayerMode)}
       </section>
     );
   }
@@ -184,29 +156,17 @@ class MusicPlayer extends Component {
 
   share() {
     const { player, player: { displayCopier } } = this.state;
-    const mAndP = document.getElementById('mAndP');
-    if (displayCopier === 'none') {
-      this.setState({ player: { ...player, displayCopier: 'block' } });
-      if (mAndP !== null) mAndP.style.display = 'none';
-    } else {
-      // missionButton.style.display = 'block';
-      // pubButton.style.display = 'block';
-      if (mAndP !== null) mAndP.style.display = 'none';
-      this.setState({ player: { ...player, displayCopier: 'none' } });
-    }
+    if (displayCopier === 'none') this.setState({ player: { ...player, displayCopier: 'block' } });
+    else this.setState({ player: { ...player, displayCopier: 'none' } });
+    this.musicPlayerUtils.showHideButtons('none');
   }
 
   copyShare() {
     const { player } = this.state;
-    // const missionButton = document.getElementsByClassName('mission')[2];
-    // const pubButton = document.getElementsByClassName('pub')[2];
-    const mAndP = document.getElementById('mAndP');
     this.navigator.clipboard.writeText(this.playUrl).then(() => {
       this.setState({ player: { ...player, displayCopyMessage: true } });
       setTimeout(() => {
-        if (mAndP !== null) mAndP.style.display = 'block';
-        // missionButton.style.display = 'block';
-        // pubButton.style.display = 'block';
+        this.musicPlayerUtils.showHideButtons('block');
         this.setState({ player: { ...player, displayCopier: 'none', displayCopyMessage: false } });
       }, 1500);
     });

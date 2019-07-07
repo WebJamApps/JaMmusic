@@ -7,7 +7,6 @@ import getSongs from '../songsActions';
 export class Originals extends Component {
   constructor(props) {
     super(props);
-    // this.allSongs = props.songs.songs;
     this.state = {
       songs: props.songs.songs.filter(song => song.category === 'originals'),
       pubState: 'off',
@@ -25,7 +24,7 @@ export class Originals extends Component {
     return true;
   }
 
-  componentDidMount() { document.title = 'Original Songs | Web Jam LLC'; }
+  componentDidMount() { document.title = 'Originals | Web Jam LLC'; }
 
   setStateAsync(state) {
     return new Promise((resolve) => {
