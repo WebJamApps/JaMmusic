@@ -29,7 +29,7 @@ class MusicPlayer extends Component {
     this.next = this.next.bind(this);
     this.prev = this.prev.bind(this);
     this.buttons = this.buttons.bind(this);
-    this.navigator = navigator;
+    this.navigator = window.navigator;
     this.musicPlayerUtils = musicPlayerUtils;
   }
 
@@ -41,8 +41,7 @@ class MusicPlayer extends Component {
   }
 
   componentDidMount() {
-    const { player: { onePlayerMode } } = this.state;
-    if (onePlayerMode) { MusicPlayer.onePlayerMode(); }
+    return this.musicPlayerUtils.runIfOnePlayer(this);
   }
 
   componentDidUpdate() {
@@ -51,27 +50,6 @@ class MusicPlayer extends Component {
     if (propSongs.length !== stateSongs.length) {
       this.setState({ songs: propSongs, copy }); // eslint-disable-line react/no-did-update-set-state
     }
-  }
-
-  static onePlayerMode() {
-    const sidebar = document.getElementById('sidebar');
-    const header = document.getElementById('header');
-    const footer = document.getElementById('wjfooter');
-    const toggler = document.getElementById('mobilemenutoggle');
-    const contentBlock = document.getElementById('contentBlock');
-    const pageContent = document.getElementById('pageContent');
-    const headerTitle = document.getElementById('headerTitle');
-    const mainPlayer = document.getElementById('mainPlayer');
-    if (sidebar) sidebar.style.display = 'none';
-    if (header) header.style.display = 'none';
-    if (footer) footer.style.display = 'none';
-    if (toggler) toggler.style.display = 'none';
-    if (headerTitle) headerTitle.style.display = 'none';
-    if (contentBlock) contentBlock.style.overflowY = 'auto';
-    if (contentBlock) contentBlock.style.width = '100%';
-    if (contentBlock) contentBlock.style.height = '100%';
-    if (window.outerWidth < 600) mainPlayer.style.height = '55vh';
-    if (pageContent) pageContent.style.borderColor = '#fff';
   }
 
   get playUrl() {
