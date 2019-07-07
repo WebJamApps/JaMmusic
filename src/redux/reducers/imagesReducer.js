@@ -5,7 +5,7 @@ const initialState = {
   error: '',
 };
 
-const fetchReducers = (state = initialState, action) => {
+const imagesReducer = (state = initialState, action) => {
   switch (action.type) {
     case 'FETCH_IMAGES':
       return Object.assign({}, state, {
@@ -30,4 +30,4 @@ const fetchReducers = (state = initialState, action) => {
   }
 };
 
-export default fetchReducers;
+export default imagesReducer;
