@@ -519,6 +519,28 @@ h6 {
   height: 0;
 }
 
+/* splash is in the index.ejs file, used for the initial page load animation */
+.splash {
+  text-align: center;
+  margin: 10% 0 0;
+  box-sizing: border-box;
+}
+
+.splash .message {
+  font-size: 72px;
+  line-height: 72px;
+  text-shadow: rgba(0, 0, 0, 0.5) 0 0 15px;
+  text-transform: uppercase;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+.splash .fa-spinner {
+  text-align: center;
+  display: inline-block;
+  font-size: 72px;
+  margin-top: 50px;
+}
+
 /* #App { */
 /*min-height: 100vh;*/
 /* } */
@@ -844,6 +866,10 @@ div.fof {
   .swipe-area {
     width: 30px;
     height: 100vh;
+  }
+
+  #playerAndButtons button {
+    border: 1px solid #cccccc;
   }
 
   ::-webkit-scrollbar:vertical {

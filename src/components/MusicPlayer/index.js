@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import ReactPlayer from 'react-player';
 import PropTypes from 'prop-types';
+import musicPlayerUtils from './musicPlayerUtils';
 
 class MusicPlayer extends Component {
   constructor(props) {
@@ -28,48 +29,23 @@ class MusicPlayer extends Component {
     this.next = this.next.bind(this);
     this.prev = this.prev.bind(this);
     this.buttons = this.buttons.bind(this);
-    this.navigator = navigator;
+    this.navigator = window.navigator;
+    this.musicPlayerUtils = musicPlayerUtils;
   }
 
   componentWillMount() {
     const params = new URLSearchParams(window.location.search);
     const { player, songs } = this.state;
-    if (params.get('oneplayer')) {
-      const song = songs.filter(s => s._id === params.get('id'));
-      const index = songs.findIndex(s => s._id === params.get('id'));
-      this.setState({ player: { ...player, onePlayerMode: true }, song: song.length ? song[0] : songs[0], index: index || 0 });
-    } else {
-      this.setState({ song: songs[0], index: 0 });
-    }
+    const { allSongs } = this.props;
+    return this.musicPlayerUtils.checkOnePlayer(params, player, songs, allSongs, this);
   }
 
   componentDidMount() {
-    const { player: { onePlayerMode } } = this.state;
-    if (onePlayerMode) { MusicPlayer.onePlayerMode(); }
+    return this.musicPlayerUtils.runIfOnePlayer(this);
   }
 
   componentDidUpdate() {
-    const { songs: propSongs, copy } = this.props;
-    const { songs: stateSongs } = this.state;
-    if (propSongs.length !== stateSongs.length) {
-      this.setState({ songs: propSongs, copy }); // eslint-disable-line react/no-did-update-set-state
-    }
-  }
-
-  static onePlayerMode() {
-    const sidebar = document.getElementById('sidebar');
-    const header = document.getElementById('header');
-    const footer = document.getElementById('wjfooter');
-    const toggler = document.getElementById('mobilemenutoggle');
-    const contentBlock = document.getElementById('contentBlock');
-    const pageContent = document.getElementById('pageContent');
-
-    if (sidebar) sidebar.style.display = 'none';
-    if (header) header.style.display = 'none';
-    if (footer) footer.style.display = 'none';
-    if (toggler) toggler.style.display = 'none';
-    if (contentBlock) contentBlock.style.overflowY = 'hidden';
-    if (pageContent) pageContent.style.borderColor = '#fff';
+    return this.musicPlayerUtils.resetSongs(this);
   }
 
   get playUrl() {
@@ -102,10 +78,8 @@ class MusicPlayer extends Component {
         <button type="button" role="menu" id="next" onClick={this.next}>Next</button>
         <button type="button" role="menu" id="prev" onClick={this.prev}>Prev</button>
         <button type="button" id="shuffle" role="menu" className={isShuffleOn ? 'on' : 'off'} onClick={this.shuffle}>Shuffle</button>
-        {/* <button type="button" role="menu" onClick={this.share}>Share</button> */}
-        <button type="button" id="h" role="menu" onClick={() => { window.location = '/music'; }} style={{ display: onePlayerMode ? 'auto' : 'none' }}>
-          <span id="homeLink">Home</span>
-        </button>
+        <button type="button" role="menu" onClick={this.share}>Share</button>
+        {this.musicPlayerUtils.homeButton(onePlayerMode)}
       </section>
     );
   }
@@ -182,11 +156,9 @@ class MusicPlayer extends Component {
 
   share() {
     const { player, player: { displayCopier } } = this.state;
-    if (displayCopier === 'none') {
-      this.setState({ player: { ...player, displayCopier: 'block' } });
-    } else {
-      this.setState({ player: { ...player, displayCopier: 'none' } });
-    }
+    if (displayCopier === 'none') this.setState({ player: { ...player, displayCopier: 'block' } });
+    else this.setState({ player: { ...player, displayCopier: 'none' } });
+    this.musicPlayerUtils.showHideButtons('none');
   }
 
   copyShare() {
@@ -194,6 +166,7 @@ class MusicPlayer extends Component {
     this.navigator.clipboard.writeText(this.playUrl).then(() => {
       this.setState({ player: { ...player, displayCopyMessage: true } });
       setTimeout(() => {
+        this.musicPlayerUtils.showHideButtons('block');
         this.setState({ player: { ...player, displayCopier: 'none', displayCopyMessage: false } });
       }, 1500);
     });
@@ -201,7 +174,6 @@ class MusicPlayer extends Component {
 
   render() {
     const { song, player } = this.state;
-
     return (
       <div className="container-fluid">
         <div id="player" className="mb-2 row justify-content-md-center">
@@ -212,7 +184,7 @@ class MusicPlayer extends Component {
             <strong>{song.title}</strong>
           </section>
           {this.buttons()}
-          <section className="mt-1 col-12" id="copier" style={{ display: player.displayCopier, marginTop: '30px' }}>
+          <section className="mt-1 col-12" id="copier" style={{ display: player.displayCopier, marginTop: '0' }}>
             <div id="copyInput">
               { player.displayCopyMessage && <div className="copySuccess"> Url copied Url to clipboard </div> }
               <input id="copyUrl" disabled value={this.playUrl} style={{ backgroundColor: '#fff' }} className="form-control" />
@@ -227,7 +199,7 @@ class MusicPlayer extends Component {
             </div>
           </section>
         </div>
-        <div id="sectionUnderButtons" style={{ minHeight: '0.5in' }}>&nbsp;</div>
+        {/* <div id="sectionUnderButtons" style={{ minHeight: '0.1in' }}>&nbsp;</div> */}
       </div>
     );
   }
@@ -237,7 +209,8 @@ MusicPlayer.defaultProps = {
   copy: [{ url: '' }],
 };
 MusicPlayer.propTypes = {
-  songs: PropTypes.arrayOf(PropTypes.shape),
-  copy: PropTypes.arrayOf(PropTypes.shape),
+  songs: PropTypes.arrayOf(PropTypes.shape({})),
+  copy: PropTypes.arrayOf(PropTypes.shape({})),
+  allSongs: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
 };
 export default MusicPlayer;

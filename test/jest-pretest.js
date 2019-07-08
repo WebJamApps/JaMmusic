@@ -10,7 +10,7 @@ window.matchMedia = window.matchMedia || function match() {
 };
 
 configure({ adapter: new Adapter() });
-document.body.innerHTML = '<div id="root"></div>';
+document.body.innerHTML = '<div id="root"></div><div id="mAndP"></div>';
 
 window.HTMLMediaElement.prototype.load = () => { /* do nothing */ };
 window.HTMLMediaElement.prototype.play = () => { /* do nothing */ };
