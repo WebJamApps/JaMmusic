@@ -988,3 +988,8 @@ button.on {
 #playSection audio::-webkit-media-controls-play-button {
   display: none;
 }
+
+.tour-table {
+  overflow-y: scroll;
+  -webkit-overflow-scrolling: touch;
+}
