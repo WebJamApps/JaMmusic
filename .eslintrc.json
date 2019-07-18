@@ -1,10 +1,17 @@
 {
   "plugins": ["node", "security", "react"],
-  "extends": ["airbnb", "plugin:security/recommended", "plugin:node/recommended"],
+  "extends": [
+    "airbnb",
+    "plugin:security/recommended",
+    "plugin:node/recommended"
+  ],
   "rules": {
-    "react/jsx-filename-extension": [1, {
-      "extensions": [".js"]
-    }],
+    "react/jsx-filename-extension": [
+      1,
+      {
+        "extensions": [".js"]
+      }
+    ],
     "node/no-unsupported-features/es-syntax": 0,
     "no-multiple-empty-lines": [
       "error",
@@ -13,19 +20,28 @@
         "maxEOF": 1
       }
     ],
-    "no-trailing-spaces": [0, {
-      "skipBlankLines": true
-    }],
+    "no-trailing-spaces": [
+      0,
+      {
+        "skipBlankLines": true
+      }
+    ],
     "no-underscore-dangle": 0,
     "one-var-declaration-per-line": [0, "never"],
-    "one-var": [2, {
-      "var": "never",
-      "let": "always",
-      "const": "never"
-    }],
-    "max-len": ["error", {
-      "code": 150
-    }]
+    "one-var": [
+      2,
+      {
+        "var": "never",
+        "let": "always",
+        "const": "never"
+      }
+    ],
+    "max-len": [
+      "error",
+      {
+        "code": 150
+      }
+    ]
   },
   "env": {
     "jest": true,
@@ -36,7 +52,8 @@
     "$": true,
     "page": true,
     "browser": true,
-    "context": true
+    "context": true,
+    "jestPuppeteer": true
   },
   "parserOptions": {
     "sourceType": "module"
