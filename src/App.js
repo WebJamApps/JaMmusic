@@ -5,11 +5,13 @@ import BuyMusic from './containers/buymusic';
 import AppFourOhFour from './containers/404';
 import AppTemp from './components/app-main';
 import DefaultOriginals from './containers/Originals';
+import connectToSC from './connectToSC';
 
 export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = {};
+    this.connectToSC = connectToSC;
   }
 
   render() {
