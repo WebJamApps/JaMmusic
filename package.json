@@ -85,6 +85,7 @@
     "redux-thunk": "latest",
     "regenerator-runtime": "^0.13.2",
     "slick-carousel": "latest",
+    "socketcluster-client": "latest",
     "snyk": "latest",
     "style-loader": "latest",
     "superagent": "latest",
