@@ -37,6 +37,7 @@ const runIfOnePlayer = (controller) => {
   return null;
 };
 
+// eslint-disable-next-line consistent-return
 const resetSongs = (controller) => {
   const { songs: propSongs, copy } = controller.props;
   const { songs: stateSongs } = controller.state;
