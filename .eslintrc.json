@@ -1,6 +1,6 @@
 {
-  "plugins": ["node", "security", "react"],
-  "extends": ["airbnb", "plugin:security/recommended", "plugin:node/recommended"],
+  "plugins": ["node", "security", "react", "jest"],
+  "extends": ["airbnb", "plugin:security/recommended", "plugin:node/recommended", "plugin:jest/recommended"],
   "rules": {
     "react/jsx-filename-extension": [1, {
       "extensions": [".js"]
@@ -36,7 +36,8 @@
     "$": true,
     "page": true,
     "browser": true,
-    "context": true
+    "context": true,
+    "jestPuppeteer": true
   },
   "parserOptions": {
     "sourceType": "module"
