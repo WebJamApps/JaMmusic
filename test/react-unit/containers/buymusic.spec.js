@@ -1,6 +1,6 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import BuyMusic from '../../src/containers/buymusic';
+import BuyMusic from '../../../src/containers/BuyMusic';
 
 function setup() {
   const props = {};

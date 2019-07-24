@@ -1,7 +1,7 @@
 import React from 'react';
 import { mount } from 'enzyme';
-import MusicPlayer from '../../src/components/MusicPlayer';
-import songData from '../../src/containers/songs';
+import MusicPlayer from '../../../src/components/MusicPlayer';
+import songData from '../../../src/containers/Originals/songs.json';
 
 function setup() {
   const songs = songData.songs.filter(song => song.category === 'originals');

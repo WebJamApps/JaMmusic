@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import Jsb from './BuyMusic/joshShermanBand';
-import Jss from './BuyMusic/joshShermanSolo';
+import Jsb from './joshShermanBand';
+import Jss from './joshShermanSolo';
 
 export default class BuyMusic extends Component {
   constructor(props) {

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { GoogleLogin, GoogleLogout } from 'react-google-login';
 import { connect } from 'react-redux';
-import authUtils from './AppTemplate/authUtils';
+import authUtils from './authUtils';
 
 export class AppTemplate extends Component {
   constructor(props) {
@@ -176,7 +176,7 @@ export class AppTemplate extends Component {
         {this.menus.map((menu, index) => (this.menuItem(menu, index)))}
         <p style={{ paddingLeft: '10px' }}>
           <i>Active Users</i>
-: 
+:
           {' '}
           {userCount}
         </p>

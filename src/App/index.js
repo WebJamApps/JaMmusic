@@ -4,11 +4,11 @@ import 'regenerator-runtime/runtime';
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { connect } from 'react-redux';
-import DefaultMusic from './containers/Music';
-import BuyMusic from './containers/buymusic';
-import AppFourOhFour from './containers/404';
-import AppTemp from './components/app-main';
-import DefaultOriginals from './containers/Originals';
+import DefaultMusic from '../containers/Music';
+import BuyMusic from '../containers/BuyMusic';
+import AppFourOhFour from './404';
+import AppTemp from './app-main';
+import DefaultOriginals from '../containers/Originals';
 import connectToSC from './connectToSC';
 
 export class App extends Component {
