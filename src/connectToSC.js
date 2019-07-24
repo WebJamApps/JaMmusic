@@ -1,7 +1,6 @@
 import socketCluster from 'socketcluster-client';
 
 const setupSocketCluster = (dispatch) => {
-  // console.log(dispatch);// eslint-disable-line no-console
   const scc = socketCluster.create({
     hostname: process.env.SOCKETCLUSTER_HOST,
     port: process.env.SOCKETCLUSTER_PORT,
