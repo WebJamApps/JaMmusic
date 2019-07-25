@@ -1,6 +1,6 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import FourOhFour from '../../src/containers/404';
+import FourOhFour from '../../../src/App/404';
 
 function setup() {
   const props = {};

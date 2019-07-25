@@ -31,8 +31,6 @@ plugins:
   eslint:
     enabled:              true
     channel:              "eslint-5"
-  stylelint:
-    enabled:              true
   fixme:
     enabled:              true
 ratings:

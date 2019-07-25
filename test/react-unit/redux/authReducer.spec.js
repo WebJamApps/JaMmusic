@@ -8,6 +8,7 @@ describe('auth reducer', () => {
         error: '',
         email: '',
         token: '',
+        userCount: 0,
       },
     );
   });
@@ -20,6 +21,7 @@ describe('auth reducer', () => {
         error: '',
         email: 'j@b.com',
         token: '123',
+        userCount: 0,
       },
     );
   });
@@ -32,6 +34,7 @@ describe('auth reducer', () => {
         error: '',
         email: '',
         token: '',
+        userCount: 0,
       },
     );
   });
@@ -47,6 +50,7 @@ describe('auth reducer', () => {
         error: 'bad',
         email: '',
         token: '',
+        userCount: 0,
       },
     );
   });

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import MusicPlayer from '../../components/MusicPlayer';
-import getSongs from '../songsActions';
+import getSongs from './songsActions';
 
 export class Originals extends Component {
   constructor(props) {
