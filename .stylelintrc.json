@@ -1,6 +1,7 @@
 {
   "extends": "stylelint-config-standard",
   "rules": {
+    "declaration-block-semicolon-newline-after": null,
     "no-empty-source": null,
     "no-eol-whitespace": null,
     "color-hex-length": null,
