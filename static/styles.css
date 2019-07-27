@@ -974,6 +974,13 @@ button.on {
   padding: 4px;
 }
 
+@media screen and (max-width: 400px) {
+  #copyInput {
+    width: 95%;
+    margin-left: 8px;
+  }
+}
+
 #copyButton {
   position: absolute;
   border: 1px solid #c0c0c0;
