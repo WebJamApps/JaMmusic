@@ -18,7 +18,7 @@ const outDir = path.resolve(__dirname, 'dist');
 const srcDir = path.resolve(__dirname, 'src');
 const nodeModulesDir = path.resolve(__dirname, 'node_modules');
 const baseUrl = '/music';
-const cssRules = [{ loader: 'css-loader' }];
+const scssRules = [{ loader: 'sass-loader' }];
 
 module.exports = ({
   production, coverage, analyze,
@@ -92,19 +92,29 @@ module.exports = ({
 
   module: {
     rules: [
-      // CSS required in JS/TS files should use the style-loader that auto-injects it into the website
+      // SCSS required in JS/TS files should use the style-loader that auto-injects it into the website
       // only when the issuer is a .js/.ts file, so the loaders are not applied inside html templates
+      {
+        test: /\.scss$/,
+        issuer: [{ not: [{ test: /\.html$/i }] }],
+        use: [
+          process.env.NODE_ENV !== 'production' ? 'style-loader' : MiniCssExtractPlugin.loader,
+          'css-loader', // translates CSS into CommonJS
+          'sass-loader', // compiles Sass to CSS, using Node Sass by default
+        ],
+      },
+      // Still needed for some node modules that use CSS
       {
         test: /\.css$/i,
         issuer: [{ not: [{ test: /\.html$/i }] }],
         use: [MiniCssExtractPlugin.loader, 'css-loader'],
       },
       {
-        test: /\.css$/i,
+        test: /\.scss$/i,
         issuer: [{ test: /\.html$/i }],
-        // CSS required in templates cannot be extracted safely
+        // SCSS required in templates cannot be extracted safely
         // because Aurelia would try to require it again in runtime
-        use: cssRules,
+        use: scssRules,
       },
       { test: /\.html$/i, loader: 'html-loader' },
       {
