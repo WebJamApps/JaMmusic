@@ -39,7 +39,7 @@
     "snyk-protect": "snyk protect",
     "eslint:fix": "./node_modules/eslint/bin/eslint.js --fix .",
     "postinstall": "yarn start build",
-    "test:stylelint": "stylelint \"static/**/*.css\""
+    "test:stylelint": "stylelint \"static/**/*.scss\""
   },
   "dependencies": {
     "@babel/core": "^7.4.5",
@@ -90,6 +90,7 @@
     "snyk": "latest",
     "socketcluster-client": "latest",
     "style-loader": "latest",
+    "stylelint-config-recommended-scss": "^3.3.0",
     "superagent": "latest",
     "terser-webpack-plugin": "latest",
     "url-loader": "latest",
@@ -120,6 +121,7 @@
     "sinon": "latest",
     "stylelint": "latest",
     "stylelint-config-standard": "latest",
+    "stylelint-scss": "latest",
     "webpack-dev-server": "latest"
   },
   "snyk": true
