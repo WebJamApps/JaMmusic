@@ -6,6 +6,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { connect } from 'react-redux';
 import DefaultMusic from '../containers/Music';
 import BuyMusic from '../containers/BuyMusic';
+import ShopMain from '../containers/Shop/ShopMain';
 import AppFourOhFour from './404';
 import AppTemp from './app-main';
 import DefaultOriginals from '../containers/Originals';
@@ -32,6 +33,7 @@ export class App extends Component {
               <Route exact path="/music" component={DefaultMusic} />
               <Route path="/music/buymusic" component={BuyMusic} />
               <Route path="/music/originals" component={DefaultOriginals} />
+              <Route path="/music/shop" component={ShopMain} />
               <Route component={AppFourOhFour} />
             </Switch>
           </AppTemp>
