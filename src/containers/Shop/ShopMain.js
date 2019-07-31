@@ -8,9 +8,13 @@ export default class ShopMain extends Component {
     this.children = props.children;// eslint-disable-line react/prop-types
   }
 
+  componentDidMount() {
+    document.title = 'Shop | Web Jam LLC';
+  }
+
   render() {
     return (
-      <div className="container wj-container">
+      <div className="page-content">
         <h3>Hello from ShopMain</h3>
         <div className="main">
           <p>
