@@ -16,6 +16,7 @@ export class Originals extends Component {
     this.populateSongs = this.populateSongs.bind(this);
     this.setStateAsync = this.setStateAsync.bind(this);
     this.ToggleSongTypes = this.ToggleSongTypes.bind(this);
+    this.setIndex = this.setIndex.bind(this);
   }
 
   componentWillMount() {
@@ -30,6 +31,25 @@ export class Originals extends Component {
     return new Promise((resolve) => {
       this.setState(state, resolve);
     });
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  setIndex(songs, category) {
+    let categorySongs = [];
+    const otherSongs = [];
+    for (let i = 0; songs.length > i; i += 1) {
+      // eslint-disable-next-line security/detect-object-injection
+      if (songs[i].category === category) {
+        // eslint-disable-next-line security/detect-object-injection
+        categorySongs.push(songs[i]);
+      } else {
+        // eslint-disable-next-line security/detect-object-injection
+        otherSongs.push(songs[i]);
+      }
+    }
+
+    categorySongs = categorySongs.concat(otherSongs);
+    return categorySongs;
   }
 
   async populateSongs() {
@@ -54,6 +74,7 @@ export class Originals extends Component {
       } else {
         songs = songs.filter(song => song.category !== type);
       }
+      songs = this.setIndex(songs, type);
       this.setState({ songs, [typeInState]: typeState === 'off' ? 'on' : 'off' });
     };
   }
