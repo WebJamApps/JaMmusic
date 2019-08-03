@@ -5,7 +5,7 @@ import { PersistGate } from 'redux-persist/integration/react';
 import ConnectedApp from './App';
 import store from './store';
 
-import '../static/styles.css';
+import '../static/styles.scss';
 
 render(
   <Provider store={store.store}>

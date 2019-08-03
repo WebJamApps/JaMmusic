@@ -1,5 +1,6 @@
 {
-  "extends": "stylelint-config-standard",
+  "extends": "stylelint-config-recommended-scss",
+  "plugins": ["stylelint-scss"],
   "rules": {
     "declaration-block-semicolon-newline-after": null,
     "no-empty-source": null,
