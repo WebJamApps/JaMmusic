@@ -64,7 +64,11 @@ h5 {
   margin-top: 0;
 }
 
-h1, h2, h3, h4, h5 {
+h1,
+h2,
+h3,
+h4,
+h5 {
   font-family: 'PT Sans Caption';
 }
 
@@ -116,14 +120,16 @@ tbody.regformtbody tr:nth-child(odd) {
   background-color: white;
 }
 
-th, td {
+th,
+td {
   border-collapse: collapse;
   border: 1px solid #777;
   padding: 8px;
   text-align: left;
 }
 
-tbody.regformtbody td, tbody.regformtbody th {
+tbody.regformtbody td,
+tbody.regformtbody th {
   border: none;
 }
 
@@ -185,13 +191,29 @@ h6 {
 }
 
 /* Slideshow container */
-#libslideshow, #libslideshow1, #slideshowMusic, #slideshow1, #slideshow, #musicSlide1, #musicSlide2, #lSlide1, #lSlide2 {
+#libslideshow,
+#libslideshow1,
+#slideshowMusic,
+#slideshow1,
+#slideshow,
+#musicSlide1,
+#musicSlide2,
+#lSlide1,
+#lSlide2 {
   max-width: 1000px;
   position: relative;
   margin: auto;
 }
 
-#libslideshow img, #libslideshow1 img, #slideshowMusic img, #slideshow1 img, #slideshow img, #musicSlide1 img, #musicSlide2 img, #lSlide1 img, #lSlide2 img {
+#libslideshow img,
+#libslideshow1 img,
+#slideshowMusic img,
+#slideshow1 img,
+#slideshow img,
+#musicSlide1 img,
+#musicSlide2 img,
+#lSlide1 img,
+#lSlide2 img {
   width: 100%;
 }
 
@@ -351,7 +373,9 @@ h6 {
   padding: 10px;
 }
 
-.material-content-h1, .material-content-h2, .material-content-h3 {
+.material-content-h1,
+.material-content-h2,
+.material-content-h3 {
   text-align: center;
   margin-top: 15px;
 }
@@ -646,7 +670,9 @@ a:not([href]):not([tabindex]):hover {
   color: #0056b3;
 }
 
-p, a, label {
+p,
+a,
+label {
   font-family: 'Habibi';
   font-size: 12pt;
 }
@@ -859,7 +885,8 @@ div.fof {
     height: calc(100vh - 88px);
   }
 
-  .navImage, .nav-list {
+  .navImage,
+  .nav-list {
     width: 180px !important;
   }
 
@@ -889,7 +916,8 @@ div.fof {
 }
 
 /*Music player styles*/
-#musicTable tr, #musicTable td {
+#musicTable tr,
+#musicTable td {
   background-color: transparent !important;
 }
 
@@ -972,6 +1000,17 @@ button.on {
   border: 1px solid #c0c0c0 !important;
   width: 100%;
   padding: 4px;
+}
+
+@media screen and (max-width: 400px) {
+  #copyInput {
+    width: 95%;
+    margin-left: 8px;
+  }
+
+  #playSection audio {
+    background-position: top;
+  }
 }
 
 #copyButton {
