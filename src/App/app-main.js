@@ -52,10 +52,10 @@ export class AppTemplate extends Component {
         className: '', type: 'link', iconClass: 'fas fa-music', link: '/music', name: 'Music',
       },
       {
-        className: '', type: 'link', iconClass: 'far fa-money-bill-alt', link: '/music/buymusic', name: 'Buy Music',
+        className: '', type: 'link', iconClass: 'far fa-money-bill-alt', link: '/buymusic', name: 'Buy Music',
       },
       {
-        className: 'originals', type: 'link', iconClass: 'far fa-lightbulb', link: '/music/originals', name: 'Originals',
+        className: 'originals', type: 'link', iconClass: 'far fa-lightbulb', link: '/originals', name: 'Originals',
       },
       {
         className: 'mission', type: 'button', iconClass: 'fas fa-crosshairs', link: '', name: 'Mission Music',
@@ -64,7 +64,7 @@ export class AppTemplate extends Component {
         className: 'pub', type: 'button', iconClass: 'fas fa-beer', link: '', name: 'Pub Songs',
       },
       {
-        className: 'shop', type: 'link', iconClass: 'fas fa-shopping-cart', link: '/music/shop', name: 'Web Jam Shop',
+        className: 'shop', type: 'link', iconClass: 'fas fa-shopping-cart', link: '/shop', name: 'Web Jam Shop',
       },
       {
         className: 'home', type: 'button', iconClass: 'fas fa-home', link: '', name: 'Web Jam LLC',

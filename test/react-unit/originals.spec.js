@@ -20,21 +20,21 @@ describe('Original Music component init', () => {
     const { wrapper } = setup();
     expect(wrapper.find(MusicPlayer).exists()).toBe(true);
   });
-  
+
   it('should simulate a click on adding mission/pub song types when either is off', () => {
     const { wrapper } = setup();
     // wrapper.instance().setState({ player: { displayCopier: 'none' } });
     wrapper.instance().ToggleSongTypes('pub')();
     expect(wrapper.instance().state.pubState).toBe('on');
   });
-  
+
   it('should simulate a click on adding mission/pub song types when either is on', () => {
     const { wrapper } = setup();
     wrapper.instance().setState({ missionState: 'on' });
     wrapper.instance().ToggleSongTypes('mission')();
     expect(wrapper.instance().state.missionState).toBe('off');
   });
-  
+
   it('should populate songs with originals when component will be mounted with less than 2 songs', async () => {
     const { wrapper } = setup();
     wrapper.instance().setState({ songs: [] });

@@ -52,9 +52,9 @@ module.exports = ({
     // // serve index.html for all 404 (required for push-state)
     historyApiFallback: {
       rewrites: [
-        { from: /^\/$/, to: '/music' },
-        { from: /^\/music/, to: '/music' },
-        { from: /./, to: '/music' },
+        { from: /^\/$/, to: '/' },
+        { from: /^\//, to: '/' },
+        { from: /./, to: '/' },
       ],
     },
     port: parseInt(process.env.PORT, 10),

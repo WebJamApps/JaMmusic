@@ -19,23 +19,15 @@ export default class ShopMain extends Component {
         <div className="main">
           <p>
             Welcome to the landing page of the future Web Jam Shop.
-            More shall come at a later point as the application is built.
-            Until then, have some dummy text.
+           Ths application is currently a work in progress, so please check back later for more updates.
           </p>
           <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Aenean vel
-            elit scelerisque mauris pellentesque. Tellus at urna condimentum mattis. Ante in nibh mauris cursus mattis molestie. In ornare quam
-            viverra orci sagittis eu volutpat odio. Amet luctus venenatis lectus magna fringilla. Rhoncus urna neque viverra justo nec. Eu volutpat
-            odio facilisis mauris sit amet massa vitae tortor. A condimentum vitae sapien pellentesque habitant morbi tristique. Et tortor consequat
-            id porta nibh venenatis cras sed felis. Hac habitasse platea dictumst quisque sagittis purus sit amet volutpat. Eget felis eget nunc
-            lobortis mattis aliquam faucibus. Pulvinar mattis nunc sed blandit libero volutpat sed cras ornare. Rutrum quisque non tellus orci.
+            In time, companies will be able to sign up to the shop as a means of selling products.
+            We are planning on having a custom inventory space for each shop, all linked into a centralized area for customers to buy from.
+            The shop items themselves will update in real time, so you don&apos;t try to buy an item that&apos;s not actually there.
           </p>
           <p>
-            Feugiat sed lectus vestibulum mattis. Arcu risus quis varius quam quisque id diam vel quam. Ornare lectus sit amet est. Lectus vestibulum
-            mattis ullamcorper velit sed ullamcorper morbi. Viverra accumsan in nisl nisi scelerisque eu ultrices vitae auctor. Tincidunt ornare massa
-            eget egestas purus viverra. Vestibulum lectus mauris ultrices eros in cursus. Velit aliquet sagittis id consectetur. Nulla malesuada
-            pellentesque elit eget gravida. Ornare suspendisse sed nisi lacus sed viverra tellus in hac. Nunc non blandit massa enim nec dui nunc
-            mattis.
+            Updates are planned for the near future, so be sure to check back with us! 
           </p>
         </div>
         <div style={{ minHeight: '2.4in' }}>&nbsp;</div>
