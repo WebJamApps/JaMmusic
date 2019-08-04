@@ -126,7 +126,7 @@ describe('Music player component init', () => {
   //
   //   window.location = {
   //     search: '?oneplayer=true&id=28ru9weis2309urihw9098ewuis',
-  //     pathname: '/music/original',
+  //     pathname: '/original',
   //     href: '/music',
   //   };
   //

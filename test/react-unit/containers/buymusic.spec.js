@@ -8,7 +8,7 @@ function setup() {
   return { wrapper, props };
 }
 
-describe('/music/buymusic', () => {
+describe('/buymusic', () => {
   it('renders the component', () => {
     const { wrapper } = setup();
     // console.log(wrapper.debug());

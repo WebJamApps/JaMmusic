@@ -27,10 +27,10 @@ export default class ShopMain extends Component {
             The shop items themselves will update in real time, so you don&apos;t try to buy an item that&apos;s not actually there.
           </p>
           <p>
-            Updates are planned for the near future, so be sure to check back with us! 
+            Updates are planned for the near future, so be sure to check back with us!
           </p>
         </div>
-        <div style={{ minHeight: '2.4in' }}>&nbsp;</div>
+        <div style={{ minHeight: '3.2in' }}>&nbsp;</div>
       </div>
     );
   }

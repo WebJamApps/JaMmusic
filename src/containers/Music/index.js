@@ -33,7 +33,7 @@ export class Music extends Component {
           </div>
         </div>
         <div className="material-content elevation2" style={{ maxWidth: '998px', margin: 'auto' }}>
-          <Intro originals="/music/originals" />
+          <Intro originals="/originals" />
           <div className="search-table-outer" style={{ position: 'relative', overflowX: 'auto' }}><DefaultTable /></div>
           <section className="afterTable">
             <JoshBio />
