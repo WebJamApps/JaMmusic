@@ -17,7 +17,7 @@ class MusicPlayer extends Component {
         onePlayerMode: false,
       },
     };
-    this.state.songs = props.songs;
+    // this.state.songs = props.songs;
     this.state.copy = props.copy;
     this.play = this.play.bind(this);
     this.state.index = 0;
@@ -35,7 +35,8 @@ class MusicPlayer extends Component {
 
   componentWillMount() {
     const params = new URLSearchParams(window.location.search);
-    const { player, songs } = this.state;
+    const { player } = this.state;
+    const { songs } = this.props;
     const { allSongs } = this.props;
     return this.musicPlayerUtils.checkOnePlayer(params, player, songs, allSongs, this);
   }
@@ -44,9 +45,9 @@ class MusicPlayer extends Component {
     return this.musicPlayerUtils.runIfOnePlayer(this);
   }
 
-  componentDidUpdate() {
-    return this.musicPlayerUtils.resetSongs(this);
-  }
+  // componentDidUpdate() {
+  //   return this.musicPlayerUtils.resetSongs(this);
+  // }
 
   get playUrl() {
     const { song } = this.state;
@@ -57,7 +58,6 @@ class MusicPlayer extends Component {
     const { song } = this.state;
     const { player } = this.state;
     return (
-
       <ReactPlayer
         style={{ backgroundColor: '#eee', textAlign: 'center' }}
         url={song.url}
@@ -176,7 +176,9 @@ class MusicPlayer extends Component {
   }
 
   render() {
-    const { song, player } = this.state;
+    const { songs } = this.props;
+    const song = songs[0];
+    const { player } = this.state;
     return (
       <div className="container-fluid">
         <div id="player" className="mb-2 row justify-content-md-center">
@@ -202,17 +204,16 @@ class MusicPlayer extends Component {
             </div>
           </section>
         </div>
-        {/* <div id="sectionUnderButtons" style={{ minHeight: '0.1in' }}>&nbsp;</div> */}
       </div>
     );
   }
 }
 MusicPlayer.defaultProps = {
-  songs: [{ url: '' }],
+  songs: [{ url: '', title: '' }],
   copy: [{ url: '' }],
 };
 MusicPlayer.propTypes = {
-  songs: PropTypes.arrayOf(PropTypes.shape({})),
+  songs: PropTypes.arrayOf(PropTypes.shape({ title: PropTypes.string })),
   copy: PropTypes.arrayOf(PropTypes.shape({})),
   allSongs: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
 };

@@ -75,6 +75,7 @@ export class Originals extends Component {
         songs = songs.filter(song => song.category !== type);
       }
       songs = this.setIndex(songs, type);
+      console.log(songs);// eslint-disable-line no-console
       this.setState({ songs, [typeInState]: typeState === 'off' ? 'on' : 'off' });
     };
   }

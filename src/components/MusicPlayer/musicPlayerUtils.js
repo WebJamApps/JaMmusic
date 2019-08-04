@@ -37,14 +37,14 @@ const runIfOnePlayer = (controller) => {
   return null;
 };
 
-const resetSongs = (controller) => {
-  const { songs: propSongs, copy } = controller.props;
-  const { songs: stateSongs } = controller.state;
-  if (propSongs.length !== stateSongs.length) {
-    return controller.setState({ songs: propSongs, copy });
-  }
-  return false;
-};
+// const resetSongs = (controller) => {
+//   const { songs: propSongs, copy } = controller.props;
+//   const { songs: stateSongs } = controller.state;
+//   if (propSongs.length !== stateSongs.length) {
+//     return controller.setState({ songs: propSongs, copy });
+//   }
+//   return false;
+// };
 
 const homeButton = onePlayerMode => (
   <button type="button" id="h" role="menu" onClick={() => { window.location = '/music'; }} style={{ display: onePlayerMode ? 'auto' : 'none' }}>
@@ -58,5 +58,5 @@ const showHideButtons = (display) => {
 };
 
 export default {
-  checkOnePlayer, runIfOnePlayer, makeOnePlayerMode, resetSongs, homeButton, showHideButtons,
+  checkOnePlayer, runIfOnePlayer, makeOnePlayerMode, homeButton, showHideButtons,
 };
