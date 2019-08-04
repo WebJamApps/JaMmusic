@@ -35,6 +35,13 @@ describe('Original Music component init', () => {
     expect(wrapper.instance().state.missionState).toBe('off');
   });
 
+  it('should resort songs', async () => {
+    const { wrapper } = setup();
+    const songs = ['mission'];
+    const result = await wrapper.instance().setIndex(songs);
+    expect(result).toBeTruthy();
+  });
+
   it('should populate songs with originals when component will be mounted with less than 2 songs', async () => {
     const { wrapper } = setup();
     wrapper.instance().setState({ songs: [] });
