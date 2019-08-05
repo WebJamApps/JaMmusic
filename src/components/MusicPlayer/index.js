@@ -57,6 +57,7 @@ class MusicPlayer extends Component {
     const { song } = this.state;
     const { player } = this.state;
     return (
+
       <ReactPlayer
         style={{ backgroundColor: '#eee', textAlign: 'center' }}
         url={song.url}
@@ -64,9 +65,11 @@ class MusicPlayer extends Component {
         controls
         onEnded={this.playEnd}
         width="100%"
+        height="40vh"
         id="mainPlayer"
         config={{ file: { attributes: { controlsList: 'nodownload' } } }}
       />
+
     );
   }
 

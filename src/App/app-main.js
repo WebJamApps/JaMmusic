@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { GoogleLogin, GoogleLogout } from 'react-google-login';
 import { connect } from 'react-redux';
-import authUtils from './AppTemplate/authUtils';
+import authUtils from './authUtils';
 
 export class AppTemplate extends Component {
   constructor(props) {
@@ -162,6 +162,7 @@ export class AppTemplate extends Component {
   }
 
   navLinks() {
+    const { userCount } = this.props;
     return (
       <div className="nav-list">
         <div
@@ -173,6 +174,12 @@ export class AppTemplate extends Component {
           Music
         </div>
         {this.menus.map((menu, index) => (this.menuItem(menu, index)))}
+        <p style={{ paddingLeft: '10px' }}>
+          <i>Active Users</i>
+:
+          {' '}
+          {userCount}
+        </p>
       </div>
     );
   }
@@ -252,9 +259,10 @@ export class AppTemplate extends Component {
   }
 }
 /* istanbul ignore next */
-AppTemplate.defaultProps = { dispatch: () => {}, auth: { isAuthenticated: false } };
+AppTemplate.defaultProps = { dispatch: () => {}, auth: { isAuthenticated: false }, userCount: 0 };
 
 AppTemplate.propTypes = {
+  userCount: PropTypes.number,
   auth: PropTypes.shape({
     isAuthenticated: PropTypes.bool,
   }),
@@ -262,6 +270,6 @@ AppTemplate.propTypes = {
   children: PropTypes.element.isRequired,
 };
 
-const mapStoreToProps = store => ({ auth: store.auth });
+const mapStoreToProps = store => ({ auth: store.auth, userCount: store.auth.userCount });
 
 export default connect(mapStoreToProps)(AppTemplate);

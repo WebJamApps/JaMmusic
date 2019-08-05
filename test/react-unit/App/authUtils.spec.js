@@ -1,4 +1,4 @@
-import authUtils from '../../../src/components/AppTemplate/authUtils';
+import authUtils from '../../../src/App/authUtils';
 
 describe('authUtils', () => {
   it('handles failed login', (done) => {

@@ -28,6 +28,7 @@ const makeOnePlayerMode = () => {
   if (contentBlock) contentBlock.style.height = '100%';
   if (window.outerWidth < 600) mainPlayer.style.height = '55vh';
   if (pageContent) pageContent.style.borderColor = '#fff';
+  return true;
 };
 
 const runIfOnePlayer = (controller) => {
@@ -40,8 +41,9 @@ const resetSongs = (controller) => {
   const { songs: propSongs, copy } = controller.props;
   const { songs: stateSongs } = controller.state;
   if (propSongs.length !== stateSongs.length) {
-    controller.setState({ songs: propSongs, copy });
+    return controller.setState({ songs: propSongs, copy });
   }
+  return false;
 };
 
 const homeButton = onePlayerMode => (

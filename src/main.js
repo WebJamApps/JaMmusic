@@ -2,15 +2,15 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { render } from 'react-dom';
 import { PersistGate } from 'redux-persist/integration/react';
-import App from './App';
+import ConnectedApp from './App';
 import store from './store';
 
-import '../static/styles.css';
+import '../static/styles.scss';
 
 render(
   <Provider store={store.store}>
     <PersistGate loading={null} persistor={store.persistor}>
-      <App />
+      <ConnectedApp />
     </PersistGate>
   </Provider>, document.getElementById('root'),
 );

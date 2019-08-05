@@ -1,6 +1,6 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import { AppTemplate } from '../../src/components/app-main';
+import { AppTemplate } from '../../../src/App/app-main';
 
 const dFunc = () => {};
 function setup() {

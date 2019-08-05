@@ -2,7 +2,8 @@ require('dotenv').config();
 
 module.exports = {
   server: {
-    launchTimeout: 40000,
+    setTimeout: 10000,
+    launchTimeout: 60000,
     command: 'yarn build:prod && node server.js',
     port: process.env.PORT,
   },
