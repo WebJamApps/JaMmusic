@@ -20,7 +20,7 @@ export class App extends Component {
 
   componentDidMount() {
     const { dispatch } = this.props;
-    this.connectToSC.setupSocketCluster(dispatch);
+    if (process.env.NODE_ENV !== 'production') this.connectToSC.setupSocketCluster(dispatch);
   }
 
   render() {
@@ -40,7 +40,9 @@ export class App extends Component {
     );
   }
 }
-App.propTypes = { dispatch: PropTypes.func.isRequired };
+App.propTypes = {
+  dispatch: PropTypes.func.isRequired,
+};
 const mapStoreToProps = store => ({ images: store.images, userCount: store.auth.userCount });
 
 export default connect(mapStoreToProps, null)(App);
