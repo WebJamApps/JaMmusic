@@ -5,6 +5,7 @@ const setupSocketCluster = (dispatch) => {
     hostname: process.env.SOCKETCLUSTER_HOST,
     port: process.env.SOCKETCLUSTER_PORT,
     autoConnect: true,
+    secure: process.env.SOCKETCLUSTER_SECURE,
   });
   scc.on('connect', () => {
     const count = scc.subscribe('sample');// eslint-disable-next-line security/detect-non-literal-fs-filename
