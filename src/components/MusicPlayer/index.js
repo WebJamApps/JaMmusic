@@ -17,7 +17,7 @@ class MusicPlayer extends Component {
         onePlayerMode: false,
       },
     };
-    // this.state.songs = props.songs;
+    this.state.songs = props.songs;
     this.state.copy = props.copy;
     this.play = this.play.bind(this);
     this.state.index = 0;
