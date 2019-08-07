@@ -29,6 +29,11 @@ export default class ShopMain extends Component {
           <p>
             Updates are planned for the near future, so be sure to check back with us!
           </p>
+          <p>
+            If you would like to pre-register to sell or buy things in the future,
+            you can sign up with an account using the login button to the right.
+            Please note you&apos;ll need a google account to do so.
+          </p>
         </div>
         <div style={{ minHeight: '3.2in' }}>&nbsp;</div>
       </div>
