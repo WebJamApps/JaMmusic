@@ -40,7 +40,9 @@ export class App extends Component {
     );
   }
 }
-App.propTypes = { dispatch: PropTypes.func.isRequired };
+App.propTypes = {
+  dispatch: PropTypes.func.isRequired,
+};
 const mapStoreToProps = store => ({ images: store.images, userCount: store.auth.userCount });
 
 export default connect(mapStoreToProps, null)(App);
