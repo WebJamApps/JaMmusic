@@ -55,14 +55,14 @@ export class AppTemplate extends Component {
         className: '', type: 'link', iconClass: 'far fa-money-bill-alt', link: '/music/buymusic', name: 'Buy Music',
       },
       {
-        className: 'originals', type: 'link', iconClass: 'far fa-lightbulb', link: '/music/originals', name: 'Originals',
+        className: 'songs', type: 'link', iconClass: 'far fa-lightbulb', link: '/music/originals', name: 'Songs',
       },
-      {
-        className: 'mission', type: 'button', iconClass: 'fas fa-crosshairs', link: '', name: 'Mission Music',
-      },
-      {
-        className: 'pub', type: 'button', iconClass: 'fas fa-beer', link: '', name: 'Pub Songs',
-      },
+      // {
+      //   className: 'mission', type: 'button', iconClass: 'fas fa-crosshairs', link: '', name: 'Mission Music',
+      // },
+      // {
+      //   className: 'pub', type: 'button', iconClass: 'fas fa-beer', link: '', name: 'Pub Songs',
+      // },
       {
         className: 'home', type: 'button', iconClass: 'fas fa-home', link: '', name: 'Web Jam LLC',
       },
