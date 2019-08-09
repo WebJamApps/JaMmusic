@@ -12,7 +12,7 @@ import DefaultOriginals from '../containers/Originals';
 import connectToSC from './connectToSC';
 import mapStoreToProps from '../redux/mapStoreToProps';
 import getSongs from './songsActions';
-import getImages from './musicActions';
+import getImages from './imageActions';
 
 export class App extends Component {
   constructor(props) {
@@ -24,7 +24,7 @@ export class App extends Component {
   componentDidMount() {
     const { dispatch, songs, images } = this.props;
     this.connectToSC.setupSocketCluster(dispatch);
-    // fetch songs
+    // fetch songs and images
     if (songs.length === 0)dispatch(getSongs());
     if (images.length === 0)dispatch(getImages());
   }
@@ -53,6 +53,5 @@ App.propTypes = {
 
 };
 App.defaultProps = { songs: [], images: [] };
-// const mapStoreToProps = store => ({ images: store.images, userCount: store.auth.userCount, songs: store.songs });
 
 export default connect(mapStoreToProps, null)(App);

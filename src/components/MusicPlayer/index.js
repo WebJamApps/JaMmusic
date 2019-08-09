@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import musicPlayerUtils from './musicPlayerUtils';
 import mapStoreToProps from '../../redux/mapStoreToProps';
 
-class MusicPlayer extends Component {
+export class MusicPlayer extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -20,7 +20,7 @@ class MusicPlayer extends Component {
       },
     };
     this.state.songs = [];
-    this.state.copy = props.copy;
+    this.state.copy = [];
     this.play = this.play.bind(this);
     this.state.index = 0;
     this.playEnd = this.playEnd.bind(this);
@@ -39,22 +39,14 @@ class MusicPlayer extends Component {
     const params = new URLSearchParams(window.location.search);
     const { player } = this.state;
     const { songs, filterBy } = this.props;
-    // console.log(songs);// eslint-disable-line
     const newSongs = songs.filter(song => song.category === filterBy);
-    console.log(newSongs);//eslint-disable-line
-    this.setState({ song: newSongs[0], songs: newSongs });
-    // const { songs } = this.props;
-    // const { allSongs } = this.props;
+    this.setState({ song: newSongs[0], songs: newSongs, copy: newSongs });
     return this.musicPlayerUtils.checkOnePlayer(params, player, this);
   }
 
   componentDidMount() {
     return this.musicPlayerUtils.runIfOnePlayer(this);
   }
-
-  // componentDidUpdate() {
-  //   return this.musicPlayerUtils.resetSongs(this);
-  // }
 
   get playUrl() {
     const { song } = this.state;
@@ -189,7 +181,7 @@ class MusicPlayer extends Component {
       <div className="container-fluid">
         <div id="player" className="mb-2 row justify-content-md-center">
           <section id="playSection" className="col-12 mt-2 mr-0 col-md-7" style={{ display: 'inline', textAlign: 'center', marginBottom: '0' }}>
-            {song !== null ? this.reactPlayer() : null}
+            {song !== null && song !== undefined && song.url !== undefined ? this.reactPlayer() : null}
           </section>
           <section className="col-12 mt-1" style={{ fontSize: '0.8em', marginTop: '15px', marginBottom: '0' }}>
             <strong>{song.title}</strong>
@@ -216,12 +208,9 @@ class MusicPlayer extends Component {
 }
 MusicPlayer.defaultProps = {
   songs: [{ url: '', title: '' }],
-  copy: [{ url: '' }],
 };
 MusicPlayer.propTypes = {
   songs: PropTypes.arrayOf(PropTypes.shape({ title: PropTypes.string })),
-  copy: PropTypes.arrayOf(PropTypes.shape({})),
   filterBy: PropTypes.string.isRequired,
-  // allSongs: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
 };
 export default connect(mapStoreToProps)(MusicPlayer);

@@ -9,15 +9,12 @@ import EmersonBio from './emersonBio';
 import BrianBio from './brianBio';
 import Wjband from './wjBand';
 import Intro from './intro';
-// import getImages from './musicActions';
 import mapStoreToProps from '../../redux/mapStoreToProps';
 
 export class Music extends Component {
   constructor(props) {
     super(props);
     this.state = { };
-    // const { dispatch } = this.props;
-    // dispatch(getImages());
   }
 
   componentDidMount() { document.title = 'Music | Web Jam LLC'; }
@@ -50,7 +47,7 @@ export class Music extends Component {
     );
   }
 }
-/* istanbul ignore next */
+
 Music.defaultProps = { images: [] };
 Music.propTypes = {
   images: PropTypes.arrayOf(PropTypes.shape({
@@ -58,6 +55,5 @@ Music.propTypes = {
     title: PropTypes.string,
   })),
 };
-/* istanbul ignore next */
-// const mapStoreToProps = store => ({ images: store.images });
+
 export default connect(mapStoreToProps)(Music);

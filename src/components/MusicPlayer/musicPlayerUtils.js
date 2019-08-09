@@ -8,7 +8,6 @@ const checkOnePlayer = (params, player, controller) => {
     return controller.setState({ player: { ...player, onePlayerMode: true }, song: song.length ? song[0] : songs[0], index: index || 0 });
   }
   return true;
-  // return controller.setState({ song: songs[0], index: 0 });
 };
 
 const makeOnePlayerMode = () => {
@@ -38,15 +37,6 @@ const runIfOnePlayer = (controller) => {
   if (onePlayerMode) return makeOnePlayerMode();
   return null;
 };
-
-// const resetSongs = (controller) => {
-//   const { songs: propSongs, copy } = controller.props;
-//   const { songs: stateSongs } = controller.state;
-//   if (propSongs.length !== stateSongs.length) {
-//     return controller.setState({ songs: propSongs, copy });
-//   }
-//   return false;
-// };
 
 const homeButton = onePlayerMode => (
   <button type="button" id="h" role="menu" onClick={() => { window.location = '/music'; }} style={{ display: onePlayerMode ? 'auto' : 'none' }}>
