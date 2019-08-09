@@ -20,7 +20,7 @@ export class App extends Component {
 
   componentDidMount() {
     const { dispatch } = this.props;
-    if (process.env.NODE_ENV !== 'production') this.connectToSC.setupSocketCluster(dispatch);
+    this.connectToSC.setupSocketCluster(dispatch);
   }
 
   render() {
