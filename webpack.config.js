@@ -155,7 +155,7 @@ module.exports = ({
       { from: 'static/tour.json', to: 'tour.json' },
       { from: 'static/imgs', to: 'static/imgs' },
     ]),
-    new webpack.EnvironmentPlugin(['SOCKETCLUSTER_HOST', 'SOCKETCLUSTER_PORT', 'NODE_ENV',
+    new webpack.EnvironmentPlugin(['SOCKETCLUSTER_HOST', 'SOCKETCLUSTER_SECURE', 'SOCKETCLUSTER_PORT', 'NODE_ENV',
       'AuthProductionBaseURL', 'PORT', 'BackendUrl', 'GoogleClientId', 'userRoles']),
     // ...when(production, new CopyWebpackPlugin([
     //   { from: 'static/favicon.ico', to: 'favicon.ico' }])),
