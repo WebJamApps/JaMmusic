@@ -1,13 +1,15 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import ReactPlayer from 'react-player';
 import PropTypes from 'prop-types';
 import musicPlayerUtils from './musicPlayerUtils';
+import mapStoreToProps from '../../redux/mapStoreToProps';
 
-class MusicPlayer extends Component {
+export class MusicPlayer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      song: props.songs[0],
+      song: null,
       player: {
         playing: false,
         shown: false,
@@ -17,8 +19,8 @@ class MusicPlayer extends Component {
         onePlayerMode: false,
       },
     };
-    this.state.songs = props.songs;
-    this.state.copy = props.copy;
+    this.state.songs = [];
+    this.state.copy = [];
     this.play = this.play.bind(this);
     this.state.index = 0;
     this.playEnd = this.playEnd.bind(this);
@@ -35,17 +37,15 @@ class MusicPlayer extends Component {
 
   componentWillMount() {
     const params = new URLSearchParams(window.location.search);
-    const { player, songs } = this.state;
-    const { allSongs } = this.props;
-    return this.musicPlayerUtils.checkOnePlayer(params, player, songs, allSongs, this);
+    const { player } = this.state;
+    const { songs, filterBy } = this.props;
+    const newSongs = songs.filter(song => song.category === filterBy);
+    this.setState({ song: newSongs[0], songs: newSongs, copy: newSongs });
+    return this.musicPlayerUtils.checkOnePlayer(params, player, this);
   }
 
   componentDidMount() {
     return this.musicPlayerUtils.runIfOnePlayer(this);
-  }
-
-  componentDidUpdate() {
-    return this.musicPlayerUtils.resetSongs(this);
   }
 
   get playUrl() {
@@ -57,7 +57,6 @@ class MusicPlayer extends Component {
     const { song } = this.state;
     const { player } = this.state;
     return (
-
       <ReactPlayer
         style={{ backgroundColor: '#eee', textAlign: 'center' }}
         url={song.url}
@@ -73,7 +72,7 @@ class MusicPlayer extends Component {
     );
   }
 
-  buttons() {
+  buttons() { // add the Pub and Mission buttons
     const { player: { playing, isShuffleOn, onePlayerMode } } = this.state;
     return (
       <section className="mt-0 col-12 col-md-10" style={{ marginTop: '4px' }}>
@@ -176,12 +175,13 @@ class MusicPlayer extends Component {
   }
 
   render() {
-    const { song, player } = this.state;
+    const { song } = this.state;
+    const { player } = this.state;
     return (
       <div className="container-fluid">
         <div id="player" className="mb-2 row justify-content-md-center">
           <section id="playSection" className="col-12 mt-2 mr-0 col-md-7" style={{ display: 'inline', textAlign: 'center', marginBottom: '0' }}>
-            {this.reactPlayer()}
+            {song !== null && song !== undefined && song.url !== undefined ? this.reactPlayer() : null}
           </section>
           <section className="col-12 mt-1" style={{ fontSize: '0.8em', marginTop: '15px', marginBottom: '0' }}>
             <strong>{song.title}</strong>
@@ -202,18 +202,15 @@ class MusicPlayer extends Component {
             </div>
           </section>
         </div>
-        {/* <div id="sectionUnderButtons" style={{ minHeight: '0.1in' }}>&nbsp;</div> */}
       </div>
     );
   }
 }
 MusicPlayer.defaultProps = {
-  songs: [{ url: '' }],
-  copy: [{ url: '' }],
+  songs: [{ url: '', title: '' }],
 };
 MusicPlayer.propTypes = {
-  songs: PropTypes.arrayOf(PropTypes.shape({})),
-  copy: PropTypes.arrayOf(PropTypes.shape({})),
-  allSongs: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+  songs: PropTypes.arrayOf(PropTypes.shape({ title: PropTypes.string })),
+  filterBy: PropTypes.string.isRequired,
 };
-export default MusicPlayer;
+export default connect(mapStoreToProps)(MusicPlayer);

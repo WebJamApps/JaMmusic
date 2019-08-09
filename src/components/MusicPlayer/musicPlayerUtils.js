@@ -1,12 +1,13 @@
 import React from 'react';
 
-const checkOnePlayer = (params, player, songs, allSongs, controller) => {
+const checkOnePlayer = (params, player, controller) => {
+  const { songs } = controller.props;
   if (params.get('oneplayer')) {
-    const song = allSongs.filter(s => s._id === params.get('id'));
-    const index = allSongs.findIndex(s => s._id === params.get('id'));
+    const song = songs.filter(s => s._id === params.get('id'));
+    const index = songs.findIndex(s => s._id === params.get('id'));
     return controller.setState({ player: { ...player, onePlayerMode: true }, song: song.length ? song[0] : songs[0], index: index || 0 });
   }
-  return controller.setState({ song: songs[0], index: 0 });
+  return true;
 };
 
 const makeOnePlayerMode = () => {
@@ -37,15 +38,6 @@ const runIfOnePlayer = (controller) => {
   return null;
 };
 
-const resetSongs = (controller) => {
-  const { songs: propSongs, copy } = controller.props;
-  const { songs: stateSongs } = controller.state;
-  if (propSongs.length !== stateSongs.length) {
-    return controller.setState({ songs: propSongs, copy });
-  }
-  return false;
-};
-
 const homeButton = onePlayerMode => (
   <button type="button" id="h" role="menu" onClick={() => { window.location = '/music'; }} style={{ display: onePlayerMode ? 'auto' : 'none' }}>
     <span id="homeLink">Home</span>
@@ -58,5 +50,5 @@ const showHideButtons = (display) => {
 };
 
 export default {
-  checkOnePlayer, runIfOnePlayer, makeOnePlayerMode, resetSongs, homeButton, showHideButtons,
+  checkOnePlayer, runIfOnePlayer, makeOnePlayerMode, homeButton, showHideButtons,
 };

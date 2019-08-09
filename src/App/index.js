@@ -12,6 +12,9 @@ import AppFourOhFour from './404';
 import AppTemp from './app-main';
 import DefaultOriginals from '../containers/Originals';
 import connectToSC from './connectToSC';
+import mapStoreToProps from '../redux/mapStoreToProps';
+import getSongs from './songsActions';
+import getImages from './imageActions';
 
 export class App extends Component {
   constructor(props) {
@@ -21,8 +24,11 @@ export class App extends Component {
   }
 
   componentDidMount() {
-    const { dispatch } = this.props;
+    const { dispatch, songs, images } = this.props;
     this.connectToSC.setupSocketCluster(dispatch);
+    // fetch songs and images
+    if (songs.length === 0)dispatch(getSongs());
+    if (images.length === 0)dispatch(getImages());
   }
 
   render() {
@@ -44,7 +50,12 @@ export class App extends Component {
     );
   }
 }
-App.propTypes = { dispatch: PropTypes.func.isRequired };
-const mapStoreToProps = store => ({ images: store.images, userCount: store.auth.userCount });
+App.propTypes = {
+  dispatch: PropTypes.func.isRequired,
+  songs: PropTypes.arrayOf(PropTypes.shape({})),
+  images: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.shape({})), PropTypes.shape({})]),
+
+};
+App.defaultProps = { songs: [], images: [] };
 
 export default connect(mapStoreToProps, null)(App);

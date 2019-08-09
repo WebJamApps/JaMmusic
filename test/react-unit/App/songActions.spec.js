@@ -1,6 +1,6 @@
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import getSongs, { gotSongs } from '../../../src/containers/Originals/songsActions';
+import getSongs, { gotSongs } from '../../../src/App/songsActions';
 
 const middlewares = [thunk];
 const mockStore = configureMockStore(middlewares);
