@@ -8,13 +8,13 @@ import mapStoreToProps from '../../redux/mapStoreToProps';
 export class Originals extends Component {
   constructor(props) {
     super(props);
-    // this.state = {
+    this.state = {};
     //   songs: props.songs.filter(song => song.category === 'originals'),
     //   pubState: 'off',
     //   missionState: 'off',
     //   allSongs: props.songs.songs,
     // };
-    this.setStateAsync = this.setStateAsync.bind(this);
+    // this.setStateAsync = this.setStateAsync.bind(this);
     // this.ToggleSongTypes = this.ToggleSongTypes.bind(this);
     // this.setIndex = this.setIndex.bind(this);
   }
@@ -24,11 +24,11 @@ export class Originals extends Component {
 
   componentDidMount() { document.title = 'Originals | Web Jam LLC'; }
 
-  setStateAsync(state) {
-    return new Promise((resolve) => {
-      this.setState(state, resolve);
-    });
-  }
+  // setStateAsync(state) {
+  //   return new Promise((resolve) => {
+  //     this.setState(state, resolve);
+  //   });
+  // }
 
   // // eslint-disable-next-line class-methods-use-this
   // setIndex(songs, category) {

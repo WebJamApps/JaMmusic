@@ -1,11 +1,10 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import { Originals } from '../../src/containers/Originals';
-// import { MusicPlayer } from '../../src/components/MusicPlayer';
+import DefaultMusicPlayer from '../../src/components/MusicPlayer';
 
 function setup() {
-  const props = { songs: [{ url: '', category: 'originals' }] };
-
+  const props = { songs: [{ url: '', category: 'originals' }, { url: '', category: 'originals' }] };
   const wrapper = shallow(<Originals {...props} />);
   return { wrapper, props };
 }
@@ -16,11 +15,15 @@ describe('Original Music component init', () => {
     expect(wrapper.find('div.page-content').exists()).toBe(true);
   });
 
-  // it('expect the presence of Music player', () => {
-  //   const { wrapper } = setup();
-  //   expect(wrapper.find(MusicPlayer).exists()).toBe(true);
-  // });
-
+  it('expect the presence of Music player', () => {
+    const { wrapper } = setup();
+    expect(wrapper.find(DefaultMusicPlayer).exists()).toBe(true);
+  });
+  it('should not display the music player', (done) => {
+    const wrapper = shallow(<Originals />);
+    expect(wrapper.find(DefaultMusicPlayer).exists()).toBe(false);
+    done();
+  });
   // it('should simulate a click on adding mission/pub song types when either is off', () => {
   //   const { wrapper } = setup();
   //   wrapper.instance().ToggleSongTypes('pub')();

@@ -1,6 +1,7 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import { Music } from '../../src/containers/Music';
+import PicSlider from '../../src/components/pic-slider';
 
 function setup(data) {
   let wrapper;
@@ -24,22 +25,10 @@ describe('/music', () => {
     expect(wrapper.find('EmersonBio').dive().find('.emersonBio').exists()).toBe(true);
     expect(wrapper.find('BrianBio').dive().find('.brianBio').exists()).toBe(true);
   });
-  // it('renders with loading ...', (done) => {
-  //   const { wrapper } = setup({ isFetching: true, images: [] });
-  //   expect(wrapper.find('h3#appLoading').exists()).toBe(true);
-  //   done();
-  // });
-  // it('renders with error', (done) => {
-  //   const { wrapper } = setup({
-  //     isFetching: false, images: [], error: 'bad', isError: true,
-  //   });
-  //   expect(wrapper.find('h3#appErr').exists()).toBe(true);
-  //   done();
-  // });
-  // it('renders with images', (done) => {
-  //   const { wrapper } = setup({ isFetching: false, images: [{ _id: 1, url: '', title: '' }], isError: false });
-  //   // console.log(wrapper.debug());
-  //   expect(wrapper.find('PicSlider').exists()).toBe(true);
-  //   done();
-  // });
+  it('renders with images', (done) => {
+    const data = [{}];
+    const wrapper2 = shallow(<Music images={data} />);
+    expect(wrapper2.find(PicSlider).exists()).toBe(true);
+    done();
+  });
 });

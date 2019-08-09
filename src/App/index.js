@@ -49,7 +49,7 @@ export class App extends Component {
 App.propTypes = {
   dispatch: PropTypes.func.isRequired,
   songs: PropTypes.arrayOf(PropTypes.shape({})),
-  images: PropTypes.arrayOf(PropTypes.shape({})),
+  images: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.shape({})), PropTypes.shape({})]),
 
 };
 App.defaultProps = { songs: [], images: [] };
