@@ -1,10 +1,13 @@
 import { createStore, applyMiddleware } from 'redux';
 import { persistStore, persistReducer } from 'redux-persist';
-import logger from 'redux-logger';
+import { createLogger } from 'redux-logger';
 import thunk from 'redux-thunk';
 import storageSession from 'redux-persist/lib/storage/session';
 import allReducers from '../redux/allReducers';
 
+const logger = createLogger({
+  predicate: (getState, action) => action.type !== 'SC_HEARTBEAT',
+});
 const persistConfig = {
   key: 'root',
   storage: storageSession,

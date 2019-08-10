@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { GoogleLogin, GoogleLogout } from 'react-google-login';
 import { connect } from 'react-redux';
 import authUtils from './authUtils';
+import mapStoreToProps from '../redux/mapStoreToProps';
 
 export class AppTemplate extends Component {
   constructor(props) {
@@ -162,7 +163,7 @@ export class AppTemplate extends Component {
   }
 
   navLinks() {
-    const { userCount } = this.props;
+    const { userCount, heartBeat } = this.props;
     return (
       <div className="nav-list">
         <div
@@ -174,12 +175,23 @@ export class AppTemplate extends Component {
           Music
         </div>
         {this.menus.map((menu, index) => (this.menuItem(menu, index)))}
-        <p style={{ paddingLeft: '10px' }}>
-          <i>Active Users</i>
+        <p style={{ margin: 0, padding: 0, fontSize: '6pt' }}>&nbsp;</p>
+        <div>
+          <button
+            type="button"
+            style={{
+              cursor: 'none', marginLeft: '10px', height: '18px', width: '18px', backgroundColor: heartBeat, 
+            }}
+          >
+            {' '}
+          </button>
+          <span style={{ paddingLeft: '10px', marginTop: '10px' }}>
+            <i>Active Users</i>
 :
-          {' '}
-          {userCount}
-        </p>
+            {' '}
+            {userCount}
+          </span>
+        </div>
       </div>
     );
   }
@@ -259,9 +271,12 @@ export class AppTemplate extends Component {
   }
 }
 /* istanbul ignore next */
-AppTemplate.defaultProps = { dispatch: () => {}, auth: { isAuthenticated: false }, userCount: 0 };
+AppTemplate.defaultProps = {
+  dispatch: () => {}, auth: { isAuthenticated: false }, userCount: 0, heartBeat: 'white',
+};
 
 AppTemplate.propTypes = {
+  heartBeat: PropTypes.string,
   userCount: PropTypes.number,
   auth: PropTypes.shape({
     isAuthenticated: PropTypes.bool,
@@ -270,6 +285,6 @@ AppTemplate.propTypes = {
   children: PropTypes.element.isRequired,
 };
 
-const mapStoreToProps = store => ({ auth: store.auth, userCount: store.auth.userCount });
+// const mapStoreToProps = store => ({ auth: store.auth, userCount: store.auth.userCount });
 
 export default connect(mapStoreToProps)(AppTemplate);
