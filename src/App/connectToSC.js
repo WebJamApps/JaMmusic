@@ -5,7 +5,8 @@ const setupSocketCluster = (dispatch) => {
     hostname: process.env.SOCKETCLUSTER_HOST,
     port: process.env.SOCKETCLUSTER_PORT,
     autoConnect: true,
-    secure: process.env.SOCKETCLUSTER_SECURE,
+    secure: process.env.SOCKETCLUSTER_SECURE !== 'false',
+    // secure: false,
   });
   scc.on('connect', () => {
     const count = scc.subscribe('sample');// eslint-disable-next-line security/detect-non-literal-fs-filename
@@ -16,8 +17,8 @@ const setupSocketCluster = (dispatch) => {
     console.log(`socketClusterClient connected on port ${process.env.SOCKETCLUSTER_PORT}`);// eslint-disable-line no-console
     scc.emit('sampleClientEvent', 'howdy');
   });
-  // scc.on('random', (data) => {
-  //   // console.log(`socket heartbeat: ${data.number}`); // eslint-disable-line no-console
-  // });
+  scc.on('random', (data) => {
+    dispatch({ type: 'SC_HEARTBEAT', data });
+  });
 };
 export default { setupSocketCluster }; // emits when a style was updated or created

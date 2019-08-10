@@ -1,5 +1,4 @@
 import request from 'superagent';
-// import store from '.';
 
 export const fetchImages = () => ({
   type: 'FETCH_IMAGES',
