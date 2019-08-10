@@ -55,7 +55,7 @@ export class AppTemplate extends Component {
         className: '', type: 'link', iconClass: 'far fa-money-bill-alt', link: '/buymusic', name: 'Buy Music',
       },
       {
-        className: 'songs', type: 'link', iconClass: 'far fa-lightbulb', link: '/music/originals', name: 'Songs',
+        className: 'songs', type: 'link', iconClass: 'far fa-lightbulb', link: '/originals', name: 'Songs',
       },
       // {
       //   className: 'mission', type: 'button', iconClass: 'fas fa-crosshairs', link: '', name: 'Mission Music',

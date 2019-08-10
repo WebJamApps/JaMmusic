@@ -15,7 +15,7 @@ export default class ShopMain extends Component {
   render() {
     return (
       <div className="page-content">
-        <h3>Hello from ShopMain</h3>
+        <h3 style={{ textAlign: 'center', margin: '20px', fontWeight: 'bold' }}>Web Jam Shop</h3>
         <div className="main">
           <p>
             Welcome to the landing page of the future Web Jam Shop.
