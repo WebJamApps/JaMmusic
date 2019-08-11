@@ -4,6 +4,8 @@ import PropTypes from 'prop-types';
 import { GoogleLogin, GoogleLogout } from 'react-google-login';
 import { connect } from 'react-redux';
 import authUtils from './authUtils';
+import mapStoreToProps from '../redux/mapStoreToProps';
+import appMainUtils from './appMainUtils';
 
 export class AppTemplate extends Component {
   constructor(props) {
@@ -21,15 +23,8 @@ export class AppTemplate extends Component {
     this.responseGoogleLogout = this.responseGoogleLogout.bind(this);
     this.googleButtons = this.googleButtons.bind(this);
     this.authUtils = authUtils;
+    this.appMainUtils = appMainUtils;
   }
-
-  // componentDidMount() {
-  //   const username = localStorage.getItem('username');
-  //   if (typeof username === 'string') {
-  //     document.getElementsByClassName('googleLogin')[0].style.display = 'none';
-  //     document.getElementsByClassName('googleLogout')[0].style.display = 'block';
-  //   }
-  // }
 
   get currentStyles() {
     let result = {};
@@ -57,12 +52,6 @@ export class AppTemplate extends Component {
       {
         className: 'songs', type: 'link', iconClass: 'far fa-lightbulb', link: '/music/originals', name: 'Songs',
       },
-      // {
-      //   className: 'mission', type: 'button', iconClass: 'fas fa-crosshairs', link: '', name: 'Mission Music',
-      // },
-      // {
-      //   className: 'pub', type: 'button', iconClass: 'fas fa-beer', link: '', name: 'Pub Songs',
-      // },
       {
         className: 'shop', type: 'link', iconClass: 'fas fa-shopping-cart', link: '/shop', name: 'Web Jam Shop',
       },
@@ -114,12 +103,13 @@ export class AppTemplate extends Component {
   }
 
   googleButtons(type, index) {
+    const cId = process.env.GoogleClientId;
     if (type === 'login') {
       return (
         <div key={index} className="menu-item googleLogin">
           <GoogleLogin
             responseType="code"
-            clientId={process.env.GoogleClientId}
+            clientId={cId}
             buttonText="Login"
             onSuccess={this.responseGoogleLogin}
             onFailure={this.authUtils.responseGoogleFailLogin}
@@ -129,12 +119,7 @@ export class AppTemplate extends Component {
       );
     } return (
       <div key={index} className="menu-item googleLogout" style={{ display: 'none' }}>
-        <GoogleLogout
-          clientId={process.env.GoogleClientId}
-          buttonText="Logout"
-          onLogoutSuccess={this.responseGoogleLogout}
-          cookiePolicy="single_host_origin"
-        />
+        <GoogleLogout clientId={cId} buttonText="Logout" onLogoutSuccess={this.responseGoogleLogout} cookiePolicy="single_host_origin" />
       </div>
     );
   }
@@ -165,7 +150,7 @@ export class AppTemplate extends Component {
   }
 
   navLinks() {
-    const { userCount } = this.props;
+    const { userCount, heartBeat } = this.props;
     return (
       <div className="nav-list">
         <div
@@ -177,12 +162,8 @@ export class AppTemplate extends Component {
           Music
         </div>
         {this.menus.map((menu, index) => (this.menuItem(menu, index)))}
-        <p style={{ paddingLeft: '10px' }}>
-          <i>Active Users</i>
-:
-          {' '}
-          {userCount}
-        </p>
+        <p style={{ margin: 0, padding: 0, fontSize: '6pt' }}>&nbsp;</p>
+        {this.appMainUtils.activeUsers(heartBeat, userCount)}
       </div>
     );
   }
@@ -201,9 +182,7 @@ export class AppTemplate extends Component {
         {
           links.map(link => (
             <a key={Math.random().toString()} target="_blank" rel="noopener noreferrer" style={{ color, paddingRight: '5px' }} href={link.href}>
-              <span>
-                <i className={`fab fa-${link.name}`} />
-              </span>
+              <span><i className={`fab fa-${link.name}`} /></span>
             </a>
           ))
         }
@@ -262,9 +241,12 @@ export class AppTemplate extends Component {
   }
 }
 /* istanbul ignore next */
-AppTemplate.defaultProps = { dispatch: () => {}, auth: { isAuthenticated: false }, userCount: 0 };
+AppTemplate.defaultProps = {
+  dispatch: () => {}, auth: { isAuthenticated: false }, userCount: 0, heartBeat: 'white',
+};
 
 AppTemplate.propTypes = {
+  heartBeat: PropTypes.string,
   userCount: PropTypes.number,
   auth: PropTypes.shape({
     isAuthenticated: PropTypes.bool,
@@ -272,7 +254,5 @@ AppTemplate.propTypes = {
   dispatch: PropTypes.func,
   children: PropTypes.element.isRequired,
 };
-
-const mapStoreToProps = store => ({ auth: store.auth, userCount: store.auth.userCount });
 
 export default connect(mapStoreToProps)(AppTemplate);
