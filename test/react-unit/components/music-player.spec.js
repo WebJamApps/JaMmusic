@@ -7,16 +7,16 @@ function setup() {
   const { songs } = songData;
   // const copy = Array.from(songData.songs.filter(song => song.category === 'originals'));
 
-  const props = { songs, filterBy: 'originals' };
+  // const props = { songs, filterBy: 'originals' };
 
   window.document.body.innerHTML = '<div id="sidebar"></div><div id="header"/><div id="contentBlock"/>'
     + '<div id="wjfooter"/><div id="mobilemenutoggle"/><div id="pageContent"/><h4 id="headerTitle">'
     + '<div id="mainPlayer"/>';
 
-  const wrapper = mount(<MusicPlayer {...props} />, {
+  const wrapper = mount(<MusicPlayer songs={songs} filterBy="originals" />, {
     attachTo: document.getElementById('sidebar'),
   });
-  return { wrapper, props };
+  return { wrapper };
 }
 
 describe('Music player component init', () => {

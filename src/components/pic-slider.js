@@ -1,4 +1,4 @@
-/* eslint-disable no-underscore-dangle */
+/* eslint-disable react/jsx-props-no-spreading */ 
 import React, { Component } from 'react';
 import Slider from 'react-slick';
 import PropTypes from 'prop-types';
@@ -27,7 +27,7 @@ class PicSlider extends Component {
       <div>
         <Slider {...this.settings}>
           {
-            this.data.map(data => (
+            this.data.map((data) => (
               <div key={data._id}>
                 {' '}
                 <img width="100%" height="100%" src={data.url} alt={data.title} />

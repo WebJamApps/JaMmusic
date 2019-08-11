@@ -9,26 +9,29 @@ const reducer = (state = initialState, action) => {
   switch (action.type) {
     case 'GOT_TOKEN':
       console.log(action.data);// eslint-disable-line no-console
-      return Object.assign({}, state, {
+      return {
+        ...state,
         isAuthenticated: true,
         email: action.data.email,
         token: action.data.token,
-        error: '',
-      });
+        error: '', 
+      };
     case 'LOGOUT':
-      return Object.assign({}, state, {
+      return {
+        ...state,
         isAuthenticated: false,
         email: '',
         token: '',
-        error: '',
-      });
+        error: '', 
+      };
     case 'AUTH_ERROR':
-      return Object.assign({}, state, {
+      return {
+        ...state,
         isAuthenticated: false,
         email: '',
         token: '',
-        error: action.error.message,
-      });
+        error: action.error.message, 
+      };
     default:
       return state;
   }
