@@ -35,22 +35,20 @@ export class MusicPlayer extends Component {
     this.musicPlayerUtils = musicPlayerUtils;
   }
 
-  UNSAFE_componentWillMount() { // eslint-disable-line camelcase
+  async componentDidMount() {
     const params = new URLSearchParams(window.location.search);
     const { player } = this.state;
     const { songs, filterBy } = this.props;
     const newSongs = songs.filter((song) => song.category === filterBy);
     this.setState({ song: newSongs[0], songs: newSongs, copy: newSongs });
-    return this.musicPlayerUtils.checkOnePlayer(params, player, this);
-  }
-
-  componentDidMount() {
+    await this.musicPlayerUtils.checkOnePlayer(params, player, this);
     return this.musicPlayerUtils.runIfOnePlayer(this);
   }
 
-  get playUrl() {
+  playUrl() {
     const { song } = this.state;
-    return `${document.location.origin}/music/${window.location.pathname.split('/').pop()}?oneplayer=true&id=${song._id}`;
+    if (song !== null) return `${document.location.origin}/music/${window.location.pathname.split('/').pop()}?oneplayer=true&id=${song._id}`;
+    return null;
   }
 
   reactPlayer() {
@@ -165,7 +163,7 @@ export class MusicPlayer extends Component {
 
   copyShare() {
     const { player } = this.state;
-    this.navigator.clipboard.writeText(this.playUrl).then(() => {
+    this.navigator.clipboard.writeText(this.playUrl()).then(() => {
       this.setState({ player: { ...player, displayCopyMessage: true } });
       setTimeout(() => {
         this.musicPlayerUtils.showHideButtons('block');
@@ -184,13 +182,14 @@ export class MusicPlayer extends Component {
             {song !== null && song !== undefined && song.url !== undefined ? this.reactPlayer() : null}
           </section>
           <section className="col-12 mt-1" style={{ fontSize: '0.8em', marginTop: '15px', marginBottom: '0' }}>
-            <strong>{song.title}</strong>
+            <strong>{song !== null ? song.title : null}</strong>
           </section>
           {this.buttons()}
           <section className="mt-1 col-12" id="copier" style={{ display: player.displayCopier, marginTop: '0' }}>
             <div id="copyInput">
               { player.displayCopyMessage && <div className="copySuccess"> Url copied Url to clipboard </div> }
-              <input id="copyUrl" disabled value={this.playUrl} style={{ backgroundColor: '#fff' }} className="form-control" />
+              {song !== null ? <input id="copyUrl" disabled value={this.playUrl()} style={{ backgroundColor: '#fff' }} className="form-control" />
+                : null}
               <div id="copyButton" role="presentation" onClick={this.copyShare} style={{ cursor: 'pointer', marginTop: '11px' }}>
                 <span style={{
                   backgroundColor: '#ccc', padding: '4px 15px', borderRadius: '5px', fontSize: '0.8em',

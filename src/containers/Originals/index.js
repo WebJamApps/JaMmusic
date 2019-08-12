@@ -61,7 +61,7 @@ export class Originals extends Component {
             Original Songs
           </h4>
           {
-            songs.length > 1
+            songs !== null && songs.length > 1
               ? (
                 <div id="playerAndButtons">
                   <DefaultMusicPlayer filterBy="originals" />

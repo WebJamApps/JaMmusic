@@ -5,9 +5,10 @@ const checkOnePlayer = (params, player, controller) => {
   if (params.get('oneplayer')) {
     const song = songs.filter((s) => s._id === params.get('id'));
     const index = songs.findIndex((s) => s._id === params.get('id'));
-    return controller.setState({ player: { ...player, onePlayerMode: true }, song: song.length ? song[0] : songs[0], index: index || 0 });
+    controller.setState({ player: { ...player, onePlayerMode: true }, song: song.length ? song[0] : songs[0], index: index || 0 });
+    return Promise.resolve(true);
   }
-  return true;
+  return Promise.resolve(false);
 };
 
 const makeOnePlayerMode = () => {
