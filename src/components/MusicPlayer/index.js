@@ -35,7 +35,7 @@ export class MusicPlayer extends Component {
     this.musicPlayerUtils = musicPlayerUtils;
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() { // eslint-disable-line camelcase
     const params = new URLSearchParams(window.location.search);
     const { player } = this.state;
     const { songs, filterBy } = this.props;

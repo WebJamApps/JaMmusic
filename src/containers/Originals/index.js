@@ -2,33 +2,15 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import DefaultMusicPlayer from '../../components/MusicPlayer';
-// import getSongs from './songsActions';
 import mapStoreToProps from '../../redux/mapStoreToProps';
 
 export class Originals extends Component {
   constructor(props) {
     super(props);
     this.state = {};
-    //   songs: props.songs.filter(song => song.category === 'originals'),
-    //   pubState: 'off',
-    //   missionState: 'off',
-    //   allSongs: props.songs.songs,
-    // };
-    // this.setStateAsync = this.setStateAsync.bind(this);
-    // this.ToggleSongTypes = this.ToggleSongTypes.bind(this);
-    // this.setIndex = this.setIndex.bind(this);
-  }
-
-  componentWillMount() {
   }
 
   componentDidMount() { document.title = 'Originals | Web Jam LLC'; }
-
-  // setStateAsync(state) {
-  //   return new Promise((resolve) => {
-  //     this.setState(state, resolve);
-  //   });
-  // }
 
   // // eslint-disable-next-line class-methods-use-this
   // setIndex(songs, category) {
