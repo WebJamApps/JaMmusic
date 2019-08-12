@@ -2,7 +2,6 @@
   "plugins": ["node", "security", "react", "jest"],
   "extends": ["airbnb", "plugin:security/recommended", "plugin:node/recommended", "plugin:jest/recommended"],
   "rules": {
-    "no-useless-catch": 0,
     "react/state-in-constructor": 0,
     "react/jsx-filename-extension": [1, {
       "extensions": [".js"]
