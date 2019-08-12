@@ -5,7 +5,7 @@ import Jss from './joshShermanSolo';
 export default class BuyMusic extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {};// eslint-disable-line react/state-in-constructor
   }
 
   componentDidMount() {

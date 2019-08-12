@@ -5,24 +5,25 @@ import PropTypes from 'prop-types';
 import musicPlayerUtils from './musicPlayerUtils';
 import mapStoreToProps from '../../redux/mapStoreToProps';
 
+const state = {
+  songs: [],
+  copy: [],
+  song: null,
+  index: 0,
+  player: {
+    playing: false,
+    shown: false,
+    isShuffleOn: false,
+    displayCopier: 'none',
+    displayCopyMessage: false,
+    onePlayerMode: false,
+  },
+};
 export class MusicPlayer extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      song: null,
-      player: {
-        playing: false,
-        shown: false,
-        isShuffleOn: false,
-        displayCopier: 'none',
-        displayCopyMessage: false,
-        onePlayerMode: false,
-      },
-    };
-    this.state.songs = [];
-    this.state.copy = [];
+    this.state = state; // eslint-disable-line react/state-in-constructor
     this.play = this.play.bind(this);
-    this.state.index = 0;
     this.playEnd = this.playEnd.bind(this);
     this.pause = this.pause.bind(this);
     this.shuffle = this.shuffle.bind(this);

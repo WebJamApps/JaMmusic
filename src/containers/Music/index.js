@@ -14,7 +14,7 @@ import mapStoreToProps from '../../redux/mapStoreToProps';
 export class Music extends Component {
   constructor(props) {
     super(props);
-    this.state = { };
+    this.state = { };// eslint-disable-line react/state-in-constructor
   }
 
   componentDidMount() { document.title = 'Music | Web Jam LLC'; }

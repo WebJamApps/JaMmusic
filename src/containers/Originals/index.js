@@ -7,7 +7,7 @@ import mapStoreToProps from '../../redux/mapStoreToProps';
 export class Originals extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {};// eslint-disable-line react/state-in-constructor
   }
 
   componentDidMount() { document.title = 'Originals | Web Jam LLC'; }
