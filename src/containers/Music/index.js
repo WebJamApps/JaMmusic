@@ -12,9 +12,8 @@ import Intro from './intro';
 import mapStoreToProps from '../../redux/mapStoreToProps';
 
 export class Music extends Component {
-  constructor(props) {
+  constructor(props) { // eslint-disable-line no-useless-constructor
     super(props);
-    this.state = { };
   }
 
   componentDidMount() { document.title = 'Music | Web Jam LLC'; }

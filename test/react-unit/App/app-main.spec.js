@@ -17,8 +17,7 @@ describe('app-main component test setup', () => {
   it('handles response from google login', async () => {
     document.body.innerHTML = '<button class="googleLogin"/><button class="googleLogout"/>';
     const aT = new AppTemplate({ dispatch: () => Promise.resolve(true) });
-    let result;
-    try { result = await aT.responseGoogleLogin({ code: 'somethingHere' }); } catch (e) { throw e; }
+    const result = await aT.responseGoogleLogin({ code: 'somethingHere' });
     expect(result).toBe(true);
   });
   it('handles response from google logout', async () => {
@@ -28,7 +27,7 @@ describe('app-main component test setup', () => {
       configurable: true,
     });
     window.location.reload = jest.fn();
-    try { await aT.responseGoogleLogout(true); } catch (e) { throw e; }
+    await aT.responseGoogleLogout(true);
     expect(window.location.reload).toHaveBeenCalled();
   });
   // it('displays logout if user is logged in already', (done) => {

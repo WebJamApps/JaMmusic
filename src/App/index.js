@@ -17,7 +17,6 @@ import getImages from './imageActions';
 export class App extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
     this.connectToSC = connectToSC;
   }
 
