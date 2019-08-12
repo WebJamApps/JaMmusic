@@ -3,11 +3,12 @@ import React from 'react';
 const checkOnePlayer = (params, player, controller) => {
   const { songs } = controller.props;
   if (params.get('oneplayer')) {
-    const song = songs.filter(s => s._id === params.get('id'));
-    const index = songs.findIndex(s => s._id === params.get('id'));
-    return controller.setState({ player: { ...player, onePlayerMode: true }, song: song.length ? song[0] : songs[0], index: index || 0 });
+    const song = songs.filter((s) => s._id === params.get('id'));
+    const index = songs.findIndex((s) => s._id === params.get('id'));
+    controller.setState({ player: { ...player, onePlayerMode: true }, song: song.length ? song[0] : songs[0], index: index || 0 });
+    return Promise.resolve(true);
   }
-  return true;
+  return Promise.resolve(false);
 };
 
 const makeOnePlayerMode = () => {
@@ -24,10 +25,12 @@ const makeOnePlayerMode = () => {
   if (footer) footer.style.display = 'none';
   if (toggler) toggler.style.display = 'none';
   if (headerTitle) headerTitle.style.display = 'none';
-  if (contentBlock) contentBlock.style.overflowY = 'auto';
-  if (contentBlock) contentBlock.style.width = '100%';
-  if (contentBlock) contentBlock.style.height = '100%';
-  if (window.outerWidth < 600) mainPlayer.style.height = '55vh';
+  if (contentBlock) {
+    contentBlock.style.overflowY = 'auto';
+    contentBlock.style.width = '100%';
+    contentBlock.style.height = '100%';
+  }
+  if (mainPlayer && window.outerWidth < 600) mainPlayer.style.height = '55vh';
   if (pageContent) pageContent.style.borderColor = '#fff';
   return true;
 };
@@ -38,8 +41,14 @@ const runIfOnePlayer = (controller) => {
   return null;
 };
 
-const homeButton = onePlayerMode => (
-  <button type="button" id="h" role="menu" onClick={() => { window.location = '/music'; }} style={{ display: onePlayerMode ? 'auto' : 'none' }}>
+const homeButton = (onePlayerMode) => (
+  <button
+    type="button"
+    id="h"
+    role="menu"
+    onClick={() => window.location.assign('/music')}
+    style={{ display: onePlayerMode ? 'auto' : 'none' }}
+  >
     <span id="homeLink">Home</span>
   </button>
 );

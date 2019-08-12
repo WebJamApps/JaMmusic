@@ -5,24 +5,25 @@ import PropTypes from 'prop-types';
 import musicPlayerUtils from './musicPlayerUtils';
 import mapStoreToProps from '../../redux/mapStoreToProps';
 
+const state = {
+  songs: [],
+  copy: [],
+  song: null,
+  index: 0,
+  player: {
+    playing: false,
+    shown: false,
+    isShuffleOn: false,
+    displayCopier: 'none',
+    displayCopyMessage: false,
+    onePlayerMode: false,
+  },
+};
 export class MusicPlayer extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      song: null,
-      player: {
-        playing: false,
-        shown: false,
-        isShuffleOn: false,
-        displayCopier: 'none',
-        displayCopyMessage: false,
-        onePlayerMode: false,
-      },
-    };
-    this.state.songs = [];
-    this.state.copy = [];
+    this.state = state; // eslint-disable-line react/state-in-constructor
     this.play = this.play.bind(this);
-    this.state.index = 0;
     this.playEnd = this.playEnd.bind(this);
     this.pause = this.pause.bind(this);
     this.shuffle = this.shuffle.bind(this);
@@ -35,22 +36,20 @@ export class MusicPlayer extends Component {
     this.musicPlayerUtils = musicPlayerUtils;
   }
 
-  componentWillMount() {
+  async componentDidMount() {
     const params = new URLSearchParams(window.location.search);
     const { player } = this.state;
     const { songs, filterBy } = this.props;
-    const newSongs = songs.filter(song => song.category === filterBy);
+    const newSongs = songs.filter((song) => song.category === filterBy);
     this.setState({ song: newSongs[0], songs: newSongs, copy: newSongs });
-    return this.musicPlayerUtils.checkOnePlayer(params, player, this);
-  }
-
-  componentDidMount() {
+    await this.musicPlayerUtils.checkOnePlayer(params, player, this);
     return this.musicPlayerUtils.runIfOnePlayer(this);
   }
 
-  get playUrl() {
+  playUrl() {
     const { song } = this.state;
-    return `${document.location.origin}/music/${window.location.pathname.split('/').pop()}?oneplayer=true&id=${song._id}`;
+    if (song !== null) return `${document.location.origin}/music/${window.location.pathname.split('/').pop()}?oneplayer=true&id=${song._id}`;
+    return null;
   }
 
   reactPlayer() {
@@ -81,7 +80,7 @@ export class MusicPlayer extends Component {
         <button type="button" role="menu" id="prev" onClick={this.prev}>Prev</button>
         <button type="button" id="shuffle" role="menu" className={isShuffleOn ? 'on' : 'off'} onClick={this.shuffle}>Shuffle</button>
         <button type="button" role="menu" onClick={this.share}>Share</button>
-        {this.musicPlayerUtils.homeButton(onePlayerMode)}
+        {onePlayerMode ? this.musicPlayerUtils.homeButton(onePlayerMode) : null}
       </section>
     );
   }
@@ -165,7 +164,7 @@ export class MusicPlayer extends Component {
 
   copyShare() {
     const { player } = this.state;
-    this.navigator.clipboard.writeText(this.playUrl).then(() => {
+    this.navigator.clipboard.writeText(this.playUrl()).then(() => {
       this.setState({ player: { ...player, displayCopyMessage: true } });
       setTimeout(() => {
         this.musicPlayerUtils.showHideButtons('block');
@@ -184,13 +183,14 @@ export class MusicPlayer extends Component {
             {song !== null && song !== undefined && song.url !== undefined ? this.reactPlayer() : null}
           </section>
           <section className="col-12 mt-1" style={{ fontSize: '0.8em', marginTop: '15px', marginBottom: '0' }}>
-            <strong>{song.title}</strong>
+            <strong>{song !== null ? song.title : null}</strong>
           </section>
           {this.buttons()}
           <section className="mt-1 col-12" id="copier" style={{ display: player.displayCopier, marginTop: '0' }}>
             <div id="copyInput">
               { player.displayCopyMessage && <div className="copySuccess"> Url copied Url to clipboard </div> }
-              <input id="copyUrl" disabled value={this.playUrl} style={{ backgroundColor: '#fff' }} className="form-control" />
+              {song !== null ? <input id="copyUrl" disabled value={this.playUrl()} style={{ backgroundColor: '#fff' }} className="form-control" />
+                : null}
               <div id="copyButton" role="presentation" onClick={this.copyShare} style={{ cursor: 'pointer', marginTop: '11px' }}>
                 <span style={{
                   backgroundColor: '#ccc', padding: '4px 15px', borderRadius: '5px', fontSize: '0.8em',

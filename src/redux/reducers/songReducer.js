@@ -6,10 +6,11 @@ const initialState = {
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case 'GOT_SONGS':
-      return Object.assign({}, state, {
+      return {
+        ...state,
         songs: action.data,
-        error: '',
-      });
+        error: '', 
+      };
     default:
       return state;
   }

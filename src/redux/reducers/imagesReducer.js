@@ -8,23 +8,26 @@ const initialState = {
 const imagesReducer = (state = initialState, action) => {
   switch (action.type) {
     case 'FETCH_IMAGES':
-      return Object.assign({}, state, {
+      return {
+        ...state,
         isFetching: true,
         images: [],
-        isError: false,
-      });
+        isError: false, 
+      };
     case 'FETCHED_IMAGES':
-      return Object.assign({}, state, {
+      return {
+        ...state,
         images: action.data,
         isFetching: false,
-        isError: false,
-      });
+        isError: false, 
+      };
     case 'RECEIVE_ERROR':
-      return Object.assign({}, state, {
+      return {
+        ...state,
         isError: true,
         isFetching: false,
-        error: action.error.message,
-      });
+        error: action.error.message, 
+      };
     default:
       return state;
   }

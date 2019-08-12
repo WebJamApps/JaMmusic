@@ -12,7 +12,7 @@ export class TourTable extends Component {// eslint-disable-line import/prefer-d
   constructor(props) {
     super(props);
     this.jquery = jquery;
-    this.state = { data: {} };
+    this.state = { data: {} };// eslint-disable-line react/state-in-constructor
     this.columns = [];
     this.setColumns = this.setColumns.bind(this);
     this.fetchJson = this.fetchJson.bind(this);
@@ -54,7 +54,7 @@ export class TourTable extends Component {// eslint-disable-line import/prefer-d
         options: {
           filter: false,
           sort: false,
-          customBodyRender: value => (
+          customBodyRender: (value) => (
             <p style={{ margin: 0, fontSize: 'inherit' }}>
               { ReactHtmlParser(value) }
             </p>
@@ -117,5 +117,5 @@ TourTable.propTypes = {
   }),
 };
 /* istanbul ignore next */
-const mapStateToProps = state => ({ data: state });
+const mapStateToProps = (state) => ({ data: state });
 export default connect(mapStateToProps)(TourTable);
