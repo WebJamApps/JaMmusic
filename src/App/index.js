@@ -9,6 +9,7 @@ import BuyMusic from '../containers/BuyMusic';
 import AppFourOhFour from './404';
 import AppTemp from './app-main';
 import DefaultOriginals from '../containers/Originals';
+import Home from './Home';
 import connectToSC from './connectToSC';
 import mapStoreToProps from '../redux/mapStoreToProps';
 import getSongs from './songsActions';
@@ -35,6 +36,7 @@ export class App extends Component {
         <Router>
           <AppTemp id="homepage">
             <Switch>
+              <Route exact path="/" component={Home} />
               <Route exact path="/music" component={DefaultMusic} />
               <Route path="/music/buymusic" component={BuyMusic} />
               <Route path="/music/originals" component={DefaultOriginals} />

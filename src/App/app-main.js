@@ -53,7 +53,7 @@ export class AppTemplate extends Component {
         className: 'songs', type: 'link', iconClass: 'far fa-lightbulb', link: '/music/originals', name: 'Songs',
       },
       {
-        className: 'home', type: 'button', iconClass: 'fas fa-home', link: '', name: 'Web Jam LLC',
+        className: 'home', type: 'link', iconClass: 'fas fa-home', link: '/', name: 'Web Jam LLC',
       },
       {
         className: 'login', type: 'googleLogin', iconClass: 'fas fa-login', link: '', name: 'Login',
