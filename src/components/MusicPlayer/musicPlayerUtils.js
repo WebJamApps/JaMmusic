@@ -25,9 +25,11 @@ const makeOnePlayerMode = () => {
   if (footer) footer.style.display = 'none';
   if (toggler) toggler.style.display = 'none';
   if (headerTitle) headerTitle.style.display = 'none';
-  if (contentBlock) contentBlock.style.overflowY = 'auto';
-  if (contentBlock) contentBlock.style.width = '100%';
-  if (contentBlock) contentBlock.style.height = '100%';
+  if (contentBlock) {
+    contentBlock.style.overflowY = 'auto';
+    contentBlock.style.width = '100%';
+    contentBlock.style.height = '100%';
+  }
   if (mainPlayer && window.outerWidth < 600) mainPlayer.style.height = '55vh';
   if (pageContent) pageContent.style.borderColor = '#fff';
   return true;

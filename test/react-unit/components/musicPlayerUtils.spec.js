@@ -4,7 +4,7 @@ import musicUtil from '../../../src/components/MusicPlayer/musicPlayerUtils';
 describe('musicPlayerUtils', () => {
   beforeEach(() => {
   // eslint-disable-next-line max-len
-    document.body.innerHTML = "<div id='sidebar'></div> <div id='header'></div><div id='wjfooter'></div><div id='mobilemenutoggle'></div><div id='contentBlock'></div><div id='pageContent'></div><div id='headerTitle'></div><div id='mainPlayer'></div>";
+    document.body.innerHTML = "<div id='sidebar'></div> <div id='header'></div><div id='wjfooter'></div><div id='mobilemenutoggle'></div><div id='contentBlock'></div><div id='pageContent'></div><div id='headerTitle'></div><div id='mainPlayer'><div id='mAndP'></div></div>";
   });
   const params = {
     get: (item) => { // eslint-disable-line consistent-return
@@ -59,5 +59,13 @@ describe('musicPlayerUtils', () => {
     window.location.assign = jest.fn();
     wrapper.find('button').simulate('click');
     expect(window.location.assign).toHaveBeenCalled();
+  });
+  it('hides the mission and pub buttons', () => {
+    musicUtil.showHideButtons('none');
+    expect(document.getElementById('mAndP').style.display).toBe('none');
+  });
+  it('hides the home button', () => {
+    const wrapper = shallow(musicUtil.homeButton(false));
+    expect(wrapper.find('button').length).toBe(1);
   });
 });

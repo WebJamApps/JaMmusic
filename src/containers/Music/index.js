@@ -19,9 +19,8 @@ export class Music extends Component {
 
   componentDidMount() { document.title = 'Music | Web Jam LLC'; }
 
-  componentWillUnmount() {
-    this.setState({ slider: false });
-  }
+  /* istanbul ignore next */
+  componentWillUnmount() { this.setState({ slider: false }); }
 
   render() {
     const { images } = this.props;

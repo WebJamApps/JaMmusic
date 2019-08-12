@@ -23,6 +23,7 @@ describe('Music player component init', () => {
   });
   it('should find and simulate play/pause', () => {
     const { wrapper } = setup();
+    wrapper.setState({ player: { playing: false, isShuffleOn: false, onePlayerMode: true } });
     wrapper.find('button#play-pause').simulate('click');
     expect(wrapper.instance().state.player.playing).toBe(true);
   });
@@ -100,6 +101,15 @@ describe('Music player component init', () => {
     wrapper.instance().setState({ song: null });
     const result = wrapper.instance().playUrl();
     expect(result).toBe(null);
+    done();
+  });
+  it('turns off the pic slider before unmounting', (done) => {
+    const { wrapper } = setup();
+    wrapper.instance().setState = jest.fn((obj) => {
+      expect(obj.slider).toBe(false);
+    });
+    wrapper.update();
+    wrapper.unmount();
     done();
   });
 });
