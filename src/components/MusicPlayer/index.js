@@ -80,7 +80,7 @@ export class MusicPlayer extends Component {
         <button type="button" role="menu" id="prev" onClick={this.prev}>Prev</button>
         <button type="button" id="shuffle" role="menu" className={isShuffleOn ? 'on' : 'off'} onClick={this.shuffle}>Shuffle</button>
         <button type="button" role="menu" onClick={this.share}>Share</button>
-        {this.musicPlayerUtils.homeButton(onePlayerMode)}
+        {onePlayerMode ? this.musicPlayerUtils.homeButton(onePlayerMode) : null}
       </section>
     );
   }

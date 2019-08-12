@@ -28,7 +28,7 @@ const makeOnePlayerMode = () => {
   if (contentBlock) contentBlock.style.overflowY = 'auto';
   if (contentBlock) contentBlock.style.width = '100%';
   if (contentBlock) contentBlock.style.height = '100%';
-  if (window.outerWidth < 600) mainPlayer.style.height = '55vh';
+  if (mainPlayer && window.outerWidth < 600) mainPlayer.style.height = '55vh';
   if (pageContent) pageContent.style.borderColor = '#fff';
   return true;
 };
@@ -40,7 +40,13 @@ const runIfOnePlayer = (controller) => {
 };
 
 const homeButton = (onePlayerMode) => (
-  <button type="button" id="h" role="menu" onClick={() => { window.location = '/music'; }} style={{ display: onePlayerMode ? 'auto' : 'none' }}>
+  <button
+    type="button"
+    id="h"
+    role="menu"
+    onClick={() => window.location.assign('/music')}
+    style={{ display: onePlayerMode ? 'auto' : 'none' }}
+  >
     <span id="homeLink">Home</span>
   </button>
 );
