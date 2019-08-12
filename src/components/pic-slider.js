@@ -1,4 +1,4 @@
-/* eslint-disable react/jsx-props-no-spreading */ 
+/* eslint-disable react/jsx-props-no-spreading */
 import React, { Component } from 'react';
 import Slider from 'react-slick';
 import PropTypes from 'prop-types';
@@ -9,7 +9,6 @@ import Caption from './PicSlider/caption';
 class PicSlider extends Component {
   constructor(props) {
     super(props);
-    this.data = props.data;
     this.settings = {
       autoplay: true,
       autoplaySpeed: 2000,
@@ -23,16 +22,17 @@ class PicSlider extends Component {
   }
 
   render() {
+    const { data } = this.props;
     return (
       <div>
         <Slider {...this.settings}>
           {
-            this.data.map((data) => (
-              <div key={data._id}>
+            data.map((d) => (
+              <div key={d._id}>
                 {' '}
-                <img width="100%" height="100%" src={data.url} alt={data.title} />
+                <img width="100%" height="100%" src={d.url} alt={d.title} />
                 {' '}
-                <Caption caption={data.title} />
+                <Caption caption={d.title} />
               </div>
             ))
           }
