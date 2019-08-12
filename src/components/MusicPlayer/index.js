@@ -112,10 +112,11 @@ export class MusicPlayer extends Component {
   playEnd() { this.next(); }
 
   prev() {
-    const { index } = this.state;
+    const { index, songs } = this.state;
     const minusIndex = index - 1;
-    const { songs } = this.state;
-    if (minusIndex < 0) {
+    // console.log(minusIndex);
+    // console.log(songs);
+    if (minusIndex < 0 || minusIndex > songs.length) {
       const newIndex = songs.length - 1;
       this.setState({
         index: newIndex,

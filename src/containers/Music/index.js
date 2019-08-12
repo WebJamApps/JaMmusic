@@ -12,24 +12,23 @@ import Intro from './intro';
 import mapStoreToProps from '../../redux/mapStoreToProps';
 
 export class Music extends Component {
-  constructor(props) {
+  constructor(props) { // eslint-disable-line no-useless-constructor
     super(props);
-    this.state = { slider: true };// eslint-disable-line react/state-in-constructor
+    // this.state = { slider: true };// eslint-disable-line react/state-in-constructor
   }
 
   componentDidMount() { document.title = 'Music | Web Jam LLC'; }
 
-  /* istanbul ignore next */
-  componentWillUnmount() { this.setState({ slider: false }); }
+  // /* istanbul ignore next */
+  // componentWillUnmount() { this.setState({ slider: false }); }
 
   render() {
     const { images } = this.props;
-    const { slider } = this.state;
     return (
       <div className="page-content">
         <div style={{ paddingTop: '1px', paddingBottom: 0, marginBottom: 0 }}>
           <div id="musicSlide1">
-            {slider && images.length > 0 ? (<PicSlider data={images} />) : null}
+            {images.length > 0 ? (<PicSlider data={images} />) : null}
           </div>
         </div>
         <div className="material-content elevation2" style={{ maxWidth: '998px', margin: 'auto' }}>
