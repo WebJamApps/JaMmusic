@@ -14,13 +14,9 @@ import mapStoreToProps from '../../redux/mapStoreToProps';
 export class Music extends Component {
   constructor(props) { // eslint-disable-line no-useless-constructor
     super(props);
-    // this.state = { slider: true };// eslint-disable-line react/state-in-constructor
   }
 
   componentDidMount() { document.title = 'Music | Web Jam LLC'; }
-
-  // /* istanbul ignore next */
-  // componentWillUnmount() { this.setState({ slider: false }); }
 
   render() {
     const { images } = this.props;
