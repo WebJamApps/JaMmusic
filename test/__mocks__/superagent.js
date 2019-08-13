@@ -28,7 +28,7 @@ const Request = {
     }
     callback(mockError, mockResponse);
   }),
-  then: jest.fn().mockImplementation(callback => new Promise((resolve, reject) => {
+  then: jest.fn().mockImplementation((callback) => new Promise((resolve, reject) => {
     if (mockError) {
       return reject(mockError);
     }
