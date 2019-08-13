@@ -11,7 +11,7 @@ export class AppTemplate extends Component {
   constructor(props) {
     super(props);
     this.children = props.children;
-    this.state = { menuOpen: false };
+    this.state = { menuOpen: false };// eslint-disable-line
     this.close = this.close.bind(this);
     this.handleKeyPress = this.handleKeyPress.bind(this);
     this.handleKeyMenu = this.handleKeyMenu.bind(this);
@@ -180,7 +180,7 @@ export class AppTemplate extends Component {
     return (
       <div style={{ textAlign: 'center', padding: '6px' }}>
         {
-          links.map(link => (
+          links.map((link) => (
             <a key={Math.random().toString()} target="_blank" rel="noopener noreferrer" style={{ color, paddingRight: '5px' }} href={link.href}>
               <span><i className={`fab fa-${link.name}`} /></span>
             </a>

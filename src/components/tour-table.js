@@ -12,7 +12,7 @@ export class TourTable extends Component {// eslint-disable-line import/prefer-d
   constructor(props) {
     super(props);
     this.jquery = jquery;
-    this.state = { data: {} };
+    this.state = { data: {} };// eslint-disable-line react/state-in-constructor
     this.columns = [];
     this.setColumns = this.setColumns.bind(this);
     this.fetchJson = this.fetchJson.bind(this);
@@ -39,7 +39,7 @@ export class TourTable extends Component {// eslint-disable-line import/prefer-d
         MuiTableRow: { head: { height: '40px' } },
         MuiTableCell: { root: { padding: '4px' } },
         MUIDataTableToolbar: { actions: { display: 'none' }, root: { paddingLeft: 0, minHeight: 'inherit' } },
-        MUIDataTable: { responsiveScroll: { maxHeight: '2.75in' } },
+        MUIDataTable: { responsiveScroll: { maxHeight: '3.5in' } },
         MuiTypography: { h6: { color: 'black', fontWeight: 'bold', fontStyle: 'italic' } },
       },
     });
@@ -54,7 +54,7 @@ export class TourTable extends Component {// eslint-disable-line import/prefer-d
         options: {
           filter: false,
           sort: false,
-          customBodyRender: value => (
+          customBodyRender: (value) => (
             <p style={{ margin: 0, fontSize: 'inherit' }}>
               { ReactHtmlParser(value) }
             </p>
@@ -117,5 +117,5 @@ TourTable.propTypes = {
   }),
 };
 /* istanbul ignore next */
-const mapStateToProps = state => ({ data: state });
+const mapStateToProps = (state) => ({ data: state });
 export default connect(mapStateToProps)(TourTable);
