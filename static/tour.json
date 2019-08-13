@@ -1,4 +1,46 @@
 [{
+    "Date": "Oct 4, 2019",
+    "Time": "6:00 pm",
+    "Location": "Roanoke, VA",
+    "Venue": "<a href=\"http://valhallawines.com/\" rel=\"noopener noreferrer\" target=\"_blank\">Valhalla Winery<\/a>",
+    "Tickets": "Free"
+  },
+  {
+    "Date": "Sept 28, 2019",
+    "Time": "5:30 pm",
+    "Location": "Marion, VA",
+    "Venue": "Hungry Mother Lutheran Retreat Center Beer & Brats Fundraiser - <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"http://hungrymother.org/contact-us/\">Contact<\/a> for more info.",
+    "Tickets": "Donation"
+  },
+  {
+    "Date": "Sept 15, 2019",
+    "Time": "5:00 pm",
+    "Location": "Salem, VA",
+    "Venue": "<a href=\"https://collegelutheran.org/\" rel=\"noopener noreferrer\" target=\"_blank\">College Lutheran Church, Folk Service<\/a>",
+    "Tickets": "Freewill"
+  },
+  {
+    "Date": "Sept 14, 2019",
+    "Time": "9:00 am",
+    "Location": "<a href=\"https://collegelutheran.org/\" rel=\"noopener noreferrer\" target=\"_blank\">College Lutheran Church<\/a>, Salem, VA",
+    "Venue": "<a href=\"http://www.oldesalemdays.com/\" rel=\"noopener noreferrer\" target=\"_blank\">Olde Salem Days<\/a>",
+    "Tickets": "Free"
+  },
+  {
+    "Date": "Sept 7, 2019",
+    "Time": "1:00 pm",
+    "Location": "Floyd, VA",
+    "Venue": "<a href=\"https://villaappalaccia.com/\" rel=\"noopener noreferrer\" target=\"_blank\">Villa Appalaccia Winery<\/a>",
+    "Tickets": "Free"
+  },
+  {
+    "Date": "Aug 31, 2019",
+    "Time": "4:00 pm",
+    "Location": "Bent Mountain, VA",
+    "Venue": "34th Annual Pig Roast",
+    "Tickets": "Sold out"
+  },
+  {
     "Date": "June 21, 2019",
     "Time": "6:00 pm",
     "Location": "Roanoke, VA",

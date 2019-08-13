@@ -43,10 +43,7 @@ describe('tour-table component test', () => {
     ]);
     const sMock = sinon.mock(tt);
     sMock.expects('setState').returns(true);
-    let result;
-    try {
-      result = await tt.fetchJson();
-    } catch (e) { throw e; }
+    const result = await tt.fetchJson();
     expect(result).toBe(true);
     jMock.restore();
     sMock.restore();
@@ -55,10 +52,7 @@ describe('tour-table component test', () => {
     const tt = new TourTable();
     const jMock = sinon.mock(tt.jquery);
     jMock.expects('getJSON').rejects(new Error('bad'));
-    let result;
-    try {
-      result = await tt.fetchJson();
-    } catch (e) { throw e; }
+    const result = await tt.fetchJson();
     expect(result).toBe(false);
     jMock.restore();
   });
