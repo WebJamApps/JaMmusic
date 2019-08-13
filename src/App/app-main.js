@@ -180,7 +180,7 @@ export class AppTemplate extends Component {
     return (
       <div style={{ textAlign: 'center', padding: '6px' }}>
         {
-          links.map((link) => (
+          links.map(link => (
             <a key={Math.random().toString()} target="_blank" rel="noopener noreferrer" style={{ color, paddingRight: '5px' }} href={link.href}>
               <span><i className={`fab fa-${link.name}`} /></span>
             </a>

@@ -1,6 +1,6 @@
 import songData from './songs.json';
 
-export const gotSongs = (docs) => ({
+export const gotSongs = docs => ({
   type: 'GOT_SONGS',
   data: docs,
 });

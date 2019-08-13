@@ -3,8 +3,8 @@ import React from 'react';
 const checkOnePlayer = (params, player, controller) => {
   const { songs } = controller.props;
   if (params.get('oneplayer')) {
-    const song = songs.filter((s) => s._id === params.get('id'));
-    const index = songs.findIndex((s) => s._id === params.get('id'));
+    const song = songs.filter(s => s._id === params.get('id'));
+    const index = songs.findIndex(s => s._id === params.get('id'));
     controller.setState({ player: { ...player, onePlayerMode: true }, song: song.length ? song[0] : songs[0], index: index || 0 });
     return Promise.resolve(true);
   }
@@ -41,7 +41,7 @@ const runIfOnePlayer = (controller) => {
   return null;
 };
 
-const homeButton = (onePlayerMode) => (
+const homeButton = onePlayerMode => (
   <button
     type="button"
     id="h"

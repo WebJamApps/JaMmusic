@@ -19,6 +19,6 @@ window.HTMLMediaElement.prototype.addTextTrack = () => { /* do nothing */ };
 window.location = {
   search: {
     get: () => '?oneplayer=true&id=28ru9weis2309urihw9098ewuis',
-    set: (data) => data,
+    set: data => data,
   },
 };

@@ -4,12 +4,12 @@ export const fetchImages = () => ({
   type: 'FETCH_IMAGES',
 });
 
-export const receiveImages = (docs) => ({
+export const receiveImages = docs => ({
   type: 'FETCHED_IMAGES',
   data: docs,
 });
 
-export const receiveError = (e) => ({
+export const receiveError = e => ({
   type: 'RECEIVE_ERROR',
   error: e,
 });
@@ -24,7 +24,7 @@ const getImages = () => (dispatch, getState) => {
       if (data.body.message === 'Not Found') return dispatch(receiveError(new Error('No pictures found!!')));
       return dispatch(receiveImages(data.body));
     })
-    .catch((err) => dispatch(receiveError(err)));
+    .catch(err => dispatch(receiveError(err)));
 };
 
 export default getImages;

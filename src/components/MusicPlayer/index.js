@@ -40,7 +40,7 @@ export class MusicPlayer extends Component {
     const params = new URLSearchParams(window.location.search);
     const { player } = this.state;
     const { songs, filterBy } = this.props;
-    const newSongs = songs.filter((song) => song.category === filterBy);
+    const newSongs = songs.filter(song => song.category === filterBy);
     this.setState({ song: newSongs[0], songs: newSongs, copy: newSongs });
     await this.musicPlayerUtils.checkOnePlayer(params, player, this);
     return this.musicPlayerUtils.runIfOnePlayer(this);
