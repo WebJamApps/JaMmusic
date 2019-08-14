@@ -34,8 +34,10 @@ describe('Music player component init', () => {
   });
   it('shuffles the songs', () => {
     const mp = new MusicPlayer({ songs: [{ _id: '123' }, { _id: '456' }], copy: [{ _id: '123' }, { _id: '456' }] });
-    mp.state = { songs: [{ _id: '123' }, { _id: '456' }], copy: [{ _id: '123' }, { _id: '456' }], player: { isShuffleOn: false } };
-    mp.setState = () => {};
+    mp.state = {
+      song: { _id: '789' }, songsState: [{ _id: '123' }, { _id: '456' }], copy: [{ _id: '123' }, { _id: '456' }], player: { isShuffleOn: false },
+    };
+    mp.setState = (obj) => { expect(obj.song._id).not.toBe('789'); };
     mp.shuffle();
   });
   it('should find and simulate stop shuffle and confirm shuffling is off', () => {
@@ -53,9 +55,9 @@ describe('Music player component init', () => {
   it('advances to the next song', () => {
     const mp = new MusicPlayer({ songs: [{ _id: '123' }, { _id: '456' }], copy: [{ _id: '123' }, { _id: '456' }] });
     mp.state = {
-      index: 0, songs: [{ _id: '123' }, { _id: '456' }], copy: [{ _id: '123' }, { _id: '456' }], player: { isShuffleOn: false },
+      index: 0, songsState: [{ _id: '123' }, { _id: '456' }], copy: [{ _id: '123' }, { _id: '456' }], player: { isShuffleOn: false },
     };
-    mp.setState = () => {};
+    mp.setState = (obj) => { expect(obj.index).toBe(1); };
     mp.next();
   });
   it('should find and simulate a previous song function', () => {
