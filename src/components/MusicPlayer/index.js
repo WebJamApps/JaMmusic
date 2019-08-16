@@ -6,10 +6,12 @@ import musicPlayerUtils from './musicPlayerUtils';
 import mapStoreToProps from '../../redux/mapStoreToProps';
 
 const state = {
-  songs: [],
+  songsState: [],
   copy: [],
   song: null,
   index: 0,
+  missionState: 'off',
+  pubState: 'off',
   player: {
     playing: false,
     shown: false,
@@ -32,6 +34,8 @@ export class MusicPlayer extends Component {
     this.next = this.next.bind(this);
     this.prev = this.prev.bind(this);
     this.buttons = this.buttons.bind(this);
+    this.setIndex = this.setIndex.bind(this);
+    this.ToggleSongTypes = this.ToggleSongTypes.bind(this);
     this.navigator = window.navigator;
     this.musicPlayerUtils = musicPlayerUtils;
   }
@@ -41,9 +45,43 @@ export class MusicPlayer extends Component {
     const { player } = this.state;
     const { songs, filterBy } = this.props;
     const newSongs = songs.filter((song) => song.category === filterBy);
-    this.setState({ song: newSongs[0], songs: newSongs, copy: newSongs });
+    this.setState({ song: newSongs[0], songsState: newSongs, copy: newSongs });
     await this.musicPlayerUtils.checkOnePlayer(params, player, this);
     return this.musicPlayerUtils.runIfOnePlayer(this);
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  setIndex(songs, category) {
+    let categorySongs = [];
+    const otherSongs = [];
+    for (let i = 0; songs.length > i; i += 1) {
+      // eslint-disable-next-line security/detect-object-injection
+      if (songs[i].category === category) {
+        // eslint-disable-next-line security/detect-object-injection
+        categorySongs.push(songs[i]);
+      } else {
+        // eslint-disable-next-line security/detect-object-injection
+        otherSongs.push(songs[i]);
+      }
+    }
+    categorySongs = categorySongs.concat(otherSongs);
+    return categorySongs;
+  }
+
+  ToggleSongTypes(type) {
+    let { songsState } = this.state;
+    const { songs } = this.props;
+    const typeInState = `${type}State`;
+    const typeState = this.state[typeInState.toString()]; // eslint-disable-line react/destructuring-assignment
+    if (typeState === 'off') {
+      songsState = [...songsState, ...songs.filter((song) => song.category === type)];
+    } else {
+      songsState = songsState.filter((song) => song.category !== type);
+    }
+    songsState = this.setIndex(songsState, type);
+    this.setState({
+      songsState, [typeInState]: typeState === 'off' ? 'on' : 'off', song: songsState[0], index: 0,
+    });
   }
 
   playUrl() {
@@ -72,7 +110,12 @@ export class MusicPlayer extends Component {
   }
 
   buttons() { // add the Pub and Mission buttons
-    const { player: { playing, isShuffleOn, onePlayerMode } } = this.state;
+    const {
+      missionState, pubState,
+      player: {
+        playing, isShuffleOn, onePlayerMode,
+      },
+    } = this.state;
     return (
       <section className="mt-0 col-12 col-md-10" style={{ marginTop: '4px' }}>
         <button type="button" id="play-pause" role="menu" className={playing ? 'on' : 'off'} onClick={this.play}>Play/Pause</button>
@@ -81,27 +124,31 @@ export class MusicPlayer extends Component {
         <button type="button" id="shuffle" role="menu" className={isShuffleOn ? 'on' : 'off'} onClick={this.shuffle}>Shuffle</button>
         <button type="button" role="menu" onClick={this.share}>Share</button>
         {onePlayerMode ? this.musicPlayerUtils.homeButton(onePlayerMode) : null}
+        <div id="mAndP" style={{ height: '22px', margin: 'auto' }}>
+          <button type="button" onClick={() => this.ToggleSongTypes('mission')} className={`mission${missionState}`}> Mission </button>
+          <button type="button" onClick={() => this.ToggleSongTypes('pub')} className={`pub${pubState}`}> Pub </button>
+        </div>
       </section>
     );
   }
 
   shuffle() {
-    const { player, copy, songs } = this.state;
+    const { player, copy, songsState } = this.state;
     if (player.isShuffleOn) {
       this.setState({
-        songs: copy,
+        songsState: copy,
         player: { ...player, isShuffleOn: false },
         song: copy[0],
         index: 0,
       });
     } else {
-      const shuffled = songs;
+      const shuffled = songsState;
       for (let i = shuffled.length - 1; i > 0; i -= 1) {
         const j = Math.floor(Math.random() * (i + 1));
         [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];// eslint-disable-line security/detect-object-injection
       }
       this.setState({
-        songs: shuffled,
+        songsState: shuffled,
         player: { ...player, isShuffleOn: true },
         song: shuffled[0],
         index: 0,
@@ -112,19 +159,17 @@ export class MusicPlayer extends Component {
   playEnd() { this.next(); }
 
   prev() {
-    const { index, songs } = this.state;
+    const { index, songsState } = this.state;
     const minusIndex = index - 1;
-    // console.log(minusIndex);
-    // console.log(songs);
-    if (minusIndex < 0 || minusIndex > songs.length) {
-      const newIndex = songs.length - 1;
+    if (minusIndex < 0 || minusIndex > songsState.length) {
+      const newIndex = songsState.length - 1;
       this.setState({
         index: newIndex,
-        song: songs[parseInt(newIndex, 0)],
+        song: songsState[parseInt(newIndex, 0)],
       });
     } else {
       this.setState({
-        song: songs[parseInt(minusIndex, 0)],
+        song: songsState[parseInt(minusIndex, 0)],
         index: minusIndex,
       });
     }
@@ -148,11 +193,11 @@ export class MusicPlayer extends Component {
   next() {
     let { index } = this.state;
     index += 1;
-    const { songs } = this.state;
-    if (index >= songs.length) {
-      this.setState({ index: 0, song: songs[0] });
+    const { songsState } = this.state;
+    if (index >= songsState.length) {
+      this.setState({ index: 0, song: songsState[0] });
     } else {
-      this.setState({ song: songs[parseInt(index, 0)], index });
+      this.setState({ song: songsState[parseInt(index, 0)], index });
     }
   }
 

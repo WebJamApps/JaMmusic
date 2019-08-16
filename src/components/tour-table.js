@@ -39,7 +39,7 @@ export class TourTable extends Component {// eslint-disable-line import/prefer-d
         MuiTableRow: { head: { height: '40px' } },
         MuiTableCell: { root: { padding: '4px' } },
         MUIDataTableToolbar: { actions: { display: 'none' }, root: { paddingLeft: 0, minHeight: 'inherit' } },
-        MUIDataTable: { responsiveScroll: { maxHeight: '3.5in' } },
+        MUIDataTable: { responsiveScroll: { maxHeight: '4in' } },
         MuiTypography: { h6: { color: 'black', fontWeight: 'bold', fontStyle: 'italic' } },
       },
     });
