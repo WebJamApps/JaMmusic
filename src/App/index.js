@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import DefaultMusic from '../containers/Music';
 import BuyMusic from '../containers/BuyMusic';
 import AppFourOhFour from './404';
-import AppTemp from './app-main';
+import AppMain from './app-main';
 import DefaultOriginals from '../containers/Originals';
 import Home from './Home';
 import connectToSC from './connectToSC';
@@ -31,9 +31,10 @@ export class App extends Component {
 
   render() {
     return (
+
       <div id="App" className="App">
         <Router>
-          <AppTemp id="homepage">
+          <AppMain id="homepage">
             <Switch>
               <Route exact path="/" component={Home} />
               <Route exact path="/music" component={DefaultMusic} />
@@ -41,9 +42,10 @@ export class App extends Component {
               <Route path="/music/originals" component={DefaultOriginals} />
               <Route component={AppFourOhFour} />
             </Switch>
-          </AppTemp>
+          </AppMain>
         </Router>
       </div>
+
     );
   }
 }

@@ -66,7 +66,7 @@ export class TourTable extends Component {// eslint-disable-line import/prefer-d
 
   async fetchJson() {
     let json;
-    try { json = await this.jquery.getJSON('/music/tour.json'); } catch (e) {
+    try { json = await this.jquery.getJSON('/tour.json'); } catch (e) {
       console.log(e.message); // eslint-disable-line no-console
       return Promise.resolve(false);
     }
