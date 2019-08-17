@@ -39,7 +39,7 @@ export class TourTable extends Component {// eslint-disable-line import/prefer-d
         MuiTableRow: { head: { height: '40px' } },
         MuiTableCell: { root: { padding: '4px' } },
         MUIDataTableToolbar: { actions: { display: 'none' }, root: { paddingLeft: 0, minHeight: 'inherit' } },
-        MUIDataTable: { responsiveScroll: { maxHeight: '4in' } },
+        MUIDataTable: { responsiveScroll: { maxHeight: '4.3in' } },
         MuiTypography: { h6: { color: 'black', fontWeight: 'bold', fontStyle: 'italic' } },
       },
     });
@@ -55,9 +55,11 @@ export class TourTable extends Component {// eslint-disable-line import/prefer-d
           filter: false,
           sort: false,
           customBodyRender: (value) => (
-            <p style={{ margin: 0, fontSize: 'inherit' }}>
-              { ReactHtmlParser(value) }
-            </p>
+            <div style={{ minWidth: '1.3in' }}>
+              <p style={{ margin: 0, fontSize: 'inherit' }}>
+                { ReactHtmlParser(value) }
+              </p>
+            </div>
           ),
         },
       });
