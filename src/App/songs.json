@@ -103,13 +103,13 @@
       "image": "https://dl.dropboxusercontent.com/s/o3jqcahsg97lnpa/webjamlogo1.png?dl=0"
     },
     {
-      "title": "Boogie Board Rash - Josh Sherman",
+      "title": "Boogie Board Rash - Josh Sherman & Jim Kelly",
       "category": "originals",
       "url": "https://www.youtube.com/embed/ach2ubW21h4?enablejsapi=1&origin=https://web-jam.com",
       "_id": "28ru9weis2309ur4y7wi8094hjrg"
     },
     {
-      "title": "Hey Red - Josh Sherman",
+      "title": "Hey Red - Josh Sherman & Jim Kelly",
       "category": "originals",
       "url": "https://www.youtube.com/embed/mCvUBjuzfo8?enablejsapi=1&origin=https://web-jam.com",
       "_id": "28ru9weis2309urw9y8iusjvc67rwe"
@@ -119,6 +119,48 @@
       "category": "originals",
       "url": "https://soundcloud.com/joshandmariamusic/good-enough",
       "_id": "28ru9weis2309urihw9q3rwy7fuih"
+    },
+    {
+      "title": "Learn To Fly by the Foo Fighters - Josh Sherman",
+      "category": "pub",
+      "url": "https://dl.dropboxusercontent.com/s/ijanc4hktk7exp4/learn-to-fly.mp3?dl=0",
+      "_id": "124"
+    },
+    {
+      "title": "Black Water by the Doobie Brothers - Josh Sherman & Dustin Sanders",
+      "category": "pub",
+      "url": "https://dl.dropboxusercontent.com/s/3kzoptad7pqdf0o/old-black-water.mp3?dl=0",
+      "_id": "130"
+    },
+    {
+      "title": "I'm So Glad - Josh & Maria Sherman",
+      "category": "mission",
+      "url": "https://dl.dropboxusercontent.com/s/so18qplh6ed5sed/im-so-glad.mp3?dl=0",
+      "_id": "136"
+    },
+    {
+      "title": "Leaning On the Everlasting Arms - Josh & Maria Sherman",
+      "category": "mission",
+      "url": "https://dl.dropboxusercontent.com/s/zowak812ztpl7lt/LeaningOnTheEverlastingArms.mp3?dl=0",
+      "_id": "142"
+    },
+    {
+      "title": "Let Us Break Bread Together On Our Knees - Josh & Maria Sherman",
+      "category": "mission",
+      "url": "https://dl.dropboxusercontent.com/s/60qze2fecfcbymv/let-us-break-bread-together.mp3?dl=0",
+      "_id": "148"
+    },
+    {
+      "title": "Lord Listen to Your Children Praying - Josh & Maria Sherman",
+      "category": "mission",
+      "url": "https://dl.dropboxusercontent.com/s/c25ciaa2su1mcst/lord-listen-to-your-children.mp3?dl=0",
+      "_id": "154"
+    },
+    {
+      "title": "What Child is This - Josh, Maria, & Tim Sherman",
+      "category": "mission",
+      "url": "https://dl.dropboxusercontent.com/s/g8nz8leu4a5hk6t/What%20Child%20Is%20This.mp3?dl=0",
+      "_id": "160"
     }
   ]
 }
