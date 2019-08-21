@@ -114,4 +114,23 @@ describe('Music player component init', () => {
     wrapper.unmount();
     done();
   });
+  it('should simulate a click on adding mission/pub song types when either is off', () => {
+    const { wrapper } = setup();
+    wrapper.find('button.puboff').simulate('click');
+    expect(wrapper.instance().state.pubState).toBe('on');
+  });
+
+  it('should simulate a click on adding mission/pub song types when either is on', () => {
+    const { wrapper } = setup();
+    wrapper.instance().setState({ missionState: 'on' });
+    wrapper.find('button.missionoff').simulate('click');
+    expect(wrapper.instance().state.missionState).toBe('off');
+  });
+
+  it('should resort songs', async () => {
+    const { wrapper } = setup();
+    const songs = ['mission'];
+    const result = await wrapper.instance().setIndex(songs);
+    expect(result).toBeTruthy();
+  });
 });
