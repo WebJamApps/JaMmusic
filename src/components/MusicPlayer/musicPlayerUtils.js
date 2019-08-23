@@ -55,7 +55,11 @@ const homeButton = (onePlayerMode) => (
 
 const showHideButtons = (display) => {
   const mAndP = document.getElementById('mAndP');
-  if (mAndP !== null) mAndP.style.display = display;
+  if (mAndP !== null) {
+    mAndP.style.display = display;
+    return true; 
+  }
+  return false;
 };
 
 export default {

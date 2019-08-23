@@ -68,4 +68,9 @@ describe('musicPlayerUtils', () => {
     const wrapper = shallow(musicUtil.homeButton(false));
     expect(wrapper.find('button').length).toBe(1);
   });
+  it('does nothing to the mission and pub buttons when they do not exist', () => {
+    document.body.innerHTML = '';
+    const result = musicUtil.showHideButtons('none');
+    expect(result).toBe(false);
+  });
 });

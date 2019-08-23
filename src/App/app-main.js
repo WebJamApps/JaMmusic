@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { GoogleLogin, GoogleLogout } from 'react-google-login';
 import { connect } from 'react-redux';
 import authUtils from './authUtils';
-import mapStoreToProps from '../redux/mapStoreToProps';
+import mapStoreToProps from '../redux/mapStoreToAllProps';
 import appMainUtils from './appMainUtils';
 import Footer from './Footer';
 
