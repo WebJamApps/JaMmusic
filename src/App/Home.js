@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap/dist/js/bootstrap.min';
 
 // eslint-disable-next-line react/prefer-stateless-function
 export default class Home extends Component {
@@ -35,7 +33,7 @@ export default class Home extends Component {
                         <strong>web.jam.adm@gmail.com</strong>
                       </a>
                       <br />
-                    or call
+                    or call&nbsp;
                       <a href="tel:5404948035" style={{ textDecoration: 'underline', fontSize: '18px' }}>
                         <strong>540-494-8035</strong>
                       </a>
@@ -75,13 +73,12 @@ export default class Home extends Component {
               </div>
             </div>
           </div>
-          {/* ToDo:Add in css for display none on this and other homepage based on viewport */}
-          <div className="notWideHomepage" style={{ marginTop: '1px', display: 'none' }}>
+          <div className="notWidescreen" style={{ marginTop: '1px' }}>
             <div id="slideshow">
               <img alt="Web Jam Banner" src="../static/imgs/banner1.jpg" />
             </div>
             <div style={{ padding: '10px', marginBottom: '-20px' }}>
-              <p style={{ marginTop: '45px', marginBottom: '40px', fontSize: '18px' }}>
+              <p style={{ marginTop: '-5px', marginBottom: '40px', fontSize: '18px' }}>
                   Web Jam LLC helps businesses bring their web technologies into the 21st century! Let us
                   help make your website mobile-friendly and grow your business by utilizing the power of online services.
                   More information is available in our&nbsp;
@@ -94,7 +91,6 @@ export default class Home extends Component {
                   <span className="qAndaStyle">Q: </span>
                     How can I contact you?
                 </p>
-
                 <p>
                   <span className="qAndaStyle">A: </span>
                     Send an email to Josh &amp; Maria Sherman
@@ -103,12 +99,12 @@ export default class Home extends Component {
                     <strong>web.jam.adm@gmail.com</strong>
                   </a>
                   <br />
-                    or call
+                    or call&nbsp;
                   <a href="tel:5404948035" style={{ textDecoration: 'underline', fontSize: '18px' }}>
                     <strong>540-494-8035</strong>
                   </a>
                 </p>
-
+                <br />
                 <p>
                   <span className="qAndaStyle">Q: </span>
                     What does Web Jam LLC do?
@@ -136,7 +132,7 @@ export default class Home extends Component {
             </div>
           </div>
           <hr />
-          <div className="widescreenHomePage">
+          <div className="widescreenHomepage">
             <div className="material-content">
               <div className="container">
                 <h3 style={{ textAlign: 'center', marginTop: '15px', marginBottom: '15px' }}>Our Current Projects</h3>
@@ -248,7 +244,7 @@ export default class Home extends Component {
             </div>
           </div>
           {/* ToDo:Add in css for display none on this and other homepage based on viewport */}
-          <div className="notWidescreen" style={{ display: 'none' }}>
+          <div className="notWidescreen">
             <div className="material-content">
               <h3 style={{ textAlign: 'center', marginTop: '15px', marginBottom: '15px' }}>Our Current Projects</h3>
               <div className="elevation2" style={{ padding: '10px', maxWidth: '500px', margin: 'auto' }}>
@@ -270,9 +266,7 @@ export default class Home extends Component {
                   </a>
                 </div>
               </div>
-            </div>
-            <p style={{ fontSize: '6pt', marginBottom: '0' }}>&nbsp;</p>
-            <div className="col">
+              <p style={{ fontSize: '6pt', marginBottom: '0' }}>&nbsp;</p>
               <div className="elevation2" style={{ padding: '10px', maxWidth: '500px', margin: 'auto' }}>
                 <h4 style={{ textAlign: 'center' }}><strong>Apperson Automotive</strong></h4>
                 <div style={{ textAlign: 'center' }}>
@@ -288,13 +282,11 @@ export default class Home extends Component {
                     rel="noreferrer noopener"
                     style={{ textDecoration: 'underline', textAlign: 'center' }}
                   >
-                      Collegeluthean.org
+                    appersonautomotive.com
                   </a>
                 </div>
               </div>
-            </div>
-            <p style={{ fontSize: '6pt', marginBottom: '0' }}>&nbsp;</p>
-            <div className="col">
+              <p style={{ fontSize: '6pt', marginBottom: '0' }}>&nbsp;</p>
               <div className="elevation2" style={{ padding: '10px', maxWidth: '500px', margin: 'auto' }}>
                 <h4 style={{ textAlign: 'center' }}>
                   <strong>
@@ -322,9 +314,7 @@ export default class Home extends Component {
                   </a>
                 </div>
               </div>
-            </div>
-            <p style={{ fontSize: '6pt', marginBottom: '0' }}>&nbsp;</p>
-            <div className="col">
+              <p style={{ fontSize: '6pt', marginBottom: '0' }}>&nbsp;</p>
               <div className="elevation2" style={{ padding: '10px', maxWidth: '500px', margin: 'auto' }}>
                 <h4 style={{ textAlign: 'center' }}>
                   <strong>
@@ -368,9 +358,9 @@ export default class Home extends Component {
           />
         </div>
         {/* ToDo:Add in css for display none on this and other homepage based on viewport */}
-        <div className="notWidescreen" style={{ maxWidth: '300px', margin: 'auto', display: 'none' }}>
+        <div className="notWidescreen" style={{ maxWidth: '300px', margin: 'auto' }}>
           <iframe
-            className="widescreenHomepage"
+            className="notWideScreen"
             // eslint-disable-next-line max-len
             src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2FWebJamLLC%2F&tabs=timeline&width=300&height=500&small_header=true&adapt_container_width=true&hide_cover=false&show_facepile=true&appId=2207148322688942"
             width="300"
