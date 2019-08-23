@@ -325,7 +325,7 @@ h6 {
 
 .headercontent img {
   position: relative;
-  left: 5px;
+  left: 0px;
 }
 
 .headercontent h3 {
@@ -424,10 +424,6 @@ h6 {
   max-width: 500px;
   margin-left: auto;
   margin-right: auto;
-}
-
-.headercontent img {
-  left: 0px;
 }
 
 .material-header-h3 {
@@ -1052,6 +1048,11 @@ button.on {
     margin-bottom: 40px;
     font-size: 18px
   }
+  
+  .container {
+    max-width: 1140px;
+  }
+
   .notWidescreen {
     display: none;
   }
@@ -1083,6 +1084,7 @@ p {
   font-weight: bolder;
   font-style: italic;
 }
+
 .missionon, .pubon{
   background-color:green !important;
   color:white !important;
@@ -1096,10 +1098,6 @@ p {
   padding-left: 15px;
   margin-right: auto;
   margin-left: auto;
-}
-
-.container {
-  max-width: 1140px;
 }
 
 .container {
