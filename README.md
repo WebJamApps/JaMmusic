@@ -8,4 +8,4 @@
 [![Known Vulnerabilities](https://snyk.io/test/github/webjamapps/JaMmusic/badge.svg)](https://snyk.io/test/github/webjamapps/JaMmusic)
 <br>
 <br>
-joshandmariamusic.com
+<a href="http://joshandmariamusic.com" target="_blank">joshandmariamusic.com</a>
