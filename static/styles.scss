@@ -339,7 +339,7 @@ h6 {
 }
 
 .header-text-card {
-  left: 15px;
+  left: 10px;
   top: -32px;
   text-align: center;
 }
@@ -424,6 +424,10 @@ h6 {
   max-width: 500px;
   margin-left: auto;
   margin-right: auto;
+}
+
+.headercontent img {
+  left: 0px;
 }
 
 .material-header-h3 {
