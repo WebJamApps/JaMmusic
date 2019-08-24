@@ -1,6 +1,6 @@
 import React from 'react';
 
-const footerLinks = () => { // eslint-disable-line class-methods-use-this
+const footerLinks = () => {
   const color = '#c09580';
   const links = [
     { href: 'https://github.com/WebJamApps', name: 'github' },
@@ -9,6 +9,7 @@ const footerLinks = () => { // eslint-disable-line class-methods-use-this
     { href: 'https://twitter.com/WebJamLLC', name: 'twitter' },
     { href: 'https://www.facebook.com/WebJamLLC/', name: 'facebook' },
   ];
+
   return (
     <div style={{ textAlign: 'center', padding: '6px' }}>
       {
@@ -26,6 +27,7 @@ const footerLinks = () => { // eslint-disable-line class-methods-use-this
     </div>
   );
 };
+
 const Footer = () => (
   <div id="wjfooter" className="footer" style={{ backgroundColor: '#565656', paddingTop: '20px', paddingBottom: '40px' }}>
     { footerLinks() }
