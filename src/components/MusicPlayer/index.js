@@ -14,12 +14,7 @@ const state = {
   missionState: 'off',
   pubState: 'off',
   player: {
-    playing: false,
-    shown: false,
-    isShuffleOn: false,
-    displayCopier: 'none',
-    displayCopyMessage: false,
-    onePlayerMode: false,
+    playing: false, shown: false, isShuffleOn: false, displayCopier: 'none', displayCopyMessage: false, onePlayerMode: false,
   },
 };
 export class MusicPlayer extends Component {
@@ -51,19 +46,12 @@ export class MusicPlayer extends Component {
     return this.musicPlayerUtils.runIfOnePlayer(this);
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  setIndex(songs, category) {
+  setIndex(songs, category) { // eslint-disable-line class-methods-use-this
     let categorySongs = [];
     const otherSongs = [];
-    for (let i = 0; songs.length > i; i += 1) {
-      // eslint-disable-next-line security/detect-object-injection
-      if (songs[i].category === category) {
-        // eslint-disable-next-line security/detect-object-injection
-        categorySongs.push(songs[i]);
-      } else {
-        // eslint-disable-next-line security/detect-object-injection
-        otherSongs.push(songs[i]);
-      }
+    for (let i = 0; songs.length > i; i += 1) { // eslint-disable-next-line security/detect-object-injection
+      if (songs[i].category === category) categorySongs.push(songs[i]);
+      else otherSongs.push(songs[i]); // eslint-disable-line security/detect-object-injection
     }
     categorySongs = categorySongs.concat(otherSongs);
     return categorySongs;
@@ -114,11 +102,10 @@ export class MusicPlayer extends Component {
         id="mainPlayer"
         config={{ file: { attributes: { controlsList: 'nodownload' } } }}
       />
-
     );
   }
 
-  buttons() { // add the Pub and Mission buttons
+  buttons() {
     const {
       missionState, pubState,
       player: {
@@ -145,10 +132,7 @@ export class MusicPlayer extends Component {
     const { player, copy, songsState } = this.state;
     if (player.isShuffleOn) {
       this.setState({
-        songsState: copy,
-        player: { ...player, isShuffleOn: false },
-        song: copy[0],
-        index: 0,
+        songsState: copy, player: { ...player, isShuffleOn: false }, song: copy[0], index: 0,
       });
     } else {
       const shuffled = songsState;
@@ -157,10 +141,7 @@ export class MusicPlayer extends Component {
         [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];// eslint-disable-line security/detect-object-injection
       }
       this.setState({
-        songsState: shuffled,
-        player: { ...player, isShuffleOn: true },
-        song: shuffled[0],
-        index: 0,
+        songsState: shuffled, player: { ...player, isShuffleOn: true }, song: shuffled[0], index: 0,
       });
     }
   }
@@ -172,42 +153,27 @@ export class MusicPlayer extends Component {
     const minusIndex = index - 1;
     if (minusIndex < 0 || minusIndex > songsState.length) {
       const newIndex = songsState.length - 1;
-      this.setState({
-        index: newIndex,
-        song: songsState[parseInt(newIndex, 0)],
-      });
-    } else {
-      this.setState({
-        song: songsState[parseInt(minusIndex, 0)],
-        index: minusIndex,
-      });
-    }
+      this.setState({ index: newIndex, song: songsState[parseInt(newIndex, 0)] });
+    } else this.setState({ song: songsState[parseInt(minusIndex, 0)], index: minusIndex });
   }
 
   play() {
     const { player } = this.state;
     const isPlaying = !player.playing;
-    this.setState({
-      player: { ...player, playing: isPlaying },
-    });
+    this.setState({ player: { ...player, playing: isPlaying } });
   }
 
   pause() {
     const { player } = this.state;
-    this.setState({
-      player: { ...player, playing: false },
-    });
+    this.setState({ player: { ...player, playing: false } });
   }
 
   next() {
     let { index } = this.state;
     index += 1;
     const { songsState } = this.state;
-    if (index >= songsState.length) {
-      this.setState({ index: 0, song: songsState[0] });
-    } else {
-      this.setState({ song: songsState[parseInt(index, 0)], index });
-    }
+    if (index >= songsState.length) this.setState({ index: 0, song: songsState[0] });
+    else this.setState({ song: songsState[parseInt(index, 0)], index });
   }
 
   share() {
@@ -226,6 +192,24 @@ export class MusicPlayer extends Component {
         this.setState({ player: { ...player, displayCopier: 'none', displayCopyMessage: false } });
       }, 1500);
     });
+  }
+
+  copyInput(player, song) {
+    return (
+      <div id="copyInput">
+        { player.displayCopyMessage && <div className="copySuccess"> Url copied Url to clipboard </div> }
+        {song !== null ? <input id="copyUrl" disabled value={this.playUrl()} style={{ backgroundColor: '#fff' }} className="form-control" />
+          : null}
+        <div id="copyButton" role="presentation" onClick={this.copyShare} style={{ cursor: 'pointer', marginTop: '11px' }}>
+          <span style={{
+            backgroundColor: '#ccc', padding: '4px 15px', borderRadius: '5px', fontSize: '0.8em',
+          }}
+          >
+        Copy URL
+          </span>
+        </div>
+      </div>
+    );
   }
 
   render() {
@@ -250,19 +234,7 @@ export class MusicPlayer extends Component {
           </section>
           {this.buttons()}
           <section className="mt-1 col-12" id="copier" style={{ display: player.displayCopier, marginTop: '0' }}>
-            <div id="copyInput">
-              { player.displayCopyMessage && <div className="copySuccess"> Url copied Url to clipboard </div> }
-              {song !== null ? <input id="copyUrl" disabled value={this.playUrl()} style={{ backgroundColor: '#fff' }} className="form-control" />
-                : null}
-              <div id="copyButton" role="presentation" onClick={this.copyShare} style={{ cursor: 'pointer', marginTop: '11px' }}>
-                <span style={{
-                  backgroundColor: '#ccc', padding: '4px 15px', borderRadius: '5px', fontSize: '0.8em',
-                }}
-                >
-                  Copy URL
-                </span>
-              </div>
-            </div>
+            {this.copyInput(player, song)}
           </section>
         </div>
       </div>
