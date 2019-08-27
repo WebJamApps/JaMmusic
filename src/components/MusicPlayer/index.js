@@ -212,6 +212,12 @@ export class MusicPlayer extends Component {
     );
   }
 
+  copyRight() { // eslint-disable-line class-methods-use-this
+    return (
+      <span>All Original Songs &copy;2019 Web Jam LLC</span>
+    );
+  }
+
   render() {
     const { song } = this.state;
     const { player, pageTitle } = this.state;
@@ -230,8 +236,25 @@ export class MusicPlayer extends Component {
             {song !== null && song !== undefined && song.url !== undefined ? this.reactPlayer() : null}
           </section>
           <section className="col-12 mt-1" style={{ fontSize: '0.8em', marginTop: '15px', marginBottom: '0' }}>
-            <strong>{song !== null ? song.title : null}</strong>
+            <strong>
+              {song !== null ? song.title : null}
+              {song !== null && song.composer !== undefined && song.category !== 'originals' ? ` by ${song.composer}` : null}
+              {song !== null && song.artist !== undefined ? ` - ${song.artist}` : null}
+            </strong>
           </section>
+          <p style={{
+            textAlign: 'center', fontSize: '0.7em', marginTop: 0, marginBottom: 0,
+          }}
+          >
+            {song !== null && song.album !== undefined ? song.album : null}
+            {song !== null && song.year !== undefined ? `, ${song.year}` : null}
+          </p>
+          <p style={{
+            textAlign: 'center', fontSize: '0.7em', marginTop: 0, marginBottom: 0,
+          }}
+          >
+            {song !== null && song.category === 'originals' ? this.copyRight() : null}
+          </p>
           {this.buttons()}
           <section className="mt-1 col-12" id="copier" style={{ display: player.displayCopier, marginTop: '0' }}>
             {this.copyInput(player, song)}
