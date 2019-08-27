@@ -6,6 +6,7 @@ import musicPlayerUtils from './musicPlayerUtils';
 import mapStoreToProps from '../../redux/mapStoreToProps';
 
 const state = {
+  pageTitle: 'Original Songs',
   songsState: [],
   copy: [],
   song: null,
@@ -69,18 +70,26 @@ export class MusicPlayer extends Component {
   }
 
   ToggleSongTypes(type) {
-    let { songsState } = this.state;
+    const lcType = type.toLowerCase();
+    let { songsState, pageTitle } = this.state;
     const { songs } = this.props;
-    const typeInState = `${type}State`;
+    const typeInState = `${lcType}State`;
     const typeState = this.state[typeInState.toString()]; // eslint-disable-line react/destructuring-assignment
     if (typeState === 'off') {
-      songsState = [...songsState, ...songs.filter((song) => song.category === type)];
+      songsState = [...songsState, ...songs.filter((song) => song.category === lcType)];
+      pageTitle = pageTitle.replace('Songs', '');
+      pageTitle += ` & ${type} Songs`;
     } else {
-      songsState = songsState.filter((song) => song.category !== type);
+      songsState = songsState.filter((song) => song.category !== lcType);
+      pageTitle = pageTitle.replace(` & ${type}`, '');
     }
-    songsState = this.setIndex(songsState, type);
+    songsState = this.setIndex(songsState, lcType);
     this.setState({
-      songsState, [typeInState]: typeState === 'off' ? 'on' : 'off', song: songsState[0], index: 0,
+      pageTitle,
+      songsState,
+      [typeInState]: typeState === 'off' ? 'on' : 'off',
+      song: songsState[0],
+      index: 0,
     });
   }
 
@@ -125,8 +134,8 @@ export class MusicPlayer extends Component {
         <button type="button" role="menu" onClick={this.share}>Share</button>
         {onePlayerMode ? this.musicPlayerUtils.homeButton(onePlayerMode) : null}
         <div id="mAndP" style={{ height: '22px', margin: 'auto' }}>
-          <button type="button" onClick={() => this.ToggleSongTypes('mission')} className={`mission${missionState}`}> Mission </button>
-          <button type="button" onClick={() => this.ToggleSongTypes('pub')} className={`pub${pubState}`}> Pub </button>
+          <button type="button" onClick={() => this.ToggleSongTypes('Mission')} className={`mission${missionState}`}> Mission </button>
+          <button type="button" onClick={() => this.ToggleSongTypes('Pub')} className={`pub${pubState}`}> Pub </button>
         </div>
       </section>
     );
@@ -221,9 +230,17 @@ export class MusicPlayer extends Component {
 
   render() {
     const { song } = this.state;
-    const { player } = this.state;
+    const { player, pageTitle } = this.state;
     return (
       <div className="container-fluid">
+        <h4
+          style={{
+            textAlign: 'center', margin: '20px', fontWeight: 'bold', marginBottom: '6px',
+          }}
+          id="headerTitle"
+        >
+          {pageTitle}
+        </h4>
         <div id="player" className="mb-2 row justify-content-md-center">
           <section id="playSection" className="col-12 mt-2 mr-0 col-md-7" style={{ display: 'inline', textAlign: 'center', marginBottom: '0' }}>
             {song !== null && song !== undefined && song.url !== undefined ? this.reactPlayer() : null}

@@ -17,14 +17,6 @@ export class Originals extends Component {
     return (
       <div id="pageContent" className="page-content">
         <div style={{ maxWidth: '5in', margin: 'auto', textAlign: 'center' }}>
-          <h4
-            style={{
-              textAlign: 'center', margin: '20px', fontWeight: 'bold', marginBottom: '4px',
-            }}
-            id="headerTitle"
-          >
-            Original Songs
-          </h4>
           {
             songs !== null && songs.length > 1
               ? (
