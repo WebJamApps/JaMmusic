@@ -1,5 +1,6 @@
 * {
   box-sizing: border-box;
+  -webkit-overflow-scrolling: touch;
 }
 
 body {
@@ -1039,7 +1040,6 @@ button.on {
 }
 
 .tourTable {
-  overflow-y: scroll;
   -webkit-overflow-scrolling: touch;
 }
 
