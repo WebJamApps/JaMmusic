@@ -1,6 +1,7 @@
 {
   "songs": [{
-      "title": "Down In The River - Josh & Maria Sherman",
+      "title": "Down In The River",
+      "artist": "Josh & Maria Sherman",
       "category": "mission",
       "album": "Live at College Lutheran Church",
       "year": "2018",
@@ -63,7 +64,9 @@
       "_id": "28ru9weis2309u90iurghebuhfdi"
     },
     {
-      "title": "I Still Haven't Found What I'm Looking For by U2 - Josh & Maria Sherman",
+      "title": "I Still Haven't Found What I'm Looking For",
+      "artist": "Josh & Maria Sherman",
+      "composer": "U2",
       "category": "pub",
       "album": "Live from Salem, VA",
       "year": "2016",
@@ -71,7 +74,9 @@
       "_id": "28ru9weis2309uoi4jrgbefieqr"
     },
     {
-      "title": "Cups (when i'm gone) by A. P. Carter - Josh & Maria Sherman",
+      "title": "Cups (when i'm gone)",
+      "artist": "Josh & Maria Sherman",
+      "composer": "A. P. Carter",
       "category": "pub",
       "album": "Live from Salem, VA",
       "year": "2016",
@@ -79,7 +84,9 @@
       "_id": "28ru9weisriutr8eg7fy9hiiujn"
     },
     {
-      "title": "I'm Yours by Jason Mraz - Josh & Maria Sherman",
+      "title": "I'm Yours",
+      "artist": "Josh & Maria Sherman",
+      "composer": "Jason Mraz",
       "category": "pub",
       "album": "Live from Salem, VA",
       "year": "2016",
@@ -87,7 +94,9 @@
       "_id": "28ru9weis2309kjh34ig9gfui"
     },
     {
-      "title": "Dark Light - Josh & Maria Sherman",
+      "title": "Dark Light",
+      "artist": "Josh & Maria Sherman",
+      "composer": "Josh & Maria Sherman",
       "category": "originals",
       "album": "Live from College Lutheran Church",
       "year": "2018",
@@ -95,7 +104,9 @@
       "_id": "28ru9weis2309ur9r7ifuviuiu"
     },
     {
-      "title": "Good Enough - Josh & Maria Sherman",
+      "title": "Good Enough",
+      "artist": "Josh & Maria Sherman",
+      "composer": "Josh & Maria Sherman",
       "category": "originals",
       "album": "Live from College Lutheran Church",
       "year": "2018",
@@ -104,6 +115,7 @@
     },
     {
       "title": "Don't Go",
+      "composer": "Joshua V Sherman",
       "artist": "Web Jam Band",
       "category": "originals",
       "album": "The Flat Five Sessions",
@@ -114,6 +126,7 @@
     },
     {
       "title": "Misty Rainy Morning",
+      "composer": "Josh & Maria Sherman",
       "artist": "Web Jam Band",
       "category": "originals",
       "album": "The Flat Five Sessions",
@@ -124,6 +137,7 @@
     },
     {
       "title": "Alone Time",
+      "composer": "Joshua V Sherman",
       "artist": "Web Jam Band",
       "category": "originals",
       "album": "The Flat Five Sessions",
@@ -134,6 +148,7 @@
     },
     {
       "title": "Try to Get Along",
+      "composer": "Joshua V Sherman",
       "artist": "Web Jam Band",
       "category": "originals",
       "album": "The Flat Five Sessions",
@@ -143,7 +158,9 @@
       "image": "https://dl.dropboxusercontent.com/s/o3jqcahsg97lnpa/webjamlogo1.png?dl=0"
     },
     {
-      "title": "Boogie Board Rash - Josh Sherman & Jim Kelly",
+      "title": "Boogie Board Rash",
+      "artist": "Josh Sherman & Jim Kelly",
+      "composer": "Joshua V Sherman",
       "category": "originals",
       "album": "Live From Myrtle Beach",
       "year": "2011",
@@ -151,7 +168,9 @@
       "_id": "28ru9weis2309ur4y7wi8094hjrg"
     },
     {
-      "title": "Hey Red - Josh Sherman & Jim Kelly",
+      "title": "Hey Red",
+      "artist": "Josh Sherman & Jim Kelly",
+      "composer": "Joshua V Sherman",
       "category": "originals",
       "album": "Live From Myrtle Beach",
       "year": "2011",
@@ -159,7 +178,9 @@
       "_id": "28ru9weis2309urw9y8iusjvc67rwe"
     },
     {
-      "title": "Good Enough - Josh & Maria Sherman",
+      "title": "Good Enough",
+      "artist": "Josh & Maria Sherman",
+      "composer": "Joshua V Sherman",
       "category": "originals",
       "album": "Live From Salem, VA",
       "year": "2016",
@@ -167,7 +188,9 @@
       "_id": "28ru9weis2309urihw9q3rwy7fuih"
     },
     {
-      "title": "Learn To Fly by the Foo Fighters - Josh Sherman",
+      "title": "Learn To Fly",
+      "artist": "Josh Sherman",
+      "composer": "The Foo Fighters",
       "category": "pub",
       "album": "Live From Full Sail, Orlando, FL",
       "year": "~2006",
@@ -175,7 +198,9 @@
       "_id": "124"
     },
     {
-      "title": "Black Water by the Doobie Brothers - Josh Sherman & Dustin Sanders",
+      "title": "Black Water",
+      "artist": "Josh Sherman & Dustin Sanders",
+      "composer": "The Doobie Brothers",
       "category": "pub",
       "album": "Live From Full Sail, Orlando, FL",
       "year": "~2006",
@@ -183,7 +208,8 @@
       "_id": "130"
     },
     {
-      "title": "I'm So Glad - Josh & Maria Sherman",
+      "title": "I'm So Glad",
+      "artist": "Josh & Maria Sherman",
       "category": "mission",
       "album": "Live From Salem, VA",
       "year": "2016",
@@ -191,7 +217,8 @@
       "_id": "136"
     },
     {
-      "title": "Leaning On the Everlasting Arms - Josh & Maria Sherman",
+      "title": "Leaning On the Everlasting Arms",
+      "artist": "Josh & Maria Sherman",
       "category": "mission",
       "album": "Live From Salem, VA",
       "year": "2016",
@@ -199,7 +226,8 @@
       "_id": "142"
     },
     {
-      "title": "Let Us Break Bread Together On Our Knees - Josh & Maria Sherman",
+      "title": "Let Us Break Bread Together On Our Knees",
+      "artist": "Josh & Maria Sherman",
       "category": "mission",
       "album": "Live From Salem, VA",
       "year": "2016",
@@ -207,7 +235,8 @@
       "_id": "148"
     },
     {
-      "title": "Lord Listen to Your Children Praying - Josh & Maria Sherman",
+      "title": "Lord Listen to Your Children Praying",
+      "artist": "Josh & Maria Sherman",
       "category": "mission",
       "album": "Live From Salem, VA",
       "year": "2016",
@@ -215,7 +244,8 @@
       "_id": "154"
     },
     {
-      "title": "What Child is This - Josh, Maria, & Tim Sherman",
+      "title": "What Child is This",
+      "artist": "Josh, Maria, & Tim Sherman",
       "category": "mission",
       "album": "Live From College Lutheran Church",
       "year": "2017",

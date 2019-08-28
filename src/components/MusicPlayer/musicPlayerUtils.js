@@ -1,5 +1,29 @@
 import React from 'react';
 
+const showHideButtons = (display) => {
+  const mAndP = document.getElementById('mAndP');
+  if (mAndP !== null) {
+    mAndP.style.display = display;
+    return true;
+  }
+  return false;
+};
+const share = (controller) => {
+  const { player, player: { displayCopier } } = controller.state;
+  if (displayCopier === 'none') controller.setState({ player: { ...player, displayCopier: 'block' } });
+  else controller.setState({ player: { ...player, displayCopier: 'none' } });
+  showHideButtons('none');
+};
+const copyShare = (controller) => {
+  const { player } = controller.state;
+  controller.navigator.clipboard.writeText(controller.playUrl()).then(() => {
+    controller.setState({ player: { ...player, displayCopyMessage: true } });
+    setTimeout(() => {
+      showHideButtons('block');
+      controller.setState({ player: { ...player, displayCopier: 'none', displayCopyMessage: false } });
+    }, 1500);
+  });
+};
 const checkOnePlayer = (params, player, controller) => {
   const { songs } = controller.props;
   if (params.get('oneplayer')) {
@@ -53,15 +77,6 @@ const homeButton = (onePlayerMode) => (
   </button>
 );
 
-const showHideButtons = (display) => {
-  const mAndP = document.getElementById('mAndP');
-  if (mAndP !== null) {
-    mAndP.style.display = display;
-    return true; 
-  }
-  return false;
-};
-
 export default {
-  checkOnePlayer, runIfOnePlayer, makeOnePlayerMode, homeButton, showHideButtons,
+  checkOnePlayer, runIfOnePlayer, makeOnePlayerMode, homeButton, showHideButtons, copyShare, share,
 };
