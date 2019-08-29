@@ -6,19 +6,21 @@ import PropTypes from 'prop-types';
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 import { connect } from 'react-redux';
-import jquery from 'jquery';
+import mapStoreToProps from '../redux/mapStoreToProps';
+
+// import jquery from 'jquery';
 
 export class TourTable extends Component {// eslint-disable-line import/prefer-default-export
   constructor(props) {
     super(props);
-    this.jquery = jquery;
-    this.state = { data: {} };// eslint-disable-line react/state-in-constructor
+    // this.jquery = jquery;
+    // this.state = { data: {} };// eslint-disable-line react/state-in-constructor
     this.columns = [];
     this.setColumns = this.setColumns.bind(this);
-    this.fetchJson = this.fetchJson.bind(this);
+    // this.fetchJson = this.fetchJson.bind(this);
     this.getMuiTheme = this.getMuiTheme.bind(this);
     this.setColumns();
-    this.fetchJson();
+    // this.fetchJson();
   }
 
   shouldComponentUpdate() {
@@ -49,7 +51,7 @@ export class TourTable extends Component {// eslint-disable-line import/prefer-d
     const titles = ['Date', 'Time', 'Location', 'Venue', 'Tickets'];
     for (let i = 0; i < titles.length; i += 1) {
       this.columns.push({
-        name: titles[i], // eslint-disable-line security/detect-object-injection
+        name: titles[i].toLowerCase(), // eslint-disable-line security/detect-object-injection
         label: titles[i], // eslint-disable-line security/detect-object-injection
         options: {
           filter: false,
@@ -66,19 +68,20 @@ export class TourTable extends Component {// eslint-disable-line import/prefer-d
     }
   }
 
-  async fetchJson() {
-    let json;
-    try { json = await this.jquery.getJSON('/music/tour.json'); } catch (e) {
-      console.log(e.message); // eslint-disable-line no-console
-      return Promise.resolve(false);
-    }
-    this.setState({ data: { tourArr: json } });
-    this.shouldComponentUpdate();
-    return Promise.resolve(true);
-  }
+  // async fetchJson() {
+  //   let json;
+  //   try { json = await this.jquery.getJSON('/music/tour.json'); } catch (e) {
+  //     console.log(e.message); // eslint-disable-line no-console
+  //     return Promise.resolve(false);
+  //   }
+  //   this.setState({ data: { tourArr: json } });
+  //   this.shouldComponentUpdate();
+  //   return Promise.resolve(true);
+  // }
 
   render() {
-    const { data } = this.state;
+    // const { data } = this.state;
+    const { tour } = this.props;
     return (
       <div className="tourTable">
         <div style={{ maxWidth: '100%' }}>
@@ -97,7 +100,7 @@ export class TourTable extends Component {// eslint-disable-line import/prefer-d
                 fixedHeader: false,
               }}
               columns={this.columns}
-              data={data.tourArr}
+              data={tour}
               title="Tour"
             />
           </MuiThemeProvider>
@@ -108,6 +111,7 @@ export class TourTable extends Component {// eslint-disable-line import/prefer-d
 }
 TourTable.defaultProps = { data: { tourArr: [] } };
 TourTable.propTypes = {
+  tour: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   data: PropTypes.shape({
     tourArr: PropTypes.arrayOf(PropTypes.shape({
       Date: PropTypes.string,
@@ -118,6 +122,5 @@ TourTable.propTypes = {
     })),
   }),
 };
-/* istanbul ignore next */
-const mapStateToProps = (state) => ({ data: state });
-export default connect(mapStateToProps)(TourTable);
+
+export default connect(mapStoreToProps)(TourTable);

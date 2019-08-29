@@ -16,9 +16,13 @@ const setupSocketCluster = (dispatch) => {
     });
     console.log(`socketClusterClient connected on port ${process.env.SOCKETCLUSTER_PORT}`);// eslint-disable-line no-console
     scc.emit('sampleClientEvent', 'howdy');
+    scc.emit('getTours');
   });
   scc.on('random', (data) => {
     dispatch({ type: 'SC_HEARTBEAT', data });
+  });
+  scc.on('allTours', (data) => {
+    dispatch({ type: 'ALL_TOUR', data });
   });
 };
 export default { setupSocketCluster }; // emits when a style was updated or created
