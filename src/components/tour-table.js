@@ -8,24 +8,18 @@ import 'regenerator-runtime/runtime';
 import { connect } from 'react-redux';
 import mapStoreToProps from '../redux/mapStoreToProps';
 
-// import jquery from 'jquery';
-
-export class TourTable extends Component {// eslint-disable-line import/prefer-default-export
+export class TourTable extends Component {
   constructor(props) {
     super(props);
-    // this.jquery = jquery;
-    // this.state = { data: {} };// eslint-disable-line react/state-in-constructor
     this.columns = [];
     this.setColumns = this.setColumns.bind(this);
-    // this.fetchJson = this.fetchJson.bind(this);
     this.getMuiTheme = this.getMuiTheme.bind(this);
     this.setColumns();
-    // this.fetchJson();
   }
 
-  shouldComponentUpdate() {
-    return true;
-  }
+  // shouldComponentUpdate() {
+  //   return true;
+  // }
 
   getMuiTheme() { // eslint-disable-line class-methods-use-this
     return createMuiTheme({
@@ -68,19 +62,7 @@ export class TourTable extends Component {// eslint-disable-line import/prefer-d
     }
   }
 
-  // async fetchJson() {
-  //   let json;
-  //   try { json = await this.jquery.getJSON('/music/tour.json'); } catch (e) {
-  //     console.log(e.message); // eslint-disable-line no-console
-  //     return Promise.resolve(false);
-  //   }
-  //   this.setState({ data: { tourArr: json } });
-  //   this.shouldComponentUpdate();
-  //   return Promise.resolve(true);
-  // }
-
   render() {
-    // const { data } = this.state;
     const { tour } = this.props;
     return (
       <div className="tourTable">
@@ -109,18 +91,18 @@ export class TourTable extends Component {// eslint-disable-line import/prefer-d
     );
   }
 }
-TourTable.defaultProps = { data: { tourArr: [] } };
+// TourTable.defaultProps = { data: { tourArr: [] } };
 TourTable.propTypes = {
   tour: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
-  data: PropTypes.shape({
-    tourArr: PropTypes.arrayOf(PropTypes.shape({
-      Date: PropTypes.string,
-      Time: PropTypes.string,
-      Location: PropTypes.string,
-      Venue: PropTypes.string,
-      Tickets: PropTypes.string,
-    })),
-  }),
+  // data: PropTypes.shape({
+  //   tourArr: PropTypes.arrayOf(PropTypes.shape({
+  //     Date: PropTypes.string,
+  //     Time: PropTypes.string,
+  //     Location: PropTypes.string,
+  //     Venue: PropTypes.string,
+  //     Tickets: PropTypes.string,
+  //   })),
+  // }),
 };
 
 export default connect(mapStoreToProps)(TourTable);
