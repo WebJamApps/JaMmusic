@@ -10,7 +10,7 @@ const Instruments = (props) => {
       {type === 'Maria' ? (
         <span>
           <li>Bass guitar</li>
-          <li>Keyboard</li>
+          <li>Accordion</li>
           <li>Bassoon</li>
           <li>Saxophone</li>
           <li>Tri-tom</li>

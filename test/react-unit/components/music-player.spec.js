@@ -1,5 +1,5 @@
 import React from 'react';
-import { mount } from 'enzyme';
+import { mount, shallow } from 'enzyme';
 import { MusicPlayer } from '../../../src/components/MusicPlayer';
 import songData from '../../../src/App/songs.json';
 
@@ -78,24 +78,24 @@ describe('Music player component init', () => {
     wrapper.find('#copyButton').simulate('click');
     expect(wrapper.instance().state.player.displayCopier).toBe('none');
   });
-  it('should hide copier message after showing for 1.5s', (done) => {
+  it('hides copier message after showing for 1.5s', (done) => {
     const { wrapper } = setup();
     wrapper.instance().navigator = { clipboard: { async writeText(arg) { return arg; } } };
     wrapper.update();
-    wrapper.instance().copyShare();
+    wrapper.instance().musicPlayerUtils.copyShare(wrapper.instance());
     expect(wrapper.instance().state.player.displayCopier).toBe('none');
     setTimeout(() => done(), 1501);
   });
-  it('should toggle off copying/share pane', () => {
+  it('toggles off copying/share pane', () => {
     const { wrapper } = setup();
     wrapper.instance().setState({ player: { displayCopier: 'block' } });
-    wrapper.instance().share();
+    wrapper.instance().musicPlayerUtils.share(wrapper.instance());
     expect(wrapper.instance().state.player.displayCopier).toBe('none');
   });
-  it('should toggle on copying/share pane', () => {
+  it('toggles on copying/share pane', () => {
     const { wrapper } = setup();
     wrapper.instance().setState({ player: { displayCopier: 'none' } });
-    wrapper.instance().share();
+    wrapper.instance().musicPlayerUtils.share(wrapper.instance());
     expect(wrapper.instance().state.player.displayCopier).toBe('block');
   });
   it('returns a null playUrl', (done) => {
@@ -112,6 +112,33 @@ describe('Music player component init', () => {
     });
     wrapper.update();
     wrapper.unmount();
+    done();
+  });
+  it('should simulate a click on adding mission/pub song types when either is off', () => {
+    const { wrapper } = setup();
+    wrapper.find('button.puboff').simulate('click');
+    expect(wrapper.instance().state.pubState).toBe('on');
+  });
+  it('should simulate a click on adding mission/pub song types when either is on', () => {
+    const { wrapper } = setup();
+    wrapper.instance().setState({ missionState: 'on' });
+    wrapper.find('button.missionoff').simulate('click');
+    expect(wrapper.instance().state.missionState).toBe('off');
+  });
+  it('should resort songs', async () => {
+    const { wrapper } = setup();
+    const songs = ['mission'];
+    const result = await wrapper.instance().setIndex(songs);
+    expect(result).toBeTruthy();
+  });
+  it('allows click on share button', (done) => {
+    const { wrapper } = setup();
+    wrapper.instance().musicPlayerUtils.share = jest.fn();
+    wrapper.update();
+    const buttons = wrapper.instance().buttons();
+    const renderButtons = shallow(buttons);
+    renderButtons.find('button#share-button').simulate('click');
+    expect(wrapper.instance().musicPlayerUtils.share).toHaveBeenCalled();
     done();
   });
 });

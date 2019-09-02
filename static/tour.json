@@ -1,4 +1,11 @@
 [{
+    "Date": "Nov 17, 2019",
+    "Time": "1:00 pm",
+    "Location": "Salem, VA",
+    "Venue": "<a href=\"https://parkwaybrewing.com/\" rel=\"noopener noreferrer\" target=\"_blank\">Parkway Brewing Co.<\/a>",
+    "Tickets": "Free"
+  },
+  {
     "Date": "Oct 4, 2019",
     "Time": "6:00 pm",
     "Location": "Roanoke, VA",
@@ -22,8 +29,8 @@
   {
     "Date": "Sept 14, 2019",
     "Time": "9:00 am",
-    "Location": "<a href=\"https://collegelutheran.org/\" rel=\"noopener noreferrer\" target=\"_blank\">College Lutheran Church<\/a>, Salem, VA",
-    "Venue": "<a href=\"http://www.oldesalemdays.com/\" rel=\"noopener noreferrer\" target=\"_blank\">Olde Salem Days<\/a>",
+    "Location": "Salem, VA",
+    "Venue": "Front porch at <a href=\"https://collegelutheran.org/\" rel=\"noopener noreferrer\" target=\"_blank\">College Lutheran Church<\/a>, during <a href=\"http://www.oldesalemdays.com/\" rel=\"noopener noreferrer\" target=\"_blank\">Olde Salem Days<\/a>",
     "Tickets": "Free"
   },
   {
