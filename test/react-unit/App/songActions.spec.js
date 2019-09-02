@@ -21,7 +21,7 @@ describe('async actions', () => {
     const fn = jest.fn();
     window.location = {
       search: '?oneplayer=true&id=28ru9weis2309urihw9098ewuis',
-      pathname: '/original',
+      pathname: '/music/original',
       href: 'http://this.is.for.fun/',
     };
     const data = await getSongs()(fn);
@@ -33,7 +33,7 @@ describe('async actions', () => {
     delete window.location;
     window.location = {
       search: '?oneplayer=true&id=28ru9weis2309urihw9098ewuis',
-      pathname: '/original',
+      pathname: '/music/original',
       href: 'https://this.is.for.fun/',
     };
     const result = await store.dispatch(getSongs());
