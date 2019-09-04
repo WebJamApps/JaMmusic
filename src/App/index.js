@@ -4,7 +4,7 @@ import 'regenerator-runtime/runtime';
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { connect } from 'react-redux';
-import HomePage from './HomePage';
+// import HomePage from './HomePage';
 import DefaultMusic from '../containers/Music';
 import BuyMusic from '../containers/BuyMusic';
 import ShopMain from '../containers/Shop/ShopMain';
@@ -36,7 +36,6 @@ export class App extends Component {
         <Router>
           <AppTemp id="homepage">
             <Switch>
-              <Route exact path="/" component={HomePage} />
               <Route exact path="/music" component={DefaultMusic} />
               <Route path="/music/buymusic" component={BuyMusic} />
               <Route path="/music/originals" component={DefaultOriginals} />

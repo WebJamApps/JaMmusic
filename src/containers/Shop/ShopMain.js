@@ -16,7 +16,7 @@ export default class ShopMain extends Component {
     return (
       <div className="page-content">
         <h3 style={{ textAlign: 'center', margin: '20px', fontWeight: 'bold' }}>Web Jam Shop</h3>
-        <div className="main">
+        <div className="main" style={{ marginLeft: '20px', marginRight: '20px' }}>
           <p>
             Welcome to the landing page of the future Web Jam Shop.
            Ths application is currently a work in progress, so please check back later for more updates.
