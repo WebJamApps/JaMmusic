@@ -4,8 +4,10 @@ import 'regenerator-runtime/runtime';
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { connect } from 'react-redux';
+// import HomePage from './HomePage';
 import DefaultMusic from '../containers/Music';
 import BuyMusic from '../containers/BuyMusic';
+import ShopMain from '../containers/Shop/ShopMain';
 import AppFourOhFour from './404';
 import AppMain from './app-main';
 import DefaultOriginals from '../containers/Originals';
@@ -40,6 +42,7 @@ export class App extends Component {
               <Route exact path="/music" component={DefaultMusic} />
               <Route path="/music/buymusic" component={BuyMusic} />
               <Route path="/music/originals" component={DefaultOriginals} />
+              <Route path="/shop" component={ShopMain} />
               <Route component={AppFourOhFour} />
             </Switch>
           </AppMain>
