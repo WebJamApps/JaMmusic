@@ -1,7 +1,6 @@
 import React from 'react';
 
-// eslint-disable-next-line import/prefer-default-export
-export const Faqs = () => (
+const Faqs = () => (
   <div className="faqs">
     <h3>FAQs</h3>
     <div className="qAnda">
@@ -49,3 +48,5 @@ export const Faqs = () => (
     </div>
   </div>
 );
+
+export default Faqs;

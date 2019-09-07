@@ -1,6 +1,6 @@
 import React from 'react';
 
-const NarrowTicker = () => (
+const FacebookFeed = () => (
   <div className="notWidescreen" style={{ maxWidth: '300px', margin: 'auto' }}>
     <iframe
       className="notWideScreen"
@@ -16,4 +16,4 @@ const NarrowTicker = () => (
   </div>
 );
 
-export default NarrowTicker;
+export default FacebookFeed;

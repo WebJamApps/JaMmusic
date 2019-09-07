@@ -1,5 +1,5 @@
 import React from 'react';
-import { Faqs } from '../HomepageData';
+import Faqs from '../HomepageData';
 
 const WideAboutUs = () => (
   <div className="widescreenHomepage">

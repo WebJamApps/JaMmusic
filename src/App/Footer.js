@@ -6,8 +6,9 @@ const footerLinks = () => {
     { href: 'https://github.com/WebJamApps', name: 'github' },
     { href: 'https://www.linkedin.com/company/webjam/', name: 'linkedin' },
     { href: 'https://www.instagram.com/joshua.v.sherman/', name: 'instagram' },
-    { href: 'https://twitter.com/WebJamLLC', name: 'twitter' },
+    { href: 'https://twitter.com/JoshuaVSherman', name: 'twitter' },
     { href: 'https://www.facebook.com/WebJamLLC/', name: 'facebook' },
+    { href: 'https://joshuavsherman.tumblr.com/', name: 'tumblr' },
   ];
 
   return (

@@ -3,10 +3,10 @@ import React, { Component } from 'react';
 import ReactResizeDetector from 'react-resize-detector';
 import WideAboutUs from './Homepage/Widescreen/WideAbout';
 import WideCurrentProjects from './Homepage/Widescreen/WideCurrentProjects';
-import WideTicker from './Homepage/Widescreen/WideFacebookTicker';
+import WideFacebookFeed from './Homepage/Widescreen/WideFacebookFeed';
 import NarrowAboutUs from './Homepage/Narrowscreen/NarrowAbout';
 import NarrowCurrentProjects from './Homepage/Narrowscreen/NarrowCurrentProjects';
-import NarrowTicker from './Homepage/Narrowscreen/NarrowFacebookTicker';
+import FacebookFeed from './Homepage/Narrowscreen/NarrowFacebookFeed';
 
 // eslint-disable-next-line react/prefer-stateless-function
 export default class Home extends Component {
@@ -26,13 +26,12 @@ export default class Home extends Component {
     return (
     // Add link-to-top for accessibility
       <div>
-        {width > 1008
+        {width >= 1004
           ? (
             <div className="page-content">
               <WideAboutUs />
               <hr />
               <WideCurrentProjects />
-              <WideTicker />
             </div>
           )
           : (
@@ -40,16 +39,15 @@ export default class Home extends Component {
               <NarrowAboutUs />
               <hr />
               <NarrowCurrentProjects />
-              <NarrowTicker />
             </div>
           )}
-        {/* <p style={{ fontSize: '6pt', marginBottom: '0' }}>&nbsp;</p>
+        <p style={{ fontSize: '6pt', marginBottom: '0' }}>&nbsp;</p>
         <div className="widescreenHomepage">
-          <WideTicker />
+          <WideFacebookFeed />
         </div>
         <div className="notWidescreen">
-          <NarrowTicker />
-        </div> */}
+          <FacebookFeed />
+        </div>
         <ReactResizeDetector handleWidth handleHeight onResize={this.onResize} targetDomEl={this.parentRef.current} />
       </div>
     );

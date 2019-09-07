@@ -1,6 +1,6 @@
 import React from 'react';
 
-const WideTicker = () => (
+const WideFacebookFeed = () => (
   <div className="col-md-6" style={{ maxWidth: '500px', margin: 'auto' }}>
     <iframe
       className="widescreenHomepage"
@@ -16,4 +16,4 @@ const WideTicker = () => (
   </div>
 );
 
-export default WideTicker;
+export default WideFacebookFeed;
