@@ -4,7 +4,6 @@ import 'regenerator-runtime/runtime';
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { connect } from 'react-redux';
-// import HomePage from './HomePage';
 import DefaultMusic from '../containers/Music';
 import BuyMusic from '../containers/BuyMusic';
 import ShopMain from '../containers/Shop/ShopMain';

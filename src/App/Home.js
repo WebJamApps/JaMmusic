@@ -32,6 +32,8 @@ export default class Home extends Component {
               <WideAboutUs />
               <hr />
               <WideCurrentProjects />
+              <p style={{ fontSize: '6pt', marginBottom: '0' }}>&nbsp;</p>
+              <WideFacebookFeed />
             </div>
           )
           : (
@@ -39,15 +41,17 @@ export default class Home extends Component {
               <NarrowAboutUs />
               <hr />
               <NarrowCurrentProjects />
+              <p style={{ fontSize: '6pt', marginBottom: '0' }}>&nbsp;</p>
+              <FacebookFeed />
             </div>
           )}
-        <p style={{ fontSize: '6pt', marginBottom: '0' }}>&nbsp;</p>
+        {/* <p style={{ fontSize: '6pt', marginBottom: '0' }}>&nbsp;</p>
         <div className="widescreenHomepage">
           <WideFacebookFeed />
         </div>
         <div className="notWidescreen">
           <FacebookFeed />
-        </div>
+        </div> */}
         <ReactResizeDetector handleWidth handleHeight onResize={this.onResize} targetDomEl={this.parentRef.current} />
       </div>
     );

@@ -1043,27 +1043,6 @@ button.on {
   -webkit-overflow-scrolling: touch;
 }
 
-@media screen and (min-width: 1201px) {
-  .widescreenHomepage {
-    margin-bottom: 40px;
-    font-size: 18px
-  }
-
-  .container {
-    max-width: 1140px;
-  }
-
-  .notWidescreen {
-    display: none;
-  }
-}
-
-@media screen and (max-width: 1200px) {
-  .widescreenHomepage {
-   display: none;
-  }
-}
-
 hr {
   margin-top: 1rem;
   margin-bottom: 1rem;
