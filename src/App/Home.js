@@ -21,10 +21,11 @@ export default class Home extends Component {
     this.setState({ width });
   }
 
+  // Add link-to-top for accessibility
+
   render() {
     const { width } = this.state;
     return (
-    // Add link-to-top for accessibility
       <div>
         {width >= 1004
           ? (
@@ -45,13 +46,6 @@ export default class Home extends Component {
               <FacebookFeed />
             </div>
           )}
-        {/* <p style={{ fontSize: '6pt', marginBottom: '0' }}>&nbsp;</p>
-        <div className="widescreenHomepage">
-          <WideFacebookFeed />
-        </div>
-        <div className="notWidescreen">
-          <FacebookFeed />
-        </div> */}
         <ReactResizeDetector handleWidth handleHeight onResize={this.onResize} targetDomEl={this.parentRef.current} />
       </div>
     );
