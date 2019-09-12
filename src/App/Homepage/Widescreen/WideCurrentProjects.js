@@ -11,13 +11,18 @@ const WideCurrentProjects = () => (
         <h3 style={{ textAlign: 'center', marginTop: '15px', marginBottom: '15px' }}>Our Current Projects</h3>
         <div className="row">
           <div className="col">
+
             <CollegeLutheran />
+
           </div>
+
           <p style={{ fontSize: '6pt', marginBottom: '0' }}>&nbsp;</p>
+
           <div className="col">
             <AppersonAutomotive />
           </div>
         </div>
+
         <p style={{ fontSize: '6pt', marginBottom: '0' }}>&nbsp;</p>
         <div className="row">
           <div className="col">

@@ -17,7 +17,6 @@ export class AppTemplate extends Component {
     this.handleKeyPress = this.handleKeyPress.bind(this);
     this.handleKeyMenu = this.handleKeyMenu.bind(this);
     this.toggleMobileMenu = this.toggleMobileMenu.bind(this);
-    this.changeNav = this.changeNav.bind(this);
 
     this.navLinks = this.navLinks.bind(this);
     this.responseGoogleLogin = this.responseGoogleLogin.bind(this);
@@ -82,15 +81,8 @@ export class AppTemplate extends Component {
 
   close(e) {
     this.setState({ menuOpen: false });
-    if (e.target.classList.contains('out-link')) return this.changeNav(e.target.classList[1]);
     if (e.target.classList.contains('loginGoogle')) return this.loginGoogle();
     return true;
-  }
-
-  changeNav(where) { // eslint-disable-line class-methods-use-this
-    let subpath = '/wj-music/';
-    if (where === 'home') subpath = '/';
-    return window.location.assign(`${process.env.BackendUrl}${subpath}${where}`);
   }
 
   handleKeyPress(e) {
@@ -138,16 +130,7 @@ export class AppTemplate extends Component {
       );
     }
     if (menu.type === 'googleLogin') return this.googleButtons('login', index);
-    if (menu.type === 'googleLogout') return this.googleButtons('logout', index);
-    return (
-      <div key={index} className="menu-item">
-        <button type="button" className={`nav-link ${menu.className} loginGoogle`} onClick={this.close}>
-          <i className={`${menu.iconClass}`} />
-          &nbsp;
-          <span className={`nav-item ${menu.className} out-link`}>{menu.name}</span>
-        </button>
-      </div>
-    );
+    return this.googleButtons('logout', index);
   }
 
   navLinks() {
