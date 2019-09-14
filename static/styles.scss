@@ -310,6 +310,9 @@ h6 {
 
 .elevation2 {
   box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.4);
+  padding: 10px;
+  max-width: 500px;
+  margin: auto;
 }
 
 .elevation3 {
@@ -1050,11 +1053,11 @@ hr {
   border-top: 1px solid rgba(0, 0, 0, .1);
 }
 
-.qAnda p {
+.qAnda p, .qAndA a {
   font-size: 18px !important;
 }
 
-.qAndaStyle {
+.qAnda span {
   font-weight: bolder;
   font-style: italic;
 }
@@ -1110,4 +1113,24 @@ hr {
     width: 100%;
     padding-right: 15px;
     padding-left: 15px;
+}
+
+div.project, h4.project, p.project, a.project {
+  text-align: center;
+}
+
+h4.project {
+  font-weight: 900;
+}
+
+.project a, .qAndA a {
+  text-decoration: underline;
+}
+
+.project img {
+  width: 260px;
+}
+
+.apperson img {
+  height: 328px;
 }

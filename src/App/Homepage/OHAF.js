@@ -2,16 +2,14 @@ import React from 'react';
 
 const OHAF = () => (
 
-  <div className="elevation2" style={{ padding: '10px', maxWidth: '500px', margin: 'auto' }}>
-    <h4 style={{ textAlign: 'center' }}>
-      <strong>
-          Our Hands and Feet
-          (
-        <a href="/ohaf">OHAF</a>
-          )
-      </strong>
+  <div className="elevation2 project">
+    <h4>
+      Our Hands and Feet
+      (
+      <a href="/ohaf">OHAF</a>
+      )
     </h4>
-    <p style={{ textAlign: 'center' }}>This app connects volunteers with charity opportunities.</p>
+    <p>This app connects volunteers with charity opportunities.</p>
     <div style={{ textAlign: 'center' }}>
       <img
         alt="OHAF Logo"

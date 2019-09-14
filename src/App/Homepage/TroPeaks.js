@@ -1,17 +1,14 @@
 import React from 'react';
 
 const TroPeaks = () => (
-  <div className="elevation2" style={{ padding: '10px', maxWidth: '500px', margin: 'auto' }}>
-    <h4 style={{ textAlign: 'center' }}>
-      <strong>
-          Tro Peaks Adventures
-      </strong>
+  <div className="elevation2 project">
+    <h4>
+      Tro Peaks Adventures
     </h4>
-    <p style={{ textAlign: 'center' }}>East African Tour &amp; Safari Company</p>
-    <div style={{ textAlign: 'center' }}>
+    <p>East African Tour &amp; Safari Company</p>
+    <div>
       <img
         alt="Tro Peaks Logo"
-        style={{ width: '260px' }}
         src="../static/imgs/TroPeaks.png"
       />
       <br />
@@ -19,7 +16,6 @@ const TroPeaks = () => (
         href="https://www.tro-peaks.com"
         target="_blank"
         rel="noreferrer noopener"
-        style={{ textDecoration: 'underline', textAlign: 'center' }}
       >
           tro-peaks.com
       </a>
