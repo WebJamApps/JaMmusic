@@ -1115,11 +1115,11 @@ hr {
     padding-left: 15px;
 }
 
-div.project, h4.project, p.project, a.project {
+div.project, .project h4, .project p, .project a, .container h3 {
   text-align: center;
 }
 
-h4.project {
+.project h4 {
   font-weight: 900;
 }
 
@@ -1133,4 +1133,14 @@ h4.project {
 
 .apperson img {
   height: 328px;
+}
+
+.container h3 {
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+p.spacer {
+  font-size: 6pt;
+  margin-bottom: 0;
 }
