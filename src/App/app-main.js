@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import authUtils from './authUtils';
 import mapStoreToProps from '../redux/mapStoreToAllProps';
 import appMainUtils from './appMainUtils';
+import Footer from './Footer';
 
 export class AppTemplate extends Component {
   constructor(props) {
@@ -16,8 +17,7 @@ export class AppTemplate extends Component {
     this.handleKeyPress = this.handleKeyPress.bind(this);
     this.handleKeyMenu = this.handleKeyMenu.bind(this);
     this.toggleMobileMenu = this.toggleMobileMenu.bind(this);
-    this.changeNav = this.changeNav.bind(this);
-    this.footerLinks = this.footerLinks.bind(this);
+
     this.navLinks = this.navLinks.bind(this);
     this.responseGoogleLogin = this.responseGoogleLogin.bind(this);
     this.responseGoogleLogout = this.responseGoogleLogout.bind(this);
@@ -56,7 +56,7 @@ export class AppTemplate extends Component {
       //   className: 'shop', type: 'link', iconClass: 'fas fa-shopping-cart', link: '/shop', name: 'Web Jam Shop',
       // },
       {
-        className: 'home', type: 'button', iconClass: 'fas fa-home', link: '', name: 'Web Jam LLC',
+        className: 'home', type: 'link', iconClass: 'fas fa-home', link: '/', name: 'Web Jam LLC',
       },
       {
         className: 'login', type: 'googleLogin', iconClass: 'fas fa-login', link: '', name: 'Login',
@@ -81,15 +81,8 @@ export class AppTemplate extends Component {
 
   close(e) {
     this.setState({ menuOpen: false });
-    if (e.target.classList.contains('out-link')) return this.changeNav(e.target.classList[1]);
     if (e.target.classList.contains('loginGoogle')) return this.loginGoogle();
     return true;
-  }
-
-  changeNav(where) { // eslint-disable-line class-methods-use-this
-    let subpath = '/wj-music/';
-    if (where === 'home') subpath = '/';
-    return window.location.assign(`${process.env.BackendUrl}${subpath}${where}`);
   }
 
   handleKeyPress(e) {
@@ -137,16 +130,7 @@ export class AppTemplate extends Component {
       );
     }
     if (menu.type === 'googleLogin') return this.googleButtons('login', index);
-    if (menu.type === 'googleLogout') return this.googleButtons('logout', index);
-    return (
-      <div key={index} className="menu-item">
-        <button type="button" className={`nav-link ${menu.className} loginGoogle`} onClick={this.close}>
-          <i className={`${menu.iconClass}`} />
-          &nbsp;
-          <span className={`nav-item ${menu.className} out-link`}>{menu.name}</span>
-        </button>
-      </div>
-    );
+    return this.googleButtons('logout', index);
   }
 
   navLinks() {
@@ -164,34 +148,6 @@ export class AppTemplate extends Component {
         {this.menus.map((menu, index) => (this.menuItem(menu, index)))}
         <p style={{ margin: 0, padding: 0, fontSize: '6pt' }}>&nbsp;</p>
         {this.appMainUtils.activeUsers(heartBeat, userCount)}
-      </div>
-    );
-  }
-
-  footerLinks() { // eslint-disable-line class-methods-use-this
-    const color = '#c09580';
-    const links = [
-      { href: 'https://github.com/WebJamApps', name: 'github' },
-      { href: 'https://www.linkedin.com/company/webjam/', name: 'linkedin' },
-      { href: 'https://www.instagram.com/joshua.v.sherman/', name: 'instagram' },
-      { href: 'https://twitter.com/JoshuaVSherman', name: 'twitter' },
-      { href: 'https://www.facebook.com/WebJamLLC/', name: 'facebook' },
-      { href: 'https://joshuavsherman.tumblr.com/', name: 'tumblr' },
-    ];
-    return (
-      <div style={{ textAlign: 'center', padding: '6px' }}>
-        {
-          links.map((link) => (
-            <a key={Math.random().toString()} target="_blank" rel="noopener noreferrer" style={{ color, paddingRight: '5px' }} href={link.href}>
-              <span><i className={`fab fa-${link.name}`} /></span>
-            </a>
-          ))
-        }
-        <p style={{ color: 'white', fontSize: '9pt', marginBottom: 0 }}>
-          Powered by
-          {' '}
-          <a className="wjllc" target="_blank" rel="noopener noreferrer" href="https://www.web-jam.com">Web Jam LLC</a>
-        </p>
       </div>
     );
   }
@@ -231,12 +187,13 @@ export class AppTemplate extends Component {
             {this.headerSection()}
             <div style={{ width: 'auto' }} id="contentBlock" className="content-block">
               { this.children }
-              <div id="wjfooter" className="footer" style={{ backgroundColor: '#565656', paddingTop: '20px', paddingBottom: '40px' }}>
-                { this.footerLinks() }
-              </div>
+              <Footer />
             </div>
+
           </div>
+
         </div>
+
       </div>
     );
   }

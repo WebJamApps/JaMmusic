@@ -30,18 +30,6 @@ describe('app-main component test setup', () => {
     await aT.responseGoogleLogout(true);
     expect(window.location.reload).toHaveBeenCalled();
   });
-  // it('displays logout if user is logged in already', (done) => {
-  //   document.body.innerHTML = '<button class="googleLogin"/><button class="googleLogout"/>';
-  //   const aT = new AppTemplate({ dispatch: () => Promise.resolve(true) });
-  //   Object.defineProperty(window.location, 'reload', {
-  //     configurable: true,
-  //   });
-  //   window.location.reload = jest.fn();
-  //   Storage.prototype.getItem = jest.fn(() => 'bla');
-  //   try { aT.componentDidMount(); } catch (e) { throw e; }
-  //   expect(document.getElementsByClassName('googleLogout')[0].style.display).toBe('block');
-  //   done();
-  // });
   it('closes the menu without navigating away from the react app', (done) => {
     document.body.innerHTML = '<button class="googleLogin"/><button class="googleLogout"/>';
     const aT = new AppTemplate({ dispatch: () => Promise.resolve(true) });
@@ -50,15 +38,15 @@ describe('app-main component test setup', () => {
     expect(result).toBe(true);
     done();
   });
-  it('closes the menu and navigates away from the react app', (done) => {
-    document.body.innerHTML = '<button class="googleLogin"/><button class="googleLogout"/>';
-    const aT = new AppTemplate({ dispatch: () => Promise.resolve(true) });
-    aT.setState = () => {};
-    aT.changeNav = () => true;
-    const result = aT.close({ target: { classList: { contains() { return true; } } } });
-    expect(result).toBe(true);
-    done();
-  });
+  // it('closes the menu and navigates away from the react app', (done) => {
+  //   document.body.innerHTML = '<button class="googleLogin"/><button class="googleLogout"/>';
+  //   const aT = new AppTemplate({ dispatch: () => Promise.resolve(true) });
+  //   aT.setState = () => {};
+  //   aT.changeNav = () => true;
+  //   const result = aT.close({ target: { classList: { contains() { return true; } } } });
+  //   expect(result).toBe(true);
+  //   done();
+  // });
   it('closes the menu and logs in to google', (done) => {
     document.body.innerHTML = '<button class="googleLogin"/><button class="googleLogout"/>';
     const aT = new AppTemplate({ dispatch: () => Promise.resolve(true) });
@@ -86,20 +74,6 @@ describe('app-main component test setup', () => {
       done();
     };
     aT.toggleMobileMenu();
-  });
-  it('changes url to external app when home', (done) => {
-    const aT = new AppTemplate({ dispatch: () => Promise.resolve(true) });
-    window.location.assign = jest.fn(() => true);
-    const result = aT.changeNav('home');
-    expect(result).toBe(true);
-    done();
-  });
-  it('changes url to external app when mission', (done) => {
-    const aT = new AppTemplate({ dispatch: () => Promise.resolve(true) });
-    window.location.assign = jest.fn(() => true);
-    const result = aT.changeNav('mission');
-    expect(result).toBe(true);
-    done();
   });
   it('closes the mobile menu on clicking escape key', (done) => {
     const aT = new AppTemplate({ dispatch: () => Promise.resolve(true) });
@@ -134,5 +108,10 @@ describe('app-main component test setup', () => {
     const result = aT.render();
     expect(result.props.className).toBe('page-host');
     done();
+  });
+  it('checks if menu is google logout', () => {
+    const { wrapper } = setup();
+    wrapper.instance().menuItem({ type: 'googleLogout' }, 1);
+    expect(wrapper.find('div.googleLogout').exists()).toBe(true);
   });
 });
