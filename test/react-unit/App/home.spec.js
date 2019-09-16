@@ -14,7 +14,9 @@ describe('Home', () => {
     expect(wrapper.find(WideAboutUs).exists()).toBe(true);
     expect(wrapper.find(WideAboutUs).dive().find('div.widescreenHomepage').exists()).toBe(true);
     expect(wrapper.find(WideCurrentProjects).dive().find('div.widescreenHomepage').exists()).toBe(true);
-    expect(wrapper.find(WideFacebookFeed).dive().find('div.col-md-6').exists()).toBe(true);
+    expect(wrapper.find(WideCurrentProjects).dive().find(WideFacebookFeed).dive()
+      .find('div.col-md-6')
+      .exists()).toBe(true);
   });
   it('Resizes the page', () => {
     wrapper.instance().onResize(100);
