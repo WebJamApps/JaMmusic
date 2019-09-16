@@ -122,7 +122,7 @@
     "react-hot-loader": "latest",
     "redux-mock-store": "latest",
     "sinon": "latest",
-    "stylelint": "latest",
+    "stylelint": "11.0.0",
     "stylelint-config-standard": "latest",
     "stylelint-scss": "latest",
     "webpack-dev-server": "latest"
