@@ -1,7 +1,7 @@
 import React from 'react';
 import CollegeLutheran from '../CollegeLutheran';
 import AppersonAutomotive from '../AppersonAutomotive';
-import OHAF from '../OHAF';
+// import OHAF from '../OHAF';
 import TroPeaks from '../TroPeaks';
 
 const NarrowCurrentProjects = () => (
@@ -11,8 +11,8 @@ const NarrowCurrentProjects = () => (
       <CollegeLutheran />
       <p style={{ fontSize: '6pt', marginBottom: '0' }}>&nbsp;</p>
       <AppersonAutomotive />
-      <p style={{ fontSize: '6pt', marginBottom: '0' }}>&nbsp;</p>
-      <OHAF />
+      {/* <p style={{ fontSize: '6pt', marginBottom: '0' }}>&nbsp;</p>
+      <OHAF /> */}
       <p style={{ fontSize: '6pt', marginBottom: '0' }}>&nbsp;</p>
       <TroPeaks />
     </div>
