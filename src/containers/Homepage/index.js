@@ -1,14 +1,11 @@
-/* eslint-disable consistent-return */
 import React, { Component } from 'react';
 import ReactResizeDetector from 'react-resize-detector';
-import WideAboutUs from './Homepage/Widescreen/WideAbout';
-import WideCurrentProjects from './Homepage/Widescreen/WideCurrentProjects';
-// import WideFacebookFeed from './Homepage/Widescreen/WideFacebookFeed';
-import NarrowAboutUs from './Homepage/Narrowscreen/NarrowAbout';
-import NarrowCurrentProjects from './Homepage/Narrowscreen/NarrowCurrentProjects';
-import FacebookFeed from './Homepage/Narrowscreen/NarrowFacebookFeed';
+import WideAboutUs from './Widescreen/WideAbout';
+import WideCurrentProjects from './Widescreen/WideCurrentProjects';
+import NarrowAboutUs from './Narrowscreen/NarrowAbout';
+import NarrowCurrentProjects from './Narrowscreen/NarrowCurrentProjects';
+import FacebookFeed from './Narrowscreen/NarrowFacebookFeed';
 
-// eslint-disable-next-line react/prefer-stateless-function
 export default class Home extends Component {
   constructor(props) {
     super(props);
@@ -21,8 +18,6 @@ export default class Home extends Component {
     this.setState({ width });
   }
 
-  // Add link-to-top for accessibility
-
   render() {
     const { width } = this.state;
     return (
@@ -33,8 +28,6 @@ export default class Home extends Component {
               <WideAboutUs />
               <hr />
               <WideCurrentProjects />
-              {/* <p style={{ fontSize: '6pt', marginBottom: '0' }}>&nbsp;</p>
-              <WideFacebookFeed /> */}
             </div>
           )
           : (

@@ -10,7 +10,7 @@ import ShopMain from '../containers/Shop/ShopMain';
 import AppFourOhFour from './404';
 import AppMain from './app-main';
 import DefaultOriginals from '../containers/Originals';
-import HomePage from './Home';
+import HomePage from '../containers/Homepage';
 import connectToSC from './connectToSC';
 import mapStoreToProps from '../redux/mapStoreToProps';
 import getSongs from './songsActions';
