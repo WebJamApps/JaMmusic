@@ -4,13 +4,13 @@ import 'regenerator-runtime/runtime';
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { connect } from 'react-redux';
-// import HomePage from './HomePage';
 import DefaultMusic from '../containers/Music';
 import BuyMusic from '../containers/BuyMusic';
 import ShopMain from '../containers/Shop/ShopMain';
 import AppFourOhFour from './404';
-import AppTemp from './app-main';
+import AppMain from './app-main';
 import DefaultOriginals from '../containers/Originals';
+import HomePage from './Home';
 import connectToSC from './connectToSC';
 import mapStoreToProps from '../redux/mapStoreToProps';
 import getSongs from './songsActions';
@@ -32,19 +32,22 @@ export class App extends Component {
 
   render() {
     return (
+
       <div id="App" className="App">
         <Router>
-          <AppTemp id="homepage">
+          <AppMain id="homepage">
             <Switch>
+              <Route exact path="/" component={HomePage} />
               <Route exact path="/music" component={DefaultMusic} />
               <Route path="/music/buymusic" component={BuyMusic} />
               <Route path="/music/originals" component={DefaultOriginals} />
               <Route path="/shop" component={ShopMain} />
               <Route component={AppFourOhFour} />
             </Switch>
-          </AppTemp>
+          </AppMain>
         </Router>
       </div>
+
     );
   }
 }
