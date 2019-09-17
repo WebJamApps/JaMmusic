@@ -8,7 +8,7 @@ const responseGoogleLogin = (response, dispatch) => { // eslint-disable-line cla
   const baseUri = uri.split('/')[2];
   const body = {
     clientId: process.env.GoogleClientId,
-    redirectUri: `http://${baseUri}`,
+    redirectUri: process.env.NODE_ENV === 'production' ? `https://${baseUri}` : `http://${baseUri}`,
     code: `${response.code}`,
     /* istanbul ignore next */state() {
       const rand = Math.random().toString(36).substr(2);
