@@ -194,8 +194,6 @@ export class AppTemplate extends Component {
   }
 
   render() {
-    // const { location } = this.props;
-    // console.log(location);// eslint-disable-line no-console
     const { menuOpen } = this.state;
     const style = `${this.currentStyles.sidebarClass} ${menuOpen ? 'open' : 'close'}`;
     return (
