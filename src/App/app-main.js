@@ -17,7 +17,6 @@ export class AppTemplate extends Component {
     this.handleKeyPress = this.handleKeyPress.bind(this);
     this.handleKeyMenu = this.handleKeyMenu.bind(this);
     this.toggleMobileMenu = this.toggleMobileMenu.bind(this);
-
     this.navLinks = this.navLinks.bind(this);
     this.responseGoogleLogin = this.responseGoogleLogin.bind(this);
     this.responseGoogleLogout = this.responseGoogleLogout.bind(this);
@@ -52,9 +51,12 @@ export class AppTemplate extends Component {
       {
         className: 'songs', type: 'link', iconClass: 'far fa-lightbulb', link: '/music/originals', name: 'Songs',
       },
-      // {
-      //   className: 'shop', type: 'link', iconClass: 'fas fa-shopping-cart', link: '/shop', name: 'Web Jam Shop',
-      // },
+      {
+        className: 'dashboard', type: 'link', iconClass: 'fas fa-user-secret', link: '/music/dashboard', name: 'Dashboard',
+      },
+      {
+        className: 'shop', type: 'link', iconClass: 'fas fa-shopping-cart', link: '/shop', name: 'Web Jam Shop',
+      },
       {
         className: 'home', type: 'link', iconClass: 'fas fa-home', link: '/', name: 'Web Jam LLC',
       },

@@ -5,6 +5,7 @@ import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { connect } from 'react-redux';
 import DefaultMusic from '../containers/Music';
+import DefaultMusicDashboard from '../containers/MusicDashboard';
 import BuyMusic from '../containers/BuyMusic';
 import ShopMain from '../containers/Shop/ShopMain';
 import AppFourOhFour from './404';
@@ -32,7 +33,6 @@ export class App extends Component {
 
   render() {
     return (
-
       <div id="App" className="App">
         <Router>
           <AppMain id="homepage">
@@ -41,6 +41,7 @@ export class App extends Component {
               <Route exact path="/music" component={DefaultMusic} />
               <Route path="/music/buymusic" component={BuyMusic} />
               <Route path="/music/originals" component={DefaultOriginals} />
+              <Route path="/music/dashboard" component={DefaultMusicDashboard} />
               <Route path="/shop" component={ShopMain} />
               <Route component={AppFourOhFour} />
             </Switch>
