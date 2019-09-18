@@ -2,8 +2,8 @@ import authenticate, { logout } from './authActions';
 
 const responseGoogleLogin = (response, dispatch) => {
   console.log(response);// eslint-disable-line no-console
-  document.getElementsByClassName('googleLogin')[0].style.display = 'none';
-  document.getElementsByClassName('googleLogout')[0].style.display = 'block';
+  // document.getElementsByClassName('googleLogin')[0].style.display = 'none';
+  // document.getElementsByClassName('googleLogout')[0].style.display = 'block';
   const uri = window.location.href;
   const baseUri = uri.split('/')[2];
   const body = {

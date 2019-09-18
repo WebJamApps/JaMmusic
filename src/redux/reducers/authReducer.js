@@ -14,7 +14,7 @@ const reducer = (state = initialState, action) => {
         isAuthenticated: true,
         email: action.data.email,
         token: action.data.token,
-        error: '', 
+        error: '',
       };
     case 'LOGOUT':
       return {
@@ -22,7 +22,7 @@ const reducer = (state = initialState, action) => {
         isAuthenticated: false,
         email: '',
         token: '',
-        error: '', 
+        error: '',
       };
     case 'AUTH_ERROR':
       return {
@@ -30,7 +30,7 @@ const reducer = (state = initialState, action) => {
         isAuthenticated: false,
         email: '',
         token: '',
-        error: action.error.message, 
+        error: action.error.message,
       };
     default:
       return state;

@@ -32,6 +32,8 @@ export class App extends Component {
   }
 
   render() {
+    const { auth } = this.props;
+    // console.log(auth);//eslint-disable-line
     return (
       <div id="App" className="App">
         <Router>
@@ -41,7 +43,7 @@ export class App extends Component {
               <Route exact path="/music" component={DefaultMusic} />
               <Route path="/music/buymusic" component={BuyMusic} />
               <Route path="/music/originals" component={DefaultOriginals} />
-              <Route path="/music/dashboard" component={DefaultMusicDashboard} />
+              {auth.isAuthenticated ? <Route path="/music/dashboard" component={DefaultMusicDashboard} /> : null}
               <Route path="/shop" component={ShopMain} />
               <Route component={AppFourOhFour} />
             </Switch>
@@ -56,8 +58,10 @@ App.propTypes = {
   dispatch: PropTypes.func.isRequired,
   songs: PropTypes.arrayOf(PropTypes.shape({})),
   images: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.shape({})), PropTypes.shape({})]),
-
+  auth: PropTypes.shape({
+    isAuthenticated: PropTypes.bool,
+  }),
 };
-App.defaultProps = { songs: [], images: [] };
+App.defaultProps = { songs: [], images: [], auth: { isAuthenticated: false } };
 
 export default connect(mapStoreToProps, null)(App);

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { GoogleLogin, GoogleLogout } from 'react-google-login';
 import { connect } from 'react-redux';
@@ -52,7 +52,7 @@ export class AppTemplate extends Component {
         className: 'songs', type: 'link', iconClass: 'far fa-lightbulb', link: '/music/originals', name: 'Songs',
       },
       {
-        className: 'dashboard', type: 'link', iconClass: 'fas fa-user-secret', link: '/music/dashboard', name: 'Dashboard',
+        className: 'dashboard', type: 'link', iconClass: 'fas fa-user-secret', link: '/music/dashboard', name: 'Dashboard', auth: true,
       },
       {
         className: 'shop', type: 'link', iconClass: 'fas fa-shopping-cart', link: '/shop', name: 'Web Jam Shop',
@@ -64,7 +64,7 @@ export class AppTemplate extends Component {
         className: 'login', type: 'googleLogin', iconClass: 'fas fa-login', link: '', name: 'Login',
       },
       {
-        className: 'logout', type: 'googleLogout', iconClass: 'fas fa-logout', link: '', name: 'Logout',
+        className: 'logout', type: 'googleLogout', iconClass: 'fas fa-logout', link: '', name: 'Logout', auth: true,
       },
     ];
   }
@@ -113,14 +113,28 @@ export class AppTemplate extends Component {
         </div>
       );
     } return (
-      <div key={index} className="menu-item googleLogout" style={{ display: 'none' }}>
+      <div key={index} className="menu-item googleLogout">
         <GoogleLogout clientId={cId} buttonText="Logout" onLogoutSuccess={this.responseGoogleLogout} cookiePolicy="single_host_origin" />
       </div>
     );
   }
 
   menuItem(menu, index) {
-    if (menu.type === 'link') {
+    const { location, auth } = this.props;
+    if (location.pathname.includes('/music') && (menu.link.includes('/music') || menu.name === 'Web Jam LLC')) {
+      if ((menu.type === 'link' && ((menu.auth && auth.isAuthenticated) || !menu.auth))) {
+        return (
+          <div key={index} className="menu-item">
+            <Link to={menu.link} className="nav-link" onClick={this.close}>
+              <i className={`${menu.iconClass}`} />
+            &nbsp;
+              <span className="nav-item">{menu.name}</span>
+            </Link>
+          </div>
+        );
+      }
+    }
+    if (location.pathname === '/' && (menu.link === '/shop' || menu.link === '/music' || menu.link === '/')) {
       return (
         <div key={index} className="menu-item">
           <Link to={menu.link} className="nav-link" onClick={this.close}>
@@ -131,8 +145,20 @@ export class AppTemplate extends Component {
         </div>
       );
     }
-    if (menu.type === 'googleLogin') return this.googleButtons('login', index);
-    return this.googleButtons('logout', index);
+    if (location.pathname === '/shop' && (menu.link === '/shop' || menu.link === '/')) {
+      return (
+        <div key={index} className="menu-item">
+          <Link to={menu.link} className="nav-link" onClick={this.close}>
+            <i className={`${menu.iconClass}`} />
+            &nbsp;
+            <span className="nav-item">{menu.name}</span>
+          </Link>
+        </div>
+      );
+    }
+    if (menu.type === 'googleLogin' && !auth.isAuthenticated) return this.googleButtons('login', index);
+    if (menu.type === 'googleLogout' && auth.isAuthenticated) return this.googleButtons('logout', index);
+    return null;
   }
 
   navLinks() {
@@ -168,6 +194,8 @@ export class AppTemplate extends Component {
   }
 
   render() {
+    // const { location } = this.props;
+    // console.log(location);// eslint-disable-line no-console
     const { menuOpen } = this.state;
     const style = `${this.currentStyles.sidebarClass} ${menuOpen ? 'open' : 'close'}`;
     return (
@@ -191,11 +219,8 @@ export class AppTemplate extends Component {
               { this.children }
               <Footer />
             </div>
-
           </div>
-
         </div>
-
       </div>
     );
   }
@@ -206,6 +231,7 @@ AppTemplate.defaultProps = {
 };
 
 AppTemplate.propTypes = {
+  location: PropTypes.shape({ pathname: PropTypes.string }).isRequired,
   heartBeat: PropTypes.string,
   userCount: PropTypes.number,
   auth: PropTypes.shape({
@@ -214,5 +240,4 @@ AppTemplate.propTypes = {
   dispatch: PropTypes.func,
   children: PropTypes.element.isRequired,
 };
-
-export default connect(mapStoreToProps)(AppTemplate);
+export default withRouter(connect(mapStoreToProps, null)(AppTemplate));
