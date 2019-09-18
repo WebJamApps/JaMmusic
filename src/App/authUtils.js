@@ -1,9 +1,22 @@
+import request from 'superagent';
+import jwt from 'jwt-simple';
 import authenticate, { logout } from './authActions';
 
-const responseGoogleLogin = (response, dispatch) => {
-  console.log(response);// eslint-disable-line no-console
-  // document.getElementsByClassName('googleLogin')[0].style.display = 'none';
-  // document.getElementsByClassName('googleLogout')[0].style.display = 'block';
+const setUser = async (controller) => {
+  const { auth, dispatch } = controller.props;
+  const decoded = jwt.decode(auth.token, process.env.HashString);
+  console.log(decoded);// eslint-disable-line no-console
+  let user;
+  try {
+    user = await request.get(`${process.env.BackendUrl}/user/${decoded.sub}`)
+      .set('Accept', 'application/json').set('Authorization', `Bearer ${auth.token}`);
+  } catch (e) { return console.log(e.message); } // eslint-disable-line no-console
+  console.log(user.body);// eslint-disable-line no-console
+  dispatch({ type: 'SET_USER', data: user.body });
+  return window.location.reload();
+};
+const responseGoogleLogin = async (response, controller) => {
+  const { dispatch } = controller.props;
   const uri = window.location.href;
   const baseUri = uri.split('/')[2];
   const body = {
@@ -15,7 +28,8 @@ const responseGoogleLogin = (response, dispatch) => {
       return encodeURIComponent(rand);
     },
   };
-  return dispatch(authenticate(body));
+  await dispatch(authenticate(body));
+  return setUser(controller);
 };
 
 const responseGoogleFailLogin = (response) => {
@@ -27,7 +41,7 @@ const responseGoogleLogout = (response, dispatch) => {
   console.log('logged out');// eslint-disable-line no-console
   console.log(response);// eslint-disable-line no-console
   dispatch(logout());
-  window.location.reload();
+  if (window.location.href.includes('/dashboard')) window.location.assign('/music');
 };
 
 export default { responseGoogleLogin, responseGoogleLogout, responseGoogleFailLogin };

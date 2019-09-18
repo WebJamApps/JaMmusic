@@ -76,7 +76,7 @@ export class AppTemplate extends Component {
   }
 
   // eslint-disable-next-line react/destructuring-assignment
-  responseGoogleLogin(response) { return this.authUtils.responseGoogleLogin(response, this.props.dispatch); }
+  responseGoogleLogin(response) { return this.authUtils.responseGoogleLogin(response, this); }
 
   // eslint-disable-next-line react/destructuring-assignment
   responseGoogleLogout(response) { return this.authUtils.responseGoogleLogout(response, this.props.dispatch); }

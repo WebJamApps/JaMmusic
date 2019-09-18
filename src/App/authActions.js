@@ -12,17 +12,23 @@ export const authError = (e) => ({
 
 export const logout = () => (dispatch) => dispatch({ type: 'LOGOUT' });
 
-const authFunc = (body) => (dispatch, getState) => {
+const authFunc = (body) => async (dispatch, getState) => {
   const { auth } = getState();
   if (auth.isAuthenticated) return Promise.resolve(true);
-  return request.post(`${process.env.BackendUrl}/user/auth/google`)
-    .set({ Accept: 'application/json' }).send(body)
-    .then((data) => {
-      if (!data.body) return dispatch(authError(new Error('authentication failed')));
-      dispatch(gotToken(data.body));
-      return window.location.reload();
-    })
-    .catch((err) => dispatch(authError(err)));
+  let data;
+  try {
+    data = await request.post(`${process.env.BackendUrl}/user/auth/google`)
+      .set({ Accept: 'application/json' }).send(body);
+  } catch (e) {
+    dispatch(authError(e));
+    return Promise.resolve(false);
+  }
+  if (!data.body) {
+    dispatch(authError(new Error('authentication failed')));
+    return Promise.resolve(false);
+  }
+  dispatch(gotToken(data.body));
+  return Promise.resolve(true); 
 };
 
 export default authFunc;
