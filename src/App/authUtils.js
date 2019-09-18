@@ -1,6 +1,6 @@
 import authenticate, { logout } from './authActions';
 
-const responseGoogleLogin = (response, dispatch) => { // eslint-disable-line class-methods-use-this
+const responseGoogleLogin = (response, dispatch) => {
   console.log(response);// eslint-disable-line no-console
   document.getElementsByClassName('googleLogin')[0].style.display = 'none';
   document.getElementsByClassName('googleLogout')[0].style.display = 'block';
@@ -8,7 +8,7 @@ const responseGoogleLogin = (response, dispatch) => { // eslint-disable-line cla
   const baseUri = uri.split('/')[2];
   const body = {
     clientId: process.env.GoogleClientId,
-    redirectUri: process.env.NODE_ENV === 'production' ? `https://${baseUri}` : `http://${baseUri}`,
+    redirectUri: process.env.NODE_ENV === 'production' ? /* istanbul ignore next */`https://${baseUri}` : `http://${baseUri}`,
     code: `${response.code}`,
     /* istanbul ignore next */state() {
       const rand = Math.random().toString(36).substr(2);
@@ -18,12 +18,12 @@ const responseGoogleLogin = (response, dispatch) => { // eslint-disable-line cla
   return dispatch(authenticate(body));
 };
 
-const responseGoogleFailLogin = (response) => { // eslint-disable-line class-methods-use-this
+const responseGoogleFailLogin = (response) => {
   console.log(response);// eslint-disable-line no-console
   return false;
 };
 
-const responseGoogleLogout = (response, dispatch) => { // eslint-disable-line class-methods-use-this
+const responseGoogleLogout = (response, dispatch) => {
   console.log('logged out');// eslint-disable-line no-console
   console.log(response);// eslint-disable-line no-console
   dispatch(logout());
