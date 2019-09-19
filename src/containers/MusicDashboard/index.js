@@ -7,7 +7,7 @@ export default class MusicDashboard extends Component {
   }
 
   componentDidMount() {
-    document.title = 'Buy Music | Web Jam LLC';
+    document.title = 'Music Dashboard | Web Jam LLC';
   }
 
   render() {
