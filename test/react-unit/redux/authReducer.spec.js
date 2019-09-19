@@ -54,4 +54,20 @@ describe('auth reducer', () => {
       },
     );
   });
+  it('handles SET_USER', () => {
+    expect(
+      reducer(undefined, {
+        type: 'SET_USER',
+        data: { name: 'Justin Bieber' },
+      }),
+    ).toEqual(
+      {
+        isAuthenticated: false,
+        error: '',
+        email: '',
+        token: '',
+        user: { name: 'Justin Bieber' },
+      },
+    );
+  });
 });

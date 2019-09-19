@@ -26,14 +26,16 @@ const responseGoogleLogin = async (response, controller) => {
   const baseUri = uri.split('/')[2];
   const body = {
     clientId: process.env.GoogleClientId,
-    redirectUri: process.env.NODE_ENV === 'production' ? /* istanbul ignore next */`https://${baseUri}` : `http://${baseUri}`,
+    redirectUri: /* istanbul ignore next */process.env.NODE_ENV === 'production' ? `https://${baseUri}` : `http://${baseUri}`,
     code: `${response.code}`,
     /* istanbul ignore next */state() {
       const rand = Math.random().toString(36).substr(2);
       return encodeURIComponent(rand);
     },
   };
-  await dispatch(authenticate(body));
+  try { await dispatch(authenticate(body)); } catch (e) {
+    return console.log(e.message);// eslint-disable-line no-console
+  }
   return setUser(controller);
 };
 
