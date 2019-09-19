@@ -4,9 +4,11 @@ import authenticate, { logout } from './authActions';
 
 const setUser = async (controller) => {
   const { auth, dispatch } = controller.props;
-  const decoded = jwt.decode(auth.token, process.env.HashString);
+  let decoded, user;
+  try { decoded = jwt.decode(auth.token, process.env.HashString); } catch (e) {
+    return Promise.reject(e); // eslint-disable-line no-console
+  }
   console.log(decoded);// eslint-disable-line no-console
-  let user;
   try {
     user = await request.get(`${process.env.BackendUrl}/user/${decoded.sub}`)
       .set('Accept', 'application/json').set('Authorization', `Bearer ${auth.token}`);
@@ -34,7 +36,7 @@ const responseGoogleLogin = async (response, controller) => {
     },
   };
   try { await dispatch(authenticate(body)); } catch (e) {
-    return console.log(e.message);// eslint-disable-line no-console
+    return Promise.reject(e);
   }
   return setUser(controller);
 };
@@ -51,4 +53,6 @@ const responseGoogleLogout = (response, dispatch) => {
   if (window.location.href.includes('/dashboard')) window.location.assign('/music');
 };
 
-export default { responseGoogleLogin, responseGoogleLogout, responseGoogleFailLogin };
+export default {
+  responseGoogleLogin, responseGoogleLogout, responseGoogleFailLogin, setUser, 
+};
