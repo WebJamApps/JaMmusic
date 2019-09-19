@@ -57,6 +57,7 @@ export class MusicPlayer extends Component {
 
   ToggleSongTypes(type) {
     const lcType = type.toLowerCase();
+    const { player } = this.state;
     let { songsState, pageTitle } = this.state;
     const { songs } = this.props;
     const typeInState = `${lcType}State`;
@@ -71,7 +72,12 @@ export class MusicPlayer extends Component {
     }
     songsState = this.setIndex(songsState, lcType);
     this.setState({
-      pageTitle, songsState, [typeInState]: typeState === 'off' ? 'on' : 'off', song: songsState[0], index: 0,
+      player: { ...player, isShuffleOn: false },
+      pageTitle,
+      songsState,
+      [typeInState]: typeState === 'off' ? 'on' : 'off',
+      song: songsState[0],
+      index: 0,
     });
   }
 
