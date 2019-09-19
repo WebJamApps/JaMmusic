@@ -13,6 +13,11 @@ const setUser = async (controller) => {
   } catch (e) { return console.log(e.message); } // eslint-disable-line no-console
   console.log(user.body);// eslint-disable-line no-console
   dispatch({ type: 'SET_USER', data: user.body });
+  if (!decoded.user) {
+    decoded.user = user.body;
+    const newToken = jwt.encode(decoded, process.env.HashString);
+    dispatch({ type: 'GOT_TOKEN', data: { token: newToken, email: auth.email } });
+  }
   return window.location.reload();
 };
 const responseGoogleLogin = async (response, controller) => {

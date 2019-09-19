@@ -43,7 +43,8 @@ export class App extends Component {
               <Route exact path="/music" component={DefaultMusic} />
               <Route path="/music/buymusic" component={BuyMusic} />
               <Route path="/music/originals" component={DefaultOriginals} />
-              {auth.isAuthenticated ? <Route path="/music/dashboard" component={DefaultMusicDashboard} /> : null}
+              {auth.isAuthenticated && auth.user.userType === 'Developer'
+                ? <Route path="/music/dashboard" component={DefaultMusicDashboard} /> : null}
               <Route path="/shop" component={ShopMain} />
               <Route component={AppFourOhFour} />
             </Switch>
@@ -60,8 +61,9 @@ App.propTypes = {
   images: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.shape({})), PropTypes.shape({})]),
   auth: PropTypes.shape({
     isAuthenticated: PropTypes.bool,
+    user: PropTypes.shape({ userType: PropTypes.string }),
   }),
 };
-App.defaultProps = { songs: [], images: [], auth: { isAuthenticated: false } };
+App.defaultProps = { songs: [], images: [], auth: { isAuthenticated: false, user: { userType: '' } } };
 
 export default connect(mapStoreToProps, null)(App);

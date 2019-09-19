@@ -119,46 +119,38 @@ export class AppTemplate extends Component {
     );
   }
 
-  menuItem(menu, index) {
-    const { location, auth } = this.props;
-    if (location.pathname.includes('/music') && (menu.link.includes('/music') || menu.name === 'Web Jam LLC')) {
-      if ((menu.type === 'link' && ((menu.auth && auth.isAuthenticated) || !menu.auth))) {
-        return (
-          <div key={index} className="menu-item">
-            <Link to={menu.link} className="nav-link" onClick={this.close}>
-              <i className={`${menu.iconClass}`} />
-            &nbsp;
-              <span className="nav-item">{menu.name}</span>
-            </Link>
-          </div>
-        );
-      }
-    }
-    if (location.pathname === '/' && (menu.link === '/shop' || menu.link === '/music' || menu.link === '/')) {
-      return (
-        <div key={index} className="menu-item">
-          <Link to={menu.link} className="nav-link" onClick={this.close}>
-            <i className={`${menu.iconClass}`} />
-            &nbsp;
-            <span className="nav-item">{menu.name}</span>
-          </Link>
-        </div>
-      );
-    }
+  makeMenuLink(menu, index) {
+    return (
+      <div key={index} className="menu-item">
+        <Link to={menu.link} className="nav-link" onClick={this.close}>
+          <i className={`${menu.iconClass}`} />
+        &nbsp;
+          <span className="nav-item">{menu.name}</span>
+        </Link>
+      </div>
+    );
+  }
+
+  continueMenuItem(menu, index, location, auth) {
     if (location.pathname === '/shop' && (menu.link === '/shop' || menu.link === '/')) {
-      return (
-        <div key={index} className="menu-item">
-          <Link to={menu.link} className="nav-link" onClick={this.close}>
-            <i className={`${menu.iconClass}`} />
-            &nbsp;
-            <span className="nav-item">{menu.name}</span>
-          </Link>
-        </div>
-      );
+      return this.makeMenuLink(menu, index);
     }
     if (menu.type === 'googleLogin' && !auth.isAuthenticated) return this.googleButtons('login', index);
     if (menu.type === 'googleLogout' && auth.isAuthenticated) return this.googleButtons('logout', index);
     return null;
+  }
+
+  menuItem(menu, index) {
+    const { location, auth } = this.props;
+    if (location.pathname.includes('/music') && (menu.link.includes('/music') || menu.name === 'Web Jam LLC')) {
+      if ((menu.type === 'link' && ((menu.auth && auth.isAuthenticated && auth.user.userType === 'Developer') || !menu.auth))) {
+        return this.makeMenuLink(menu, index);
+      }
+    }
+    if (location.pathname === '/' && (menu.link === '/shop' || menu.link === '/music' || menu.link === '/')) {
+      return this.makeMenuLink(menu, index);
+    }
+    return this.continueMenuItem(menu, index, location, auth);
   }
 
   navLinks() {
@@ -225,7 +217,7 @@ export class AppTemplate extends Component {
 }
 /* istanbul ignore next */
 AppTemplate.defaultProps = {
-  dispatch: () => {}, auth: { isAuthenticated: false }, userCount: 0, heartBeat: 'white',
+  dispatch: () => {}, auth: { isAuthenticated: false, user: { userType: '' } }, userCount: 0, heartBeat: 'white',
 };
 
 AppTemplate.propTypes = {
@@ -234,6 +226,7 @@ AppTemplate.propTypes = {
   userCount: PropTypes.number,
   auth: PropTypes.shape({
     isAuthenticated: PropTypes.bool,
+    user: PropTypes.shape({ userType: PropTypes.string }),
   }),
   dispatch: PropTypes.func,
   children: PropTypes.element.isRequired,
