@@ -1,7 +1,6 @@
 import React from 'react';
 import CollegeLutheran from '../CollegeLutheran';
 import AppersonAutomotive from '../AppersonAutomotive';
-import WideFacebookFeed from './WideFacebookFeed';
 // import OHAF from '../OHAF';
 import TroPeaks from '../TroPeaks';
 
@@ -24,10 +23,8 @@ const WideCurrentProjects = () => (
           <div className="col">
             <TroPeaks />
           </div>
+          <div className="col" />
           <p className="spacer">&nbsp;</p>
-          <div className="col">
-            <WideFacebookFeed />
-          </div>
         </div>
       </div>
     </div>
