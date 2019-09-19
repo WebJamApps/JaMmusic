@@ -3,7 +3,7 @@ import { persistStore, persistReducer } from 'redux-persist';
 import { createLogger } from 'redux-logger';
 import thunk from 'redux-thunk';
 import storageSession from 'redux-persist/lib/storage/session';
-import allReducers from '../redux/allReducers';
+import allReducers from '../allReducers';
 
 const persistConfig = {
   key: 'root',
