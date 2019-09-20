@@ -3,7 +3,7 @@ import { Provider } from 'react-redux';
 import { render } from 'react-dom';
 import { PersistGate } from 'redux-persist/integration/react';
 import ConnectedApp from './App';
-import store from './store';
+import store from './redux/store';
 
 import '../static/styles.scss';
 
