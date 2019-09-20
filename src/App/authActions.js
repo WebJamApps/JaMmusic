@@ -21,14 +21,14 @@ const authFunc = (body) => async (dispatch, getState) => {
       .set({ Accept: 'application/json' }).send(body);
   } catch (e) {
     dispatch(authError(e));
-    return Promise.resolve(false);
+    return Promise.reject(e);
   }
   if (!data.body) {
     dispatch(authError(new Error('authentication failed')));
     return Promise.resolve(false);
   }
   dispatch(gotToken(data.body));
-  return Promise.resolve(true); 
+  return Promise.resolve(true);
 };
 
 export default authFunc;
