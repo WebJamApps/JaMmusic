@@ -5,22 +5,20 @@ import authenticate, { logout } from './authActions';
 const setUser = async (controller) => {
   const { auth, dispatch } = controller.props;
   let decoded, user;
-  try { decoded = jwt.decode(auth.token, process.env.HashString); } catch (e) {
-    return Promise.reject(e); // eslint-disable-line no-console
-  }
-  console.log(decoded);// eslint-disable-line no-console
-  try {
-    user = await request.get(`${process.env.BackendUrl}/user/${decoded.sub}`)
-      .set('Accept', 'application/json').set('Authorization', `Bearer ${auth.token}`);
-  } catch (e) { return console.log(e.message); } // eslint-disable-line no-console
-  console.log(user.body);// eslint-disable-line no-console
-  dispatch({ type: 'SET_USER', data: user.body });
-  if (!decoded.user) {
+  try { decoded = jwt.decode(auth.token, process.env.HashString); } catch (e) { return Promise.reject(e); }
+  if (decoded.user) dispatch({ type: 'SET_USER', data: decoded.user });
+  else {
+    try {
+      user = await request.get(`${process.env.BackendUrl}/user/${decoded.sub}`)
+        .set('Accept', 'application/json').set('Authorization', `Bearer ${auth.token}`);
+    } catch (e) { return Promise.reject(e); }
+    dispatch({ type: 'SET_USER', data: user.body });
     decoded.user = user.body;
     const newToken = jwt.encode(decoded, process.env.HashString);
     dispatch({ type: 'GOT_TOKEN', data: { token: newToken, email: auth.email } });
   }
-  return window.location.reload();
+  window.location.reload();
+  return Promise.resolve(true);
 };
 const responseGoogleLogin = async (response, controller) => {
   const { dispatch } = controller.props;
@@ -47,12 +45,11 @@ const responseGoogleFailLogin = (response) => {
 };
 
 const responseGoogleLogout = (response, dispatch) => {
-  console.log('logged out');// eslint-disable-line no-console
-  console.log(response);// eslint-disable-line no-console
   dispatch(logout());
   if (window.location.href.includes('/dashboard')) window.location.assign('/music');
+  return Promise.resolve(response);
 };
 
 export default {
-  responseGoogleLogin, responseGoogleLogout, responseGoogleFailLogin, setUser, 
+  responseGoogleLogin, responseGoogleLogout, responseGoogleFailLogin, setUser,
 };
