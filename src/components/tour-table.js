@@ -72,7 +72,7 @@ export class TourTable extends Component {
               options={{
                 filterType: 'dropdown',
                 pagination: false,
-                responsive: 'scroll',
+                responsive: 'scrollMaxHeight',
                 filter: false,
                 download: false,
                 search: false,
