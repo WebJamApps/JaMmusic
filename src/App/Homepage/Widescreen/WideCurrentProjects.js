@@ -17,17 +17,17 @@ const WideCurrentProjects = () => (
           <div className="col">
             <AppersonAutomotive />
           </div>
+          <div className="col">
+            <TroPeaks />
+          </div>
         </div>
         <p className="spacer">&nbsp;</p>
         <div className="row">
           <div className="col">
-            <TroPeaks />
-          </div>
-          <div className="col">
             <WideFacebookFeed />
           </div>
-          <p className="spacer">&nbsp;</p>
         </div>
+        <p className="spacer">&nbsp;</p>
       </div>
     </div>
   </div>
