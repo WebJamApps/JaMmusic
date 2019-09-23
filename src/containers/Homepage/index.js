@@ -28,6 +28,7 @@ export default class Home extends Component {
               <WideAboutUs />
               <hr />
               <WideCurrentProjects />
+              <p style={{ fontSize: '6pt', marginBottom: '0' }}>&nbsp;</p>
             </div>
           )
           : (
