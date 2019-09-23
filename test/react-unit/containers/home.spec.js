@@ -1,9 +1,9 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import Home from '../../../src/App/Home';
-import WideAboutUs from '../../../src/App/Homepage/Widescreen/WideAbout';
-import WideCurrentProjects from '../../../src/App/Homepage/Widescreen/WideCurrentProjects';
-import WideFacebookFeed from '../../../src/App/Homepage/Widescreen/WideFacebookFeed';
+import Home from '../../../src/containers/Homepage';
+import WideAboutUs from '../../../src/containers/Homepage/Widescreen/WideAbout';
+import WideCurrentProjects from '../../../src/containers/Homepage/Widescreen/WideCurrentProjects';
+import WideFacebookFeed from '../../../src/containers/Homepage/Widescreen/WideFacebookFeed';
 
 const wrapper = shallow(<Home />);
 

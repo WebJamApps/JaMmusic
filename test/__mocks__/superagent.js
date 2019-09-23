@@ -12,7 +12,7 @@ const Request = {
   text: JSON.stringify(mockResponse),
   body: mockResponse,
 
-  post: jest.fn().mockReturnThis(),
+  post: jest.fn().mockReturnThis({ set: () => {} }),
   get: jest.fn().mockReturnThis(),
   send: jest.fn().mockReturnThis(),
   query: jest.fn().mockReturnThis(),
@@ -30,7 +30,7 @@ const Request = {
   }),
   then: jest.fn().mockImplementation((callback) => new Promise((resolve, reject) => {
     if (mockError) {
-      return reject(mockError);
+      return reject(callback(new Error(mockError)));
     }
     return resolve(callback(mockResponse));
   })),
