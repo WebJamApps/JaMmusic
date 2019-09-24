@@ -4,5 +4,6 @@ const mapStoreToProps = (store) => ({
   userCount: store.sc.userCount,
   auth: store.auth,
   tour: store.tour.tour,
+  scc: store.sc.scc,
 });
 export default mapStoreToProps;

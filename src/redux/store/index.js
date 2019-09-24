@@ -8,6 +8,7 @@ import allReducers from '../allReducers';
 const persistConfig = {
   key: 'root',
   storage: storageSession,
+  blacklist: ['sc'],
 };
 let mWares = applyMiddleware(thunk);
 /* istanbul ignore if */

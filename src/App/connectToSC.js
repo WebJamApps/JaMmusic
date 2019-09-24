@@ -24,5 +24,6 @@ const setupSocketCluster = (dispatch) => {
   scc.on('allTours', (data) => {
     dispatch({ type: 'ALL_TOUR', data });
   });
+  dispatch({ type: 'SCC', scc });
 };
 export default { setupSocketCluster }; // emits when a style was updated or created
