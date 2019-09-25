@@ -67,6 +67,7 @@
     "jquery": "latest",
     "jwt-simple": "latest",
     "mini-css-extract-plugin": "latest",
+    "moment": "latest",
     "mui-datatables": "latest",
     "node-sass": "latest",
     "nps": "latest",

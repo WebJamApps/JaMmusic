@@ -16,13 +16,13 @@ describe('tour-table component test', () => {
     const { wrapper } = setup();
     expect(wrapper.find('.tourTable').exists()).toBe(true);
   });
-  it('tests the tour-table columns', () => {
-    const { wrapper } = setup();
-    expect(typeof wrapper.instance().setColumns).toBe('function');
-    wrapper.instance().setColumns();
-    wrapper.instance().columns[0].options.customBodyRender('<a href="http://collegelutheran.org/"'
-      + ' rel="noopener noreferrer" target="_blank">College Lutheran Church</a>');
-  });
+  // it('tests the tour-table columns', () => {
+  //   const { wrapper } = setup();
+  //   expect(typeof wrapper.instance().setColumns).toBe('function');
+  //   wrapper.instance().setColumns();
+  //   wrapper.instance().columns[0].options.customBodyRender('<a href="http://collegelutheran.org/"'
+  //     + ' rel="noopener noreferrer" target="_blank">College Lutheran Church</a>');
+  // });
   // it('returns the json data', async () => {
   //   const tt = new TourTable();
   //   const jMock = sinon.mock(tt.jquery);

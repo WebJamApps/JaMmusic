@@ -6,14 +6,16 @@ describe('socket reducer', () => {
       {
         userCount: 0,
         heartBeat: 'white',
+        scc: {},
       },
     );
   });
   it('changes color to white', () => {
-    expect(reducer({ heartBeat: 'green', userCount: 0 }, { type: 'SC_HEARTBEAT' })).toEqual(
+    expect(reducer({ heartBeat: 'green', userCount: 0, scc: {} }, { type: 'SC_HEARTBEAT' })).toEqual(
       {
         userCount: 0,
         heartBeat: 'white',
+        scc: {},
       },
     );
   });
