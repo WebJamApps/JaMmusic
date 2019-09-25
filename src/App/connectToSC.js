@@ -36,5 +36,6 @@ const setupSocketCluster = (dispatch) => {
     dispatch({ type: 'ALL_TOUR', data });
   });
   dispatch({ type: 'SCC', scc });
+  return Promise.resolve(true);
 };
 export default { setupSocketCluster }; // emits when a style was updated or created
