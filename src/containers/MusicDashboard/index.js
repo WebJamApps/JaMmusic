@@ -21,13 +21,10 @@ export class MusicDashboard extends Component {
     this.createTourApi = this.createTourApi.bind(this);
   }
 
-  componentDidMount() {
-    document.title = 'Music Dashboard | Web Jam LLC';
-  }
+  componentDidMount() { document.title = 'Music Dashboard | Web Jam LLC'; }
 
   onChange(evt) {
     evt.preventDefault();
-    console.log(evt.target);// eslint-disable-line no-console
     this.setState({ [evt.target.id]: evt.target.value });
   }
 
@@ -45,11 +42,8 @@ export class MusicDashboard extends Component {
     tour.datetime = new Date(tour.date);
     const m = moment(tour.date, 'YYYY-MM-DD');
     tour.date = m.format('ll');
-    console.log(tour);// eslint-disable-line no-console
     scc.emit('newTour', { tour, token: auth.token });
     this.setState({ redirect: true });
-    // window.location.assign('/music');
-    // return (<Redirect to="/music" />);
   }
 
   createTour() {
@@ -59,8 +53,6 @@ export class MusicDashboard extends Component {
     const tour = {
       date, time, location, venue, tickets, more,
     };
-    console.log('create tour');// eslint-disable-line no-console
-    console.log(tour);// eslint-disable-line no-console
     return this.createTourApi(tour);
   }
 

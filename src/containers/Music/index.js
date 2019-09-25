@@ -12,23 +12,12 @@ import Intro from './intro';
 import mapStoreToProps from '../../redux/mapStoreToProps';
 
 export class Music extends Component {
-  constructor(props) { // eslint-disable-line no-useless-constructor
+  constructor(props) {
     super(props);
+    this.state = {};
   }
 
   componentDidMount() { document.title = 'Music | Web Jam LLC'; }
-
-  // componentDidUpdate(prevProps) {
-  //   console.log(prevProps.tour.length);//eslint-disable-line
-  //   console.log(this.props.tour.length);//eslint-disable-line
-  //   console.log(prevProps.tourUpdated);//eslint-disable-line
-  //   console.log(this.props.tourUpdated);//eslint-disable-line
-  //   if(!prevProps.tourUpdated && this.props.tourUpdated) {
-  //     this.rebuildTable = true;
-  //     this.props.dispatch({type:'TOUR_RESET'})
-  //   }
-  //   else
-  // }
 
   render() {
     const { images } = this.props;
@@ -61,8 +50,6 @@ export class Music extends Component {
 
 Music.defaultProps = { images: [] };
 Music.propTypes = {
-  // tourUpdated: PropTypes.bool.isRequired,
-  // tour: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   images: PropTypes.arrayOf(PropTypes.shape({
     url: PropTypes.string,
     title: PropTypes.string,
