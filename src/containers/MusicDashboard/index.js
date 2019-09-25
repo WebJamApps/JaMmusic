@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import moment from 'moment';
+import { withRouter, Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import mapStoreToProps from '../../redux/mapStoreToProps';
@@ -8,7 +9,11 @@ export class MusicDashboard extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      date: '', time: '', tickets: '', more: '',
+      redirect: false,
+      date: '',
+      time: '',
+      tickets: '',
+      more: '',
     };
     this.onChange = this.onChange.bind(this);
     this.createTour = this.createTour.bind(this);
@@ -42,6 +47,9 @@ export class MusicDashboard extends Component {
     tour.date = m.format('ll');
     console.log(tour);// eslint-disable-line no-console
     scc.emit('newTour', { tour, token: auth.token });
+    this.setState({ redirect: true });
+    // window.location.assign('/music');
+    // return (<Redirect to="/music" />);
   }
 
   createTour() {
@@ -58,10 +66,11 @@ export class MusicDashboard extends Component {
 
   render() {
     const {
-      date, time, buttonStyle,
+      date, time, buttonStyle, redirect,
     } = this.state;
     return (
       <div className="page-content">
+        {redirect ? <Redirect to="/music" /> : null}
         <h3 style={{ textAlign: 'center', margin: '14px', fontWeight: 'bold' }}>Music Dashboard</h3>
         <h5 style={{ textAlign: 'center', marginBottom: 0 }}>Create a New Tour</h5>
         <form style={{ marginTop: '4px', paddingLeft: '10px' }}>
@@ -147,4 +156,4 @@ export class MusicDashboard extends Component {
 }
 MusicDashboard.propTypes = { scc: PropTypes.shape({ emit: PropTypes.func }), auth: PropTypes.shape({ token: PropTypes.string }).isRequired };
 MusicDashboard.defaultProps = { scc: { emit: () => {} } };
-export default connect(mapStoreToProps)(MusicDashboard);
+export default withRouter(connect(mapStoreToProps)(MusicDashboard));
