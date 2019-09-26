@@ -151,7 +151,6 @@ module.exports = ({
     }),
     new CopyWebpackPlugin([
       { from: 'static/favicon.ico', to: 'favicon.ico' },
-      { from: 'static/tour.json', to: 'tour.json' },
       { from: 'static/imgs', to: 'static/imgs' },
     ]),
     new webpack.EnvironmentPlugin(['SOCKETCLUSTER_HOST', 'SOCKETCLUSTER_PORT', 'SOCKETCLUSTER_SECURE', 'NODE_ENV',

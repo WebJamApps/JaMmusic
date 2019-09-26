@@ -89,12 +89,11 @@ input.checkboxes-input {
 
 label {
   /* font-size: 11pt; */
-  padding-top: 20px;
+  padding-top: 25px;
   margin-bottom: 0;
-  padding-bottom: 1px;
+  padding-bottom: 0;
   display: block;
   width: 100%;
-  font-weight: bold;
 }
 
 label.checkboxes-label {
@@ -311,6 +310,8 @@ h6 {
 .elevation2 {
   box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.4);
   padding: 10px;
+  height: 500px;
+  max-height: 500px;
   max-width: 500px;
   margin: auto;
 }
@@ -698,6 +699,12 @@ button {
 
 button:hover {
   background-color: #ddffcc;
+
+}
+
+button:disabled {
+  background-color: #f2f2f2;
+  cursor: none
 }
 
 a:hover {
@@ -1129,6 +1136,7 @@ div.project, .project h4, .project p, .project a, .container h3 {
 
 .project img {
   width: 260px;
+  margin-top: 2rem;
 }
 
 .apperson img {

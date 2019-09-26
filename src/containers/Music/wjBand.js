@@ -1,8 +1,8 @@
 import React from 'react';
 
 const Wjband = () => (
-  <div className="wjBand">
-    <p style={{ textAlign: 'left' }}>
+  <div className="wjBand" style={{ margin: 'auto' }}>
+    <p style={{ textAlign: 'left', marginLeft: '10px', marginRight: '10px' }}>
 The Web Jam Band formed at the beginning of 2017,
   with a performance at a summer wedding anniversary house party, and performances at the annual Bent
     Mountain Pig Roast.

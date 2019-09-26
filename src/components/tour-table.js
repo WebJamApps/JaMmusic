@@ -11,15 +11,21 @@ import mapStoreToProps from '../redux/mapStoreToProps';
 export class TourTable extends Component {
   constructor(props) {
     super(props);
-    this.columns = [];
     this.setColumns = this.setColumns.bind(this);
     this.getMuiTheme = this.getMuiTheme.bind(this);
-    this.setColumns();
+    this.checkTourTable = this.checkTourTable.bind(this);
+    this.setColumns = this.setColumns.bind(this);
+    this.state = {
+      columns: [],
+    };
   }
 
-  // shouldComponentUpdate() {
-  //   return true;
-  // }
+  componentDidMount() { this.setColumns(); }
+
+  componentDidUpdate(prevProps) {
+    const { tourUpdated } = this.props;
+    return this.checkTourTable(prevProps.tourUpdated, tourUpdated);
+  }
 
   getMuiTheme() { // eslint-disable-line class-methods-use-this
     return createMuiTheme({
@@ -42,9 +48,10 @@ export class TourTable extends Component {
   }
 
   setColumns() {
+    const columns = [];
     const titles = ['Date', 'Time', 'Location', 'Venue', 'Tickets'];
     for (let i = 0; i < titles.length; i += 1) {
-      this.columns.push({
+      columns.push({
         name: titles[i].toLowerCase(), // eslint-disable-line security/detect-object-injection
         label: titles[i], // eslint-disable-line security/detect-object-injection
         options: {
@@ -60,9 +67,21 @@ export class TourTable extends Component {
         },
       });
     }
+    this.setState({ columns });
+  }
+
+  checkTourTable(pTupdated, nTupdated) {
+    if (!pTupdated && nTupdated) {
+      const { dispatch } = this.props;
+      dispatch({ type: 'RESET_TOUR' });
+      this.setState({ columns: [] });
+      this.setColumns();
+    }
+    return null;
   }
 
   render() {
+    const { columns } = this.state;
     const { tour } = this.props;
     return (
       <div className="tourTable">
@@ -72,7 +91,7 @@ export class TourTable extends Component {
               options={{
                 filterType: 'dropdown',
                 pagination: false,
-                responsive: 'scroll',
+                responsive: 'scrollMaxHeight',
                 filter: false,
                 download: false,
                 search: false,
@@ -81,7 +100,7 @@ export class TourTable extends Component {
                 selectableRows: 'none',
                 fixedHeader: false,
               }}
-              columns={this.columns}
+              columns={columns}
               data={tour}
               title="Tour"
             />
@@ -91,18 +110,10 @@ export class TourTable extends Component {
     );
   }
 }
-// TourTable.defaultProps = { data: { tourArr: [] } };
 TourTable.propTypes = {
+  dispatch: PropTypes.func.isRequired,
+  tourUpdated: PropTypes.bool.isRequired,
   tour: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
-  // data: PropTypes.shape({
-  //   tourArr: PropTypes.arrayOf(PropTypes.shape({
-  //     Date: PropTypes.string,
-  //     Time: PropTypes.string,
-  //     Location: PropTypes.string,
-  //     Venue: PropTypes.string,
-  //     Tickets: PropTypes.string,
-  //   })),
-  // }),
 };
 
 export default connect(mapStoreToProps)(TourTable);
