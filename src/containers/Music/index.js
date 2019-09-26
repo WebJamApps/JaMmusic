@@ -19,6 +19,26 @@ export class Music extends Component {
 
   componentDidMount() { document.title = 'Music | Web Jam LLC'; }
 
+  musicians() { // eslint-disable-line class-methods-use-this
+    return (
+      <div className="elevation3" style={{ maxWidth: '1000px', margin: 'auto' }}>
+        <section>
+          <JoshBio />
+          <hr />
+          <MariaBio />
+          <hr />
+          <Wjband />
+          <hr />
+          <EmersonBio />
+          <hr />
+          <BrianBio />
+        </section>
+        <p>{' '}</p>
+        <p>{' '}</p>
+      </div>
+    );
+  }
+
   render() {
     const { images } = this.props;
     return (
@@ -40,21 +60,7 @@ export class Music extends Component {
         <div style={{ height: '10px' }}>
           <p>{' '}</p>
         </div>
-        <div className="elevation3" style={{ maxWidth: '1000px', margin: 'auto' }}>
-          <section>
-            <JoshBio />
-            <hr />
-            <MariaBio />
-            <hr />
-            <Wjband />
-            <hr />
-            <EmersonBio />
-            <hr />
-            <BrianBio />
-          </section>
-          <p>{' '}</p>
-          <p>{' '}</p>
-        </div>
+        {this.musicians()}
       </div>
     );
   }
