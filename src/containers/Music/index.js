@@ -27,11 +27,21 @@ export class Music extends Component {
           <div id="musicSlide1">
             {images.length > 0 ? (<PicSlider data={images} />) : null}
           </div>
-        </div>
-        <div className="material-content elevation2" style={{ maxWidth: '998px', margin: 'auto' }}>
           <Intro />
-          <div className="search-table-outer" style={{ position: 'relative', overflowX: 'auto' }}><DefaultTable /></div>
-          <section className="afterTable">
+        </div>
+        <div
+          className="search-table-outer"
+          style={{
+            position: 'relative', overflowX: 'auto', maxWidth: '96%', margin: 'auto',
+          }}
+        >
+          <DefaultTable />
+        </div>
+        <div style={{ height: '10px' }}>
+          <p>{' '}</p>
+        </div>
+        <div className="elevation3" style={{ maxWidth: '1000px', margin: 'auto' }}>
+          <section>
             <JoshBio />
             <hr />
             <MariaBio />
@@ -42,6 +52,8 @@ export class Music extends Component {
             <hr />
             <BrianBio />
           </section>
+          <p>{' '}</p>
+          <p>{' '}</p>
         </div>
       </div>
     );
