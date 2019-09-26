@@ -56,6 +56,37 @@ export class MusicDashboard extends Component {
     return this.createTourApi(tour);
   }
 
+  makeInput(type, name, isRequired, onChange, value) { // eslint-disable-line class-methods-use-this
+    return (
+      <label htmlFor={name} style={{ marginTop: '14px', paddingTop: 0 }}>
+        {isRequired ? '* ' : ''}
+        {name[0].toUpperCase() + name.slice(1)}
+        <br />
+        <input id={name} type={type} name={name} onChange={onChange} required={isRequired} value={value} />
+      </label>
+    );
+  }
+
+  newTourForm(date, time, buttonStyle) {
+    const {
+      venue, location, tickets, more,
+    } = this.state;
+    return (
+      <form id="new-tour" style={{ marginTop: '4px', paddingLeft: '10px' }}>
+        {this.makeInput('date', 'date', true, this.onChange, date)}
+        {this.makeInput('text', 'time', true, this.onChange, time)}
+        {this.makeInput('text', 'venue', true, this.onChange, venue)}
+        {this.makeInput('text', 'location', true, this.onChange, location)}
+        {this.makeInput('text', 'tickets', false, this.onChange, tickets)}
+        {this.makeInput('text', 'more', false, this.onChange, more)}
+        <div style={{ textAlign: 'right', marginTop: '10px', maxWidth: '85%' }}>
+          <span style={{ fontSize: '16px', marginRight: '38%', fontFamily: 'Habibi' }}><i>* Required</i></span>
+          <button style={buttonStyle} disabled={this.validateForm()} type="button" onClick={this.createTour}>Create Tour</button>
+        </div>
+      </form>
+    );
+  }
+
   render() {
     const {
       date, time, buttonStyle, redirect,
@@ -65,80 +96,7 @@ export class MusicDashboard extends Component {
         {redirect ? <Redirect to="/music" /> : null}
         <h3 style={{ textAlign: 'center', margin: '14px', fontWeight: 'bold' }}>Music Dashboard</h3>
         <h5 style={{ textAlign: 'center', marginBottom: 0 }}>Create a New Tour</h5>
-        <form style={{ marginTop: '4px', paddingLeft: '10px' }}>
-          <label htmlFor="date" style={{ marginTop: 0, paddingTop: 0 }}>
-            * Date
-            <br />
-            <input
-              id="date"
-              type="date"
-              name="date"
-              onChange={this.onChange}
-              value={date}
-              required
-            />
-          </label>
-          <label htmlFor="time" style={{ marginTop: '14px', paddingTop: 0 }}>
-            * Time
-            <br />
-            <input
-              id="time"
-              type="text"
-              name="time"
-              onChange={this.onChange}
-              value={time}
-              required
-            />
-          </label>
-          <label htmlFor="time" style={{ marginTop: '14px', paddingTop: 0 }}>
-            * Location
-            <br />
-            <input
-              id="location"
-              type="text"
-              name="location"
-              onChange={this.onChange}
-              required
-            />
-          </label>
-          <label htmlFor="time" style={{ marginTop: '14px', paddingTop: 0 }}>
-            * Venue
-            <br />
-            <input
-              id="venue"
-              type="text"
-              name="venue"
-              onChange={(evt) => { this.setState({ venue: evt.target.value }); }}
-              required
-            />
-          </label>
-          <label htmlFor="time" style={{ marginTop: '14px', paddingTop: 0 }}>
-            Tickets
-            <br />
-            <input
-              id="more"
-              type="text"
-              name="more"
-              onChange={(evt) => { this.setState({ tickets: evt.target.value }); }}
-              required
-            />
-          </label>
-          <label htmlFor="time" style={{ marginTop: '14px', paddingTop: 0 }}>
-            More Details
-            <br />
-            <input
-              id="more"
-              type="text"
-              name="more"
-              onChange={(evt) => { this.setState({ more: evt.target.value }); }}
-              required
-            />
-          </label>
-          <div style={{ textAlign: 'right', marginTop: '10px', maxWidth: '85%' }}>
-            <span style={{ fontSize: '16px', marginRight: '38%', fontFamily: 'Habibi' }}><i>* Required</i></span>
-            <button style={buttonStyle} disabled={this.validateForm()} type="button" onClick={this.createTour}>Create Tour</button>
-          </div>
-        </form>
+        {this.newTourForm(date, time, buttonStyle)}
         <p>&nbsp;</p>
         <p>&nbsp;</p>
         <p>&nbsp;</p>
