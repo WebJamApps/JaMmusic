@@ -133,28 +133,6 @@ export class AppTemplate extends Component {
     );
   }
 
-  // continueMenuItem(menu, index, location, auth) {
-  //   if (location.pathname === '/shop' && (menu.link === '/shop' || menu.link === '/')) {
-  //     return this.makeMenuLink(menu, index);
-  //   }
-  //   if (menu.type === 'googleLogin' && !auth.isAuthenticated) return this.googleButtons('login', index);
-  //   if (menu.type === 'googleLogout' && auth.isAuthenticated) return this.googleButtons('logout', index);
-  //   return null;
-  // }
-
-  // menuItem(menu, index) {
-  //   const { location, auth } = this.props;
-  //   if (location.pathname.includes('/music') && (menu.link.includes('/music') || menu.name === 'Web Jam LLC')) {
-  //     if ((menu.type === 'link' && ((menu.auth && auth.isAuthenticated && auth.user.userType === 'Developer') || !menu.auth))) {
-  //       return this.makeMenuLink(menu, index);
-  //     }
-  //   }
-  //   if (location.pathname === '/' && (menu.link === '/shop' || menu.link === '/music' || menu.link === '/')) {
-  //     return this.makeMenuLink(menu, index);
-  //   }
-  //   return this.continueMenuItem(menu, index, location, auth);
-  // }
-
   navLinks() {
     const { userCount, heartBeat } = this.props;
     return (
