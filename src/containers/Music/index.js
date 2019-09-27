@@ -19,6 +19,26 @@ export class Music extends Component {
 
   componentDidMount() { document.title = 'Music | Web Jam LLC'; }
 
+  musicians() { // eslint-disable-line class-methods-use-this
+    return (
+      <div className="elevation3" style={{ maxWidth: '1000px', margin: 'auto' }}>
+        <section>
+          <JoshBio />
+          <hr />
+          <MariaBio />
+          <hr />
+          <Wjband />
+          <hr />
+          <EmersonBio />
+          <hr />
+          <BrianBio />
+        </section>
+        <p>{' '}</p>
+        <p>{' '}</p>
+      </div>
+    );
+  }
+
   render() {
     const { images } = this.props;
     return (
@@ -27,22 +47,20 @@ export class Music extends Component {
           <div id="musicSlide1">
             {images.length > 0 ? (<PicSlider data={images} />) : null}
           </div>
-        </div>
-        <div className="material-content elevation2" style={{ maxWidth: '998px', margin: 'auto' }}>
           <Intro />
-          <div className="search-table-outer" style={{ position: 'relative', overflowX: 'auto' }}><DefaultTable /></div>
-          <section className="afterTable">
-            <JoshBio />
-            <hr />
-            <MariaBio />
-            <hr />
-            <Wjband />
-            <hr />
-            <EmersonBio />
-            <hr />
-            <BrianBio />
-          </section>
         </div>
+        <div
+          className="search-table-outer"
+          style={{
+            position: 'relative', overflowX: 'auto', maxWidth: '96%', margin: 'auto',
+          }}
+        >
+          <DefaultTable />
+        </div>
+        <div style={{ height: '10px' }}>
+          <p>{' '}</p>
+        </div>
+        {this.musicians()}
       </div>
     );
   }

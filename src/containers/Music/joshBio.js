@@ -3,7 +3,8 @@ import Instruments from './instruments';
 
 const JoshBio = () => (
   <div className="joshBio">
-    <h4 id="joshbio" style={{ marginBottom: '4px' }}>Josh Sherman</h4>
+    <div style={{ height: '10px' }}><p>{' '}</p></div>
+    <h4 id="joshbio" style={{ marginBottom: '4px', marginTop: '8px' }}>Josh Sherman</h4>
     <div>
       <img className="alignnone size-full wp-image-49" src="/static/imgs/josh01.jpg" alt="josh01" width="288px" />
     </div>
@@ -28,6 +29,7 @@ const JoshBio = () => (
   And whenever the harmful spirit from God was upon Saul, David took the lyre
       and played it with his hand. So Saul was refreshed and was well, and the harmful spirit
       departed from him.
+        {' '}
         <strong>1 Samuel 16:23</strong>
       </p>
     </blockquote>
