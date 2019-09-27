@@ -7,7 +7,7 @@ import { TourTable } from '../../src/components/tour-table';
 function setup() {
   const props = {};
   const tour = [];
-  const wrapper = shallow(<TourTable tour={tour} />);
+  const wrapper = shallow(<TourTable tour={tour} dispatch={() => {}} tourUpdated={false} />);
   return { wrapper, props };
 }
 
