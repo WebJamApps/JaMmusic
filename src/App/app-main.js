@@ -25,6 +25,13 @@ export class AppTemplate extends Component {
     this.appMainUtils = appMainUtils;
   }
 
+  componentDidMount() {
+    if (document.querySelector('.page-content').scrollHeight <= '666') {
+      document.querySelector('.footer').classList.add('noContent');
+      document.querySelector('.content-block').classList.add('noContent');
+    }
+  }
+
   get currentStyles() {
     let result = {};
     this.style = 'wj';
@@ -188,6 +195,7 @@ export class AppTemplate extends Component {
   render() {
     const { menuOpen } = this.state;
     const style = `${this.currentStyles.sidebarClass} ${menuOpen ? 'open' : 'close'}`;
+
     return (
       <div className="page-host">
         <div tabIndex={0} role="button" id="sidebar" onClick={this.close} onKeyPress={this.handleKeyPress} className={`${style} drawer-container`}>
