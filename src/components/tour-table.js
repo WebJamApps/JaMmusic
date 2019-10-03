@@ -76,8 +76,9 @@ export class TourTable extends Component {
       dispatch({ type: 'RESET_TOUR' });
       this.setState({ columns: [] });
       this.setColumns();
+      return Promise.resolve(true);
     }
-    return null;
+    return Promise.resolve(false);
   }
 
   render() {

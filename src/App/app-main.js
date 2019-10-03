@@ -7,10 +7,12 @@ import authUtils from './authUtils';
 import mapStoreToProps from '../redux/mapStoreToAllProps';
 import appMainUtils from './appMainUtils';
 import Footer from './Footer';
+import menuUtils from './menuUtils';
 
 export class AppTemplate extends Component {
   constructor(props) {
     super(props);
+    this.menuUtils = menuUtils;
     this.children = props.children;
     this.state = { menuOpen: false };// eslint-disable-line
     this.close = this.close.bind(this);
@@ -138,28 +140,6 @@ export class AppTemplate extends Component {
     );
   }
 
-  continueMenuItem(menu, index, location, auth) {
-    if (location.pathname === '/shop' && (menu.link === '/shop' || menu.link === '/')) {
-      return this.makeMenuLink(menu, index);
-    }
-    if (menu.type === 'googleLogin' && !auth.isAuthenticated) return this.googleButtons('login', index);
-    if (menu.type === 'googleLogout' && auth.isAuthenticated) return this.googleButtons('logout', index);
-    return null;
-  }
-
-  menuItem(menu, index) {
-    const { location, auth } = this.props;
-    if (location.pathname.includes('/music') && (menu.link.includes('/music') || menu.name === 'Web Jam LLC')) {
-      if ((menu.type === 'link' && ((menu.auth && auth.isAuthenticated && auth.user.userType === 'Developer') || !menu.auth))) {
-        return this.makeMenuLink(menu, index);
-      }
-    }
-    if (location.pathname === '/' && (menu.link === '/shop' || menu.link === '/music' || menu.link === '/')) {
-      return this.makeMenuLink(menu, index);
-    }
-    return this.continueMenuItem(menu, index, location, auth);
-  }
-
   navLinks() {
     const { userCount, heartBeat } = this.props;
     return (
@@ -172,7 +152,7 @@ export class AppTemplate extends Component {
         >
           Music
         </div>
-        {this.menus.map((menu, index) => (this.menuItem(menu, index)))}
+        {this.menus.map((menu, index) => (this.menuUtils.menuItem(menu, index, this)))}
         <p style={{ margin: 0, padding: 0, fontSize: '6pt' }}>&nbsp;</p>
         {this.appMainUtils.activeUsers(heartBeat, userCount)}
       </div>
