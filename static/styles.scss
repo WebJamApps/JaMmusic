@@ -900,6 +900,10 @@ div.fof {
     background-color: rgba(42, 34, 42, 0.67);
   }
 
+  div#contentBlock.content-block.noContent {
+    height: auto;
+  }
+
   .content-block {
     width: 100vw !important;
     margin: 0 auto;
@@ -1151,4 +1155,8 @@ div.project, .project h4, .project p, .project a, .container h3 {
 p.spacer {
   font-size: 6pt;
   margin-bottom: 0;
+}
+
+.noContent.footer {
+  margin-top: calc(5% + 650px) !important;
 }

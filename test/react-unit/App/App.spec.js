@@ -15,4 +15,11 @@ describe('App component', () => {
     expect(wrapper2.find('div#App').exists()).toBe(true);
     done();
   });
+  it('renders the music dashboard route', (done) => {
+    const songs = [{}];
+    const images = [{}];
+    const wrapper2 = shallow(<App dispatch={dp} songs={songs} images={images} auth={{ isAuthenticated: true, user: { userType: 'Developer' } }} />);
+    expect(wrapper2.find('div#App').exists()).toBe(true);
+    done();
+  });
 });

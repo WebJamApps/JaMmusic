@@ -30,7 +30,13 @@ const footerLinks = () => {
 };
 
 const Footer = () => (
-  <div id="wjfooter" className="footer" style={{ backgroundColor: '#565656', paddingTop: '20px', paddingBottom: '40px' }}>
+  <div
+    id="wjfooter"
+    className="footer"
+    style={{
+      backgroundColor: '#565656', paddingTop: '20px', paddingBottom: '20px', marginTop: 'calc(5% + 60px)', bottom: '0',
+    }}
+  >
     { footerLinks() }
   </div>
 );
