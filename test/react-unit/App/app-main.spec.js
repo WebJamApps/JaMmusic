@@ -11,6 +11,7 @@ function setup() {
 
 describe('app-main component test setup', () => {
   it('renders the component', () => {
+    document.getElementsByClassName('.page-content').scrollHeight = '667';
     const { wrapper } = setup();
     expect(wrapper.find('div.page-host').exists()).toBe(true);
   });
