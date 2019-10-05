@@ -39,7 +39,8 @@
     "snyk-protect": "snyk protect",
     "eslint:fix": "./node_modules/eslint/bin/eslint.js --fix .",
     "postinstall": "yarn start build",
-    "test:stylelint": "stylelint \"static/**/*.scss\""
+    "test:stylelint": "stylelint \"static/**/*.scss\"",
+    "prepublish": "npm run snyk-protect"
   },
   "dependencies": {
     "@babel/core": "latest",
@@ -90,7 +91,7 @@
     "regenerator-runtime": "latest",
     "sass-loader": "latest",
     "slick-carousel": "latest",
-    "snyk": "latest",
+    "snyk": "^1.231.0",
     "socketcluster-client": "latest",
     "style-loader": "latest",
     "stylelint-config-recommended-scss": "latest",
