@@ -751,6 +751,10 @@ div.fof {
   font-weight: normal;
 }
 
+div#wjfooter.footer {
+  margin-top: calc(5% + 60px) !important;
+}
+
 .footerIcon:hover {
   color: white;
 }
@@ -1157,6 +1161,6 @@ p.spacer {
   margin-bottom: 0;
 }
 
-.noContent.footer {
+div#wjfooter.noContent.footer {
   margin-top: calc(5% + 650px) !important;
 }
