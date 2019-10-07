@@ -1,6 +1,7 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import { AppTemplate } from '../../../src/App/app-main';
+import authUtils from '../../../src/App/authUtils';
 
 const dFunc = () => {};
 function setup() {
@@ -14,22 +15,32 @@ describe('app-main component test setup', () => {
     const { wrapper } = setup();
     expect(wrapper.find('div.page-host').exists()).toBe(true);
   });
-  // it('handles response from google login', async () => {
-  //   document.body.innerHTML = '<button class="googleLogin"/><button class="googleLogout"/>';
-  //   const aT = new AppTemplate({ dispatch: () => Promise.resolve(true) location={{ pathname: '/' }});
-  //   const result = await aT.responseGoogleLogin({ code: 'somethingHere' });
-  //   expect(result).toBe(true);
-  // });
-  // it('handles response from google logout', async () => {
-  //   document.body.innerHTML = '<button class="googleLogin"/><button class="googleLogout"/>';
-  //   const aT = new AppTemplate({ dispatch: () => Promise.resolve(true) });
-  //   Object.defineProperty(window.location, 'reload', {
-  //     configurable: true,
-  //   });
-  //   window.location.reload = jest.fn();
-  //   await aT.responseGoogleLogout(true);
-  //   expect(window.location.reload).toHaveBeenCalled();
-  // });
+  it('rerenders the component when menuOpen state changes', () => {
+    const { wrapper } = setup();
+    wrapper.setState({ menuOpen: true });
+    expect(wrapper.find('div.open').length).toBe(1);
+  });
+  it('handles response from google login', (done) => {
+    authUtils.responseGoogleLogin = jest.fn(() => true);
+    const wrapper2 = shallow(<AppTemplate dispatch={dFunc} location={{ pathname: '/music' }}><div /></AppTemplate>);
+    const result = wrapper2.instance().responseGoogleLogin({});
+    expect(result).toBe(true);
+    done();
+  });
+  it('handles response from google logout', (done) => {
+    authUtils.responseGoogleLogout = jest.fn(() => true);
+    const wrapper2 = shallow(<AppTemplate dispatch={dFunc} location={{ pathname: '/music' }}><div /></AppTemplate>);
+    const result = wrapper2.instance().responseGoogleLogout({});
+    expect(result).toBe(true);
+    done();
+  });
+  it('renders the logout button', (done) => {
+    const { wrapper } = setup();
+    const logoutButton = wrapper.instance().googleButtons('logout', 'logout');
+    const rLogout = shallow(logoutButton);
+    expect(rLogout.find('div.googleLogout').length).toBe(1);
+    done();
+  });
   it('closes the menu without navigating away from the react app', (done) => {
     document.body.innerHTML = '<button class="googleLogin"/><button class="googleLogout"/>';
     const aT = new AppTemplate({ dispatch: () => Promise.resolve(true) });
@@ -38,15 +49,6 @@ describe('app-main component test setup', () => {
     expect(result).toBe(true);
     done();
   });
-  // it('closes the menu and navigates away from the react app', (done) => {
-  //   document.body.innerHTML = '<button class="googleLogin"/><button class="googleLogout"/>';
-  //   const aT = new AppTemplate({ dispatch: () => Promise.resolve(true) });
-  //   aT.setState = () => {};
-  //   aT.changeNav = () => true;
-  //   const result = aT.close({ target: { classList: { contains() { return true; } } } });
-  //   expect(result).toBe(true);
-  //   done();
-  // });
   it('closes the menu and logs in to google', (done) => {
     document.body.innerHTML = '<button class="googleLogin"/><button class="googleLogout"/>';
     const aT = new AppTemplate({ dispatch: () => Promise.resolve(true) });
