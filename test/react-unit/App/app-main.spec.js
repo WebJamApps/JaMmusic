@@ -7,7 +7,6 @@ const dFunc = () => {};
 function setup() {
   const props = { children: '<div></div>' };
   document.body.innerHTML = '<div class="page-content"></div>';
-  document.getElementsByClassName('.page-content').scrollHeight = '667';
   const wrapper = shallow(<AppTemplate dispatch={dFunc} location={{ pathname: '/' }}><div /></AppTemplate>);
   return { wrapper, props };
 }

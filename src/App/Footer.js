@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
 const footerLinks = () => {
   const color = '#c09580';
@@ -30,26 +29,16 @@ const footerLinks = () => {
   );
 };
 
-const Footer = (props) => {
-  const { noContent } = props;
-  return (
-    <div
-      id="wjfooter"
-      className={`${noContent} footer`}
-      style={{
-        backgroundColor: '#565656', paddingTop: '20px', paddingBottom: '20px', bottom: '0',
-      }}
-    >
-      { footerLinks() }
-    </div>
-  );
-};
-Footer.propTypes = {
-  noContent: PropTypes.string,
-};
-
-Footer.defaultProps = {
-  noContent: '',
-};
+const Footer = () => (
+  <div
+    id="wjfooter"
+    className="footer"
+    style={{
+      backgroundColor: '#565656', paddingTop: '20px', paddingBottom: '20px', bottom: '0',
+    }}
+  >
+    { footerLinks() }
+  </div>
+);
 
 export default Footer;

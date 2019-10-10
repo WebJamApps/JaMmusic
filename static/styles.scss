@@ -751,10 +751,6 @@ div.fof {
   font-weight: normal;
 }
 
-div#wjfooter.footer {
-  margin-top: calc(5% + 60px) !important;
-}
-
 .footerIcon:hover {
   color: white;
 }
@@ -902,10 +898,6 @@ div#wjfooter.footer {
     z-index: 100 !important;
     cursor: pointer;
     background-color: rgba(42, 34, 42, 0.67);
-  }
-
-  div#contentBlock.content-block.noContent {
-    height: auto;
   }
 
   .content-block {
@@ -1159,8 +1151,4 @@ div.project, .project h4, .project p, .project a, .container h3 {
 p.spacer {
   font-size: 6pt;
   margin-bottom: 0;
-}
-
-div#wjfooter.noContent.footer {
-  margin-top: calc(5% + 650px) !important;
 }

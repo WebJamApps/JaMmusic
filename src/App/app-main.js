@@ -14,7 +14,7 @@ export class AppTemplate extends Component {
     super(props);
     this.menuUtils = menuUtils;
     this.children = props.children;
-    this.state = { menuOpen: false, noContent: '' };// eslint-disable-line
+    this.state = { menuOpen: false };// eslint-disable-line
     this.close = this.close.bind(this);
     this.handleKeyPress = this.handleKeyPress.bind(this);
     this.handleKeyMenu = this.handleKeyMenu.bind(this);
@@ -25,12 +25,6 @@ export class AppTemplate extends Component {
     this.googleButtons = this.googleButtons.bind(this);
     this.authUtils = authUtils;
     this.appMainUtils = appMainUtils;
-  }
-
-  componentDidMount() {
-    if (document.querySelector('.page-content').scrollHeight <= '666') {
-      this.setState({ noContent: 'noContent' });
-    }
   }
 
   get currentStyles() {
@@ -172,7 +166,7 @@ export class AppTemplate extends Component {
   }
 
   render() {
-    const { menuOpen, noContent } = this.state;
+    const { menuOpen } = this.state;
     const style = `${this.currentStyles.sidebarClass} ${menuOpen ? 'open' : 'close'}`;
 
     return (
@@ -192,9 +186,9 @@ export class AppTemplate extends Component {
           <div className="mainPanel">
             <div className="swipe-area" />
             {this.headerSection()}
-            <div style={{ width: 'auto' }} id="contentBlock" className={`${noContent} content-block`}>
+            <div style={{ width: 'auto' }} id="contentBlock" className="content-block">
               { this.children }
-              <Footer noContent={noContent} />
+              <Footer />
             </div>
           </div>
         </div>
