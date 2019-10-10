@@ -6,6 +6,7 @@ import authUtils from '../../../src/App/authUtils';
 const dFunc = () => {};
 function setup() {
   const props = { children: '<div></div>' };
+  document.body.innerHTML = '<div class="page-content"></div>';
   const wrapper = shallow(<AppTemplate dispatch={dFunc} location={{ pathname: '/' }}><div /></AppTemplate>);
   return { wrapper, props };
 }
