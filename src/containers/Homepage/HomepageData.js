@@ -42,7 +42,7 @@ const Faqs = () => (
         <span>A: </span>
           To assist small businesses by refactoring their existing
           websites to be mobile-friendly,
-          providing new online services, empowering business owner, and training staff to use these new services
+          providing new online services, empowering business owners, and training staff to use these new services
           effectively.
       </p>
     </div>
