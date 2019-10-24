@@ -9,7 +9,7 @@ export default class inquiry extends Component {
       comments: '',
       location: '',
       email: '',
-      customerName: '',
+      customername: '',
     };
     this.onChange = this.onChange.bind(this);
     this.createEmail = this.createEmail.bind(this);
@@ -26,9 +26,15 @@ export default class inquiry extends Component {
 
   validateForm() {
     const {
-      customerName, email, location, comments,
+      customername, email, location, comments,
     } = this.state;
-    if (customerName && email && location && comments !== '') return false;
+    let validEmail = false;
+    // eslint-disable-next-line no-useless-escape
+    const regEx = RegExp('^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$');
+    if (regEx.test(email) && email.includes('.')) {
+      validEmail = true;
+    }
+    if (customername && email && location && comments !== '' && validEmail) return false;
     return true;
   }
 
@@ -40,30 +46,30 @@ export default class inquiry extends Component {
 
   createEmail() {
     const {
-      customerName, email, location, comments,
+      customername, email, location, comments,
     } = this.state;
     const emailForm = {
-      customerName, email, location, comments,
+      customername, email, location, comments,
     };
     return this.createEmailApi(emailForm);
   }
 
   // eslint-disable-next-line class-methods-use-this
-  makeInput(type, customerName, isRequired, onChange, value) {
+  makeInput(type, name, isRequired, onChange, value) {
     return (
-      <label htmlFor={customerName} style={{ marginTop: '14px', paddingTop: 0 }}>
+      <label htmlFor={name} style={{ marginTop: '14px', paddingTop: 0 }}>
         {isRequired ? '* ' : ''}
-        {customerName[0].toUpperCase() + customerName.slice(1)}
+        {name[0].toUpperCase() + name.slice(1)}
         <br />
-        <input id={customerName} type={type} customerName={customerName} onChange={onChange} required={isRequired} value={value} />
+        <input id={name} type={type} name={name} onChange={onChange} required={isRequired} value={value} />
       </label>
     );
   }
 
-  newContactForm(customerName, email, location, comments, buttonStyle) {
+  newContactForm(customername, email, location, comments, buttonStyle) {
     return (
       <form id="new-contact" style={{ marginTop: '4px', paddingLeft: '10px' }}>
-        {this.makeInput('text', 'name', true, this.onChange, customerName)}
+        {this.makeInput('text', 'customername', true, this.onChange, customername)}
         {this.makeInput('email', 'email', true, this.onChange, email)}
         {this.makeInput('text', 'location', true, this.onChange, location)}
         {this.makeInput('textarea', 'comments', true, this.onChange, comments)}
@@ -77,13 +83,13 @@ export default class inquiry extends Component {
 
   render() {
     const {
-      redirect, customerName, email, location, comments, buttonStyle,
+      redirect, customername, email, location, comments, buttonStyle,
     } = this.state;
     return (
       <div className="page-content">
         {redirect ? <Redirect to="/" /> : null}
         <h3 style={{ textAlign: 'center', margin: '14px', fontWeight: 'bold' }}>Contact Us</h3>
-        {this.newContactForm(customerName, email, location, comments, buttonStyle)}
+        {this.newContactForm(customername, email, location, comments, buttonStyle)}
         <p>&nbsp;</p>
         <p>&nbsp;</p>
         <p>&nbsp;</p>
