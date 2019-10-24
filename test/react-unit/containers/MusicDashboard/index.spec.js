@@ -1,6 +1,6 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import { MemoryRedirect } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 import { MusicDashboard } from '../../../../src/containers/MusicDashboard';
 
 describe('Dashboard Container', () => {
@@ -36,8 +36,30 @@ describe('Dashboard Container', () => {
     wrapper.instance().createTourApi({ date: '2019-10-10' });
   });
   it('redirects to /music', (done) => {
-    const result = wrapper.instance(<MemoryRedirect to="/music" />);
-    expect(result).toBe(true);
+    wrapper.setState({ redirect: true });
+    expect(wrapper.find(Redirect).length).toBe(1);
     done();
+  });
+  it('returns the validation', () => {
+    wrapper.setState({
+      date: '10-24-2019',
+      time: '10:00',
+      location: 'A place',
+      venue: 'Venue',
+    });
+    const result = wrapper.instance().validateForm();
+    expect(result).toBe(false);
+  });
+  it('creates the tour', () => {
+    wrapper.setState({
+      date: '10-24-2019',
+      time: '10:00',
+      location: 'A place',
+      venue: 'Venue',
+      tickets: '1',
+      more: 'yes',
+    });
+    const result = wrapper.instance().createTour();
+    expect(result).toBe(true);
   });
 });
