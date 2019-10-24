@@ -17,6 +17,7 @@ const state = {
     playing: false, shown: false, isShuffleOn: false, displayCopier: 'none', displayCopyMessage: false, onePlayerMode: false,
   },
 };
+
 export class MusicPlayer extends Component {
   constructor(props) {
     super(props);
@@ -68,11 +69,12 @@ export class MusicPlayer extends Component {
       pageTitle += ` & ${type} Songs`;
     } else {
       songsState = songsState.filter((song) => song.category !== lcType);
-      pageTitle = pageTitle.replace(` & ${type}`, '');
+       pageTitle = pageTitle.replace(` & ${type}`, '');
     }
     songsState = this.setIndex(songsState, lcType);
     this.setState({
       player: { ...player, isShuffleOn: false },
+      player: { ...player },
       pageTitle,
       songsState,
       [typeInState]: typeState === 'off' ? 'on' : 'off',
@@ -244,6 +246,7 @@ export class MusicPlayer extends Component {
     return (
       <div className="container-fluid">
         {this.pageH4(pageTitle)}
+
         <div id="player" className="mb-2 row justify-content-md-center">
           <section id="playSection" className="col-12 mt-2 mr-0 col-md-7" style={{ display: 'inline', textAlign: 'center', marginBottom: '0' }}>
             {song !== null && song !== undefined && song.url !== undefined ? this.reactPlayer() : null}
