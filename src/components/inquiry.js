@@ -72,7 +72,11 @@ export default class inquiry extends Component {
         {this.makeInput('text', 'customername', true, this.onChange, customername)}
         {this.makeInput('email', 'email', true, this.onChange, email)}
         {this.makeInput('text', 'location', true, this.onChange, location)}
-        {this.makeInput('textarea', 'comments', true, this.onChange, comments)}
+        <label htmlFor="comments">
+          * Comments
+          <br />
+          <textarea style={{ minWidth: '3in', paddingLeft: '5px' }} value={comments} onChange={this.onChange} />
+        </label>
         <div style={{ textAlign: 'right', marginTop: '10px', maxWidth: '85%' }}>
           <span style={{ fontSize: '16px', marginRight: '38%', fontFamily: 'Habibi' }}><i>* Required</i></span>
           <button style={buttonStyle} disabled={this.validateForm()} type="button" onClick={this.createEmail}>Send</button>
