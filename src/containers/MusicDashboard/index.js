@@ -4,7 +4,7 @@ import { withRouter, Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import mapStoreToProps from '../../redux/mapStoreToProps';
-
+ 
 export class MusicDashboard extends Component {
   constructor(props) {
     super(props);
