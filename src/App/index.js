@@ -16,6 +16,7 @@ import connectToSC from './connectToSC';
 import mapStoreToProps from '../redux/mapStoreToProps';
 import getSongs from './songsActions';
 import getImages from './imageActions';
+// import Tour from "../containers/tour" 
 
 export class App extends Component {
   constructor(props) {
@@ -40,11 +41,15 @@ export class App extends Component {
           <AppMain id="homepage">
             <Switch>
               <Route exact path="/" component={HomePage} />
+              {/* <Route exact path="/tour" component={Tour}/> */}
               <Route exact path="/music" component={DefaultMusic} />
               <Route path="/music/buymusic" component={BuyMusic} />
               <Route path="/music/originals" component={DefaultOriginals} />
               {auth.isAuthenticated && auth.user.userType === 'Developer'
                 ? <Route path="/music/dashboard" component={DefaultMusicDashboard} /> : null}
+                
+                
+                <Route path="/music/dashboard" component={DefaultMusicDashboard} /> 
               <Route path="/shop" component={ShopMain} />
               <Route component={AppFourOhFour} />
             </Switch>

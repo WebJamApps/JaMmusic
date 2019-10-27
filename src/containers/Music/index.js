@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import PicSlider from '../../components/pic-slider';
@@ -9,7 +9,8 @@ import EmersonBio from './emersonBio';
 import BrianBio from './brianBio';
 import Wjband from './wjBand';
 import Intro from './intro';
-import mapStoreToProps from '../../redux/mapStoreToProps';
+ import mapStoreToProps from '../../redux/mapStoreToProps';
+ // import MusicDashboard from '../MusicDashboard/index'; 
 
 export class Music extends Component {
   constructor(props) {
@@ -55,12 +56,13 @@ export class Music extends Component {
             position: 'relative', overflowX: 'auto', maxWidth: '96%', margin: 'auto',
           }}
         >
-          <DefaultTable />
+        {/* <DefaultTable /> */}
         </div>
         <div style={{ height: '10px' }}>
           <p>{' '}</p>
         </div>
         {this.musicians()}
+        {/* <MusicDashboard /> */}
       </div>
     );
   }
