@@ -130,8 +130,6 @@ export class MusicDashboard extends Component {
         <h3 style={{ textAlign: 'center', margin: '14px', fontWeight: 'bold' }}>Music Dashboard</h3>
         <h5 style={{ textAlign: 'center', marginBottom: 0 }}>Create a New Tour</h5>
         {this.newTourForm(date, time, buttonStyle)}
-        
-       
       </div>
     );
   }

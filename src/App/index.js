@@ -41,7 +41,6 @@ export class App extends Component {
           <AppMain id="homepage">
             <Switch>
               <Route exact path="/" component={HomePage} />
-              {/* <Route exact path="/tour" component={Tour}/> */}
               <Route exact path="/music" component={DefaultMusic} />
               <Route path="/music/buymusic" component={BuyMusic} />
               <Route path="/music/originals" component={DefaultOriginals} />
