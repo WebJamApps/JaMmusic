@@ -7,26 +7,38 @@ export default class inquiry extends Component {
     this.state = {
       redirect: false,
       comments: '',
-      location: '',
+      states: '',
       email: '',
       customername: '',
     };
     this.onChange = this.onChange.bind(this);
+    this.handleChange = this.handleChange.bind(this);
     this.createEmail = this.createEmail.bind(this);
     this.validateForm = this.validateForm.bind(this);
     this.createEmailApi = this.createEmailApi.bind(this);
+    this.states = ['Alabama', 'Alaska', 'American Samoa', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware',
+      'District of Columbia', 'Federated States of Micronesia', 'Florida', 'Georgia', 'Guam', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa',
+      'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Marshall Islands', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri',
+      'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota',
+      'Northern Mariana Islands', 'Ohio', 'Oklahoma', 'Oregon', 'Palau', 'Pennsylvania', 'Puerto Rico', 'Rhode Island', 'South Carolina',
+      'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virgin Island', 'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'];
+    this.states.sort();
   }
 
   // componentDidMount() { document.title = 'Contact Us | Web Jam LLC'; }
 
   onChange(evt) {
     evt.preventDefault();
-    this.setState({ [evt.target.id]: evt.target.value });
+    this.setState({ [evt.target.id]: evt.target.value, states: evt.target.value });
+  }
+
+  handleChange(event) {
+    this.setState({ comments: event.target.value });
   }
 
   validateForm() {
     const {
-      customername, email, location, comments,
+      customername, email, states, comments,
     } = this.state;
     let validEmail = false;
     // eslint-disable-next-line no-useless-escape
@@ -34,7 +46,7 @@ export default class inquiry extends Component {
     if (regEx.test(email) && email.includes('.')) {
       validEmail = true;
     }
-    if (customername && email && location && comments !== '' && validEmail) return false;
+    if (customername && email && states && comments !== '' && validEmail) return false;
     return true;
   }
 
@@ -46,10 +58,10 @@ export default class inquiry extends Component {
 
   createEmail() {
     const {
-      customername, email, location, comments,
+      customername, email, states, comments,
     } = this.state;
     const emailForm = {
-      customername, email, location, comments,
+      customername, email, states, comments,
     };
     return this.createEmailApi(emailForm);
   }
@@ -66,16 +78,24 @@ export default class inquiry extends Component {
     );
   }
 
-  newContactForm(customername, email, location, comments, buttonStyle) {
+  newContactForm(customername, email, states, comments, buttonStyle) {
     return (
       <form id="new-contact" style={{ marginTop: '4px', paddingLeft: '10px' }}>
         {this.makeInput('text', 'customername', true, this.onChange, customername)}
         {this.makeInput('email', 'email', true, this.onChange, email)}
-        {this.makeInput('text', 'location', true, this.onChange, location)}
+        <label htmlFor="state">
+          * State
+          <br />
+          <select value={states} onChange={this.onChange}>
+            {
+              this.states.map((state) => <option id={states} key={state} value={state}>{state}</option>)
+            }
+          </select>
+        </label>
         <label htmlFor="comments">
           * Comments
           <br />
-          <textarea style={{ minWidth: '3in', paddingLeft: '5px' }} value={comments} onChange={this.onChange} />
+          <textarea style={{ minWidth: '3in', paddingLeft: '5px' }} value={comments} onChange={this.handleChange} />
         </label>
         <div style={{ textAlign: 'right', marginTop: '10px', maxWidth: '85%' }}>
           <span style={{ fontSize: '16px', marginRight: '38%', fontFamily: 'Habibi' }}><i>* Required</i></span>
@@ -87,13 +107,13 @@ export default class inquiry extends Component {
 
   render() {
     const {
-      redirect, customername, email, location, comments, buttonStyle,
+      redirect, customername, email, states, comments, buttonStyle,
     } = this.state;
     return (
       <div className="page-content">
         {redirect ? <Redirect to="/" /> : null}
         <h3 style={{ textAlign: 'center', margin: '14px', fontWeight: 'bold' }}>Contact Us</h3>
-        {this.newContactForm(customername, email, location, comments, buttonStyle)}
+        {this.newContactForm(customername, email, states, comments, buttonStyle)}
         <p>&nbsp;</p>
         <p>&nbsp;</p>
         <p>&nbsp;</p>
