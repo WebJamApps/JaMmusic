@@ -78,14 +78,14 @@ describe('Music player component init', () => {
     wrapper.find('#copyButton').simulate('click');
     expect(wrapper.instance().state.player.displayCopier).toBe('none');
   });
-  it('hides copier message after showing for 1.5s', (done) => {
+  it('hides copier message after showing for 1.5s', () => new Promise((done) => {
     const { wrapper } = setup();
     wrapper.instance().navigator = { clipboard: { async writeText(arg) { return arg; } } };
     wrapper.update();
     wrapper.instance().musicPlayerUtils.copyShare(wrapper.instance());
     expect(wrapper.instance().state.player.displayCopier).toBe('none');
     setTimeout(() => done(), 1501);
-  });
+  }));
   it('toggles off copying/share pane', () => {
     const { wrapper } = setup();
     wrapper.instance().setState({ player: { displayCopier: 'block' } });
@@ -98,14 +98,14 @@ describe('Music player component init', () => {
     wrapper.instance().musicPlayerUtils.share(wrapper.instance());
     expect(wrapper.instance().state.player.displayCopier).toBe('block');
   });
-  it('returns a null playUrl', (done) => {
+  it('returns a null playUrl', () => new Promise((done) => {
     const { wrapper } = setup();
     wrapper.instance().setState({ song: null });
     const result = wrapper.instance().playUrl();
     expect(result).toBe(null);
     done();
-  });
-  it('turns off the pic slider before unmounting', (done) => {
+  }));
+  it('turns off the pic slider before unmounting', () => new Promise((done) => {
     const { wrapper } = setup();
     wrapper.instance().setState = jest.fn((obj) => {
       expect(obj.slider).toBe(false);
@@ -113,7 +113,7 @@ describe('Music player component init', () => {
     wrapper.update();
     wrapper.unmount();
     done();
-  });
+  }));
   it('should simulate a click on adding mission/pub song types when either is off', () => {
     const { wrapper } = setup();
     wrapper.find('button.puboff').simulate('click');
@@ -131,7 +131,7 @@ describe('Music player component init', () => {
     const result = await wrapper.instance().setIndex(songs);
     expect(result).toBeTruthy();
   });
-  it('allows click on share button', (done) => {
+  it('allows click on share button', () => new Promise((done) => {
     const { wrapper } = setup();
     wrapper.instance().musicPlayerUtils.share = jest.fn();
     wrapper.update();
@@ -140,5 +140,5 @@ describe('Music player component init', () => {
     renderButtons.find('button#share-button').simulate('click');
     expect(wrapper.instance().musicPlayerUtils.share).toHaveBeenCalled();
     done();
-  });
+  }));
 });

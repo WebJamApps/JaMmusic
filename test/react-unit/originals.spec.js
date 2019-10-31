@@ -19,9 +19,9 @@ describe('Original Music component init', () => {
     const { wrapper } = setup();
     expect(wrapper.find(DefaultMusicPlayer).exists()).toBe(true);
   });
-  it('should not display the music player', (done) => {
+  it('should not display the music player', () => new Promise((done) => {
     const wrapper = shallow(<Originals />);
     expect(wrapper.find(DefaultMusicPlayer).exists()).toBe(false);
     done();
-  });
+  }));
 });
