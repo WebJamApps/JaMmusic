@@ -7,7 +7,7 @@ export default class inquiry extends Component {
     this.state = {
       redirect: false,
       comments: '',
-      states: '',
+      uSAstate: 'Alabama',
       email: '',
       customername: '',
     };
@@ -16,20 +16,24 @@ export default class inquiry extends Component {
     this.createEmail = this.createEmail.bind(this);
     this.validateForm = this.validateForm.bind(this);
     this.createEmailApi = this.createEmailApi.bind(this);
-    this.states = ['Alabama', 'Alaska', 'American Samoa', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware',
+    this.stateValues = ['Alabama', 'Alaska', 'American Samoa', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware',
       'District of Columbia', 'Federated States of Micronesia', 'Florida', 'Georgia', 'Guam', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa',
       'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Marshall Islands', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri',
       'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota',
       'Northern Mariana Islands', 'Ohio', 'Oklahoma', 'Oregon', 'Palau', 'Pennsylvania', 'Puerto Rico', 'Rhode Island', 'South Carolina',
       'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virgin Island', 'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'];
-    this.states.sort();
+    this.stateValues.sort();
   }
 
-  // componentDidMount() { document.title = 'Contact Us | Web Jam LLC'; }
+  componentDidUpdate() {
+    console.log(this.state);
+  }
 
-  onChange(evt) {
+  onChange(evt, isSelect) {
     evt.preventDefault();
-    this.setState({ [evt.target.id]: evt.target.value, states: evt.target.value });
+    console.log(evt);
+    if (isSelect) return this.setState({ uSAstate: evt.target.value });
+    return this.setState({ [evt.target.id]: evt.target.value });
   }
 
   handleChange(event) {
@@ -38,7 +42,7 @@ export default class inquiry extends Component {
 
   validateForm() {
     const {
-      customername, email, states, comments,
+      customername, email, comments,
     } = this.state;
     let validEmail = false;
     // eslint-disable-next-line no-useless-escape
@@ -46,7 +50,7 @@ export default class inquiry extends Component {
     if (regEx.test(email) && email.includes('.')) {
       validEmail = true;
     }
-    if (customername && email && states && comments !== '' && validEmail) return false;
+    if (customername && email && comments !== '' && validEmail) return false;
     return true;
   }
 
@@ -58,10 +62,10 @@ export default class inquiry extends Component {
 
   createEmail() {
     const {
-      customername, email, states, comments,
+      customername, email, uSAstate, comments,
     } = this.state;
     const emailForm = {
-      customername, email, states, comments,
+      customername, email, uSAstate, comments,
     };
     return this.createEmailApi(emailForm);
   }
@@ -78,20 +82,26 @@ export default class inquiry extends Component {
     );
   }
 
-  newContactForm(customername, email, states, comments, buttonStyle) {
+  statesDropdown(uSAstate) {
+    return (
+      <label htmlFor="state">
+          * State
+        <br />
+        <select value={uSAstate} onChange={(evt) => this.onChange(evt, true)}>
+          {
+            this.stateValues.map((sv) => <option id={sv} key={sv} value={sv}>{sv}</option>)
+          }
+        </select>
+      </label>
+    );
+  }
+
+  newContactForm(customername, email, uSAstate, comments, buttonStyle) {
     return (
       <form id="new-contact" style={{ marginTop: '4px', paddingLeft: '10px' }}>
         {this.makeInput('text', 'customername', true, this.onChange, customername)}
         {this.makeInput('email', 'email', true, this.onChange, email)}
-        <label htmlFor="state">
-          * State
-          <br />
-          <select value={states} onChange={this.onChange}>
-            {
-              this.states.map((state) => <option id={states} key={state} value={state}>{state}</option>)
-            }
-          </select>
-        </label>
+        { this.statesDropdown() }
         <label htmlFor="comments">
           * Comments
           <br />
@@ -107,13 +117,13 @@ export default class inquiry extends Component {
 
   render() {
     const {
-      redirect, customername, email, states, comments, buttonStyle,
+      redirect, customername, email, uSAstate, comments, buttonStyle,
     } = this.state;
     return (
       <div className="page-content">
         {redirect ? <Redirect to="/" /> : null}
         <h3 style={{ textAlign: 'center', margin: '14px', fontWeight: 'bold' }}>Contact Us</h3>
-        {this.newContactForm(customername, email, states, comments, buttonStyle)}
+        {this.newContactForm(customername, email, uSAstate, comments, buttonStyle)}
         <p>&nbsp;</p>
         <p>&nbsp;</p>
         <p>&nbsp;</p>
@@ -121,4 +131,3 @@ export default class inquiry extends Component {
     );
   }
 }
-
