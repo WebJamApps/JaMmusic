@@ -42,7 +42,7 @@ export default class inquiry extends Component {
 
   validateForm() {
     const {
-      customername, email, states, comments,
+      customername, email, comments,
     } = this.state;
     let validEmail = false;
     // eslint-disable-next-line no-useless-escape
@@ -50,7 +50,7 @@ export default class inquiry extends Component {
     if (regEx.test(email) && email.includes('.')) {
       validEmail = true;
     }
-    if (customername && email && states && comments !== '' && validEmail) return false;
+    if (customername && email && comments !== '' && validEmail) return false;
     return true;
   }
 
@@ -62,10 +62,10 @@ export default class inquiry extends Component {
 
   createEmail() {
     const {
-      customername, email, states, comments,
+      customername, email, uSAstate, comments,
     } = this.state;
     const emailForm = {
-      customername, email, states, comments,
+      customername, email, uSAstate, comments,
     };
     return this.createEmailApi(emailForm);
   }
@@ -81,21 +81,27 @@ export default class inquiry extends Component {
       </label>
     );
   }
+  
+  statesDropdown(uSAstate) {
+    return (
+      <label htmlFor="state">
+          * State
+        <br />
+        <select value={uSAstate} onChange={(evt) => this.onChange(evt, true)}>
+          {
+            this.stateValues.map((sv) => <option id={sv} key={sv} value={sv}>{sv}</option>)
+          }
+        </select>
+      </label>
+    );
+  }
 
   newContactForm(customername, email, uSAstate, comments, buttonStyle) {
     return (
       <form id="new-contact" style={{ marginTop: '4px', paddingLeft: '10px' }}>
         {this.makeInput('text', 'customername', true, this.onChange, customername)}
         {this.makeInput('email', 'email', true, this.onChange, email)}
-        <label htmlFor="state">
-          * State
-          <br />
-          <select value={uSAstate} onChange={(evt) => this.onChange(evt, true)}>
-            {
-              this.stateValues.map((sv) => <option id={sv} key={sv} value={sv}>{sv}</option>)
-            }
-          </select>
-        </label>
+        { this.statesDropdown() }
         <label htmlFor="comments">
           * Comments
           <br />
