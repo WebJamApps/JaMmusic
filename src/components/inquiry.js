@@ -73,7 +73,7 @@ export default class inquiry extends Component {
   // eslint-disable-next-line class-methods-use-this
   makeInput(type, name, isRequired, onChange, value) {
     return (
-      <label htmlFor={name} style={{ marginTop: '14px', paddingTop: 0 }}>
+      <label className="inquiryLabel" htmlFor={name}>
         {isRequired ? '* ' : ''}
         {name[0].toUpperCase() + name.slice(1)}
         <br />
@@ -81,7 +81,7 @@ export default class inquiry extends Component {
       </label>
     );
   }
-  
+
   statesDropdown(uSAstate) {
     return (
       <label htmlFor="state">
@@ -96,7 +96,7 @@ export default class inquiry extends Component {
     );
   }
 
-  newContactForm(customername, email, uSAstate, comments, buttonStyle) {
+  newContactForm(customername, email, comments, buttonStyle) {
     return (
       <form id="new-contact" style={{ marginTop: '4px', paddingLeft: '10px' }}>
         {this.makeInput('text', 'customername', true, this.onChange, customername)}
@@ -107,8 +107,8 @@ export default class inquiry extends Component {
           <br />
           <textarea style={{ minWidth: '3in', paddingLeft: '5px' }} value={comments} onChange={this.handleChange} />
         </label>
-        <div style={{ textAlign: 'right', marginTop: '10px', maxWidth: '85%' }}>
-          <span style={{ fontSize: '16px', marginRight: '38%', fontFamily: 'Habibi' }}><i>* Required</i></span>
+        <div className="inquiryValidation">
+          <span className="inquiryValidation">* Required</span>
           <button style={buttonStyle} disabled={this.validateForm()} type="button" onClick={this.createEmail}>Send</button>
         </div>
       </form>
@@ -117,13 +117,13 @@ export default class inquiry extends Component {
 
   render() {
     const {
-      redirect, customername, email, uSAstate, comments, buttonStyle,
+      redirect, customername, email, comments, buttonStyle,
     } = this.state;
     return (
       <div className="page-content">
         {redirect ? <Redirect to="/" /> : null}
         <h3 style={{ textAlign: 'center', margin: '14px', fontWeight: 'bold' }}>Contact Us</h3>
-        {this.newContactForm(customername, email, uSAstate, comments, buttonStyle)}
+        {this.newContactForm(customername, email, comments, buttonStyle)}
         <p>&nbsp;</p>
         <p>&nbsp;</p>
         <p>&nbsp;</p>
