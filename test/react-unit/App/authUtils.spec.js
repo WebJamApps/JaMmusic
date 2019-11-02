@@ -6,11 +6,11 @@ describe('authUtils', () => {
   const controllerStub = {
     props: { auth: { token: 'token' }, dispatch: () => Promise.resolve(true) },
   };
-  it('handles failed login', (done) => {
+  it('handles failed login', () => new Promise((done) => {
     const result = authUtils.responseGoogleFailLogin('no way');
     expect(result).toBe(false);
     done();
-  });
+  }));
   it('handles google login with bad token', async () => {
     try { await authUtils.responseGoogleLogin({}, controllerStub); } catch (e) {
       expect(e.message).toBe('Not enough or too many segments');

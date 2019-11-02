@@ -81,7 +81,7 @@ export default class inquiry extends Component {
       </label>
     );
   }
-
+  
   statesDropdown(uSAstate) {
     return (
       <label htmlFor="state">
