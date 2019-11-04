@@ -1,8 +1,14 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import moment from 'moment';
 import { withRouter, Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import DateFnsUtils from "@date-io/date-fns";
+import {
+  DatePicker,
+  MuiPickersUtilsProvider,
+  KeyboardTimePicker,
+} from '@material-ui/pickers';
 import mapStoreToProps from '../../redux/mapStoreToProps';
 
 export class MusicDashboard extends Component {
@@ -14,15 +20,21 @@ export class MusicDashboard extends Component {
       time: '',
       tickets: '',
       more: '',
+      selectedDate: new Date()
     };
     this.onChange = this.onChange.bind(this);
     this.createTour = this.createTour.bind(this);
     this.validateForm = this.validateForm.bind(this);
     this.createTourApi = this.createTourApi.bind(this);
+    this.handleDateChange = this.handleDateChange.bind(this)
   }
 
   componentDidMount() { document.title = 'Music Dashboard | Web Jam LLC'; }
 
+  handleDateChange(e) {
+    this.setState({ selectedDate: e })
+    console.log(e)
+  }
   onChange(evt) {
     evt.preventDefault();
     this.setState({ [evt.target.id]: evt.target.value });
@@ -44,7 +56,6 @@ export class MusicDashboard extends Component {
     tour.date = m.format('ll');
     scc.emit('newTour', { tour, token: auth.token });
     this.setState({ redirect: true });
-    return true;
   }
 
   createTour() {
@@ -80,6 +91,27 @@ export class MusicDashboard extends Component {
         {this.makeInput('text', 'location', true, this.onChange, location)}
         {this.makeInput('text', 'tickets', false, this.onChange, tickets)}
         {this.makeInput('text', 'more', false, this.onChange, more)}
+        <div style={{
+          display:"flex",
+          justifyContent:"center",
+          marginBottom:"15px" ,
+          marginTop: '14px', 
+          paddingTop: 0 
+        }} >
+          <MuiPickersUtilsProvider utils={DateFnsUtils} >
+            {/* <DatePicker value={this.selectedDate} onChange={this.handleDateChange} /> */}
+            <KeyboardTimePicker
+              // margin="normal"
+              id="time-picker"
+              label="Time picker"
+              value={this.selectedDate}
+              onChange={this.handleDateChange}
+              KeyboardButtonProps={{
+                'aria-label': 'change time',
+              }}
+            />
+          </MuiPickersUtilsProvider>
+        </div>
         <div style={{ textAlign: 'right', marginTop: '10px', maxWidth: '85%' }}>
           <span style={{ fontSize: '16px', marginRight: '38%', fontFamily: 'Habibi' }}><i>* Required</i></span>
           <button style={buttonStyle} disabled={this.validateForm()} type="button" onClick={this.createTour}>Create Tour</button>
@@ -93,20 +125,15 @@ export class MusicDashboard extends Component {
       date, time, buttonStyle, redirect,
     } = this.state;
     return (
-      <div className="page-content">
+      <div className="page-content" >
         {redirect ? <Redirect to="/music" /> : null}
         <h3 style={{ textAlign: 'center', margin: '14px', fontWeight: 'bold' }}>Music Dashboard</h3>
         <h5 style={{ textAlign: 'center', marginBottom: 0 }}>Create a New Tour</h5>
         {this.newTourForm(date, time, buttonStyle)}
-        <p>&nbsp;</p>
-        <p>&nbsp;</p>
-        <p>&nbsp;</p>
       </div>
     );
   }
 }
-MusicDashboard.propTypes = {
-  scc: PropTypes.shape({ emit: PropTypes.func }).isRequired,
-  auth: PropTypes.shape({ token: PropTypes.string }).isRequired,
-};
+MusicDashboard.propTypes = { scc: PropTypes.shape({ emit: PropTypes.func }), auth: PropTypes.shape({ token: PropTypes.string }).isRequired };
+MusicDashboard.defaultProps = { scc: { emit: () => { } } };
 export default withRouter(connect(mapStoreToProps)(MusicDashboard));
