@@ -91,24 +91,14 @@ export class MusicDashboard extends Component {
         {this.makeInput('text', 'location', true, this.onChange, location)}
         {this.makeInput('text', 'tickets', false, this.onChange, tickets)}
         {this.makeInput('text', 'more', false, this.onChange, more)}
-        <div style={{
-          display:"flex",
-          justifyContent:"center",
-          marginBottom:"15px" ,
-          marginTop: '14px', 
-          paddingTop: 0 
-        }} >
+        <div  className = "divStyle">
           <MuiPickersUtilsProvider utils={DateFnsUtils} >
-            {/* <DatePicker value={this.selectedDate} onChange={this.handleDateChange} /> */}
             <KeyboardTimePicker
-              // margin="normal"
               id="time-picker"
               label="Time picker"
               value={this.selectedDate}
               onChange={this.handleDateChange}
-              KeyboardButtonProps={{
-                'aria-label': 'change time',
-              }}
+              KeyboardButtonProps={{ 'aria-label': 'change time' }}
             />
           </MuiPickersUtilsProvider>
         </div>
@@ -119,6 +109,7 @@ export class MusicDashboard extends Component {
       </form>
     );
   }
+
 
   render() {
     const {
