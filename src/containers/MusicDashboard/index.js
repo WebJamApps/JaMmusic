@@ -1,4 +1,5 @@
 import React, { Component, useState } from 'react';
+import "./style.css" ;
 import moment from 'moment';
 import { withRouter, Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
