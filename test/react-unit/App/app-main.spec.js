@@ -105,16 +105,4 @@ describe('app-main component test setup', () => {
     expect(result).toBe(null);
     done();
   }));
-  // it('renders with menuOpen', (done) => {
-  //   const aT = new AppTemplate({ dispatch: () => Promise.resolve(true) });
-  //   aT.state.menuOpen = true;
-  //   const result = aT.render();
-  //   expect(result.props.className).toBe('page-host');
-  //   done();
-  // });
-  // it('checks if menu is google logout', () => {
-  //   const { wrapper } = setup();
-  //   wrapper.instance().menuItem({ type: 'googleLogout' }, 1);
-  //   expect(wrapper.find('div.googleLogout').exists()).toBe(true);
-  // });
 });
