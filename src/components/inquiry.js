@@ -24,13 +24,8 @@ export default class inquiry extends Component {
     this.stateValues.sort();
   }
 
-  componentDidUpdate() {
-    console.log(this.state);
-  }
-
   onChange(evt, isSelect) {
     evt.preventDefault();
-    console.log(evt);
     if (isSelect) return this.setState({ uSAstate: evt.target.value });
     return this.setState({ [evt.target.id]: evt.target.value });
   }
@@ -129,7 +124,7 @@ export default class inquiry extends Component {
             <p>&nbsp;</p>
           </div>
         ) : (
-          <div className="page-content">
+          <div className="page-content contacted">
             <p style={{ textAlign: 'center', margin: '14px', paddingBottom: '15px' }}>
               Thank you for contacting us.
               <br />
