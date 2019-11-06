@@ -4,6 +4,7 @@ import ReactPlayer from 'react-player';
 import PropTypes from 'prop-types';
 import musicPlayerUtils from './musicPlayerUtils';
 import mapStoreToProps from '../../redux/mapStoreToProps';
+
 const state = {
   pageTitle: 'Original Songs',
   songsState: [],
@@ -32,6 +33,7 @@ export class MusicPlayer extends Component {
     this.navigator = window.navigator;
     this.musicPlayerUtils = musicPlayerUtils;
   }
+
   async componentDidMount() {
     const params = new URLSearchParams(window.location.search);
     const { player } = this.state;
@@ -41,15 +43,17 @@ export class MusicPlayer extends Component {
     await this.musicPlayerUtils.checkOnePlayer(params, player, this);
     return this.musicPlayerUtils.runIfOnePlayer(this);
   }
+
   setIndex(songs, category) { // eslint-disable-line class-methods-use-this
     let categorySongs = [];
     const otherSongs = [];
     for (let i = 0; songs.length > i; i += 1) { // eslint-disable-next-line security/detect-object-injection
-      (songs[i].category === category) ? categorySongs.push(songs[i]) :  otherSongs.push(songs[i]);
+      (songs[i].category === category) ? categorySongs.push(songs[i]) : otherSongs.push(songs[i]);
     }
     categorySongs = categorySongs.concat(otherSongs);
     return categorySongs;
   }
+
   ToggleSongTypes(type) {
     const lcType = type.toLowerCase();
     const { player } = this.state;
@@ -63,7 +67,7 @@ export class MusicPlayer extends Component {
       pageTitle += ` & ${type} Songs`;
     } else {
       songsState = songsState.filter((song) => song.category !== lcType);
-       pageTitle = pageTitle.replace(` & ${type}`, '');
+      pageTitle = pageTitle.replace(` & ${type}`, '');
     }
     songsState = this.setIndex(songsState, lcType);
     this.setState({
@@ -76,11 +80,13 @@ export class MusicPlayer extends Component {
       index: 0,
     });
   }
+
   playUrl() {
     const { song } = this.state;
     if (song !== null) return `${document.location.origin}/music/${window.location.pathname.split('/').pop()}?oneplayer=true&id=${song._id}`;
     return null;
   }
+
   reactPlayer() {
     const { song } = this.state;
     const { player } = this.state;
@@ -98,6 +104,7 @@ export class MusicPlayer extends Component {
       />
     );
   }
+
   buttons() {
     const { missionState, pubState, player: { playing, isShuffleOn, onePlayerMode } } = this.state;
     return (
@@ -115,6 +122,7 @@ export class MusicPlayer extends Component {
       </section>
     );
   }
+
   shuffle() {
     const { player, copy, songsState } = this.state;
     if (player.isShuffleOn) {
@@ -132,30 +140,36 @@ export class MusicPlayer extends Component {
       });
     }
   }
+
   playEnd() { this.next(); }
+
   prev() {
     const { index, songsState } = this.state;
     const minusIndex = index - 1;
-  if (minusIndex < 0 || minusIndex > songsState.length) {
-    const newIndex = songsState.length - 1;
-    this.setState({ index: newIndex, song: songsState[parseInt(newIndex, 0)] });
-  } else this.setState({ song: songsState[parseInt(minusIndex, 0)], index: minusIndex });
-}
+    if (minusIndex < 0 || minusIndex > songsState.length) {
+      const newIndex = songsState.length - 1;
+      this.setState({ index: newIndex, song: songsState[parseInt(newIndex, 0)] });
+    } else this.setState({ song: songsState[parseInt(minusIndex, 0)], index: minusIndex });
+  }
+
   play() {
     const { player } = this.state;
     const isPlaying = !player.playing;
     this.setState({ player: { ...player, playing: isPlaying } });
   }
+
   pause() {
     const { player } = this.state;
     this.setState({ player: { ...player, playing: false } });
   }
+
   next() {
     let { index } = this.state;
     index += 1;
     const { songsState } = this.state;
-     (index >= songsState.length) ? this.setState({ index: 0, song: songsState[0] }) : this.setState({ song: songsState[parseInt(index, 0)], index });
+    (index >= songsState.length) ? this.setState({ index: 0, song: songsState[0] }) : this.setState({ song: songsState[parseInt(index, 0)], index });
   }
+
   copyInput(player, song) {
     return (
       <div id="copyInput">
@@ -178,11 +192,13 @@ export class MusicPlayer extends Component {
       </div>
     );
   }
+
   copyRight() { // eslint-disable-line class-methods-use-this
     return (
       <span>All Original Songs &copy;2019 Web Jam LLC</span>
     );
   }
+
   pageH4(pageTitle) { // eslint-disable-line class-methods-use-this
     return (
       <h4
@@ -195,6 +211,7 @@ export class MusicPlayer extends Component {
       </h4>
     );
   }
+
   textUnderPlayer(song) {
     return (
       <section className="col-12 mt-1" style={{ fontSize: '0.8em', marginTop: '8px', marginBottom: '0' }}>
@@ -219,6 +236,7 @@ export class MusicPlayer extends Component {
       </section>
     );
   }
+
   render() {
     const { song } = this.state;
     const { player, pageTitle } = this.state;
@@ -239,7 +257,7 @@ export class MusicPlayer extends Component {
     );
   }
 }
-MusicPlayer.defaultProps = {   songs: [{ url: '', title: '' }], };
+MusicPlayer.defaultProps = { songs: [{ url: '', title: '' }] };
 MusicPlayer.propTypes = {
   songs: PropTypes.arrayOf(PropTypes.shape({ title: PropTypes.string })),
   filterBy: PropTypes.string.isRequired,

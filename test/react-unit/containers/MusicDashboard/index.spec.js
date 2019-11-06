@@ -35,11 +35,11 @@ describe('Dashboard Container', () => {
     wrapper.instance().setState = jest.fn((obJ) => { expect(obJ.redirect).toBe(true); });
     wrapper.instance().createTourApi({ date: '2019-10-10' });
   });
-  it('redirects to /music', (done) => {
+  it('redirects to /music', () => new Promise((done) => {
     wrapper.setState({ redirect: true });
     expect(wrapper.find(Redirect).length).toBe(1);
     done();
-  });
+  }));
   it('returns the validation', () => {
     wrapper.setState({
       date: '10-24-2019',
