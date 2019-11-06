@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
-import { Redirect } from 'react-router-dom';
 
 export default class inquiry extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      redirect: false,
+      submitted: false,
       comments: '',
       uSAstate: 'Alabama',
       email: '',
@@ -57,7 +56,7 @@ export default class inquiry extends Component {
   createEmailApi(emailForm1) {
     // eslint-disable-next-line no-unused-vars
     const emailForm = emailForm1;
-    this.setState({ redirect: true });
+    this.setState({ submitted: true });
   }
 
   createEmail() {
@@ -117,16 +116,27 @@ export default class inquiry extends Component {
 
   render() {
     const {
-      redirect, customername, email, comments, buttonStyle,
+      submitted, customername, email, comments, buttonStyle,
     } = this.state;
     return (
-      <div className="page-content">
-        {redirect ? <Redirect to="/" /> : null}
-        <h3 style={{ textAlign: 'center', margin: '14px', fontWeight: 'bold' }}>Contact Us</h3>
-        {this.newContactForm(customername, email, comments, buttonStyle)}
-        <p>&nbsp;</p>
-        <p>&nbsp;</p>
-        <p>&nbsp;</p>
+      <div>
+        { submitted === false ? (
+          <div className="page-content">
+            <h3 style={{ textAlign: 'center', margin: '14px', fontWeight: 'bold' }}>Contact Us</h3>
+            {this.newContactForm(customername, email, comments, buttonStyle)}
+            <p>&nbsp;</p>
+            <p>&nbsp;</p>
+            <p>&nbsp;</p>
+          </div>
+        ) : (
+          <div className="page-content">
+            <p style={{ textAlign: 'center', margin: '14px', paddingBottom: '15px' }}>
+              Thank you for contacting us.
+              <br />
+              We will be in contact with you shortly.
+            </p>
+          </div>
+        )}
       </div>
     );
   }
