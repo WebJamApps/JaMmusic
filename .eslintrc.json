@@ -2,6 +2,9 @@
   "plugins": ["node", "security", "react", "jest"],
   "extends": ["airbnb", "plugin:security/recommended", "plugin:node/recommended", "plugin:jest/recommended"],
   "rules": {
+    "jest/no-mocks-import": 0,
+    "jest/expect-expect": 0,
+    "jest/no-try-expect": 0,
     "react/jsx-filename-extension": [1, {
       "extensions": [".js"]
     }],

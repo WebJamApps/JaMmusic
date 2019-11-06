@@ -7,9 +7,9 @@ const middlewares = [thunk];
 const mockStore = configureMockStore(middlewares);
 
 describe('authActions', () => {
-  it('does nothing', (done) => {
+  it('does nothing', () => new Promise((done) => {
     done();
-  });
+  }));
   it('authenticates', async () => {
     const store = mockStore({ auth: { isAuthenticated: false } });
     const result = await store.dispatch(authenticate({ code: 'someCode' }));
