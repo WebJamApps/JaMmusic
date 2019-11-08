@@ -4,6 +4,7 @@ import { withRouter, Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Application from './pickers';
+import './style.css';
 import mapStoreToProps from '../../redux/mapStoreToProps';
 
 export class MusicDashboard extends Component {
@@ -101,13 +102,7 @@ export class MusicDashboard extends Component {
         {this.makeInput('text', 'tickets', false, this.onChange, tickets)}
         {this.makeInput('text', 'more', false, this.onChange, more)}
         <div style={{ textAlign: 'right', marginTop: '10px', maxWidth: '85%' }}>
-          <span
-            style={{
-              fontSize: '16px',
-              marginRight: '38%',
-              fontFamily: 'Habibi',
-            }}
-          >
+          <span className="Required">
             <i>* Required</i>
           </span>
           <button
