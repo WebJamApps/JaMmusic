@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import forms from '../lib/forms';
 
 export default class inquiry extends Component {
   constructor(props) {
@@ -10,6 +11,7 @@ export default class inquiry extends Component {
       email: '',
       customername: '',
     };
+    this.forms = forms;
     this.onChange = this.onChange.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.createEmail = this.createEmail.bind(this);
@@ -64,18 +66,6 @@ export default class inquiry extends Component {
     return this.createEmailApi(emailForm);
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  makeInput(type, name, isRequired, onChange, value) {
-    return (
-      <label className="inquiryLabel" htmlFor={name}>
-        {isRequired ? '* ' : ''}
-        {name[0].toUpperCase() + name.slice(1)}
-        <br />
-        <input id={name} type={type} name={name} onChange={onChange} required={isRequired} value={value} />
-      </label>
-    );
-  }
-
   statesDropdown(uSAstate) {
     return (
       <label htmlFor="state">
@@ -93,8 +83,8 @@ export default class inquiry extends Component {
   newContactForm(customername, email, comments, buttonStyle) {
     return (
       <form id="new-contact" style={{ marginTop: '4px', paddingLeft: '10px' }}>
-        {this.makeInput('text', 'customername', true, this.onChange, customername)}
-        {this.makeInput('email', 'email', true, this.onChange, email)}
+        {this.forms.makeInput('text', 'customername', true, this.onChange, customername)}
+        {this.forms.makeInput('email', 'email', true, this.onChange, email)}
         { this.statesDropdown() }
         <label htmlFor="comments">
           * Comments
