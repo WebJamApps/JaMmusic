@@ -14,7 +14,12 @@ const state = {
   missionState: 'off',
   pubState: 'off',
   player: {
-    playing: false, shown: false, isShuffleOn: false, displayCopier: 'none', displayCopyMessage: false, onePlayerMode: false,
+    playing: false,
+    shown: false,
+    isShuffleOn: false,
+    displayCopier: 'none',
+    displayCopyMessage: false,
+    onePlayerMode: false,
   },
 };
 export class MusicPlayer extends Component {
@@ -32,6 +37,7 @@ export class MusicPlayer extends Component {
     this.ToggleSongTypes = this.ToggleSongTypes.bind(this);
     this.navigator = window.navigator;
     this.musicPlayerUtils = musicPlayerUtils;
+    this.copyRight = this.copyRight.bind(this);
   }
 
   async componentDidMount() {
@@ -44,10 +50,13 @@ export class MusicPlayer extends Component {
     return this.musicPlayerUtils.runIfOnePlayer(this);
   }
 
-  setIndex(songs, category) { // eslint-disable-line class-methods-use-this
+  // eslint-disable-next-line class-methods-use-this
+  setIndex(songs, category) {
+    // eslint-disable-line class-methods-use-this
     let categorySongs = [];
     const otherSongs = [];
-    for (let i = 0; songs.length > i; i += 1) { // eslint-disable-next-line security/detect-object-injection
+    for (let i = 0; songs.length > i; i += 1) {
+      // eslint-disable-next-line security/detect-object-injection
       if (songs[i].category === category) categorySongs.push(songs[i]);
       else otherSongs.push(songs[i]); // eslint-disable-line security/detect-object-injection
     }
@@ -63,7 +72,10 @@ export class MusicPlayer extends Component {
     const typeInState = `${lcType}State`;
     const typeState = this.state[typeInState.toString()]; // eslint-disable-line react/destructuring-assignment
     if (typeState === 'off') {
-      songsState = [...songsState, ...songs.filter((song) => song.category === lcType)];
+      songsState = [
+        ...songsState,
+        ...songs.filter((song) => song.category === lcType),
+      ];
       pageTitle = pageTitle.replace('Songs', '');
       pageTitle += ` & ${type} Songs`;
     } else {
@@ -73,6 +85,7 @@ export class MusicPlayer extends Component {
     songsState = this.setIndex(songsState, lcType);
     this.setState({
       player: { ...player, isShuffleOn: false },
+      // player: { ...player },
       pageTitle,
       songsState,
       [typeInState]: typeState === 'off' ? 'on' : 'off',
@@ -83,7 +96,13 @@ export class MusicPlayer extends Component {
 
   playUrl() {
     const { song } = this.state;
-    if (song !== null) return `${document.location.origin}/music/${window.location.pathname.split('/').pop()}?oneplayer=true&id=${song._id}`;
+    if (song !== null) {
+      return `${
+        document.location.origin
+      }/music/${window.location.pathname.split('/').pop()}?oneplayer=true&id=${
+        song._id
+      }`;
+    }
     return null;
   }
 
@@ -106,18 +125,65 @@ export class MusicPlayer extends Component {
   }
 
   buttons() {
-    const { missionState, pubState, player: { playing, isShuffleOn, onePlayerMode } } = this.state;
+    const {
+      missionState,
+      pubState,
+      player: { playing, isShuffleOn, onePlayerMode },
+    } = this.state;
     return (
       <section className="mt-0 col-12 col-md-10" style={{ marginTop: '4px' }}>
-        <button type="button" id="play-pause" role="menu" className={playing ? 'on' : 'off'} onClick={this.play}>Play/Pause</button>
-        <button type="button" role="menu" id="next" onClick={this.next}>Next</button>
-        <button type="button" role="menu" id="prev" onClick={this.prev}>Prev</button>
-        <button type="button" id="shuffle" role="menu" className={isShuffleOn ? 'on' : 'off'} onClick={this.shuffle}>Shuffle</button>
-        <button type="button" id="share-button" role="menu" onClick={() => this.musicPlayerUtils.share(this)}>Share</button>
+        <button
+          type="button"
+          id="play-pause"
+          role="menu"
+          className={playing ? 'on' : 'off'}
+          onClick={this.play}
+        >
+          Play/Pause
+        </button>
+        <button type="button" role="menu" id="next" onClick={this.next}>
+          Next
+        </button>
+        <button type="button" role="menu" id="prev" onClick={this.prev}>
+          Prev
+        </button>
+        <button
+          type="button"
+          id="shuffle"
+          role="menu"
+          className={isShuffleOn ? 'on' : 'off'}
+          onClick={this.shuffle}
+        >
+          Shuffle
+        </button>
+        <button
+          type="button"
+          id="share-button"
+          role="menu"
+          onClick={() => this.musicPlayerUtils.share(this)}
+        >
+          Share
+        </button>
         {onePlayerMode ? this.musicPlayerUtils.homeButton(onePlayerMode) : null}
         <div id="mAndP" style={{ height: '22px', margin: 'auto' }}>
-          <button type="button" onClick={() => this.ToggleSongTypes('Mission')} className={`mission${missionState}`}> Mission </button>
-          <button type="button" onClick={() => this.ToggleSongTypes('Pub')} className={`pub${pubState}`}> Pub </button>
+          <button
+            type="button"
+            onClick={() => this.ToggleSongTypes('Mission')}
+            className={`mission${missionState}`}
+          >
+            {' '}
+            Mission
+            {' '}
+          </button>
+          <button
+            type="button"
+            onClick={() => this.ToggleSongTypes('Pub')}
+            className={`pub${pubState}`}
+          >
+            {' '}
+            Pub
+            {' '}
+          </button>
         </div>
       </section>
     );
@@ -127,29 +193,45 @@ export class MusicPlayer extends Component {
     const { player, copy, songsState } = this.state;
     if (player.isShuffleOn) {
       this.setState({
-        songsState: copy, player: { ...player, isShuffleOn: false }, song: copy[0], index: 0,
+        songsState: copy,
+        player: { ...player, isShuffleOn: false },
+        song: copy[0],
+        index: 0,
       });
     } else {
       const shuffled = songsState;
       for (let i = shuffled.length - 1; i > 0; i -= 1) {
         const j = Math.floor(Math.random() * (i + 1));
-        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];// eslint-disable-line security/detect-object-injection
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]; // eslint-disable-line security/detect-object-injection
       }
       this.setState({
-        songsState: shuffled, player: { ...player, isShuffleOn: true }, song: shuffled[0], index: 0,
+        songsState: shuffled,
+        player: { ...player, isShuffleOn: true },
+        song: shuffled[0],
+        index: 0,
       });
     }
   }
 
-  playEnd() { this.next(); }
+  playEnd() {
+    this.next();
+  }
 
   prev() {
     const { index, songsState } = this.state;
     const minusIndex = index - 1;
     if (minusIndex < 0 || minusIndex > songsState.length) {
       const newIndex = songsState.length - 1;
-      this.setState({ index: newIndex, song: songsState[parseInt(newIndex, 0)] });
-    } else this.setState({ song: songsState[parseInt(minusIndex, 0)], index: minusIndex });
+      this.setState({
+        index: newIndex,
+        song: songsState[parseInt(newIndex, 0)],
+      });
+    } else {
+      this.setState({
+        song: songsState[parseInt(minusIndex, 0)],
+        index: minusIndex,
+      });
+    }
   }
 
   play() {
@@ -167,44 +249,63 @@ export class MusicPlayer extends Component {
     let { index } = this.state;
     index += 1;
     const { songsState } = this.state;
-    if (index >= songsState.length) this.setState({ index: 0, song: songsState[0] });
-    else this.setState({ song: songsState[parseInt(index, 0)], index });
+    if (index >= songsState.length) {
+      this.setState({ index: 0, song: songsState[0] });
+    } else {
+      this.setState({ song: songsState[parseInt(index, 0)], index });
+    }
   }
 
   copyInput(player, song) {
     return (
       <div id="copyInput">
-        { player.displayCopyMessage && <div className="copySuccess"> Url copied Url to clipboard </div> }
-        {song !== null ? <input id="copyUrl" disabled value={this.playUrl()} style={{ backgroundColor: '#fff' }} className="form-control" />
-          : null}
+        {player.displayCopyMessage && (
+          <div className="copySuccess"> Url copied Url to clipboard </div>
+        )}
+        {song !== null ? (
+          <input
+            id="copyUrl"
+            disabled
+            value={this.playUrl()}
+            style={{ backgroundColor: '#fff' }}
+            className="form-control"
+          />
+        ) : null}
         <div
           id="copyButton"
           role="presentation"
           onClick={() => this.musicPlayerUtils.copyShare(this)}
           style={{ cursor: 'pointer', marginTop: '11px' }}
         >
-          <span style={{
-            backgroundColor: '#ccc', padding: '4px 15px', borderRadius: '5px', fontSize: '0.8em',
-          }}
+          <span
+            style={{
+              backgroundColor: '#ccc',
+              padding: '4px 15px',
+              borderRadius: '5px',
+              fontSize: '0.8em',
+            }}
           >
-        Copy URL
+            Copy URL
           </span>
         </div>
       </div>
     );
   }
 
-  copyRight() { // eslint-disable-line class-methods-use-this
-    return (
-      <span>All Original Songs &copy;2019 Web Jam LLC</span>
-    );
+  copyRight() {
+    // eslint-disable-line class-methods-use-this
+    return <span>All Original Songs &copy;2019 Web Jam LLC</span>;
   }
 
-  pageH4(pageTitle) { // eslint-disable-line class-methods-use-this
+  pageH4(pageTitle) {
+    // eslint-disable-line class-methods-use-this
     return (
       <h4
         style={{
-          textAlign: 'center', margin: '20px', fontWeight: 'bold', marginBottom: '6px',
+          textAlign: 'center',
+          margin: '20px',
+          fontWeight: 'bold',
+          marginBottom: '6px',
         }}
         id="headerTitle"
       >
@@ -215,24 +316,42 @@ export class MusicPlayer extends Component {
 
   textUnderPlayer(song) {
     return (
-      <section className="col-12 mt-1" style={{ fontSize: '0.8em', marginTop: '8px', marginBottom: '0' }}>
+      <section
+        className="col-12 mt-1"
+        style={{ fontSize: '0.8em', marginTop: '8px', marginBottom: '0' }}
+      >
         <strong>
           {song !== null ? song.title : null}
-          {song !== null && song.composer !== undefined && song.category !== 'originals' ? ` by ${song.composer}` : null}
-          {song !== null && song.artist !== undefined ? ` - ${song.artist}` : null}
+          {song !== null
+          && song.composer !== undefined
+          && song.category !== 'originals'
+            ? ` by ${song.composer}`
+            : null}
+          {song !== null && song.artist !== undefined
+            ? ` - ${song.artist}`
+            : null}
         </strong>
-        <p style={{
-          textAlign: 'center', fontSize: '8pt', marginTop: '4px', marginBottom: 0,
-        }}
+        <p
+          style={{
+            textAlign: 'center',
+            fontSize: '8pt',
+            marginTop: '4px',
+            marginBottom: 0,
+          }}
         >
           {song !== null && song.album !== undefined ? song.album : null}
           {song !== null && song.year !== undefined ? `, ${song.year}` : null}
         </p>
-        <p style={{
-          textAlign: 'center', fontSize: '8pt', marginTop: '2px', marginBottom: 0,
-        }}
+        <p
+          style={{
+            textAlign: 'center',
+            fontSize: '8pt',
+            marginTop: '2px',
+            marginBottom: 0,
+          }}
         >
-          {song !== null && song.category === 'originals' ? this.copyRight() : null}
+          {song !== null && song.category === 'originals' ? this.copyRight()
+            : null}
         </p>
       </section>
     );
@@ -245,12 +364,26 @@ export class MusicPlayer extends Component {
       <div className="container-fluid">
         {this.pageH4(pageTitle)}
         <div id="player" className="mb-2 row justify-content-md-center">
-          <section id="playSection" className="col-12 mt-2 mr-0 col-md-7" style={{ display: 'inline', textAlign: 'center', marginBottom: '0' }}>
-            {song !== null && song !== undefined && song.url !== undefined ? this.reactPlayer() : null}
+          <section
+            id="playSection"
+            className="col-12 mt-2 mr-0 col-md-7"
+            style={{
+              display: 'inline',
+              textAlign: 'center',
+              marginBottom: '0',
+            }}
+          >
+            {song !== null && song !== undefined && song.url !== undefined
+              ? this.reactPlayer()
+              : null}
           </section>
           {this.textUnderPlayer(song)}
           {this.buttons()}
-          <section className="mt-1 col-12" id="copier" style={{ display: player.displayCopier, marginTop: '0' }}>
+          <section
+            className="mt-1 col-12"
+            id="copier"
+            style={{ display: player.displayCopier, marginTop: '0' }}
+          >
             {this.copyInput(player, song)}
           </section>
         </div>
@@ -258,9 +391,7 @@ export class MusicPlayer extends Component {
     );
   }
 }
-MusicPlayer.defaultProps = {
-  songs: [{ url: '', title: '' }],
-};
+MusicPlayer.defaultProps = { songs: [{ url: '', title: '' }] };
 MusicPlayer.propTypes = {
   songs: PropTypes.arrayOf(PropTypes.shape({ title: PropTypes.string })),
   filterBy: PropTypes.string.isRequired,
