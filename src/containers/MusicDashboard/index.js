@@ -32,9 +32,13 @@ export class MusicDashboard extends Component {
     this.setState({ [evt.target.id]: evt.target.value });
   }
 
+  handleDateChange(e) {
+    this.setState({ selectedDate: e });
+  }
+
   validateForm() {
     const {
-      date, time, location, venue, 
+      date, time, location, venue,
     } = this.state;
     if (date && time && location && venue && date !== '') return false;
     return true;
@@ -53,7 +57,7 @@ export class MusicDashboard extends Component {
 
   createTour() {
     const {
-      date, time, location, venue, tickets, more, 
+      date, time, location, venue, tickets, more,
     } = this.state;
     const tour = {
       date,
@@ -87,7 +91,7 @@ export class MusicDashboard extends Component {
 
   newTourForm(date, time, buttonStyle) {
     const {
-      venue, location, tickets, more, 
+      venue, location, tickets, more,
     } = this.state;
     return (
       <form id="new-tour" style={{ marginTop: '4px', paddingLeft: '10px' }}>
@@ -96,7 +100,6 @@ export class MusicDashboard extends Component {
         {this.makeInput('text', 'location', true, this.onChange, location)}
         {this.makeInput('text', 'tickets', false, this.onChange, tickets)}
         {this.makeInput('text', 'more', false, this.onChange, more)}
-
         <div style={{ textAlign: 'right', marginTop: '10px', maxWidth: '85%' }}>
           <span
             style={{
@@ -122,7 +125,7 @@ export class MusicDashboard extends Component {
 
   render() {
     const {
-      date, time, buttonStyle, redirect, 
+      date, time, buttonStyle, redirect,
     } = this.state;
     return (
       <div className="page-content">
