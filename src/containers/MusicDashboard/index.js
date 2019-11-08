@@ -1,27 +1,20 @@
-import React, { Component, useState } from "react";
-import moment from "moment";
-import { withRouter, Redirect } from "react-router-dom";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import DateFnsUtils from "@date-io/date-fns";
-import {
-  MuiPickersUtilsProvider,
-  KeyboardTimePicker,
-  KeyboardDatePicker
-} from "@material-ui/pickers";
-import mapStoreToProps from "../../redux/mapStoreToProps";
+import React, { Component } from 'react';
+import moment from 'moment';
+import { withRouter, Redirect } from 'react-router-dom';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import Application from './pickers';
+import mapStoreToProps from '../../redux/mapStoreToProps';
 
 export class MusicDashboard extends Component {
   constructor(props) {
     super(props);
     this.state = {
       redirect: false,
-      date: "",
-      time: "",
-      tickets: "",
-      more: "",
-      selectedDate: new Date(),
-      setSelectedDate: new Date()
+      date: '',
+      time: '',
+      tickets: '',
+      more: '',
     };
     this.onChange = this.onChange.bind(this);
     this.createTour = this.createTour.bind(this);
@@ -31,12 +24,7 @@ export class MusicDashboard extends Component {
   }
 
   componentDidMount() {
-    document.title = "Music Dashboard | Web Jam LLC";
-  }
-
-  handleDateChange(e) {
-    this.setState({ selectedDate: e });
-    console.log(e);
+    document.title = 'Music Dashboard | Web Jam LLC';
   }
 
   onChange(evt) {
@@ -45,8 +33,10 @@ export class MusicDashboard extends Component {
   }
 
   validateForm() {
-    const { date, time, location, venue } = this.state;
-    if (date && time && location && venue && date !== "") return false;
+    const {
+      date, time, location, venue, 
+    } = this.state;
+    if (date && time && location && venue && date !== '') return false;
     return true;
   }
 
@@ -55,21 +45,23 @@ export class MusicDashboard extends Component {
     const { scc, auth } = this.props;
     const tour = tour1;
     tour.datetime = new Date(tour.date);
-    const m = moment(tour.date, "YYYY-MM-DD");
-    tour.date = m.format("ll");
-    scc.emit("newTour", { tour, token: auth.token });
+    const m = moment(tour.date, 'YYYY-MM-DD');
+    tour.date = m.format('ll');
+    scc.emit('newTour', { tour, token: auth.token });
     this.setState({ redirect: true });
   }
 
   createTour() {
-    const { date, time, location, venue, tickets, more } = this.state;
+    const {
+      date, time, location, venue, tickets, more, 
+    } = this.state;
     const tour = {
       date,
       time,
       location,
       venue,
       tickets,
-      more
+      more,
     };
     return this.createTourApi(tour);
   }
@@ -77,8 +69,8 @@ export class MusicDashboard extends Component {
   makeInput(type, name, isRequired, onChange, value) {
     // eslint-disable-line class-methods-use-this
     return (
-      <label htmlFor={name} style={{ marginTop: "14px", paddingTop: 0 }}>
-        {isRequired ? "* " : ""}
+      <label htmlFor={name} style={{ marginTop: '14px', paddingTop: 0 }}>
+        {isRequired ? '* ' : ''}
         {name[0].toUpperCase() + name.slice(1)}
         <br />
         <input
@@ -94,42 +86,23 @@ export class MusicDashboard extends Component {
   }
 
   newTourForm(date, time, buttonStyle) {
-    const { venue, location, tickets, more } = this.state;
+    const {
+      venue, location, tickets, more, 
+    } = this.state;
     return (
-      <form id="new-tour" style={{ marginTop: "4px", paddingLeft: "10px" }}>
-        <MuiPickersUtilsProvider utils={DateFnsUtils}>
-          <KeyboardDatePicker
-            disableToolbar
-            format="MM/dd/yyyy"
-            margin="normal"
-            id="date-picker-inline"
-            label="Date"
-            value={this.selectedDate}
-            onChange={this.handleDateChange}
-            KeyboardButtonProps={{
-              "aria-label": "change date"
-            }}
-          />
-          <KeyboardTimePicker
-            id="time-picker"
-            label="Time"
-            value={this.selectedDate}
-            onChange={this.handleDateChange}
-            KeyboardButtonProps={{ "aria-label": "change time" }}
-          />
-        </MuiPickersUtilsProvider>
+      <form id="new-tour" style={{ marginTop: '4px', paddingLeft: '10px' }}>
+        <Application />
+        {this.makeInput('text', 'venue', true, this.onChange, venue)}
+        {this.makeInput('text', 'location', true, this.onChange, location)}
+        {this.makeInput('text', 'tickets', false, this.onChange, tickets)}
+        {this.makeInput('text', 'more', false, this.onChange, more)}
 
-        {this.makeInput("text", "venue", true, this.onChange, venue)}
-        {this.makeInput("text", "location", true, this.onChange, location)}
-        {this.makeInput("text", "tickets", false, this.onChange, tickets)}
-        {this.makeInput("text", "more", false, this.onChange, more)}
-
-        <div style={{ textAlign: "right", marginTop: "10px", maxWidth: "85%" }}>
+        <div style={{ textAlign: 'right', marginTop: '10px', maxWidth: '85%' }}>
           <span
             style={{
-              fontSize: "16px",
-              marginRight: "38%",
-              fontFamily: "Habibi"
+              fontSize: '16px',
+              marginRight: '38%',
+              fontFamily: 'Habibi',
             }}
           >
             <i>* Required</i>
@@ -148,14 +121,16 @@ export class MusicDashboard extends Component {
   }
 
   render() {
-    const { date, time, buttonStyle, redirect } = this.state;
+    const {
+      date, time, buttonStyle, redirect, 
+    } = this.state;
     return (
       <div className="page-content">
         {redirect ? <Redirect to="/music" /> : null}
-        <h3 style={{ textAlign: "center", margin: "14px", fontWeight: "bold" }}>
+        <h3 style={{ textAlign: 'center', margin: '14px', fontWeight: 'bold' }}>
           Music Dashboard
         </h3>
-        <h5 style={{ textAlign: "center", marginBottom: 0 }}>
+        <h5 style={{ textAlign: 'center', marginBottom: 0 }}>
           Create a New Tour
         </h5>
         {this.newTourForm(date, time, buttonStyle)}
@@ -165,7 +140,7 @@ export class MusicDashboard extends Component {
 }
 MusicDashboard.propTypes = {
   scc: PropTypes.shape({ emit: PropTypes.func }),
-  auth: PropTypes.shape({ token: PropTypes.string }).isRequired
+  auth: PropTypes.shape({ token: PropTypes.string }).isRequired,
 };
 MusicDashboard.defaultProps = { scc: { emit: () => {} } };
 export default withRouter(connect(mapStoreToProps)(MusicDashboard));
