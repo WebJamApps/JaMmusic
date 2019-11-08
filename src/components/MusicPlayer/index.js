@@ -72,7 +72,7 @@ export class MusicPlayer extends Component {
     songsState = this.setIndex(songsState, lcType);
     this.setState({
       player: { ...player, isShuffleOn: false },
-      //  player: { ...player },
+      player: { ...player },
       pageTitle,
       songsState,
       [typeInState]: typeState === 'off' ? 'on' : 'off',
