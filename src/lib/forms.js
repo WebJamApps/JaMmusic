@@ -1,11 +1,15 @@
 import React from 'react';
 
-const makeInput = (type, name, isRequired, onChange, value) => (
-  <label className="inquiryLabel" htmlFor={name}>
-    {isRequired ? '* ' : ''}
-    {name[0].toUpperCase() + name.slice(1)}
-    <br />
-    <input id={name} type={type} name={name} onChange={onChange} required={isRequired} value={value} />
-  </label>
-);
+const makeInput = (type, label, isRequired, onChange, value) => {
+  let fId = label.toLowerCase();
+  fId = fId.replace(/\s/g, '');
+  return (
+    <label className="inquiryLabel" htmlFor={fId}>
+      {isRequired ? '* ' : ''}
+      {label}
+      <br />
+      <input id={fId} type={type} name={fId} onChange={onChange} required={isRequired} value={value} />
+    </label>
+  );
+};
 export default { makeInput };
