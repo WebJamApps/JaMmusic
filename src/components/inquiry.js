@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import forms from '../lib/forms';
 
 export default class inquiry extends Component {
   constructor(props) {
@@ -7,14 +8,15 @@ export default class inquiry extends Component {
       submitted: false,
       comments: '',
       uSAstate: 'Alabama',
-      email: '',
-      customername: '',
+      emailaddress: '',
+      fullname: '',
     };
+    this.forms = forms;
     this.onChange = this.onChange.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.createEmail = this.createEmail.bind(this);
     this.validateForm = this.validateForm.bind(this);
-    this.createEmailApi = this.createEmailApi.bind(this);
+    // this.createEmailApi = this.createEmailApi.bind(this);
     this.stateValues = ['Alabama', 'Alaska', 'American Samoa', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware',
       'District of Columbia', 'Federated States of Micronesia', 'Florida', 'Georgia', 'Guam', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa',
       'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Marshall Islands', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri',
@@ -36,44 +38,34 @@ export default class inquiry extends Component {
 
   validateForm() {
     const {
-      customername, email, comments,
+      fullname, emailaddress, comments,
     } = this.state;
     let validEmail = false;
     // eslint-disable-next-line no-useless-escape
     const regEx = RegExp('^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$');
-    if (regEx.test(email) && email.includes('.')) {
+    if (regEx.test(emailaddress) && emailaddress.includes('.')) {
       validEmail = true;
     }
-    if (customername && email && comments !== '' && validEmail) return false;
+    if (fullname && emailaddress && comments !== '' && validEmail) return false;
     return true;
   }
 
-  createEmailApi(emailForm1) {
-    // eslint-disable-next-line no-unused-vars
-    const emailForm = emailForm1;
-    this.setState({ submitted: true });
-  }
+  // createEmailApi(emailForm1) {
+  //   // eslint-disable-next-line no-unused-vars
+  //   const emailForm = emailForm1;
+  //   this.setState({ submitted: true });
+  // }
 
   createEmail() {
     const {
-      customername, email, uSAstate, comments,
+      fullname, emailaddress, uSAstate, comments,
     } = this.state;
     const emailForm = {
-      customername, email, uSAstate, comments,
+      fullname, emailaddress, uSAstate, comments,
     };
-    return this.createEmailApi(emailForm);
-  }
-
-  // eslint-disable-next-line class-methods-use-this
-  makeInput(type, name, isRequired, onChange, value) {
-    return (
-      <label className="inquiryLabel" htmlFor={name}>
-        {isRequired ? '* ' : ''}
-        {name[0].toUpperCase() + name.slice(1)}
-        <br />
-        <input id={name} type={type} name={name} onChange={onChange} required={isRequired} value={value} />
-      </label>
-    );
+    console.log('ready to post to the backend');
+    console.log(emailForm);
+    // return this.createEmailApi(emailForm);
   }
 
   statesDropdown(uSAstate) {
@@ -90,11 +82,11 @@ export default class inquiry extends Component {
     );
   }
 
-  newContactForm(customername, email, comments, buttonStyle) {
+  newContactForm(fullname, emailaddress, comments, buttonStyle) {
     return (
       <form id="new-contact" style={{ marginTop: '4px', paddingLeft: '10px' }}>
-        {this.makeInput('text', 'customername', true, this.onChange, customername)}
-        {this.makeInput('email', 'email', true, this.onChange, email)}
+        {this.forms.makeInput('text', 'Full Name', true, this.onChange, fullname)}
+        {this.forms.makeInput('email', 'Email Address', true, this.onChange, emailaddress)}
         { this.statesDropdown() }
         <label htmlFor="comments">
           * Comments
@@ -111,14 +103,14 @@ export default class inquiry extends Component {
 
   render() {
     const {
-      submitted, customername, email, comments, buttonStyle,
+      submitted, fullname, emailaddress, comments, buttonStyle,
     } = this.state;
     return (
       <div>
         { submitted === false ? (
           <div className="page-content">
             <h3 style={{ textAlign: 'center', margin: '14px', fontWeight: 'bold' }}>Contact Us</h3>
-            {this.newContactForm(customername, email, comments, buttonStyle)}
+            {this.newContactForm(fullname, emailaddress, comments, buttonStyle)}
             <p>&nbsp;</p>
             <p>&nbsp;</p>
             <p>&nbsp;</p>
