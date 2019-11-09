@@ -99,12 +99,13 @@ export class MusicPlayer extends Component {
 
     playUrl() {
         const { song } = this.state;
-        if (song !== null)
+        if (song !== null) {
             return `${
                 document.location.origin
             }/music/${window.location.pathname
                 .split("/")
                 .pop()}?oneplayer=true&id=${song._id}`;
+        }
         return null;
     }
 
@@ -227,11 +228,12 @@ export class MusicPlayer extends Component {
                 index: newIndex,
                 song: songsState[parseInt(newIndex, 0)]
             });
-        } else
+        } else {
             this.setState({
                 song: songsState[parseInt(minusIndex, 0)],
                 index: minusIndex
             });
+        }
     }
 
     play() {
