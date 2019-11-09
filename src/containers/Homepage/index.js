@@ -30,7 +30,6 @@ export default class Home extends Component {
               <hr />
               <WideCurrentProjects />
               <p style={{ fontSize: '6pt', marginBottom: '0' }}>&nbsp;</p>
-              <Inquiry />
             </div>
           )
           : (
@@ -40,6 +39,8 @@ export default class Home extends Component {
               <NarrowCurrentProjects />
               <p style={{ fontSize: '6pt', marginBottom: '0' }}>&nbsp;</p>
               <FacebookFeed />
+              <p style={{ fontSize: '6pt', marginBottom: '0' }}>&nbsp;</p>
+              <Inquiry />
             </div>
           )}
         <ReactResizeDetector handleWidth handleHeight onResize={this.onResize} targetDomEl={this.parentRef.current} />

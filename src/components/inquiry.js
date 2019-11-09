@@ -66,6 +66,8 @@ export default class inquiry extends Component {
     console.log('ready to post to the backend');
     console.log(emailForm);
     // return this.createEmailApi(emailForm);
+    // ToDo: Remove when Email API is reimplimented. Solely moved here for testing.
+    this.setState({ submitted: true });
   }
 
   statesDropdown(uSAstate) {
