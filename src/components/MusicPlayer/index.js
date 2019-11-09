@@ -48,8 +48,7 @@ export class MusicPlayer extends Component {
     let categorySongs = [];
     const otherSongs = [];
     for (let i = 0; songs.length > i; i += 1) { // eslint-disable-next-line security/detect-object-injection
-      if (songs[i].category === category) categorySongs.push(songs[i]);
-      else otherSongs.push(songs[i]); // eslint-disable-line security/detect-object-injection
+      (songs[i].category === category) ? categorySongs.push(songs[i]) : otherSongs.push(songs[i]);
     }
     categorySongs = categorySongs.concat(otherSongs);
     return categorySongs;
@@ -73,6 +72,7 @@ export class MusicPlayer extends Component {
     songsState = this.setIndex(songsState, lcType);
     this.setState({
       player: { ...player, isShuffleOn: false },
+      player: { ...player },
       pageTitle,
       songsState,
       [typeInState]: typeState === 'off' ? 'on' : 'off',
@@ -167,8 +167,7 @@ export class MusicPlayer extends Component {
     let { index } = this.state;
     index += 1;
     const { songsState } = this.state;
-    if (index >= songsState.length) this.setState({ index: 0, song: songsState[0] });
-    else this.setState({ song: songsState[parseInt(index, 0)], index });
+    (index >= songsState.length) ? this.setState({ index: 0, song: songsState[0] }) : this.setState({ song: songsState[parseInt(index, 0)], index });
   }
 
   copyInput(player, song) {
@@ -258,9 +257,7 @@ export class MusicPlayer extends Component {
     );
   }
 }
-MusicPlayer.defaultProps = {
-  songs: [{ url: '', title: '' }],
-};
+MusicPlayer.defaultProps = { songs: [{ url: '', title: '' }] };
 MusicPlayer.propTypes = {
   songs: PropTypes.arrayOf(PropTypes.shape({ title: PropTypes.string })),
   filterBy: PropTypes.string.isRequired,
