@@ -33,7 +33,7 @@ export default class inquiry extends Component {
   }
 
   handleChange(event) {
-    this.setState({ comments: event.target.value });
+    return this.setState({ comments: event.target.value });
   }
 
   validateForm() {
@@ -50,11 +50,12 @@ export default class inquiry extends Component {
     return true;
   }
 
-  // createEmailApi(emailForm1) {
-  //   // eslint-disable-next-line no-unused-vars
-  //   const emailForm = emailForm1;
-  //   this.setState({ submitted: true });
-  // }
+  createEmailApi(emailForm1) {
+    // eslint-disable-next-line no-unused-vars
+    const emailForm = emailForm1;
+    this.setState({ submitted: true });
+    return true;
+  }
 
   createEmail() {
     const {
@@ -63,11 +64,7 @@ export default class inquiry extends Component {
     const emailForm = {
       fullname, emailaddress, uSAstate, comments,
     };
-    console.log('ready to post to the backend');
-    console.log(emailForm);
-    // return this.createEmailApi(emailForm);
-    // ToDo: Remove when Email API is reimplimented. Solely moved here for testing.
-    this.setState({ submitted: true });
+    return this.createEmailApi(emailForm);
   }
 
   statesDropdown(uSAstate) {

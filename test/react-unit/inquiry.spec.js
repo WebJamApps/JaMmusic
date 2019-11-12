@@ -17,15 +17,6 @@ describe('Inquiry Form', () => {
     wrapper.instance().setState = jest.fn((boobyJ) => { expect(boobyJ.hi).toBe(11); });
     wrapper.instance().onChange({ preventDefault: () => {}, target: { id: 'hi', value: 11 } });
   });
-  // it('calls on change isSelect', () => {
-  //   wrapper.instance().setState = jest.fn((boobyJ) => { expect(boobyJ.uSAstate).toBe('Virginia'); });
-  //   wrapper.instance.statesDropdown({ uSAstate: 'Virginia' });
-  //   wrapper.instance().onChange({ preventDefault: () => {}, uSAstate: { value: 'Virginia' } });
-  // });
-  // it('calls handle change', () => {
-  //   wrapper.instance().setState = jest.fn((obJ) => { expect(obJ.comments).toBe('Comment'); });
-  //   wrapper.instance().handleChange({ comments: { value: 'Comment' } });
-  // });
   it('returns the validation', () => {
     wrapper.setState({
       fullname: 'Bob McBobPerson',
@@ -36,20 +27,33 @@ describe('Inquiry Form', () => {
     const result = wrapper.instance().validateForm();
     expect(result).toBe(false);
   });
-  // it('creates an email', () => {
-  //   wrapper.setState({
-  //     fullname: 'Bob McBobPerson',
-  //     emailaddress: 'example@example.com',
-  //     comments: 'A comment',
-  //     uSAstate: 'Virginia',
-  //   });
-  //   const result = wrapper.instance().createEmail();
-  //   expect(result).toBe(true);
-  // });
+  it('calls the email API', () => {
+    wrapper.instance().setState = jest.fn((obJ) => { expect(obJ.submitted).toBe(true); });
+    wrapper.instance().createEmailApi({ submitted: true });
+  });
+  it('creates an email', () => {
+    wrapper.setState({
+      fullname: 'Bob McBobPerson',
+      emailaddress: 'example@example.com',
+      comments: 'A comment',
+      uSAstate: 'Virginia',
+    });
+    const result = wrapper.instance().createEmail();
+    expect(result).toBe(true);
+  });
   it('calls the thank you statement', () => {
     wrapper.setState({
       submitted: true,
     });
     expect(wrapper.find('div.contacted').exists()).toBe(true);
   });
+  // it('calls on change isSelect', () => {
+  //   wrapper.instance().setState = jest.fn((boobyJ) => { expect(boobyJ.uSAstate).toBe('Virginia'); });
+  //   wrapper.instance.statesDropdown({ uSAstate: 'Virginia' });
+  //   wrapper.instance().onChange({ preventDefault: () => {}, uSAstate: { value: 'Virginia' } });
+  // });
+  // it('calls handle change', () => {
+  //   wrapper.instance().setState = jest.fn((obJ) => { expect(obJ.comments).toBe('Comment'); });
+  //   wrapper.instance().handleChange({ comments: { value: 'Comment' } });
+  // });
 });
