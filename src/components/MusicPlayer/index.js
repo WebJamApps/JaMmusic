@@ -4,6 +4,7 @@ import ReactPlayer from 'react-player';
 import PropTypes from 'prop-types';
 import musicPlayerUtils from './musicPlayerUtils';
 import mapStoreToProps from '../../redux/mapStoreToProps';
+// import Application from './copyInputDiv';
 
 const state = {
   pageTitle: 'Original Songs',
