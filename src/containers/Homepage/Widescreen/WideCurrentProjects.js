@@ -3,6 +3,7 @@ import CollegeLutheran from '../CollegeLutheran';
 import AppersonAutomotive from '../AppersonAutomotive';
 import TroPeaks from '../TroPeaks';
 import WideFacebookFeed from './WideFacebookFeed';
+import Inquiry from '../../../components/inquiry';
 
 const WideCurrentProjects = () => (
   <div className="widescreenHomepage">
@@ -25,6 +26,9 @@ const WideCurrentProjects = () => (
         <div className="row">
           <div className="col">
             <WideFacebookFeed />
+          </div>
+          <div className="col">
+            <Inquiry />
           </div>
         </div>
         <p className="spacer">&nbsp;</p>

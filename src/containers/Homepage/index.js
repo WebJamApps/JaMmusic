@@ -5,6 +5,7 @@ import WideCurrentProjects from './Widescreen/WideCurrentProjects';
 import NarrowAboutUs from './Narrowscreen/NarrowAbout';
 import NarrowCurrentProjects from './Narrowscreen/NarrowCurrentProjects';
 import FacebookFeed from './Narrowscreen/NarrowFacebookFeed';
+import Inquiry from '../../components/inquiry';
 
 export default class Home extends Component {
   constructor(props) {
@@ -38,6 +39,8 @@ export default class Home extends Component {
               <NarrowCurrentProjects />
               <p style={{ fontSize: '6pt', marginBottom: '0' }}>&nbsp;</p>
               <FacebookFeed />
+              <p style={{ fontSize: '6pt', marginBottom: '0' }}>&nbsp;</p>
+              <Inquiry />
             </div>
           )}
         <ReactResizeDetector handleWidth handleHeight onResize={this.onResize} targetDomEl={this.parentRef.current} />
