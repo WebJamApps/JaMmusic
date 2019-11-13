@@ -45,20 +45,6 @@ export class MusicPlayer extends Component {
     return this.musicPlayerUtils.runIfOnePlayer(this);
   }
 
-<<<<<<< HEAD
-=======
-  setIndex(songs, category) { // eslint-disable-line class-methods-use-this
-    let categorySongs = [];
-    const otherSongs = [];
-    for (let i = 0; songs.length > i; i += 1) { // eslint-disable-next-line security/detect-object-injection
-      if (songs[i].category === category) categorySongs.push(songs[i]);
-      else otherSongs.push(songs[i]); // eslint-disable-line security/detect-object-injection
-    }
-    categorySongs = categorySongs.concat(otherSongs);
-    return categorySongs;
-  }
-
->>>>>>> 80d6c23dbb84db71363ff6505ce19118027a6a20
   ToggleSongTypes(type) {
     const lcType = type.toLowerCase();
     const { player } = this.state;
@@ -79,11 +65,7 @@ export class MusicPlayer extends Component {
     }
     songsState = this.musicUtils.setIndex(songsState, lcType);
     this.setState({
-<<<<<<< HEAD
       player: { ...player },
-=======
-      player: { ...player, isShuffleOn: false },
->>>>>>> 80d6c23dbb84db71363ff6505ce19118027a6a20
       pageTitle,
       songsState,
       [typeInState]: typeState === 'off' ? 'on' : 'off',
@@ -178,16 +160,8 @@ export class MusicPlayer extends Component {
     let { index } = this.state;
     index += 1;
     const { songsState } = this.state;
-<<<<<<< HEAD
-    if (index >= songsState.length) {
-      this.setState({ index: 0, song: songsState[0] });
-    } else {
-      this.setState({ song: songsState[parseInt(index, 0)], index });
-    }
-=======
-    if (index >= songsState.length) this.setState({ index: 0, song: songsState[0] });
-    else this.setState({ song: songsState[parseInt(index, 0)], index });
->>>>>>> 80d6c23dbb84db71363ff6505ce19118027a6a20
+        if (index >= songsState.length) this.setState({ index: 0, song: songsState[0] });
+        else this.setState({ song: songsState[parseInt(index, 0)], index });
   }
 
   copyInput(player, song) {
