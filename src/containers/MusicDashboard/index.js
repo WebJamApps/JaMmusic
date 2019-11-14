@@ -63,7 +63,7 @@ export class MusicDashboard extends Component {
         {isRequired ? '* ' : ''}
         {name[0].toUpperCase() + name.slice(1)}
         <br />
-        <input id={name} type={type} name={name} onChange={onChange} required={isRequired} value={value} />
+        <input id={name} type={type} name={name} onChange={onChange} required={isRequired} value={value || ''} />
       </label>
     );
   }
