@@ -8,7 +8,7 @@ const makeInput = (type, label, isRequired, onChange, value) => {
       {isRequired ? '* ' : ''}
       {label}
       <br />
-      <input id={fId} type={type} name={fId} onChange={onChange} required={isRequired} value={value} />
+      <input id={fId} type={type} name={fId} onChange={onChange} required={isRequired} value={value || ''} />
     </label>
   );
 };

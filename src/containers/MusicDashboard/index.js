@@ -15,6 +15,7 @@ export class MusicDashboard extends Component {
       time: '',
       tickets: '',
       more: '',
+      venue: '',
     };
     this.forms = forms;
     this.onChange = this.onChange.bind(this);
