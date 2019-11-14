@@ -40,7 +40,7 @@ export default class Home extends Component {
               <p style={{ fontSize: '6pt', marginBottom: '0' }}>&nbsp;</p>
               <FacebookFeed />
               <p style={{ fontSize: '6pt', marginBottom: '0' }}>&nbsp;</p>
-              <Inquiry />
+              {process.env.NODE_ENV !== 'production' ? <Inquiry /> : null}
             </div>
           )}
         <ReactResizeDetector handleWidth handleHeight onResize={this.onResize} targetDomEl={this.parentRef.current} />
