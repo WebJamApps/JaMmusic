@@ -1,8 +1,6 @@
 import React from 'react';
 
-const pageH4 = (
-  pageTitle, // eslint-disable-line class-methods-use-this
-) => (
+const pageH4 = (pageTitle) => (
   <h4
     style={{
       textAlign: 'center',
@@ -17,16 +15,12 @@ const pageH4 = (
 );
 
 const setIndex = (songs, category) => {
-  // eslint-disable-line class-methods-use-this
   let categorySongs = [];
   const otherSongs = [];
   for (let i = 0; songs.length > i; i += 1) {
     // eslint-disable-next-line security/detect-object-injection
-    if (songs[i].category === category) {
-      categorySongs.push(songs[i]);
-    } else {
-      otherSongs.push(songs[i]);
-    }
+    if (songs[i].category === category) categorySongs.push(songs[i]);
+    else otherSongs.push(songs[i]);// eslint-disable-line security/detect-object-injection
   }
   categorySongs = categorySongs.concat(otherSongs);
   return categorySongs;

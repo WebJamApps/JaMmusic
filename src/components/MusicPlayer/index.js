@@ -160,8 +160,8 @@ export class MusicPlayer extends Component {
     let { index } = this.state;
     index += 1;
     const { songsState } = this.state;
-        if (index >= songsState.length) this.setState({ index: 0, song: songsState[0] });
-        else this.setState({ song: songsState[parseInt(index, 0)], index });
+    if (index >= songsState.length) this.setState({ index: 0, song: songsState[0] });
+    else this.setState({ song: songsState[parseInt(index, 0)], index });
   }
 
   copyInput(player, song) {
