@@ -59,17 +59,6 @@ export class MusicDashboard extends Component {
     return this.createTourApi(tour);
   }
 
-  makeInput(type, name, isRequired, onChange, value) { // eslint-disable-line class-methods-use-this
-    return (
-      <label htmlFor={name} style={{ marginTop: '14px', paddingTop: 0 }}>
-        {isRequired ? '* ' : ''}
-        {name[0].toUpperCase() + name.slice(1)}
-        <br />
-        <input id={name} type={type} name={name} onChange={onChange} required={isRequired} value={value || ''} />
-      </label>
-    );
-  }
-
   newTourForm(date, time, buttonStyle) {
     const {
       venue, location, tickets, more,
