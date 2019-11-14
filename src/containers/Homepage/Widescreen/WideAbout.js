@@ -15,7 +15,7 @@ const WideAboutUs = () => (
               target="_blank"
               rel="noopener noreferrer"
             >
-Fact Sheet
+            Fact Sheet
             </a>
           .
           </p>

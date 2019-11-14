@@ -48,6 +48,7 @@
     "@babel/register": "latest",
     "@material-ui/core": "latest",
     "@material-ui/icons": "latest",
+    "@types/react": "latest",
     "babel-loader": "latest",
     "bluebird": "latest",
     "bootstrap": "latest",
@@ -127,6 +128,7 @@
     "stylelint": "latest",
     "stylelint-config-standard": "latest",
     "stylelint-scss": "latest",
+    "typescript": "latest",
     "webpack-dev-server": "latest"
   },
   "snyk": true
