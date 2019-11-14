@@ -13,7 +13,7 @@ const CollegeLutheran = () => (
       target="_blank"
       rel="noreferrer noopener"
     >
-      Collegeluthean.org
+      Collegelutheran.org
     </a>
   </div>
 );
