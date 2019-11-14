@@ -128,7 +128,7 @@ describe('Music player component init', () => {
   it('should resort songs', async () => {
     const { wrapper } = setup();
     const songs = ['mission'];
-    const result = await wrapper.instance().setIndex(songs);
+    const result = await wrapper.instance().musicUtils.setIndex(songs);
     expect(result).toBeTruthy();
   });
   it('allows click on share button', () => new Promise((done) => {
