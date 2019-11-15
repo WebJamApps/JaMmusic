@@ -7,9 +7,6 @@ const middlewares = [thunk];
 const mockStore = configureMockStore(middlewares);
 
 describe('authActions', () => {
-  it('does nothing', () => new Promise((done) => {
-    done();
-  }));
   it('authenticates', async () => {
     const store = mockStore({ auth: { isAuthenticated: false } });
     const result = await store.dispatch(authenticate({ code: 'someCode' }));
@@ -29,9 +26,7 @@ describe('authActions', () => {
   it('returns false when fetch error', async () => {
     const store = mockStore({ auth: { isAuthenticated: false } });
     request.post = jest.fn(() => ({ set: () => ({ send: () => Promise.reject(new Error('bad')) }) }));
-    try { await store.dispatch(authenticate({ code: 'someCode' })); } catch (e) {
-      expect(e.message).toBe('bad');
-    }
+    await expect(store.dispatch(authenticate({ code: 'someCode' }))).rejects.toThrow('bad');
   });
   it('logs out the user', async () => {
     const store = mockStore({ auth: { isAuthenticated: true } });
