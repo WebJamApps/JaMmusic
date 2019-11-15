@@ -1,6 +1,6 @@
 import jwt from 'jwt-simple';
+import request from 'superagent';
 import authUtils from '../../../src/App/authUtils';
-import request from '../../__mocks__/superagent';
 
 describe('authUtils', () => {
   const controllerStub = {
