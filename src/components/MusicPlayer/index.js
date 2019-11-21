@@ -48,7 +48,7 @@ export class MusicPlayer extends Component {
   ToggleSongTypes(type) {
     const lcType = type.toLowerCase();
     const { player } = this.state;
-    let { songsState, pageTitle, copy } = this.state;
+    let { songsState, pageTitle } = this.state;
     const { songs } = this.props;
     const typeInState = `${lcType}State`;
     const typeState = this.state[typeInState.toString()]; // eslint-disable-line react/destructuring-assignment
@@ -73,7 +73,6 @@ export class MusicPlayer extends Component {
       copy: songsState,
       index: 0,
     });
-    console.log(songsState);
   }
 
   playUrl() {
@@ -134,7 +133,6 @@ export class MusicPlayer extends Component {
       this.setState({
         songsState: shuffled, player: { ...player, isShuffleOn: true }, song: shuffled[0], index: 0,
       });
-      console.log(songsState);
     }
   }
 
