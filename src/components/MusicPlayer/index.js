@@ -40,7 +40,7 @@ export class MusicPlayer extends Component {
     const { player } = this.state;
     const { songs, filterBy } = this.props;
     const newSongs = songs.filter((song) => song.category === filterBy);
-    this.setState({ song: newSongs[0], songsState: newSongs, copy: newSongs });
+    this.setState({ song: newSongs[0], songsState: newSongs, shuffledSongsState: newSongs, copy: newSongs });
     await this.musicPlayerUtils.checkOnePlayer(params, player, this);
     return this.musicPlayerUtils.runIfOnePlayer(this);
   }
@@ -48,7 +48,7 @@ export class MusicPlayer extends Component {
   ToggleSongTypes(type) {
     const lcType = type.toLowerCase();
     const { player } = this.state;
-    let { songsState, pageTitle } = this.state;
+    let { songsState, pageTitle, copy } = this.state;
     const { songs } = this.props;
     const typeInState = `${lcType}State`;
     const typeState = this.state[typeInState.toString()]; // eslint-disable-line react/destructuring-assignment
@@ -70,8 +70,10 @@ export class MusicPlayer extends Component {
       songsState,
       [typeInState]: typeState === 'off' ? 'on' : 'off',
       song: songsState[0],
+      copy: songsState,
       index: 0,
     });
+    console.log(songsState);
   }
 
   playUrl() {
@@ -122,6 +124,7 @@ export class MusicPlayer extends Component {
       this.setState({
         songsState: copy, player: { ...player, isShuffleOn: false }, song: copy[0], index: 0,
       });
+      console.log(songsState);
     } else {
       const shuffled = songsState;
       for (let i = shuffled.length - 1; i > 0; i -= 1) {
@@ -131,6 +134,7 @@ export class MusicPlayer extends Component {
       this.setState({
         songsState: shuffled, player: { ...player, isShuffleOn: true }, song: shuffled[0], index: 0,
       });
+      console.log(songsState);
     }
   }
 
