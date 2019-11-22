@@ -97,11 +97,6 @@ const toggleSongTypes = (type, controller) => {
       ...songs.filter((song) => song.category === lcType),
     ];
     if (player.isShuffleOn) shuffled = shuffleThem(songsState);
-    // shuffled = songsState;
-    // for (let i = shuffled.length - 1; i > 0; i -= 1) {
-    //   const j = Math.floor(Math.random() * (i + 1));
-    //   [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];// eslint-disable-line security/detect-object-injection
-    // }
     else { songsState = controller.musicUtils.setIndex(songsState, lcType); }
     pageTitle = pageTitle.replace('Songs', '');
     pageTitle += ` & ${type} Songs`;
@@ -109,13 +104,6 @@ const toggleSongTypes = (type, controller) => {
     songsState = songsState.filter((song) => song.category !== lcType);
     pageTitle = pageTitle.replace(` & ${type}`, '');
     if (player.isShuffleOn) shuffled = shuffleThem(songsState);
-    // if (player.isShuffleOn) {
-    //   shuffled = songsState;
-    //   for (let i = shuffled.length - 1; i > 0; i -= 1) {
-    //     const j = Math.floor(Math.random() * (i + 1));
-    //     [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];// eslint-disable-line security/detect-object-injection
-    //   }
-    // }
   }
   controller.setState({
     player: { ...player },
