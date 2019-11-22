@@ -1,5 +1,5 @@
 import { shallow } from 'enzyme';
-import musicUtil from '../../../src/components/MusicPlayer/musicPlayerUtils';
+import musicUtil from '../../src/components/MusicPlayer/musicPlayerUtils';
 
 describe('musicPlayerUtils', () => {
   beforeEach(() => {

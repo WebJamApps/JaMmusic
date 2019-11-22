@@ -1,7 +1,7 @@
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import request from 'superagent';
-import authenticate, { logout } from '../../../src/App/authActions';
+import authenticate, { logout } from '../../src/App/authActions';
 
 const middlewares = [thunk];
 const mockStore = configureMockStore(middlewares);

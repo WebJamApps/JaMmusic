@@ -1,4 +1,4 @@
-import reducer from '../../../src/redux/reducers/tourReducer';
+import reducer from '../../src/redux/reducers/tourReducer';
 
 describe('tour reducer', () => {
   it('should return the initial state', () => {
