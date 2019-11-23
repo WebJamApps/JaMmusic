@@ -28,7 +28,6 @@ export class MusicPlayer extends Component {
     this.next = this.next.bind(this);
     this.prev = this.prev.bind(this);
     this.buttons = this.buttons.bind(this);
-    // this.ToggleSongTypes = this.ToggleSongTypes.bind(this);
     this.navigator = window.navigator;
     this.musicPlayerUtils = musicPlayerUtils;
     this.musicUtils = musicUtils;
