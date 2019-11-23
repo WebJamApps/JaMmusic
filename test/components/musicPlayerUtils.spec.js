@@ -1,5 +1,5 @@
 import { shallow } from 'enzyme';
-import musicUtil from '../../src/components/MusicPlayer/musicPlayerUtils';
+import musicPlayerUtils from '../../src/components/MusicPlayer/musicPlayerUtils';
 
 describe('musicPlayerUtils', () => {
   beforeEach(() => {
@@ -12,15 +12,13 @@ describe('musicPlayerUtils', () => {
       if (item === 'id') return '123';
     },
   };
-
   const controller = {
     setState: () => true,
     props: { songs: [{ _id: '123' }] },
-    state: { songs: [], player: { onePlayerMode: true } },
+    state: { songsState: [], player: { onePlayerMode: true }, pageTitle: '' },
   };
-
   it('checks for one player then sets the song', async () => {
-    const result = await musicUtil.checkOnePlayer(params, { onePlayerMode: false }, controller);
+    const result = await musicPlayerUtils.checkOnePlayer(params, { onePlayerMode: false }, controller);
     expect(result).toBe(true);
   });
   it('checks for one player then sets the song when the id does not match', async () => {
@@ -28,49 +26,57 @@ describe('musicPlayerUtils', () => {
       if (item === 'oneplayer') return true;
       if (item === 'id') return '456';
     };
-    const result = await musicUtil.checkOnePlayer(params, { onePlayerMode: false }, controller);
+    const result = await musicPlayerUtils.checkOnePlayer(params, { onePlayerMode: false }, controller);
     expect(result).toBe(true);
   });
 
   it('makes one player', () => {
-    const result = musicUtil.makeOnePlayerMode();
+    const result = musicPlayerUtils.makeOnePlayerMode();
     expect(result).toBe(true);
   });
   it('makes one player and adjusts height for smaller devices', () => {
     window.outerWidth = 500;
-    const result = musicUtil.makeOnePlayerMode();
+    const result = musicPlayerUtils.makeOnePlayerMode();
     expect(result).toBe(true);
   });
 
   it('checks for null styles', () => {
     document.body.innerHTML = '';
     window.outerWidth = 400;
-    const result = musicUtil.makeOnePlayerMode();
+    const result = musicPlayerUtils.makeOnePlayerMode();
     expect(result).toBe(true);
   });
 
   it('runs one player mode if it exists', () => {
     window.outerWidth = 800;
-    const result = musicUtil.runIfOnePlayer(controller);
+    const result = musicPlayerUtils.runIfOnePlayer(controller);
     expect(result).toBe(true);
   });
   it('makes the home button that navigates to /music page', () => {
-    const wrapper = shallow(musicUtil.homeButton(true));
+    const wrapper = shallow(musicPlayerUtils.homeButton(true));
     window.location.assign = jest.fn();
     wrapper.find('button').simulate('click');
     expect(window.location.assign).toHaveBeenCalled();
   });
   it('hides the mission and pub buttons', () => {
-    musicUtil.showHideButtons('none');
+    musicPlayerUtils.showHideButtons('none');
     expect(document.getElementById('mAndP').style.display).toBe('none');
   });
   it('hides the home button', () => {
-    const wrapper = shallow(musicUtil.homeButton(false));
+    const wrapper = shallow(musicPlayerUtils.homeButton(false));
     expect(wrapper.find('button').length).toBe(1);
   });
   it('does nothing to the mission and pub buttons when they do not exist', () => {
     document.body.innerHTML = '';
-    const result = musicUtil.showHideButtons('none');
+    const result = musicPlayerUtils.showHideButtons('none');
     expect(result).toBe(false);
+  });
+  it('reshuffled the songs if shuffle is on and type is deselected', () => {
+    controller.setState = (obj) => {
+      expect(obj.player.isShuffleOn).toBe(true);
+    };
+    controller.state.player.isShuffleOn = true;
+    controller.state.missionState = 'on';
+    musicPlayerUtils.toggleSongTypes('mission', controller);
   });
 });
