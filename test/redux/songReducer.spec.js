@@ -1,4 +1,4 @@
-import reducer from '../../../src/redux/reducers/songReducer';
+import reducer from '../../src/redux/reducers/songReducer';
 
 describe('auth reducer', () => {
   it('should return the initial state', () => {

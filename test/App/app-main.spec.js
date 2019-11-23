@@ -1,7 +1,7 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import { AppTemplate } from '../../../src/App/app-main';
-import authUtils from '../../../src/App/authUtils';
+import { AppTemplate } from '../../src/App/app-main';
+import authUtils from '../../src/App/authUtils';
 
 const dFunc = () => {};
 function setup() {
