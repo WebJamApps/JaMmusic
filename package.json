@@ -1,6 +1,6 @@
 {
   "name": "JaMmusic",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "joshandmariamusic.com",
   "main": "dist/index.html",
   "repository": {
@@ -17,11 +17,7 @@
     "static/",
     "server.js"
   ],
-  "keywords": [
-    "React",
-    "Babel",
-    "Webpack"
-  ],
+  "keywords": ["React", "Babel", "Webpack", "Jest"],
   "license": "MIT",
   "scripts": {
     "start:dist": "node server.js",
