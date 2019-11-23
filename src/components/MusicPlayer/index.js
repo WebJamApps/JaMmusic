@@ -9,7 +9,6 @@ import musicUtils from './musicUtils';
 const state = {
   pageTitle: 'Original Songs',
   songsState: [],
-  // copy: [],
   song: null,
   index: 0,
   missionState: 'off',
@@ -29,8 +28,7 @@ export class MusicPlayer extends Component {
     this.next = this.next.bind(this);
     this.prev = this.prev.bind(this);
     this.buttons = this.buttons.bind(this);
-    this.ToggleSongTypes = this.ToggleSongTypes.bind(this);
-    // this.removeShuffle = this.removeShuffle.bind(this);
+    // this.ToggleSongTypes = this.ToggleSongTypes.bind(this);
     this.navigator = window.navigator;
     this.musicPlayerUtils = musicPlayerUtils;
     this.musicUtils = musicUtils;
@@ -44,64 +42,6 @@ export class MusicPlayer extends Component {
     this.setState({ song: newSongs[0], songsState: newSongs /* copy: newSongs */ });
     await this.musicPlayerUtils.checkOnePlayer(params, player, this);
     return this.musicPlayerUtils.runIfOnePlayer(this);
-  }
-
-  // removeShuffle() {
-  //   // Remove the button highlight on shuffle
-  //   // return songsState to preshuffle
-  //   // Only remove if preshuffle.length > 0
-  //   // set preshuffle to [];
-  //   if (preShuffle.length > 0) {
-  //     this.setState({
-  //       isShuffleOn: false,
-  //       songsState: preShuffle,
-  //       preShuffle: [],
-  //     });
-  //   }
-  //   return Promise.resolve(true);
-  // }
-
-  async ToggleSongTypes(type) {
-    // await this.removeShuffle();
-    const lcType = type.toLowerCase();
-    const { player } = this.state;
-    let { songsState, pageTitle } = this.state, shuffled;
-    const { songs } = this.props;
-    const typeInState = `${lcType}State`;
-    const typeState = this.state[typeInState.toString()]; // eslint-disable-line react/destructuring-assignment
-    if (typeState === 'off') {
-      songsState = [
-        ...songsState,
-        ...songs.filter((song) => song.category === lcType),
-      ];
-      if (player.isShuffleOn) {
-        shuffled = songsState;
-        for (let i = shuffled.length - 1; i > 0; i -= 1) {
-          const j = Math.floor(Math.random() * (i + 1));
-          [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];// eslint-disable-line security/detect-object-injection
-        }
-      }
-      pageTitle = pageTitle.replace('Songs', '');
-      pageTitle += ` & ${type} Songs`;
-    } else {
-      songsState = songsState.filter((song) => song.category !== lcType);
-      pageTitle = pageTitle.replace(` & ${type}`, '');
-      if (player.isShuffleOn) {
-        shuffled = songsState;
-      }
-    }
-    if (!player.isShuffleOn && typeState === 'off') {
-      songsState = this.musicUtils.setIndex(songsState, lcType);
-    }
-    this.setState({
-      player: { ...player },
-      pageTitle,
-      songsState: player.isShuffleOn ? shuffled : songsState,
-      [typeInState]: typeState === 'off' ? 'on' : 'off',
-      song: player.isShuffleOn ? shuffled[0] : songsState[0],
-      // copy: songsState,
-      index: 0,
-    });
   }
 
   playUrl() {
@@ -139,8 +79,10 @@ export class MusicPlayer extends Component {
         <button type="button" id="share-button" role="menu" onClick={() => this.musicPlayerUtils.share(this)}>Share</button>
         {onePlayerMode ? this.musicPlayerUtils.homeButton(onePlayerMode) : null}
         <div id="mAndP" style={{ height: '22px', margin: 'auto' }}>
-          <button type="button" onClick={() => this.ToggleSongTypes('Mission')} className={`mission${missionState}`}> Mission </button>
-          <button type="button" onClick={() => this.ToggleSongTypes('Pub')} className={`pub${pubState}`}> Pub </button>
+          <button type="button" onClick={() => this.musicPlayerUtils.toggleSongTypes('Mission', this)} className={`mission${missionState}`}>
+          Mission
+          </button>
+          <button type="button" onClick={() => this.musicPlayerUtils.toggleSongTypes('Pub', this)} className={`pub${pubState}`}> Pub </button>
         </div>
       </section>
     );
@@ -151,14 +93,12 @@ export class MusicPlayer extends Component {
       player, songsState, missionState, pubState,
     } = this.state;
     if (player.isShuffleOn) {
-      let reset;
-      // console.log(songsState);
-      // window.location.reload();
+      let reset = songsState;
       if (missionState === 'on') {
-        reset = this.musicUtils.setIndex(songsState, 'mission');
+        reset = this.musicUtils.setIndex(reset, 'mission');
       }
       if (pubState === 'on') {
-        reset = this.musicUtils.setIndex(songsState, 'pub');
+        reset = this.musicUtils.setIndex(reset, 'pub');
       }
       this.setState({
         songsState: reset, player: { ...player, isShuffleOn: false }, song: reset[0], index: 0,

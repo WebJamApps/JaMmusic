@@ -1,22 +1,10 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import { Redirect } from 'react-router-dom';
-import { MusicDashboard } from '../../../../src/containers/MusicDashboard';
+import { MusicDashboard } from '../../../src/containers/MusicDashboard';
 
 describe('Dashboard Container', () => {
   let wrapper;
-  // const controller = {
-  //   state: {
-  //     redirect: false,
-  //     date: '10-10-2019',
-  //     time: '11:11',
-  //     tickets: '1',
-  //     more: 'yes',
-  //   },
-  //   props: {
-  //     location: { pathname: '/music/dashboard' },
-  //   },
-  // };
   beforeEach(() => {
     const auth = { token: '' };
     wrapper = shallow(<MusicDashboard auth={auth} scc={{ emit: () => {} }} />);

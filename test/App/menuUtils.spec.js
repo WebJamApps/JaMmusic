@@ -1,4 +1,4 @@
-import menuUtils from '../../../src/App/menuUtils';
+import menuUtils from '../../src/App/menuUtils';
 
 describe('menuUtils', () => {
   const controllerStub = {

@@ -1,4 +1,4 @@
-import connectToSC from '../../../src/App/connectToSC';
+import connectToSC from '../../src/App/connectToSC';
 
 describe('connectToSC', () => {
   it('sets up scc', async () => {

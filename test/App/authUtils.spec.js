@@ -1,6 +1,6 @@
 import jwt from 'jwt-simple';
 import request from 'superagent';
-import authUtils from '../../../src/App/authUtils';
+import authUtils from '../../src/App/authUtils';
 
 describe('authUtils', () => {
   const controllerStub = {
