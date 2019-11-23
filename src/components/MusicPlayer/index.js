@@ -38,7 +38,7 @@ export class MusicPlayer extends Component {
     const { player } = this.state;
     const { songs, filterBy } = this.props;
     const newSongs = songs.filter((song) => song.category === filterBy);
-    this.setState({ song: newSongs[0], songsState: newSongs /* copy: newSongs */ });
+    this.setState({ song: newSongs[0], songsState: newSongs });
     await this.musicPlayerUtils.checkOnePlayer(params, player, this);
     return this.musicPlayerUtils.runIfOnePlayer(this);
   }
