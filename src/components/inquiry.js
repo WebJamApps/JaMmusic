@@ -8,6 +8,8 @@ export default class inquiry extends Component {
       submitted: false,
       comments: '',
       uSAstate: 'Alabama',
+      country: 'Afghanistan',
+      zipcode: '',
       emailaddress: '',
       fullname: '',
     };
@@ -24,6 +26,28 @@ export default class inquiry extends Component {
       'Northern Mariana Islands', 'Ohio', 'Oklahoma', 'Oregon', 'Palau', 'Pennsylvania', 'Puerto Rico', 'Rhode Island', 'South Carolina',
       'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virgin Island', 'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'];
     this.stateValues.sort();
+    this.countryValues = ['Afghanistan', 'Albania', 'Algeria', 'Andorra', 'Angola', 'Antigua & Deps', 'Argentina', 'Armenia', 'Australia', 'Austria',
+      'Azerbaijan', 'Bahamas', 'Bahrain', 'Bangladesh', 'Barbados', 'Belarus', 'Belgium', 'Belize',
+      'Benin', 'Bhutan', 'Bolivia', 'Bosnia Herzegovina', 'Botswana', 'Brazil', 'Brunei', 'Bulgaria', 'Burkina', 'Burundi', 'Cambodia', 'Cameroon',
+      'Canada', 'Cape Verde', 'Central African Rep', 'Chad', 'Chile', 'China', 'Colombia', 'Comoros', 'Congo',
+      'Congo (Democratic Rep)', 'Costa Rica', 'Croatia', 'Cuba', 'Cyprus', 'Czech Republic', 'Denmark', 'Djibouti', 'Dominica',
+      'Dominican Republic', 'East Timor', 'Ecuador', 'Egypt', 'El Salvador', 'Equatorial Guinea', 'Eritrea', 'Estonia', 'Ethiopia',
+      'Fiji', 'Finland', 'France', 'Gabon', 'Gambia', 'Georgia', 'Germany', 'Ghana', 'Greece', 'Grenada', 'Guatemala', 'Guinea', 'Guinea-Bissau',
+      'Guyana', 'Haiti', 'Honduras', 'Hungary', 'Iceland', 'India', 'Indonesia', 'Iran', 'Iraq', 'Ireland (Republic)', 'Israel', 'Italy',
+      'Ivory Coast', 'Jamaica', 'Japan', 'Jordan', 'Kazakhstan', 'Kenya', 'Kiribati',
+      'Kosovo', 'Kuwait', 'Kyrgyzstan', 'Laos', 'Latvia', 'Lebanon', 'Lesotho', 'Liberia', 'Libya',
+      'Liechtenstein', 'Lithuania', 'Luxembourg', 'Macedonia', 'Madagascar', 'Malawi', 'Malaysia', 'Maldives', 'Mali', 'Malta', 'Marshall Islands',
+      'Mauritania', 'Mauritius', 'Mexico', 'Micronesia', 'Moldova', 'Monaco', 'Mongolia', 'Montenegro', 'Morocco', 'Mozambique', 'Myanmar, (Burma)',
+      'Namibia', 'Nauru', 'Nepal', 'Netherlands', 'New Zealand', 'Nicaragua', 'Niger', 'Nigeria', 'North Korea', 'Norway', 'Oman', 'Pakistan',
+      'Palau', 'Panama', 'Papua New Guinea', 'Paraguay', 'Peru', 'Philippines', 'Poland', 'Portugal',
+      'Qatar', 'Romania', 'Russian Federation', 'Rwanda', 'St Kitts & Nevis', 'St Lucia', 'Saint Vincent & the Grenadines', 'Samoa', 'San Marino',
+      'Sao Tome & Principe', 'Saudi Arabia', 'Senegal', 'Serbia', 'Seychelles', 'Sierra Leone', 'Singapore', 'Slovakia', 'Slovenia',
+      'Solomon Islands', 'Somalia', 'South Africa', 'South Korea', 'South Sudan', 'Spain', 'Sri Lanka', 'Sudan', 'Suriname', 'Swaziland',
+      'Sweden', 'Switzerland', 'Syria', 'Taiwan', 'Tajikistan', 'Tanzania', 'Thailand', 'Togo',
+      'Tonga', 'Trinidad & Tobago', 'Tunisia', 'Turkey', 'Turkmenistan', 'Tuvalu', 'Uganda', 'Ukraine',
+      'United Arab Emirates', 'United Kingdom', 'United States', 'Uruguay', 'Uzbekistan', 'Vanuatu',
+      'Vatican City', 'Venezuela', 'Vietnam', 'Yemen', 'Zambia', 'Zimbabwe'];
+    this.countryValues.sort();
   }
 
   onChange(evt, isSelect) {
@@ -33,12 +57,13 @@ export default class inquiry extends Component {
   }
 
   handleChange(event) {
+    if (isSelect) return this.setState({ country: event.target.value });
     return this.setState({ comments: event.target.value });
   }
 
   validateForm() {
     const {
-      fullname, emailaddress, comments,
+      fullname, emailaddress, comments, zipcode,
     } = this.state;
     let validEmail = false;
     // eslint-disable-next-line no-useless-escape
@@ -46,7 +71,7 @@ export default class inquiry extends Component {
     if (regEx.test(emailaddress) && emailaddress.includes('.')) {
       validEmail = true;
     }
-    if (fullname && emailaddress && comments !== '' && validEmail) return false;
+    if (fullname && emailaddress && comments && zipcode !== '' && validEmail) return false;
     return true;
   }
 
@@ -59,12 +84,26 @@ export default class inquiry extends Component {
 
   createEmail() {
     const {
-      fullname, emailaddress, uSAstate, comments,
+      fullname, emailaddress, uSAstate, comments, country, zipcode,
     } = this.state;
     const emailForm = {
-      fullname, emailaddress, uSAstate, comments,
+      fullname, emailaddress, uSAstate, comments, country, zipcode,
     };
     return this.createEmailApi(emailForm);
+  }
+
+  countryDropdown(country) {
+    return (
+      <label htmlFor="country">
+          * Country
+        <br />
+        <select value={country} onChange={(event) => this.handleChange(event, true)}>
+          {
+            this.countryValues.map((cv) => <option id={cv} key={cv} value={cv}>{cv}</option>)
+          }
+        </select>
+      </label>
+    );
   }
 
   statesDropdown(uSAstate) {
@@ -81,12 +120,16 @@ export default class inquiry extends Component {
     );
   }
 
-  newContactForm(fullname, emailaddress, comments, buttonStyle) {
+  newContactForm(fullname, country, emailaddress, zipcode, comments, buttonStyle) {
     return (
       <form id="new-contact" style={{ marginTop: '4px', paddingLeft: '10px' }}>
         {this.forms.makeInput('text', 'Full Name', true, this.onChange, fullname)}
         {this.forms.makeInput('email', 'Email Address', true, this.onChange, emailaddress)}
-        { this.statesDropdown() }
+        { this.countryDropdown() }
+        { this.state.country === "USA" ? (
+           this.statesDropdown()
+        ) : null }
+        {this.forms.makeInput('text', 'Zipcode', true, this.onChange, zipcode)}
         <label htmlFor="comments">
           * Comments
           <br />
@@ -102,14 +145,14 @@ export default class inquiry extends Component {
 
   render() {
     const {
-      submitted, fullname, emailaddress, comments, buttonStyle,
+      submitted, fullname, emailaddress, zipcode, comments, buttonStyle,
     } = this.state;
     return (
       <div>
         { submitted === false ? (
           <div className="page-content">
             <h3 style={{ textAlign: 'center', margin: '14px', fontWeight: 'bold' }}>Contact Us</h3>
-            {this.newContactForm(fullname, emailaddress, comments, buttonStyle)}
+            {this.newContactForm(fullname, emailaddress, zipcode, comments, buttonStyle)}
             <p>&nbsp;</p>
             <p>&nbsp;</p>
             <p>&nbsp;</p>
