@@ -56,7 +56,7 @@ export default class inquiry extends Component {
     return this.setState({ [evt.target.id]: evt.target.value });
   }
 
-  handleChange(event) {
+  handleChange(event, isSelect) {
     if (isSelect) return this.setState({ country: event.target.value });
     return this.setState({ comments: event.target.value });
   }
@@ -126,8 +126,8 @@ export default class inquiry extends Component {
         {this.forms.makeInput('text', 'Full Name', true, this.onChange, fullname)}
         {this.forms.makeInput('email', 'Email Address', true, this.onChange, emailaddress)}
         { this.countryDropdown() }
-        { this.state.country === "USA" ? (
-           this.statesDropdown()
+        { country === 'USA' ? (
+          this.statesDropdown()
         ) : null }
         {this.forms.makeInput('text', 'Zipcode', true, this.onChange, zipcode)}
         <label htmlFor="comments">
