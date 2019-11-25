@@ -8,7 +8,7 @@ export default class inquiry extends Component {
       submitted: false,
       comments: '',
       uSAstate: 'Alabama',
-      country: 'Afghanistan',
+      country: 'USA',
       zipcode: '',
       emailaddress: '',
       fullname: '',
@@ -126,7 +126,7 @@ export default class inquiry extends Component {
         {this.forms.makeInput('text', 'Full Name', true, this.onChange, fullname)}
         {this.forms.makeInput('email', 'Email Address', true, this.onChange, emailaddress)}
         { this.countryDropdown() }
-        { country === 'USA' ? (
+        { country === 'United States' ? (
           this.statesDropdown()
         ) : null }
         {this.forms.makeInput('text', 'Zipcode', true, this.onChange, zipcode)}
