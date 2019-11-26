@@ -22,6 +22,7 @@ describe('Inquiry Form', () => {
       fullname: 'Bob McBobPerson',
       emailaddress: 'example@example.com',
       comments: 'A comment',
+      zipcode: '24179',
       validEmail: true,
     });
     const result = wrapper.instance().validateForm();

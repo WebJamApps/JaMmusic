@@ -7,9 +7,10 @@ export default class inquiry extends Component {
     this.state = {
       submitted: false,
       comments: '',
-      uSAstate: 'Alabama',
-      country: 'USA',
+      uSAstate: '',
+      country: 'Afghanistan',
       zipcode: '',
+      phonenumber: '',
       emailaddress: '',
       fullname: '',
     };
@@ -19,7 +20,7 @@ export default class inquiry extends Component {
     this.createEmail = this.createEmail.bind(this);
     this.validateForm = this.validateForm.bind(this);
     // this.createEmailApi = this.createEmailApi.bind(this);
-    this.stateValues = ['Alabama', 'Alaska', 'American Samoa', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware',
+    this.stateValues = ['--', 'Alabama', 'Alaska', 'American Samoa', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware',
       'District of Columbia', 'Federated States of Micronesia', 'Florida', 'Georgia', 'Guam', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa',
       'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Marshall Islands', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri',
       'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota',
@@ -68,10 +69,15 @@ export default class inquiry extends Component {
     let validEmail = false;
     // eslint-disable-next-line no-useless-escape
     const regEx = RegExp('^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$');
+    // const phoneno = /^\+?([0-9]{2})\)?[-. ]?([0-9]{4})[-. ]?([0-9]{4})$/;
     if (regEx.test(emailaddress) && emailaddress.includes('.')) {
       validEmail = true;
     }
-    if (fullname && emailaddress && comments && zipcode !== '' && validEmail) return false;
+    // if (phoneno.test(phonenumber)) {
+    //   validPhoneNumber = true;
+    // }
+    // if (phonenumber !== '' && !validPhoneNumber) return true;
+    if (fullname && emailaddress && zipcode && comments !== '' && validEmail) return false;
     return true;
   }
 
@@ -84,10 +90,10 @@ export default class inquiry extends Component {
 
   createEmail() {
     const {
-      fullname, emailaddress, uSAstate, comments, country, zipcode,
+      fullname, emailaddress, uSAstate, country, phonenumber, zipcode, comments,
     } = this.state;
     const emailForm = {
-      fullname, emailaddress, uSAstate, comments, country, zipcode,
+      fullname, emailaddress, uSAstate, country, phonenumber, zipcode, comments,
     };
     return this.createEmailApi(emailForm);
   }
@@ -109,7 +115,7 @@ export default class inquiry extends Component {
   statesDropdown(uSAstate) {
     return (
       <label htmlFor="state">
-          * State
+          State
         <br />
         <select value={uSAstate} onChange={(evt) => this.onChange(evt, true)}>
           {
@@ -120,16 +126,19 @@ export default class inquiry extends Component {
     );
   }
 
-  newContactForm(fullname, country, emailaddress, zipcode, comments, buttonStyle) {
+  newContactForm(fullname, country, emailaddress, phonenumber, zipcode, comments, buttonStyle) {
     return (
       <form id="new-contact" style={{ marginTop: '4px', paddingLeft: '10px' }}>
         {this.forms.makeInput('text', 'Full Name', true, this.onChange, fullname)}
         {this.forms.makeInput('email', 'Email Address', true, this.onChange, emailaddress)}
+        { this.forms.makeInput('zip', 'Zipcode', true, this.onChange, zipcode)}
+        { this.forms.makeInput('tel', 'Phone Number', false, this.onChange, phonenumber)}
         { this.countryDropdown() }
-        { country === 'United States' ? (
-          this.statesDropdown()
-        ) : null }
-        {this.forms.makeInput('text', 'Zipcode', true, this.onChange, zipcode)}
+        { country.state === 'United States'
+          ? (
+            this.statesDropdown()
+          )
+          : null}
         <label htmlFor="comments">
           * Comments
           <br />
@@ -145,14 +154,14 @@ export default class inquiry extends Component {
 
   render() {
     const {
-      submitted, fullname, emailaddress, zipcode, comments, buttonStyle,
+      submitted, fullname, emailaddress, comments, phonenumber, zipcode, buttonStyle,
     } = this.state;
     return (
       <div>
         { submitted === false ? (
           <div className="page-content">
             <h3 style={{ textAlign: 'center', margin: '14px', fontWeight: 'bold' }}>Contact Us</h3>
-            {this.newContactForm(fullname, emailaddress, zipcode, comments, buttonStyle)}
+            {this.newContactForm(fullname, emailaddress, phonenumber, zipcode, comments, buttonStyle)}
             <p>&nbsp;</p>
             <p>&nbsp;</p>
             <p>&nbsp;</p>
