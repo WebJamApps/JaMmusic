@@ -126,7 +126,8 @@ export default class inquiry extends Component {
     );
   }
 
-  newContactForm(fullname, country, emailaddress, phonenumber, zipcode, comments, buttonStyle) {
+  newContactForm(fullname, emailaddress, phonenumber, zipcode, comments, buttonStyle) {
+    const { country } = this.state;
     return (
       <form id="new-contact" style={{ marginTop: '4px', paddingLeft: '10px' }}>
         {this.forms.makeInput('text', 'Full Name', true, this.onChange, fullname)}
@@ -134,7 +135,7 @@ export default class inquiry extends Component {
         { this.forms.makeInput('zip', 'Zipcode', true, this.onChange, zipcode)}
         { this.forms.makeInput('tel', 'Phone Number', false, this.onChange, phonenumber)}
         { this.countryDropdown() }
-        { country.state === 'United States'
+        { country === 'United States'
           ? (
             this.statesDropdown()
           )
