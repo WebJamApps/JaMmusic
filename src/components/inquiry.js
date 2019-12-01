@@ -34,19 +34,20 @@ export default class inquiry extends Component {
 
   validateForm() {
     const {
-      fullname, emailaddress, comments, zipcode,
+      fullname, emailaddress, comments, zipcode, phonenumber,
     } = this.state;
-    let validEmail = false;
+    let validEmail = false,
+      validPhoneNumber = false;
     // eslint-disable-next-line no-useless-escape
     const regEx = RegExp('^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$');
-    // const phoneno = /^\+?([0-9]{2})\)?[-. ]?([0-9]{4})[-. ]?([0-9]{4})$/;
+    const phoneno = /^\+?([0-9]{2})\)?[-. ]?([0-9]{4})[-. ]?([0-9]{4})$/;
     if (regEx.test(emailaddress) && emailaddress.includes('.')) {
       validEmail = true;
     }
-    // if (phoneno.test(phonenumber)) {
-    //   validPhoneNumber = true;
-    // }
-    // if (phonenumber !== '' && !validPhoneNumber) return true;
+    if (phoneno.test(phonenumber)) {
+      validPhoneNumber = true;
+    }
+    if (phonenumber !== '' && !validPhoneNumber) return true;
     if (fullname && emailaddress && zipcode && comments !== '' && validEmail) return false;
     return true;
   }
