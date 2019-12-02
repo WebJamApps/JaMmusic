@@ -1,7 +1,7 @@
 import React from 'react';
 
 const WideFacebookFeed = () => (
-  <div className="col-md-6" style={{ maxWidth: '500px', margin: 'auto' }}>
+  <div style={{ maxWidth: '500px', margin: 'auto' }}>
     <iframe
       className="widescreenHomepage"
       // eslint-disable-next-line max-len
