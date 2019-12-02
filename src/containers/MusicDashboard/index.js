@@ -4,6 +4,7 @@ import { withRouter, Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import mapStoreToProps from '../../redux/mapStoreToProps';
+import forms from '../../lib/forms';
 
 export class MusicDashboard extends Component {
   constructor(props) {
@@ -14,7 +15,9 @@ export class MusicDashboard extends Component {
       time: '',
       tickets: '',
       more: '',
+      venue: '',
     };
+    this.forms = forms;
     this.onChange = this.onChange.bind(this);
     this.createTour = this.createTour.bind(this);
     this.validateForm = this.validateForm.bind(this);
@@ -44,6 +47,7 @@ export class MusicDashboard extends Component {
     tour.date = m.format('ll');
     scc.emit('newTour', { tour, token: auth.token });
     this.setState({ redirect: true });
+    return true;
   }
 
   createTour() {
@@ -56,29 +60,18 @@ export class MusicDashboard extends Component {
     return this.createTourApi(tour);
   }
 
-  makeInput(type, name, isRequired, onChange, value) { // eslint-disable-line class-methods-use-this
-    return (
-      <label htmlFor={name} style={{ marginTop: '14px', paddingTop: 0 }}>
-        {isRequired ? '* ' : ''}
-        {name[0].toUpperCase() + name.slice(1)}
-        <br />
-        <input id={name} type={type} name={name} onChange={onChange} required={isRequired} value={value} />
-      </label>
-    );
-  }
-
   newTourForm(date, time, buttonStyle) {
     const {
       venue, location, tickets, more,
     } = this.state;
     return (
       <form id="new-tour" style={{ marginTop: '4px', paddingLeft: '10px' }}>
-        {this.makeInput('date', 'date', true, this.onChange, date)}
-        {this.makeInput('text', 'time', true, this.onChange, time)}
-        {this.makeInput('text', 'venue', true, this.onChange, venue)}
-        {this.makeInput('text', 'location', true, this.onChange, location)}
-        {this.makeInput('text', 'tickets', false, this.onChange, tickets)}
-        {this.makeInput('text', 'more', false, this.onChange, more)}
+        {this.forms.makeInput('date', 'Date', true, this.onChange, date)}
+        {this.forms.makeInput('text', 'Time', true, this.onChange, time)}
+        {this.forms.makeInput('text', 'Venue', true, this.onChange, venue)}
+        {this.forms.makeInput('text', 'Location', true, this.onChange, location)}
+        {this.forms.makeInput('text', 'Tickets', false, this.onChange, tickets)}
+        {this.forms.makeInput('text', 'More', false, this.onChange, more)}
         <div style={{ textAlign: 'right', marginTop: '10px', maxWidth: '85%' }}>
           <span style={{ fontSize: '16px', marginRight: '38%', fontFamily: 'Habibi' }}><i>* Required</i></span>
           <button style={buttonStyle} disabled={this.validateForm()} type="button" onClick={this.createTour}>Create Tour</button>
@@ -104,6 +97,8 @@ export class MusicDashboard extends Component {
     );
   }
 }
-MusicDashboard.propTypes = { scc: PropTypes.shape({ emit: PropTypes.func }), auth: PropTypes.shape({ token: PropTypes.string }).isRequired };
-MusicDashboard.defaultProps = { scc: { emit: () => {} } };
+MusicDashboard.propTypes = {
+  scc: PropTypes.shape({ emit: PropTypes.func }).isRequired,
+  auth: PropTypes.shape({ token: PropTypes.string }).isRequired,
+};
 export default withRouter(connect(mapStoreToProps)(MusicDashboard));

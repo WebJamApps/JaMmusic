@@ -40,7 +40,7 @@ module.exports = ({
     path: outDir,
     publicPath: baseUrl,
     filename: production ? '[name].[chunkhash].bundle.js' : '[name].[hash].bundle.js',
-    sourceMapFilename: production ? '[name].[chunkhash].bundle.map' : '[name].[hash].bundle.map',
+    // sourceMapFilename: production ? '[name].[chunkhash].bundle.map' : '[name].[hash].bundle.map',
     chunkFilename: production ? '[name].[chunkhash].chunk.js' : '[name].[hash].chunk.js',
   },
 
@@ -49,8 +49,7 @@ module.exports = ({
   devServer: {
     contentBase: outDir,
     hot: true,
-    // // serve index.html for all 404 (required for push-state)
-    historyApiFallback: {
+    historyApiFallback: { // serve index.html for all 404 (required for push-state)
       rewrites: [
         { from: /^\/$/, to: '/' },
         { from: /^\//, to: '/' },
@@ -69,22 +68,16 @@ module.exports = ({
         cache: true,
         parallel: true,
         sourceMap: true,
-        terserOptions: {
-        // https://github.com/webpack-contrib/terser-webpack-plugin#terseroptions
+        terserOptions: { // https://github.com/webpack-contrib/terser-webpack-plugin#terseroptions
           extractComments: 'all',
-          compress: {
-            drop_console: true,
-          },
+          compress: { drop_console: true },
         },
       }),
     ] : [],
     splitChunks: {
       cacheGroups: {
         styles: {
-          name: 'styles',
-          test: /\.css$/i,
-          chunks: 'all',
-          enforce: true,
+          name: 'styles', test: /\.css$/i, chunks: 'all', enforce: true,
         },
       },
     },

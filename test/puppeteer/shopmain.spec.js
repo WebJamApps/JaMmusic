@@ -7,7 +7,6 @@ describe('ShopMain', () => {
     await page.goto('http://localhost:7878/shop', {
       waitUntil: 'load',
     });
-    // console.log(page);
-    // await expect(page.title()).resolves.toMatch('Shop | Web Jam LLC');
+    await expect(page.title()).resolves.toMatch('Shop | Web Jam LLC');
   });
 });

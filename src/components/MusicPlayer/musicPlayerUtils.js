@@ -76,7 +76,52 @@ const homeButton = (onePlayerMode) => (
     <span id="homeLink">Home</span>
   </button>
 );
-
+const shuffleThem = (songs) => {
+  const shuffled = songs;
+  for (let i = shuffled.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];// eslint-disable-line security/detect-object-injection
+  }
+  return shuffled;
+};
+const toggleSongTypes = (type, controller) => {
+  const lcType = type.toLowerCase();
+  const { player } = controller.state;
+  let { songsState, pageTitle } = controller.state, shuffled;
+  const { songs } = controller.props;
+  const typeInState = `${lcType}State`;
+  const typeState = controller.state[typeInState.toString()]; // eslint-disable-line react/destructuring-assignment
+  if (typeState === 'off') {
+    songsState = [
+      ...songsState,
+      ...songs.filter((song) => song.category === lcType),
+    ];
+    if (player.isShuffleOn) shuffled = shuffleThem(songsState);
+    else { songsState = controller.musicUtils.setIndex(songsState, lcType); }
+    pageTitle = pageTitle.replace('Songs', '');
+    pageTitle += ` & ${type} Songs`;
+  } else {
+    songsState = songsState.filter((song) => song.category !== lcType);
+    pageTitle = pageTitle.replace(` & ${type}`, '');
+    if (player.isShuffleOn) shuffled = shuffleThem(songsState);
+  }
+  controller.setState({
+    player: { ...player },
+    pageTitle,
+    songsState: player.isShuffleOn ? shuffled : songsState,
+    [typeInState]: typeState === 'off' ? 'on' : 'off',
+    song: player.isShuffleOn ? shuffled[0] : songsState[0],
+    index: 0,
+  });
+};
 export default {
-  checkOnePlayer, runIfOnePlayer, makeOnePlayerMode, homeButton, showHideButtons, copyShare, share,
+  shuffleThem,
+  toggleSongTypes,
+  checkOnePlayer,
+  runIfOnePlayer,
+  makeOnePlayerMode,
+  homeButton,
+  showHideButtons,
+  copyShare,
+  share,
 };

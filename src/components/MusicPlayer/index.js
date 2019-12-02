@@ -4,11 +4,11 @@ import ReactPlayer from 'react-player';
 import PropTypes from 'prop-types';
 import musicPlayerUtils from './musicPlayerUtils';
 import mapStoreToProps from '../../redux/mapStoreToProps';
+import musicUtils from './musicUtils';
 
 const state = {
   pageTitle: 'Original Songs',
   songsState: [],
-  copy: [],
   song: null,
   index: 0,
   missionState: 'off',
@@ -28,10 +28,9 @@ export class MusicPlayer extends Component {
     this.next = this.next.bind(this);
     this.prev = this.prev.bind(this);
     this.buttons = this.buttons.bind(this);
-    this.setIndex = this.setIndex.bind(this);
-    this.ToggleSongTypes = this.ToggleSongTypes.bind(this);
     this.navigator = window.navigator;
     this.musicPlayerUtils = musicPlayerUtils;
+    this.musicUtils = musicUtils;
   }
 
   async componentDidMount() {
@@ -39,46 +38,9 @@ export class MusicPlayer extends Component {
     const { player } = this.state;
     const { songs, filterBy } = this.props;
     const newSongs = songs.filter((song) => song.category === filterBy);
-    this.setState({ song: newSongs[0], songsState: newSongs, copy: newSongs });
+    this.setState({ song: newSongs[0], songsState: newSongs });
     await this.musicPlayerUtils.checkOnePlayer(params, player, this);
     return this.musicPlayerUtils.runIfOnePlayer(this);
-  }
-
-  setIndex(songs, category) { // eslint-disable-line class-methods-use-this
-    let categorySongs = [];
-    const otherSongs = [];
-    for (let i = 0; songs.length > i; i += 1) { // eslint-disable-next-line security/detect-object-injection
-      if (songs[i].category === category) categorySongs.push(songs[i]);
-      else otherSongs.push(songs[i]); // eslint-disable-line security/detect-object-injection
-    }
-    categorySongs = categorySongs.concat(otherSongs);
-    return categorySongs;
-  }
-
-  ToggleSongTypes(type) {
-    const lcType = type.toLowerCase();
-    const { player } = this.state;
-    let { songsState, pageTitle } = this.state;
-    const { songs } = this.props;
-    const typeInState = `${lcType}State`;
-    const typeState = this.state[typeInState.toString()]; // eslint-disable-line react/destructuring-assignment
-    if (typeState === 'off') {
-      songsState = [...songsState, ...songs.filter((song) => song.category === lcType)];
-      pageTitle = pageTitle.replace('Songs', '');
-      pageTitle += ` & ${type} Songs`;
-    } else {
-      songsState = songsState.filter((song) => song.category !== lcType);
-      pageTitle = pageTitle.replace(` & ${type}`, '');
-    }
-    songsState = this.setIndex(songsState, lcType);
-    this.setState({
-      player: { ...player, isShuffleOn: false },
-      pageTitle,
-      songsState,
-      [typeInState]: typeState === 'off' ? 'on' : 'off',
-      song: songsState[0],
-      index: 0,
-    });
   }
 
   playUrl() {
@@ -116,18 +78,29 @@ export class MusicPlayer extends Component {
         <button type="button" id="share-button" role="menu" onClick={() => this.musicPlayerUtils.share(this)}>Share</button>
         {onePlayerMode ? this.musicPlayerUtils.homeButton(onePlayerMode) : null}
         <div id="mAndP" style={{ height: '22px', margin: 'auto' }}>
-          <button type="button" onClick={() => this.ToggleSongTypes('Mission')} className={`mission${missionState}`}> Mission </button>
-          <button type="button" onClick={() => this.ToggleSongTypes('Pub')} className={`pub${pubState}`}> Pub </button>
+          <button type="button" onClick={() => this.musicPlayerUtils.toggleSongTypes('Mission', this)} className={`mission${missionState}`}>
+          Mission
+          </button>
+          <button type="button" onClick={() => this.musicPlayerUtils.toggleSongTypes('Pub', this)} className={`pub${pubState}`}> Pub </button>
         </div>
       </section>
     );
   }
 
   shuffle() {
-    const { player, copy, songsState } = this.state;
+    const {
+      player, songsState, missionState, pubState,
+    } = this.state;
     if (player.isShuffleOn) {
+      let reset = songsState;
+      if (missionState === 'on') {
+        reset = this.musicUtils.setIndex(reset, 'mission');
+      }
+      if (pubState === 'on') {
+        reset = this.musicUtils.setIndex(reset, 'pub');
+      }
       this.setState({
-        songsState: copy, player: { ...player, isShuffleOn: false }, song: copy[0], index: 0,
+        songsState: reset, player: { ...player, isShuffleOn: false }, song: reset[0], index: 0,
       });
     } else {
       const shuffled = songsState;
@@ -200,19 +173,6 @@ export class MusicPlayer extends Component {
     );
   }
 
-  pageH4(pageTitle) { // eslint-disable-line class-methods-use-this
-    return (
-      <h4
-        style={{
-          textAlign: 'center', margin: '20px', fontWeight: 'bold', marginBottom: '6px',
-        }}
-        id="headerTitle"
-      >
-        {pageTitle}
-      </h4>
-    );
-  }
-
   textUnderPlayer(song) {
     return (
       <section className="col-12 mt-1" style={{ fontSize: '0.8em', marginTop: '8px', marginBottom: '0' }}>
@@ -243,7 +203,7 @@ export class MusicPlayer extends Component {
     const { player, pageTitle } = this.state;
     return (
       <div className="container-fluid">
-        {this.pageH4(pageTitle)}
+        {this.musicUtils.pageH4(pageTitle)}
         <div id="player" className="mb-2 row justify-content-md-center">
           <section id="playSection" className="col-12 mt-2 mr-0 col-md-7" style={{ display: 'inline', textAlign: 'center', marginBottom: '0' }}>
             {song !== null && song !== undefined && song.url !== undefined ? this.reactPlayer() : null}

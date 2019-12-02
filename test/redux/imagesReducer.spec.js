@@ -1,4 +1,4 @@
-import reducer from '../../../src/redux/reducers/imagesReducer';
+import reducer from '../../src/redux/reducers/imagesReducer';
 
 describe('fetch reducer', () => {
   it('should return the initial state', () => {

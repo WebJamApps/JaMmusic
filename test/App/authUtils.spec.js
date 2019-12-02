@@ -1,26 +1,22 @@
 import jwt from 'jwt-simple';
-import authUtils from '../../../src/App/authUtils';
-import request from '../../__mocks__/superagent';
+import request from 'superagent';
+import authUtils from '../../src/App/authUtils';
 
 describe('authUtils', () => {
   const controllerStub = {
     props: { auth: { token: 'token' }, dispatch: () => Promise.resolve(true) },
   };
-  it('handles failed login', (done) => {
+  it('handles failed login', () => new Promise((done) => {
     const result = authUtils.responseGoogleFailLogin('no way');
     expect(result).toBe(false);
     done();
-  });
+  }));
   it('handles google login with bad token', async () => {
-    try { await authUtils.responseGoogleLogin({}, controllerStub); } catch (e) {
-      expect(e.message).toBe('Not enough or too many segments');
-    }
+    await expect(authUtils.responseGoogleLogin({}, controllerStub)).rejects.toThrow('Not enough or too many segments');
   });
   it('handles google login with authenticate error', async () => {
     controllerStub.props.dispatch = () => Promise.reject(new Error('bad'));
-    try { await authUtils.responseGoogleLogin({}, controllerStub); } catch (e) {
-      expect(e.message).toBe('bad');
-    }
+    await expect(authUtils.responseGoogleLogin({}, controllerStub)).rejects.toThrow('bad');
   });
   it('sets the user', async () => {
     jwt.decode = jest.fn(() => ({ sub: '123' }));
@@ -34,7 +30,7 @@ describe('authUtils', () => {
   it('cathes fetch user error when sets the user', async () => {
     jwt.decode = jest.fn(() => ({ sub: '123' }));
     request.get = jest.fn(() => ({ set: () => ({ set: () => Promise.reject(new Error('bad')) }) }));
-    try { await authUtils.setUser(controllerStub); } catch (e) { expect(e.message).toBe('bad'); }
+    await expect(authUtils.setUser(controllerStub)).rejects.toThrow('bad');
   });
   it('sets the user to the already decoded user', async () => {
     jwt.decode = jest.fn(() => ({ sub: '123', user: {} }));

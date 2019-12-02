@@ -1,4 +1,4 @@
-import main from '../../src/main'; // eslint-disable-line no-unused-vars
+import main from '../src/main'; // eslint-disable-line no-unused-vars
 
 describe('Main', () => {
   it('renders to the root', () => {

@@ -5,13 +5,14 @@ import WideCurrentProjects from './Widescreen/WideCurrentProjects';
 import NarrowAboutUs from './Narrowscreen/NarrowAbout';
 import NarrowCurrentProjects from './Narrowscreen/NarrowCurrentProjects';
 import FacebookFeed from './Narrowscreen/NarrowFacebookFeed';
+import Inquiry from '../../components/inquiry';
 
 export default class Home extends Component {
   constructor(props) {
     super(props);
     this.parentRef = React.createRef();
     this.onResize = this.onResize.bind(this);
-    this.state = { width: 100 };
+    this.state = { width: 100, nodeEnv: process.env.NODE_ENV };
   }
 
   onResize(width) {
@@ -19,7 +20,7 @@ export default class Home extends Component {
   }
 
   render() {
-    const { width } = this.state;
+    const { width, nodeEnv } = this.state;
     return (
       <div>
         {width >= 1004
@@ -38,6 +39,8 @@ export default class Home extends Component {
               <NarrowCurrentProjects />
               <p style={{ fontSize: '6pt', marginBottom: '0' }}>&nbsp;</p>
               <FacebookFeed />
+              <p style={{ fontSize: '6pt', marginBottom: '0' }}>&nbsp;</p>
+              {nodeEnv !== 'production' ? <Inquiry /> : null}
             </div>
           )}
         <ReactResizeDetector handleWidth handleHeight onResize={this.onResize} targetDomEl={this.parentRef.current} />

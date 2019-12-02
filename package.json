@@ -1,6 +1,6 @@
 {
   "name": "JaMmusic",
-  "version": "0.0.5",
+  "version": "0.0.8",
   "description": "joshandmariamusic.com",
   "main": "dist/index.html",
   "repository": {
@@ -9,7 +9,7 @@
   },
   "author": "https://github.com/orgs/WebJamApps/teams/handlersandkickers",
   "engines": {
-    "node": ">=12.9.0"
+    "node": ">=13.1.0"
   },
   "files": [
     "webpack.config.js",
@@ -17,11 +17,7 @@
     "static/",
     "server.js"
   ],
-  "keywords": [
-    "React",
-    "Babel",
-    "Webpack"
-  ],
+  "keywords": ["React", "Babel", "Webpack", "Jest"],
   "license": "MIT",
   "scripts": {
     "start:dist": "node server.js",
@@ -33,7 +29,7 @@
     "test": "yarn test:lint && yarn test:jest && yarn test:puppeteer",
     "test:local": "yarn test:lint-fix && yarn test:jest && yarn test:puppeteer && yarn cc",
     "test:jest": "jest --no-cache --config jest.config.json --notify",
-    "test:puppeteer": "jest --preset jest-puppeteer --testPathIgnorePatterns ./test/react-unit/",
+    "test:puppeteer": "jest --preset jest-puppeteer /test/puppeteer",
     "installglobals": "yarn config set registry https://registry.yarnpkg.com -g",
     "cleaninstall": "rm -rf yarn.lock && rm -rf node_modules && yarn cache clean && yarn installglobals && yarn install",
     "snyk-protect": "snyk protect",
@@ -48,6 +44,7 @@
     "@babel/register": "latest",
     "@material-ui/core": "latest",
     "@material-ui/icons": "latest",
+    "@types/react": "latest",
     "babel-loader": "latest",
     "bluebird": "latest",
     "bootstrap": "latest",
@@ -127,6 +124,7 @@
     "stylelint": "latest",
     "stylelint-config-standard": "latest",
     "stylelint-scss": "latest",
+    "typescript": "latest",
     "webpack-dev-server": "latest"
   },
   "snyk": true

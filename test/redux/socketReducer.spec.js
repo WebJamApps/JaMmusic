@@ -1,4 +1,4 @@
-import reducer from '../../../src/redux/reducers/socketReducer';
+import reducer from '../../src/redux/reducers/socketReducer';
 
 describe('socket reducer', () => {
   it('should return the initial state', () => {

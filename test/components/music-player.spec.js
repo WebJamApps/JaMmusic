@@ -1,7 +1,7 @@
 import React from 'react';
 import { mount, shallow } from 'enzyme';
-import { MusicPlayer } from '../../../src/components/MusicPlayer';
-import songData from '../../../src/App/songs.json';
+import { MusicPlayer } from '../../src/components/MusicPlayer';
+import songData from '../../src/App/songs.json';
 
 function setup() {
   const { songs } = songData;
@@ -46,12 +46,6 @@ describe('Music player component init', () => {
     wrapper.instance().playEnd();
     expect(wrapper.instance().state.index).toBe(0);
   });
-  it('should test the end of the player', () => {
-    const { wrapper } = setup();
-    wrapper.instance().setState({ player: { isShuffleOn: true } });
-    wrapper.find('button#shuffle').simulate('click');
-    expect(wrapper.instance().state.player.isShuffleOn).toBe(false);
-  });
   it('advances to the next song', () => {
     const mp = new MusicPlayer({ songs: [{ _id: '123' }, { _id: '456' }], copy: [{ _id: '123' }, { _id: '456' }] });
     mp.state = {
@@ -78,14 +72,14 @@ describe('Music player component init', () => {
     wrapper.find('#copyButton').simulate('click');
     expect(wrapper.instance().state.player.displayCopier).toBe('none');
   });
-  it('hides copier message after showing for 1.5s', (done) => {
+  it('hides copier message after showing for 1.5s', () => new Promise((done) => {
     const { wrapper } = setup();
     wrapper.instance().navigator = { clipboard: { async writeText(arg) { return arg; } } };
     wrapper.update();
     wrapper.instance().musicPlayerUtils.copyShare(wrapper.instance());
     expect(wrapper.instance().state.player.displayCopier).toBe('none');
     setTimeout(() => done(), 1501);
-  });
+  }));
   it('toggles off copying/share pane', () => {
     const { wrapper } = setup();
     wrapper.instance().setState({ player: { displayCopier: 'block' } });
@@ -98,14 +92,14 @@ describe('Music player component init', () => {
     wrapper.instance().musicPlayerUtils.share(wrapper.instance());
     expect(wrapper.instance().state.player.displayCopier).toBe('block');
   });
-  it('returns a null playUrl', (done) => {
+  it('returns a null playUrl', () => new Promise((done) => {
     const { wrapper } = setup();
     wrapper.instance().setState({ song: null });
     const result = wrapper.instance().playUrl();
     expect(result).toBe(null);
     done();
-  });
-  it('turns off the pic slider before unmounting', (done) => {
+  }));
+  it('turns off the pic slider before unmounting', () => new Promise((done) => {
     const { wrapper } = setup();
     wrapper.instance().setState = jest.fn((obj) => {
       expect(obj.slider).toBe(false);
@@ -113,7 +107,7 @@ describe('Music player component init', () => {
     wrapper.update();
     wrapper.unmount();
     done();
-  });
+  }));
   it('should simulate a click on adding mission/pub song types when either is off', () => {
     const { wrapper } = setup();
     wrapper.find('button.puboff').simulate('click');
@@ -128,10 +122,10 @@ describe('Music player component init', () => {
   it('should resort songs', async () => {
     const { wrapper } = setup();
     const songs = ['mission'];
-    const result = await wrapper.instance().setIndex(songs);
+    const result = await wrapper.instance().musicUtils.setIndex(songs);
     expect(result).toBeTruthy();
   });
-  it('allows click on share button', (done) => {
+  it('allows click on share button', () => new Promise((done) => {
     const { wrapper } = setup();
     wrapper.instance().musicPlayerUtils.share = jest.fn();
     wrapper.update();
@@ -140,5 +134,31 @@ describe('Music player component init', () => {
     renderButtons.find('button#share-button').simulate('click');
     expect(wrapper.instance().musicPlayerUtils.share).toHaveBeenCalled();
     done();
+  }));
+  it('should reset songs if missionState on', async () => {
+    const { wrapper } = setup();
+    wrapper.instance().setState({ player: { isShuffleOn: true, missionState: 'off' } });
+    wrapper.find('button.missionoff').simulate('click');
+    wrapper.find('button#shuffle').simulate('click');
+    const songsState = 'mission';
+    const missionState = 'on';
+    if (missionState === 'on') {
+      let reset = songsState;
+      reset = wrapper.instance().musicUtils.setIndex(reset, 'mission');
+      expect(reset).toBeTruthy();
+    }
+  });
+  it('should reset songs if pubState on', async () => {
+    const { wrapper } = setup();
+    wrapper.instance().setState({ player: { isShuffleOn: true, pubState: 'off' } });
+    wrapper.find('button.puboff').simulate('click');
+    wrapper.find('button#shuffle').simulate('click');
+    const songsState = 'pub';
+    const pubState = 'on';
+    if (pubState === 'on') {
+      let reset = songsState;
+      reset = wrapper.instance().musicUtils.setIndex(reset, 'mission');
+      expect(reset).toBeTruthy();
+    }
   });
 });

@@ -1,4 +1,4 @@
-import reducer from '../../../src/redux/reducers/authReducer';
+import reducer from '../../src/redux/reducers/authReducer';
 
 describe('auth reducer', () => {
   it('returns the initial state', () => {
