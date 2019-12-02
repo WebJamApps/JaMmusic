@@ -1,7 +1,6 @@
 import React from 'react';
 import CollegeLutheran from '../CollegeLutheran';
 import AppersonAutomotive from '../AppersonAutomotive';
-// import TroPeaks from '../TroPeaks';
 import WideFacebookFeed from './WideFacebookFeed';
 import Inquiry from '../../../components/inquiry';
 
@@ -24,20 +23,7 @@ const WideCurrentProjects = () => (
           <div className="col" style={{ margin: 'auto', marginTop: 0 }}>
             <Inquiry />
           </div>
-          {/* <div className="col">
-            <TroPeaks />
-          </div> */}
         </div>
-        {/* <p className="spacer">&nbsp;</p>
-        <p className="spacer">&nbsp;</p>
-        <div className="row"> */}
-        {/* <div className="col">
-            <WideFacebookFeed />
-          </div> */}
-        {/* <div className="col" style={{ margin: 'auto', marginTop: 0 }}>
-            <Inquiry />
-          </div> */}
-        {/* </div> */}
         <p className="spacer">&nbsp;</p>
       </div>
     </div>
