@@ -70,7 +70,7 @@ export class MusicPlayer extends Component {
   buttons() {
     const { missionState, pubState, player: { playing, isShuffleOn, onePlayerMode } } = this.state;
     return (
-      <section className="mt-0 col-12 col-md-10" style={{ marginTop: '4px' }}>
+      <section className="mt-0 col-12 col-md-10" style={{ marginTop: '4px', paddingTop: 0 }}>
         <button type="button" id="play-pause" role="menu" className={playing ? 'on' : 'off'} onClick={this.play}>Play/Pause</button>
         <button type="button" role="menu" id="next" onClick={this.next}>Next</button>
         <button type="button" role="menu" id="prev" onClick={this.prev}>Prev</button>
@@ -175,7 +175,12 @@ export class MusicPlayer extends Component {
 
   textUnderPlayer(song) {
     return (
-      <section className="col-12 mt-1" style={{ fontSize: '0.8em', marginTop: '8px', marginBottom: '0' }}>
+      <section
+        className="col-12 mt-1"
+        style={{
+          fontSize: '0.8em', marginTop: 0, marginBottom: '0', paddingTop: 0, paddingBottom: 0,
+        }}
+      >
         <strong>
           {song !== null ? song.title : null}
           {song !== null && song.composer !== undefined && song.category !== 'originals' ? ` by ${song.composer}` : null}

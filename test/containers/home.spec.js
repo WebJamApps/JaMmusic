@@ -16,7 +16,7 @@ describe('Home', () => {
     expect(wrapper.find(WideAboutUs).dive().find('div.widescreenHomepage').exists()).toBe(true);
     expect(wrapper.find(WideCurrentProjects).dive().find('div.widescreenHomepage').exists()).toBe(true);
     expect(wrapper.find(WideCurrentProjects).dive().find(WideFacebookFeed).dive()
-      .find('div.col-md-6')
+      .find('div')
       .exists()).toBe(true);
   });
   it('Resizes the page', () => {

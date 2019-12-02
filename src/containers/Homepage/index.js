@@ -41,6 +41,7 @@ export default class Home extends Component {
               <FacebookFeed />
               <p style={{ fontSize: '6pt', marginBottom: '0' }}>&nbsp;</p>
               {nodeEnv !== 'production' ? <Inquiry /> : null}
+              <p style={{ fontSize: '6pt', marginBottom: '0' }}>&nbsp;</p>
             </div>
           )}
         <ReactResizeDetector handleWidth handleHeight onResize={this.onResize} targetDomEl={this.parentRef.current} />
