@@ -126,7 +126,7 @@ export default class inquiry extends Component {
 
   render() {
     const {
-      submitted, fullname, emailaddress, comments, phonenumber, zipcode, buttonStyle,
+      submitted, fullname, emailaddress, comments, buttonStyle,
     } = this.state;
     return (
       <div style={{ border: '1px solid black', maxWidth: '4in', margin: 'auto' }}>
@@ -136,7 +136,7 @@ export default class inquiry extends Component {
               textAlign: 'center', margin: '14px', marginTop: 0, paddingTop: 0, fontWeight: 'bold',
             }}
             >
-Contact Us
+              Contact Us
             </h4>
             {this.newContactForm(fullname, emailaddress, comments, buttonStyle)}
             <p>&nbsp;</p>
