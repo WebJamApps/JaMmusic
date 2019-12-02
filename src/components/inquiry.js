@@ -40,7 +40,7 @@ export default class inquiry extends Component {
       validPhoneNumber = false;
     // eslint-disable-next-line no-useless-escape
     const regEx = RegExp('^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$');
-    const phoneno = /^\+?([0-9]{2})\)?[-. ]?([0-9]{4})[-. ]?([0-9]{4})$/;
+    const phoneno = /^[0-9]{10,20}$/;
     if (regEx.test(emailaddress) && emailaddress.includes('.')) {
       validEmail = true;
     }
@@ -86,8 +86,9 @@ export default class inquiry extends Component {
   statesDropdown(uSAstate) {
     return (
       <label htmlFor="state">
+        <span style={{ display: 'table', padding: '1px 8px' }}>
           State
-        <br />
+        </span>
         <select value={uSAstate} onChange={(evt) => this.onChange(evt, true)}>
           {
             this.stateValues.map((sv) => <option id={sv} key={sv} value={sv}>{sv}</option>)
@@ -104,7 +105,7 @@ export default class inquiry extends Component {
         {this.forms.makeInput('text', 'Full Name', true, this.onChange, fullname)}
         {this.forms.makeInput('email', 'Email Address', true, this.onChange, emailaddress)}
         { this.forms.makeInput('zip', 'Zipcode', true, this.onChange, zipcode)}
-        { this.forms.makeInput('tel', 'Phone Number', false, this.onChange, phonenumber)}
+        { this.forms.makeInput('tel', 'Phone Number (Digits Only)', false, this.onChange, phonenumber)}
         { this.countryDropdown() }
         { country === 'United States'
           ? (
@@ -126,7 +127,7 @@ export default class inquiry extends Component {
 
   render() {
     const {
-      submitted, fullname, emailaddress, comments, buttonStyle,
+      submitted, fullname, emailaddress, comments, phonenumber, zipcode, buttonStyle,
     } = this.state;
     return (
       <div style={{ border: '1px solid black', maxWidth: '4in', margin: 'auto' }}>
@@ -138,7 +139,7 @@ export default class inquiry extends Component {
             >
               Contact Us
             </h4>
-            {this.newContactForm(fullname, emailaddress, comments, buttonStyle)}
+            {this.newContactForm(fullname, emailaddress, phonenumber, zipcode, comments, buttonStyle)}
             <p>&nbsp;</p>
             <p>&nbsp;</p>
             <p>&nbsp;</p>

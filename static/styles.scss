@@ -1158,9 +1158,10 @@ p.spacer {
 }
 
 div.inquiryValidation {
-  text-align: right;
   margin-top: 10px;
   max-width: 85%;
+  display:flex;
+  justify-content:space-between;
 }
 
 span.inquiryValidation {
