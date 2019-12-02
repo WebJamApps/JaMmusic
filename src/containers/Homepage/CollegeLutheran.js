@@ -1,7 +1,7 @@
 import React from 'react';
 
 const CollegeLutheran = () => (
-  <div className="elevation2 project">
+  <div className="elevation2 project" style={{ minWidth: '313px' }}>
     <h4>College Lutheran Church</h4>
     <img
       alt="College Lutheran Church Homepage"

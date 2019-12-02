@@ -83,7 +83,7 @@ export default class inquiry extends Component {
 
   newContactForm(fullname, emailaddress, comments, buttonStyle) {
     return (
-      <form id="new-contact" style={{ marginTop: '4px', paddingLeft: '10px' }}>
+      <form id="new-contact" style={{ marginTop: '4px', maxWidth: '90%' }}>
         {this.forms.makeInput('text', 'Full Name', true, this.onChange, fullname)}
         {this.forms.makeInput('email', 'Email Address', true, this.onChange, emailaddress)}
         { this.statesDropdown() }
@@ -105,10 +105,15 @@ export default class inquiry extends Component {
       submitted, fullname, emailaddress, comments, buttonStyle,
     } = this.state;
     return (
-      <div>
+      <div style={{ border: '1px solid black', maxWidth: '4in', margin: 'auto' }}>
         { submitted === false ? (
           <div className="page-content">
-            <h3 style={{ textAlign: 'center', margin: '14px', fontWeight: 'bold' }}>Contact Us</h3>
+            <h4 style={{
+              textAlign: 'center', margin: '14px', marginTop: 0, paddingTop: 0, fontWeight: 'bold',
+            }}
+            >
+Contact Us
+            </h4>
             {this.newContactForm(fullname, emailaddress, comments, buttonStyle)}
             <p>&nbsp;</p>
             <p>&nbsp;</p>
