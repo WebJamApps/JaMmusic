@@ -21,7 +21,7 @@ const WideCurrentProjects = () => (
             <WideFacebookFeed />
           </div>
           <div className="col" style={{ margin: 'auto', marginTop: 0 }}>
-            <Inquiry />
+            {process.env.NODE_ENV !== 'production' ? <Inquiry /> : null}
           </div>
         </div>
         <p className="spacer">&nbsp;</p>
