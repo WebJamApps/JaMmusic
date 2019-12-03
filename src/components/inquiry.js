@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import request from 'superagent';
 import forms from '../lib/forms';
 import stateData from '../lib/StateData.json';
 import countryData from '../lib/CountryData.json';
@@ -15,7 +16,7 @@ export default class inquiry extends Component {
     this.handleChange = this.handleChange.bind(this);
     this.createEmail = this.createEmail.bind(this);
     this.validateForm = this.validateForm.bind(this);
-    // this.createEmailApi = this.createEmailApi.bind(this);
+    this.createEmailApi = this.createEmailApi.bind(this);
     this.stateValues.sort();
     this.countryValues = countryData;
     this.countryValues.sort();
@@ -55,6 +56,8 @@ export default class inquiry extends Component {
   createEmailApi(emailForm1) {
     // eslint-disable-next-line no-unused-vars
     const emailForm = emailForm1;
+    request.post(`${process.env.BackendUrl}/inquiry`)
+      .send(emailForm);
     this.setState({ submitted: true });
     return true;
   }
