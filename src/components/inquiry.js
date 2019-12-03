@@ -57,6 +57,7 @@ export default class inquiry extends Component {
     // eslint-disable-next-line no-unused-vars
     const emailForm = emailForm1;
     request.post(`${process.env.BackendUrl}/inquiry`)
+      .set('Content-Type', 'application/json')
       .send(emailForm);
     this.setState({ submitted: true });
     return true;
