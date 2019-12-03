@@ -1,29 +1,25 @@
 import React, { Component } from 'react';
+import request from 'superagent';
 import forms from '../lib/forms';
+import stateData from '../lib/StateData.json';
+import countryData from '../lib/CountryData.json';
 
 export default class inquiry extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      submitted: false,
-      comments: '',
-      uSAstate: 'Alabama',
-      emailaddress: '',
-      fullname: '',
+      submitted: false, comments: '', uSAstate: '', country: 'Afghanistan', zipcode: '', phonenumber: '', emailaddress: '', fullname: '',
     };
+    this.stateValues = stateData;
     this.forms = forms;
     this.onChange = this.onChange.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.createEmail = this.createEmail.bind(this);
     this.validateForm = this.validateForm.bind(this);
-    // this.createEmailApi = this.createEmailApi.bind(this);
-    this.stateValues = ['Alabama', 'Alaska', 'American Samoa', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware',
-      'District of Columbia', 'Federated States of Micronesia', 'Florida', 'Georgia', 'Guam', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa',
-      'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Marshall Islands', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri',
-      'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota',
-      'Northern Mariana Islands', 'Ohio', 'Oklahoma', 'Oregon', 'Palau', 'Pennsylvania', 'Puerto Rico', 'Rhode Island', 'South Carolina',
-      'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virgin Island', 'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'];
+    this.createEmailApi = this.createEmailApi.bind(this);
     this.stateValues.sort();
+    this.countryValues = countryData;
+    this.countryValues.sort();
   }
 
   onChange(evt, isSelect) {
@@ -32,46 +28,71 @@ export default class inquiry extends Component {
     return this.setState({ [evt.target.id]: evt.target.value });
   }
 
-  handleChange(event) {
+  handleChange(event, isSelect) {
+    if (isSelect) return this.setState({ country: event.target.value });
     return this.setState({ comments: event.target.value });
   }
 
   validateForm() {
     const {
-      fullname, emailaddress, comments,
+      fullname, emailaddress, comments, zipcode, phonenumber,
     } = this.state;
-    let validEmail = false;
+    let validEmail = false,
+      validPhoneNumber = false;
     // eslint-disable-next-line no-useless-escape
     const regEx = RegExp('^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$');
+    const phoneno = /^[0-9]{10,20}$/;
     if (regEx.test(emailaddress) && emailaddress.includes('.')) {
       validEmail = true;
     }
-    if (fullname && emailaddress && comments !== '' && validEmail) return false;
+    if (phoneno.test(phonenumber)) {
+      validPhoneNumber = true;
+    }
+    if (phonenumber !== '' && !validPhoneNumber) return true;
+    if (fullname && emailaddress && zipcode && comments !== '' && validEmail) return false;
     return true;
   }
 
   createEmailApi(emailForm1) {
     // eslint-disable-next-line no-unused-vars
     const emailForm = emailForm1;
+    request.post(`${process.env.BackendUrl}/inquiry`)
+      .set('Content-Type', 'application/json')
+      .send(emailForm);
     this.setState({ submitted: true });
     return true;
   }
 
   createEmail() {
     const {
-      fullname, emailaddress, uSAstate, comments,
+      fullname, emailaddress, uSAstate, country, phonenumber, zipcode, comments,
     } = this.state;
     const emailForm = {
-      fullname, emailaddress, uSAstate, comments,
+      fullname, emailaddress, uSAstate, country, phonenumber, zipcode, comments,
     };
     return this.createEmailApi(emailForm);
+  }
+
+  countryDropdown(country) {
+    return (
+      <label htmlFor="country">
+          * Country
+        <br />
+        <select value={country} onChange={(event) => this.handleChange(event, true)}>
+          {
+            this.countryValues.map((cv) => <option id={cv} key={cv} value={cv}>{cv}</option>)
+          }
+        </select>
+      </label>
+    );
   }
 
   statesDropdown(uSAstate) {
     return (
       <label htmlFor="state">
-          * State
-        <br />
+        <span style={{ display: 'table', padding: '1px 8px' }}>
+          State
+        </span>
         <select value={uSAstate} onChange={(evt) => this.onChange(evt, true)}>
           {
             this.stateValues.map((sv) => <option id={sv} key={sv} value={sv}>{sv}</option>)
@@ -81,12 +102,20 @@ export default class inquiry extends Component {
     );
   }
 
-  newContactForm(fullname, emailaddress, comments, buttonStyle) {
+  newContactForm(fullname, emailaddress, phonenumber, zipcode, comments, buttonStyle) {
+    const { country } = this.state;
     return (
       <form id="new-contact" style={{ marginTop: '4px', maxWidth: '90%' }}>
         {this.forms.makeInput('text', 'Full Name', true, this.onChange, fullname)}
         {this.forms.makeInput('email', 'Email Address', true, this.onChange, emailaddress)}
-        { this.statesDropdown() }
+        { this.forms.makeInput('zip', 'Zipcode', true, this.onChange, zipcode)}
+        { this.forms.makeInput('tel', 'Phone Number (Digits Only)', false, this.onChange, phonenumber)}
+        { this.countryDropdown() }
+        { country === 'United States'
+          ? (
+            this.statesDropdown()
+          )
+          : null}
         <label htmlFor="comments">
           * Comments
           <br />
@@ -102,7 +131,7 @@ export default class inquiry extends Component {
 
   render() {
     const {
-      submitted, fullname, emailaddress, comments, buttonStyle,
+      submitted, fullname, emailaddress, comments, phonenumber, zipcode, buttonStyle,
     } = this.state;
     return (
       <div style={{ border: '1px solid black', maxWidth: '4in', margin: 'auto' }}>
@@ -112,9 +141,9 @@ export default class inquiry extends Component {
               textAlign: 'center', margin: '14px', marginTop: 0, paddingTop: 0, fontWeight: 'bold',
             }}
             >
-Contact Us
+              Contact Us
             </h4>
-            {this.newContactForm(fullname, emailaddress, comments, buttonStyle)}
+            {this.newContactForm(fullname, emailaddress, phonenumber, zipcode, comments, buttonStyle)}
             <p>&nbsp;</p>
             <p>&nbsp;</p>
             <p>&nbsp;</p>
