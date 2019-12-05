@@ -25,9 +25,4 @@ describe('Home', () => {
     const i = wrapper.find(Inquiry).get(0);
     expect(i).toBeDefined();
   });
-  it('does not render the inquiry form', () => {
-    wrapper.instance().setState({ nodeEnv: 'production' });
-    const i = wrapper.find(Inquiry).get(0);
-    expect(i).toBe(undefined);
-  });
 });

@@ -3,6 +3,8 @@ import React from 'react';
 const makeInput = (type, label, isRequired, onChange, value) => {
   let fId = label.toLowerCase();
   fId = fId.replace(/\s/g, '');
+  fId = fId.split('(');
+  [fId] = fId;
   return (
     <label className="inquiryLabel" htmlFor={fId}>
       {isRequired ? '* ' : ''}
