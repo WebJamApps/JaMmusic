@@ -12,7 +12,7 @@ export default class Home extends Component {
     super(props);
     this.parentRef = React.createRef();
     this.onResize = this.onResize.bind(this);
-    this.state = { width: 100, nodeEnv: process.env.NODE_ENV };
+    this.state = { width: 320 };
   }
 
   onResize(width) {
@@ -20,7 +20,7 @@ export default class Home extends Component {
   }
 
   render() {
-    const { width, nodeEnv } = this.state;
+    const { width } = this.state;
     return (
       <div>
         {width >= 1004
@@ -40,7 +40,7 @@ export default class Home extends Component {
               <p style={{ fontSize: '6pt', marginBottom: '0' }}>&nbsp;</p>
               <FacebookFeed />
               <p style={{ fontSize: '6pt', marginBottom: '0' }}>&nbsp;</p>
-              {nodeEnv !== 'production' ? <Inquiry /> : null}
+              <Inquiry />
               <p style={{ fontSize: '6pt', marginBottom: '0' }}>&nbsp;</p>
             </div>
           )}

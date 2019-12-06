@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import request from 'superagent';
+import superagent from 'superagent';
 import forms from '../lib/forms';
 import stateData from '../lib/StateData.json';
 import countryData from '../lib/CountryData.json';
@@ -20,6 +20,7 @@ export default class inquiry extends Component {
     this.stateValues.sort();
     this.countryValues = countryData;
     this.countryValues.sort();
+    this.superagent = superagent;
   }
 
   onChange(evt, isSelect) {
@@ -53,14 +54,16 @@ export default class inquiry extends Component {
     return true;
   }
 
-  createEmailApi(emailForm1) {
-    // eslint-disable-next-line no-unused-vars
+  async createEmailApi(emailForm1) {
+    let r;
     const emailForm = emailForm1;
-    request.post(`${process.env.BackendUrl}/inquiry`)
-      .set('Content-Type', 'application/json')
-      .send(emailForm);
+    try {
+      r = await this.superagent.post(`${process.env.BackendUrl}/inquiry`)
+        .set('Content-Type', 'application/json')
+        .send(emailForm);
+    } catch (e) { return Promise.reject(e); }
     this.setState({ submitted: true });
-    return true;
+    return Promise.resolve(r.status);
   }
 
   createEmail() {
@@ -145,15 +148,13 @@ export default class inquiry extends Component {
             </h4>
             {this.newContactForm(fullname, emailaddress, phonenumber, zipcode, comments, buttonStyle)}
             <p>&nbsp;</p>
-            <p>&nbsp;</p>
-            <p>&nbsp;</p>
           </div>
         ) : (
           <div className="page-content contacted">
             <p style={{ textAlign: 'center', margin: '14px', paddingBottom: '15px' }}>
               Thank you for contacting us.
               <br />
-              We will be in contact with you shortly.
+              We will respond to your request soon.
             </p>
           </div>
         )}

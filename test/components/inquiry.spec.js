@@ -42,15 +42,28 @@ describe('Inquiry Form', () => {
     wrapper.instance().setState = jest.fn((obJ) => { expect(obJ.submitted).toBe(true); });
     wrapper.instance().createEmailApi({ submitted: true });
   });
-  it('creates an email', () => {
+  it('creates an email', async () => {
+    wrapper.instance().superagent.post = jest.fn(() => ({ set: () => ({ send: () => Promise.resolve({ status: 200 }) }) }));
+    wrapper.update();
     wrapper.setState({
       fullname: 'Bob McBobPerson',
       emailaddress: 'example@example.com',
       comments: 'A comment',
       uSAstate: 'Virginia',
     });
-    const result = wrapper.instance().createEmail();
-    expect(result).toBe(true);
+    const result = await wrapper.instance().createEmail();
+    expect(result).toBe(200);
+  });
+  it('catches error when posting email to backend', async () => {
+    wrapper.instance().superagent.post = jest.fn(() => ({ set: () => ({ send: () => Promise.reject(new Error('bad')) }) }));
+    wrapper.update();
+    wrapper.setState({
+      fullname: 'Bob McBobPerson',
+      emailaddress: 'example@example.com',
+      comments: 'A comment',
+      uSAstate: 'Virginia',
+    });
+    await expect(wrapper.instance().createEmail()).rejects.toThrow('bad');
   });
   it('calls the thank you statement', () => {
     wrapper.setState({
