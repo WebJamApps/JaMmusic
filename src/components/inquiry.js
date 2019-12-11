@@ -4,7 +4,7 @@ import forms from '../lib/forms';
 import stateData from '../lib/StateData.json';
 import countryData from '../lib/CountryData.json';
 
-export default class inquiry extends Component {
+export default class Inquiry extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -16,6 +16,7 @@ export default class inquiry extends Component {
     this.handleChange = this.handleChange.bind(this);
     this.createEmail = this.createEmail.bind(this);
     this.validateForm = this.validateForm.bind(this);
+    this.continueValidating = this.continueValidating.bind(this);
     this.createEmailApi = this.createEmailApi.bind(this);
     this.stateValues.sort();
     this.countryValues = countryData;
@@ -24,7 +25,6 @@ export default class inquiry extends Component {
   }
 
   onChange(evt, isSelect) {
-    evt.preventDefault();
     if (isSelect) return this.setState({ uSAstate: evt.target.value });
     return this.setState({ [evt.target.id]: evt.target.value });
   }
@@ -34,11 +34,27 @@ export default class inquiry extends Component {
     return this.setState({ comments: event.target.value });
   }
 
+  continueValidating(validEmail) {
+    const {
+      country, uSAstate, fullname, zipcode, comments, formError,
+    } = this.state;
+    let validState = false, notEmpty = false;
+    if (country === 'United States' && uSAstate !== '--') validState = true;
+    if (country !== 'United States') validState = true;
+    if (fullname !== '' && zipcode !== '' && comments !== '') notEmpty = true;
+    if (notEmpty && validEmail && country !== '--' && validState) {
+      if (formError !== '') this.setState({ formError: '' });
+      return false;
+    }
+    if (formError === '' || formError === 'Ten-digit phone number') this.setState({ formError: 'Complete missing form fields' });
+    return true;
+  }
+
   validateForm() {
     const {
-      fullname, emailaddress, comments, zipcode, phonenumber, formError, country, uSAstate,
+      emailaddress, phonenumber, formError,
     } = this.state;
-    let validEmail = false, validPhoneNumber = false, validState = false;
+    let validEmail = false;
     // eslint-disable-next-line no-useless-escape
     const regEx = RegExp('^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$');
     const phoneno = /^\d{10}$/;
@@ -49,19 +65,11 @@ export default class inquiry extends Component {
       if (formError === '') this.setState({ formError: 'Invalid email format' });
       return true;
     }
-    if (phoneno.test(phonenumber)) validPhoneNumber = true;
-    if (phonenumber !== '' && !validPhoneNumber) {
+    if (phonenumber !== '' && !phoneno.test(phonenumber)) {
       if (formError !== 'Ten-digit phone number') this.setState({ formError: 'Ten-digit phone number' });
       return true;
     }
-    if (country === 'United States' && uSAstate !== '--')validState = true;
-    if (country !== 'United States')validState = true;
-    if (fullname && emailaddress && zipcode && comments !== '' && validEmail && country !== '--' && validState) {
-      if (formError !== '') this.setState({ formError: '' });
-      return false;
-    }
-    if (formError === '' || formError === 'Ten-digit phone number') this.setState({ formError: 'Complete missing form fields' });
-    return true;
+    return this.continueValidating(validEmail);
   }
 
   async createEmailApi(emailForm1) {
@@ -86,46 +94,16 @@ export default class inquiry extends Component {
     return this.createEmailApi(emailForm);
   }
 
-  countryDropdown(country) {
-    return (
-      <label htmlFor="country" style={{ paddingTop: '12px' }}>
-          * Country
-        <br />
-        <select value={country} onChange={(event) => this.handleChange(event, true)}>
-          {
-            this.countryValues.map((cv) => <option id={cv} key={cv} value={cv}>{cv}</option>)
-          }
-        </select>
-      </label>
-    );
-  }
-
-  statesDropdown(uSAstate) {
-    return (
-      <label htmlFor="state" style={{ paddingTop: '12px' }}>
-          * State
-        <br />
-        <select value={uSAstate} onChange={(evt) => this.onChange(evt, true)}>
-          {
-            this.stateValues.map((sv) => <option id={sv} key={sv} value={sv}>{sv}</option>)
-          }
-        </select>
-      </label>
-    );
-  }
-
   newContactForm(fullname, emailaddress, phonenumber, zipcode, comments, buttonStyle) {
-    const { country, formError } = this.state;
+    const { country, formError, uSAstate } = this.state;
     return (
       <form id="new-contact" style={{ maxWidth: '316px', marginLeft: '10px' }}>
         {this.forms.makeInput('text', 'Full Name', true, this.onChange, fullname)}
         {this.forms.makeInput('email', 'Email Address', true, this.onChange, emailaddress)}
         { this.forms.makeInput('tel', 'Phone Number (Digits Only)', false, this.onChange, phonenumber)}
-        { this.countryDropdown() }
+        { this.forms.makeDropdown('country', '* Country', country, this.handleChange, this.countryValues) }
         { country === 'United States'
-          ? (
-            this.statesDropdown()
-          )
+          ? this.forms.makeDropdown('state', '* State', uSAstate, this.onChange, this.stateValues)
           : null}
         { this.forms.makeInput('zip', 'Zipcode', true, this.onChange, zipcode)}
         <label htmlFor="comments">
