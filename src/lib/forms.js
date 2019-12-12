@@ -11,7 +11,7 @@ const makeDropdown = (htmlFor, labelText, value, onChange, options) => (
     </select>
   </label>
 );
-const makeInput = (type, label, isRequired, onChange, value) => {
+const makeInput = (type, label, isRequired, onChange, value, width) => {
   let fId = label.toLowerCase();
   fId = fId.replace(/\s/g, '');
   fId = fId.split('(');
@@ -22,7 +22,7 @@ const makeInput = (type, label, isRequired, onChange, value) => {
       {label}
       <br />
       <input
-        style={{ paddingLeft: 0 }}
+        style={{ paddingLeft: 0, minWidth: 'inherit', width }}
         id={fId}
         type={type}
         name={fId}

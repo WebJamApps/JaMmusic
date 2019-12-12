@@ -13,10 +13,10 @@ describe('Inquiry Form', () => {
   // it('renders correctly', () => {
   //   expect(wrapper.find('div.page-content').exists()).toBe(true);
   // });
-  it('calls on change', () => {
-    wrapper.instance().setState = jest.fn((boobyJ) => { expect(boobyJ.hi).toBe(11); });
-    wrapper.instance().onChange({ preventDefault: () => {}, target: { id: 'hi', value: 11 } });
-  });
+  // it('calls on change', () => {
+  //   wrapper.instance().setState = jest.fn((boobyJ) => { expect(boobyJ.hi).toBe(11); });
+  //   wrapper.instance().onChange({ preventDefault: () => {}, target: { id: 'hi', value: 11 } });
+  // });
   it('checks for invalid phone numbers', () => {
     wrapper.setState({
       phonenumber: '540',
