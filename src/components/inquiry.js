@@ -4,11 +4,11 @@ import forms from '../lib/forms';
 import stateData from '../lib/StateData.json';
 import countryData from '../lib/CountryData.json';
 
-export default class inquiry extends Component {
+export default class Inquiry extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      submitted: false, comments: '', uSAstate: '', country: 'Afghanistan', zipcode: '', phonenumber: '', emailaddress: '', fullname: '',
+      submitted: false, comments: '', uSAstate: '--', country: '--', zipcode: '', phonenumber: '', emailaddress: '', fullname: '', formError: '',
     };
     this.stateValues = stateData;
     this.forms = forms;
@@ -16,6 +16,7 @@ export default class inquiry extends Component {
     this.handleChange = this.handleChange.bind(this);
     this.createEmail = this.createEmail.bind(this);
     this.validateForm = this.validateForm.bind(this);
+    this.continueValidating = this.continueValidating.bind(this);
     this.createEmailApi = this.createEmailApi.bind(this);
     this.stateValues.sort();
     this.countryValues = countryData;
@@ -24,7 +25,6 @@ export default class inquiry extends Component {
   }
 
   onChange(evt, isSelect) {
-    evt.preventDefault();
     if (isSelect) return this.setState({ uSAstate: evt.target.value });
     return this.setState({ [evt.target.id]: evt.target.value });
   }
@@ -34,24 +34,42 @@ export default class inquiry extends Component {
     return this.setState({ comments: event.target.value });
   }
 
+  continueValidating(validEmail) {
+    const {
+      country, uSAstate, fullname, zipcode, comments, formError,
+    } = this.state;
+    let validState = false, notEmpty = false;
+    if (country === 'United States' && uSAstate !== '--') validState = true;
+    if (country !== 'United States') validState = true;
+    if (fullname !== '' && zipcode !== '' && comments !== '') notEmpty = true;
+    if (notEmpty && validEmail && country !== '--' && validState) {
+      if (formError !== '') this.setState({ formError: '' });
+      return false;
+    }
+    if (formError === '' || formError === 'Ten-digit phone number') this.setState({ formError: 'Complete missing form fields' });
+    return true;
+  }
+
   validateForm() {
     const {
-      fullname, emailaddress, comments, zipcode, phonenumber,
+      emailaddress, phonenumber, formError,
     } = this.state;
-    let validEmail = false,
-      validPhoneNumber = false;
+    let validEmail = false;
     // eslint-disable-next-line no-useless-escape
     const regEx = RegExp('^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$');
-    const phoneno = /^[0-9]{10,20}$/;
+    const phoneno = /^\d{10}$/;
     if (regEx.test(emailaddress) && emailaddress.includes('.')) {
       validEmail = true;
+      if (formError === 'Invalid email format') this.setState({ formError: '' });
+    } else {
+      if (formError === '') this.setState({ formError: 'Invalid email format' });
+      return true;
     }
-    if (phoneno.test(phonenumber)) {
-      validPhoneNumber = true;
+    if (phonenumber !== '' && !phoneno.test(phonenumber)) {
+      if (formError !== 'Ten-digit phone number') this.setState({ formError: 'Ten-digit phone number' });
+      return true;
     }
-    if (phonenumber !== '' && !validPhoneNumber) return true;
-    if (fullname && emailaddress && zipcode && comments !== '' && validEmail) return false;
-    return true;
+    return this.continueValidating(validEmail);
   }
 
   async createEmailApi(emailForm1) {
@@ -76,55 +94,25 @@ export default class inquiry extends Component {
     return this.createEmailApi(emailForm);
   }
 
-  countryDropdown(country) {
-    return (
-      <label htmlFor="country">
-          * Country
-        <br />
-        <select value={country} onChange={(event) => this.handleChange(event, true)}>
-          {
-            this.countryValues.map((cv) => <option id={cv} key={cv} value={cv}>{cv}</option>)
-          }
-        </select>
-      </label>
-    );
-  }
-
-  statesDropdown(uSAstate) {
-    return (
-      <label htmlFor="state">
-        <span style={{ display: 'table', padding: '1px 8px' }}>
-          State
-        </span>
-        <select value={uSAstate} onChange={(evt) => this.onChange(evt, true)}>
-          {
-            this.stateValues.map((sv) => <option id={sv} key={sv} value={sv}>{sv}</option>)
-          }
-        </select>
-      </label>
-    );
-  }
-
   newContactForm(fullname, emailaddress, phonenumber, zipcode, comments, buttonStyle) {
-    const { country } = this.state;
+    const { country, formError, uSAstate } = this.state;
     return (
-      <form id="new-contact" style={{ marginTop: '4px', maxWidth: '90%' }}>
+      <form id="new-contact" style={{ maxWidth: '316px', marginLeft: '10px' }}>
         {this.forms.makeInput('text', 'Full Name', true, this.onChange, fullname)}
         {this.forms.makeInput('email', 'Email Address', true, this.onChange, emailaddress)}
-        { this.forms.makeInput('zip', 'Zipcode', true, this.onChange, zipcode)}
         { this.forms.makeInput('tel', 'Phone Number (Digits Only)', false, this.onChange, phonenumber)}
-        { this.countryDropdown() }
+        { this.forms.makeDropdown('country', '* Country', country, this.handleChange, this.countryValues) }
         { country === 'United States'
-          ? (
-            this.statesDropdown()
-          )
+          ? this.forms.makeDropdown('state', '* State', uSAstate, this.onChange, this.stateValues)
           : null}
+        { this.forms.makeInput('zip', 'Zipcode', true, this.onChange, zipcode)}
         <label htmlFor="comments">
           * Comments
           <br />
           <textarea style={{ minWidth: '3in', paddingLeft: '5px' }} value={comments} onChange={this.handleChange} />
         </label>
-        <div className="inquiryValidation">
+        <p className="form-errors" style={{ color: 'red' }}>{formError}</p>
+        <div className="inquiryValidation" style={{ marginBottom: '12px' }}>
           <span className="inquiryValidation">* Required</span>
           <button style={buttonStyle} disabled={this.validateForm()} type="button" onClick={this.createEmail}>Send</button>
         </div>
@@ -137,17 +125,16 @@ export default class inquiry extends Component {
       submitted, fullname, emailaddress, comments, phonenumber, zipcode, buttonStyle,
     } = this.state;
     return (
-      <div style={{ border: '1px solid black', maxWidth: '4in', margin: 'auto' }}>
+      <div style={{ maxWidth: '320px', margin: 'auto', border: '1px solid black' }}>
         { submitted === false ? (
-          <div className="page-content">
+          <div className="contact-form">
             <h4 style={{
-              textAlign: 'center', margin: '14px', marginTop: 0, paddingTop: 0, fontWeight: 'bold',
+              textAlign: 'center', marginBottom: '0', marginTop: '10px', paddingTop: 0, fontWeight: 'bold',
             }}
             >
               Contact Us
             </h4>
             {this.newContactForm(fullname, emailaddress, phonenumber, zipcode, comments, buttonStyle)}
-            <p>&nbsp;</p>
           </div>
         ) : (
           <div className="page-content contacted">
