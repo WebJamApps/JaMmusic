@@ -1,6 +1,6 @@
 {
   "name": "JaMmusic",
-  "version": "0.0.8",
+  "version": "0.1.0",
   "description": "joshandmariamusic.com",
   "main": "dist/index.html",
   "repository": {
@@ -9,7 +9,7 @@
   },
   "author": "https://github.com/orgs/WebJamApps/teams/handlersandkickers",
   "engines": {
-    "node": ">=13.2.0"
+    "node": ">=13.4.0"
   },
   "files": [
     "webpack.config.js",
@@ -77,7 +77,7 @@
     "react-html-parser": "latest",
     "react-player": "latest",
     "react-redux": "latest",
-    "react-resize-detector": "^4.2.0",
+    "react-resize-detector": "latest",
     "react-router-dom": "latest",
     "react-slick": "latest",
     "redux": "latest",

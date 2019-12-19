@@ -1,6 +1,6 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import Inquiry from '../../src/components/inquiry';
+import Inquiry from '../../../src/components/inquiry';
 
 describe('Inquiry Form', () => {
   let wrapper;
@@ -10,13 +10,27 @@ describe('Inquiry Form', () => {
   it('is defined', () => {
     expect(Inquiry).toBeDefined();
   });
-  // it('renders correctly', () => {
-  //   expect(wrapper.find('div.page-content').exists()).toBe(true);
-  // });
-  // it('calls on change', () => {
-  //   wrapper.instance().setState = jest.fn((boobyJ) => { expect(boobyJ.hi).toBe(11); });
-  //   wrapper.instance().onChange({ preventDefault: () => {}, target: { id: 'hi', value: 11 } });
-  // });
+  it('renders correctly', () => {
+    expect(wrapper).toMatchSnapshot();
+  });
+  it('displays the usa state dropdown when country selected is United States', () => {
+    wrapper.instance().setState({ country: 'United States' });
+    const dropdown = wrapper.find('select#state').get(0);
+    dropdown.props.onChange({ target: { value: 'Alaska' } });
+    expect(wrapper.instance().state.uSAstate).toBe('Alaska');
+  });
+  it('calls on change for text input', () => {
+    wrapper.instance().setState = jest.fn((obj) => { expect(obj.hi).toBe('11'); });
+    wrapper.instance().onChange({ target: { id: 'hi', value: '11 ' } });
+  });
+  it('calls on change for uSAstate dropdown', () => {
+    wrapper.instance().setState = jest.fn((obj) => { expect(obj.uSAstate).toBe('Alaska'); });
+    wrapper.instance().onChange({ target: { value: 'Alaska' } }, true);
+  });
+  it('calls handleChange for country dropdown', () => {
+    wrapper.instance().setState = jest.fn((obj) => { expect(obj.country).toBe('Spain'); });
+    wrapper.instance().handleChange({ target: { value: 'Spain' } }, true);
+  });
   it('checks for invalid phone numbers', () => {
     wrapper.setState({
       phonenumber: '540',
