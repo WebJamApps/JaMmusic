@@ -1,10 +1,10 @@
 import React from 'react';
 
 const makeDropdown = (htmlFor, labelText, value, onChange, options) => (
-  <label htmlFor={htmlFor} style={{ paddingTop: '12px' }}>
+  <label htmlFor={htmlFor} style={{ paddingTop: '12px' }} id={htmlFor}>
     {labelText}
     <br />
-    <select value={value} onChange={(event) => onChange(event, true)}>
+    <select id={htmlFor} value={value} onChange={(event) => onChange(event, true)}>
       {
           options.map((cv) => <option id={cv} key={cv} value={cv}>{cv}</option>)
         }

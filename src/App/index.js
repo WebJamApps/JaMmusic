@@ -26,14 +26,12 @@ export class App extends Component {
   componentDidMount() {
     const { dispatch, songs, images } = this.props;
     this.connectToSC.setupSocketCluster(dispatch);
-    // fetch songs and images
     if (songs.length === 0)dispatch(getSongs());
     if (images.length === 0)dispatch(getImages());
   }
 
   render() {
     const { auth } = this.props;
-    // console.log(auth);//eslint-disable-line
     return (
       <div id="App" className="App">
         <Router>
@@ -51,7 +49,6 @@ export class App extends Component {
           </AppMain>
         </Router>
       </div>
-
     );
   }
 }
@@ -59,10 +56,7 @@ App.propTypes = {
   dispatch: PropTypes.func.isRequired,
   songs: PropTypes.arrayOf(PropTypes.shape({})),
   images: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.shape({})), PropTypes.shape({})]),
-  auth: PropTypes.shape({
-    isAuthenticated: PropTypes.bool,
-    user: PropTypes.shape({ userType: PropTypes.string }),
-  }),
+  auth: PropTypes.shape({ isAuthenticated: PropTypes.bool, user: PropTypes.shape({ userType: PropTypes.string }) }),
 };
 App.defaultProps = { songs: [], images: [], auth: { isAuthenticated: false, user: { userType: '' } } };
 

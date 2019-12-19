@@ -205,10 +205,7 @@ AppTemplate.propTypes = {
   location: PropTypes.shape({ pathname: PropTypes.string }).isRequired,
   heartBeat: PropTypes.string,
   userCount: PropTypes.number,
-  auth: PropTypes.shape({
-    isAuthenticated: PropTypes.bool,
-    user: PropTypes.shape({ userType: PropTypes.string }),
-  }),
+  auth: PropTypes.shape({ isAuthenticated: PropTypes.bool, user: PropTypes.shape({ userType: PropTypes.string }) }),
   dispatch: PropTypes.func,
   children: PropTypes.element.isRequired,
 };

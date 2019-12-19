@@ -103,11 +103,12 @@ export class MusicPlayer extends Component {
         songsState: reset, player: { ...player, isShuffleOn: false }, song: reset[0], index: 0,
       });
     } else {
-      const shuffled = songsState;
-      for (let i = shuffled.length - 1; i > 0; i -= 1) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];// eslint-disable-line security/detect-object-injection
-      }
+      const shuffled = this.musicPlayerUtils.shuffleThem(songsState);
+      // const shuffled = songsState;
+      // for (let i = shuffled.length - 1; i > 0; i -= 1) {
+      //   const j = Math.floor(Math.random() * (i + 1));
+      //   [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];// eslint-disable-line security/detect-object-injection
+      // }
       this.setState({
         songsState: shuffled, player: { ...player, isShuffleOn: true }, song: shuffled[0], index: 0,
       });

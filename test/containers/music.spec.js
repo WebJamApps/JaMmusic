@@ -21,9 +21,6 @@ describe('/music', () => {
       .find('.instruments')
       .exists()).toBe(true);
     expect(wrapper.find('MariaBio').dive().find('.mariaBio').exists()).toBe(true);
-    expect(wrapper.find('Wjband').dive().find('.wjBand').exists()).toBe(true);
-    expect(wrapper.find('EmersonBio').dive().find('.emersonBio').exists()).toBe(true);
-    expect(wrapper.find('BrianBio').dive().find('.brianBio').exists()).toBe(true);
   });
   it('renders with images', () => new Promise((done) => {
     const data = [{}];
