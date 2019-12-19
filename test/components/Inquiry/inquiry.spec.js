@@ -39,19 +39,91 @@ describe('Inquiry Form', () => {
     const result = wrapper.instance().validateForm();
     expect(result).toBe(true);
   });
-  // it('returns the validation', () => {
-  //   wrapper.setState({
-  //     fullname: 'Bob McBobPerson',
-  //     emailaddress: 'example@example.com',
-  //     comments: 'A comment',
-  //     zipcode: '24179',
-  //     phonenumber: '5405555555',
-  //     validPhoneNumber: true,
-  //     validEmail: true,
-  //   });
-  //   const result = wrapper.instance().validateForm();
-  //   expect(result).toBe(false);
-  // });
+  it('returns the validation', () => {
+    wrapper.setState({
+      firstname: 'Bob',
+      lastname: 'McBobPerson',
+      emailaddress: 'example@example.com',
+      comments: 'A comment',
+      zipcode: '24179',
+      phonenumber: '5405555555',
+      validPhoneNumber: true,
+      validEmail: true,
+      formError: '',
+      country: 'United States',
+      uSAstate: 'Alaska',
+    });
+    const result = wrapper.instance().validateForm();
+    expect(result).toBe(false);
+  });
+  it('returns the validation after fixing email format', () => {
+    wrapper.setState({
+      firstname: 'Bob',
+      lastname: 'McBobPerson',
+      emailaddress: 'example@example.com',
+      comments: 'A comment',
+      zipcode: '24179',
+      phonenumber: '5405555555',
+      validPhoneNumber: true,
+      validEmail: true,
+      formError: 'Invalid email format',
+      country: 'United States',
+      uSAstate: 'Alaska',
+    });
+    const result = wrapper.instance().validateForm();
+    expect(result).toBe(false);
+  });
+  it('returns the validation when bad email format', () => {
+    wrapper.setState({
+      firstname: 'Bob',
+      lastname: 'McBobPerson',
+      emailaddress: 'example-example.com',
+      comments: 'A comment',
+      zipcode: '24179',
+      phonenumber: '5405555555',
+      validPhoneNumber: true,
+      validEmail: true,
+      formError: '',
+      country: 'United States',
+      uSAstate: 'Alaska',
+    });
+    const result = wrapper.instance().validateForm();
+    expect(result).toBe(true);
+  });
+  it('returns the validation when bad phone number', () => {
+    wrapper.setState({
+      firstname: 'Bob',
+      lastname: 'McBobPerson',
+      emailaddress: 'example@example.com',
+      comments: 'A comment',
+      zipcode: '24179',
+      phonenumber: '540',
+      validPhoneNumber: true,
+      validEmail: true,
+      formError: '',
+      country: 'United States',
+      uSAstate: 'Alaska',
+    });
+    const result = wrapper.instance().validateForm();
+    expect(result).toBe(true);
+  });
+  it('returns the validation when form not complete', () => {
+    wrapper.setState({
+      firstname: 'Bob',
+      lastname: 'McBobPerson',
+      emailaddress: 'example@example.com',
+      comments: 'A comment',
+      zipcode: '24179',
+      phonenumber: '5405555555',
+      validPhoneNumber: true,
+      validEmail: true,
+      formError: 'Ten-digit phone number',
+      country: 'United States',
+      uSAstate: '--',
+    });
+    const result = wrapper.instance().validateForm();
+    expect(result).toBe(true);
+  });
   it('calls the email API', () => {
     wrapper.instance().setState = jest.fn((obJ) => { expect(obJ.submitted).toBe(true); });
     wrapper.instance().createEmailApi({ submitted: true });
