@@ -56,7 +56,7 @@ App.propTypes = {
   dispatch: PropTypes.func.isRequired,
   songs: PropTypes.arrayOf(PropTypes.shape({})),
   images: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.shape({})), PropTypes.shape({})]),
-  auth: PropTypes.shape({ isAuthenticated: PropTypes.bool, user: PropTypes.shape({ userType: PropTypes.string }) }),
+  auth: PropTypes.shape({ user: PropTypes.shape({ userType: PropTypes.string }), isAuthenticated: PropTypes.bool }),
 };
 App.defaultProps = { songs: [], images: [], auth: { isAuthenticated: false, user: { userType: '' } } };
 

@@ -5,9 +5,6 @@ import PicSlider from '../../components/pic-slider';
 import DefaultTable from '../../components/tour-table';
 import JoshBio from './joshBio';
 import MariaBio from './mariaBio';
-// import EmersonBio from './emersonBio';
-// import BrianBio from './brianBio';
-// import Wjband from './wjBand';
 import Intro from './intro';
 import mapStoreToProps from '../../redux/mapStoreToProps';
 
@@ -26,12 +23,6 @@ export class Music extends Component {
           <JoshBio />
           <hr />
           <MariaBio />
-          {/* <hr />
-          <Wjband />
-          <hr />
-          <EmersonBio />
-          <hr />
-          <BrianBio /> */}
         </section>
         <p>{' '}</p>
         <p>{' '}</p>
