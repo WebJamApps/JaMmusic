@@ -62,7 +62,12 @@ export class MusicPlayer extends Component {
         width="100%"
         height="40vh"
         id="mainPlayer"
-        config={{ file: { attributes: { controlsList: 'nodownload' } } }}
+        config={{
+          youtube: {
+            playerVars: { controls: 0 },
+          },
+          file: { attributes: { controlsList: 'nodownload' } },
+        }}
       />
     );
   }
@@ -224,6 +229,7 @@ export class MusicPlayer extends Component {
     );
   }
 }
+
 MusicPlayer.defaultProps = {
   songs: [{ url: '', title: '' }],
 };
