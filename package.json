@@ -87,7 +87,7 @@
     "regenerator-runtime": "latest",
     "sass-loader": "latest",
     "slick-carousel": "latest",
-    "snyk": "latest",
+    "snyk": "1.290.1",
     "socketcluster-client": "latest",
     "style-loader": "latest",
     "stylelint-config-recommended-scss": "latest",
