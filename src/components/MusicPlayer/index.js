@@ -52,6 +52,13 @@ export class MusicPlayer extends Component {
   reactPlayer() {
     const { song } = this.state;
     const { player } = this.state;
+    let id = 'mainPlayer';
+    if (song.url[8] === 's') {
+      id = 'soundcloud';
+    }
+    if (song.url[12] === 'y') {
+      id = 'youtube';
+    }
     return (
       <ReactPlayer
         style={{ backgroundColor: '#eee', textAlign: 'center' }}
@@ -61,7 +68,7 @@ export class MusicPlayer extends Component {
         onEnded={this.playEnd}
         width="100%"
         height="40vh"
-        id="mainPlayer"
+        id={id}
         config={{
           youtube: {
             playerVars: { controls: 0 },
