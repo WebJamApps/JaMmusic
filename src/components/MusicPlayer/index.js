@@ -52,13 +52,7 @@ export class MusicPlayer extends Component {
   reactPlayer() {
     const { song } = this.state;
     const { player } = this.state;
-    let id = 'mainPlayer';
-    if (song.url[8] === 's') {
-      id = 'soundcloud';
-    }
-    if (song.url[12] === 'y') {
-      id = 'youtube';
-    }
+
     return (
       <ReactPlayer
         style={{ backgroundColor: '#eee', textAlign: 'center' }}
@@ -68,7 +62,7 @@ export class MusicPlayer extends Component {
         onEnded={this.playEnd}
         width="100%"
         height="40vh"
-        id={id}
+        id="mainPlayer"
         config={{
           youtube: {
             playerVars: { controls: 0 },
@@ -219,11 +213,19 @@ export class MusicPlayer extends Component {
   render() {
     const { song } = this.state;
     const { player, pageTitle } = this.state;
+    // let classOverlay = 'mainPlayer';
+    // if (song.url[8] === 's') {
+    //   classOverlay = 'soundcloudOverlay';
+    // }
+    // if (song.url[12] === 'y') {
+    //   classOverlay = 'youtubeOverlay';
+    // }
     return (
       <div className="container-fluid">
         {this.musicUtils.pageH4(pageTitle)}
         <div id="player" className="mb-2 row justify-content-md-center">
           <section id="playSection" className="col-12 mt-2 mr-0 col-md-7" style={{ display: 'inline', textAlign: 'center', marginBottom: '0' }}>
+            {/* <div className={classOverlay} /> */}
             {song !== null && song !== undefined && song.url !== undefined ? this.reactPlayer() : null}
           </section>
           {this.textUnderPlayer(song)}
