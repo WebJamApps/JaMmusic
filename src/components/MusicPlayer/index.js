@@ -220,6 +220,11 @@ export class MusicPlayer extends Component {
     if (song !== null && song !== undefined && song.url[12] === 'y') {
       classOverlay = 'youtubeOverlay';
     }
+    if (player.playing === true) {
+      if (song.url[12] === 'y' || song.url[8] === 's') {
+        classOverlay = 'mainPlayer';
+      }
+    }
     return (
       <div className="container-fluid">
         {this.musicUtils.pageH4(pageTitle)}
