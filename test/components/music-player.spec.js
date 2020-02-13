@@ -161,4 +161,17 @@ describe('Music player component init', () => {
       expect(reset).toBeTruthy();
     }
   });
+  it('checks if youtube is about to be played', () => {
+    const song = { url: 'https://www.youtube.com/embed/mCvUBjuzfo8' };
+    const wrapper = setup();
+    const overlay = wrapper.instance().setClassOverlay(song);
+    expect(overlay).toBe('youtubeOverlay');
+  });
+  it('checks to see if player is playing and changes overlay based on that', () => {
+    const player = { playing: true };
+    const song = { url: 'https://www.youtube.com/embed/mCvUBjuzfo8' };
+    const wrapper = setup();
+    const overlay = wrapper.instance().setClassOverlay(player, song);
+    expect(overlay).toBe('mainPlayer');
+  });
 });

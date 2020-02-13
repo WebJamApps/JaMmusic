@@ -28,6 +28,7 @@ export class MusicPlayer extends Component {
     this.next = this.next.bind(this);
     this.prev = this.prev.bind(this);
     this.buttons = this.buttons.bind(this);
+    this.setClassOverlay = this.setClassOverlay.bind(this);
     this.navigator = window.navigator;
     this.musicPlayerUtils = musicPlayerUtils;
     this.musicUtils = musicUtils;
@@ -41,6 +42,23 @@ export class MusicPlayer extends Component {
     this.setState({ song: newSongs[0], songsState: newSongs });
     await this.musicPlayerUtils.checkOnePlayer(params, player, this);
     return this.musicPlayerUtils.runIfOnePlayer(this);
+  }
+
+  setClassOverlay() {
+    const { song, player } = this.state;
+    let classOverlay = 'mainPlayer';
+    if (song !== null && song !== undefined && song.url[8] === 's') {
+      classOverlay = 'soundcloudOverlay';
+    }
+    if (song !== null && song !== undefined && song.url[12] === 'y') {
+      classOverlay = 'youtubeOverlay';
+    }
+    if (player.playing === true) {
+      if (song.url[12] === 'y' || song.url[8] === 's') {
+        classOverlay = 'mainPlayer';
+      }
+    }
+    return classOverlay;
   }
 
   playUrl() {
@@ -211,20 +229,10 @@ export class MusicPlayer extends Component {
   }
 
   render() {
-    const { song } = this.state;
-    const { player, pageTitle } = this.state;
-    let classOverlay = 'mainPlayer';
-    if (song !== null && song !== undefined && song.url[8] === 's') {
-      classOverlay = 'soundcloudOverlay';
-    }
-    if (song !== null && song !== undefined && song.url[12] === 'y') {
-      classOverlay = 'youtubeOverlay';
-    }
-    if (player.playing === true) {
-      if (song.url[12] === 'y' || song.url[8] === 's') {
-        classOverlay = 'mainPlayer';
-      }
-    }
+    const {
+      song, player, pageTitle,
+    } = this.state;
+    const classOverlay = this.setClassOverlay();
     return (
       <div className="container-fluid">
         {this.musicUtils.pageH4(pageTitle)}
