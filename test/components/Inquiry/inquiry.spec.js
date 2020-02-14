@@ -157,35 +157,8 @@ describe('Inquiry Form', () => {
     });
     expect(wrapper.find('div.contacted').exists()).toBe(true);
   });
-  // it('calls on change isSelect', () => {
-  //   wrapper.instance().setState = jest.fn((boobyJ) => { expect(boobyJ.uSAstate).toBe('Virginia'); });
-  //   wrapper.setState({ country: 'United States' });
-  //   wrapper.instance().statesDropdown({ uSAstate: 'Virginia' });
-  //   wrapper.instance().onChange({ preventDefault: () => {}, target: { value: 'Virginia' } }, true);
-  // });
-  // it('calls handle change isSelect', () => {
-  //   wrapper.instance().setState = jest.fn((boobyJ) => { expect(boobyJ.country).toBe('United States'); });
-  //   wrapper.instance().countryDropdown({ country: 'United States' });
-  //   wrapper.instance().handleChange({ target: { value: 'United States' } }, true);
-  // });
   it('calls handle change to set the comments', () => {
     wrapper.instance().handleChange({ target: { value: 'howdy' } });
     expect(wrapper.instance().state.comments).toBe('howdy');
   });
-  // it('calls on change from the select dropdown', () => {
-  //   wrapper.instance().onChange = jest.fn();
-  //   wrapper.update();
-  //   const select = wrapper.instance().statesDropdown('Florida');
-  //   const s = shallow(select);
-  //   s.find('select').simulate('change');
-  //   expect(wrapper.instance().onChange).toHaveBeenCalled();
-  // });
-  // it('calls handle change from the select dropdown', () => {
-  //   wrapper.instance().handleChange = jest.fn();
-  //   wrapper.update();
-  //   const select = wrapper.instance().countryDropdown('United States');
-  //   const s = shallow(select);
-  //   s.find('select').simulate('change');
-  //   expect(wrapper.instance().handleChange).toHaveBeenCalled();
-  // });
 });

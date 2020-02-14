@@ -161,4 +161,12 @@ describe('Music player component init', () => {
       expect(reset).toBeTruthy();
     }
   });
+  it('checks if youtube is about to be played', () => {
+    const { songs } = songData;
+    const song = { url: 'https://www.youtube.com/embed/mCvUBjuzfo8' };
+    const wrapper = shallow(<MusicPlayer songs={songs} filterBy="originals" />);
+    wrapper.instance().setState({ song, player: { playing: false } });
+    const overlay = wrapper.instance().setClassOverlay();
+    expect(overlay).toBe('youtubeOverlay');
+  });
 });
