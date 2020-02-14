@@ -47,15 +47,12 @@ export class MusicPlayer extends Component {
   setClassOverlay() {
     const { song, player } = this.state;
     let classOverlay = 'mainPlayer';
-    if (song !== null && song !== undefined && song.url[8] === 's') {
-      classOverlay = 'soundcloudOverlay';
-    }
-    if (song !== null && song !== undefined && song.url[12] === 'y') {
-      classOverlay = 'youtubeOverlay';
-    }
-    if (player.playing === true) {
-      if (song.url[12] === 'y' || song.url[8] === 's') {
-        classOverlay = 'mainPlayer';
+    if (player.playing === false) {
+      if (song !== null && song !== undefined && song.url[8] === 's') {
+        classOverlay = 'soundcloudOverlay';
+      }
+      if (song !== null && song !== undefined && song.url[12] === 'y') {
+        classOverlay = 'youtubeOverlay';
       }
     }
     return classOverlay;
