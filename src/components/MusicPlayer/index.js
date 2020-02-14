@@ -28,6 +28,7 @@ export class MusicPlayer extends Component {
     this.next = this.next.bind(this);
     this.prev = this.prev.bind(this);
     this.buttons = this.buttons.bind(this);
+    this.setClassOverlay = this.setClassOverlay.bind(this);
     this.navigator = window.navigator;
     this.musicPlayerUtils = musicPlayerUtils;
     this.musicUtils = musicUtils;
@@ -43,6 +44,20 @@ export class MusicPlayer extends Component {
     return this.musicPlayerUtils.runIfOnePlayer(this);
   }
 
+  setClassOverlay() {
+    const { song, player } = this.state;
+    let classOverlay = 'mainPlayer';
+    if (player.playing === false) {
+      if (song !== null && song !== undefined && song.url[8] === 's') {
+        classOverlay = 'soundcloudOverlay';
+      }
+      if (song !== null && song !== undefined && song.url[12] === 'y') {
+        classOverlay = 'youtubeOverlay';
+      }
+    }
+    return classOverlay;
+  }
+
   playUrl() {
     const { song } = this.state;
     if (song !== null) return `${document.location.origin}/music/${window.location.pathname.split('/').pop()}?oneplayer=true&id=${song._id}`;
@@ -52,6 +67,7 @@ export class MusicPlayer extends Component {
   reactPlayer() {
     const { song } = this.state;
     const { player } = this.state;
+
     return (
       <ReactPlayer
         style={{ backgroundColor: '#eee', textAlign: 'center' }}
@@ -62,7 +78,12 @@ export class MusicPlayer extends Component {
         width="100%"
         height="40vh"
         id="mainPlayer"
-        config={{ file: { attributes: { controlsList: 'nodownload' } } }}
+        config={{
+          youtube: {
+            playerVars: { controls: 0 },
+          },
+          file: { attributes: { controlsList: 'nodownload' } },
+        }}
       />
     );
   }
@@ -205,13 +226,16 @@ export class MusicPlayer extends Component {
   }
 
   render() {
-    const { song } = this.state;
-    const { player, pageTitle } = this.state;
+    const {
+      song, player, pageTitle,
+    } = this.state;
+    const classOverlay = this.setClassOverlay();
     return (
       <div className="container-fluid">
         {this.musicUtils.pageH4(pageTitle)}
         <div id="player" className="mb-2 row justify-content-md-center">
           <section id="playSection" className="col-12 mt-2 mr-0 col-md-7" style={{ display: 'inline', textAlign: 'center', marginBottom: '0' }}>
+            <div className={classOverlay} />
             {song !== null && song !== undefined && song.url !== undefined ? this.reactPlayer() : null}
           </section>
           {this.textUnderPlayer(song)}
@@ -224,6 +248,7 @@ export class MusicPlayer extends Component {
     );
   }
 }
+
 MusicPlayer.defaultProps = {
   songs: [{ url: '', title: '' }],
 };

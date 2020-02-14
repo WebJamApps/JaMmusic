@@ -925,6 +925,22 @@ div.fof {
   }
 }
 
+@media screen and (max-width: 500px) {
+  .youtubeOverlay {
+    position: absolute;
+    margin-top: 30px !important;
+    height: 75px !important;
+  }
+}
+
+@media screen and (max-width: 350px) {
+  div.youtubeOverlay {
+    position: absolute;
+    margin-top: 60px !important;
+    height: 75px !important;
+  }
+}
+
 .swipe-area {
   position: absolute;
   width: 0px;
@@ -1169,4 +1185,25 @@ span.inquiryValidation {
   margin-right: 38%;
   font-family: Habibi;
   font-style: italic;
+}
+
+#mainPlayer iFrame {
+  pointer-events: none;
+}
+
+.youtubeOverlay {
+  position: absolute;
+  margin-top: 90px;
+  background-color: white;
+  width: 100%;
+  height: 125px;
+}
+
+.soundcloudOverlay {
+  position: absolute;
+  margin-top: 13px;
+  margin-left: 7px;
+  background-color: white;
+  width: 48px;
+  height: 48px;
 }
