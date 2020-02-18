@@ -54,6 +54,7 @@ describe('musicPlayerUtils', () => {
   });
   it('makes the home button that navigates to /music page', () => {
     const wrapper = shallow(musicPlayerUtils.homeButton(true));
+    Object.defineProperty(window, 'location', { value: { href: '/booya', assign: () => {}, reload: () => {} }, writable: true });
     window.location.assign = jest.fn();
     wrapper.find('button').simulate('click');
     expect(window.location.assign).toHaveBeenCalled();

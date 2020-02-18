@@ -100,7 +100,7 @@ export class MusicPlayer extends Component {
         {onePlayerMode ? this.musicPlayerUtils.homeButton(onePlayerMode) : null}
         <div id="mAndP" style={{ height: '22px', margin: 'auto' }}>
           <button type="button" onClick={() => this.musicPlayerUtils.toggleSongTypes('Mission', this)} className={`mission${missionState}`}>
-          Mission
+            Mission
           </button>
           <button type="button" onClick={() => this.musicPlayerUtils.toggleSongTypes('Pub', this)} className={`pub${pubState}`}> Pub </button>
         </div>
@@ -182,7 +182,7 @@ export class MusicPlayer extends Component {
             backgroundColor: '#ccc', padding: '4px 15px', borderRadius: '5px', fontSize: '0.8em',
           }}
           >
-        Copy URL
+            Copy URL
           </span>
         </div>
       </div>
