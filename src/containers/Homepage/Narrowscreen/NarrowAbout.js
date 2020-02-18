@@ -8,11 +8,11 @@ const NarrowAboutUs = () => (
     </div>
     <div style={{ padding: '10px', marginBottom: '-20px' }}>
       <p style={{ marginTop: '-5px', marginBottom: '40px', fontSize: '18px' }}>
-          Web Jam LLC helps businesses bring their web technologies into the 21st century! Let us
-          help make your website mobile-friendly and grow your business by utilizing the power of online services.
-          More information is available in our&nbsp;
+        Web Jam LLC helps businesses bring their web technologies into the 21st century! Let us
+        help make your website mobile-friendly and grow your business by utilizing the power of online services.
+        More information is available in our&nbsp;
         <a href="https://www.dropbox.com/s/bzdqp3hr682y9sw/WebJamLLC_FactSheet.pdf?dl=0" target="_blank" rel="noopener noreferrer">Fact Sheet</a>
-          .
+        .
       </p>
       <Faqs />
     </div>

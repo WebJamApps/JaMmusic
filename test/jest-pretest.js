@@ -19,6 +19,7 @@ window.HTMLMediaElement.prototype.addTextTrack = () => { /* do nothing */ };
 window.location = {
   href: '',
   reload: jest.fn(),
+  assign: jest.fn(),
   search: {
     get: () => '?oneplayer=true&id=28ru9weis2309urihw9098ewuis',
     set: (data) => data,
