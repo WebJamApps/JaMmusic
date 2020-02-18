@@ -29,7 +29,7 @@
     "test": "yarn test:lint && yarn test:jest && yarn test:puppeteer",
     "test:local": "yarn test:lint-fix && yarn test:jest && yarn test:puppeteer && yarn cc",
     "test:jest": "jest --no-cache --config jest.config.json --notify",
-    "test:puppeteer": "jest --preset jest-puppeteer /test/puppeteer",
+    "test:puppeteer": "jest --preset jest-puppeteer --config jest.puppeteer-config.json /test/puppeteer",
     "installglobals": "yarn config set registry https://registry.yarnpkg.com -g",
     "cleaninstall": "rm -rf yarn.lock && rm -rf node_modules && yarn cache clean && yarn installglobals && yarn install",
     "snyk-protect": "snyk protect",
