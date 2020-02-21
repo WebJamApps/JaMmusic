@@ -27,7 +27,6 @@ export class Originals extends Component {
               : null
           }
         </div>
-        <div style={{ minHeight: '2.4in' }}>&nbsp;</div>
       </div>
     );
   }
