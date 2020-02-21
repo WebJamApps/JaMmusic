@@ -1,0 +1,9 @@
+{
+  "verbose": true,
+  "bail": true,
+  "setupFiles": [
+    "core-js/stable",
+    "regenerator-runtime/runtime"
+  ],
+  "testURL": "http://localhost/"
+}

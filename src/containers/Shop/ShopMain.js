@@ -31,7 +31,7 @@ export default class ShopMain extends Component {
             In time, businesses will be able to sign up to the shop as a means of selling products.
           </p>
           <p style={{ fontSize: '14pt' }}>
-We are planning on having a custom inventory space for each business, all linked into a centralized area for customers to buy from.
+            We are planning on having a custom inventory space for each business, all linked into a centralized area for customers to buy from.
             The shop items themselves will update in real time, to prevent the purchase of items that are out of stock.
           </p>
         </div>

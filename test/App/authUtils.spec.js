@@ -22,6 +22,7 @@ describe('authUtils', () => {
     jwt.decode = jest.fn(() => ({ sub: '123' }));
     jwt.encode = jest.fn(() => 'token');
     request.setMockResponse({ body: {} });
+    Object.defineProperty(window, 'location', { value: { assign: () => {}, reload: () => {} }, writable: true });
     window.location.reload = jest.fn();
     controllerStub.props.dispatch = (obj) => { expect(obj.type).toBeDefined(); };
     const result = await authUtils.setUser(controllerStub);
@@ -34,12 +35,14 @@ describe('authUtils', () => {
   });
   it('sets the user to the already decoded user', async () => {
     jwt.decode = jest.fn(() => ({ sub: '123', user: {} }));
+    Object.defineProperty(window, 'location', { value: { assign: () => {}, reload: () => {} }, writable: true });
     window.location.reload = jest.fn();
     controllerStub.props.dispatch = (obj) => { expect(obj.type).toBe('SET_USER'); };
     const result = await authUtils.setUser(controllerStub);
     expect(result).toBe(true);
   });
   it('logs out when not /dashboard', async () => {
+    Object.defineProperty(window, 'location', { value: { href: '/booya', assign: () => {}, reload: () => {} }, writable: true });
     const result = await authUtils.responseGoogleLogout('howdy', () => {});
     expect(result).toBe('howdy');
   });
