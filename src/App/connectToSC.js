@@ -27,7 +27,7 @@ const connectToSCC = () => {
     hostname: 'localhost',
     port: 8888,
   });
-  socket.transmit('howdy', 123);
+  socket.transmit('initial message', 123);
   return Promise.resolve(true);
 };
 export default { setupSocketCluster, connectToSCC }; // emits when a style was updated or created
