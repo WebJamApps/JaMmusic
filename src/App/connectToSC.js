@@ -24,8 +24,10 @@ const setupSocketCluster = (dispatch) => {
 };
 const connectToSCC = () => {
   const socket = scc.create({
-    hostname: 'localhost',
-    port: 8888,
+    hostname: process.env.SCS_HOST,
+    port: process.env.SCS_PORT,
+    autoConnect: true,
+    secure: process.env.SOCKETCLUSTER_SECURE !== 'false',
   });
   socket.transmit('initial message', 123);
   return Promise.resolve(true);
