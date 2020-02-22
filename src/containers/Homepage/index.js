@@ -6,6 +6,7 @@ import NarrowAboutUs from './Narrowscreen/NarrowAbout';
 import NarrowCurrentProjects from './Narrowscreen/NarrowCurrentProjects';
 import FacebookFeed from './Narrowscreen/NarrowFacebookFeed';
 import Inquiry from '../../components/inquiry';
+import commonUtils from '../../lib/commonUtils';
 
 export default class Home extends Component {
   constructor(props) {
@@ -13,7 +14,10 @@ export default class Home extends Component {
     this.parentRef = React.createRef();
     this.onResize = this.onResize.bind(this);
     this.state = { width: 320 };
+    this.commonUtils = commonUtils;
   }
+
+  componentDidMount() { this.commonUtils.setTitleAndScroll(''); }
 
   onResize(width) {
     this.setState({ width });

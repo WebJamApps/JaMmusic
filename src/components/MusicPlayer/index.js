@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import musicPlayerUtils from './musicPlayerUtils';
 import mapStoreToProps from '../../redux/mapStoreToProps';
 import musicUtils from './musicUtils';
+import commonUtils from '../../lib/commonUtils';
 
 const state = {
   pageTitle: 'Original Songs',
@@ -32,6 +33,7 @@ export class MusicPlayer extends Component {
     this.navigator = window.navigator;
     this.musicPlayerUtils = musicPlayerUtils;
     this.musicUtils = musicUtils;
+    this.commonUtils = commonUtils;
   }
 
   async componentDidMount() {
