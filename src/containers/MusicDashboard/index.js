@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import mapStoreToProps from '../../redux/mapStoreToProps';
 import forms from '../../lib/forms';
+import commonUtils from '../../lib/commonUtils';
 
 export class MusicDashboard extends Component {
   constructor(props) {
@@ -22,9 +23,10 @@ export class MusicDashboard extends Component {
     this.createTour = this.createTour.bind(this);
     this.validateForm = this.validateForm.bind(this);
     this.createTourApi = this.createTourApi.bind(this);
+    this.commonUtils = commonUtils;
   }
 
-  componentDidMount() { document.title = 'Music Dashboard | Web Jam LLC'; }
+  componentDidMount() { this.commonUtils.setTitleAndScroll('Music Dashboard'); }
 
   onChange(evt) {
     evt.preventDefault();

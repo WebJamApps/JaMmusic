@@ -3,14 +3,16 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import DefaultMusicPlayer from '../../components/MusicPlayer';
 import mapStoreToProps from '../../redux/mapStoreToProps';
+import commonUtils from '../../lib/commonUtils';
 
 export class Originals extends Component {
   constructor(props) {
     super(props);
-    this.state = {};// eslint-disable-line react/state-in-constructor
+    this.state = {};
+    this.commonUtils = commonUtils;
   }
 
-  componentDidMount() { document.title = 'Originals | Web Jam LLC'; }
+  componentDidMount() { this.commonUtils.setTitleAndScroll('Originals'); }
 
   render() {
     const { songs } = this.props;
@@ -27,7 +29,6 @@ export class Originals extends Component {
               : null
           }
         </div>
-        <div style={{ minHeight: '2.4in' }}>&nbsp;</div>
       </div>
     );
   }

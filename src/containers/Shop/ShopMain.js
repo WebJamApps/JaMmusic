@@ -1,16 +1,16 @@
 import React, { Component } from 'react';
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
+import commonUtils from '../../lib/commonUtils';
 
 export default class ShopMain extends Component {
   constructor(props) {
     super(props);
     this.children = props.children;// eslint-disable-line react/prop-types
+    this.commonUtils = commonUtils;
   }
 
-  componentDidMount() {
-    document.title = 'Shop | Web Jam LLC';
-  }
+  componentDidMount() { this.commonUtils.setTitleAndScroll('Shop'); }
 
   render() {
     return (

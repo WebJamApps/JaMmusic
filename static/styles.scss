@@ -756,6 +756,7 @@ div.fof {
 }
 
 .footer {
+  flex-shrink: 0;
   background-color: #2a222a !important;
 }
 
@@ -808,10 +809,13 @@ div.fof {
     overflow: auto;
     margin-top: 91px;
     margin-right: inherit;
+    display: flex;
+    flex-direction: column;
   }
 
   .page-content {
     border-right: 1px solid #000000;
+    flex: 1 0 auto;
   }
 
   ::-webkit-scrollbar:vertical {
@@ -904,6 +908,12 @@ div.fof {
     width: 100vw !important;
     margin: 0 auto;
     height: calc(100vh - 88px);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .page-content {
+    flex: 1 0 auto;
   }
 
   .navImage,

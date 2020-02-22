@@ -7,14 +7,16 @@ import JoshBio from './joshBio';
 import MariaBio from './mariaBio';
 import Intro from './intro';
 import mapStoreToProps from '../../redux/mapStoreToProps';
+import commonUtils from '../../lib/commonUtils';
 
 export class Music extends Component {
   constructor(props) {
     super(props);
     this.state = {};
+    this.commonUtils = commonUtils;
   }
 
-  componentDidMount() { document.title = 'Music | Web Jam LLC'; }
+  componentDidMount() { this.commonUtils.setTitleAndScroll('Music'); }
 
   musicians() { // eslint-disable-line class-methods-use-this
     return (
