@@ -89,6 +89,7 @@
     "slick-carousel": "latest",
     "snyk": "latest",
     "socketcluster-client": "14.3.1",
+    "scc": "npm:socketcluster-client@latest",
     "style-loader": "latest",
     "stylelint-config-recommended-scss": "latest",
     "superagent": "latest",
