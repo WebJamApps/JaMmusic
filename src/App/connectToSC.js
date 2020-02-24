@@ -17,7 +17,6 @@ const setupSocketCluster = (dispatch) => {
     sccOld.emit('sampleClientEvent', 'howdy');
     sccOld.emit('getTours');
   });
-  // sccOld.on('random', (data) => dispatch({ type: 'SC_HEARTBEAT', data }));
   sccOld.on('allTours', (data) => dispatch({ type: 'ALL_TOUR', data }));
   dispatch({ type: 'SCC', sccOld });
   return Promise.resolve(true);
