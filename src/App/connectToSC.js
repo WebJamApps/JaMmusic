@@ -17,12 +17,11 @@ const setupSocketCluster = (dispatch) => {
     sccOld.emit('sampleClientEvent', 'howdy');
     sccOld.emit('getTours');
   });
-  sccOld.on('random', (data) => dispatch({ type: 'SC_HEARTBEAT', data }));
   sccOld.on('allTours', (data) => dispatch({ type: 'ALL_TOUR', data }));
   dispatch({ type: 'SCC', sccOld });
   return Promise.resolve(true);
 };
-const connectToSCC = () => {
+const connectToSCC = (dispatch) => {
   const socket = scc.create({
     hostname: process.env.SCS_HOST,
     port: process.env.SCS_PORT,
@@ -30,6 +29,15 @@ const connectToSCC = () => {
     secure: process.env.SOCKETCLUSTER_SECURE !== 'false',
   });
   socket.transmit('initial message', 123);
+  (async () => {
+    let receiver;
+    const rConsumer = socket.receiver('pulse').createConsumer();
+    while (true) { // eslint-disable-line no-constant-condition
+      receiver = await rConsumer.next();// eslint-disable-line no-await-in-loop
+      dispatch({ type: 'SC_HEARTBEAT', data: receiver.value });
+      /* istanbul ignore else */if (receiver.done) break;
+    }
+  })();
   return Promise.resolve(true);
 };
 export default { setupSocketCluster, connectToSCC }; // emits when a style was updated or created

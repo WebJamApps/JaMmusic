@@ -28,7 +28,7 @@ export class App extends Component {
     await this.connectToSC.setupSocketCluster(dispatch);
     if (songs.length === 0)dispatch(getSongs());
     if (images.length === 0)dispatch(getImages());
-    await this.connectToSC.connectToSCC();
+    await this.connectToSC.connectToSCC(dispatch);
   }
 
   render() {
