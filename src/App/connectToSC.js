@@ -43,13 +43,9 @@ const connectToSCC = (dispatch) => {
     const cConsumer = socket.subscribe('sample').createConsumer();
     while (true) { // eslint-disable-line no-constant-condition
       cReceiver = await cConsumer.next();// eslint-disable-line no-await-in-loop
-      console.log(cReceiver);
       dispatch({ type: 'NUM_USERS', numbUsers: cReceiver.value });
       /* istanbul ignore else */if (cReceiver.done) break;
     }
-    // for await (const data of count) {
-    //   dispatch({ type: 'NUM_USERS', data });
-    // }
   })();
   return Promise.resolve(true);
 };
