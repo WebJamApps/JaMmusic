@@ -9,8 +9,8 @@ const setupSocketCluster = (dispatch) => {
     secure: process.env.SOCKETCLUSTER_SECURE !== 'false',
   });
   sccOld.on('connect', () => {
-    const count = sccOld.subscribe('sample');// eslint-disable-next-line security/detect-non-literal-fs-filename
-    count.watch((numbUsers) => dispatch({ type: 'NUM_USERS', numbUsers }));
+    // const count = sccOld.subscribe('sample');// eslint-disable-next-line security/detect-non-literal-fs-filename
+    // count.watch((numbUsers) => dispatch({ type: 'NUM_USERS', numbUsers }));
     const newTour = sccOld.subscribe('tourCreated');// eslint-disable-next-line security/detect-non-literal-fs-filename
     newTour.watch((data) => dispatch({ type: 'NEW_TOUR', data }));
     console.log(`socketClusterClient connected on port ${process.env.SOCKETCLUSTER_PORT}`);// eslint-disable-line no-console
@@ -37,6 +37,19 @@ const connectToSCC = (dispatch) => {
       dispatch({ type: 'SC_HEARTBEAT', data: receiver.value });
       /* istanbul ignore else */if (receiver.done) break;
     }
+  })();
+  (async () => {
+    let cReceiver;
+    const cConsumer = socket.subscribe('sample').createConsumer();
+    while (true) { // eslint-disable-line no-constant-condition
+      cReceiver = await cConsumer.next();// eslint-disable-line no-await-in-loop
+      console.log(cReceiver);
+      dispatch({ type: 'NUM_USERS', numbUsers: cReceiver.value });
+      /* istanbul ignore else */if (cReceiver.done) break;
+    }
+    // for await (const data of count) {
+    //   dispatch({ type: 'NUM_USERS', data });
+    // }
   })();
   return Promise.resolve(true);
 };
