@@ -39,6 +39,7 @@ const connectToSCC = (dispatch) => {
   });
   socket.transmit('initial message', 123);
   listenForMessages(socket, 'receiver', 'pulse', 'SC_HEARTBEAT', dispatch);
+  listenForMessages(socket, 'receiver', 'num_clients', 'NUM_USERS', dispatch);
   listenForMessages(socket, 'subscribe', 'sample', 'NUM_USERS', dispatch);
   return Promise.resolve(true);
 };
