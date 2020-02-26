@@ -1217,3 +1217,13 @@ span.inquiryValidation {
   width: 48px;
   height: 48px;
 }
+
+.active-users {
+  display: flex;
+}
+
+@-moz-document url-prefix() {
+  .active-users-text {
+    margin-top: 7px !important;
+  }
+}
