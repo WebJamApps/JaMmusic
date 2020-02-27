@@ -16,7 +16,7 @@ const setupSocketCluster = (dispatch) => {
     sccOld.emit('getTours');
   });
   sccOld.on('allTours', (data) => dispatch({ type: 'ALL_TOUR', data }));
-  dispatch({ type: 'SCC', sccOld });
+  dispatch({ type: 'SCC', scc: sccOld });
   return Promise.resolve(true);
 };
 const listenForMessages = (socket, method, name, type, dispatch) => {
