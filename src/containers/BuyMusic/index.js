@@ -1,16 +1,16 @@
 import React, { Component } from 'react';
 import Jsb from './joshShermanBand';
 import Jss from './joshShermanSolo';
+import commonUtils from '../../lib/commonUtils';
 
 export default class BuyMusic extends Component {
   constructor(props) {
     super(props);
     this.state = {};
+    this.commonUtils = commonUtils;
   }
 
-  componentDidMount() {
-    document.title = 'Buy Music | Web Jam LLC';
-  }
+  componentDidMount() { this.commonUtils.setTitleAndScroll('Buy Music'); }
 
   render() {
     return (

@@ -7,7 +7,7 @@ const initialState = {
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case 'SCC': return { ...state, scc: action.scc };
-    case 'NUM_USERS': return { ...state, userCount: action.numbUsers };
+    case 'NUM_USERS': return { ...state, userCount: parseInt(action.data, 10) };
     case 'SC_HEARTBEAT': {
       let newColor = 'white';
       if (state.heartBeat === 'white') newColor = 'green';

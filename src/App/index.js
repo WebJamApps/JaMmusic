@@ -23,11 +23,12 @@ export class App extends Component {
     this.connectToSC = connectToSC;
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     const { dispatch, songs, images } = this.props;
-    this.connectToSC.setupSocketCluster(dispatch);
+    await this.connectToSC.setupSocketCluster(dispatch);
     if (songs.length === 0)dispatch(getSongs());
     if (images.length === 0)dispatch(getImages());
+    await this.connectToSC.connectToSCC(dispatch);
   }
 
   render() {
