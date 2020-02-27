@@ -12,7 +12,7 @@ const activeUsers = (heartBeat, userCount) => (
         {' '}
       </button>
     </div>
-    <div className="active-users-text" style={{ paddingLeft: '10px', marginTop: '5px' }}>
+    <div className="active-users-text" style={{ paddingLeft: '10px', marginTop: '6px' }}>
       <i>Active Users</i>
       :
       {' '}
