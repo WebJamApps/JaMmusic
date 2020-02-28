@@ -17,7 +17,7 @@ export default class Home extends Component {
     this.commonUtils = commonUtils;
   }
 
-  componentDidMount() { this.commonUtils.setTitleAndScroll(''); }
+  componentDidMount() { const { width } = this.state; this.commonUtils.setTitleAndScroll('', width); }
 
   onResize(width) {
     this.setState({ width });
@@ -30,6 +30,7 @@ export default class Home extends Component {
         {width >= 1004
           ? (
             <div className="page-content">
+              <div className="anchor"> </div>
               <WideAboutUs />
               <hr />
               <WideCurrentProjects />
