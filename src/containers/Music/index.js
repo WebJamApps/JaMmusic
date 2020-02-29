@@ -45,7 +45,7 @@ export class Music extends Component {
         <div
           className="search-table-outer"
           style={{
-            position: 'relative', overflowX: 'auto', maxWidth: '96%', margin: 'auto',
+            position: 'relative', overflowX: 'auto', maxWidth: '96%', margin: 'auto', zIndex: 0,
           }}
         >
           <DefaultTable />

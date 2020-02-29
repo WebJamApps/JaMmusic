@@ -172,7 +172,7 @@ export class AppTemplate extends Component {
     return (
       <div className="page-host">
         <div tabIndex={0} role="button" id="sidebar" onClick={this.close} onKeyPress={this.handleKeyPress} className={`${style} drawer-container`}>
-          <div className="drawer" style={{ backgroundColor: '#c0c0c0' }}>
+          <div className="drawer" style={{ backgroundColor: '#c0c0c0', zIndex: -1, position: 'relative' }}>
             <div className="navImage">
               <img alt="wjsidelogo" id="webjamwidelogo" src={`${this.currentStyles.sidebarImagePath}`} style={{ width: '182px', marginRight: 0 }} />
             </div>
