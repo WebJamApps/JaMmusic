@@ -1,0 +1,32 @@
+.footer span i {
+  font-size: 2em;
+}
+
+.footerIcon:hover {
+  color: white;
+}
+
+.footer {
+  flex-shrink: 0;
+  background-color: #2a222a !important;
+}
+
+.footer span {
+  color: #367aff;
+  cursor: pointer;
+}
+
+.footer span:hover {
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.wjllc {
+  color: white;
+  font-size: 9pt;
+  font-weight: bold;
+}
+
+.wjllc:hover {
+  color: black;
+}

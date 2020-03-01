@@ -1,0 +1,27 @@
+/* containers/Music */
+
+p.bioText {
+  max-width: 98%;
+  margin: auto;
+  text-align: left;
+  padding-top: 7px;
+}
+
+aside.instrumentList {
+  text-align: left;
+  margin: auto;
+  width: 3in;
+}
+
+td.wjBand {
+  text-align: center;
+  background-color: #e6ffe6;
+}
+
+td p a {
+  font-size: inherit
+}
+
+.tourTable {
+  -webkit-overflow-scrolling: touch;
+}

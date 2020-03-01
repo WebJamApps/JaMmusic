@@ -1,0 +1,71 @@
+/* Homepage */
+
+.qAnda p, .qAndA a {
+  font-size: 18px !important;
+}
+
+.qAnda span {
+  font-weight: bolder;
+  font-style: italic;
+}
+
+div.project, .project h4, .project p, .project a, .container h3 {
+  text-align: center;
+}
+
+.project h4 {
+  font-weight: 900;
+}
+
+.project a, .qAndA a {
+  text-decoration: underline;
+}
+
+.project img {
+  width: 260px;
+  margin-top: 2rem;
+}
+
+.apperson img {
+  height: 328px;
+}
+
+.container h3 {
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+p.spacer {
+  font-size: 6pt;
+  margin-bottom: 0;
+}
+
+.inquiryLabel {
+  margin-top: 14px;
+  padding-top: 0;
+}
+
+div.inquiryValidation {
+  margin-top: 10px;
+  max-width: 85%;
+  display:flex;
+  justify-content:space-between;
+}
+
+span.inquiryValidation {
+  font-size: 16px;
+  margin-right: 38%;
+  font-family: Habibi;
+  font-style: italic;
+}
+
+.question {
+  margin-bottom: 0;
+  margin-left: 10px;
+}
+
+.answer {
+  margin-bottom: 1em;
+  font-style: italic;
+  margin-left: 10px;
+}
