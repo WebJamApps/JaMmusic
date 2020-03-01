@@ -1,0 +1,134 @@
+/* I'm not honestly sure if this is still being used, but I don't want to delete it, just in case. Feel free to remove this otherwise. */
+
+/* These are Aurelia animate page transitions */
+.au-enter-active {
+  -webkit-animation: fadeInRight 1s;
+  animation: fadeInRight 1s;
+}
+
+.au-stagger {
+  /* 50ms will be applied between each successive enter operation */
+  -webkit-animation-delay: 50ms;
+  animation-delay: 50ms;
+}
+
+.aut-asc::after {
+  content: "\f160";
+}
+
+.aut-sort::after {
+  font-family: FontAwesome;
+  padding-left: 0.5em;
+  width: 1.28571429em;
+  display: inline-block;
+  text-align: center;
+  content: "\f0dc";
+}
+
+.aut-desc::after {
+  content: "\f161";
+}
+
+
+.ohaf-sidebar {
+  background-color: #c09580;
+}
+
+.ohaf-header {
+  background-color: #565656;
+  height: 91px;
+}
+
+.ohaf-header-image {
+  width: 85px;
+  left: 2px;
+  margin-top: -13px;
+}
+
+.ohaf-menu-toggle {
+  color: white;
+}
+
+.ohaf-social-media:hover {
+  color: white;
+}
+
+div.checkboxes-div {
+  outline: none;
+  position: relative;
+  margin-top: 0;
+  z-index: 103;
+  display: none;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+div.dropdown-content {
+  overflow-x: hidden;
+  overflow-y: auto;
+  background-color: white;
+  box-sizing: border-box;
+  max-width: 250px;
+  max-height: 362px;
+  border: 1px #dadada solid;
+}
+
+input.checkboxes-input {
+  min-width: 0;
+  padding: 5px;
+}
+
+label.checkboxes-label {
+  font-size: 10pt;
+  font-weight: normal;
+  text-align: left;
+  padding: 5px;
+}
+
+#checkboxes {
+  display: none;
+  border: 1px #dadada solid;
+}
+
+#checkboxes label {
+  display: block;
+}
+
+#checkboxes label:hover {
+  background-color: #1e90ff;
+}
+
+div.RegistrationForm {
+  margin: auto;
+}
+
+.multiselect {
+  width: 100px;
+}
+
+.newUserForm {
+  margin-left: 0.5cm;
+  width: 180px;
+}
+
+.selectBox {
+  position: relative;
+}
+
+.onePx {
+  padding-top: 1px !important;
+  padding-right: 1px !important;
+}
+
+.selectBoxBig select {
+  width: 100%;
+  font-weight: bold;
+}
+
+.selectBox select {
+  font-weight: normal;
+}
+
+.mySlides {
+  display: none;
+}
