@@ -1,0 +1,70 @@
+.material-content {
+  padding: 10px;
+}
+
+.material-content-faq {
+  padding: 10px;
+}
+
+.material-content-h1,
+.material-content-h2,
+.material-content-h3 {
+  text-align: center;
+  margin-top: 15px;
+}
+
+.material-content-h2 {
+  font-size: 30px;
+}
+
+.material-content-h1 {
+  font-size: 34px;
+  color: black;
+}
+
+.material-content-p {
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-bottom: 10px;
+  font-size: 16px;
+  text-align: center;
+}
+
+.material-content-p-bigger {
+  font-size: 24px;
+  max-width: 800px;
+}
+
+.material-content-ul {
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+  font-size: 16px;
+}
+
+.material-header {
+  min-height: 88px;
+  background-color: #2a222a;
+  z-index: 93;
+  top: 0;
+}
+
+.material-header-content {
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.material-header-h3 {
+  color: white;
+}
+
+.material-header-h3-call {
+  color: white;
+  font-size: 22pt;
+}
+
+.material-header-h4 {
+  text-align: center;
+  margin-top: 5px;
+}

@@ -1,0 +1,57 @@
+/* Slideshow container */
+#libslideshow,
+#libslideshow1,
+#slideshowMusic,
+#slideshow1,
+#slideshow,
+#musicSlide1,
+#musicSlide2,
+#lSlide1,
+#lSlide2 {
+  max-width: 1000px;
+  position: relative;
+  margin: auto;
+}
+
+#libslideshow img,
+#libslideshow1 img,
+#slideshowMusic img,
+#slideshow1 img,
+#slideshow img,
+#musicSlide1 img,
+#musicSlide2 img,
+#lSlide1 img,
+#lSlide2 img {
+  width: 100%;
+}
+
+.music-slideshow {
+  width: 100% !important;
+  height: 0 !important;
+  padding-bottom: 38%;
+}
+
+.home-slideshow {
+  width: 100% !important;
+  height: 0 !important;
+  padding-bottom: 50%;
+  margin-top: -15px;
+}
+
+.slideshowimage {
+  width: 100%;
+  height: 0;
+}
+
+.spaceUnderSlideShow {
+  margin-top: auto;
+}
+
+.sidebar-image {
+  width: 180px;
+  border: 0;
+}
+
+div.slider-caption {
+  display: none;
+}
