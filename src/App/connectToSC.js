@@ -13,9 +13,9 @@ const setupSocketCluster = (dispatch) => {
     newTour.watch((data) => dispatch({ type: 'NEW_TOUR', data }));
     console.log(`socketClusterClient connected on port ${process.env.SOCKETCLUSTER_PORT}`);// eslint-disable-line no-console
     sccOld.emit('sampleClientEvent', 'howdy');
-    sccOld.emit('getTours');
+    // sccOld.emit('getTours');
   });
-  sccOld.on('allTours', (data) => dispatch({ type: 'ALL_TOUR', data }));
+  // sccOld.on('allTours', (data) => dispatch({ type: 'ALL_TOUR', data }));
   dispatch({ type: 'SCC', scc: sccOld });
   return Promise.resolve(true);
 };
@@ -38,6 +38,7 @@ const connectToSCC = (dispatch) => {
     secure: process.env.SOCKETCLUSTER_SECURE !== 'false',
   });
   socket.transmit('initial message', 123);
+  listenForMessages(socket, 'receiver', 'allTours', 'ALL_TOUR', dispatch);
   listenForMessages(socket, 'receiver', 'pulse', 'SC_HEARTBEAT', dispatch);
   listenForMessages(socket, 'receiver', 'num_clients', 'NUM_USERS', dispatch);
   listenForMessages(socket, 'subscribe', 'sample', 'NUM_USERS', dispatch);
