@@ -25,7 +25,6 @@ export class App extends Component {
 
   async componentDidMount() {
     const { dispatch, songs, images } = this.props;
-    // await this.connectToSC.setupSocketCluster(dispatch);
     if (songs.length === 0)dispatch(getSongs());
     if (images.length === 0)dispatch(getImages());
     await this.connectToSC.connectToSCC(dispatch);

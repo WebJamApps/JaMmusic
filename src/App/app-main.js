@@ -56,9 +56,6 @@ export class AppTemplate extends Component {
       {
         className: 'dashboard', type: 'link', iconClass: 'fas fa-user-secret', link: '/music/dashboard', name: 'Dashboard', auth: true,
       },
-      // {
-      //   className: 'shop', type: 'link', iconClass: 'fas fa-shopping-cart', link: '/shop', name: 'Web Jam Shop',
-      // },
       {
         className: 'home', type: 'link', iconClass: 'fas fa-home', link: '/', name: 'Web Jam LLC',
       },
