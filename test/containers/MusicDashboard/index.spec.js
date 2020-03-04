@@ -7,7 +7,7 @@ describe('Dashboard Container', () => {
   let wrapper;
   beforeEach(() => {
     const auth = { token: '' };
-    wrapper = shallow(<MusicDashboard auth={auth} scc={{ emit: () => {} }} />);
+    wrapper = shallow(<MusicDashboard auth={auth} scc={{ transmit: () => {} }} />);
   });
   it('is defined', () => {
     expect(MusicDashboard).toBeDefined();
