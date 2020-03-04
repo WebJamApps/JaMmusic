@@ -31,7 +31,7 @@ module.exports = ({
 
   entry: {
     app: [`${srcDir}/main.js`],
-    vendor: ['bootstrap'],
+    vendor: ['reactstrap'],
   },
 
   mode: production ? 'production' : 'development',

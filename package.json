@@ -17,7 +17,12 @@
     "static/",
     "server.js"
   ],
-  "keywords": ["React", "Babel", "Webpack", "Jest"],
+  "keywords": [
+    "React",
+    "Babel",
+    "Webpack",
+    "Jest"
+  ],
   "license": "MIT",
   "scripts": {
     "start:dist": "node server.js",
@@ -47,7 +52,6 @@
     "@types/react": "latest",
     "babel-loader": "latest",
     "bluebird": "latest",
-    "bootstrap": "latest",
     "copy-webpack-plugin": "latest",
     "core-js": "latest",
     "css-loader": "latest",
@@ -61,7 +65,6 @@
     "html-loader": "latest",
     "html-webpack-plugin": "latest",
     "jasmine-spec-reporter": "latest",
-    "jquery": "latest",
     "jwt-simple": "latest",
     "mini-css-extract-plugin": "latest",
     "moment": "latest",
