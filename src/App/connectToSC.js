@@ -1,24 +1,5 @@
-import socketCluster from 'socketcluster-client';
 import scc from 'scc';
 
-const setupSocketCluster = (dispatch) => {
-  const sccOld = socketCluster.create({
-    hostname: process.env.SOCKETCLUSTER_HOST,
-    port: process.env.SOCKETCLUSTER_PORT,
-    autoConnect: true,
-    secure: process.env.SOCKETCLUSTER_SECURE !== 'false',
-  });
-  sccOld.on('connect', () => {
-    const newTour = sccOld.subscribe('tourCreated');// eslint-disable-next-line security/detect-non-literal-fs-filename
-    newTour.watch((data) => dispatch({ type: 'NEW_TOUR', data }));
-    console.log(`socketClusterClient connected on port ${process.env.SOCKETCLUSTER_PORT}`);// eslint-disable-line no-console
-    sccOld.emit('sampleClientEvent', 'howdy');
-    sccOld.emit('getTours');
-  });
-  sccOld.on('allTours', (data) => dispatch({ type: 'ALL_TOUR', data }));
-  dispatch({ type: 'SCC', scc: sccOld });
-  return Promise.resolve(true);
-};
 const listenForMessages = (socket, method, name, type, dispatch) => {
   (async () => {
     let receiver; // eslint-disable-next-line security/detect-object-injection
@@ -37,10 +18,13 @@ const connectToSCC = (dispatch) => {
     autoConnect: true,
     secure: process.env.SOCKETCLUSTER_SECURE !== 'false',
   });
+  dispatch({ type: 'SCC', scc: socket });
   socket.transmit('initial message', 123);
+  listenForMessages(socket, 'subscribe', 'tourCreated', 'NEW_TOUR', dispatch);
+  listenForMessages(socket, 'receiver', 'allTours', 'ALL_TOUR', dispatch);
   listenForMessages(socket, 'receiver', 'pulse', 'SC_HEARTBEAT', dispatch);
   listenForMessages(socket, 'receiver', 'num_clients', 'NUM_USERS', dispatch);
   listenForMessages(socket, 'subscribe', 'sample', 'NUM_USERS', dispatch);
   return Promise.resolve(true);
 };
-export default { setupSocketCluster, connectToSCC, listenForMessages };
+export default { connectToSCC, listenForMessages };
