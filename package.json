@@ -1,6 +1,6 @@
 {
   "name": "JaMmusic",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "joshandmariamusic.com",
   "main": "dist/index.html",
   "repository": {
@@ -49,6 +49,7 @@
     "@babel/register": "latest",
     "@material-ui/core": "latest",
     "@material-ui/icons": "latest",
+    "@tinymce/tinymce-react": "latest",
     "@types/react": "latest",
     "babel-loader": "latest",
     "bluebird": "latest",
@@ -94,7 +95,6 @@
     "scc": "npm:socketcluster-client@latest",
     "slick-carousel": "latest",
     "snyk": "latest",
-    "socketcluster-client": "14.3.1",
     "style-loader": "latest",
     "stylelint-config-recommended-scss": "latest",
     "superagent": "latest",
@@ -126,7 +126,6 @@
     "puppeteer": "latest",
     "react-hot-loader": "latest",
     "redux-mock-store": "latest",
-    "sinon": "latest",
     "stylelint": "latest",
     "stylelint-config-standard": "latest",
     "stylelint-scss": "latest",

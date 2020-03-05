@@ -143,8 +143,8 @@ module.exports = ({
       { from: 'static/favicon.ico', to: 'favicon.ico' },
       { from: 'static/imgs', to: 'static/imgs' },
     ]),
-    new webpack.EnvironmentPlugin(['SCS_PORT', 'SCS_HOST', 'SOCKETCLUSTER_HOST', 'SOCKETCLUSTER_PORT', 'SOCKETCLUSTER_SECURE', 'NODE_ENV',
-      'AuthProductionBaseURL', 'PORT', 'BackendUrl', 'GoogleClientId', 'userRoles', 'HashString']),
+    new webpack.EnvironmentPlugin(['SCS_PORT', 'SCS_HOST', 'SOCKETCLUSTER_SECURE', 'NODE_ENV',
+      'AuthProductionBaseURL', 'PORT', 'BackendUrl', 'GoogleClientId', 'userRoles', 'HashString', 'TINY_KEY']),
     ...when(analyze, new BundleAnalyzerPlugin()),
   ],
 });

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Editor } from '@tinymce/tinymce-react';
 import moment from 'moment';
 import { withRouter, Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
@@ -23,6 +24,7 @@ export class MusicDashboard extends Component {
     this.createTour = this.createTour.bind(this);
     this.validateForm = this.validateForm.bind(this);
     this.createTourApi = this.createTourApi.bind(this);
+    this.handleEditorChange = this.handleEditorChange.bind(this);
     this.commonUtils = commonUtils;
   }
 
@@ -31,6 +33,11 @@ export class MusicDashboard extends Component {
   onChange(evt) {
     evt.preventDefault();
     this.setState({ [evt.target.id]: evt.target.value });
+  }
+
+  handleEditorChange(venue) {
+    console.log(venue);// eslint-disable-line no-console
+    this.setState({ venue });
   }
 
   validateForm() {
@@ -62,15 +69,41 @@ export class MusicDashboard extends Component {
     return this.createTourApi(tour);
   }
 
+  editor() {
+    return (
+      <Editor
+        apiKey={process.env.TINY_KEY}
+        initialValue="<p>This is the description of the venue</p>"
+        init={{
+          height: 400,
+          menubar: 'insert',
+          selector: 'textarea',
+          menu: { format: { title: 'Format', items: 'forecolor backcolor' } },
+          plugins: [
+            'advlist autolink lists link image charmap print preview anchor',
+            'searchreplace visualblocks code fullscreen',
+            'insertdatetime media table paste code help wordcount',
+          ],
+          toolbar:
+            'undo redo | formatselect | bold italic backcolor forecolor |'
+            + 'alignleft aligncenter alignright alignjustify |'
+            + 'bullist numlist outdent indent | removeformat | help',
+        }}
+        onEditorChange={this.handleEditorChange}
+      />
+    );
+  }
+
   newTourForm(date, time, buttonStyle) {
     const {
-      venue, location, tickets, more,
+      location, tickets, more,
     } = this.state;
     return (
       <form id="new-tour" style={{ marginTop: '4px', paddingLeft: '10px' }}>
         {this.forms.makeInput('date', 'Date', true, this.onChange, date)}
         {this.forms.makeInput('text', 'Time', true, this.onChange, time)}
-        {this.forms.makeInput('text', 'Venue', true, this.onChange, venue)}
+        <p style={{ marginBottom: 0 }}>* Venue</p>
+        {this.editor()}
         {this.forms.makeInput('text', 'Location', true, this.onChange, location)}
         {this.forms.makeInput('text', 'Tickets', false, this.onChange, tickets)}
         {this.forms.makeInput('text', 'More', false, this.onChange, more)}

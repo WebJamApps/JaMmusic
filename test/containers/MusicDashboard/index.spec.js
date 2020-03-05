@@ -19,6 +19,10 @@ describe('Dashboard Container', () => {
     wrapper.instance().setState = jest.fn((boobyJ) => { expect(boobyJ.hi).toBe(11); });
     wrapper.instance().onChange({ preventDefault: () => {}, target: { id: 'hi', value: 11 } });
   });
+  it('calls handleEditorChange', () => {
+    wrapper.instance().setState = jest.fn((obj) => { expect(obj.venue).toBe('<p>Cool Venue</p>'); });
+    wrapper.instance().handleEditorChange('<p>Cool Venue</p>');
+  });
   it('calls the tour API', () => {
     wrapper.instance().setState = jest.fn((obJ) => { expect(obJ.redirect).toBe(true); });
     wrapper.instance().createTourApi({ date: '2019-10-10' });
