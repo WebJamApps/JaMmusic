@@ -58,10 +58,8 @@ export class TourTable extends Component {
           filter: false,
           sort: false,
           customBodyRender: (value) => (
-            <div style={{ minWidth: '1.3in' }}>
-              <p style={{ margin: 0, fontSize: 'inherit' }}>
-                { ReactHtmlParser(value) }
-              </p>
+            <div style={{ minWidth: '1.3in', margin: 0, fontSize: '12pt' }}>
+              { ReactHtmlParser(value) }
             </div>
           ),
         },
