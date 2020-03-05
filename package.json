@@ -52,6 +52,7 @@
     "@types/react": "latest",
     "babel-loader": "latest",
     "bluebird": "latest",
+    "bootstrap": "^4.4.1",
     "copy-webpack-plugin": "latest",
     "core-js": "latest",
     "css-loader": "latest",

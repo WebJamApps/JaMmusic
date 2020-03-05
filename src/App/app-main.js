@@ -15,7 +15,7 @@ export class AppTemplate extends Component {
     this.menuUtils = menuUtils;
     this.children = props.children;
     this.state = { menuOpen: false };// eslint-disable-line
-    this.close = this.close.bind(this);
+    this.wjclose = this.wjclose.bind(this);
     this.handleKeyPress = this.handleKeyPress.bind(this);
     this.handleKeyMenu = this.handleKeyMenu.bind(this);
     this.toggleMobileMenu = this.toggleMobileMenu.bind(this);
@@ -80,7 +80,7 @@ export class AppTemplate extends Component {
   // eslint-disable-next-line react/destructuring-assignment
   responseGoogleLogout(response) { return this.authUtils.responseGoogleLogout(response, this.props.dispatch); }
 
-  close(e) {
+  wjclose(e) {
     this.setState({ menuOpen: false });
     if (e.target.classList.contains('loginGoogle')) return this.loginGoogle();
     return true;
@@ -121,7 +121,7 @@ export class AppTemplate extends Component {
   makeMenuLink(menu, index) {
     return (
       <div key={index} className="menu-item">
-        <Link to={menu.link} className="nav-link" onClick={this.close}>
+        <Link to={menu.link} className="nav-link" onClick={this.wjclose}>
           <i className={`${menu.iconClass}`} />
         &nbsp;
           <span className="nav-item">{menu.name}</span>
@@ -164,11 +164,11 @@ export class AppTemplate extends Component {
 
   render() {
     const { menuOpen } = this.state;
-    const style = `${this.currentStyles.sidebarClass} ${menuOpen ? 'open' : 'close'}`;
+    const style = `${this.currentStyles.sidebarClass} ${menuOpen ? 'open' : 'wjclose'}`;
 
     return (
       <div className="page-host">
-        <div tabIndex={0} role="button" id="sidebar" onClick={this.close} onKeyPress={this.handleKeyPress} className={`${style} drawer-container`}>
+        <div tabIndex={0} role="button" id="sidebar" onClick={this.wjclose} onKeyPress={this.handleKeyPress} className={`${style} drawer-container`}>
           <div className="drawer" style={{ backgroundColor: '#c0c0c0', zIndex: -1, position: 'relative' }}>
             <div className="navImage">
               <img alt="wjsidelogo" id="webjamwidelogo" src={`${this.currentStyles.sidebarImagePath}`} style={{ width: '182px', marginRight: 0 }} />
