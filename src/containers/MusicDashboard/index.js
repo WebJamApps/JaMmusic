@@ -47,7 +47,7 @@ export class MusicDashboard extends Component {
     tour.datetime = new Date(tour.date);
     const m = moment(tour.date, 'YYYY-MM-DD');
     tour.date = m.format('ll');
-    scc.emit('newTour', { tour, token: auth.token });
+    scc.transmit('newTour', { tour, token: auth.token });
     this.setState({ redirect: true });
     return true;
   }
@@ -100,7 +100,7 @@ export class MusicDashboard extends Component {
   }
 }
 MusicDashboard.propTypes = {
-  scc: PropTypes.shape({ emit: PropTypes.func }).isRequired,
+  scc: PropTypes.shape({ transmit: PropTypes.func }).isRequired,
   auth: PropTypes.shape({ token: PropTypes.string }).isRequired,
 };
 export default withRouter(connect(mapStoreToProps)(MusicDashboard));
