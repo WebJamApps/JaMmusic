@@ -1,18 +1,18 @@
 @media screen and (min-width: 900px) {
   .drawer-container {
-    float: right;
+    float   : right;
     position: fixed;
-    right: 0;
-    z-index: 100;
+    right   : 0;
+    z-index : 100;
   }
 
   .main-panel {
     position: relative;
-    float: left;
-    clear: both;
-    height: 100vh;
-    width: calc(100% - 180px);
-    display: block;
+    float   : left;
+    clear   : both;
+    height  : 100vh;
+    width   : calc(100% - 180px);
+    display : block;
     overflow: hidden;
   }
 
@@ -21,39 +21,37 @@
   }
 
   .content-block {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    overflow: auto;
-    margin-top: 91px;
-    margin-right: inherit;
-    display: flex;
+    position      : absolute;
+    top           : 0;
+    bottom        : 0;
+    left          : 0;
+    right         : 0;
+    overflow      : auto;
+    margin-top    : 91px;
+    margin-right  : inherit;
+    display       : flex;
     flex-direction: column;
   }
 
   .page-content {
     border-right: 1px solid #000000;
-    flex: 1 0 auto;
+    flex        : 1 0 auto;
   }
 
   ::-webkit-scrollbar:vertical {
     width: 0;
   }
 }
-
 @media screen and (max-width: 350px) {
   div.youtubeOverlay {
-    position: absolute;
+    position  : absolute;
     margin-top: 60px !important;
-    height: 75px !important;
+    height    : 75px !important;
   }
 }
-
 @media screen and (max-width: 400px) {
   #copyInput {
-    width: 95%;
+    width      : 95%;
     margin-left: 8px;
   }
 
@@ -61,29 +59,27 @@
     background-position: center;
   }
 }
-
 @media screen and (max-width: 500px) {
   .youtubeOverlay {
-    position: absolute;
+    position  : absolute;
     margin-top: 30px !important;
-    height: 75px !important;
+    height    : 75px !important;
   }
 }
-
 @media screen and (max-width: 900px) {
   .drawer {
     background-color: rgb(192, 192, 192);
-    float: right;
-    height: 100%;
+    float           : right;
+    height          : 100%;
   }
 
   .main-panel {
     position: relative;
-    float: left;
-    clear: both;
-    height: 100vh;
-    width: 100vw;
-    display: block;
+    float   : left;
+    clear   : both;
+    height  : 100vh;
+    width   : 100vw;
+    display : block;
   }
 
   .material-header {
@@ -95,18 +91,18 @@
   }
 
   .drawer-container.open {
-    display: block !important;
-    width: 100vw !important;
-    z-index: 100 !important;
-    cursor: pointer;
+    display         : block !important;
+    width           : 100vw !important;
+    z-index         : 100 !important;
+    cursor          : pointer;
     background-color: rgba(42, 34, 42, 0.67);
   }
 
   .content-block {
-    width: 100vw !important;
-    margin: 0 auto;
-    height: calc(100vh - 88px);
-    display: flex;
+    width         : 100vw !important;
+    margin        : 0 auto;
+    height        : calc(100vh - 88px);
+    display       : flex;
     flex-direction: column;
   }
 
@@ -114,13 +110,14 @@
     flex: 1 0 auto;
   }
 
-  .navImage,
-  .nav-list {
-    width: 180px !important;
+  .nav-list,
+  .navImage {
+    width : 180px !important;
+    height: 91px;
   }
 
   .swipe-area {
-    width: 30px;
+    width : 30px;
     height: 100vh;
   }
 
@@ -134,33 +131,33 @@
 }
 
 .drawer-container {
-  height: 100vh;
+  height  : 100vh;
   position: fixed;
-  float: right;
-  z-index: 100;
-  width: 180px;
+  float   : right;
+  z-index : 100;
+  width   : 180px;
 }
 
 .nav-list {
-  position: fixed;
-  top: 91px;
-  right: 0;
-  width: 180px;
-  height: 100%;
-  z-index: 90000;
+  position        : fixed;
+  top             : 91px;
+  right           : 0;
+  width           : 180px;
+  height          : 100%;
+  z-index         : 90000;
   background-color: rgb(192, 192, 192);
 }
 
 .navImage {
-  top: 0;
-  right: 0;
-  width: 13.5vw;
+  top             : 0;
+  right           : 0;
+  width           : 13.5vw;
   background-color: #2a222a;
 }
 
 ::-webkit-scrollbar {
   -webkit-appearance: none;
-  width: 12px;
+  width             : 12px;
 }
 
 ::-webkit-scrollbar:vertical {
@@ -173,20 +170,20 @@
 
 ::-webkit-scrollbar-thumb {
   background-color: rgba(0, 0, 0, 0.5);
-  border-radius: 10px;
-  border: 2px solid #ffffff;
+  border-radius   : 10px;
+  border          : 2px solid #ffffff;
 }
 
 ::-webkit-scrollbar-track {
-  border-radius: 10px;
+  border-radius   : 10px;
   background-color: #ffffff;
 }
 
 .swipe-area {
   position: absolute;
-  width: 0px;
-  left: 128px;
-  top: 0;
-  height: 100%;
-  z-index: 9999;
+  width   : 0;
+  left    : 128px;
+  top     : 0;
+  height  : 100%;
+  z-index : 9999;
 }
