@@ -3,6 +3,7 @@ const setTitleAndScroll = (pageTitle, width) => {
   document.title = `${pageTitle}Web Jam LLC`;
   let getClass = 'page-content';
   if (pageTitle === '' && width >= 1004)getClass = 'anchor';
+  if (width !== undefined && width < 1004)getClass = 'headercontent';
   const top = document.getElementsByClassName(getClass)[0];
   if (top !== undefined && typeof top.scrollIntoView === 'function') top.scrollIntoView();
 };

@@ -112,7 +112,6 @@
 
   .nav-list,
   .navImage {
-    width : 180px !important;
     height: 91px;
   }
 
@@ -128,6 +127,9 @@
   ::-webkit-scrollbar:vertical {
     width: 0;
   }
+  // .nav-list {
+  //   width: 192px;
+  // }
 }
 
 .drawer-container {
@@ -139,19 +141,24 @@
 }
 
 .nav-list {
+  // width           : 180px;
   position        : fixed;
   top             : 91px;
   right           : 0;
-  width           : 180px;
   height          : 100%;
   z-index         : 90000;
   background-color: rgb(192, 192, 192);
 }
+// @media screen and (max-width: 500px) {
+//   // .nav-list {
+//   //   width: 192px;
+//   // }
+// }
 
 .navImage {
   top             : 0;
   right           : 0;
-  width           : 13.5vw;
+  // width           : 178px;
   background-color: #2a222a;
 }
 
