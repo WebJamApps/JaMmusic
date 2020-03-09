@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import ReactResizeDetector from 'react-resize-detector';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import PicSlider from '../../components/pic-slider';
@@ -12,11 +13,17 @@ import commonUtils from '../../lib/commonUtils';
 export class Music extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.parentRef = React.createRef();
+    this.onResize = this.onResize.bind(this);
+    this.state = { width: 320 };
     this.commonUtils = commonUtils;
   }
 
-  componentDidMount() { this.commonUtils.setTitleAndScroll('Music'); }
+  componentDidMount() { const { width } = this.state; this.commonUtils.setTitleAndScroll('Music', width); }
+
+  onResize(width) {
+    this.setState({ width });
+  }
 
   musicians() { // eslint-disable-line class-methods-use-this
     return (
@@ -54,6 +61,7 @@ export class Music extends Component {
           <p>{' '}</p>
         </div>
         {this.musicians()}
+        <ReactResizeDetector handleWidth handleHeight onResize={this.onResize} targetDomEl={this.parentRef.current} />
       </div>
     );
   }
