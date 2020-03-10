@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import ReactResizeDetector from 'react-resize-detector';
 import Jsb from './joshShermanBand';
 import Jss from './joshShermanSolo';
 import commonUtils from '../../lib/commonUtils';
@@ -7,17 +6,10 @@ import commonUtils from '../../lib/commonUtils';
 export default class BuyMusic extends Component {
   constructor(props) {
     super(props);
-    this.parentRef = React.createRef();
-    this.onResize = this.onResize.bind(this);
-    this.state = { width: 320 };
     this.commonUtils = commonUtils;
   }
 
-  componentDidMount() { const { width } = this.state; this.commonUtils.setTitleAndScroll('Buy Music', width); }
-
-  onResize(width) {
-    this.setState({ width });
-  }
+  componentDidMount() { this.commonUtils.setTitleAndScroll('Buy Music', window.screen.width); }
 
   render() {
     return (
@@ -30,7 +22,6 @@ export default class BuyMusic extends Component {
         <Jss />
         <p>&nbsp;</p>
         <p>&nbsp;</p>
-        <ReactResizeDetector handleWidth handleHeight onResize={this.onResize} targetDomEl={this.parentRef.current} />
       </div>
     );
   }

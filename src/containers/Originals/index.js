@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import ReactResizeDetector from 'react-resize-detector';
 import { connect } from 'react-redux';
 import DefaultMusicPlayer from '../../components/MusicPlayer';
 import mapStoreToProps from '../../redux/mapStoreToProps';
@@ -9,17 +8,11 @@ import commonUtils from '../../lib/commonUtils';
 export class Originals extends Component {
   constructor(props) {
     super(props);
-    this.parentRef = React.createRef();
-    this.onResize = this.onResize.bind(this);
-    this.state = { width: 320 };
+    this.o = React.createRef();
     this.commonUtils = commonUtils;
   }
 
-  componentDidMount() { const { width } = this.state; this.commonUtils.setTitleAndScroll('Originals', width); }
-
-  onResize(width) {
-    this.setState({ width });
-  }
+  componentDidMount() { this.commonUtils.setTitleAndScroll('Originals', window.screen.width); }
 
   render() {
     const { songs } = this.props;
@@ -36,7 +29,6 @@ export class Originals extends Component {
               : null
           }
         </div>
-        <ReactResizeDetector handleWidth handleHeight onResize={this.onResize} targetDomEl={this.parentRef.current} />
       </div>
     );
   }

@@ -17,7 +17,7 @@ export default class Home extends Component {
     this.commonUtils = commonUtils;
   }
 
-  componentDidMount() { const { width } = this.state; this.commonUtils.setTitleAndScroll('', width); }
+  componentDidMount() { this.commonUtils.setTitleAndScroll('', window.screen.width); }
 
   onResize(width) {
     this.setState({ width });
