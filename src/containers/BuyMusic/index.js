@@ -6,11 +6,10 @@ import commonUtils from '../../lib/commonUtils';
 export default class BuyMusic extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
     this.commonUtils = commonUtils;
   }
 
-  componentDidMount() { this.commonUtils.setTitleAndScroll('Buy Music'); }
+  componentDidMount() { this.commonUtils.setTitleAndScroll('Buy Music', window.screen.width); }
 
   render() {
     return (
