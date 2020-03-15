@@ -8,11 +8,11 @@ import commonUtils from '../../lib/commonUtils';
 export class Originals extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.o = React.createRef();
     this.commonUtils = commonUtils;
   }
 
-  componentDidMount() { this.commonUtils.setTitleAndScroll('Originals'); }
+  componentDidMount() { this.commonUtils.setTitleAndScroll('Originals', window.screen.width); }
 
   render() {
     const { songs } = this.props;
