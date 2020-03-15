@@ -43,6 +43,14 @@
   }
 }
 
+@media screen and (min-width: 2000px) {
+  div.youtubeOverlay {
+    margin-top: 180px;
+    height: 125px;
+  }
+}
+
+
 @media screen and (max-width: 350px) {
   div.youtubeOverlay {
     position: absolute;
