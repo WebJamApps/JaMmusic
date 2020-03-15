@@ -27,7 +27,6 @@ export default class Home extends Component {
     const { width } = this.state;
     return (
       <div>
-        {console.log(width)}
         {width >= 1004
           ? (
             <div className="page-content">
