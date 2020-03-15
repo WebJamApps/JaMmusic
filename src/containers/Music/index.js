@@ -12,11 +12,10 @@ import commonUtils from '../../lib/commonUtils';
 export class Music extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
     this.commonUtils = commonUtils;
   }
 
-  componentDidMount() { this.commonUtils.setTitleAndScroll('Music'); }
+  componentDidMount() { this.commonUtils.setTitleAndScroll('Music', window.screen.width); }
 
   musicians() { // eslint-disable-line class-methods-use-this
     return (
