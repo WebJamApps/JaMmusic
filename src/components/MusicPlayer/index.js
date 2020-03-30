@@ -145,8 +145,8 @@ export class MusicPlayer extends Component {
     const minusIndex = index - 1;
     if (minusIndex < 0 || minusIndex > songsState.length) {
       const newIndex = songsState.length - 1;
-      this.setState({ index: newIndex, song: songsState[parseInt(newIndex, 0)] });
-    } else this.setState({ song: songsState[parseInt(minusIndex, 0)], index: minusIndex });
+      this.setState({ index: newIndex, song: songsState[newIndex] });// eslint-disable-line security/detect-object-injection
+    } else this.setState({ song: songsState[minusIndex], index: minusIndex });// eslint-disable-line security/detect-object-injection
   }
 
   play() {
@@ -165,7 +165,7 @@ export class MusicPlayer extends Component {
     index += 1;
     const { songsState } = this.state;
     if (index >= songsState.length) this.setState({ index: 0, song: songsState[0] });
-    else this.setState({ song: songsState[parseInt(index, 0)], index });
+    else this.setState({ song: songsState[index], index });// eslint-disable-line security/detect-object-injection
   }
 
   copyInput(player, song) {

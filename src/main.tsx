@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react';
 import { Provider } from 'react-redux';
 import { render } from 'react-dom';
@@ -14,5 +15,6 @@ render(
     </PersistGate>
   </Provider>, document.getElementById('root'),
 );
+
 /* istanbul ignore if */
-if (process.env.NODE_ENV === 'development') module.hot.accept();
+if (process.env.NODE_ENV === 'development' && module.hot) module.hot.accept();

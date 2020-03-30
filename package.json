@@ -42,6 +42,9 @@
     "postinstall": "yarn start build",
     "test:stylelint": "stylelint \"static/**/*.scss\""
   },
+  "resolutions": {
+    "@types/react": "^16.9.27"
+  },
   "dependencies": {
     "@babel/core": "latest",
     "@babel/preset-env": "latest",
@@ -50,7 +53,19 @@
     "@material-ui/core": "latest",
     "@material-ui/icons": "latest",
     "@tinymce/tinymce-react": "latest",
-    "@types/react": "latest",
+    "@types/copy-webpack-plugin": "^5.0.0",
+    "@types/ejs": "^3.0.1",
+    "@types/html-webpack-plugin": "^3.2.2",
+    "@types/jest": "^25.1.4",
+    "@types/mini-css-extract-plugin": "^0.9.1",
+    "@types/node": "^13.9.5",
+    "@types/react": "^16.9.27",
+    "@types/react-dom": "^16.9.5",
+    "@types/react-redux": "^7.1.7",
+    "@types/terser-webpack-plugin": "^2.2.0",
+    "@types/webpack-bundle-analyzer": "^2.13.3",
+    "@types/webpack-env": "^1.15.1",
+    "awesome-typescript-loader": "^5.2.1",
     "babel-loader": "latest",
     "bluebird": "latest",
     "bootstrap": "latest",
@@ -95,6 +110,7 @@
     "scc": "npm:socketcluster-client@latest",
     "slick-carousel": "latest",
     "snyk": "latest",
+    "source-map-loader": "^0.2.4",
     "style-loader": "latest",
     "stylelint-config-recommended-scss": "latest",
     "superagent": "latest",
@@ -128,7 +144,7 @@
     "stylelint": "latest",
     "stylelint-config-standard": "latest",
     "stylelint-scss": "latest",
-    "typescript": "latest",
+    "typescript": "^3.8.3",
     "webpack-dev-server": "latest"
   },
   "snyk": true
