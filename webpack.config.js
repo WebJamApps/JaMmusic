@@ -61,18 +61,6 @@ module.exports = ({
   devtool: production ? 'nosources-source-map' : 'source-map',
 
   optimization: {
-    // minimizer: production ? [
-    //   new TerserPlugin({
-    //     extractComments: true,
-    //     cache: true,
-    //     parallel: true,
-    //     sourceMap: true,
-    //     terserOptions: { // https://github.com/webpack-contrib/terser-webpack-plugin#terseroptions
-    //       extractComments: 'all',
-    //       compress: { drop_console: true },
-    //     },
-    //   }),
-    // ] : [],
     splitChunks: {
       cacheGroups: {
         styles: {
