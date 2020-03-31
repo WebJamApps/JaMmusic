@@ -10,9 +10,9 @@
   "moduleNameMapper": {
     "\\.(css|less|scss|sass)$": "identity-obj-proxy"
   },
-  "moduleFileExtensions": ["js", "json", "jsx"],
+  "moduleFileExtensions": ["js", "json", "jsx", "ts", "tsx"],
   "testPathIgnorePatterns": ["/node_modules/", "/puppeteer/"],
-  "collectCoverageFrom": ["src/**/*.{js,jsx}"],
+  "collectCoverageFrom": ["src/**/*.{js,jsx,ts,tsx}"],
   "collectCoverage": true,
   "testEnvironment": "jest-environment-jsdom",
   "testURL": "http://localhost/"

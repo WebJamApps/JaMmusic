@@ -3,7 +3,7 @@
   "extends": ["airbnb", "plugin:security/recommended", "plugin:node/recommended", "plugin:jest/recommended"],
   "rules": {
     "react/jsx-filename-extension": [1, {
-      "extensions": [".js"]
+      "extensions": [".js", "tsx"]
     }],
     "node/no-unsupported-features/es-syntax": 0,
     "no-multiple-empty-lines": [

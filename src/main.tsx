@@ -1,9 +1,10 @@
+// @ts-nocheck
 import React from 'react';
 import { Provider } from 'react-redux';
 import { render } from 'react-dom';
 import { PersistGate } from 'redux-persist/integration/react';
 import ConnectedApp from './App';
-import store from './redux/store';
+import store from './redux/store/index';
 
 import '../static/styles.scss';
 
@@ -14,5 +15,6 @@ render(
     </PersistGate>
   </Provider>, document.getElementById('root'),
 );
-/* istanbul ignore if */
-if (process.env.NODE_ENV === 'development') module.hot.accept();
+
+/* istanbul ignore next */
+if (process.env.NODE_ENV === 'development' && module.hot) module.hot.accept();

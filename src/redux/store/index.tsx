@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { createStore, applyMiddleware } from 'redux';
 import { persistStore, persistReducer } from 'redux-persist';
 import { createLogger } from 'redux-logger';
@@ -13,10 +14,11 @@ const persistConfig = {
 let mWares = applyMiddleware(thunk);
 /* istanbul ignore if */
 if (process.env.NODE_ENV === 'development') {
-  const logger = createLogger({ predicate: (getState, action) => action.type !== 'SC_HEARTBEAT' });
+  const logger = createLogger({ predicate: (_getState, action) => action.type !== 'SC_HEARTBEAT' });
   mWares = applyMiddleware(thunk, logger);
 }
 const persistedReducer = persistReducer(persistConfig, allReducers);
+// const store = createStore<IRootState & PersistPartial, any, any, any>( persistedReducer );
 const store = createStore(persistedReducer, mWares);
 const persistor = persistStore(store);
 export default { store, persistor };
