@@ -1,9 +1,8 @@
-// @ts-nocheck
 import React from 'react';
 import { Provider } from 'react-redux';
 import { render } from 'react-dom';
 import { PersistGate } from 'redux-persist/integration/react';
-import ConnectedApp from './App';
+import ConnectedApp from './App/index';
 import store from './redux/store/index';
 
 import '../static/styles.scss';

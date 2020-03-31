@@ -124,7 +124,7 @@ export class AppTemplate extends Component {
       <div key={index} className="menu-item">
         <Link to={menu.link} className="nav-link" onClick={this.close}>
           <i className={`${menu.iconClass}`} />
-        &nbsp;
+          &nbsp;
           <span className="nav-item">{menu.name}</span>
         </Link>
       </div>
