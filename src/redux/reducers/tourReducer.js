@@ -1,3 +1,4 @@
+// @ts-nocheck
 const initialState = {
   tour: [],
   tourUpdated: false,
