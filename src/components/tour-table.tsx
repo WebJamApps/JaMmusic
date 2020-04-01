@@ -1,39 +1,42 @@
-// @ts-nocheck
 import React, { Component } from 'react';
 import MUIDataTable from 'mui-datatables';
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 import ReactHtmlParser from 'react-html-parser';
-import PropTypes from 'prop-types';
-import 'core-js/stable';
-import 'regenerator-runtime/runtime';
 import { connect } from 'react-redux';
 import mapStoreToProps from '../redux/mapStoreToProps';
 
-export class TourTable extends Component {
-  constructor(props) {
+type TourTableProps = {
+  dispatch: (...args: any[]) => any;
+  tourUpdated: boolean;
+  tour: {}[];
+  deleteButton?: boolean;
+};
+type TourTableState = {
+  columns: any[];
+};
+export class TourTable extends Component<TourTableProps, TourTableState> {
+  constructor(props: any) {
     super(props);
     this.setColumns = this.setColumns.bind(this);
     this.getMuiTheme = this.getMuiTheme.bind(this);
     this.checkTourTable = this.checkTourTable.bind(this);
     this.setColumns = this.setColumns.bind(this);
-    this.state = {
-      columns: [],
-    };
+    this.state = { columns: [] };
   }
 
   componentDidMount() { this.setColumns(); }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps: any) {
     const { tourUpdated } = this.props;
     return this.checkTourTable(prevProps.tourUpdated, tourUpdated);
   }
 
   getMuiTheme() { // eslint-disable-line class-methods-use-this
     return createMuiTheme({
-      typography: {
-        useNextVariants: true,
-      },
+      // @ts-ignore
+      typography: { useNextVariants: true },
       overrides: {
+        // @ts-ignore
         MUIDataTableHeadCell: {
           root: {
             padding: '4px', fontWeight: 'bold', color: 'black', fontSize: '11pt',
@@ -41,9 +44,15 @@ export class TourTable extends Component {
         },
         MuiTableRow: { head: { height: '40px' } },
         MuiTableCell: { root: { padding: '4px' } },
-        MUIDataTableToolbar: { actions: { display: 'none' }, root: { paddingLeft: 0, minHeight: 'inherit' } },
+        // @ts-ignore
+        MUIDataTableToolbar: {
+          actions: { display: 'none' },
+          root: { paddingLeft: 0, minHeight: 'inherit' },
+        },
         MUIDataTable: { responsiveScroll: { maxHeight: '4.3in' } },
-        MuiTypography: { h6: { color: 'black', fontWeight: 'bold', fontStyle: 'italic' } },
+        MuiTypography: {
+          h6: { color: 'black', fontWeight: 'bold', fontStyle: 'italic' },
+        },
       },
     });
   }
@@ -58,9 +67,9 @@ export class TourTable extends Component {
         options: {
           filter: false,
           sort: false,
-          customBodyRender: (value) => (
+          customBodyRender: (value: any) => (
             <div style={{ minWidth: '1.3in', margin: 0, fontSize: '12pt' }}>
-              { ReactHtmlParser(value) }
+              {ReactHtmlParser(value)}
             </div>
           ),
         },
@@ -69,7 +78,7 @@ export class TourTable extends Component {
     this.setState({ columns });
   }
 
-  checkTourTable(pTupdated, nTupdated) {
+  checkTourTable(pTupdated: any, nTupdated: boolean) {
     if (!pTupdated && nTupdated) {
       const { dispatch } = this.props;
       dispatch({ type: 'RESET_TOUR' });
@@ -110,10 +119,4 @@ export class TourTable extends Component {
     );
   }
 }
-TourTable.propTypes = {
-  dispatch: PropTypes.func.isRequired,
-  tourUpdated: PropTypes.bool.isRequired,
-  tour: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
-};
-
 export default connect(mapStoreToProps)(TourTable);
