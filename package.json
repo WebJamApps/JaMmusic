@@ -9,7 +9,7 @@
   },
   "author": "https://github.com/orgs/WebJamApps/teams/handlersandkickers",
   "engines": {
-    "node": ">=13.10.0"
+    "node": ">=13.11.0"
   },
   "files": [
     "webpack.config.js",
@@ -47,6 +47,7 @@
   },
   "dependencies": {
     "@babel/core": "latest",
+    "@babel/plugin-proposal-export-default-from": "^7.8.3",
     "@babel/preset-env": "latest",
     "@babel/preset-react": "latest",
     "@babel/register": "latest",
@@ -54,8 +55,10 @@
     "@material-ui/icons": "latest",
     "@tinymce/tinymce-react": "latest",
     "@types/copy-webpack-plugin": "^5.0.0",
+    "@types/core-js": "^2.5.3",
     "@types/domutils": "^1.7.2",
     "@types/ejs": "^3.0.1",
+    "@types/enzyme": "^3.10.5",
     "@types/html-webpack-plugin": "^3.2.2",
     "@types/jest": "^25.1.4",
     "@types/mini-css-extract-plugin": "^0.9.1",
@@ -74,6 +77,7 @@
     "@types/terser-webpack-plugin": "^2.2.0",
     "@types/webpack-bundle-analyzer": "^2.13.3",
     "@types/webpack-env": "^1.15.1",
+    "@typescript-eslint/eslint-plugin": "^2.26.0",
     "awesome-typescript-loader": "^5.2.1",
     "babel-loader": "latest",
     "bluebird": "latest",
@@ -123,8 +127,8 @@
     "stylelint-config-recommended-scss": "latest",
     "superagent": "latest",
     "terser-webpack-plugin": "latest",
-    "ts-jest": "^25.3.0",
     "ts-loader": "^6.2.2",
+    "typescript": "^3.8.3",
     "url-loader": "latest",
     "url-search-params-polyfill": "latest",
     "webpack": "latest",
@@ -132,11 +136,17 @@
     "webpack-cli": "latest"
   },
   "devDependencies": {
+    "@babel/plugin-proposal-class-properties": "^7.8.3",
+    "@babel/preset-typescript": "^7.9.0",
+    "@typescript-eslint/parser": "^2.26.0",
+    "babel-eslint": "^10.1.0",
+    "babel-plugin-transform-class-properties": "^6.24.1",
     "enzyme": "latest",
     "enzyme-adapter-react-16": "latest",
     "enzyme-react-16-adapter-setup": "latest",
-    "eslint": "latest",
+    "eslint": "^6.8.0",
     "eslint-config-airbnb": "latest",
+    "eslint-config-airbnb-typescript": "^7.2.0",
     "eslint-plugin-es": "latest",
     "eslint-plugin-import": "latest",
     "eslint-plugin-jest": "latest",
@@ -154,7 +164,7 @@
     "stylelint": "latest",
     "stylelint-config-standard": "latest",
     "stylelint-scss": "latest",
-    "typescript": "^3.8.3",
+    "ts-jest": "^25.3.0",
     "webpack-dev-server": "latest"
   },
   "snyk": true
