@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import TimeKeeper from 'react-timekeeper';
 
-function AddTime() {
+export default function AddTime() {
   const [time, setTime] = useState('12:34pm');
   const [showTime, setShowTime] = useState(true);
-
+  console.log(time);
   return (
     <div>
       <br />
@@ -33,5 +33,3 @@ function AddTime() {
     </div>
   );
 }
-
-export default AddTime;
