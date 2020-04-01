@@ -127,8 +127,8 @@
     "stylelint-config-recommended-scss": "latest",
     "superagent": "latest",
     "terser-webpack-plugin": "latest",
-    "ts-jest": "^25.3.0",
     "ts-loader": "^6.2.2",
+    "typescript": "^3.8.3",
     "url-loader": "latest",
     "url-search-params-polyfill": "latest",
     "webpack": "latest",
@@ -136,8 +136,11 @@
     "webpack-cli": "latest"
   },
   "devDependencies": {
+    "@babel/plugin-proposal-class-properties": "^7.8.3",
+    "@babel/preset-typescript": "^7.9.0",
     "@typescript-eslint/parser": "^2.26.0",
     "babel-eslint": "^10.1.0",
+    "babel-plugin-transform-class-properties": "^6.24.1",
     "enzyme": "latest",
     "enzyme-adapter-react-16": "latest",
     "enzyme-react-16-adapter-setup": "latest",
@@ -161,7 +164,7 @@
     "stylelint": "latest",
     "stylelint-config-standard": "latest",
     "stylelint-scss": "latest",
-    "typescript": "^3.8.3",
+    "ts-jest": "^25.3.0",
     "webpack-dev-server": "latest"
   },
   "snyk": true

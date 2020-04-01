@@ -22,4 +22,8 @@ describe('App component', () => {
     expect(wrapper2.find('div#App').exists()).toBe(true);
     done();
   }));
+  it('renders when dispatch is not defined', () => {
+    const wrapper2 = shallow(<App />);
+    expect(wrapper2).toBeDefined();
+  });
 });
