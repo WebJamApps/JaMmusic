@@ -7,6 +7,9 @@ function AddTime() {
 
   return (
     <div>
+      <br />
+      <span>* Time</span>
+      <br />
       {showTime
       && (
       <TimeKeeper
@@ -17,15 +20,16 @@ function AddTime() {
         onChange={(data) => setTime(data.formatted12)}
       />
       )}
-      <br />
-      <span>
-        Time selected:
-        {' '}
-        {time}
-      </span>
-      <br />
       {!showTime
-        && <button type="button" onClick={() => setShowTime(true)}>Show Clock</button>}
+        && (
+        <div>
+          Time selected:
+          {' '}
+          {time}
+          <br />
+          <button type="button" onClick={() => setShowTime(true)}>Show Clock</button>
+        </div>
+        )}
     </div>
   );
 }
