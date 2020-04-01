@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 import mapStoreToProps from '../../redux/mapStoreToProps';
 import forms from '../../lib/forms';
 import commonUtils from '../../lib/commonUtils';
+import AddTime from '../../lib/timeKeeper';
 
 export class MusicDashboard extends Component {
   constructor(props) {
@@ -101,7 +102,7 @@ export class MusicDashboard extends Component {
     return (
       <form id="new-tour" style={{ marginTop: '4px', paddingLeft: '10px' }}>
         {this.forms.makeInput('date', 'Date', true, this.onChange, date)}
-        {this.forms.makeInput('text', 'Time', true, this.onChange, time)}
+        <AddTime />
         <p style={{ marginBottom: 0 }}>* Venue</p>
         {this.editor()}
         {this.forms.makeInput('text', 'Location', true, this.onChange, location)}

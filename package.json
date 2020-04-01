@@ -113,6 +113,7 @@
     "react-resize-detector": "latest",
     "react-router-dom": "latest",
     "react-slick": "latest",
+    "react-timekeeper": "^2.1.0",
     "redux": "latest",
     "redux-logger": "latest",
     "redux-persist": "latest",
