@@ -5,6 +5,7 @@
     "react/jsx-filename-extension": [1, {
       "extensions": [".js", "tsx"]
     }],
+    "@typescript-eslint/ban-ts-ignore": 0,
     "@typescript-eslint/no-var-requires": 0,
     "@typescript-eslint/no-throw-literal": 0,
     "@typescript-eslint/no-implied-eval": 0,

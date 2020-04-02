@@ -95,6 +95,7 @@
     "html-loader": "latest",
     "html-webpack-plugin": "latest",
     "jquery": "latest",
+    "jsog": "^1.0.7",
     "jwt-simple": "latest",
     "mini-css-extract-plugin": "latest",
     "moment": "latest",
