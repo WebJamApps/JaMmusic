@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { createStore, applyMiddleware } from 'redux';
 import { persistStore, persistReducer, createTransform } from 'redux-persist';
 import { createLogger } from 'redux-logger';
