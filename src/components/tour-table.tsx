@@ -3,7 +3,6 @@ import MUIDataTable from 'mui-datatables';
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 import ReactHtmlParser from 'react-html-parser';
 import { connect } from 'react-redux';
-// import superagent from 'superagent';
 import mapStoreToProps from '../redux/mapStoreToProps';
 
 type TourTableProps = {
@@ -18,8 +17,6 @@ type TourTableState = {
   columns: any[];
 };
 export class TourTable extends Component<TourTableProps, TourTableState> {
-  // superagent: any;
-
   constructor(props: any) {
     super(props);
     this.setColumns = this.setColumns.bind(this);
@@ -28,7 +25,6 @@ export class TourTable extends Component<TourTableProps, TourTableState> {
     this.setColumns = this.setColumns.bind(this);
     this.state = { columns: [] };
     this.addDeleteButton = this.addDeleteButton.bind(this);
-    // this.superagent = superagent;
   }
 
   componentDidMount() { this.setColumns(); }
@@ -99,13 +95,11 @@ export class TourTable extends Component<TourTableProps, TourTableState> {
     return Promise.resolve(false);
   }
 
-  deleteTour(tourId: string) {
-    console.log(tourId);// eslint-disable-next-line no-restricted-globals
+  deleteTour(tourId: string) { // eslint-disable-next-line no-restricted-globals
     const result = confirm('Deleting Event, are you sure?');// eslint-disable-line no-alert
     if (result) {
       const { scc, auth } = this.props;
       const tour = { tourId };
-      console.log(tour);
       scc.transmit('deleteTour', { tour, token: auth.token });
       window.location.assign('/music');
       return true;
