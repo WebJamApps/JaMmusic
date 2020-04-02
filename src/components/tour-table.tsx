@@ -3,18 +3,23 @@ import MUIDataTable from 'mui-datatables';
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 import ReactHtmlParser from 'react-html-parser';
 import { connect } from 'react-redux';
+// import superagent from 'superagent';
 import mapStoreToProps from '../redux/mapStoreToProps';
 
 type TourTableProps = {
   dispatch: (...args: any[]) => any;
   tourUpdated: boolean;
   tour: {}[];
+  auth: {token: string};
   deleteButton?: boolean;
+  scc: {transmit: (...args: any[]) => any};
 };
 type TourTableState = {
   columns: any[];
 };
 export class TourTable extends Component<TourTableProps, TourTableState> {
+  // superagent: any;
+
   constructor(props: any) {
     super(props);
     this.setColumns = this.setColumns.bind(this);
@@ -22,6 +27,8 @@ export class TourTable extends Component<TourTableProps, TourTableState> {
     this.checkTourTable = this.checkTourTable.bind(this);
     this.setColumns = this.setColumns.bind(this);
     this.state = { columns: [] };
+    this.addDeleteButton = this.addDeleteButton.bind(this);
+    // this.superagent = superagent;
   }
 
   componentDidMount() { this.setColumns(); }
@@ -58,18 +65,21 @@ export class TourTable extends Component<TourTableProps, TourTableState> {
   }
 
   setColumns() {
+    const { deleteButton } = this.props;
     const columns = [];
     const titles = ['Date', 'Time', 'Location', 'Venue', 'Tickets'];
+    if (deleteButton)titles.push('Modify');
     for (let i = 0; i < titles.length; i += 1) {
+      const label = titles[i];// eslint-disable-line security/detect-object-injection
       columns.push({
-        name: titles[i].toLowerCase(), // eslint-disable-line security/detect-object-injection
-        label: titles[i], // eslint-disable-line security/detect-object-injection
+        name: label.toLowerCase(),
+        label,
         options: {
           filter: false,
           sort: false,
           customBodyRender: (value: any) => (
             <div style={{ minWidth: '1.3in', margin: 0, fontSize: '12pt' }}>
-              {ReactHtmlParser(value)}
+              {label !== 'Modify' ? ReactHtmlParser(value) : value}
             </div>
           ),
         },
@@ -89,9 +99,37 @@ export class TourTable extends Component<TourTableProps, TourTableState> {
     return Promise.resolve(false);
   }
 
+  deleteTour(tourId: string) {
+    console.log(tourId);// eslint-disable-next-line no-restricted-globals
+    const result = confirm('Deleting Event, are you sure?');// eslint-disable-line no-alert
+    if (result) {
+      const { scc, auth } = this.props;
+      const tour = { tourId };
+      console.log(tour);
+      scc.transmit('deleteTour', { tour, token: auth.token });
+      window.location.assign('/music');
+      return true;
+    } return false;
+  }
+
+  addDeleteButton(arr: any) {
+    const newArr = arr;/* eslint-disable security/detect-object-injection */
+    for (let i = 0; i < arr.length; i += 1) { // eslint-disable-next-line security/detect-object-injection
+      const deletePicId = `deletePic${newArr[i]._id}`;// eslint-disable-line security/detect-object-injection
+      newArr[i].modify = (// eslint-disable-line security/detect-object-injection
+        <div>
+          <button type="button" id={deletePicId} onClick={() => this.deleteTour(newArr[i]._id)}>Delete Event</button>
+        </div>
+      );
+    }
+    return newArr;
+  }
+
   render() {
     const { columns } = this.state;
-    const { tour } = this.props;
+    const { tour, deleteButton } = this.props;
+    let tableData = tour;
+    if (deleteButton)tableData = this.addDeleteButton(tableData);
     return (
       <div className="tourTable">
         <div style={{ maxWidth: '100%' }}>
@@ -110,7 +148,7 @@ export class TourTable extends Component<TourTableProps, TourTableState> {
                 fixedHeader: false,
               }}
               columns={columns}
-              data={tour}
+              data={tableData}
               title="Tour"
             />
           </MuiThemeProvider>
