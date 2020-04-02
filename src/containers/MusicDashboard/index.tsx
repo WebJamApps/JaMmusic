@@ -2,22 +2,36 @@ import React, { Component } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
 import moment from 'moment';
 import { withRouter, Redirect } from 'react-router-dom';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import mapStoreToProps from '../../redux/mapStoreToProps';
 import forms from '../../lib/forms';
 import commonUtils from '../../lib/commonUtils';
+import Ttable from '../../components/tour-table';
 
-export class MusicDashboard extends Component {
-  constructor(props) {
+type MusicDashboardProps = {
+  scc: {transmit: (...args: any[]) => any};
+  auth: {token: string};
+};
+type MusicDashboardState = {
+  location: string;
+  venue: any | string;
+  redirect: boolean;
+  date: string;
+  time: string;
+  tickets: string;
+  more: string;
+  [x: number]: any;
+  buttonStyle: any;
+};
+export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboardState> {
+  forms: any;
+
+  commonUtils: any;
+
+  constructor(props: any) {
     super(props);
     this.state = {
-      redirect: false,
-      date: '',
-      time: '',
-      tickets: '',
-      more: '',
-      venue: '',
+      redirect: false, date: '', time: '', tickets: '', more: '', venue: '', location: '', buttonStyle: {},
     };
     this.forms = forms;
     this.onChange = this.onChange.bind(this);
@@ -30,15 +44,12 @@ export class MusicDashboard extends Component {
 
   componentDidMount() { this.commonUtils.setTitleAndScroll('Music Dashboard'); }
 
-  onChange(evt) {
+  onChange(evt: any) {
     evt.preventDefault();
     this.setState({ [evt.target.id]: evt.target.value });
   }
 
-  handleEditorChange(venue) {
-    console.log(venue);// eslint-disable-line no-console
-    this.setState({ venue });
-  }
+  handleEditorChange(venue: any) { this.setState({ venue }); }
 
   validateForm() {
     const {
@@ -48,7 +59,7 @@ export class MusicDashboard extends Component {
     return true;
   }
 
-  createTourApi(tour1) { // eslint-disable-line class-methods-use-this
+  createTourApi(tour1: any) {
     const { scc, auth } = this.props;
     const tour = tour1;
     tour.datetime = new Date(tour.date);
@@ -94,22 +105,28 @@ export class MusicDashboard extends Component {
     );
   }
 
-  newTourForm(date, time, buttonStyle) {
-    const {
-      location, tickets, more,
-    } = this.state;
+  newTourForm(date: string, time: string, buttonStyle: any) {
+    const { location, tickets, more } = this.state;
     return (
-      <form id="new-tour" style={{ marginTop: '4px', paddingLeft: '10px' }}>
+      <form id="new-tour" style={{ marginLeft: '4px', marginTop: '4px' }}>
         {this.forms.makeInput('date', 'Date', true, this.onChange, date)}
         {this.forms.makeInput('text', 'Time', true, this.onChange, time)}
-        <p style={{ marginBottom: 0 }}>* Venue</p>
-        {this.editor()}
+        <div className="horiz-scroll">
+          <div style={{ width: '850px', margin: 'auto' }}>
+            <p style={{ marginBottom: 0 }}>* Venue</p>
+            {this.editor()}
+          </div>
+        </div>
         {this.forms.makeInput('text', 'Location', true, this.onChange, location)}
         {this.forms.makeInput('text', 'Tickets', false, this.onChange, tickets)}
         {this.forms.makeInput('text', 'More', false, this.onChange, more)}
         <div style={{ textAlign: 'right', marginTop: '10px', maxWidth: '85%' }}>
-          <span style={{ fontSize: '16px', marginRight: '38%', fontFamily: 'Habibi' }}><i>* Required</i></span>
-          <button style={buttonStyle} disabled={this.validateForm()} type="button" onClick={this.createTour}>Create Tour</button>
+          <span style={{ fontSize: '16px', marginRight: '38%', fontFamily: 'Habibi' }}>
+            <i>* Required</i>
+          </span>
+          <button style={buttonStyle} disabled={this.validateForm()} type="button" onClick={this.createTour}>
+            Create Tour
+          </button>
         </div>
       </form>
     );
@@ -123,17 +140,19 @@ export class MusicDashboard extends Component {
       <div className="page-content">
         {redirect ? <Redirect to="/music" /> : null}
         <h3 style={{ textAlign: 'center', margin: '14px', fontWeight: 'bold' }}>Music Dashboard</h3>
-        <h5 style={{ textAlign: 'center', marginBottom: 0 }}>Create a New Tour</h5>
-        {this.newTourForm(date, time, buttonStyle)}
+        <div className="material-content elevation3" style={{ maxWidth: '9.1in', margin: 'auto' }}>
+          <h5 style={{ textAlign: 'center', marginBottom: 0 }}>Create a New Tour Event</h5>
+          {this.newTourForm(date, time, buttonStyle)}
+        </div>
         <p>&nbsp;</p>
+        <div className="material-content elevation3" style={{ maxWidth: '10in', margin: 'auto' }}>
+          <h5 style={{ textAlign: 'center', marginBottom: 0 }}>Delete Tour Event</h5>
+          <Ttable deleteButton />
+        </div>
         <p>&nbsp;</p>
         <p>&nbsp;</p>
       </div>
     );
   }
 }
-MusicDashboard.propTypes = {
-  scc: PropTypes.shape({ transmit: PropTypes.func }).isRequired,
-  auth: PropTypes.shape({ token: PropTypes.string }).isRequired,
-};
 export default withRouter(connect(mapStoreToProps)(MusicDashboard));

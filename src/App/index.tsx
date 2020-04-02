@@ -1,6 +1,3 @@
-import PropTypes from 'prop-types';
-import 'core-js/stable';
-import 'regenerator-runtime/runtime';
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -17,16 +14,36 @@ import mapStoreToProps from '../redux/mapStoreToProps';
 import getSongs from './songsActions';
 import getImages from './imageActions';
 
-export class App extends Component {
-  constructor(props) {
+export interface AppProps {
+  dispatch: (...args: any[]) => any;
+  songs: {}[];
+  images: {}[];
+  auth: {
+    user: {
+      userType?: string;
+    };
+    isAuthenticated?: boolean;
+  };
+}
+export class App extends Component<AppProps> {
+  connectToSC: any;
+
+  static defaultProps = {
+    dispatch: () => {},
+    songs: [],
+    images: [],
+    auth: { isAuthenticated: false, user: { userType: '' } },
+  };
+
+  constructor(props: any) {
     super(props);
     this.connectToSC = connectToSC;
   }
 
   async componentDidMount() {
     const { dispatch, songs, images } = this.props;
-    if (songs.length === 0)dispatch(getSongs());
-    if (images.length === 0)dispatch(getImages());
+    if (songs.length === 0) dispatch(getSongs());
+    if (images.length === 0) dispatch(getImages());
     await this.connectToSC.connectToSCC(dispatch);
   }
 
@@ -35,14 +52,18 @@ export class App extends Component {
     return (
       <div id="App" className="App">
         <Router>
-          <AppMain id="homepage">
+          <AppMain>
             <Switch>
               <Route exact path="/" component={HomePage} />
               <Route exact path="/music" component={DefaultMusic} />
               <Route path="/music/buymusic" component={BuyMusic} />
               <Route path="/music/originals" component={DefaultOriginals} />
-              {auth.isAuthenticated && auth.user.userType === 'Developer'
-                ? <Route path="/music/dashboard" component={DefaultMusicDashboard} /> : null}
+              {auth.isAuthenticated && auth.user.userType === 'Developer' ? (
+                <Route
+                  path="/music/dashboard"
+                  component={DefaultMusicDashboard}
+                />
+              ) : null}
               <Route path="/shop" component={ShopMain} />
               <Route component={AppFourOhFour} />
             </Switch>
@@ -52,12 +73,5 @@ export class App extends Component {
     );
   }
 }
-App.propTypes = {
-  dispatch: PropTypes.func.isRequired,
-  songs: PropTypes.arrayOf(PropTypes.shape({})),
-  images: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.shape({})), PropTypes.shape({})]),
-  auth: PropTypes.shape({ user: PropTypes.shape({ userType: PropTypes.string }), isAuthenticated: PropTypes.bool }),
-};
-App.defaultProps = { songs: [], images: [], auth: { isAuthenticated: false, user: { userType: '' } } };
 
 export default connect(mapStoreToProps, null)(App);

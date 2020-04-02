@@ -1,12 +1,15 @@
-import React from 'react';
+import * as React from 'react';
 import { shallow } from 'enzyme';
 import { App } from '../../src/App';
 
 describe('App component', () => {
-  const dp = (fun) => fun;
+  const dp = (fun: any) => fun;
   const wrapper = shallow(<App dispatch={dp} />);
   it('renders the component', () => {
     expect(wrapper.find('div#App').exists()).toBe(true);
+  });
+  it('renders correctly', () => {
+    expect(wrapper).toMatchSnapshot();
   });
   it('does not fetch the images or songs if they already exist', () => new Promise((done) => {
     const songs = [{}];
@@ -22,4 +25,8 @@ describe('App component', () => {
     expect(wrapper2.find('div#App').exists()).toBe(true);
     done();
   }));
+  it('renders when dispatch is not defined', () => {
+    const wrapper2 = shallow(<App />);
+    expect(wrapper2).toBeDefined();
+  });
 });
