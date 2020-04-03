@@ -59,7 +59,7 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
       date, time, tickets, more, venue, location,
     } = this.state;
     const { editTour } = this.props;
-    if (date === '' && editTour.date !== undefined) { date = editTour.datetime.split('T')[0]; }
+    if (date === '' && editTour.date !== undefined) { date = editTour.datetime.split('T')[0]; }//eslint-disable-line
     if (time === '' && editTour.time !== undefined) { time = editTour.time; }
     if (tickets === '' && editTour.tickets !== undefined) { tickets = editTour.tickets; }
     if (more === '' && editTour.more !== undefined) { more = editTour.more; }
@@ -158,7 +158,7 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
       location, tickets, more, date, time, venue,
     } = this.state;
     const { editTour } = this.props;
-    if (date === '' && editTour.date !== undefined) { date = editTour.datetime.split('T')[0]; }
+    if (date === '' && editTour.date !== undefined) { date = editTour.datetime.split('T')[0]; }//eslint-disable-line
     if (time === '' && editTour.time !== undefined) { time = editTour.time; }
     if (tickets === '' && editTour.tickets !== undefined) { tickets = editTour.tickets; }
     if (more === '' && editTour.more !== undefined) { more = editTour.more; }
