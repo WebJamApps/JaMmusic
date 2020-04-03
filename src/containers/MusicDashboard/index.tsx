@@ -52,7 +52,6 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
 
   onChange(evt: any) {
     this.checkEdit();
-    console.log(evt.target.value);
     this.setState({ [evt.target.id]: evt.target.value });
   }
 
@@ -173,7 +172,7 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
     return (
       <form id="new-tour" style={{ marginLeft: '4px', marginTop: '4px' }}>
         {this.forms.makeInput('date', 'Date', true, this.onChange, date)}
-        {this.forms.makeInput('text', 'Time', true, this.onChange, time)}
+        <AddTime setFormTime={this.setFormTime} />
         <div className="horiz-scroll">
           <div style={{ width: '850px', margin: 'auto' }}>
             <p style={{ marginBottom: 0 }}>* Venue</p>

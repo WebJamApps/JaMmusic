@@ -8,7 +8,6 @@ type setFormTime = (...args: any) => any;
 export default function AddTime({ setFormTime }) {
   const [time, setTime] = useState('12:34pm');
   const [showTime, setShowTime] = useState(true);
-  console.log(time);
   return (
     <div>
       <br />
