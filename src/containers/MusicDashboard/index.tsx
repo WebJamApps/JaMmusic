@@ -40,6 +40,7 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
     this.validateForm = this.validateForm.bind(this);
     this.createTourApi = this.createTourApi.bind(this);
     this.handleEditorChange = this.handleEditorChange.bind(this);
+    this.setFormTime = this.setFormTime.bind(this);
     this.commonUtils = commonUtils;
   }
 
@@ -50,7 +51,9 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
     this.setState({ [evt.target.id]: evt.target.value });
   }
 
-  handleEditorChange(venue: any) { this.setState({ venue }); }
+  setFormTime(data) {
+    this.setState({ time: data });
+  }
 
   validateForm() {
     const {
@@ -106,12 +109,15 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
     );
   }
 
+  handleEditorChange(venue: any) { this.setState({ venue }); }
+
   newTourForm(date: string, time: string, buttonStyle: any) {
     const { location, tickets, more } = this.state;
     return (
       <form id="new-tour" style={{ marginLeft: '4px', marginTop: '4px' }}>
         {this.forms.makeInput('date', 'Date', true, this.onChange, date)}
-        <AddTime />
+        <AddTime setFormTime={this.setFormTime} />
+        {console.log(time)}
         <p style={{ marginBottom: 0 }}>* Venue</p>
         {this.editor()}
         {this.forms.makeInput('text', 'Location', true, this.onChange, location)}
