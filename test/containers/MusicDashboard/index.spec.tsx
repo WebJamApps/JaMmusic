@@ -1,10 +1,10 @@
-import React from 'react';
+import * as React from 'react';
 import { shallow } from 'enzyme';
 import { Redirect } from 'react-router-dom';
 import { MusicDashboard } from '../../../src/containers/MusicDashboard';
 
 describe('Dashboard Container', () => {
-  let wrapper;
+  let wrapper: any;
   beforeEach(() => {
     const auth = { token: '' };
     wrapper = shallow(<MusicDashboard auth={auth} scc={{ transmit: () => {} }} />);

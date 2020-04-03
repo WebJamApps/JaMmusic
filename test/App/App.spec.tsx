@@ -8,6 +8,9 @@ describe('App component', () => {
   it('renders the component', () => {
     expect(wrapper.find('div#App').exists()).toBe(true);
   });
+  it('renders correctly', () => {
+    expect(wrapper).toMatchSnapshot();
+  });
   it('does not fetch the images or songs if they already exist', () => new Promise((done) => {
     const songs = [{}];
     const images = [{}];
