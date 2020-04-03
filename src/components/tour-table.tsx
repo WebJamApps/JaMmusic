@@ -106,13 +106,22 @@ export class TourTable extends Component<TourTableProps, TourTableState> {
     } return false;
   }
 
+  editTour(data: {}) {
+    const { dispatch } = this.props;
+    dispatch({ type: 'EDIT_TOUR', data });
+    return true;
+  }
+
   addDeleteButton(arr: any) {
     const newArr = arr;/* eslint-disable security/detect-object-injection */
     for (let i = 0; i < arr.length; i += 1) { // eslint-disable-next-line security/detect-object-injection
       const deletePicId = `deletePic${newArr[i]._id}`;// eslint-disable-line security/detect-object-injection
+      const editPicId = `editPic${newArr[i]._id}`;// eslint-disable-line security/detect-object-injection
       newArr[i].modify = (// eslint-disable-line security/detect-object-injection
         <div>
           <button type="button" id={deletePicId} onClick={() => this.deleteTour(newArr[i]._id)}>Delete Event</button>
+          <p>{' '}</p>
+          <button type="button" id={editPicId} onClick={() => this.editTour(newArr[i])}>Edit Event</button>
         </div>
       );
     }

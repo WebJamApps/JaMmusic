@@ -116,4 +116,36 @@ describe('tour-table component test', () => {
     r = await wrapper2.instance().deleteTour('456');
     expect(r).toBe(false);
   });
+  it('handles click on edit pic button', () => {
+    const wrapper2 = shallow(<TourTable
+      tour={[{ _id: '123' }]}
+      dispatch={() => {}}
+      tourUpdated={false}
+      deleteButton
+      auth={{ token: 'token' }}
+      scc={{ transmit: () => {} }}
+    />);
+    // @ts-ignore
+    wrapper2.instance().editTour = jest.fn();
+    wrapper2.update();
+    // @ts-ignore
+    const newArr = wrapper2.instance().addDeleteButton([{ url: 'url', _id: '456' }]);
+    const button = shallow(newArr[0].modify);
+    button.find('button#editPic456').simulate('click');
+    // @ts-ignore
+    expect(wrapper2.instance().editTour).toHaveBeenCalled();
+  });
+  it('stores the edit pic data to redux', () => {
+    const wrapper2 = shallow(<TourTable
+      tour={[{ _id: '123' }]}
+      dispatch={() => {}}
+      tourUpdated={false}
+      deleteButton
+      auth={{ token: 'token' }}
+      scc={{ transmit: () => {} }}
+    />);
+      // @ts-ignore
+    r = wrapper2.instance().editTour({});
+    expect(r).toBe(true);
+  });
 });

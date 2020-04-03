@@ -260,6 +260,12 @@ button:disabled {
   cursor: none
 }
 
+button.floatRight {
+  position: relative;
+  display: inline-block;
+  margin-right: 20px;
+}
+
 .button-lib {
   height: 0.35in;
   text-transform: none;
