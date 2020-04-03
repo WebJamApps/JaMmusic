@@ -59,7 +59,7 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
       date, time, tickets, more, venue, location,
     } = this.state;
     const { editTour } = this.props;
-    if (date === '' && editTour.date !== undefined) { const m = moment(editTour.datetime); date = m.format('YYYY-MM-DD'); }
+    if (date === '' && editTour.date !== undefined) { date = editTour.datetime.split('T')[0]; }
     if (time === '' && editTour.time !== undefined) { time = editTour.time; }
     if (tickets === '' && editTour.tickets !== undefined) { tickets = editTour.tickets; }
     if (more === '' && editTour.more !== undefined) { more = editTour.more; }
@@ -92,7 +92,7 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
   createTourApi(tour1: any) {
     const { scc, auth } = this.props;
     const tour = tour1;
-    tour.datetime = new Date(tour.date);
+    tour.datetime = tour.date;
     const m = moment(tour.date, 'YYYY-MM-DD');
     tour.date = m.format('ll');
     scc.transmit('newTour', { tour, token: auth.token });
@@ -115,7 +115,6 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
       <Editor
         value={venue}
         apiKey={process.env.TINY_KEY}
-        initialValue={venue !== '' ? venue : '<p>Description of Event</p>'}
         init={{
           height: 400,
           menubar: 'insert',
@@ -145,10 +144,11 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
       date, time, location, venue, tickets, more,
     };
     // @ts-ignore
-    tour.datetime = new Date(tour.date);
+    tour.datetime = date;
     const m = moment(tour.date, 'YYYY-MM-DD');
     tour.date = m.format('ll');
     scc.transmit('editTour', { tour, token: auth.token, tourId: editTour._id });
+    this.resetEditForm({ preventDefault: () => {} });
     this.setState({ redirect: true });
     return true;
   }
@@ -158,7 +158,7 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
       location, tickets, more, date, time, venue,
     } = this.state;
     const { editTour } = this.props;
-    if (date === '' && editTour.date !== undefined) { const m = moment(editTour.datetime); date = m.format('YYYY-MM-DD'); }
+    if (date === '' && editTour.date !== undefined) { date = editTour.datetime.split('T')[0]; }
     if (time === '' && editTour.time !== undefined) { time = editTour.time; }
     if (tickets === '' && editTour.tickets !== undefined) { tickets = editTour.tickets; }
     if (more === '' && editTour.more !== undefined) { more = editTour.more; }
