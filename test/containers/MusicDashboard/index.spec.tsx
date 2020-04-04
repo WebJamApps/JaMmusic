@@ -68,6 +68,7 @@ describe('Dashboard Container', () => {
   it('calls setFormTime', () => {
     wrapper.instance().setFormTime('12:00 pm');
     wrapper.instance().setState = jest.fn((obj) => { expect(obj.time).toBe('12:00 pm'); });
+  });
   it('renders with edit tour', () => {
     const wrapper2 = shallow(<MusicDashboard
       auth={auth}
@@ -133,7 +134,7 @@ describe('Dashboard Container', () => {
         location: 'salem, va',
       }}
     />);
-    // @ts-ignore
+      // @ts-ignore
     wrapper2.instance().setState = jest.fn((obj) => expect(obj.venue).toBe(''));
     // @ts-ignore
     wrapper2.instance().resetEditForm({ preventDefault: () => {} });
