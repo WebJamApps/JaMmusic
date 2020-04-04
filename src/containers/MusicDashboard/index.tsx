@@ -9,8 +9,10 @@ import commonUtils from '../../lib/commonUtils';
 import Ttable from '../../components/tour-table';
 
 type MusicDashboardProps = {
+  dispatch: (...args: any) => any;
   scc: {transmit: (...args: any[]) => any};
   auth: {token: string};
+  editTour: {date?: string; time?: string; tickets?: string; more?: string; venue?: string; location?: string; _id?: string; datetime?: string};
 };
 type MusicDashboardState = {
   location: string;
@@ -21,7 +23,6 @@ type MusicDashboardState = {
   tickets: string;
   more: string;
   [x: number]: any;
-  buttonStyle: any;
 };
 export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboardState> {
   forms: any;
@@ -31,7 +32,7 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
   constructor(props: any) {
     super(props);
     this.state = {
-      redirect: false, date: '', time: '', tickets: '', more: '', venue: '', location: '', buttonStyle: {},
+      redirect: false, date: '', time: '', tickets: '', more: '', venue: '', location: '',
     };
     this.forms = forms;
     this.onChange = this.onChange.bind(this);
@@ -40,16 +41,45 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
     this.createTourApi = this.createTourApi.bind(this);
     this.handleEditorChange = this.handleEditorChange.bind(this);
     this.commonUtils = commonUtils;
+    this.checkEdit = this.checkEdit.bind(this);
+    this.editTourAPI = this.editTourAPI.bind(this);
+    this.resetEditForm = this.resetEditForm.bind(this);
   }
 
   componentDidMount() { this.commonUtils.setTitleAndScroll('Music Dashboard'); }
 
   onChange(evt: any) {
-    evt.preventDefault();
+    this.checkEdit();
+    console.log(evt.target.value);
     this.setState({ [evt.target.id]: evt.target.value });
   }
 
-  handleEditorChange(venue: any) { this.setState({ venue }); }
+  checkEdit() {
+    let {
+      date, time, tickets, more, venue, location,
+    } = this.state;
+    const { editTour } = this.props;
+    if (date === '' && editTour.date !== undefined) { date = editTour.datetime.split('T')[0]; }//eslint-disable-line
+    if (time === '' && editTour.time !== undefined) { time = editTour.time; }
+    if (tickets === '' && editTour.tickets !== undefined) { tickets = editTour.tickets; }
+    if (more === '' && editTour.more !== undefined) { more = editTour.more; }
+    if (venue === '' && editTour.venue !== undefined) { venue = editTour.venue; }
+    if (location === '' && editTour.location !== undefined) { location = editTour.location; }
+    this.setState({
+      date, time, tickets, more, venue, location,
+    });
+  }
+
+  resetEditForm(evt: {preventDefault: (...args: any) => any}) {
+    evt.preventDefault();
+    const { dispatch } = this.props;
+    dispatch({ type: 'EDIT_TOUR', data: {} });
+    this.setState({
+      date: '', time: '', tickets: '', more: '', venue: '', location: '',
+    });
+  }
+
+  handleEditorChange(venue: any) { this.checkEdit(); this.setState({ venue }); }
 
   validateForm() {
     const {
@@ -62,7 +92,7 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
   createTourApi(tour1: any) {
     const { scc, auth } = this.props;
     const tour = tour1;
-    tour.datetime = new Date(tour.date);
+    tour.datetime = tour.date;
     const m = moment(tour.date, 'YYYY-MM-DD');
     tour.date = m.format('ll');
     scc.transmit('newTour', { tour, token: auth.token });
@@ -80,11 +110,11 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
     return this.createTourApi(tour);
   }
 
-  editor() {
+  editor(venue: string) {
     return (
       <Editor
+        value={venue}
         apiKey={process.env.TINY_KEY}
-        initialValue="<p>This is the description of the venue</p>"
         init={{
           height: 400,
           menubar: 'insert',
@@ -105,8 +135,35 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
     );
   }
 
-  newTourForm(date: string, time: string, buttonStyle: any) {
-    const { location, tickets, more } = this.state;
+  editTourAPI() {
+    const {
+      date, time, location, venue, tickets, more,
+    } = this.state;
+    const { editTour, scc, auth } = this.props;
+    const tour = {
+      date, time, location, venue, tickets, more,
+    };
+    // @ts-ignore
+    tour.datetime = date;
+    const m = moment(tour.date, 'YYYY-MM-DD');
+    tour.date = m.format('ll');
+    scc.transmit('editTour', { tour, token: auth.token, tourId: editTour._id });
+    this.resetEditForm({ preventDefault: () => {} });
+    this.setState({ redirect: true });
+    return true;
+  }
+
+  newTourForm() {
+    let {
+      location, tickets, more, date, time, venue,
+    } = this.state;
+    const { editTour } = this.props;
+    if (date === '' && editTour.date !== undefined) { date = editTour.datetime.split('T')[0]; }//eslint-disable-line
+    if (time === '' && editTour.time !== undefined) { time = editTour.time; }
+    if (tickets === '' && editTour.tickets !== undefined) { tickets = editTour.tickets; }
+    if (more === '' && editTour.more !== undefined) { more = editTour.more; }
+    if (venue === '' && editTour.venue !== undefined) { venue = editTour.venue; }
+    if (location === '' && editTour.location !== undefined) { location = editTour.location; }
     return (
       <form id="new-tour" style={{ marginLeft: '4px', marginTop: '4px' }}>
         {this.forms.makeInput('date', 'Date', true, this.onChange, date)}
@@ -114,18 +171,38 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
         <div className="horiz-scroll">
           <div style={{ width: '850px', margin: 'auto' }}>
             <p style={{ marginBottom: 0 }}>* Venue</p>
-            {this.editor()}
+            {this.editor(venue)}
           </div>
         </div>
         {this.forms.makeInput('text', 'Location', true, this.onChange, location)}
         {this.forms.makeInput('text', 'Tickets', false, this.onChange, tickets)}
         {this.forms.makeInput('text', 'More', false, this.onChange, more)}
-        <div style={{ textAlign: 'right', marginTop: '10px', maxWidth: '85%' }}>
-          <span style={{ fontSize: '16px', marginRight: '38%', fontFamily: 'Habibi' }}>
+        <div style={{ textAlign: 'left', marginTop: '10px', maxWidth: '85%' }}>
+          <span style={{
+            fontSize: '16px', marginRight: '20px', fontFamily: 'Habibi', position: 'relative', display: 'inline-block',
+          }}
+          >
             <i>* Required</i>
           </span>
-          <button style={buttonStyle} disabled={this.validateForm()} type="button" onClick={this.createTour}>
-            Create Tour
+          {editTour._id ? (
+            <button
+              className="floatRight"
+              type="button"
+              id="cancel-edit-pic"
+              onClick={this.resetEditForm}
+            >
+              Cancel
+            </button>
+          ) : null}
+          <button
+            className="floatRight"
+            disabled={this.validateForm()}
+            type="button"
+            onClick={editTour._id ? this.editTourAPI : this.createTour}
+          >
+            {editTour._id ? 'Edit' : 'Create'}
+            {' '}
+            Tour
           </button>
         </div>
       </form>
@@ -133,22 +210,27 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
   }
 
   render() {
-    const {
-      date, time, buttonStyle, redirect,
-    } = this.state;
+    const { redirect } = this.state;
+    const { editTour } = this.props;
     return (
       <div className="page-content">
         {redirect ? <Redirect to="/music" /> : null}
         <h3 style={{ textAlign: 'center', margin: '14px', fontWeight: 'bold' }}>Music Dashboard</h3>
         <div className="material-content elevation3" style={{ maxWidth: '9.1in', margin: 'auto' }}>
-          <h5 style={{ textAlign: 'center', marginBottom: 0 }}>Create a New Tour Event</h5>
-          {this.newTourForm(date, time, buttonStyle)}
+          <h5 style={{ textAlign: 'center', marginBottom: 0 }}>
+            {editTour._id ? 'Edit' : 'Create a New'}
+            {' '}
+            Tour Event
+          </h5>
+          {this.newTourForm()}
         </div>
         <p>&nbsp;</p>
-        <div className="material-content elevation3" style={{ maxWidth: '10in', margin: 'auto' }}>
-          <h5 style={{ textAlign: 'center', marginBottom: 0 }}>Delete Tour Event</h5>
-          <Ttable deleteButton />
-        </div>
+        {!editTour._id ? (
+          <div className="material-content elevation3" style={{ maxWidth: '10in', margin: 'auto' }}>
+            <h5 style={{ textAlign: 'center', marginBottom: 0 }}>Modify Event</h5>
+            <Ttable deleteButton />
+          </div>
+        ) : null}
         <p>&nbsp;</p>
         <p>&nbsp;</p>
       </div>
