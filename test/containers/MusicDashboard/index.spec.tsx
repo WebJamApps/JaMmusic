@@ -56,4 +56,17 @@ describe('Dashboard Container', () => {
     const result = wrapper.instance().createTour();
     expect(result).toBe(true);
   });
+  it('resets the edit form', () => {
+    wrapper.instance().setState = jest.fn((obj) => expect(obj.date).toBe(''));
+    wrapper.update();
+    wrapper.instance().resetEditForm({ preventDefault: () => {} });
+  });
+  it('calls checkEdit', () => {
+    wrapper.instance().checkEdit('<p>Cool Venue</p>');
+    wrapper.instance().setState = jest.fn((obj) => { expect(obj.venue).toBe('<p>Cool Venue</p>'); });
+  });
+  it('calls setFormTime', () => {
+    wrapper.instance().setFormTime('12:00 pm');
+    wrapper.instance().setState = jest.fn((obj) => { expect(obj.time).toBe('12:00 pm'); });
+  });
 });

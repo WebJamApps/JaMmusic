@@ -9,7 +9,7 @@ export default function AddTime({ setFormTime }) {
   const [time, setTime] = useState('12:34pm');
   const [showTime, setShowTime] = useState(true);
   return (
-    <div>
+    <div className="clock-input">
       <br />
       <span>* Time</span>
       <br />
@@ -25,12 +25,12 @@ export default function AddTime({ setFormTime }) {
       )}
       {!showTime
         && (
-        <div>
+        <div className="time-div">
           Time selected:
           {' '}
           {time}
           <br />
-          <button type="button" onClick={() => setShowTime(true)}>Show Clock</button>
+          <button className="show-clock" type="button" onClick={() => setShowTime(true)}>Show Clock</button>
         </div>
         )}
     </div>
