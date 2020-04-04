@@ -153,6 +153,35 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
     return true;
   }
 
+  tourButtons() {
+    const { editTour } = this.props;
+    return (
+      <div style={{ textAlign: 'left', marginTop: '10px', maxWidth: '85%' }}>
+        <span style={{
+          fontSize: '16px', marginRight: '20px', fontFamily: 'Habibi', position: 'relative', display: 'inline-block',
+        }}
+        >
+          <i>* Required</i>
+        </span>
+        {editTour._id ? (
+          <button className="floatRight" type="button" id="cancel-edit-pic" onClick={this.resetEditForm}>
+            Cancel
+          </button>
+        ) : null}
+        <button
+          className="floatRight"
+          disabled={this.validateForm()}
+          type="button"
+          onClick={editTour._id ? this.editTourAPI : this.createTour}
+        >
+          {editTour._id ? 'Edit' : 'Create'}
+          {' '}
+          Tour
+        </button>
+      </div>
+    );
+  }
+
   newTourForm() {
     let {
       location, tickets, more, date, time, venue,
@@ -177,34 +206,7 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
         {this.forms.makeInput('text', 'Location', true, this.onChange, location)}
         {this.forms.makeInput('text', 'Tickets', false, this.onChange, tickets)}
         {this.forms.makeInput('text', 'More', false, this.onChange, more)}
-        <div style={{ textAlign: 'left', marginTop: '10px', maxWidth: '85%' }}>
-          <span style={{
-            fontSize: '16px', marginRight: '20px', fontFamily: 'Habibi', position: 'relative', display: 'inline-block',
-          }}
-          >
-            <i>* Required</i>
-          </span>
-          {editTour._id ? (
-            <button
-              className="floatRight"
-              type="button"
-              id="cancel-edit-pic"
-              onClick={this.resetEditForm}
-            >
-              Cancel
-            </button>
-          ) : null}
-          <button
-            className="floatRight"
-            disabled={this.validateForm()}
-            type="button"
-            onClick={editTour._id ? this.editTourAPI : this.createTour}
-          >
-            {editTour._id ? 'Edit' : 'Create'}
-            {' '}
-            Tour
-          </button>
-        </div>
+        {this.tourButtons()}
       </form>
     );
   }
