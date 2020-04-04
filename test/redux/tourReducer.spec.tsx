@@ -39,4 +39,17 @@ describe('tour reducer', () => {
       },
     );
   });
+  it('handles MODIFY_TOUR', () => {
+    expect(reducer({
+      tour: [{ _id: '456' }, { _id: '123' }],
+      tourUpdated: false,
+      editTour: {},
+    }, { type: 'UPDATED_TOUR', data: { _id: '123', datetime: 'string' } })).toEqual(
+      {
+        tour: [{ _id: '456' }, { _id: '123', datetime: 'string' }],
+        tourUpdated: true,
+        editTour: {},
+      },
+    );
+  });
 });
