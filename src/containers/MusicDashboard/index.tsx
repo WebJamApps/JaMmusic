@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import mapStoreToProps from '../../redux/mapStoreToProps';
 import forms from '../../lib/forms';
 import commonUtils from '../../lib/commonUtils';
+import AddTime from '../../lib/timeKeeper';
 import Ttable from '../../components/tour-table';
 
 type MusicDashboardProps = {
@@ -40,6 +41,7 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
     this.validateForm = this.validateForm.bind(this);
     this.createTourApi = this.createTourApi.bind(this);
     this.handleEditorChange = this.handleEditorChange.bind(this);
+    this.setFormTime = this.setFormTime.bind(this);
     this.commonUtils = commonUtils;
     this.checkEdit = this.checkEdit.bind(this);
     this.editTourAPI = this.editTourAPI.bind(this);
@@ -50,8 +52,11 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
 
   onChange(evt: any) {
     this.checkEdit();
-    console.log(evt.target.value);
     this.setState({ [evt.target.id]: evt.target.value });
+  }
+
+  setFormTime(data) {
+    this.setState({ time: data });
   }
 
   checkEdit() {
@@ -196,13 +201,14 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
     return (
       <form id="new-tour" style={{ marginLeft: '4px', marginTop: '4px' }}>
         {this.forms.makeInput('date', 'Date', true, this.onChange, date)}
-        {this.forms.makeInput('text', 'Time', true, this.onChange, time)}
+        <AddTime setFormTime={this.setFormTime} />
         <div className="horiz-scroll">
           <div style={{ width: '850px', margin: 'auto' }}>
             <p style={{ marginBottom: 0 }}>* Venue</p>
             {this.editor(venue)}
           </div>
         </div>
+
         {this.forms.makeInput('text', 'Location', true, this.onChange, location)}
         {this.forms.makeInput('text', 'Tickets', false, this.onChange, tickets)}
         {this.forms.makeInput('text', 'More', false, this.onChange, more)}
