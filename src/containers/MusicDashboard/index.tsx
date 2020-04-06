@@ -201,7 +201,7 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
     return (
       <form id="new-tour" style={{ marginLeft: '4px', marginTop: '4px' }}>
         {this.forms.makeInput('date', 'Date', true, this.onChange, date)}
-        <AddTime setFormTime={this.setFormTime} />
+        <AddTime setFormTime={this.setFormTime} initTime={time} />
         <div className="horiz-scroll">
           <div style={{ width: '850px', margin: 'auto' }}>
             <p style={{ marginBottom: 0 }}>* Venue</p>
