@@ -12,7 +12,7 @@ import HomePage from '../containers/Homepage';
 import connectToSC from './connectToSC';
 import mapStoreToProps from '../redux/mapStoreToProps';
 import getSongs from './songsActions';
-import getImages from './imageActions';
+// import getImages from './imageActions';
 
 export interface AppProps {
   dispatch: (...args: any[]) => any;
@@ -41,9 +41,8 @@ export class App extends Component<AppProps> {
   }
 
   async componentDidMount() {
-    const { dispatch, songs, images } = this.props;
+    const { dispatch, songs } = this.props;
     if (songs.length === 0) dispatch(getSongs());
-    if (images.length === 0) dispatch(getImages());
     await this.connectToSC.connectToSCC(dispatch);
   }
 
