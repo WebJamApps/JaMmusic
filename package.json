@@ -110,6 +110,7 @@
     "react-resize-detector": "latest",
     "react-router-dom": "latest",
     "react-slick": "latest",
+    "react-timekeeper": "^2.1.0",
     "redux": "latest",
     "redux-logger": "latest",
     "redux-persist": "latest",
@@ -135,6 +136,8 @@
   "devDependencies": {
     "@babel/plugin-proposal-class-properties": "^7.8.3",
     "@babel/preset-typescript": "^7.9.0",
+    "@testing-library/jest-dom": "latest",
+    "@testing-library/react": "latest",
     "@typescript-eslint/parser": "^2.26.0",
     "babel-eslint": "^10.1.0",
     "babel-plugin-transform-class-properties": "^6.24.1",

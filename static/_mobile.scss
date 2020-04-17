@@ -56,8 +56,32 @@
     margin-top: 60px !important;
     height    : 75px !important;
   }
+
+  div.project {
+    min-width: 280px !important;
+  }
+  // 320x480 android
+  .nav-list {
+    overflow-y: auto;
+    height: 80% !important;
+  }
 }
-@media screen and (max-width: 400px) {
+// Galaxy S9/S9+
+@media screen and (min-width: 351px) and (max-width: 370px) {
+  .nav-list {
+    overflow-y: auto;
+    height: 87% !important;
+  }
+}
+// iPhone 6/7/8 iOS 11 && iPhone X/XS iOS 12
+@media screen and (min-width: 375px) and (max-width: 376px) {
+  .nav-list {
+    overflow-y: auto;
+    height: 77% !important;
+  }
+}
+// iPhone 6/7/8 Plus iOS 11
+@media screen and (min-width: 377px) and (max-width: 425px) {
   #copyInput {
     width      : 95%;
     margin-left: 8px;
@@ -66,12 +90,30 @@
   #playSection audio {
     background-position: center;
   }
+  .nav-list {
+    overflow-y: auto;
+    height: 85% !important;
+  }
 }
 @media screen and (max-width: 500px) {
   .youtubeOverlay {
     position  : absolute;
     margin-top: 30px !important;
     height    : 75px !important;
+  }
+}
+// iPad
+@media screen and (min-width: 750px) and (max-width: 769px) {
+  .nav-list {
+    overflow-y: auto;
+    height: 91% !important;
+  }
+}
+// Kindle Fire HDX && Nexus 10
+@media screen and (min-width: 800px) and (max-width: 899px) {
+  .nav-list {
+    overflow-y: auto;
+    height: 92% !important;
   }
 }
 @media screen and (max-width: 900px) {
@@ -149,7 +191,6 @@
 }
 
 .nav-list {
-  // width           : 180px;
   position        : fixed;
   top             : 91px;
   right           : 0;
@@ -157,16 +198,10 @@
   z-index         : 90000;
   background-color: rgb(192, 192, 192);
 }
-// @media screen and (max-width: 500px) {
-//   // .nav-list {
-//   //   width: 192px;
-//   // }
-// }
 
 .navImage {
   top             : 0;
   right           : 0;
-  // width           : 178px;
   background-color: #2a222a;
 }
 
