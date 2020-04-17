@@ -12,7 +12,6 @@ import HomePage from '../containers/Homepage';
 import connectToSC from './connectToSC';
 import mapStoreToProps from '../redux/mapStoreToProps';
 import getSongs from './songsActions';
-// import getImages from './imageActions';
 
 export interface AppProps {
   dispatch: (...args: any[]) => any;
