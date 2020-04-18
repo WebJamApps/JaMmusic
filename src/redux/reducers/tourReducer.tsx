@@ -15,8 +15,7 @@ const modifyTour = (state: any, action: any) => {
 const addTour = (state: {tour: {datetime: string}[]}, action: {data?: {datetime: string}}) => {
   const tArr = state.tour;
   tArr.push(action.data);
-  // @ts-ignore
-  tArr.sort((a, b) => new Date(b.datetime) - new Date(a.datetime));
+  tArr.sort((a, b) => new Date(b.datetime).getTime() - new Date(a.datetime).getTime());
   return { ...state, tour: tArr, tourUpdated: true };
 };
 
