@@ -31,7 +31,7 @@
     "start": "nps",
     "test:lint-fix": "yarn test:stylelint && nps test.lint.fix",
     "test:lint": "yarn test:stylelint && nps test.lint",
-    "test": "yarn test:lint && yarn test:jest",
+    "test": "yarn test:lint && yarn test:jest && yarn test:puppeteer",
     "test:local": "yarn test:lint-fix && yarn test:jest && yarn test:puppeteer && yarn cc",
     "test:jest": "jest --no-cache --config jest.config.json --notify",
     "test:puppeteer": "jest --preset jest-puppeteer --config jest.puppeteer-config.json /test/puppeteer",
