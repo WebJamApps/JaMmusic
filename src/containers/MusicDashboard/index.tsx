@@ -146,10 +146,8 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
     } = this.state;
     const { editTour, scc, auth } = this.props;
     const tour = {
-      date, time, location, venue, tickets, more,
+      date, time, location, venue, tickets, more, datetime: date,
     };
-    // @ts-ignore
-    tour.datetime = date;
     const m = moment(tour.date, 'YYYY-MM-DD');
     tour.date = m.format('ll');
     scc.transmit('editTour', { tour, token: auth.token, tourId: editTour._id });
