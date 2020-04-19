@@ -1,3 +1,5 @@
+import 'core-js/stable';
+import 'regenerator-runtime/runtime';
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -47,6 +49,7 @@ export class App extends Component<AppProps> {
 
   render() {
     const { auth } = this.props;
+    const userRoles = JSON.parse(process.env.userRoles).roles;
     return (
       <div id="App" className="App">
         <Router>
@@ -56,12 +59,8 @@ export class App extends Component<AppProps> {
               <Route exact path="/music" component={DefaultMusic} />
               <Route path="/music/buymusic" component={BuyMusic} />
               <Route path="/music/originals" component={DefaultOriginals} />
-              {auth.isAuthenticated && auth.user.userType === 'Developer' ? (
-                <Route
-                  path="/music/dashboard"
-                  component={DefaultMusicDashboard}
-                />
-              ) : null}
+              {auth.isAuthenticated && userRoles.indexOf(auth.user.userType) !== -1 
+                ? <Route path="/music/dashboard" component={DefaultMusicDashboard} /> : null}
               <Route path="/shop" component={ShopMain} />
               <Route component={AppFourOhFour} />
             </Switch>
