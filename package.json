@@ -164,7 +164,7 @@
     "stylelint": "latest",
     "stylelint-config-standard": "latest",
     "stylelint-scss": "latest",
-    "ts-jest": "^25.3.0",
+    "ts-jest": "^25.4.0",
     "webpack-dev-server": "latest"
   },
   "snyk": true
