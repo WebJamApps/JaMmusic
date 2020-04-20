@@ -6,7 +6,6 @@ import { connect } from 'react-redux';
 import DefaultMusic from '../containers/Music';
 import DefaultMusicDashboard from '../containers/MusicDashboard';
 import BuyMusic from '../containers/BuyMusic';
-import ShopMain from '../containers/Shop/ShopMain';
 import AppFourOhFour from './404';
 import AppMain from './app-main';
 import DefaultOriginals from '../containers/Originals';
@@ -61,7 +60,6 @@ export class App extends Component<AppProps> {
               <Route path="/music/originals" component={DefaultOriginals} />
               {auth.isAuthenticated && userRoles.indexOf(auth.user.userType) !== -1
                 ? <Route path="/music/dashboard" component={DefaultMusicDashboard} /> : null}
-              <Route path="/shop" component={ShopMain} />
               <Route component={AppFourOhFour} />
             </Switch>
           </AppMain>
