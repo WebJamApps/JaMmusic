@@ -59,7 +59,7 @@ export class App extends Component<AppProps> {
               <Route exact path="/music" component={DefaultMusic} />
               <Route path="/music/buymusic" component={BuyMusic} />
               <Route path="/music/originals" component={DefaultOriginals} />
-              {auth.isAuthenticated && userRoles.indexOf(auth.user.userType) !== -1 
+              {auth.isAuthenticated && userRoles.indexOf(auth.user.userType) !== -1
                 ? <Route path="/music/dashboard" component={DefaultMusicDashboard} /> : null}
               <Route path="/shop" component={ShopMain} />
               <Route component={AppFourOhFour} />
