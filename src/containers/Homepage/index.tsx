@@ -15,7 +15,7 @@ export default class Home extends Component<{}, HomepageState> {
 
   commonUtils: any;
 
-  constructor(props) {
+  constructor(props: any) {
     super(props);
     this.parentRef = React.createRef();
     this.onResize = this.onResize.bind(this);
@@ -25,7 +25,7 @@ export default class Home extends Component<{}, HomepageState> {
 
   componentDidMount() { this.commonUtils.setTitleAndScroll('', window.screen.width); }
 
-  onResize(width) {
+  onResize(width: number) {
     this.setState({ width });
   }
 
