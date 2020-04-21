@@ -8,7 +8,13 @@ import FacebookFeed from './Narrowscreen/NarrowFacebookFeed';
 import Inquiry from '../../components/inquiry';
 import commonUtils from '../../lib/commonUtils';
 
-export default class Home extends Component {
+interface HomepageState { width: number }
+
+export default class Home extends Component<{}, HomepageState> {
+  parentRef: any;
+
+  commonUtils: any;
+
   constructor(props) {
     super(props);
     this.parentRef = React.createRef();
