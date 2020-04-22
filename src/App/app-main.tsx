@@ -1,7 +1,5 @@
-
 import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
-// import PropTypes from 'prop-types';
 import { GoogleLogin, GoogleLogout } from 'react-google-login';
 import { connect } from 'react-redux';
 import authUtils from './authUtils';
@@ -96,10 +94,10 @@ export class AppTemplate extends Component<AppMainProps, AppMainState> {
   }
 
   // eslint-disable-next-line react/destructuring-assignment
-  responseGoogleLogin(response) { return this.authUtils.responseGoogleLogin(response, this); }
+  responseGoogleLogin(response: any) { return this.authUtils.responseGoogleLogin(response, this); }
 
   // eslint-disable-next-line react/destructuring-assignment
-  responseGoogleLogout(response) { return this.authUtils.responseGoogleLogout(response, this.props.dispatch); }
+  responseGoogleLogout(response: any) { return this.authUtils.responseGoogleLogout(response, this.props.dispatch); }
 
   close() {
     this.setState({ menuOpen: false });
@@ -116,7 +114,7 @@ export class AppTemplate extends Component<AppMainProps, AppMainState> {
     return null;
   }
 
-  googleButtons(type, index) {
+  googleButtons(type: string, index: number) {
     const cId = process.env.GoogleClientId;
     if (type === 'login') {
       return (
@@ -133,13 +131,12 @@ export class AppTemplate extends Component<AppMainProps, AppMainState> {
       );
     } return (
       <div key={index} className="menu-item googleLogout">
-        //@ts-ignore
         <GoogleLogout clientId={cId} buttonText="Logout" onLogoutSuccess={this.responseGoogleLogout} cookiePolicy="single_host_origin" />
       </div>
     );
   }
 
-  makeMenuLink(menu, index) {
+  makeMenuLink(menu: any, index: number) {
     return (
       <div key={index} className="menu-item">
         <Link to={menu.link} className="nav-link" onClick={this.close}>
@@ -183,7 +180,7 @@ export class AppTemplate extends Component<AppMainProps, AppMainState> {
     );
   }
 
-  drawerContainer(style) {
+  drawerContainer(style: string) {
     return (
       <div tabIndex={0} role="button" id="sidebar" onClick={this.close} onKeyPress={this.handleKeyPress} className={`${style} drawer-container`}>
         <div
@@ -229,17 +226,5 @@ export class AppTemplate extends Component<AppMainProps, AppMainState> {
     );
   }
 }
-// /* istanbul ignore next */
-// AppTemplate.defaultProps = {
-//   dispatch: () => {}, auth: { isAuthenticated: false, user: { userType: '' } }, userCount: 0, heartBeat: 'white',
-// };
 
-// AppTemplate.propTypes = {
-//   location: PropTypes.shape({ pathname: PropTypes.string }).isRequired,
-//   heartBeat: PropTypes.string,
-//   userCount: PropTypes.number,
-//   auth: PropTypes.shape({ isAuthenticated: PropTypes.bool, user: PropTypes.shape({ userType: PropTypes.string }) }),
-//   dispatch: PropTypes.func,
-//   children: PropTypes.element.isRequired,
-// };
 export default withRouter(connect(mapStoreToProps, null)(AppTemplate));
