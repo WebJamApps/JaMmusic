@@ -6,7 +6,7 @@ import WideCurrentProjects from '../../src/containers/Homepage/Widescreen/WideCu
 import WideFacebookFeed from '../../src/containers/Homepage/Widescreen/WideFacebookFeed';
 import Inquiry from '../../src/components/inquiry';
 
-const wrapper = shallow(<Home />);
+const wrapper = shallow<Home>(<Home />);
 
 describe('Home', () => {
   it('Renders the homepage', () => {
