@@ -20,7 +20,7 @@ interface AppMainState { menuOpen: boolean }
 
 export class AppTemplate extends Component<AppMainProps, AppMainState> {
   static defaultProps = {
-    dispatch: () => {}, auth: { isAuthenticated: false, user: { userType: '' } }, userCount: 0, heartBeat: 'white',
+    dispatch: /* istanbul ignore next*/() => {}, auth: { isAuthenticated: false, user: { userType: '' } }, userCount: 0, heartBeat: 'white',
   };
 
   menuUtils: any;
