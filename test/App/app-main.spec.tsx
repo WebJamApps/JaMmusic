@@ -1,5 +1,5 @@
 import React from 'react';
-import { shallow, ReactWrapper } from 'enzyme';
+import { shallow } from 'enzyme';
 import { AppTemplate } from '../../src/App/app-main';
 import authUtils from '../../src/App/authUtils';
 
@@ -74,10 +74,10 @@ describe('app-main component test setup', () => {
     expect(result).toBe(null);
     done();
   }));
-it('toggles the mobile menu', ()=>{
-  const { wrapper } = setup();
-  wrapper.instance().setState = jest.fn();
-  wrapper.instance().toggleMobileMenu();
-  expect(wrapper.instance().setState).toHaveBeenCalledWith({menuOpen:true});
-  })
+  it('toggles the mobile menu', () => {
+    const { wrapper } = setup();
+    wrapper.instance().setState = jest.fn();
+    wrapper.instance().toggleMobileMenu();
+    expect(wrapper.instance().setState).toHaveBeenCalledWith({ menuOpen: true });
+  });
 });
