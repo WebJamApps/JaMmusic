@@ -45,10 +45,10 @@ const responseGoogleFailLogin = (response) => {
   return false;
 };
 
-const responseGoogleLogout = (response, dispatch) => {
+const responseGoogleLogout = (dispatch) => {
   dispatch(logout());
   if (window.location.href.includes('/dashboard')) window.location.assign('/music');
-  return Promise.resolve(response);
+  return Promise.resolve(true);
 };
 
 export default {

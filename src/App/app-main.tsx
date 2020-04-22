@@ -97,7 +97,7 @@ export class AppTemplate extends Component<AppMainProps, AppMainState> {
   responseGoogleLogin(response: any) { return this.authUtils.responseGoogleLogin(response, this); }
 
   // eslint-disable-next-line react/destructuring-assignment
-  responseGoogleLogout(response: any) { return this.authUtils.responseGoogleLogout(response, this.props.dispatch); }
+  responseGoogleLogout() { return this.authUtils.responseGoogleLogout(this.props.dispatch); }
 
   close() {
     this.setState({ menuOpen: false });
@@ -131,7 +131,7 @@ export class AppTemplate extends Component<AppMainProps, AppMainState> {
       );
     } return (
       <div key={index} className="menu-item googleLogout">
-        <GoogleLogout clientId={cId} buttonText="Logout" onLogoutSuccess={this.responseGoogleLogout} cookiePolicy="single_host_origin" />
+        <GoogleLogout clientId={cId} buttonText="Logout" onLogoutSuccess={this.responseGoogleLogout} />
       </div>
     );
   }
