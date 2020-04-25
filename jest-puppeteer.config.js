@@ -1,6 +1,9 @@
 require('dotenv').config();
 
 module.exports = {
+  launch: {
+    headless: process.env.HEADLESS !== 'false',
+  },
   server: {
     setTimeout: 10000,
     launchTimeout: 100000,

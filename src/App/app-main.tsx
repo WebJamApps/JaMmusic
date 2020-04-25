@@ -1,7 +1,5 @@
-// @ts-nocheck
 import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
-import PropTypes from 'prop-types';
 import { GoogleLogin, GoogleLogout } from 'react-google-login';
 import { connect } from 'react-redux';
 import authUtils from './authUtils';
@@ -10,12 +8,34 @@ import appMainUtils from './appMainUtils';
 import Footer from './Footer';
 import menuUtils from './menuUtils';
 
-export class AppTemplate extends Component {
-  constructor(props) {
+interface AppMainProps {
+  location: { pathname: string };
+  heartBeat: string;
+  userCount: number;
+  auth: { isAuthenticated: boolean; user: { userType: string }};
+  dispatch: (...args: any) => any;
+}
+
+interface AppMainState { menuOpen: boolean }
+
+export class AppTemplate extends Component<AppMainProps, AppMainState> {
+  static defaultProps = {
+    dispatch: /* istanbul ignore next */() => {}, auth: { isAuthenticated: false, user: { userType: '' } }, userCount: 0, heartBeat: 'white',
+  };
+
+  menuUtils: any;
+
+  children: any;
+
+  authUtils: any;
+
+  appMainUtils: any;
+
+  constructor(props: any) {
     super(props);
     this.menuUtils = menuUtils;
     this.children = props.children;
-    this.state = { menuOpen: false };// eslint-disable-line
+    this.state = { menuOpen: false };
     this.close = this.close.bind(this);
     this.handleKeyPress = this.handleKeyPress.bind(this);
     this.handleKeyMenu = this.handleKeyMenu.bind(this);
@@ -28,18 +48,16 @@ export class AppTemplate extends Component {
     this.appMainUtils = appMainUtils;
   }
 
-  get currentStyles() {
-    let result = {};
-    this.style = 'wj';
-    result = {
+  get currentStyles() { // eslint-disable-line class-methods-use-this
+    const result = {
       headerImagePath: '../static/imgs/webjamicon7.png',
       headerText1: 'Web Jam LLC',
       headerClass: 'home-header',
       headerImageClass: 'home-header-image',
       sidebarClass: 'home-sidebar',
       menuToggleClass: 'home-menu-toggle',
+      sidebarImagePath: '../static/imgs/webjamlogo1.png',
     };
-    result.sidebarImagePath = '../static/imgs/webjamlogo1.png';
     return result;
   }
 
@@ -76,28 +94,27 @@ export class AppTemplate extends Component {
   }
 
   // eslint-disable-next-line react/destructuring-assignment
-  responseGoogleLogin(response) { return this.authUtils.responseGoogleLogin(response, this); }
+  responseGoogleLogin(response: any) { return this.authUtils.responseGoogleLogin(response, this); }
 
   // eslint-disable-next-line react/destructuring-assignment
-  responseGoogleLogout(response) { return this.authUtils.responseGoogleLogout(response, this.props.dispatch); }
+  responseGoogleLogout() { return this.authUtils.responseGoogleLogout(this.props.dispatch); }
 
-  close(e) {
+  close() {
     this.setState({ menuOpen: false });
-    if (e.target.classList.contains('loginGoogle')) return this.loginGoogle();
     return true;
   }
 
-  handleKeyPress(e) {
+  handleKeyPress(e: any) {
     if (e.key === 'Escape') return this.setState({ menuOpen: false });
     return null;
   }
 
-  handleKeyMenu(e) {
+  handleKeyMenu(e: any) {
     if (e.key === 'Enter') return this.toggleMobileMenu();
     return null;
   }
 
-  googleButtons(type, index) {
+  googleButtons(type: string, index: number) {
     const cId = process.env.GoogleClientId;
     if (type === 'login') {
       return (
@@ -114,12 +131,12 @@ export class AppTemplate extends Component {
       );
     } return (
       <div key={index} className="menu-item googleLogout">
-        <GoogleLogout clientId={cId} buttonText="Logout" onLogoutSuccess={this.responseGoogleLogout} cookiePolicy="single_host_origin" />
+        <GoogleLogout clientId={cId} buttonText="Logout" onLogoutSuccess={this.responseGoogleLogout} />
       </div>
     );
   }
 
-  makeMenuLink(menu, index) {
+  makeMenuLink(menu: any, index: number) {
     return (
       <div key={index} className="menu-item">
         <Link to={menu.link} className="nav-link" onClick={this.close}>
@@ -163,7 +180,7 @@ export class AppTemplate extends Component {
     );
   }
 
-  drawerContainer(style) {
+  drawerContainer(style: string) {
     return (
       <div tabIndex={0} role="button" id="sidebar" onClick={this.close} onKeyPress={this.handleKeyPress} className={`${style} drawer-container`}>
         <div
@@ -209,17 +226,5 @@ export class AppTemplate extends Component {
     );
   }
 }
-/* istanbul ignore next */
-AppTemplate.defaultProps = {
-  dispatch: () => {}, auth: { isAuthenticated: false, user: { userType: '' } }, userCount: 0, heartBeat: 'white',
-};
 
-AppTemplate.propTypes = {
-  location: PropTypes.shape({ pathname: PropTypes.string }).isRequired,
-  heartBeat: PropTypes.string,
-  userCount: PropTypes.number,
-  auth: PropTypes.shape({ isAuthenticated: PropTypes.bool, user: PropTypes.shape({ userType: PropTypes.string }) }),
-  dispatch: PropTypes.func,
-  children: PropTypes.element.isRequired,
-};
 export default withRouter(connect(mapStoreToProps, null)(AppTemplate));

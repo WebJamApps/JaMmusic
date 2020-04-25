@@ -1,6 +1,6 @@
 import React from 'react';
 
-const activeUsers = (heartBeat, userCount) => (
+const activeUsers = (heartBeat: string, userCount: number) => (
   <div className="active-users">
     <div>
       <button

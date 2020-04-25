@@ -43,8 +43,8 @@ describe('authUtils', () => {
   });
   it('logs out when not /dashboard', async () => {
     Object.defineProperty(window, 'location', { value: { href: '/booya', assign: () => {}, reload: () => {} }, writable: true });
-    const result = await authUtils.responseGoogleLogout('howdy', () => {});
-    expect(result).toBe('howdy');
+    const result = await authUtils.responseGoogleLogout(() => {});
+    expect(result).toBe(true);
   });
   it('logs out when /dashboard', async () => {
     delete window.location;
@@ -52,7 +52,7 @@ describe('authUtils', () => {
       href: '/dashboard',
       assign: jest.fn(),
     };
-    const result = await authUtils.responseGoogleLogout('howdy', () => {});
-    expect(result).toBe('howdy');
+    const result = await authUtils.responseGoogleLogout(() => {});
+    expect(result).toBe(true);
   });
 });

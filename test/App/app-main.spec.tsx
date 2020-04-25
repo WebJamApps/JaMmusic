@@ -7,7 +7,7 @@ const dFunc = () => {};
 function setup() {
   const props = { children: '<div></div>' };
   document.body.innerHTML = '<div class="page-content"></div>';
-  const wrapper = shallow(<AppTemplate dispatch={dFunc} location={{ pathname: '/' }}><div /></AppTemplate>);
+  const wrapper = shallow<AppTemplate>(<AppTemplate dispatch={dFunc} location={{ pathname: '/' }}><div /></AppTemplate>);
   return { wrapper, props };
 }
 
@@ -21,63 +21,32 @@ describe('app-main component test setup', () => {
     wrapper.setState({ menuOpen: true });
     expect(wrapper.find('div.open').length).toBe(1);
   });
-  it('handles response from google login', () => new Promise((done) => {
-    authUtils.responseGoogleLogin = jest.fn(() => true);
-    const wrapper2 = shallow(<AppTemplate dispatch={dFunc} location={{ pathname: '/music' }}><div /></AppTemplate>);
-    const result = wrapper2.instance().responseGoogleLogin({});
+  it('handles response from google login', async () => {
+    authUtils.responseGoogleLogin = jest.fn(() => Promise.resolve(true));
+    const wrapper2 = shallow<AppTemplate>(<AppTemplate dispatch={dFunc} location={{ pathname: '/music' }}><div /></AppTemplate>);
+    const result = await wrapper2.instance().responseGoogleLogin({});
     expect(result).toBe(true);
-    done();
-  }));
-  it('handles response from google logout', () => new Promise((done) => {
-    authUtils.responseGoogleLogout = jest.fn(() => true);
-    const wrapper2 = shallow(<AppTemplate dispatch={dFunc} location={{ pathname: '/music' }}><div /></AppTemplate>);
-    const result = wrapper2.instance().responseGoogleLogout({});
+  });
+  it('handles response from google logout', async () => {
+    authUtils.responseGoogleLogout = jest.fn(() => Promise.resolve(true));
+    const wrapper2 = shallow<AppTemplate>(<AppTemplate dispatch={dFunc} location={{ pathname: '/music' }}><div /></AppTemplate>);
+    const result = await wrapper2.instance().responseGoogleLogout();
     expect(result).toBe(true);
-    done();
-  }));
+  });
   it('renders the logout button', () => new Promise((done) => {
     const { wrapper } = setup();
-    const logoutButton = wrapper.instance().googleButtons('logout', 'logout');
+    const logoutButton = wrapper.instance().googleButtons('logout', 5);
     const rLogout = shallow(logoutButton);
     expect(rLogout.find('div.googleLogout').length).toBe(1);
     done();
   }));
-  it('closes the menu without navigating away from the react app', () => new Promise((done) => {
+  it('closes the menu without navigating away from the react app', () => {
     document.body.innerHTML = '<button class="googleLogin"/><button class="googleLogout"/>';
     const aT = new AppTemplate({ dispatch: () => Promise.resolve(true) });
     aT.setState = () => {};
-    const result = aT.close({ target: { classList: { contains() { return false; } } } });
+    const result = aT.close();
     expect(result).toBe(true);
-    done();
-  }));
-  it('closes the menu and logs in to google', () => new Promise((done) => {
-    document.body.innerHTML = '<button class="googleLogin"/><button class="googleLogout"/>';
-    const aT = new AppTemplate({ dispatch: () => Promise.resolve(true) });
-    aT.setState = () => {};
-    aT.changeNav = () => false;
-    aT.loginGoogle = () => true;
-    const result = aT.close({
-      target: {
-        classList: {
-          contains(name) {
-            if (name === 'loginGoogle') return true;
-            return false;
-          },
-        },
-      },
-    });
-    expect(result).toBe(true);
-    done();
-  }));
-  it('toggles the mobile menu', () => new Promise((done) => {
-    const aT = new AppTemplate({ dispatch: () => Promise.resolve(true) });
-    aT.state.menuOpen = false;
-    aT.setState = (obj) => {
-      expect(obj.menuOpen).toBe(true);
-      done();
-    };
-    aT.toggleMobileMenu();
-  }));
+  });
   it('closes the mobile menu on clicking escape key', () => new Promise((done) => {
     const aT = new AppTemplate({ dispatch: () => Promise.resolve(true) });
     aT.setState = jest.fn(() => true);
@@ -105,4 +74,10 @@ describe('app-main component test setup', () => {
     expect(result).toBe(null);
     done();
   }));
+  it('toggles the mobile menu', () => {
+    const { wrapper } = setup();
+    wrapper.instance().setState = jest.fn();
+    wrapper.instance().toggleMobileMenu();
+    expect(wrapper.instance().setState).toHaveBeenCalledWith({ menuOpen: true });
+  });
 });

@@ -1,4 +1,4 @@
-import scc from 'scc';
+import scc from 'socketcluster-client';
 
 const listenForMessages = (socket, method, name, type, dispatch) => {
   (async () => {
@@ -14,7 +14,7 @@ const listenForMessages = (socket, method, name, type, dispatch) => {
 const connectToSCC = (dispatch) => {
   const socket = scc.create({
     hostname: process.env.SCS_HOST,
-    port: process.env.SCS_PORT,
+    port: Number(process.env.SCS_PORT),
     autoConnect: true,
     secure: process.env.SOCKETCLUSTER_SECURE !== 'false',
   });

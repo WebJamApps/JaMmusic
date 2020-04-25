@@ -41,8 +41,8 @@ export class TourTable extends Component<TourTableProps, TourTableState> {
       overrides: {
         // @ts-ignore
         MUIDataTableHeadCell: {
-          root: { 
-            padding: '4px', fontWeight: 'bold', color: 'black', fontSize: '11pt', 
+          root: {
+            padding: '4px', fontWeight: 'bold', color: 'black', fontSize: '11pt',
           },
         },
         MuiTableRow: { head: { height: '40px' } },

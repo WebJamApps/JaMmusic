@@ -12,7 +12,7 @@ const Request = {
   text: JSON.stringify(mockResponse),
   body: mockResponse,
 
-  post: jest.fn().mockReturnThis({ set: () => {} }),
+  post: jest.fn().mockReturnThis(),
   get: jest.fn().mockReturnThis(),
   send: jest.fn().mockReturnThis(),
   query: jest.fn().mockReturnThis(),
