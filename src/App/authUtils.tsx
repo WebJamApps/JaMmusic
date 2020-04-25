@@ -1,4 +1,3 @@
-// @ts-nocheck
 import request from 'superagent';
 import jwt from 'jwt-simple';
 import authenticate, { logout } from './authActions';
