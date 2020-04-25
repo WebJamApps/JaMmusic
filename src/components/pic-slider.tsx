@@ -1,4 +1,3 @@
-// @ts-nocheck
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { Component } from 'react';
 import Slider from 'react-slick';

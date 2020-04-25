@@ -1,28 +1,45 @@
-// @ts-nocheck
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import ReactPlayer from 'react-player';
-import PropTypes from 'prop-types';
 import musicPlayerUtils from './musicPlayerUtils';
 import mapStoreToProps from '../../redux/mapStoreToProps';
 import musicUtils from './musicUtils';
 import commonUtils from '../../lib/commonUtils';
 
-const state = {
-  pageTitle: 'Original Songs',
-  songsState: [],
-  song: null,
-  index: 0,
-  missionState: 'off',
-  pubState: 'off',
-  player: {
-    playing: false, shown: false, isShuffleOn: false, displayCopier: 'none', displayCopyMessage: false, onePlayerMode: false,
-  },
-};
-export class MusicPlayer extends Component {
+interface MusicPlayerState {
+  missionState: string;
+  pageTitle: string;
+  pubState: string;
+  songsState: any[];
+  index: number;
+  song: any;
+  player: { playing: boolean; shown: boolean; isShuffleOn: boolean; displayCopier: string; displayCopyMessage: boolean; onePlayerMode: boolean };
+}
+
+export class MusicPlayer extends Component<{songs: any; filterBy: any}, MusicPlayerState> {
+  navigator: Navigator;
+
+  musicUtils: any;
+
+  commonUtils: any;
+
+  musicPlayerUtils: any;
+
+  static defaultProps: { songs: { url: any; title: string }[] };
+
   constructor(props) {
     super(props);
-    this.state = state;
+    this.state = {
+      pageTitle: 'Original Songs',
+      songsState: [],
+      song: null,
+      index: 0,
+      missionState: 'off',
+      pubState: 'off',
+      player: {
+        playing: false, shown: false, isShuffleOn: false, displayCopier: 'none', displayCopyMessage: false, onePlayerMode: false,
+      },
+    };
     this.play = this.play.bind(this);
     this.playEnd = this.playEnd.bind(this);
     this.pause = this.pause.bind(this);
@@ -41,6 +58,7 @@ export class MusicPlayer extends Component {
     const params = new URLSearchParams(window.location.search);
     const { player } = this.state;
     const { songs, filterBy } = this.props;
+    this.commonUtils.setTitleAndScroll('', window.screen.width);
     const newSongs = songs.filter((song) => song.category === filterBy);
     this.setState({ song: newSongs[0], songsState: newSongs });
     await this.musicPlayerUtils.checkOnePlayer(params, player, this);
@@ -128,11 +146,6 @@ export class MusicPlayer extends Component {
       });
     } else {
       const shuffled = this.musicPlayerUtils.shuffleThem(songsState);
-      // const shuffled = songsState;
-      // for (let i = shuffled.length - 1; i > 0; i -= 1) {
-      //   const j = Math.floor(Math.random() * (i + 1));
-      //   [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];// eslint-disable-line security/detect-object-injection
-      // }
       this.setState({
         songsState: shuffled, player: { ...player, isShuffleOn: true }, song: shuffled[0], index: 0,
       });
@@ -252,11 +265,4 @@ export class MusicPlayer extends Component {
   }
 }
 
-MusicPlayer.defaultProps = {
-  songs: [{ url: '', title: '' }],
-};
-MusicPlayer.propTypes = {
-  songs: PropTypes.arrayOf(PropTypes.shape({ title: PropTypes.string })),
-  filterBy: PropTypes.string.isRequired,
-};
-export default connect(mapStoreToProps)(MusicPlayer);
+export default connect(mapStoreToProps, null)(MusicPlayer);
