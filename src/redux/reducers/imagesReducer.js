@@ -12,21 +12,21 @@ const imagesReducer = (state = initialState, action) => {
         ...state,
         isFetching: true,
         images: [],
-        isError: false, 
+        isError: false,
       };
     case 'FETCHED_IMAGES':
       return {
         ...state,
         images: action.data,
         isFetching: false,
-        isError: false, 
+        isError: false,
       };
     case 'RECEIVE_ERROR':
       return {
         ...state,
         isError: true,
         isFetching: false,
-        error: action.error.message, 
+        error: action.error.message,
       };
     default:
       return state;

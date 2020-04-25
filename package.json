@@ -1,6 +1,6 @@
 {
   "name": "jammusic",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "joshandmariamusic.com",
   "main": "dist/index.html",
   "repository": {
@@ -9,7 +9,7 @@
   },
   "author": "https://github.com/orgs/WebJamApps/teams/handlersandkickers",
   "engines": {
-    "node": ">=13.12.0"
+    "node": ">=13.13.0"
   },
   "files": [
     "webpack.config.js",
@@ -76,7 +76,6 @@
     "@typescript-eslint/eslint-plugin": "^2.26.0",
     "awesome-typescript-loader": "^5.2.1",
     "babel-loader": "latest",
-    "bluebird": "latest",
     "bootstrap": "latest",
     "copy-webpack-plugin": "latest",
     "core-js": "latest",

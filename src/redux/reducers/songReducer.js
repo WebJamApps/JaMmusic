@@ -9,7 +9,7 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         songs: action.data,
-        error: '', 
+        error: '',
       };
     default:
       return state;
