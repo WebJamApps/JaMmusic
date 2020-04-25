@@ -6,7 +6,7 @@ function setup() {
   const props = {};
   const tour = [];
   const wrapper = shallow<TourTable>(<TourTable
-    tour={tour} 
+    tour={tour}
     dispatch={() => {}}
     tourUpdated={false}
     auth={{ token: 'token' }}
@@ -88,7 +88,7 @@ describe('tour-table component test', () => {
     globalAny.confirm = jest.fn(() => true);
     const loc = window.location;
     delete window.location;
-    window.location = { 
+    window.location = {
       ...loc,
       href: '/',
       assign: jest.fn(),
