@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { Component } from 'react';
 import superagent from 'superagent';
 import forms from '../lib/forms';
