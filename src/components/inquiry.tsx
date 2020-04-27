@@ -1,11 +1,35 @@
-// @ts-nocheck
 import React, { Component } from 'react';
 import superagent from 'superagent';
 import forms from '../lib/forms';
 import stateData from '../lib/StateData.json';
 import countryData from '../lib/CountryData.json';
 
-export default class Inquiry extends Component {
+interface InquiryState {
+  country: any;
+  uSAstate: any;
+  firstname: any;
+  lastname: any;
+  zipcode: any;
+  comments: any;
+  emailaddress: any;
+  formError: any;
+  phonenumber: any;
+  submitted: any;
+  [x: number]: any;
+}
+
+export default class Inquiry extends Component<{}, InquiryState> {
+  stateValues: string[];
+
+  forms: {
+    makeInput: (type: any, label: any, isRequired: any, onChange: any, value: any, width?: any) => JSX.Element;
+    makeDropdown: (htmlFor: any, labelText: any, value: any, onChange: any, options: any) => JSX.Element;
+  };
+
+  countryValues: string[];
+
+  superagent: superagent.SuperAgentStatic;
+
   constructor(props) {
     super(props);
     this.state = {
