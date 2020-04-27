@@ -58,7 +58,7 @@ export default class Inquiry extends Component<{}, InquiryState> {
     this.superagent = superagent;
   }
 
-  onChange(evt, isSelect) {
+  onChange(evt: any, isSelect?: boolean) {
     if (isSelect) return this.setState({ uSAstate: evt.target.value });
     return this.setState({ [evt.target.id]: evt.target.value.trim() });
   }
@@ -173,7 +173,11 @@ export default class Inquiry extends Component<{}, InquiryState> {
         <label htmlFor="comments">
           * Comments
           <br />
-          <textarea style={{ minWidth: '3in', paddingLeft: '5px' }} value={comments} onChange={this.handleChange} />
+          <textarea
+            style={{ minWidth: '3in', paddingLeft: '5px' }}
+            value={comments}
+            onChange={(evt) => this.setState({ comments: evt.target.value.trim() })}
+          />
         </label>
         <p className="form-errors" style={{ color: 'red' }}>{formError}</p>
         <div className="inquiryValidation" style={{ marginBottom: '12px' }}>
