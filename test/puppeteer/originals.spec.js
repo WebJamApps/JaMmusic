@@ -7,6 +7,7 @@ describe('Originals', () => {
     await page.goto('http://localhost:7878/music/originals', {
       waitUntil: 'load',
     });
+    await page.reload();
     await expect(page.title()).resolves.toMatch('Originals | Web Jam LLC');
   });
 });
