@@ -5,7 +5,7 @@ import Inquiry from '../../../src/components/inquiry';
 describe('Inquiry Form', () => {
   let wrapper;
   beforeEach(() => {
-    wrapper = shallow(<Inquiry />);
+    wrapper = shallow<Inquiry>(<Inquiry />);
   });
   it('is defined', () => {
     expect(Inquiry).toBeDefined();

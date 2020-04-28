@@ -22,6 +22,7 @@ describe('musicPlayerUtils', () => {
     expect(result).toBe(true);
   });
   it('checks for one player then sets the song when the id does not match', async () => {
+    // @ts-ignore
     params.get = (item) => { // eslint-disable-line consistent-return
       if (item === 'oneplayer') return true;
       if (item === 'id') return '456';
@@ -35,20 +36,20 @@ describe('musicPlayerUtils', () => {
     expect(result).toBe(true);
   });
   it('makes one player and adjusts height for smaller devices', () => {
-    window.outerWidth = 500;
+    Object.defineProperty(window, 'outerWidth', { writable: true, configurable: true, value: 500 });
     const result = musicPlayerUtils.makeOnePlayerMode();
     expect(result).toBe(true);
   });
 
   it('checks for null styles', () => {
     document.body.innerHTML = '';
-    window.outerWidth = 400;
+    Object.defineProperty(window, 'outerWidth', { writable: true, configurable: true, value: 400 });
     const result = musicPlayerUtils.makeOnePlayerMode();
     expect(result).toBe(true);
   });
 
   it('runs one player mode if it exists', () => {
-    window.outerWidth = 800;
+    Object.defineProperty(window, 'outerWidth', { writable: true, configurable: true, value: 800 });
     const result = musicPlayerUtils.runIfOnePlayer(controller);
     expect(result).toBe(true);
   });
@@ -73,10 +74,13 @@ describe('musicPlayerUtils', () => {
     expect(result).toBe(false);
   });
   it('reshuffled the songs if shuffle is on and type is deselected', () => {
+    // @ts-ignore
     controller.setState = (obj) => {
       expect(obj.player.isShuffleOn).toBe(true);
     };
+    // @ts-ignore
     controller.state.player.isShuffleOn = true;
+    // @ts-ignore
     controller.state.missionState = 'on';
     musicPlayerUtils.toggleSongTypes('mission', controller);
   });
