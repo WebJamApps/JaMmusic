@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react';
 import { mount, shallow } from 'enzyme';
 import { MusicPlayer } from '../../src/components/MusicPlayer';
@@ -10,7 +11,7 @@ function setup() {
     + '<div id="wjfooter"/><div id="mobilemenutoggle"/><div id="pageContent"/><h4 id="headerTitle">'
     + '<div id="mainPlayer"/>';
 
-  const wrapper = mount(<MusicPlayer songs={songs} filterBy="originals" />, {
+  const wrapper = mount<MusicPlayer>(<MusicPlayer songs={songs} filterBy="originals" />, {
     attachTo: document.getElementById('sidebar'),
   });
   return { wrapper };
