@@ -21,7 +21,6 @@ function setup() {
 describe('picture slider component test', () => {
   it('renders the component', () => {
     const { wrapper } = setup();
-    // console.log(wrapper.debug());
     expect(wrapper.find('div').exists()).toBe(true);
     expect(wrapper.find('Caption').first().dive().find('.slider-caption')
       .exists()).toBe(true);
