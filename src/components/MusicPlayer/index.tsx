@@ -13,6 +13,7 @@ interface MusicPlayerState {
   songsState: any[];
   index: number;
   song: any;
+  copy?: any;
   player: { playing: boolean; shown: boolean; isShuffleOn: boolean; displayCopier: string; displayCopyMessage: boolean; onePlayerMode: boolean };
 }
 
