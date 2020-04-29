@@ -157,8 +157,11 @@ describe('Inquiry Form', () => {
     });
     expect(wrapper.find('div.contacted').exists()).toBe(true);
   });
-  it('calls handle change to set the comments', () => {
-    wrapper.instance().handleChange({ target: { value: 'howdy' } });
-    expect(wrapper.instance().state.comments).toBe('howdy');
+  it('handles change to set the comments', () => {
+    wrapper.instance().setState = jest.fn();
+    const commentsSec = wrapper.instance().commentsSection('');
+    const cs = shallow(commentsSec);
+    cs.find('textarea').at(0).simulate('change', { target: { name: 'comments', value: 'howdy' } });
+    expect(wrapper.instance().setState).toHaveBeenCalled();
   });
 });
