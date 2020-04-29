@@ -63,12 +63,9 @@ export default class Inquiry extends Component<{}, InquiryState> {
     return this.setState({ [evt.target.id]: evt.target.value.trim() });
   }
 
-  handleChange(event, isSelect) {
-    if (isSelect) return this.setState({ country: event.target.value });
-    return this.setState({ comments: event.target.value });
-  }
+  handleChange(event: any) { return this.setState({ country: event.target.value }); }
 
-  continueValidating(validEmail) {
+  continueValidating(validEmail: boolean) {
     const {
       country, uSAstate, firstname, lastname, zipcode, comments, formError,
     } = this.state;
@@ -158,6 +155,20 @@ export default class Inquiry extends Component<{}, InquiryState> {
     );
   }
 
+  commentsSection(comments: string) {
+    return (
+      <label htmlFor="comments">
+        * Comments
+        <br />
+        <textarea
+          style={{ minWidth: '3in', paddingLeft: '5px' }}
+          value={comments}
+          onChange={(evt) => this.setState({ comments: evt.target.value.trim() })}
+        />
+      </label>
+    );
+  }
+
   newContactForm() {
     const {
       country, formError, uSAstate, zipcode, comments,
@@ -170,15 +181,7 @@ export default class Inquiry extends Component<{}, InquiryState> {
           ? this.forms.makeDropdown('state', '* State', uSAstate, this.onChange, this.stateValues)
           : null}
         { this.forms.makeInput('zip', 'Zipcode', true, this.onChange, zipcode)}
-        <label htmlFor="comments">
-          * Comments
-          <br />
-          <textarea
-            style={{ minWidth: '3in', paddingLeft: '5px' }}
-            value={comments}
-            onChange={(evt) => this.setState({ comments: evt.target.value.trim() })}
-          />
-        </label>
+        {this.commentsSection(comments)}
         <p className="form-errors" style={{ color: 'red' }}>{formError}</p>
         <div className="inquiryValidation" style={{ marginBottom: '12px' }}>
           <span className="inquiryValidation">* Required</span>
