@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { mount, shallow } from 'enzyme';
 import { MusicPlayer } from '../../src/components/MusicPlayer';
@@ -24,7 +23,11 @@ describe('Music player component init', () => {
   });
   it('should find and simulate play/pause', () => {
     const { wrapper } = setup();
-    wrapper.setState({ player: { playing: false, isShuffleOn: false, onePlayerMode: true } });
+    wrapper.setState({
+      player: {
+        playing: false, isShuffleOn: false, onePlayerMode: true, shown: true, displayCopier: '', displayCopyMessage: true,
+      },
+    });
     wrapper.find('button#play-pause').simulate('click');
     expect(wrapper.instance().state.player.playing).toBe(true);
   });
@@ -36,7 +39,17 @@ describe('Music player component init', () => {
   it('shuffles the songs', () => {
     const mp = new MusicPlayer({ songs: [{ _id: '123' }, { _id: '456' }], copy: [{ _id: '123' }, { _id: '456' }] });
     mp.state = {
-      song: { _id: '789' }, songsState: [{ _id: '123' }, { _id: '456' }], copy: [{ _id: '123' }, { _id: '456' }], player: { isShuffleOn: false },
+      // eslint-disable-next-line max-len
+      song: { _id: '789' },
+      songsState: [{ _id: '123' }, { _id: '456' }],
+      copy: [{ _id: '123' }, { _id: '456' }],
+      player: {
+        isShuffleOn: false, playing: true, shown: true, displayCopier: '', displayCopyMessage: false, onePlayerMode: false,
+      },
+      missionState: 'off',
+      pubState: 'off',
+      pageTitle: 'Originals',
+      index: 0,
     };
     mp.setState = (obj) => { expect(obj.song._id).not.toBe('789'); };
     mp.shuffle();
@@ -50,7 +63,16 @@ describe('Music player component init', () => {
   it('advances to the next song', () => {
     const mp = new MusicPlayer({ songs: [{ _id: '123' }, { _id: '456' }], copy: [{ _id: '123' }, { _id: '456' }] });
     mp.state = {
-      index: 0, songsState: [{ _id: '123' }, { _id: '456' }], copy: [{ _id: '123' }, { _id: '456' }], player: { isShuffleOn: false },
+      index: 0,
+      songsState: [{ _id: '123' }, { _id: '456' }],
+      copy: [{ _id: '123' }, { _id: '456' }],
+      player: {
+        isShuffleOn: false, playing: true, shown: true, displayCopier: '', displayCopyMessage: false, onePlayerMode: false,
+      },
+      missionState: 'off',
+      pageTitle: 'Original',
+      pubState: 'off',
+      song: { _id: '789' },
     };
     mp.setState = (obj) => { expect(obj.index).toBe(1); };
     mp.next();
@@ -83,13 +105,21 @@ describe('Music player component init', () => {
   }));
   it('toggles off copying/share pane', () => {
     const { wrapper } = setup();
-    wrapper.instance().setState({ player: { displayCopier: 'block' } });
+    wrapper.instance().setState({
+      player: {
+        isShuffleOn: false, playing: true, shown: true, displayCopier: 'block', displayCopyMessage: false, onePlayerMode: false,
+      },
+    });
     wrapper.instance().musicPlayerUtils.share(wrapper.instance());
     expect(wrapper.instance().state.player.displayCopier).toBe('none');
   });
   it('toggles on copying/share pane', () => {
     const { wrapper } = setup();
-    wrapper.instance().setState({ player: { displayCopier: 'none' } });
+    wrapper.instance().setState({
+      player: {
+        isShuffleOn: false, playing: true, shown: true, displayCopier: 'none', displayCopyMessage: false, onePlayerMode: false,
+      },
+    });
     wrapper.instance().musicPlayerUtils.share(wrapper.instance());
     expect(wrapper.instance().state.player.displayCopier).toBe('block');
   });
@@ -138,7 +168,12 @@ describe('Music player component init', () => {
   }));
   it('should reset songs if missionState on', async () => {
     const { wrapper } = setup();
-    wrapper.instance().setState({ player: { isShuffleOn: true, missionState: 'off' } });
+    wrapper.instance().setState({
+      player: {
+        isShuffleOn: true, playing: true, shown: true, displayCopier: '', displayCopyMessage: false, onePlayerMode: false,
+      },
+      missionState: 'off',
+    });
     wrapper.find('button.missionoff').simulate('click');
     wrapper.find('button#shuffle').simulate('click');
     const songsState = 'mission';
@@ -151,7 +186,12 @@ describe('Music player component init', () => {
   });
   it('should reset songs if pubState on', async () => {
     const { wrapper } = setup();
-    wrapper.instance().setState({ player: { isShuffleOn: true, pubState: 'off' } });
+    wrapper.instance().setState({
+      player: {
+        isShuffleOn: true, playing: true, shown: true, displayCopier: 'none', displayCopyMessage: false, onePlayerMode: false,
+      },
+      pubState: 'off',
+    });
     wrapper.find('button.puboff').simulate('click');
     wrapper.find('button#shuffle').simulate('click');
     const songsState = 'pub';
@@ -165,8 +205,13 @@ describe('Music player component init', () => {
   it('checks if youtube is about to be played', () => {
     const { songs } = songData;
     const song = { url: 'https://www.youtube.com/embed/mCvUBjuzfo8' };
-    const wrapper = shallow(<MusicPlayer songs={songs} filterBy="originals" />);
-    wrapper.instance().setState({ song, player: { playing: false } });
+    const wrapper = shallow<MusicPlayer>(<MusicPlayer songs={songs} filterBy="originals" />);
+    wrapper.instance().setState({
+      song,
+      player: {
+        isShuffleOn: false, playing: false, shown: true, displayCopier: '', displayCopyMessage: false, onePlayerMode: false,
+      },
+    });
     const overlay = wrapper.instance().setClassOverlay();
     expect(overlay).toBe('youtubeOverlay');
   });

@@ -8,6 +8,7 @@ import Caption from './PicSlider/caption';
 export interface PicSliderProps {
   settings: any;
   data: any;
+  slider?: any;
 }
 
 class PicSlider extends Component<PicSliderProps> {

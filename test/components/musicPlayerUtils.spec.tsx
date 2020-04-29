@@ -3,26 +3,27 @@ import musicPlayerUtils from '../../src/components/MusicPlayer/musicPlayerUtils'
 
 describe('musicPlayerUtils', () => {
   beforeEach(() => {
-  // eslint-disable-next-line max-len
-    document.body.innerHTML = "<div id='sidebar'></div> <div id='header'></div><div id='wjfooter'></div><div id='mobilemenutoggle'></div><div id='contentBlock'></div><div id='pageContent'></div><div id='headerTitle'></div><div id='mainPlayer'><div id='mAndP'></div></div>";
+    document.body.innerHTML = "<div id='sidebar'></div> <div id='header'></div><div id='wjfooter'></div><div id='mobilemenutoggle'></div>"
+    + "<div id='contentBlock'></div><div id='pageContent'></div><div id='headerTitle'></div><div id='mainPlayer'><div id='mAndP'></div></div>";
   });
   const params = {
     get: (item) => { // eslint-disable-line consistent-return
       if (item === 'oneplayer') return true;
-      if (item === 'id') return '123';
+      if (item === 'id') return '123' || '456';
     },
   };
   const controller = {
     setState: () => true,
     props: { songs: [{ _id: '123' }] },
-    state: { songsState: [], player: { onePlayerMode: true }, pageTitle: '' },
+    state: {
+      songsState: [], player: { onePlayerMode: true, isShuffleOn: true }, pageTitle: '', missionState: '',
+    },
   };
   it('checks for one player then sets the song', async () => {
     const result = await musicPlayerUtils.checkOnePlayer(params, { onePlayerMode: false }, controller);
     expect(result).toBe(true);
   });
   it('checks for one player then sets the song when the id does not match', async () => {
-    // @ts-ignore
     params.get = (item) => { // eslint-disable-line consistent-return
       if (item === 'oneplayer') return true;
       if (item === 'id') return '456';
@@ -74,13 +75,10 @@ describe('musicPlayerUtils', () => {
     expect(result).toBe(false);
   });
   it('reshuffled the songs if shuffle is on and type is deselected', () => {
-    // @ts-ignore
     controller.setState = (obj) => {
       expect(obj.player.isShuffleOn).toBe(true);
     };
-    // @ts-ignore
     controller.state.player.isShuffleOn = true;
-    // @ts-ignore
     controller.state.missionState = 'on';
     musicPlayerUtils.toggleSongTypes('mission', controller);
   });
