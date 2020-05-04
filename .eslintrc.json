@@ -1,7 +1,8 @@
 {
   "plugins": ["node", "security", "react", "jest", "@typescript-eslint"],
-  "extends": ["airbnb-typescript", "airbnb/hooks", "plugin:security/recommended", "plugin:node/recommended", 
-    "plugin:jest/recommended", "plugin:@typescript-eslint/recommended"],
+  "extends": ["airbnb-typescript", "airbnb/hooks", "plugin:security/recommended", "plugin:node/recommended",
+    "plugin:jest/recommended", "plugin:@typescript-eslint/recommended"
+  ],
   "rules": {
     "react/jsx-filename-extension": [1, {
       "extensions": [".js", "tsx"]
@@ -13,8 +14,10 @@
     "@typescript-eslint/explicit-function-return-type": 0,
     "@typescript-eslint/no-explicit-any": 0,
     "react/static-property-placement": 0,
-    "node/no-unsupported-features/es-syntax":0,
-    "node/no-missing-import": ["error", {"tryExtensions": [".js", ".json", ".tsx"]}],
+    "node/no-unsupported-features/es-syntax": 0,
+    "node/no-missing-import": ["error", {
+      "tryExtensions": [".js", ".json", ".tsx", ".ts"]
+    }],
     "no-multiple-empty-lines": [
       "error",
       {
