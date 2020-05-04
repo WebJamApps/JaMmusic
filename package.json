@@ -9,7 +9,7 @@
   },
   "author": "https://github.com/orgs/WebJamApps/teams/handlersandkickers",
   "engines": {
-    "node": "13.13.0"
+    "node": ">=13.14.0"
   },
   "files": [
     "webpack.config.js",
@@ -119,7 +119,7 @@
     "regenerator-runtime": "latest",
     "sass-loader": "latest",
     "slick-carousel": "latest",
-    "snyk": "^1.316.2",
+    "snyk": "^1.317.0",
     "socketcluster-client": "latest",
     "source-map-loader": "^0.2.4",
     "style-loader": "latest",

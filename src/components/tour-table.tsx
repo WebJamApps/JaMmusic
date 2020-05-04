@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import MUIDataTable from 'mui-datatables';
-import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
+import { MuiThemeProvider } from '@material-ui/core/styles';
 import ReactHtmlParser from 'react-html-parser';
 import { connect } from 'react-redux';
 import mapStoreToProps from '../redux/mapStoreToProps';
+import TableTheme from '../lib/tourTableTheme';
 
 type TourTableProps = {
   dispatch: (...args: any[]) => any;
@@ -20,7 +21,7 @@ export class TourTable extends Component<TourTableProps, TourTableState> {
   constructor(props: any) {
     super(props);
     this.setColumns = this.setColumns.bind(this);
-    this.getMuiTheme = this.getMuiTheme.bind(this);
+    // this.getMuiTheme = this.getMuiTheme.bind(this);
     this.checkTourTable = this.checkTourTable.bind(this);
     this.setColumns = this.setColumns.bind(this);
     this.state = { columns: [] };
@@ -32,31 +33,6 @@ export class TourTable extends Component<TourTableProps, TourTableState> {
   componentDidUpdate(prevProps: any) {
     const { tourUpdated } = this.props;
     return this.checkTourTable(prevProps.tourUpdated, tourUpdated);
-  }
-
-  getMuiTheme() { // eslint-disable-line class-methods-use-this
-    return createMuiTheme({
-      // @ts-ignore
-      typography: { useNextVariants: true },
-      overrides: {
-        // @ts-ignore
-        MUIDataTableHeadCell: {
-          root: {
-            padding: '4px', fontWeight: 'bold', color: 'black', fontSize: '11pt',
-          },
-        },
-        MuiTableRow: { head: { height: '40px' } },
-        MuiTableCell: { root: { padding: '4px' } },
-        MUIDataTableToolbar: {
-          actions: { display: 'none' },
-          root: { paddingLeft: 0, minHeight: 'inherit' },
-        },
-        MUIDataTable: { responsiveScroll: { maxHeight: '4.3in' } },
-        MuiTypography: {
-          h6: { color: 'black', fontWeight: 'bold', fontStyle: 'italic' },
-        },
-      },
-    });
   }
 
   setColumns() {
@@ -135,7 +111,7 @@ export class TourTable extends Component<TourTableProps, TourTableState> {
     return (
       <div className="tourTable">
         <div style={{ maxWidth: '100%' }}>
-          <MuiThemeProvider theme={this.getMuiTheme()}>
+          <MuiThemeProvider theme={TableTheme}>
             <MUIDataTable
               options={{
                 filterType: 'dropdown',
