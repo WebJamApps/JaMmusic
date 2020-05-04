@@ -4,7 +4,6 @@ import { MuiThemeProvider } from '@material-ui/core/styles';
 import ReactHtmlParser from 'react-html-parser';
 import { connect } from 'react-redux';
 import mapStoreToProps from '../redux/mapStoreToProps';
-// eslint-disable-next-line node/no-missing-import
 import TableTheme from '../lib/tourTableTheme';
 
 type TourTableProps = {
