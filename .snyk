@@ -279,3 +279,9 @@ patch:
         patched: '2020-05-02T00:49:23.974Z'
     - '@babel/preset-env > @babel/plugin-transform-exponentiation-operator > @babel/helper-builder-binary-assignment-operator-visitor > @babel/helper-explode-assignable-expression > @babel/traverse > @babel/helper-function-name > @babel/template > @babel/types > lodash':
         patched: '2020-05-02T00:49:23.974Z'
+    - snyk > @snyk/snyk-cocoapods-plugin > @snyk/cocoapods-lockfile-parser > @snyk/ruby-semver > lodash:
+        patched: '2020-05-04T13:30:43.139Z'
+    - snyk > snyk-nodejs-lockfile-parser > snyk-config > lodash:
+        patched: '2020-05-04T13:30:43.139Z'
+    - snyk > snyk-mvn-plugin > @snyk/java-call-graph-builder > snyk-config > lodash:
+        patched: '2020-05-04T13:30:43.139Z'
