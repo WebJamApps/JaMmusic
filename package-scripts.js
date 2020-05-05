@@ -65,6 +65,6 @@ module.exports = {
         default: 'webpack-dev-server -d --inline --env.server',
         hmr: 'webpack-dev-server -d --inline --hot --env.server',
       },
-    }
+    },
   },
 };
