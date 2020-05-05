@@ -1,4 +1,4 @@
-const setTitleAndScroll = (pageTitle, width) => {
+const setTitleAndScroll = (pageTitle: string, width: number) => {
   if (pageTitle !== '') pageTitle += ' | ';// eslint-disable-line no-param-reassign
   document.title = `${pageTitle}Web Jam LLC`;
   let getClass = 'page-content';
