@@ -1,12 +1,19 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import DefaultMusicPlayer from '../../components/MusicPlayer';
 import mapStoreToProps from '../../redux/mapStoreToProps';
 import commonUtils from '../../lib/commonUtils';
 
-export class Originals extends Component {
-  constructor(props) {
+type oProps = {
+  songs: {url: string}[];};
+export class Originals extends Component<oProps> {
+  o: any;
+
+  commonUtils: any;
+
+  static defaultProps = { songs: [{ url: '' }] };
+
+  constructor(props: any) {
     super(props);
     this.o = React.createRef();
     this.commonUtils = commonUtils;
@@ -33,11 +40,4 @@ export class Originals extends Component {
     );
   }
 }
-
-Originals.propTypes = {
-  songs: PropTypes.arrayOf(PropTypes.shape({})),
-};
-
-Originals.defaultProps = { songs: [{ url: '' }] };
-
 export default connect(mapStoreToProps)(Originals);
