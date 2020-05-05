@@ -243,4 +243,5 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
     );
   }
 }
+// @ts-ignore
 export default withRouter(connect(mapStoreToProps)(MusicDashboard));
