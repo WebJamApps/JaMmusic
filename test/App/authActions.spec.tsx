@@ -19,13 +19,17 @@ describe('authActions', () => {
   });
   it('returns false when nothing is returned from Google', async () => {
     const store = mockStore({ auth: { isAuthenticated: false } });
-    request.setMockResponse({ });
+    request.post = () => ({
+      set: () => ({ send: () => Promise.resolve({ body: undefined }) }),
+    });
     const result = await store.dispatch(authenticate({ code: 'someCode' }));
     expect(result).toBe(false);
   });
   it('returns false when fetch error', async () => {
     const store = mockStore({ auth: { isAuthenticated: false } });
-    request.post = jest.fn(() => ({ set: () => ({ send: () => Promise.reject(new Error('bad')) }) }));
+    request.post = () => ({
+      set: () => ({ send: () => Promise.reject(new Error('bad')) }),
+    });
     await expect(store.dispatch(authenticate({ code: 'someCode' }))).rejects.toThrow('bad');
   });
   it('logs out the user', async () => {
