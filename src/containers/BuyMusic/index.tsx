@@ -4,7 +4,9 @@ import Jss from './joshShermanSolo';
 import commonUtils from '../../lib/commonUtils';
 
 export default class BuyMusic extends Component {
-  constructor(props) {
+  commonUtils: any;
+
+  constructor(props: any) {
     super(props);
     this.commonUtils = commonUtils;
   }
