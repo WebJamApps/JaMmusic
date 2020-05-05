@@ -75,6 +75,7 @@ describe('musicPlayerUtils', () => {
     expect(result).toBe(false);
   });
   it('reshuffled the songs if shuffle is on and type is deselected', () => {
+    // @ts-ignore
     controller.setState = (obj) => {
       expect(obj.player.isShuffleOn).toBe(true);
     };
