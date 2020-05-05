@@ -21,15 +21,18 @@ describe('authUtils', () => {
   it('sets the user', async () => {
     jwt.decode = jest.fn(() => ({ sub: '123' }));
     jwt.encode = jest.fn(() => 'token');
+    // @ts-ignore
     request.setMockResponse({ body: {} });
     Object.defineProperty(window, 'location', { value: { assign: () => {}, reload: () => {} }, writable: true });
     window.location.reload = jest.fn();
+    // @ts-ignore
     controllerStub.props.dispatch = (obj) => { expect(obj.type).toBeDefined(); };
     const result = await authUtils.setUser(controllerStub);
     expect(result).toBe(true);
   });
   it('cathes fetch user error when sets the user', async () => {
     jwt.decode = jest.fn(() => ({ sub: '123' }));
+    // @ts-ignore
     request.get = jest.fn(() => ({ set: () => ({ set: () => Promise.reject(new Error('bad')) }) }));
     await expect(authUtils.setUser(controllerStub)).rejects.toThrow('bad');
   });
@@ -37,6 +40,7 @@ describe('authUtils', () => {
     jwt.decode = jest.fn(() => ({ sub: '123', user: {} }));
     Object.defineProperty(window, 'location', { value: { assign: () => {}, reload: () => {} }, writable: true });
     window.location.reload = jest.fn();
+    // @ts-ignore
     controllerStub.props.dispatch = (obj) => { expect(obj.type).toBe('SET_USER'); };
     const result = await authUtils.setUser(controllerStub);
     expect(result).toBe(true);
@@ -48,6 +52,7 @@ describe('authUtils', () => {
   });
   it('logs out when /dashboard', async () => {
     delete window.location;
+    // @ts-ignore
     window.location = {
       href: '/dashboard',
       assign: jest.fn(),

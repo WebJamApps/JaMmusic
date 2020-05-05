@@ -51,6 +51,7 @@ describe('Music player component init', () => {
       pageTitle: 'Originals',
       index: 0,
     };
+    // @ts-ignore
     mp.setState = (obj) => { expect(obj.song._id).not.toBe('789'); };
     mp.shuffle();
   });
@@ -74,6 +75,7 @@ describe('Music player component init', () => {
       pubState: 'off',
       song: { _id: '789' },
     };
+    // @ts-ignore
     mp.setState = (obj) => { expect(obj.index).toBe(1); };
     mp.next();
   });
@@ -90,6 +92,7 @@ describe('Music player component init', () => {
   });
   it('should find and copy a playing song url', () => {
     const { wrapper } = setup();
+    // @ts-ignore
     wrapper.instance().navigator = { clipboard: { async writeText(arg) { return arg; } } };
     wrapper.update();
     wrapper.find('#copyButton').simulate('click');
@@ -97,6 +100,7 @@ describe('Music player component init', () => {
   });
   it('hides copier message after showing for 1.5s', () => new Promise((done) => {
     const { wrapper } = setup();
+    // @ts-ignore
     wrapper.instance().navigator = { clipboard: { async writeText(arg) { return arg; } } };
     wrapper.update();
     wrapper.instance().musicPlayerUtils.copyShare(wrapper.instance());
@@ -133,6 +137,7 @@ describe('Music player component init', () => {
   it('turns off the pic slider before unmounting', () => new Promise((done) => {
     const { wrapper } = setup();
     wrapper.instance().setState = jest.fn((obj) => {
+      // @ts-ignore
       expect(obj.slider).toBe(false);
     });
     wrapper.update();
