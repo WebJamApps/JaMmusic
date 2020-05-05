@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import PicSlider from '../../components/pic-slider';
 import DefaultTable from '../../components/tour-table';
@@ -9,8 +8,16 @@ import Intro from './intro';
 import mapStoreToProps from '../../redux/mapStoreToProps';
 import commonUtils from '../../lib/commonUtils';
 
-export class Music extends Component {
-  constructor(props) {
+type MusicProps = {
+  images: {url: string;title: string}[];};
+export class Music extends Component<MusicProps> {
+  commonUtils: any;
+
+  static defaultProps = {
+    images: [],
+  };
+
+  constructor(props: any) {
     super(props);
     this.commonUtils = commonUtils;
   }
@@ -57,13 +64,5 @@ export class Music extends Component {
     );
   }
 }
-
-Music.defaultProps = { images: [] };
-Music.propTypes = {
-  images: PropTypes.arrayOf(PropTypes.shape({
-    url: PropTypes.string,
-    title: PropTypes.string,
-  })),
-};
 
 export default connect(mapStoreToProps)(Music);

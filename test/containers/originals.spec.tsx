@@ -5,7 +5,7 @@ import DefaultMusicPlayer from '../../src/components/MusicPlayer';
 
 function setup() {
   const songs = [{ url: '', category: 'originals' }, { url: '', category: 'originals' }];
-  const wrapper = shallow(<Originals songs={songs} />);
+  const wrapper = shallow<Originals>(<Originals songs={songs} />);
   return { wrapper };
 }
 
