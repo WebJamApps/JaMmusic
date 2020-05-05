@@ -1,5 +1,79 @@
 {
-  "songs": [{
+  "songs": [
+    {
+      "title": "Allelulia Alleluia Give Thanks",
+      "artist": "Josh & Maria Sherman",
+      "category": "mission",
+      "album": "Shelter In Place",
+      "year": "2020",
+      "url": "https://dl.dropboxusercontent.com/s/p7wzn7x02253kfo/Allelulia_Alleluia_Give_Thanks.mp3?dl=0",
+      "_id": "29ru9weis2309urihw9q34u"
+    },
+    {
+      "title": "Bind Us Together",
+      "artist": "Josh & Maria Sherman",
+      "category": "mission",
+      "album": "Shelter In Place",
+      "year": "2020",
+      "url": "https://dl.dropboxusercontent.com/s/7lo4l95ak70t5fu/Bind%20Us%20Together%203-29-20.mp3?dl=0",
+      "_id": "30ru9weis2309urihw9q34u"
+    },
+    {
+      "title": "Holy Holy Holy Lord",
+      "artist": "Josh & Maria Sherman",
+      "category": "mission",
+      "album": "Shelter In Place",
+      "year": "2020",
+      "url": "https://dl.dropboxusercontent.com/s/fk32mop4djtt78y/HolyHolyHolyLord.mp3?dl=0",
+      "_id": "31ru9weis2309urihw9q34u"
+    },
+    {
+      "title": "Jesus Christ Has Risen Today",
+      "artist": "Josh & Maria Sherman",
+      "category": "mission",
+      "album": "Shelter In Place",
+      "year": "2020",
+      "url": "https://dl.dropboxusercontent.com/s/qg9wbqqvasd8eco/JesusChristRisenToday-verse1.mp3?dl=0",
+      "_id": "32ru9weis2309urihw9q34u"
+    },
+    {
+      "title": "Kyrie, Glory In the Highest",
+      "composer": "Jonathan Rundman",
+      "artist": "Josh & Maria Sherman",
+      "category": "mission",
+      "album": "Shelter In Place",
+      "year": "2020",
+      "url": "https://dl.dropboxusercontent.com/s/w8qg2bm1zfqyach/Kyrie-GloryInHighest_FolkService.mp3?dl=0",
+      "_id": "33ru9weis2309urihw9q34u"
+    },
+    {
+      "title": "Agnus Dei",
+      "artist": "Josh & Maria Sherman",
+      "category": "mission",
+      "album": "Shelter In Place",
+      "year": "2020",
+      "url": "https://dl.dropboxusercontent.com/s/nsckl9shnz35baj/Agnus-Dei.mp3?dl=0",
+      "_id": "34ru9weis2309urihw9q34u"
+    },
+    {
+      "title": "Where You There, Tomb?",
+      "artist": "Maria Sherman",
+      "category": "mission",
+      "album": "Shelter In Place",
+      "year": "2020",
+      "url": "https://dl.dropboxusercontent.com/s/qc7oqlv8mkxbpo7/Where-You-There_Tomb.mp3?dl=0",
+      "_id": "35ru9weis2309urihw9q34u"
+    },
+    {
+      "title": "Wood of the Cross",
+      "artist": "Josh & Maria Sherman",
+      "category": "mission",
+      "album": "Shelter In Place",
+      "year": "2020",
+      "url": "https://dl.dropboxusercontent.com/s/2mgnbnqntftvmja/Wood-of-the-Cross.mp3?dl=0",
+      "_id": "36ru9weis2309urihw9q34u"
+    },
+    {
       "title": "Down In The River",
       "artist": "Josh & Maria Sherman",
       "category": "mission",
@@ -60,7 +134,7 @@
       "category": "mission",
       "album": "Live from Salem, VA",
       "year": "2016",
-      "url": "https://soundcloud.com/joshandmariamusic/canticle-for-departure",
+      "url": "https://dl.dropboxusercontent.com/s/go5e9bghw6a52nn/Canticle%20For%20Departure.mp3?dl=0",
       "_id": "28ru9weis2309u90iurghebuhfdi"
     },
     {
@@ -92,6 +166,36 @@
       "year": "2016",
       "url": "https://soundcloud.com/joshandmariamusic/im-yours",
       "_id": "28ru9weis2309kjh34ig9gfui"
+    },
+    {
+      "title": "Rainbow Connection",
+      "artist": "Josh & Maria Sherman",
+      "composer": "Paul Williams & Kenneth Ascher",
+      "category": "pub",
+      "album": "Shelter In Place",
+      "year": "2020",
+      "url": "https://dl.dropboxusercontent.com/s/3hfxf45infac29w/Rainbow_Connection.mp3?dl=0",
+      "_id": "48ru9weis2309kjh34ig9gfui"
+    },
+    {
+      "title": "Mary Jane's Last Dance",
+      "artist": "Josh & Maria Sherman",
+      "composer": "Tom Pettty",
+      "category": "pub",
+      "album": "Live from Villa Appalaccia",
+      "year": "2019",
+      "url": "https://dl.dropboxusercontent.com/s/h8l70lopm6egj1n/MaryJanesLastDance-VillaAppalaccia2019.mp3?dl=0",
+      "_id": "49ru9weis2309kjh34ig9gfui"
+    },
+    {
+      "title": "Summertime",
+      "artist": "Josh & Maria Sherman",
+      "composer": "George Gershwin",
+      "category": "pub",
+      "album": "Live from Villa Appalaccia",
+      "year": "2019",
+      "url": "https://dl.dropboxusercontent.com/s/x5kadmvlt9xrmbf/SummerTime-liveFromVillaAppalaccia2019.mp3?dl=0",
+      "_id": "50ru9weis2309kjh34ig9gfui"
     },
     {
       "title": "Dark Light",
