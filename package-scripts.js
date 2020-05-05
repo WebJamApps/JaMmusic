@@ -30,26 +30,6 @@ module.exports = {
         lint: 'nps test.lint',
       }),
     },
-    e2e: {
-      default: `${concurrent({
-        // webpack: `webpack-dev-server --inline --port=${E2E_PORT}`,
-        protractor: 'nps e2e.whenReady',
-      })} --kill-others --success first`,
-      protractor: {
-        install: 'webdriver-manager update',
-        default: series(
-          'nps e2e.protractor.install',
-          'protractor test/protractor.conf.js',
-        ),
-        debug: series(
-          'nps e2e.protractor.install',
-          'protractor test/protractor.conf.js --elementExplorer',
-        ),
-      },
-      whenReady: series(
-        'nps e2e.protractor',
-      ),
-    },
     build: 'nps webpack.build',
     webpack: {
       default: 'nps webpack.server',
@@ -85,7 +65,6 @@ module.exports = {
         default: 'webpack-dev-server -d --inline --env.server',
         hmr: 'webpack-dev-server -d --inline --hot --env.server',
       },
-    },
-    serve: 'pushstate-server dist',
+    }
   },
 };
