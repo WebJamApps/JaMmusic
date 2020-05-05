@@ -5,7 +5,7 @@ describe('forms', () => {
     const scrollIntoViewMock = jest.fn();
     window.HTMLElement.prototype.scrollIntoView = scrollIntoViewMock;
     document.body.innerHTML = '<div class="page-content"></div>';
-    commonUtils.setTitleAndScroll('home');
+    commonUtils.setTitleAndScroll('home', undefined);
     expect(scrollIntoViewMock).toHaveBeenCalled();
   });
 });
