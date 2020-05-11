@@ -20,6 +20,7 @@ describe('authActions', () => {
   it('returns false when nothing is returned from Google', async () => {
     const store = mockStore({ auth: { isAuthenticated: false } });
     request.post = () => ({
+      // @ts-ignore
       set: () => ({ send: () => Promise.resolve({ body: undefined }) }),
     });
     const result = await store.dispatch(authenticate({ code: 'someCode' }));
@@ -28,6 +29,7 @@ describe('authActions', () => {
   it('returns false when fetch error', async () => {
     const store = mockStore({ auth: { isAuthenticated: false } });
     request.post = () => ({
+      // @ts-ignore
       set: () => ({ send: () => Promise.reject(new Error('bad')) }),
     });
     await expect(store.dispatch(authenticate({ code: 'someCode' }))).rejects.toThrow('bad');
