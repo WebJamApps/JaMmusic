@@ -128,15 +128,6 @@ describe('Music player component init', () => {
     const result = wrapper.instance().playUrl();
     expect(result).toBe(null);
   });
-  // it('turns off the pic slider before unmounting', () => new Promise((done) => {
-  //   const { wrapper } = setup();
-  //   wrapper.instance().setState = jest.fn((obj: MusicPlayerState) => {
-  //     expect(obj.slider).toBe(false);
-  //   });
-  //   wrapper.update();
-  //   wrapper.unmount();
-  //   done();
-  // }));
   it('should simulate a click on adding mission/pub song types when either is off', () => {
     const { wrapper } = setup();
     wrapper.find('button.puboff').simulate('click');
