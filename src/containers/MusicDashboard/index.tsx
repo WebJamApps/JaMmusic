@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
 import moment from 'moment';
-import { withRouter, Redirect } from 'react-router-dom';
+import { withRouter, Redirect, RouteComponentProps } from 'react-router-dom';
 import { connect } from 'react-redux';
 import mapStoreToProps from '../../redux/mapStoreToProps';
 import forms from '../../lib/forms';
@@ -9,12 +9,12 @@ import commonUtils from '../../lib/commonUtils';
 import AddTime from '../../lib/timeKeeper';
 import Ttable from '../../components/tour-table';
 
-type MusicDashboardProps = {
+interface MusicDashboardProps extends RouteComponentProps<any> {
   dispatch: (...args: any) => any;
-  scc: {transmit: (...args: any[]) => any};
-  auth: {token: string};
-  editTour: {date?: string; time?: string; tickets?: string; more?: string; venue?: string; location?: string; _id?: string; datetime?: string};
-};
+  scc: { transmit: (...args: any[]) => any };
+  auth: { token: string };
+  editTour: { date?: string; time?: string; tickets?: string; more?: string; venue?: string; location?: string; _id?: string; datetime?: string };
+}
 type MusicDashboardState = {
   location: string;
   venue: any | string;
@@ -55,7 +55,7 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
     this.setState({ [evt.target.id]: evt.target.value });
   }
 
-  setFormTime(data) {
+  setFormTime(data: any) {
     this.setState({ time: data });
   }
 
@@ -75,7 +75,7 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
     });
   }
 
-  resetEditForm(evt: {preventDefault: (...args: any) => any}) {
+  resetEditForm(evt: { preventDefault: (...args: any) => any }) {
     evt.preventDefault();
     const { dispatch } = this.props;
     dispatch({ type: 'EDIT_TOUR', data: {} });
@@ -151,7 +151,7 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
     const m = moment(tour.date, 'YYYY-MM-DD');
     tour.date = m.format('ll');
     scc.transmit('editTour', { tour, token: auth.token, tourId: editTour._id });
-    this.resetEditForm({ preventDefault: () => {} });
+    this.resetEditForm({ preventDefault: () => { } });
     this.setState({ redirect: true });
     return true;
   }
@@ -243,5 +243,6 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
     );
   }
 }
-// @ts-ignore
-export default withRouter(connect(mapStoreToProps)(MusicDashboard));
+
+export default withRouter(connect(mapStoreToProps, null)(MusicDashboard));
+

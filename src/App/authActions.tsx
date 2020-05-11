@@ -1,4 +1,5 @@
 import request from 'superagent';
+import { ActionCreator } from 'redux';
 
 export const gotToken = (doc: any) => ({
   type: 'GOT_TOKEN',
@@ -10,9 +11,9 @@ export const authError = (e: any) => ({
   error: e,
 });
 
-export const logout = () => (dispatch: (...args: any) => any) => dispatch({ type: 'LOGOUT' });
+export const logout: ActionCreator<any> = () => (dispatch: (...args: any) => any) => dispatch({ type: 'LOGOUT' });
 
-const authFunc = (body: any) => async (dispatch: (...args: any) => any, getState: () => any) => {
+const authFunc: ActionCreator<any> = (body: any) => async (dispatch: (...args: any) => any, getState: () => any) => {
   const { auth } = getState();
   if (auth.isAuthenticated) return Promise.resolve(true);
   let data: any;
