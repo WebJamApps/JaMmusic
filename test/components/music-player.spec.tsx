@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-ignore */
 import React from 'react';
 import { mount, shallow } from 'enzyme';
 import { MusicPlayer } from '../../src/components/MusicPlayer';

@@ -3,31 +3,23 @@ import Adapter from 'enzyme-adapter-react-16';
 import { config } from 'dotenv';
 
 config();
-// @ts-ignore
-window.matchMedia = window.matchMedia || function match() {
-  return {
-    matches: false,
-    addListener: function addlistener() {},
-    removeListener: function rmlistener() {},
-  };
-};
+window.matchMedia = jest.fn().mockImplementation((query) => ({
+  matches: false,
+  media: query,
+  onchange: null,
+  addListener: jest.fn(),
+  removeListener: jest.fn(),
+}));
 
 configure({ adapter: new Adapter() });
 document.body.innerHTML = '<div id="root"></div><div id="mAndP"></div>';
 
 window.HTMLMediaElement.prototype.load = () => { /* do nothing */ };
-// @ts-ignore
-window.HTMLMediaElement.prototype.play = () => { /* do nothing */ };
+window.HTMLMediaElement.prototype.play = () => Promise.resolve();
 window.HTMLMediaElement.prototype.pause = () => { /* do nothing */ };
-// @ts-ignore
-window.HTMLMediaElement.prototype.addTextTrack = () => { /* do nothing */ };
 window.location = {
+  ...window.location,
   href: '',
   reload: jest.fn(),
   assign: jest.fn(),
-  // @ts-ignore
-  search: {
-    get: () => '?oneplayer=true&id=28ru9weis2309urihw9098ewuis',
-    set: (data: any) => data,
-  },
 };

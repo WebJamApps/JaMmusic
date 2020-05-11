@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-ignore */
 import jwt from 'jwt-simple';
 import request from 'superagent';
 import authUtils from '../../src/App/authUtils';
