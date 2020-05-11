@@ -4,16 +4,16 @@ import musicPlayerUtils from '../../src/components/MusicPlayer/musicPlayerUtils'
 describe('musicPlayerUtils', () => {
   beforeEach(() => {
     document.body.innerHTML = "<div id='sidebar'></div> <div id='header'></div><div id='wjfooter'></div><div id='mobilemenutoggle'></div>"
-    + "<div id='contentBlock'></div><div id='pageContent'></div><div id='headerTitle'></div><div id='mainPlayer'><div id='mAndP'></div></div>";
+      + "<div id='contentBlock'></div><div id='pageContent'></div><div id='headerTitle'></div><div id='mainPlayer'><div id='mAndP'></div></div>";
   });
   const params = {
-    get: (item) => { // eslint-disable-line consistent-return
+    get: (item: string) => {
       if (item === 'oneplayer') return true;
-      if (item === 'id') return '123' || '456';
+      return '123' || '456';
     },
   };
   const controller = {
-    setState: () => true,
+    setState: (obj: any) => { if (obj) return true; return false; },
     props: { songs: [{ _id: '123' }] },
     state: {
       songsState: [], player: { onePlayerMode: true, isShuffleOn: true }, pageTitle: '', missionState: '',
@@ -24,9 +24,9 @@ describe('musicPlayerUtils', () => {
     expect(result).toBe(true);
   });
   it('checks for one player then sets the song when the id does not match', async () => {
-    params.get = (item) => { // eslint-disable-line consistent-return
+    params.get = (item) => {
       if (item === 'oneplayer') return true;
-      if (item === 'id') return '456';
+      return '456';
     };
     const result = await musicPlayerUtils.checkOnePlayer(params, { onePlayerMode: false }, controller);
     expect(result).toBe(true);
@@ -56,7 +56,7 @@ describe('musicPlayerUtils', () => {
   });
   it('makes the home button that navigates to /music page', () => {
     const wrapper = shallow(musicPlayerUtils.homeButton(true));
-    Object.defineProperty(window, 'location', { value: { href: '/booya', assign: () => {}, reload: () => {} }, writable: true });
+    Object.defineProperty(window, 'location', { value: { href: '/booya', assign: () => { }, reload: () => { } }, writable: true });
     window.location.assign = jest.fn();
     wrapper.find('button').simulate('click');
     expect(window.location.assign).toHaveBeenCalled();
@@ -75,9 +75,8 @@ describe('musicPlayerUtils', () => {
     expect(result).toBe(false);
   });
   it('reshuffled the songs if shuffle is on and type is deselected', () => {
-    // @ts-ignore
-    controller.setState = (obj) => {
-      expect(obj.player.isShuffleOn).toBe(true);
+    controller.setState = (obj: any) => {
+      expect(obj.player.isShuffleOn).toBe(true); return true;
     };
     controller.state.player.isShuffleOn = true;
     controller.state.missionState = 'on';
