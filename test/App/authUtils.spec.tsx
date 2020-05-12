@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/ban-ts-ignore */
 import jwt from 'jwt-simple';
-import request from 'superagent';
+import superagent from 'superagent';
 import authUtils from '../../src/App/authUtils';
 
 describe('authUtils', () => {
@@ -19,45 +20,47 @@ describe('authUtils', () => {
     await expect(authUtils.responseGoogleLogin({}, controllerStub)).rejects.toThrow('bad');
   });
   it('sets the user', async () => {
+    const cStub2 = {
+      props: { auth: { token: 'token' }, dispatch: (obj: any) => { expect(obj.type).toBeDefined(); } },
+    };
     jwt.decode = jest.fn(() => ({ sub: '123' }));
     jwt.encode = jest.fn(() => 'token');
     // @ts-ignore
-    request.setMockResponse({ body: {} });
-    Object.defineProperty(window, 'location', { value: { assign: () => {}, reload: () => {} }, writable: true });
+    superagent.setMockResponse({ body: {} });
+    Object.defineProperty(window, 'location', { value: { assign: () => { }, reload: () => { } }, writable: true });
     window.location.reload = jest.fn();
-    // @ts-ignore
-    controllerStub.props.dispatch = (obj) => { expect(obj.type).toBeDefined(); };
-    const result = await authUtils.setUser(controllerStub);
+    const result = await authUtils.setUser(cStub2);
     expect(result).toBe(true);
   });
   it('cathes fetch user error when sets the user', async () => {
     jwt.decode = jest.fn(() => ({ sub: '123' }));
     // @ts-ignore
-    request.get = jest.fn(() => ({ set: () => ({ set: () => Promise.reject(new Error('bad')) }) }));
+    superagent.get = jest.fn(() => ({ set: () => ({ set: () => Promise.reject(new Error('bad')) }) }));
     await expect(authUtils.setUser(controllerStub)).rejects.toThrow('bad');
   });
   it('sets the user to the already decoded user', async () => {
     jwt.decode = jest.fn(() => ({ sub: '123', user: {} }));
-    Object.defineProperty(window, 'location', { value: { assign: () => {}, reload: () => {} }, writable: true });
+    Object.defineProperty(window, 'location', { value: { assign: () => { }, reload: () => { } }, writable: true });
     window.location.reload = jest.fn();
-    // @ts-ignore
-    controllerStub.props.dispatch = (obj) => { expect(obj.type).toBe('SET_USER'); };
-    const result = await authUtils.setUser(controllerStub);
+    const cStub3 = {
+      props: { auth: { token: 'token' }, dispatch: (obj: any) => { expect(obj.type).toBe('SET_USER'); } },
+    };
+    const result = await authUtils.setUser(cStub3);
     expect(result).toBe(true);
   });
   it('logs out when not /dashboard', async () => {
-    Object.defineProperty(window, 'location', { value: { href: '/booya', assign: () => {}, reload: () => {} }, writable: true });
-    const result = await authUtils.responseGoogleLogout(() => {});
+    Object.defineProperty(window, 'location', { value: { href: '/booya', assign: () => { }, reload: () => { } }, writable: true });
+    const result = await authUtils.responseGoogleLogout(() => { });
     expect(result).toBe(true);
   });
   it('logs out when /dashboard', async () => {
     delete window.location;
-    // @ts-ignore
     window.location = {
+      ...window.location,
       href: '/dashboard',
       assign: jest.fn(),
     };
-    const result = await authUtils.responseGoogleLogout(() => {});
+    const result = await authUtils.responseGoogleLogout(() => { });
     expect(result).toBe(true);
   });
 });

@@ -6,7 +6,7 @@ import mapStoreToProps from '../../redux/mapStoreToProps';
 import musicUtils from './musicUtils';
 import commonUtils from '../../lib/commonUtils';
 
-interface MusicPlayerState {
+export interface MusicPlayerState {
   missionState: string;
   pageTitle: string;
   pubState: string;
@@ -28,7 +28,7 @@ export class MusicPlayer extends Component<{songs: any; filterBy: any}, MusicPla
 
   static defaultProps: { songs: { url: any; title: string }[] };
 
-  constructor(props) {
+  constructor(props: {songs: any; filterBy: any}) {
     super(props);
     this.state = {
       pageTitle: 'Original Songs',

@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/ban-ts-ignore */
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import request from 'superagent';
+import superagent from 'superagent';
 import authenticate, { logout } from '../../src/App/authActions';
 
 const middlewares = [thunk];
@@ -19,16 +20,16 @@ describe('authActions', () => {
   });
   it('returns false when nothing is returned from Google', async () => {
     const store = mockStore({ auth: { isAuthenticated: false } });
-    request.post = () => ({
+    superagent.post = () => ({
       // @ts-ignore
-      set: () => ({ send: () => Promise.resolve({ body: undefined }) }),
+      set: () => ({ send: async () => ({ body: undefined }) }),
     });
     const result = await store.dispatch(authenticate({ code: 'someCode' }));
     expect(result).toBe(false);
   });
   it('returns false when fetch error', async () => {
     const store = mockStore({ auth: { isAuthenticated: false } });
-    request.post = () => ({
+    superagent.post = () => ({
       // @ts-ignore
       set: () => ({ send: () => Promise.reject(new Error('bad')) }),
     });
