@@ -1,6 +1,7 @@
 { 
   "verbose": true,
   "bail": true,
+  "resetMocks": true,
   "setupFiles": [
     "core-js/stable",
     "regenerator-runtime/runtime",
@@ -14,6 +15,5 @@
   "testPathIgnorePatterns": ["/node_modules/", "/puppeteer/"],
   "collectCoverageFrom": ["src/**/*.{js,jsx,ts,tsx}"],
   "collectCoverage": true,
-  "testEnvironment": "jest-environment-jsdom",
   "testURL": "http://localhost/"
 }

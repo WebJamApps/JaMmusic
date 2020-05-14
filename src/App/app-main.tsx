@@ -120,6 +120,8 @@ export class AppTemplate extends Component<AppMainProps, AppMainState> {
       return (
         <div key={index} className="menu-item googleLogin">
           <GoogleLogin
+            // eslint-disable-next-line no-console
+            onAutoLoadFinished={(good) => { console.log(good); return good; }}
             responseType="code"
             clientId={cId}
             buttonText="Login"

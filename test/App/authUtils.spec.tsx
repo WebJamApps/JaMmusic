@@ -26,7 +26,7 @@ describe('authUtils', () => {
     jwt.decode = jest.fn(() => ({ sub: '123' }));
     jwt.encode = jest.fn(() => 'token');
     // @ts-ignore
-    superagent.setMockResponse({ body: {} });
+    superagent.get = jest.fn(() => ({ set: () => ({ set: () => Promise.resolve({ body: {} }) }) }));
     Object.defineProperty(window, 'location', { value: { assign: () => { }, reload: () => { } }, writable: true });
     window.location.reload = jest.fn();
     const result = await authUtils.setUser(cStub2);
