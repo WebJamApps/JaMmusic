@@ -16,7 +16,7 @@
     /* Allow javascript files to be compiled. */
     "jsx": "react",
     /* Specify JSX code generation: 'preserve', 'react-native', or 'react'. */
-    "checkJs": true,
+    /*"checkJs": true,
     /* Report errors in .js files. */
     "lib": ["es2018", "dom", "dom.iterable", "esnext"],
     /* Specify library files to be included in the compilation. */
