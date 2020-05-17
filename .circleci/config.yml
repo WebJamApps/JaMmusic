@@ -25,6 +25,8 @@ jobs:
       - run:
           name: Test install
           command: "yarn install"
+          environment:
+            NODE_OPTIONS: --max_old_space_size=8192
       - run:
           name: run all tests
           no_output_timeout: 30m
