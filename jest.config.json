@@ -15,5 +15,8 @@
   "testPathIgnorePatterns": ["/node_modules/", "/puppeteer/"],
   "collectCoverageFrom": ["src/**/*.{js,jsx,ts,tsx}"],
   "collectCoverage": true,
-  "testURL": "http://localhost/"
+  "testURL": "http://localhost/",
+  "transform": {
+    "^.+\\.tsx?$": "ts-jest"
+  }
 }

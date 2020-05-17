@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-ignore */
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import getSongs, { gotSongs } from '../../src/App/songsActions';
@@ -19,6 +20,7 @@ describe('async actions', () => {
     const { location } = window;
     delete window.location;
     const fn = jest.fn();
+    // @ts-ignore
     window.location = {
       search: '?oneplayer=true&id=28ru9weis2309urihw9098ewuis',
       pathname: '/music/original',
@@ -31,11 +33,13 @@ describe('async actions', () => {
   it('test get songs when https', async () => {
     const { location } = window;
     delete window.location;
+    // @ts-ignore
     window.location = {
       search: '?oneplayer=true&id=28ru9weis2309urihw9098ewuis',
       pathname: '/music/original',
       href: 'https://this.is.for.fun/',
     };
+    // @ts-ignore
     const result = await store.dispatch(getSongs());
     expect(result).toBe(true);
     window.location = location;
