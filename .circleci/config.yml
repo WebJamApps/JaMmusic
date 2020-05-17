@@ -1,4 +1,4 @@
-version:  2.0
+version: 2.0
 jobs:
   build:
     environment:
@@ -14,8 +14,8 @@ jobs:
             curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
             chmod +x ./cc-test-reporter
       - run:
-          name:        Install Chromedriver latest version
-          command:     |
+          name: Install Chromedriver latest version
+          command: |
             sudo apt-get update
             sudo apt-get install lsb-release libappindicator3-1 fonts-liberation libasound2 libnspr4 libnss3 libxss1 xdg-utils
             curl -L -o google-chrome.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
@@ -23,26 +23,26 @@ jobs:
             sudo sed -i 's|HERE/chrome"|HERE/chrome" --no-sandbox|g' /opt/google/chrome/google-chrome
             rm google-chrome.deb
       - run:
-          name:        Test install
-          command:     'yarn install'
+          name: Test install
+          command: "yarn install"
       - run:
-          name:        run all tests
-          command:     |
+          name: run all tests
+          no_output_timeout: 30m
+          command: |
             ./cc-test-reporter before-build
             yarn test
             ./cc-test-reporter after-build --coverage-input-type lcov --exit-code $?
       - store_artifacts:
-          path:        coverage
-          prefix:      coverage
-
+          path: coverage
+          prefix: coverage
 # workflows:
 #   version: 2
 #   build_and_test:
 #     jobs:
 #       # - build
 #       - test
-      #     requires:
-      #       - build
-      # - upload-coverage:
-      #     requires:
-      #        - test
+#     requires:
+#       - build
+# - upload-coverage:
+#     requires:
+#        - test
