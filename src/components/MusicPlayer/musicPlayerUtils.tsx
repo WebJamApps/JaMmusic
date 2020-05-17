@@ -84,38 +84,19 @@ const shuffleThem = (songs) => {
   }
   return shuffled;
 };
-const toggleSongTypes = (type: string, view: any) => {
-  const lcType = type.toLowerCase();
-  const { player, missionState, pubState } = view.state;
-  if (lcType === 'original' && missionState === 'off' && pubState === 'off') return;
-  let { songsState, pageTitle } = view.state, shuffled: any[];
+function toggleOn(lcType: string, view: any, type: string, typeInState: string, typeState: string) {
   const { songs } = view.props;
-  const typeInState = `${lcType}State`;
-  const typeState = view.state[typeInState.toString()]; // eslint-disable-line react/destructuring-assignment
-  if (typeState === 'off') {
-    songsState = [
-      ...songsState,
-      ...songs.filter((song: any) => song.category === lcType),
-    ];
-    if (player.isShuffleOn) shuffled = shuffleThem(songsState);
-    else { songsState = view.musicUtils.setIndex(songsState, lcType); }
-    pageTitle = pageTitle.replace('Songs', '');
-    pageTitle += ` & ${type} Songs`;
-  } else {
-    songsState = songsState.filter((song: any) => song.category !== lcType);
-    pageTitle = pageTitle.replace(` & ${type}`, '');
-    if (songsState.length === 0) {
-      songsState = [
-        ...songsState,
-        ...songs.filter((song: any) => song.category === 'original'),
-      ];
-      pageTitle = 'Original Songs';
-      view.setState({ originalState: 'on' });
-    }
-    pageTitle = pageTitle.replace(`${type}`, '').replace('&', '');
-    if (player.isShuffleOn) shuffled = shuffleThem(songsState);
-  }
-  view.setState({
+  const { player } = view.state;
+  let { songsState, pageTitle } = view.state, shuffled: any[];
+  songsState = [
+    ...songsState,
+    ...songs.filter((song: any) => song.category === lcType),
+  ];
+  if (player.isShuffleOn) shuffled = shuffleThem(songsState);
+  else { songsState = view.musicUtils.setIndex(songsState, lcType); }
+  pageTitle = pageTitle.replace('Songs', '');
+  pageTitle += ` & ${type} Songs`;
+  return view.setState({
     player: { ...player },
     pageTitle,
     songsState: player.isShuffleOn ? shuffled : songsState,
@@ -123,7 +104,37 @@ const toggleSongTypes = (type: string, view: any) => {
     song: player.isShuffleOn ? shuffled[0] : songsState[0],
     index: 0,
   });
-};
+}
+function toggleSongTypes(type: string, view: any) {
+  const lcType = type.toLowerCase();
+  const { player, missionState, pubState } = view.state;
+  if (lcType === 'original' && missionState === 'off' && pubState === 'off') return false;
+  let { songsState, pageTitle } = view.state, shuffled: any[];
+  const { songs } = view.props;
+  const typeInState = `${lcType}State`;
+  const typeState = view.state[typeInState.toString()]; // eslint-disable-line react/destructuring-assignment
+  if (typeState === 'off') return toggleOn(lcType, view, type, typeInState, typeState);
+  songsState = songsState.filter((song: any) => song.category !== lcType);
+  pageTitle = pageTitle.replace(` & ${type}`, '');
+  if (songsState.length === 0) {
+    songsState = [
+      ...songsState,
+      ...songs.filter((song: any) => song.category === 'original'),
+    ];
+    pageTitle = 'Original Songs';
+    view.setState({ originalState: 'on' });
+  }
+  pageTitle = pageTitle.replace(`${type}`, '').replace('&', '');
+  if (player.isShuffleOn) shuffled = shuffleThem(songsState);
+  return view.setState({
+    player: { ...player },
+    pageTitle,
+    songsState: player.isShuffleOn ? shuffled : songsState,
+    [typeInState]: typeState === 'off' ? 'on' : 'off',
+    song: player.isShuffleOn ? shuffled[0] : songsState[0],
+    index: 0,
+  });
+}
 export default {
   shuffleThem,
   toggleSongTypes,
@@ -134,4 +145,5 @@ export default {
   showHideButtons,
   copyShare,
   share,
+  toggleOn,
 };

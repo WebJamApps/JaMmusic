@@ -10,7 +10,7 @@ function setup() {
     + '<div id="wjfooter"/><div id="mobilemenutoggle"/><div id="pageContent"/><h4 id="headerTitle">'
     + '<div id="mainPlayer"/>';
 
-  const wrapper = mount<MusicPlayer>(<MusicPlayer songs={songs} filterBy="originals" />, {
+  const wrapper = mount<MusicPlayer>(<MusicPlayer songs={songs} filterBy="original" />, {
     attachTo: document.getElementById('sidebar'),
   });
   return { wrapper };
@@ -47,6 +47,7 @@ describe('Music player component init', () => {
       },
       missionState: 'off',
       pubState: 'off',
+      originalState: 'on',
       pageTitle: 'Originals',
       index: 0,
     };
@@ -71,6 +72,7 @@ describe('Music player component init', () => {
       missionState: 'off',
       pageTitle: 'Original',
       pubState: 'off',
+      originalState: 'on',
       song: { _id: '789' },
     };
     mp.setState = (obj: MusicPlayerState) => { expect(obj.index).toBe(1); };

@@ -93,7 +93,6 @@ export class MusicPlayer extends Component<{ songs: any; filterBy: any }, MusicP
   reactPlayer() {
     const { song } = this.state;
     const { player } = this.state;
-
     return (
       <ReactPlayer
         style={{ backgroundColor: '#eee', textAlign: 'center' }}
@@ -104,12 +103,7 @@ export class MusicPlayer extends Component<{ songs: any; filterBy: any }, MusicP
         width="100%"
         height="40vh"
         id="mainPlayer"
-        config={{
-          youtube: {
-            playerVars: { controls: 0 },
-          },
-          file: { attributes: { controlsList: 'nodownload' } },
-        }}
+        config={{ youtube: { playerVars: { controls: 0 } }, file: { attributes: { controlsList: 'nodownload' } } }}
       />
     );
   }
@@ -145,12 +139,8 @@ export class MusicPlayer extends Component<{ songs: any; filterBy: any }, MusicP
     } = this.state;
     if (player.isShuffleOn) {
       let reset = songsState;
-      if (missionState === 'on') {
-        reset = this.musicUtils.setIndex(reset, 'mission');
-      }
-      if (pubState === 'on') {
-        reset = this.musicUtils.setIndex(reset, 'pub');
-      }
+      if (missionState === 'on') reset = this.musicUtils.setIndex(reset, 'mission');
+      if (pubState === 'on') reset = this.musicUtils.setIndex(reset, 'pub');
       this.setState({
         songsState: reset, player: { ...player, isShuffleOn: false }, song: reset[0], index: 0,
       });
@@ -216,12 +206,10 @@ export class MusicPlayer extends Component<{ songs: any; filterBy: any }, MusicP
   }
 
   copyRight() { // eslint-disable-line class-methods-use-this
-    return (
-      <span>All Original Songs &copy;2019 Web Jam LLC</span>
-    );
+    return (<span>All Original Songs &copy;2019 Web Jam LLC</span>);
   }
 
-  textUnderPlayer(song) {
+  textUnderPlayer(song: any) {
     return (
       <section
         className="col-12 mt-1"
