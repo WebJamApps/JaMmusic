@@ -6,7 +6,7 @@ import commonUtils from '../../lib/commonUtils';
 
 type oProps = {
   songs: {url: string}[];};
-export class Originals extends Component<oProps> {
+export class Songs extends Component<oProps> {
   o: any;
 
   commonUtils: any;
@@ -19,7 +19,7 @@ export class Originals extends Component<oProps> {
     this.commonUtils = commonUtils;
   }
 
-  componentDidMount() { this.commonUtils.setTitleAndScroll('Originals', window.screen.width); }
+  componentDidMount() { this.commonUtils.setTitleAndScroll('Songs', window.screen.width); }
 
   render() {
     const { songs } = this.props;
@@ -40,4 +40,4 @@ export class Originals extends Component<oProps> {
     );
   }
 }
-export default connect(mapStoreToProps)(Originals);
+export default connect(mapStoreToProps)(Songs);
