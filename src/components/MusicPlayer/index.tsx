@@ -10,6 +10,7 @@ export interface MusicPlayerState {
   missionState: string;
   pageTitle: string;
   pubState: string;
+  originalState: string;
   songsState: any[];
   index: number;
   song: any;
@@ -17,7 +18,7 @@ export interface MusicPlayerState {
   player: { playing: boolean; shown: boolean; isShuffleOn: boolean; displayCopier: string; displayCopyMessage: boolean; onePlayerMode: boolean };
 }
 
-export class MusicPlayer extends Component<{songs: any; filterBy: any}, MusicPlayerState> {
+export class MusicPlayer extends Component<{ songs: any; filterBy: any }, MusicPlayerState> {
   navigator: Navigator;
 
   musicUtils: any;
@@ -28,7 +29,7 @@ export class MusicPlayer extends Component<{songs: any; filterBy: any}, MusicPla
 
   static defaultProps: { songs: { url: any; title: string }[] };
 
-  constructor(props: {songs: any; filterBy: any}) {
+  constructor(props: { songs: any; filterBy: any }) {
     super(props);
     this.state = {
       pageTitle: 'Original Songs',
@@ -37,6 +38,7 @@ export class MusicPlayer extends Component<{songs: any; filterBy: any}, MusicPla
       index: 0,
       missionState: 'off',
       pubState: 'off',
+      originalState: 'on',
       player: {
         playing: false, shown: false, isShuffleOn: false, displayCopier: 'none', displayCopyMessage: false, onePlayerMode: false,
       },
@@ -82,7 +84,9 @@ export class MusicPlayer extends Component<{songs: any; filterBy: any}, MusicPla
 
   playUrl() {
     const { song } = this.state;
-    if (song !== null) return `${document.location.origin}/music/${window.location.pathname.split('/').pop()}?oneplayer=true&id=${song._id}`;
+    if (song && song._id) {
+      return `${document.location.origin}/music/${window.location.pathname.split('/').pop()}?oneplayer=true&id=${song._id}`;
+    }
     return null;
   }
 
@@ -111,7 +115,9 @@ export class MusicPlayer extends Component<{songs: any; filterBy: any}, MusicPla
   }
 
   buttons() {
-    const { missionState, pubState, player: { playing, isShuffleOn, onePlayerMode } } = this.state;
+    const {
+      missionState, pubState, originalState, player: { playing, isShuffleOn, onePlayerMode },
+    } = this.state;
     return (
       <section className="mt-0 col-12 col-md-10" style={{ marginTop: '4px', paddingTop: 0 }}>
         <button type="button" id="play-pause" role="menu" className={playing ? 'on' : 'off'} onClick={this.play}>Play/Pause</button>
@@ -121,6 +127,9 @@ export class MusicPlayer extends Component<{songs: any; filterBy: any}, MusicPla
         <button type="button" id="share-button" role="menu" onClick={() => this.musicPlayerUtils.share(this)}>Share</button>
         {onePlayerMode ? this.musicPlayerUtils.homeButton(onePlayerMode) : null}
         <div id="mAndP" style={{ height: '22px', margin: 'auto' }}>
+          <button type="button" onClick={() => this.musicPlayerUtils.toggleSongTypes('Original', this)} className={`original${originalState}`}>
+            Original
+          </button>
           <button type="button" onClick={() => this.musicPlayerUtils.toggleSongTypes('Mission', this)} className={`mission${missionState}`}>
             Mission
           </button>
@@ -183,10 +192,10 @@ export class MusicPlayer extends Component<{songs: any; filterBy: any}, MusicPla
     else this.setState({ song: songsState[index], index });// eslint-disable-line security/detect-object-injection
   }
 
-  copyInput(player, song) {
+  copyInput(player: any, song: any) {
     return (
       <div id="copyInput">
-        { player.displayCopyMessage && <div className="copySuccess"> Url copied Url to clipboard </div> }
+        {player.displayCopyMessage && <div className="copySuccess"> Url copied Url to clipboard </div>}
         {song !== null ? <input id="copyUrl" disabled value={this.playUrl()} style={{ backgroundColor: '#fff' }} className="form-control" />
           : null}
         <div
@@ -255,7 +264,7 @@ export class MusicPlayer extends Component<{songs: any; filterBy: any}, MusicPla
             <div className={classOverlay} />
             {song !== null && song !== undefined && song.url !== undefined ? this.reactPlayer() : null}
           </section>
-          {this.textUnderPlayer(song)}
+          {song ? this.textUnderPlayer(song) : null}
           {this.buttons()}
           <section className="mt-1 col-12" id="copier" style={{ display: player.displayCopier, marginTop: '0' }}>
             {this.copyInput(player, song)}

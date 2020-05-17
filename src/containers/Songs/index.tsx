@@ -30,7 +30,7 @@ export class Songs extends Component<oProps> {
             songs !== null && songs.length > 1
               ? (
                 <div id="playerAndButtons">
-                  <DefaultMusicPlayer filterBy="originals" />
+                  <DefaultMusicPlayer filterBy="original" />
                 </div>
               )
               : null
