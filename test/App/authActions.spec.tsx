@@ -9,6 +9,8 @@ const mockStore = configureMockStore(middlewares);
 
 describe('authActions', () => {
   it('authenticates', async () => {
+    // @ts-ignore
+    superagent.post = jest.fn(() => ({ set: () => ({ send: () => Promise.resolve({ body: '123' }) }) }));
     const store = mockStore({ auth: { isAuthenticated: false } });
     const result = await store.dispatch(authenticate({ code: 'someCode' }));
     expect(result).toBe(true);

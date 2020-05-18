@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-ignore */
 import * as React from 'react';
 import { shallow } from 'enzyme';
 import { Redirect } from 'react-router-dom';
@@ -7,6 +8,7 @@ describe('Dashboard Container', () => {
   let wrapper: any;
   const auth = { token: '' };
   beforeEach(() => {
+    // @ts-ignore
     wrapper = shallow(<MusicDashboard auth={auth} scc={{ transmit: () => {} }} dispatch={() => {}} editTour={{}} />);
   });
   it('is defined', () => {
@@ -70,6 +72,7 @@ describe('Dashboard Container', () => {
     wrapper.instance().setState = jest.fn((obj) => { expect(obj.time).toBe('12:00 pm'); });
   });
   it('renders with edit tour', () => {
+    // @ts-ignore
     const wrapper2 = shallow(<MusicDashboard
       auth={auth}
       scc={{ transmit: () => {} }}
@@ -88,6 +91,7 @@ describe('Dashboard Container', () => {
     expect(wrapper2.find('h5').text()).toBe('Edit Tour Event');
   });
   it('checks edit when editTour', () => {
+    // @ts-ignore
     const wrapper2 = shallow<MusicDashboard>(<MusicDashboard
       auth={auth}
       scc={{ transmit: () => {} }}
@@ -111,6 +115,7 @@ describe('Dashboard Container', () => {
     expect(wrapper2.instance().setState).toHaveBeenCalledWith(sO);
   });
   it('checks edit when not editTour', () => {
+    // @ts-ignore
     const wrapper2 = shallow<MusicDashboard>(<MusicDashboard
       auth={auth}
       scc={{ transmit: () => {} }}
@@ -125,6 +130,7 @@ describe('Dashboard Container', () => {
     expect(wrapper2.instance().setState).toHaveBeenCalledWith(sO);
   });
   it('resets edit form when editTour', () => {
+    // @ts-ignore
     const wrapper2 = shallow<MusicDashboard>(<MusicDashboard
       auth={auth}
       scc={{ transmit: () => {} }}
@@ -149,6 +155,7 @@ describe('Dashboard Container', () => {
     expect(wrapper2.instance().setState).toHaveBeenCalledWith(sO);
   });
   it('calls edit tour api', async () => {
+    // @ts-ignore
     const wrapper2 = shallow<MusicDashboard>(<MusicDashboard
       auth={auth}
       scc={{ transmit: () => {} }}

@@ -19,7 +19,7 @@
   ],
   "keywords": [
     "React",
-    "Babel",
+    "Typescript",
     "Webpack",
     "Jest"
   ],
@@ -31,7 +31,7 @@
     "start": "nps",
     "test:lint-fix": "yarn test:stylelint && nps test.lint.fix",
     "test:lint": "yarn test:stylelint && nps test.lint",
-    "test": "yarn test:lint && yarn test:jest && yarn test:puppeteer",
+    "test": "yarn test:lint && yarn test:jest --runInBand && yarn test:puppeteer",
     "test:local": "yarn test:lint-fix && yarn test:jest && yarn test:puppeteer && yarn cc",
     "test:jest": "jest --no-cache --config jest.config.json --notify",
     "test:puppeteer": "jest --preset jest-puppeteer --config jest.puppeteer-config.json /test/puppeteer",
@@ -42,11 +42,6 @@
     "test:stylelint": "stylelint \"static/**/*.scss\""
   },
   "dependencies": {
-    "@babel/core": "latest",
-    "@babel/plugin-proposal-export-default-from": "^7.8.3",
-    "@babel/preset-env": "latest",
-    "@babel/preset-react": "latest",
-    "@babel/register": "latest",
     "@material-ui/core": "latest",
     "@material-ui/icons": "latest",
     "@tinymce/tinymce-react": "latest",
@@ -74,8 +69,6 @@
     "@types/terser-webpack-plugin": "^2.2.0",
     "@types/webpack-bundle-analyzer": "^2.13.3",
     "@types/webpack-env": "^1.15.1",
-    "awesome-typescript-loader": "latest",
-    "babel-loader": "latest",
     "bootstrap": "latest",
     "copy-webpack-plugin": "latest",
     "core-js": "latest",
@@ -86,7 +79,6 @@
     "express-sslify": "latest",
     "extract-text-webpack-plugin": "next",
     "file-loader": "latest",
-    "hammerjs": "latest",
     "html-loader": "latest",
     "html-webpack-plugin": "latest",
     "jquery": "latest",
@@ -133,8 +125,6 @@
     "webpack-cli": "latest"
   },
   "devDependencies": {
-    "@babel/plugin-proposal-class-properties": "^7.8.3",
-    "@babel/preset-typescript": "^7.9.0",
     "@testing-library/jest-dom": "latest",
     "@testing-library/react": "latest",
     "@types/enzyme-adapter-react-16": "^1.0.6",
@@ -144,8 +134,6 @@
     "@types/redux-mock-store": "^1.0.2",
     "@typescript-eslint/eslint-plugin": "latest",
     "@typescript-eslint/parser": "latest",
-    "babel-eslint": "^10.1.0",
-    "babel-plugin-transform-class-properties": "^6.24.1",
     "enzyme": "latest",
     "enzyme-adapter-react-16": "latest",
     "enzyme-react-16-adapter-setup": "latest",

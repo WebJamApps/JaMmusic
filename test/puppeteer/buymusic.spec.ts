@@ -1,6 +1,3 @@
-import 'core-js/stable';
-import 'regenerator-runtime/runtime';
-
 describe('Buy Music', () => {
   it('should be titled "Buy Music | Web Jam LLC"', async () => {
     const page = await browser.newPage();

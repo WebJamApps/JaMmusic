@@ -60,7 +60,7 @@ describe('Music player component init', () => {
     expect(wrapper.instance().state.index).toBe(0);
   });
   it('advances to the next song', () => {
-    const mp = new MusicPlayer({ songs: [{ _id: '123' }, { _id: '456' }], copy: [{ _id: '123' }, { _id: '456' }] });
+    const mp = new MusicPlayer({ songs: [{ _id: '123' }, { _id: '456' }], filterBy: {} });
     mp.state = {
       index: 0,
       songsState: [{ _id: '123' }, { _id: '456' }],

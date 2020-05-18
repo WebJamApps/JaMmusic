@@ -1,5 +1,4 @@
-let mockDelay,
-  mockError,
+let mockError,
   mockResponse = {
     status: () => 200,
     ok: true,
@@ -22,10 +21,6 @@ const Request = {
   accept: jest.fn().mockReturnThis(),
   timeout: jest.fn().mockReturnThis(),
   end: jest.fn().mockImplementation((callback) => {
-    if (mockDelay) {
-      this.delayTimer = setTimeout(callback, 0, mockError, mockResponse);
-      return;
-    }
     callback(mockError, mockResponse);
   }),
   then: jest.fn().mockImplementation((callback) => new Promise((resolve, reject) => {
@@ -34,10 +29,6 @@ const Request = {
     }
     return resolve(callback(mockResponse));
   })),
-
-  __setMockDelay: (boolValue) => {
-    mockDelay = boolValue;
-  },
   setMockResponse: (mockRes) => {
     mockResponse = mockRes;
   },
