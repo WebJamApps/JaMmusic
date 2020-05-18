@@ -1,5 +1,5 @@
 import React from 'react';
-import { mount, shallow, ReactWrapper } from 'enzyme';
+import { mount, shallow } from 'enzyme';
 import { MusicPlayer, MusicPlayerState } from '../../src/components/MusicPlayer';
 import songData from '../../src/App/songs.json';
 
@@ -211,7 +211,7 @@ describe('Music player component init', () => {
     const overlay = wrapper.instance().setClassOverlay();
     expect(overlay).toBe('youtubeOverlay');
   });
-  it('handles null song when textUnderPlayer', ()=>{
+  it('handles null song when textUnderPlayer', () => {
     const { songs } = songData;
     const wrapper = shallow<MusicPlayer>(<MusicPlayer songs={songs} filterBy="originals" />);
     const r = wrapper.instance().textUnderPlayer(null);

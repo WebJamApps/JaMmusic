@@ -84,7 +84,7 @@ const shuffleThem = (songs) => {
   }
   return shuffled;
 };
-function toggleOn(lcType: string, view: any, type: string, typeInState: string, typeState: string) {
+function toggleOn(lcType: string, view: any, type: string, typeInState: string) {
   const { songs } = view.props;
   const { player } = view.state;
   let { songsState, pageTitle } = view.state, shuffled: any[];
@@ -113,7 +113,7 @@ function toggleSongTypes(type: string, view: any) {
   const { songs } = view.props;
   const typeInState = `${lcType}State`;
   const typeState = view.state[typeInState.toString()]; // eslint-disable-line react/destructuring-assignment
-  if (typeState === 'off') return toggleOn(lcType, view, type, typeInState, typeState);
+  if (typeState === 'off') return toggleOn(lcType, view, type, typeInState);
   songsState = songsState.filter((song: any) => song.category !== lcType);
   pageTitle = pageTitle.replace(` & ${type}`, '');
   if (songsState.length === 0) {

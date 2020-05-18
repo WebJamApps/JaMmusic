@@ -82,7 +82,7 @@ describe('musicPlayerUtils', () => {
     const r = musicPlayerUtils.toggleSongTypes('mission', controller);
     expect(r).toBe(true);
   });
-  it('does not toggle the original button', ()=>{
+  it('does not toggle the original button', () => {
     controller.state.missionState = 'off';
     controller.state.originalState = 'on';
     const r = musicPlayerUtils.toggleSongTypes('original', controller);
