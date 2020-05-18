@@ -1,5 +1,5 @@
 import React from 'react';
-import { mount, shallow } from 'enzyme';
+import { mount, shallow, ReactWrapper } from 'enzyme';
 import { MusicPlayer, MusicPlayerState } from '../../src/components/MusicPlayer';
 import songData from '../../src/App/songs.json';
 
@@ -141,6 +141,12 @@ describe('Music player component init', () => {
     wrapper.find('button.missionoff').simulate('click');
     expect(wrapper.instance().state.missionState).toBe('off');
   });
+  it('should simulate a click on original song type button', () => {
+    const { wrapper } = setup();
+    wrapper.instance().setState({ missionState: 'on', originalState: 'on' });
+    wrapper.find('button.originalon').simulate('click');
+    expect(wrapper.instance().state.originalState).toBe('off');
+  });
   it('should resort songs', async () => {
     const { wrapper } = setup();
     const songs = ['mission'];
@@ -204,5 +210,11 @@ describe('Music player component init', () => {
     });
     const overlay = wrapper.instance().setClassOverlay();
     expect(overlay).toBe('youtubeOverlay');
+  });
+  it('handles null song when textUnderPlayer', ()=>{
+    const { songs } = songData;
+    const wrapper = shallow<MusicPlayer>(<MusicPlayer songs={songs} filterBy="originals" />);
+    const r = wrapper.instance().textUnderPlayer(null);
+    expect(r.type).toBe('section');
   });
 });

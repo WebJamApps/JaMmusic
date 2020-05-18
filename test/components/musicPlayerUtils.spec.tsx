@@ -16,7 +16,7 @@ describe('musicPlayerUtils', () => {
     setState: (obj: any) => { if (obj) return true; return false; },
     props: { songs: [{ _id: '123' }] },
     state: {
-      songsState: [], player: { onePlayerMode: true, isShuffleOn: true }, pageTitle: '', missionState: '',
+      songsState: [], player: { onePlayerMode: true, isShuffleOn: true }, pageTitle: '', missionState: 'on', pubState: 'off', originalState: 'on',
     },
   };
   it('checks for one player then sets the song', async () => {
@@ -74,12 +74,18 @@ describe('musicPlayerUtils', () => {
     const result = musicPlayerUtils.showHideButtons('none');
     expect(result).toBe(false);
   });
-  // it('reshuffled the songs if shuffle is on and type is deselected', () => {
-  //   controller.setState = (obj: any) => {
-  //     expect(obj.player.isShuffleOn).toBe(true); return true;
-  //   };
-  //   controller.state.player.isShuffleOn = true;
-  //   controller.state.missionState = 'on';
-  //   musicPlayerUtils.toggleSongTypes('mission', controller);
-  // });
+  it('reshuffled the songs if shuffle is on and type is deselected', () => {
+    controller.setState = jest.fn(() => true);
+    controller.state.player.isShuffleOn = true;
+    controller.state.missionState = 'on';
+    controller.state.originalState = 'on';
+    const r = musicPlayerUtils.toggleSongTypes('mission', controller);
+    expect(r).toBe(true);
+  });
+  it('does not toggle the original button', ()=>{
+    controller.state.missionState = 'off';
+    controller.state.originalState = 'on';
+    const r = musicPlayerUtils.toggleSongTypes('original', controller);
+    expect(r).toBe(false);
+  });
 });

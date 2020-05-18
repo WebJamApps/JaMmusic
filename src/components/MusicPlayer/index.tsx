@@ -219,7 +219,7 @@ export class MusicPlayer extends Component<{ songs: any; filterBy: any }, MusicP
       >
         <strong>
           {song !== null ? song.title : null}
-          {song !== null && song.composer !== undefined && song.category !== 'originals' ? ` by ${song.composer}` : null}
+          {song !== null && song.composer !== undefined && song.category !== 'original' ? ` by ${song.composer}` : null}
           {song !== null && song.artist !== undefined ? ` - ${song.artist}` : null}
         </strong>
         <p style={{
@@ -233,7 +233,7 @@ export class MusicPlayer extends Component<{ songs: any; filterBy: any }, MusicP
           textAlign: 'center', fontSize: '8pt', marginTop: '2px', marginBottom: 0,
         }}
         >
-          {song !== null && song.category === 'originals' ? this.copyRight() : null}
+          {song !== null && song.category === 'original' ? this.copyRight() : null}
         </p>
       </section>
     );

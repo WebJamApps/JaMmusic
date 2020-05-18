@@ -100,7 +100,7 @@ function toggleOn(lcType: string, view: any, type: string, typeInState: string, 
     player: { ...player },
     pageTitle,
     songsState: player.isShuffleOn ? shuffled : songsState,
-    [typeInState]: typeState === 'off' ? 'on' : 'off',
+    [typeInState]: 'on',
     song: player.isShuffleOn ? shuffled[0] : songsState[0],
     index: 0,
   });
@@ -130,7 +130,7 @@ function toggleSongTypes(type: string, view: any) {
     player: { ...player },
     pageTitle,
     songsState: player.isShuffleOn ? shuffled : songsState,
-    [typeInState]: typeState === 'off' ? 'on' : 'off',
+    [typeInState]: 'off',
     song: player.isShuffleOn ? shuffled[0] : songsState[0],
     index: 0,
   });
