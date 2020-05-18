@@ -192,10 +192,10 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
     const { editTour } = this.props;
     if (date === '' && editTour.date !== undefined) { date = editTour.datetime.split('T')[0]; }//eslint-disable-line
     if (time === '' && editTour.time !== undefined) { time = editTour.time; }
-    if (tickets === '' && editTour.tickets !== undefined) { tickets = editTour.tickets; }
-    if (more === '' && editTour.more !== undefined) { more = editTour.more; }
-    if (venue === '' && editTour.venue !== undefined) { venue = editTour.venue; }
-    if (location === '' && editTour.location !== undefined) { location = editTour.location; }
+    if (tickets === '' && editTour.tickets !== undefined) { tickets = tickets.state; }
+    if (more === '' && editTour.more !== undefined) { more = more.state; }
+    if (venue === '' && editTour.venue !== undefined) { venue = venue.state; }
+    if (location === '' && editTour.location !== undefined) { location = location.state; }
     return (
       <form id="new-tour" style={{ marginLeft: '4px', marginTop: '4px' }}>
         {this.forms.makeInput('date', 'Date', true, this.onChange, date)}
