@@ -70,7 +70,7 @@ export class AppTemplate extends Component<AppMainProps, AppMainState> {
         className: '', type: 'link', iconClass: 'far fa-money-bill-alt', link: '/music/buymusic', name: 'Buy Music',
       },
       {
-        className: 'songs', type: 'link', iconClass: 'far fa-lightbulb', link: '/music/originals', name: 'Songs',
+        className: 'songs', type: 'link', iconClass: 'far fa-lightbulb', link: '/music/songs', name: 'Songs',
       },
       {
         className: 'dashboard', type: 'link', iconClass: 'fas fa-user-secret', link: '/music/dashboard', name: 'Dashboard', auth: true,

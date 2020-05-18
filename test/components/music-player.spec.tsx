@@ -10,7 +10,7 @@ function setup() {
     + '<div id="wjfooter"/><div id="mobilemenutoggle"/><div id="pageContent"/><h4 id="headerTitle">'
     + '<div id="mainPlayer"/>';
 
-  const wrapper = mount<MusicPlayer>(<MusicPlayer songs={songs} filterBy="originals" />, {
+  const wrapper = mount<MusicPlayer>(<MusicPlayer songs={songs} filterBy="original" />, {
     attachTo: document.getElementById('sidebar'),
   });
   return { wrapper };
@@ -47,6 +47,7 @@ describe('Music player component init', () => {
       },
       missionState: 'off',
       pubState: 'off',
+      originalState: 'on',
       pageTitle: 'Originals',
       index: 0,
     };
@@ -71,6 +72,7 @@ describe('Music player component init', () => {
       missionState: 'off',
       pageTitle: 'Original',
       pubState: 'off',
+      originalState: 'on',
       song: { _id: '789' },
     };
     mp.setState = (obj: MusicPlayerState) => { expect(obj.index).toBe(1); };
@@ -139,6 +141,12 @@ describe('Music player component init', () => {
     wrapper.find('button.missionoff').simulate('click');
     expect(wrapper.instance().state.missionState).toBe('off');
   });
+  it('should simulate a click on original song type button', () => {
+    const { wrapper } = setup();
+    wrapper.instance().setState({ missionState: 'on', originalState: 'on' });
+    wrapper.find('button.originalon').simulate('click');
+    expect(wrapper.instance().state.originalState).toBe('off');
+  });
   it('should resort songs', async () => {
     const { wrapper } = setup();
     const songs = ['mission'];
@@ -202,5 +210,11 @@ describe('Music player component init', () => {
     });
     const overlay = wrapper.instance().setClassOverlay();
     expect(overlay).toBe('youtubeOverlay');
+  });
+  it('handles null song when textUnderPlayer', () => {
+    const { songs } = songData;
+    const wrapper = shallow<MusicPlayer>(<MusicPlayer songs={songs} filterBy="originals" />);
+    const r = wrapper.instance().textUnderPlayer(null);
+    expect(r.type).toBe('section');
   });
 });

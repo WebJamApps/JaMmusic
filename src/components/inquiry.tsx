@@ -103,8 +103,8 @@ export default class Inquiry extends Component<{}, InquiryState> {
     return this.continueValidating(validEmail);
   }
 
-  async createEmailApi(emailForm1) {
-    let r;
+  async createEmailApi(emailForm1: any) {
+    let r: any;
     const emailForm = emailForm1;
     try {
       r = await this.superagent.post(`${process.env.BackendUrl}/inquiry`)
@@ -112,7 +112,7 @@ export default class Inquiry extends Component<{}, InquiryState> {
         .send(emailForm);
     } catch (e) { return Promise.reject(e); }
     this.setState({ submitted: true });
-    return Promise.resolve(r.status);
+    return r.status;
   }
 
   createEmail() {

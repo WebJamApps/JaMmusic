@@ -8,7 +8,7 @@ import DefaultMusicDashboard from '../containers/MusicDashboard';
 import BuyMusic from '../containers/BuyMusic';
 import AppFourOhFour from './404';
 import AppMain from './app-main';
-import DefaultOriginals from '../containers/Originals';
+import DefaultSongs from '../containers/Songs';
 import HomePage from '../containers/Homepage';
 import connectToSC from './connectToSC';
 import mapStoreToProps from '../redux/mapStoreToProps';
@@ -57,7 +57,8 @@ export class App extends Component<AppProps> {
               <Route exact path="/" component={HomePage} />
               <Route exact path="/music" component={DefaultMusic} />
               <Route path="/music/buymusic" component={BuyMusic} />
-              <Route path="/music/originals" component={DefaultOriginals} />
+              <Route path="/music/originals" component={DefaultSongs} />
+              <Route path="/music/songs" component={DefaultSongs} />
               {auth.isAuthenticated && userRoles.indexOf(auth.user.userType) !== -1
                 ? <Route path="/music/dashboard" component={DefaultMusicDashboard} /> : null}
               <Route component={AppFourOhFour} />

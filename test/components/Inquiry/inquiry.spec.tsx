@@ -3,7 +3,7 @@ import { shallow } from 'enzyme';
 import Inquiry from '../../../src/components/inquiry';
 
 describe('Inquiry Form', () => {
-  let wrapper;
+  let wrapper: any;
   beforeEach(() => {
     wrapper = shallow<Inquiry>(<Inquiry />);
   });
@@ -125,6 +125,7 @@ describe('Inquiry Form', () => {
     expect(result).toBe(true);
   });
   it('calls the email API', () => {
+    wrapper.instance().superagent.post = jest.fn(() => ({ set: () => ({ send: () => Promise.resolve({ status: 201 }) }) }));
     wrapper.instance().setState = jest.fn((obJ) => { expect(obJ.submitted).toBe(true); });
     wrapper.instance().createEmailApi({ submitted: true });
   });
