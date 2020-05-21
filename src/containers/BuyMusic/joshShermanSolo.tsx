@@ -5,13 +5,13 @@ const JoshShermanSolo = () => (
     <h4 style={{ textAlign: 'center' }}>Josh Sherman Solo Acoustic</h4>
     <div style={{ textAlign: 'center' }}>
       <a
-        href="http://store.cdbaby.com/cd/shermanjosh"
+        href="https://www.amazon.com/Solo-Acoustic-Explicit-Josh-Sherman/dp/B0013XP8MI/ref=ntt_mus_dp_dpt_2"
         target="_blank"
         rel="noopener noreferrer"
         style={{
           textAlign: 'center',
           display: 'inline-block',
-          background: 'url(http://CDBaby.name/s/h/shermanjosh.jpg) 18px 2px no-repeat, '
+          background: 'url(https://m.media-amazon.com/images/I/81PLWgAmBEL._SS500_.jpg) 18px 2px no-repeat, '
           + 'url(http://content.cdbaby.com/img/links/link-artwork-cart-light-buy-now.png) 0px 0px no-repeat',
           backgroundSize: '175px, 211px',
           height: '233px',
