@@ -1,7 +1,7 @@
 require('dotenv').config();
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const { ProvidePlugin } = require('webpack');
@@ -132,10 +132,12 @@ module.exports = ({
       allChunks: true,
       metadata: { title, baseUrl },
     }),
-    new CopyWebpackPlugin([
-      { from: 'static/favicon.ico', to: 'favicon.ico' },
-      { from: 'static/imgs', to: 'static/imgs' },
-    ]),
+    new CopyPlugin({
+      patterns: [
+        { from: 'static/favicon.ico', to: 'favicon.ico' },
+        { from: 'static/imgs', to: 'static/imgs' },
+      ],
+    }),
     new webpack.EnvironmentPlugin(['SCS_PORT', 'SCS_HOST', 'SOCKETCLUSTER_SECURE', 'NODE_ENV',
       'AuthProductionBaseURL', 'PORT', 'BackendUrl', 'GoogleClientId', 'userRoles', 'HashString', 'TINY_KEY']),
     ...when(analyze, new BundleAnalyzerPlugin()),
