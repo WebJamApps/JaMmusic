@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import ReactPlayer from 'react-player';
+import { FacebookShareButton, FacebookIcon } from 'react-share';
 import musicPlayerUtils from './musicPlayerUtils';
 import mapStoreToProps from '../../redux/mapStoreToProps';
 import musicUtils from './musicUtils';
@@ -51,6 +52,7 @@ export class MusicPlayer extends Component<{ songs: any; filterBy: any }, MusicP
     this.prev = this.prev.bind(this);
     this.buttons = this.buttons.bind(this);
     this.setClassOverlay = this.setClassOverlay.bind(this);
+    this.playUrl = this.playUrl.bind(this);
     this.navigator = window.navigator;
     this.musicPlayerUtils = musicPlayerUtils;
     this.musicUtils = musicUtils;
@@ -112,13 +114,29 @@ export class MusicPlayer extends Component<{ songs: any; filterBy: any }, MusicP
     const {
       missionState, pubState, originalState, player: { playing, isShuffleOn, onePlayerMode },
     } = this.state;
+    let url = this.playUrl();
+    if (process.env.NODE_ENV !== 'production') url = 'https://www.web-jam.com/music/originals?oneplayer=true&id=28ru9weis2309ur9r7ifuviuiu';
     return (
       <section className="mt-0 col-12 col-md-10" style={{ marginTop: '4px', paddingTop: 0 }}>
-        <button type="button" id="play-pause" role="menu" className={playing ? 'on' : 'off'} onClick={this.play}>Play/Pause</button>
-        <button type="button" role="menu" id="next" onClick={this.next}>Next</button>
-        <button type="button" role="menu" id="prev" onClick={this.prev}>Prev</button>
-        <button type="button" id="shuffle" role="menu" className={isShuffleOn ? 'on' : 'off'} onClick={this.shuffle}>Shuffle</button>
-        <button type="button" id="share-button" role="menu" onClick={() => this.musicPlayerUtils.share(this)}>Share</button>
+        <div style={{
+          display: 'inline-block', height: '40px', verticalAlign: 'middle', lineHeight: '40px',
+        }}
+        >
+          <button type="button" id="play-pause" role="menu" className={playing ? 'on' : 'off'} onClick={this.play}>Play/Pause</button>
+          <button type="button" role="menu" id="next" onClick={this.next}>Next</button>
+          <button type="button" role="menu" id="prev" onClick={this.prev}>Prev</button>
+          <button type="button" id="shuffle" role="menu" className={isShuffleOn ? 'on' : 'off'} onClick={this.shuffle}>Shuffle</button>
+          <button type="button" id="share-button" role="menu" onClick={() => this.musicPlayerUtils.share(this)}>Share</button>
+          <FacebookShareButton
+            resetButtonStyle={false}
+            style={{
+              backgroundColor: 'white', marginLeft: 0, paddingLeft: '5px', marginBottom: 0
+            }}
+            url={url}
+          >
+            <FacebookIcon round size={26} />
+          </FacebookShareButton>
+        </div>
         {onePlayerMode ? this.musicPlayerUtils.homeButton(onePlayerMode) : null}
         <div id="mAndP" style={{ height: '22px', margin: 'auto' }}>
           <button type="button" onClick={() => this.musicPlayerUtils.toggleSongTypes('Original', this)} className={`original${originalState}`}>
