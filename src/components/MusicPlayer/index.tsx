@@ -130,7 +130,7 @@ export class MusicPlayer extends Component<{ songs: any; filterBy: any }, MusicP
           <FacebookShareButton
             resetButtonStyle={false}
             style={{
-              backgroundColor: 'white', marginLeft: 0, paddingLeft: '5px', marginBottom: 0
+              backgroundColor: 'white', marginLeft: 0, paddingLeft: '5px', marginBottom: 0,
             }}
             url={url}
           >
