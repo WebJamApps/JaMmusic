@@ -73,6 +73,8 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
     this.setState({
       date, time, tickets, more, venue, location,
     });
+    // const { dispatch } = this.props;
+    // dispatch({ type: 'EDIT_TOUR', data: {} });
   }
 
   resetEditForm(evt: { preventDefault: (...args: any) => any }) {
@@ -84,7 +86,7 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
     });
   }
 
-  handleEditorChange(venue: any) { this.checkEdit(); this.setState({ venue }); }
+  handleEditorChange(venue: any) { this.setState({ venue }); }
 
   validateForm() {
     const {
@@ -116,6 +118,7 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
   }
 
   editor(venue: string) {
+    console.log(venue);
     return (
       <Editor
         value={venue}
@@ -190,12 +193,13 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
       location, tickets, more, date, time, venue,
     } = this.state;
     const { editTour } = this.props;
-    if (date === '' && editTour.date !== undefined) { date = editTour.datetime.split('T')[0]; }//eslint-disable-line
-    if (time === '' && editTour.time !== undefined) { time = editTour.time; }
-    if (tickets === '' && editTour.tickets !== undefined) { tickets = tickets.state; }
-    if (more === '' && editTour.more !== undefined) { more = more.state; }
-    if (venue === '' && editTour.venue !== undefined) { venue = venue.state; }
-    if (location === '' && editTour.location !== undefined) { location = location.state; }
+    console.log(editTour);
+    if (editTour.date !== undefined) { date = editTour.datetime.split('T')[0]; }//eslint-disable-line
+    if (editTour.time !== undefined) { time = editTour.time; }
+    if (editTour.tickets !== undefined) { tickets = editTour.tickets; }
+    if (editTour.more !== undefined) { more = editTour.more; }
+    if (editTour.venue !== undefined) { venue = editTour.venue; }
+    if (editTour.location !== undefined) { location = editTour.location; }
     return (
       <form id="new-tour" style={{ marginLeft: '4px', marginTop: '4px' }}>
         {this.forms.makeInput('date', 'Date', true, this.onChange, date)}
