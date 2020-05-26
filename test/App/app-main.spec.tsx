@@ -1,5 +1,6 @@
 import React from 'react';
 import { shallow } from 'enzyme';
+import { GoogleLogin } from 'react-google-login';
 import { AppTemplate } from '../../src/App/app-main';
 import authUtils from '../../src/App/authUtils';
 
@@ -79,5 +80,12 @@ describe('app-main component test setup', () => {
     wrapper.instance().setState = jest.fn();
     wrapper.instance().toggleMobileMenu();
     expect(wrapper.instance().setState).toHaveBeenCalledWith({ menuOpen: true });
+  });
+  it('runs onAutoLoadFinished props from GoogleLogin component', () => {
+    const wrapper2 = shallow<AppTemplate>(<AppTemplate dispatch={dFunc} location={{ pathname: '/music' }}><div /></AppTemplate>);
+    const bu = wrapper2.instance().googleButtons('login', 1);
+    const gb = shallow(bu);
+    const auto = gb.find(GoogleLogin).get(0).props.onAutoLoadFinished(false);
+    expect(auto).toBe(false);
   });
 });

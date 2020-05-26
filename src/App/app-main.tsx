@@ -70,7 +70,7 @@ export class AppTemplate extends Component<AppMainProps, AppMainState> {
         className: '', type: 'link', iconClass: 'far fa-money-bill-alt', link: '/music/buymusic', name: 'Buy Music',
       },
       {
-        className: 'songs', type: 'link', iconClass: 'far fa-lightbulb', link: '/music/originals', name: 'Songs',
+        className: 'songs', type: 'link', iconClass: 'far fa-lightbulb', link: '/music/songs', name: 'Songs',
       },
       {
         className: 'dashboard', type: 'link', iconClass: 'fas fa-user-secret', link: '/music/dashboard', name: 'Dashboard', auth: true,
@@ -120,6 +120,8 @@ export class AppTemplate extends Component<AppMainProps, AppMainState> {
       return (
         <div key={index} className="menu-item googleLogin">
           <GoogleLogin
+            // eslint-disable-next-line no-console
+            onAutoLoadFinished={(good) => { console.log(good); return good; }}
             responseType="code"
             clientId={cId}
             buttonText="Login"

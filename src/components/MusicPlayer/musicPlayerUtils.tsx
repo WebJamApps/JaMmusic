@@ -1,6 +1,6 @@
 import React from 'react';
 
-const showHideButtons = (display) => {
+const showHideButtons = (display: string) => {
   const mAndP = document.getElementById('mAndP');
   if (mAndP !== null) {
     mAndP.style.display = display;
@@ -8,19 +8,19 @@ const showHideButtons = (display) => {
   }
   return false;
 };
-const share = (controller) => {
-  const { player, player: { displayCopier } } = controller.state;
-  if (displayCopier === 'none') controller.setState({ player: { ...player, displayCopier: 'block' } });
-  else controller.setState({ player: { ...player, displayCopier: 'none' } });
+const share = (view: any) => {
+  const { player, player: { displayCopier } } = view.state;
+  if (displayCopier === 'none') view.setState({ player: { ...player, displayCopier: 'block' } });
+  else view.setState({ player: { ...player, displayCopier: 'none' } });
   showHideButtons('none');
 };
-const copyShare = (controller) => {
-  const { player } = controller.state;
-  controller.navigator.clipboard.writeText(controller.playUrl()).then(() => {
-    controller.setState({ player: { ...player, displayCopyMessage: true } });
+const copyShare = (view: any) => {
+  const { player } = view.state;
+  view.navigator.clipboard.writeText(view.playUrl()).then(() => {
+    view.setState({ player: { ...player, displayCopyMessage: true } });
     setTimeout(() => {
       showHideButtons('block');
-      controller.setState({ player: { ...player, displayCopier: 'none', displayCopyMessage: false } });
+      view.setState({ player: { ...player, displayCopier: 'none', displayCopyMessage: false } });
     }, 1500);
   });
 };
@@ -84,36 +84,57 @@ const shuffleThem = (songs) => {
   }
   return shuffled;
 };
-const toggleSongTypes = (type, controller) => {
-  const lcType = type.toLowerCase();
-  const { player } = controller.state;
-  let { songsState, pageTitle } = controller.state, shuffled;
-  const { songs } = controller.props;
-  const typeInState = `${lcType}State`;
-  const typeState = controller.state[typeInState.toString()]; // eslint-disable-line react/destructuring-assignment
-  if (typeState === 'off') {
-    songsState = [
-      ...songsState,
-      ...songs.filter((song) => song.category === lcType),
-    ];
-    if (player.isShuffleOn) shuffled = shuffleThem(songsState);
-    else { songsState = controller.musicUtils.setIndex(songsState, lcType); }
-    pageTitle = pageTitle.replace('Songs', '');
-    pageTitle += ` & ${type} Songs`;
-  } else {
-    songsState = songsState.filter((song) => song.category !== lcType);
-    pageTitle = pageTitle.replace(` & ${type}`, '');
-    if (player.isShuffleOn) shuffled = shuffleThem(songsState);
-  }
-  controller.setState({
+function toggleOn(lcType: string, view: any, type: string, typeInState: string) {
+  const { songs } = view.props;
+  const { player } = view.state;
+  let { songsState, pageTitle } = view.state, shuffled: any[];
+  songsState = [
+    ...songsState,
+    ...songs.filter((song: any) => song.category === lcType),
+  ];
+  if (player.isShuffleOn) shuffled = shuffleThem(songsState);
+  else { songsState = view.musicUtils.setIndex(songsState, lcType); }
+  pageTitle = pageTitle.replace('Songs', '');
+  pageTitle += ` & ${type} Songs`;
+  return view.setState({
     player: { ...player },
     pageTitle,
     songsState: player.isShuffleOn ? shuffled : songsState,
-    [typeInState]: typeState === 'off' ? 'on' : 'off',
+    [typeInState]: 'on',
     song: player.isShuffleOn ? shuffled[0] : songsState[0],
     index: 0,
   });
-};
+}
+function toggleSongTypes(type: string, view: any) {
+  const lcType = type.toLowerCase();
+  const { player, missionState, pubState } = view.state;
+  if (lcType === 'original' && missionState === 'off' && pubState === 'off') return false;
+  let { songsState, pageTitle } = view.state, shuffled: any[];
+  const { songs } = view.props;
+  const typeInState = `${lcType}State`;
+  const typeState = view.state[typeInState.toString()]; // eslint-disable-line react/destructuring-assignment
+  if (typeState === 'off') return toggleOn(lcType, view, type, typeInState);
+  songsState = songsState.filter((song: any) => song.category !== lcType);
+  pageTitle = pageTitle.replace(` & ${type}`, '');
+  if (songsState.length === 0) {
+    songsState = [
+      ...songsState,
+      ...songs.filter((song: any) => song.category === 'original'),
+    ];
+    pageTitle = 'Original Songs';
+    view.setState({ originalState: 'on' });
+  }
+  pageTitle = pageTitle.replace(`${type}`, '').replace('&', '');
+  if (player.isShuffleOn) shuffled = shuffleThem(songsState);
+  return view.setState({
+    player: { ...player },
+    pageTitle,
+    songsState: player.isShuffleOn ? shuffled : songsState,
+    [typeInState]: 'off',
+    song: player.isShuffleOn ? shuffled[0] : songsState[0],
+    index: 0,
+  });
+}
 export default {
   shuffleThem,
   toggleSongTypes,
@@ -124,4 +145,5 @@ export default {
   showHideButtons,
   copyShare,
   share,
+  toggleOn,
 };

@@ -12,6 +12,8 @@
   margin: 3px;
   outline: 0;
   font-size: 0.8em;
+  display: inline-block;
+  vertical-align: middle;
 }
 
 #playSection audio {
@@ -64,7 +66,7 @@ button.on {
   color: #ffffff;
 }
 
-.missionon, .pubon{
+.missionon, .pubon, .originalon{
   background-color:green !important;
   color:white !important;
 }

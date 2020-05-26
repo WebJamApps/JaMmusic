@@ -1,6 +1,6 @@
 import React from 'react';
 import { mount, shallow } from 'enzyme';
-import { MusicPlayer } from '../../src/components/MusicPlayer';
+import { MusicPlayer, MusicPlayerState } from '../../src/components/MusicPlayer';
 import songData from '../../src/App/songs.json';
 
 function setup() {
@@ -10,7 +10,7 @@ function setup() {
     + '<div id="wjfooter"/><div id="mobilemenutoggle"/><div id="pageContent"/><h4 id="headerTitle">'
     + '<div id="mainPlayer"/>';
 
-  const wrapper = mount<MusicPlayer>(<MusicPlayer songs={songs} filterBy="originals" />, {
+  const wrapper = mount<MusicPlayer>(<MusicPlayer songs={songs} filterBy="original" />, {
     attachTo: document.getElementById('sidebar'),
   });
   return { wrapper };
@@ -37,9 +37,8 @@ describe('Music player component init', () => {
     expect(wrapper.instance().state.player.playing).toBe(false);
   });
   it('shuffles the songs', () => {
-    const mp = new MusicPlayer({ songs: [{ _id: '123' }, { _id: '456' }], copy: [{ _id: '123' }, { _id: '456' }] });
+    const mp = new MusicPlayer({ songs: [{ _id: '123' }, { _id: '456' }], filterBy: '' });
     mp.state = {
-      // eslint-disable-next-line max-len
       song: { _id: '789' },
       songsState: [{ _id: '123' }, { _id: '456' }],
       copy: [{ _id: '123' }, { _id: '456' }],
@@ -48,11 +47,11 @@ describe('Music player component init', () => {
       },
       missionState: 'off',
       pubState: 'off',
+      originalState: 'on',
       pageTitle: 'Originals',
       index: 0,
     };
-    // @ts-ignore
-    mp.setState = (obj) => { expect(obj.song._id).not.toBe('789'); };
+    mp.setState = (obj: MusicPlayerState) => { expect(obj.song._id).not.toBe('789'); };
     mp.shuffle();
   });
   it('should find and simulate stop shuffle and confirm shuffling is off', () => {
@@ -62,7 +61,7 @@ describe('Music player component init', () => {
     expect(wrapper.instance().state.index).toBe(0);
   });
   it('advances to the next song', () => {
-    const mp = new MusicPlayer({ songs: [{ _id: '123' }, { _id: '456' }], copy: [{ _id: '123' }, { _id: '456' }] });
+    const mp = new MusicPlayer({ songs: [{ _id: '123' }, { _id: '456' }], filterBy: {} });
     mp.state = {
       index: 0,
       songsState: [{ _id: '123' }, { _id: '456' }],
@@ -73,10 +72,10 @@ describe('Music player component init', () => {
       missionState: 'off',
       pageTitle: 'Original',
       pubState: 'off',
+      originalState: 'on',
       song: { _id: '789' },
     };
-    // @ts-ignore
-    mp.setState = (obj) => { expect(obj.index).toBe(1); };
+    mp.setState = (obj: MusicPlayerState) => { expect(obj.index).toBe(1); };
     mp.next();
   });
   it('should find and simulate a previous song function', () => {
@@ -92,16 +91,14 @@ describe('Music player component init', () => {
   });
   it('should find and copy a playing song url', () => {
     const { wrapper } = setup();
-    // @ts-ignore
-    wrapper.instance().navigator = { clipboard: { async writeText(arg) { return arg; } } };
+    wrapper.instance().navigator = { ...navigator, clipboard: { ...navigator.clipboard, writeText: () => Promise.resolve() } };
     wrapper.update();
     wrapper.find('#copyButton').simulate('click');
     expect(wrapper.instance().state.player.displayCopier).toBe('none');
   });
   it('hides copier message after showing for 1.5s', () => new Promise((done) => {
     const { wrapper } = setup();
-    // @ts-ignore
-    wrapper.instance().navigator = { clipboard: { async writeText(arg) { return arg; } } };
+    wrapper.instance().navigator = { ...navigator, clipboard: { ...navigator.clipboard, writeText: () => Promise.resolve() } };
     wrapper.update();
     wrapper.instance().musicPlayerUtils.copyShare(wrapper.instance());
     expect(wrapper.instance().state.player.displayCopier).toBe('none');
@@ -127,23 +124,12 @@ describe('Music player component init', () => {
     wrapper.instance().musicPlayerUtils.share(wrapper.instance());
     expect(wrapper.instance().state.player.displayCopier).toBe('block');
   });
-  it('returns a null playUrl', () => new Promise((done) => {
+  it('returns a null playUrl', () => {
     const { wrapper } = setup();
     wrapper.instance().setState({ song: null });
     const result = wrapper.instance().playUrl();
     expect(result).toBe(null);
-    done();
-  }));
-  it('turns off the pic slider before unmounting', () => new Promise((done) => {
-    const { wrapper } = setup();
-    wrapper.instance().setState = jest.fn((obj) => {
-      // @ts-ignore
-      expect(obj.slider).toBe(false);
-    });
-    wrapper.update();
-    wrapper.unmount();
-    done();
-  }));
+  });
   it('should simulate a click on adding mission/pub song types when either is off', () => {
     const { wrapper } = setup();
     wrapper.find('button.puboff').simulate('click');
@@ -155,13 +141,19 @@ describe('Music player component init', () => {
     wrapper.find('button.missionoff').simulate('click');
     expect(wrapper.instance().state.missionState).toBe('off');
   });
+  it('should simulate a click on original song type button', () => {
+    const { wrapper } = setup();
+    wrapper.instance().setState({ missionState: 'on', originalState: 'on' });
+    wrapper.find('button.originalon').simulate('click');
+    expect(wrapper.instance().state.originalState).toBe('off');
+  });
   it('should resort songs', async () => {
     const { wrapper } = setup();
     const songs = ['mission'];
     const result = await wrapper.instance().musicUtils.setIndex(songs);
     expect(result).toBeTruthy();
   });
-  it('allows click on share button', () => new Promise((done) => {
+  it('allows click on share button', () => {
     const { wrapper } = setup();
     wrapper.instance().musicPlayerUtils.share = jest.fn();
     wrapper.update();
@@ -169,8 +161,7 @@ describe('Music player component init', () => {
     const renderButtons = shallow(buttons);
     renderButtons.find('button#share-button').simulate('click');
     expect(wrapper.instance().musicPlayerUtils.share).toHaveBeenCalled();
-    done();
-  }));
+  });
   it('should reset songs if missionState on', async () => {
     const { wrapper } = setup();
     wrapper.instance().setState({
@@ -219,5 +210,11 @@ describe('Music player component init', () => {
     });
     const overlay = wrapper.instance().setClassOverlay();
     expect(overlay).toBe('youtubeOverlay');
+  });
+  it('handles null song when textUnderPlayer', () => {
+    const { songs } = songData;
+    const wrapper = shallow<MusicPlayer>(<MusicPlayer songs={songs} filterBy="originals" />);
+    const r = wrapper.instance().musicUtils.textUnderPlayer(null);
+    expect(r.type).toBe('section');
   });
 });
