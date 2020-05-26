@@ -74,7 +74,7 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
     this.setState({
       date, time, tickets, more, venue, location,
     });
-    
+
     if (editTour.venue !== undefined) {
       dispatch({ type: 'EDIT_TOUR', data: { _id: editTour._id } });
     }
@@ -121,7 +121,6 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
   }
 
   editor(venue: string) {
-    console.log(venue);
     return (
       <Editor
         value={venue}
@@ -196,7 +195,6 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
       location, tickets, more, date, time, venue,
     } = this.state;
     const { editTour } = this.props;
-    console.log(editTour);
     if (editTour.date !== undefined) { date = editTour.datetime.split('T')[0]; }//eslint-disable-line
     if (editTour.time !== undefined) { time = editTour.time; }
     if (editTour.tickets !== undefined) { tickets = editTour.tickets; }
