@@ -100,6 +100,7 @@
     "react-redux": "latest",
     "react-resize-detector": "latest",
     "react-router-dom": "latest",
+    "react-share": "^4.1.0",
     "react-slick": "latest",
     "react-timekeeper": "latest",
     "redux": "latest",
