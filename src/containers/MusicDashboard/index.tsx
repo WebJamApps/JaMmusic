@@ -51,7 +51,8 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
   componentDidMount() { this.commonUtils.setTitleAndScroll('Music Dashboard'); }
 
   onChange(evt: any) {
-    this.checkEdit();
+    const { editTour } = this.props;
+    if (editTour.venue !== undefined) this.checkEdit();
     this.setState({ [evt.target.id]: evt.target.value });
   }
 
@@ -63,7 +64,7 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
     let {
       date, time, tickets, more, venue, location,
     } = this.state;
-    const { editTour } = this.props;
+    const { editTour, dispatch } = this.props;
     if (date === '' && editTour.date !== undefined) { date = editTour.datetime.split('T')[0]; }//eslint-disable-line
     if (time === '' && editTour.time !== undefined) { time = editTour.time; }
     if (tickets === '' && editTour.tickets !== undefined) { tickets = editTour.tickets; }
@@ -73,6 +74,9 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
     this.setState({
       date, time, tickets, more, venue, location,
     });
+    if (editTour.venue !== undefined) {
+      dispatch({ type: 'EDIT_TOUR', data: { _id: editTour._id } });
+    }
   }
 
   resetEditForm(evt: { preventDefault: (...args: any) => any }) {
