@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import ReactPlayer from 'react-player';
+import { FacebookShareButton, FacebookIcon } from 'react-share';
 import musicPlayerUtils from './musicPlayerUtils';
 import mapStoreToProps from '../../redux/mapStoreToProps';
 import musicUtils from './musicUtils';
@@ -51,6 +52,7 @@ export class MusicPlayer extends Component<{ songs: any; filterBy: any }, MusicP
     this.prev = this.prev.bind(this);
     this.buttons = this.buttons.bind(this);
     this.setClassOverlay = this.setClassOverlay.bind(this);
+    this.playUrl = this.playUrl.bind(this);
     this.navigator = window.navigator;
     this.musicPlayerUtils = musicPlayerUtils;
     this.musicUtils = musicUtils;
@@ -108,27 +110,52 @@ export class MusicPlayer extends Component<{ songs: any; filterBy: any }, MusicP
     );
   }
 
-  buttons() {
+  lineTwoButtons() {
     const {
-      missionState, pubState, originalState, player: { playing, isShuffleOn, onePlayerMode },
+      missionState, pubState, originalState, player: { onePlayerMode },
     } = this.state;
     return (
-      <section className="mt-0 col-12 col-md-10" style={{ marginTop: '4px', paddingTop: 0 }}>
-        <button type="button" id="play-pause" role="menu" className={playing ? 'on' : 'off'} onClick={this.play}>Play/Pause</button>
-        <button type="button" role="menu" id="next" onClick={this.next}>Next</button>
-        <button type="button" role="menu" id="prev" onClick={this.prev}>Prev</button>
-        <button type="button" id="shuffle" role="menu" className={isShuffleOn ? 'on' : 'off'} onClick={this.shuffle}>Shuffle</button>
-        <button type="button" id="share-button" role="menu" onClick={() => this.musicPlayerUtils.share(this)}>Share</button>
+      <div id="mAndP" style={{ height: '22px', margin: 'auto' }}>
+        <button type="button" onClick={() => this.musicPlayerUtils.toggleSongTypes('Original', this)} className={`original${originalState}`}>
+          Original
+        </button>
+        <button type="button" onClick={() => this.musicPlayerUtils.toggleSongTypes('Mission', this)} className={`mission${missionState}`}>
+          Mission
+        </button>
+        <button type="button" onClick={() => this.musicPlayerUtils.toggleSongTypes('Pub', this)} className={`pub${pubState}`}> Pub </button>
         {onePlayerMode ? this.musicPlayerUtils.homeButton(onePlayerMode) : null}
-        <div id="mAndP" style={{ height: '22px', margin: 'auto' }}>
-          <button type="button" onClick={() => this.musicPlayerUtils.toggleSongTypes('Original', this)} className={`original${originalState}`}>
-            Original
-          </button>
-          <button type="button" onClick={() => this.musicPlayerUtils.toggleSongTypes('Mission', this)} className={`mission${missionState}`}>
-            Mission
-          </button>
-          <button type="button" onClick={() => this.musicPlayerUtils.toggleSongTypes('Pub', this)} className={`pub${pubState}`}> Pub </button>
+      </div>
+    );
+  }
+
+  buttons() {
+    const { player: { playing, isShuffleOn } } = this.state;
+    let url = this.playUrl();
+    /* istanbul ignore else */if (process.env.NODE_ENV !== 'production') {
+      url = 'https://www.web-jam.com/music/originals?oneplayer=true&id=28ru9weis2309ur9r7ifuviuiu';
+    }
+    return (
+      <section className="mt-0 col-12 col-md-10" style={{ marginTop: '4px', paddingTop: 0 }}>
+        <div style={{
+          display: 'inline-block', height: '40px', verticalAlign: 'middle', lineHeight: '40px',
+        }}
+        >
+          <button type="button" id="play-pause" role="menu" className={playing ? 'on' : 'off'} onClick={this.play}>Play/Pause</button>
+          <button type="button" role="menu" id="next" onClick={this.next}>Next</button>
+          <button type="button" role="menu" id="prev" onClick={this.prev}>Prev</button>
+          <button type="button" id="shuffle" role="menu" className={isShuffleOn ? 'on' : 'off'} onClick={this.shuffle}>Shuffle</button>
+          <button type="button" id="share-button" role="menu" onClick={() => this.musicPlayerUtils.share(this)}>Share</button>
+          <FacebookShareButton
+            resetButtonStyle={false}
+            style={{
+              backgroundColor: 'white', marginLeft: 0, paddingLeft: '5px', marginBottom: 0,
+            }}
+            url={url}
+          >
+            <FacebookIcon round size={26} />
+          </FacebookShareButton>
         </div>
+        {this.lineTwoButtons()}
       </section>
     );
   }
@@ -205,40 +232,6 @@ export class MusicPlayer extends Component<{ songs: any; filterBy: any }, MusicP
     );
   }
 
-  copyRight() { // eslint-disable-line class-methods-use-this
-    return (<span>All Original Songs &copy;2019 Web Jam LLC</span>);
-  }
-
-  textUnderPlayer(song: any) {
-    return (
-      <section
-        className="col-12 mt-1"
-        style={{
-          fontSize: '0.8em', marginTop: 0, marginBottom: '0', paddingTop: 0, paddingBottom: 0,
-        }}
-      >
-        <strong>
-          {song !== null ? song.title : null}
-          {song !== null && song.composer !== undefined && song.category !== 'original' ? ` by ${song.composer}` : null}
-          {song !== null && song.artist !== undefined ? ` - ${song.artist}` : null}
-        </strong>
-        <p style={{
-          textAlign: 'center', fontSize: '8pt', marginTop: '4px', marginBottom: 0,
-        }}
-        >
-          {song !== null && song.album !== undefined ? song.album : null}
-          {song !== null && song.year !== undefined ? `, ${song.year}` : null}
-        </p>
-        <p style={{
-          textAlign: 'center', fontSize: '8pt', marginTop: '2px', marginBottom: 0,
-        }}
-        >
-          {song !== null && song.category === 'original' ? this.copyRight() : null}
-        </p>
-      </section>
-    );
-  }
-
   render() {
     const {
       song, player, pageTitle,
@@ -252,7 +245,7 @@ export class MusicPlayer extends Component<{ songs: any; filterBy: any }, MusicP
             <div className={classOverlay} />
             {song !== null && song !== undefined && song.url !== undefined ? this.reactPlayer() : null}
           </section>
-          {song ? this.textUnderPlayer(song) : null}
+          {song ? this.musicUtils.textUnderPlayer(song) : null}
           {this.buttons()}
           <section className="mt-1 col-12" id="copier" style={{ display: player.displayCopier, marginTop: '0' }}>
             {this.copyInput(player, song)}

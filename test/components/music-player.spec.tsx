@@ -214,7 +214,7 @@ describe('Music player component init', () => {
   it('handles null song when textUnderPlayer', () => {
     const { songs } = songData;
     const wrapper = shallow<MusicPlayer>(<MusicPlayer songs={songs} filterBy="originals" />);
-    const r = wrapper.instance().textUnderPlayer(null);
+    const r = wrapper.instance().musicUtils.textUnderPlayer(null);
     expect(r.type).toBe('section');
   });
 });
