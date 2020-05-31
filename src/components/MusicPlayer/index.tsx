@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-ignore */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import ReactPlayer from 'react-player';
@@ -17,6 +18,7 @@ export interface MusicPlayerState {
   song: any;
   copy?: any;
   player: { playing: boolean; shown: boolean; isShuffleOn: boolean; displayCopier: string; displayCopyMessage: boolean; onePlayerMode: boolean };
+  buttonState: string;
 }
 
 export class MusicPlayer extends Component<{ songs: any; filterBy: any }, MusicPlayerState> {
@@ -43,6 +45,8 @@ export class MusicPlayer extends Component<{ songs: any; filterBy: any }, MusicP
       player: {
         playing: false, shown: false, isShuffleOn: false, displayCopier: 'none', displayCopyMessage: false, onePlayerMode: false,
       },
+      // @ts-ignore
+      buttonState: [],
     };
     this.play = this.play.bind(this);
     this.playEnd = this.playEnd.bind(this);
@@ -85,9 +89,10 @@ export class MusicPlayer extends Component<{ songs: any; filterBy: any }, MusicP
   }
 
   playUrl() {
-    const { song } = this.state;
+    // @ts-ignore
+    const { song, buttonState } = this.state;
     if (song && song._id) {
-      return `${document.location.origin}/music/${window.location.pathname.split('/').pop()}?oneplayer=true&id=${song._id}`;
+      return `${document.location.origin}/music/${window.location.pathname.split('/').pop()}?oneplayer=true&id=${song._id}?${buttonState}`;
     }
     return null;
   }
@@ -112,7 +117,7 @@ export class MusicPlayer extends Component<{ songs: any; filterBy: any }, MusicP
 
   lineTwoButtons() {
     const {
-      missionState, pubState, originalState, player: { onePlayerMode },
+      missionState, pubState, originalState, player: { onePlayerMode }, buttonState,
     } = this.state;
     return (
       <div id="mAndP" style={{ height: '22px', margin: 'auto' }}>
@@ -122,7 +127,16 @@ export class MusicPlayer extends Component<{ songs: any; filterBy: any }, MusicP
         <button type="button" onClick={() => this.musicPlayerUtils.toggleSongTypes('Mission', this)} className={`mission${missionState}`}>
           Mission
         </button>
-        <button type="button" onClick={() => this.musicPlayerUtils.toggleSongTypes('Pub', this)} className={`pub${pubState}`}> Pub </button>
+        <button
+          type="button"
+          onClick={() => this.musicPlayerUtils.toggleSongTypes('Pub', this)}
+          // @ts-ignore
+          buttonState={pubState}
+          className={`pub${pubState}`}
+        >
+          {' '}
+          Pub
+        </button>
         {onePlayerMode ? this.musicPlayerUtils.homeButton(onePlayerMode) : null}
       </div>
     );
@@ -132,7 +146,7 @@ export class MusicPlayer extends Component<{ songs: any; filterBy: any }, MusicP
     const { player: { playing, isShuffleOn } } = this.state;
     let url = this.playUrl();
     /* istanbul ignore else */if (process.env.NODE_ENV !== 'production') {
-      url = 'https://www.web-jam.com/music/originals?oneplayer=true&id=28ru9weis2309ur9r7ifuviuiu';
+      url = 'https://www.web-jam.com/music/originals?oneplayer=true&id=28ru9weis2309ur9r7ifuviuiu?pub';
     }
     return (
       <section className="mt-0 col-12 col-md-10" style={{ marginTop: '4px', paddingTop: 0 }}>
