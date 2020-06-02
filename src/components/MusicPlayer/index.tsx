@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-ts-ignore */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import ReactPlayer from 'react-player';
@@ -86,12 +85,9 @@ export class MusicPlayer extends Component<{ songs: any; filterBy: any }, MusicP
   }
 
   playUrl() {
-    // @ts-ignore
-    const {
-      song, originalState, missionState, pubState,
-    } = this.state;
+    const { song } = this.state;
     if (song && song._id) {
-      return `${document.location.origin}/music/${window.location.pathname.split('/').pop()}?oneplayer=true&id=${song._id}?original${originalState}?mission${missionState}?pub${pubState}`;// eslint-disable-line max-len
+      return `${document.location.origin}/music/${window.location.pathname.split('/').pop()}?oneplayer=true&id=${song._id}`;// eslint-disable-line max-len
     }
     return null;
   }
@@ -140,7 +136,6 @@ export class MusicPlayer extends Component<{ songs: any; filterBy: any }, MusicP
     /* istanbul ignore else */if (process.env.NODE_ENV !== 'production') {
       url = 'https://www.web-jam.com/music/originals?oneplayer=true&id=28ru9weis2309ur9r7ifuviuiu';
     }
-    console.log(url);
     return (
       <section className="mt-0 col-12 col-md-10" style={{ marginTop: '4px', paddingTop: 0 }}>
         <div style={{
