@@ -9,7 +9,7 @@ describe('Dashboard Container', () => {
   const auth = { token: '' };
   beforeEach(() => {
     // @ts-ignore
-    wrapper = shallow(<MusicDashboard auth={auth} scc={{ transmit: () => {} }} dispatch={() => {}} editTour={{}} />);
+    wrapper = shallow<MusicDashboard>(<MusicDashboard auth={auth} scc={{ transmit: () => {} }} dispatch={() => {}} editTour={{}} />);
   });
   it('is defined', () => {
     expect(MusicDashboard).toBeDefined();
@@ -21,6 +21,15 @@ describe('Dashboard Container', () => {
     wrapper.instance().checkEdit = jest.fn();
     wrapper.instance().setState = jest.fn((boobyJ) => { expect(boobyJ.hi).toBe(11); });
     wrapper.instance().onChange({ preventDefault: () => {}, target: { id: 'hi', value: 11 } });
+  });
+  it('handles onChange with editTour', () => {
+    const wrapper2 = shallow<MusicDashboard>(
+    // @ts-ignore
+      <MusicDashboard auth={auth} scc={{ transmit: () => {} }} dispatch={() => {}} editTour={{ venue: 'wjllc' }} />,
+    );
+    wrapper2.instance().checkEdit = jest.fn();
+    wrapper2.instance().onChange({ preventDefault: () => {}, target: { id: 'hi', value: 11 } });
+    expect(wrapper2.instance().checkEdit).toHaveBeenCalled();
   });
   it('calls handleEditorChange', () => {
     wrapper.instance().checkEdit = jest.fn();

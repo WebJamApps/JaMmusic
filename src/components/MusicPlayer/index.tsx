@@ -122,7 +122,9 @@ export class MusicPlayer extends Component<{ songs: any; filterBy: any }, MusicP
         <button type="button" onClick={() => this.musicPlayerUtils.toggleSongTypes('Mission', this)} className={`mission${missionState}`}>
           Mission
         </button>
-        <button type="button" onClick={() => this.musicPlayerUtils.toggleSongTypes('Pub', this)} className={`pub${pubState}`}> Pub </button>
+        <button type="button" onClick={() => this.musicPlayerUtils.toggleSongTypes('Pub', this)} className={`pub${pubState}`}>
+          Pub
+        </button>
         {onePlayerMode ? this.musicPlayerUtils.homeButton(onePlayerMode) : null}
       </div>
     );
