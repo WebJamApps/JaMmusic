@@ -87,7 +87,7 @@ export class MusicPlayer extends Component<{ songs: any; filterBy: any }, MusicP
   playUrl() {
     const { song } = this.state;
     if (song && song._id) {
-      return `${document.location.origin}/music/${window.location.pathname.split('/').pop()}?oneplayer=true&id=${song._id}`;// eslint-disable-line max-len
+      return `${document.location.origin}/music/${window.location.pathname.split('/').pop()}?oneplayer=true&id=${song._id}`;
     }
     return null;
   }
