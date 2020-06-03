@@ -12,26 +12,32 @@ describe('musicPlayerUtils', () => {
       return '123' || '456';
     },
   };
-  const controller = {
+  const view = {
     setState: (obj: any) => { if (obj) return true; return false; },
-    props: { songs: [{ _id: '123' }] },
+    props: { songs: [{ _id: '123', category: 'pub' }] },
     state: {
       songsState: [], player: { onePlayerMode: true, isShuffleOn: true }, pageTitle: '', missionState: 'on', pubState: 'off', originalState: 'on',
     },
   };
-  it('checks for one player then sets the song', async () => {
-    const result = await musicPlayerUtils.checkOnePlayer(params, { onePlayerMode: false }, controller);
+  it('checks for one player then sets the song when pub', async () => {
+    const result = await musicPlayerUtils.checkOnePlayer(params, { onePlayerMode: false }, view);
     expect(result).toBe(true);
   });
-  it('checks for one player then sets the song when the id does not match', async () => {
-    params.get = (item) => {
-      if (item === 'oneplayer') return true;
-      return '456';
-    };
-    const result = await musicPlayerUtils.checkOnePlayer(params, { onePlayerMode: false }, controller);
+  it('handles one player when mission', async () => {
+    view.props.songs = [{ _id: '123', category: 'mission' }, { _id: '456', category: 'pub' }];
+    const result = await musicPlayerUtils.checkOnePlayer(params, { onePlayerMode: false }, view);
     expect(result).toBe(true);
   });
-
+  it('handles one player when original', async () => {
+    view.props.songs = [{ _id: '123', category: 'original' }, { _id: '456', category: 'pub' }];
+    const result = await musicPlayerUtils.checkOnePlayer(params, { onePlayerMode: false }, view);
+    expect(result).toBe(true);
+  });
+  it('handles one player when song id does not match', async () => {
+    view.props.songs = [{ _id: '999', category: 'original' }, { _id: '888', category: 'pub' }, { _id: '777', category: 'mission' }];
+    const result = await musicPlayerUtils.checkOnePlayer(params, { onePlayerMode: false }, view);
+    expect(result).toBe(true);
+  });
   it('makes one player', () => {
     const result = musicPlayerUtils.makeOnePlayerMode();
     expect(result).toBe(true);
@@ -51,7 +57,7 @@ describe('musicPlayerUtils', () => {
 
   it('runs one player mode if it exists', () => {
     Object.defineProperty(window, 'outerWidth', { writable: true, configurable: true, value: 800 });
-    const result = musicPlayerUtils.runIfOnePlayer(controller);
+    const result = musicPlayerUtils.runIfOnePlayer(view);
     expect(result).toBe(true);
   });
   it('makes the home button that navigates to /music page', () => {
@@ -75,17 +81,17 @@ describe('musicPlayerUtils', () => {
     expect(result).toBe(false);
   });
   it('reshuffled the songs if shuffle is on and type is deselected', () => {
-    controller.setState = jest.fn(() => true);
-    controller.state.player.isShuffleOn = true;
-    controller.state.missionState = 'on';
-    controller.state.originalState = 'on';
-    const r = musicPlayerUtils.toggleSongTypes('mission', controller);
+    view.setState = jest.fn(() => true);
+    view.state.player.isShuffleOn = true;
+    view.state.missionState = 'on';
+    view.state.originalState = 'on';
+    const r = musicPlayerUtils.toggleSongTypes('mission', view);
     expect(r).toBe(true);
   });
   it('does not toggle the original button', () => {
-    controller.state.missionState = 'off';
-    controller.state.originalState = 'on';
-    const r = musicPlayerUtils.toggleSongTypes('original', controller);
+    view.state.missionState = 'off';
+    view.state.originalState = 'on';
+    const r = musicPlayerUtils.toggleSongTypes('original', view);
     expect(r).toBe(false);
   });
 });
