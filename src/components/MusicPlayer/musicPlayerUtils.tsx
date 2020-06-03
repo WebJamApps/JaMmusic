@@ -24,27 +24,28 @@ const copyShare = (view: any) => {
     }, 1500);
   });
 };
-const checkOnePlayer = (params, player, controller) => {
-  const { songs } = controller.props;
+const checkOnePlayer = async (params, player, view) => {
+  const { songs } = view.props;
   let missionState = 'off', pubState = 'off', originalState = 'off', newSongs = [];
   if (params.get('oneplayer')) {
     const song = songs.filter((s) => s._id === params.get('id'));
     const index = songs.findIndex((s) => s._id === params.get('id'));
+    if (song.length === 0) song.push(songs[0]);
     if (song[0].category === 'mission') { missionState = 'on'; newSongs = songs.filter((s) => s.category === 'mission'); }
     if (song[0].category === 'pub') { pubState = 'on'; newSongs = songs.filter((s) => s.category === 'pub'); }
     if (song[0].category === 'original') { originalState = 'on'; newSongs = songs.filter((s) => s.category === 'original'); }
-    controller.setState({
+    view.setState({
       player: { ...player, onePlayerMode: true },
-      song: song.length ? song[0] : newSongs[0],
+      song: song[0],
       index: index || 0,
       missionState,
       pubState,
       originalState,
       songsState: newSongs,
     });
-    return Promise.resolve(true);
+    return true;
   }
-  return Promise.resolve(false);
+  return false;
 };
 
 const makeOnePlayerMode = () => {
