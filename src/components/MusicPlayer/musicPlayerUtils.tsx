@@ -2,8 +2,12 @@ import React from 'react';
 
 const showHideButtons = (display: string) => {
   const mAndP = document.getElementById('mAndP');
+  const sb = document.getElementById('share-buttons');
+  const pb = document.getElementById('play-buttons');
   if (mAndP !== null) {
     mAndP.style.display = display;
+    sb.style.display = display;
+    pb.style.display = display;
     return true;
   }
   return false;
