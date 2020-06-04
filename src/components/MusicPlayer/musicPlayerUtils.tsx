@@ -4,13 +4,12 @@ const showHideButtons = (display: string) => {
   const mAndP = document.getElementById('mAndP');
   const sb = document.getElementById('share-buttons');
   const pb = document.getElementById('play-buttons');
-  if (mAndP !== null) {
+  try {
     mAndP.style.display = display;
     sb.style.display = display;
     pb.style.display = display;
-    return true;
-  }
-  return false;
+  } catch (e) { return false; }
+  return true;
 };
 const share = (view: any) => {
   const { player, player: { displayCopier } } = view.state;

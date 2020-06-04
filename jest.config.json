@@ -2,6 +2,7 @@
   "verbose": true,
   "bail": true,
   "resetMocks": true,
+  "notify": true,
   "setupFiles": [
     "core-js/stable",
     "regenerator-runtime/runtime",

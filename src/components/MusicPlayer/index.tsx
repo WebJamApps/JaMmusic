@@ -87,7 +87,7 @@ export class MusicPlayer extends Component<{ songs: any; filterBy: any }, MusicP
   playUrl() {
     const { song } = this.state;
     if (song && song._id) {
-      return `${document.location.origin}/music/${window.location.pathname.split('/').pop()}?oneplayer=true&id=${song._id}`;
+      return `https://web-jam.com/music/songs?oneplayer=true&id=${song._id}`;
     }
     return null;
   }
@@ -130,12 +130,26 @@ export class MusicPlayer extends Component<{ songs: any; filterBy: any }, MusicP
     );
   }
 
+  lineThreeButtons(url: string) {
+    return (
+      <div id="share-buttons" style={{ display: 'inline-block' }}>
+        <button type="button" id="share-button" role="menu" onClick={() => this.musicPlayerUtils.share(this)}>Share</button>
+        <FacebookShareButton
+          resetButtonStyle={false}
+          style={{
+            backgroundColor: 'white', marginLeft: 0, paddingLeft: '5px', marginBottom: 0,
+          }}
+          url={url}
+        >
+          <FacebookIcon round size={26} />
+        </FacebookShareButton>
+      </div>
+    );
+  }
+
   buttons() {
     const { player: { playing, isShuffleOn } } = this.state;
-    let url = this.playUrl();
-    /* istanbul ignore else */if (process.env.NODE_ENV !== 'production') {
-      url = 'https://www.web-jam.com/music/originals?oneplayer=true&id=28ru9weis2309ur9r7ifuviuiu';
-    }
+    const url = this.playUrl();
     return (
       <section className="mt-0 col-12 col-md-10" style={{ marginTop: '4px', paddingTop: 0 }}>
         <div
@@ -150,18 +164,7 @@ export class MusicPlayer extends Component<{ songs: any; filterBy: any }, MusicP
           <button type="button" id="shuffle" role="menu" className={isShuffleOn ? 'on' : 'off'} onClick={this.shuffle}>Shuffle</button>
         </div>
         {this.lineTwoButtons()}
-        <div id="share-buttons" style={{ display: 'inline-block' }}>
-          <button type="button" id="share-button" role="menu" onClick={() => this.musicPlayerUtils.share(this)}>Share</button>
-          <FacebookShareButton
-            resetButtonStyle={false}
-            style={{
-              backgroundColor: 'white', marginLeft: 0, paddingLeft: '5px', marginBottom: 0,
-            }}
-            url={url}
-          >
-            <FacebookIcon round size={26} />
-          </FacebookShareButton>
-        </div>
+        {this.lineThreeButtons(url)}
       </section>
     );
   }
