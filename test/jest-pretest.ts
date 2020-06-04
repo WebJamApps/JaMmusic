@@ -12,14 +12,14 @@ window.matchMedia = jest.fn().mockImplementation((query) => ({
 }));
 
 configure({ adapter: new Adapter() });
-document.body.innerHTML = '<div id="root"></div><div id="mAndP"></div>';
-
+document.body.innerHTML = '<div id="root"><div id="mAndP"></div><div id="play-buttons">'
+  + '</div><div id="share-buttons"></div></div>';
 window.HTMLMediaElement.prototype.load = () => { /* do nothing */ };
 window.HTMLMediaElement.prototype.play = () => Promise.resolve();
 window.HTMLMediaElement.prototype.pause = () => { /* do nothing */ };
 window.location = {
   ...window.location,
-  href: '',
+  href: 'https://web-jam.com',
   reload: jest.fn(),
   assign: jest.fn(),
 };

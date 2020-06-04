@@ -67,7 +67,7 @@ describe('musicPlayerUtils', () => {
     wrapper.find('button').simulate('click');
     expect(window.location.assign).toHaveBeenCalled();
   });
-  it('hides the mission and pub buttons', () => {
+  it('hides the buttons', () => {
     musicPlayerUtils.showHideButtons('none');
     expect(document.getElementById('mAndP').style.display).toBe('none');
   });

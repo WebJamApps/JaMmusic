@@ -87,7 +87,7 @@ export class MusicPlayer extends Component<{ songs: any; filterBy: any }, MusicP
   playUrl() {
     const { song } = this.state;
     if (song && song._id) {
-      return `${document.location.origin}/music/${window.location.pathname.split('/').pop()}?oneplayer=true&id=${song._id}`;
+      return `https://web-jam.com/music/songs?oneplayer=true&id=${song._id}`;
     }
     return null;
   }
@@ -130,34 +130,41 @@ export class MusicPlayer extends Component<{ songs: any; filterBy: any }, MusicP
     );
   }
 
+  lineThreeButtons(url: string) {
+    return (
+      <div id="share-buttons" style={{ display: 'inline-block' }}>
+        <button type="button" id="share-button" role="menu" onClick={() => this.musicPlayerUtils.share(this)}>Share</button>
+        <FacebookShareButton
+          resetButtonStyle={false}
+          style={{
+            backgroundColor: 'white', marginLeft: 0, paddingLeft: '5px', marginBottom: 0,
+          }}
+          url={url}
+        >
+          <FacebookIcon round size={26} />
+        </FacebookShareButton>
+      </div>
+    );
+  }
+
   buttons() {
     const { player: { playing, isShuffleOn } } = this.state;
-    let url = this.playUrl();
-    /* istanbul ignore else */if (process.env.NODE_ENV !== 'production') {
-      url = 'https://www.web-jam.com/music/originals?oneplayer=true&id=28ru9weis2309ur9r7ifuviuiu';
-    }
+    const url = this.playUrl();
     return (
       <section className="mt-0 col-12 col-md-10" style={{ marginTop: '4px', paddingTop: 0 }}>
-        <div style={{
-          display: 'inline-block', height: '40px', verticalAlign: 'middle', lineHeight: '40px',
-        }}
+        <div
+          id="play-buttons"
+          style={{
+            display: 'inline-block', height: '40px', verticalAlign: 'middle', lineHeight: '40px',
+          }}
         >
           <button type="button" id="play-pause" role="menu" className={playing ? 'on' : 'off'} onClick={this.play}>Play/Pause</button>
           <button type="button" role="menu" id="next" onClick={this.next}>Next</button>
           <button type="button" role="menu" id="prev" onClick={this.prev}>Prev</button>
           <button type="button" id="shuffle" role="menu" className={isShuffleOn ? 'on' : 'off'} onClick={this.shuffle}>Shuffle</button>
-          <button type="button" id="share-button" role="menu" onClick={() => this.musicPlayerUtils.share(this)}>Share</button>
-          <FacebookShareButton
-            resetButtonStyle={false}
-            style={{
-              backgroundColor: 'white', marginLeft: 0, paddingLeft: '5px', marginBottom: 0,
-            }}
-            url={url}
-          >
-            <FacebookIcon round size={26} />
-          </FacebookShareButton>
         </div>
         {this.lineTwoButtons()}
+        {this.lineThreeButtons(url)}
       </section>
     );
   }
@@ -213,7 +220,7 @@ export class MusicPlayer extends Component<{ songs: any; filterBy: any }, MusicP
 
   copyInput(player: any, song: any) {
     return (
-      <div id="copyInput">
+      <div id="copyInput" style={{ marginTop: '-20px', marginBottom: '40px' }}>
         {player.displayCopyMessage && <div className="copySuccess"> Url copied Url to clipboard </div>}
         {song !== null ? <input id="copyUrl" disabled value={this.playUrl()} style={{ backgroundColor: '#fff' }} className="form-control" />
           : null}
