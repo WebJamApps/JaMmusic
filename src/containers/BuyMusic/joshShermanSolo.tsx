@@ -1,8 +1,8 @@
 import React from 'react';
 
 const JoshShermanSolo = () => (
-  <div className="material-content elevation2" style={{ margin: 'auto', maxWidth: '4in' }}>
-    <h4 style={{ textAlign: 'center' }}>Josh Sherman Solo Acoustic</h4>
+  <div className="material-content elevation2" style={{ margin: 'auto', maxWidth: '3in', height: '3in' }}>
+    <h5 style={{ textAlign: 'center' }}>Solo Acoustic</h5>
     <div style={{ textAlign: 'center' }}>
       <a
         href="https://www.amazon.com/Solo-Acoustic-Explicit-Josh-Sherman/dp/B0013XP8MI/ref=ntt_mus_dp_dpt_2"
