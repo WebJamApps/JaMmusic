@@ -2,11 +2,14 @@ import React from 'react';
 
 const showHideButtons = (display: string) => {
   const mAndP = document.getElementById('mAndP');
-  if (mAndP !== null) {
+  const sb = document.getElementById('share-buttons');
+  const pb = document.getElementById('play-buttons');
+  try {
     mAndP.style.display = display;
-    return true;
-  }
-  return false;
+    sb.style.display = display;
+    pb.style.display = display;
+  } catch (e) { return false; }
+  return true;
 };
 const share = (view: any) => {
   const { player, player: { displayCopier } } = view.state;
