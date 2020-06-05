@@ -16,14 +16,32 @@ export default class BuyMusic extends Component {
   render() {
     return (
       <div className="page-content">
-        <h3 style={{ textAlign: 'center', margin: '20px', fontWeight: 'bold' }}>Buy Music</h3>
-        <p>&nbsp;</p>
+        <h3 style={{
+          textAlign: 'center', margin: '20px', fontWeight: 'bold', fontSize: '16pt',
+        }}
+        >
+          Buy Music
+        </h3>
         <Jsb />
-        <p>&nbsp;</p>
-        <p>&nbsp;</p>
+        <p style={{ fontSize: '8pt' }}>{' '}</p>
         <Jss />
-        <p>&nbsp;</p>
-        <p>&nbsp;</p>
+        <p style={{ fontSize: '24pt' }}>{' '}</p>
+        <div style={{ margin: 'auto', textAlign: 'center' }}>
+          <h5>Also On Spotify</h5>
+          <iframe
+            src="https://open.spotify.com/embed/artist/4XGcA7sSHYypVflLH48KCx"
+            width="320"
+            height="500"
+            title="soloAcoustic"
+          />
+          <p style={{ fontSize: '1pt' }}>{' '}</p>
+          <iframe
+            src="https://open.spotify.com/embed/artist/5IvBs06z4RksIE1WvqLULs"
+            width="320"
+            height="500"
+            title="soloAcoustic"
+          />
+        </div>
       </div>
     );
   }

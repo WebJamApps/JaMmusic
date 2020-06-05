@@ -6,7 +6,8 @@ const pageH4 = (pageTitle: string) => (
       textAlign: 'center',
       margin: '20px',
       fontWeight: 'bold',
-      marginBottom: '6px',
+      marginBottom: '0px',
+      fontSize: '16pt',
     }}
     id="headerTitle"
   >
