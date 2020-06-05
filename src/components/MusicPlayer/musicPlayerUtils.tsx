@@ -69,6 +69,7 @@ const makeOnePlayerMode = () => {
     contentBlock.style.overflowY = 'auto';
     contentBlock.style.width = '100%';
     contentBlock.style.height = '100%';
+    contentBlock.style.marginTop = '0px';
   }
   if (mainPlayer && window.outerWidth < 600) mainPlayer.style.height = '55vh';
   if (pageContent) pageContent.style.borderColor = '#fff';
