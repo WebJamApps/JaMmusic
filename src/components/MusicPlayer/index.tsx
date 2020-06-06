@@ -131,6 +131,9 @@ export class MusicPlayer extends Component<{ songs: any; filterBy: any }, MusicP
   }
 
   lineThreeButtons(url: string) {
+    let { song } = this.state, composer = '';
+    if (!song) song = {};
+    if (song.composer !== undefined && !song.composer.includes('Josh')) composer = ` by ${song.composer}`;
     return (
       <div id="share-buttons" style={{ display: 'inline-block' }}>
         <button type="button" id="share-button" role="menu" onClick={() => this.musicPlayerUtils.share(this)}>Share</button>
@@ -140,6 +143,8 @@ export class MusicPlayer extends Component<{ songs: any; filterBy: any }, MusicP
             backgroundColor: 'white', marginLeft: 0, paddingLeft: '5px', marginBottom: 0,
           }}
           url={url}
+          quote={`Click the graphic below to hear ${song.artist} performing the song, "${song.title}"${composer}`}
+          hashtag="#JoshAndMariaMusic"
         >
           <FacebookIcon round size={26} />
         </FacebookShareButton>

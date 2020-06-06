@@ -1,8 +1,8 @@
 import React from 'react';
 
 const JoshShermanBand = () => (
-  <div className="material-content elevation2" style={{ maxWidth: '4in', margin: 'auto' }}>
-    <h4 style={{ textAlign: 'center' }}>Josh Sherman Band</h4>
+  <div className="material-content elevation2" style={{ maxWidth: '3in', margin: 'auto', height: '3in' }}>
+    <h5 style={{ textAlign: 'center' }}>Josh Sherman Band</h5>
     <div style={{ textAlign: 'center' }}>
       <a
         href="https://www.amazon.com/Live-Central-Florida-2001-Explicit/dp/B0015HGSEO/ref=ntt_mus_dp_dpt_1"
