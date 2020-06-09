@@ -22,25 +22,37 @@ export default class BuyMusic extends Component {
         >
           Buy Music
         </h3>
-        <Jsb />
-        <p style={{ fontSize: '8pt' }}>{' '}</p>
-        <Jss />
+        <div className="row">
+          <div className="col">
+            <Jsb />
+          </div>
+          <p style={{ fontSize: '8pt' }}>{' '}</p>
+          <div className="col">
+            <Jss />
+          </div>
+        </div>
         <p style={{ fontSize: '24pt' }}>{' '}</p>
         <div style={{ margin: 'auto', textAlign: 'center' }}>
           <h5>Also On Spotify</h5>
-          <iframe
-            src="https://open.spotify.com/embed/artist/4XGcA7sSHYypVflLH48KCx"
-            width="320"
-            height="500"
-            title="soloAcoustic"
-          />
-          <p style={{ fontSize: '1pt' }}>{' '}</p>
-          <iframe
-            src="https://open.spotify.com/embed/artist/5IvBs06z4RksIE1WvqLULs"
-            width="320"
-            height="500"
-            title="soloAcoustic"
-          />
+          <div className="row">
+            <div className="col">
+              <iframe
+                src="https://open.spotify.com/embed/artist/4XGcA7sSHYypVflLH48KCx"
+                width="320"
+                height="500"
+                title="soloAcoustic"
+              />
+            </div>
+            <p style={{ fontSize: '1pt' }}>{' '}</p>
+            <div className="col">
+              <iframe
+                src="https://open.spotify.com/embed/artist/5IvBs06z4RksIE1WvqLULs"
+                width="320"
+                height="500"
+                title="soloAcoustic"
+              />
+            </div>
+          </div>
         </div>
       </div>
     );
