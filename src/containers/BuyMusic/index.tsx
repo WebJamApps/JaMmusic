@@ -15,7 +15,7 @@ export default class BuyMusic extends Component {
 
   render() {
     return (
-      <div className="page-content">
+      <div className="page-content" style={{ paddingRight: '15px' }}>
         <h3 style={{
           textAlign: 'center', margin: '20px', fontWeight: 'bold', fontSize: '16pt',
         }}
