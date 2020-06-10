@@ -16,8 +16,8 @@ import getSongs from './songsActions';
 
 export interface AppProps {
   dispatch: (...args: any[]) => any;
-  songs: {}[];
-  images: {}[];
+  songs: any[];
+  images: any[];
   auth: {
     user: {
       userType?: string;

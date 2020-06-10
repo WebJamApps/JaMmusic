@@ -4,20 +4,20 @@ const JoshShermanSpotify = () => (
   <div className="spotify">
     <h5>Also On Spotify</h5>
     <div className="row">
-      <div className="col">
+      <div className="col" style={{ paddingRight: '0px' }}>
         <iframe
-          src="https://open.spotify.com/embed/artist/4XGcA7sSHYypVflLH48KCx"
-          width="320"
-          height="500"
+          src="https://open.spotify.com/embed/artist/5IvBs06z4RksIE1WvqLULs"
+          width="312"
+          height="436"
           title="soloAcoustic"
         />
       </div>
       <p style={{ fontSize: '1pt' }}>{' '}</p>
-      <div className="col">
+      <div className="col" style={{ paddingRight: '0px' }}>
         <iframe
-          src="https://open.spotify.com/embed/artist/5IvBs06z4RksIE1WvqLULs"
-          width="320"
-          height="500"
+          src="https://open.spotify.com/embed/artist/4XGcA7sSHYypVflLH48KCx"
+          width="312"
+          height="436"
           title="soloAcoustic"
         />
       </div>
