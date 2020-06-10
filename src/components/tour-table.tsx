@@ -9,7 +9,7 @@ import TableTheme from '../lib/tourTableTheme';
 type TourTableProps = {
   dispatch: (...args: any[]) => any;
   tourUpdated: boolean;
-  tour: {}[];
+  tour: any[];
   auth: {token: string};
   deleteButton?: boolean;
   scc: {transmit: (...args: any[]) => any};
@@ -81,7 +81,7 @@ export class TourTable extends Component<TourTableProps, TourTableState> {
     } return false;
   }
 
-  editTour(data: {}) {
+  editTour(data: any) {
     const { dispatch } = this.props;
     dispatch({ type: 'EDIT_TOUR', data });
     return true;

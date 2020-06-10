@@ -18,7 +18,7 @@ interface InquiryState {
   [x: number]: any;
 }
 
-export default class Inquiry extends Component<{}, InquiryState> {
+export default class Inquiry extends Component<any, InquiryState> {
   stateValues: string[];
 
   forms: {
