@@ -1,7 +1,7 @@
 import React from 'react';
 
 const JoshShermanSpotify = () => (
-  <div>
+  <div className="spotify">
     <h5>Also On Spotify</h5>
     <div className="row">
       <div className="col">
