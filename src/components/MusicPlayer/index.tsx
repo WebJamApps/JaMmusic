@@ -74,21 +74,15 @@ export class MusicPlayer extends Component<{ songs: any; filterBy: any }, MusicP
     const { song, player } = this.state;
     let classOverlay = 'mainPlayer';
     if (player.playing === false) {
-      if (song !== null && song !== undefined && song.url[8] === 's') {
-        classOverlay = 'soundcloudOverlay';
-      }
-      if (song !== null && song !== undefined && song.url[12] === 'y') {
-        classOverlay = 'youtubeOverlay';
-      }
+      if (song !== null && song !== undefined && song.url[8] === 's') classOverlay = 'soundcloudOverlay';
+      if (song !== null && song !== undefined && song.url[12] === 'y') classOverlay = 'youtubeOverlay';
     }
     return classOverlay;
   }
 
   playUrl() {
     const { song } = this.state;
-    if (song && song._id) {
-      return `https://web-jam.com/music/songs?oneplayer=true&id=${song._id}`;
-    }
+    if (song && song._id) return `https://web-jam.com/music/songs?oneplayer=true&id=${song._id}`;
     return null;
   }
 
@@ -131,10 +125,10 @@ export class MusicPlayer extends Component<{ songs: any; filterBy: any }, MusicP
   }
 
   lineThreeButtons(url: string) {
-    let { song } = this.state, composer = '';
+    let { song } = this.state, composer = '', quote = '';
     if (!song) song = {};
     if (song.composer !== undefined && !song.composer.includes('Josh')) composer = ` by ${song.composer}`;
-    let quote = `Click the graphic below to hear ${song.artist} performing the song, "${song.title}"${composer}`;
+    quote = `Click the graphic below to hear ${song.artist} performing the song, "${song.title}"${composer}`;
     if (song.category === 'original')quote = quote.replace('performing the song', 'performing their song');
     return (
       <div id="share-buttons" style={{ display: 'inline-block' }}>
