@@ -4,9 +4,9 @@ import DefaultMusicPlayer from '../../components/MusicPlayer';
 import mapStoreToProps from '../../redux/mapStoreToProps';
 import commonUtils from '../../lib/commonUtils';
 
-type oProps = {
+type SProps = {
   songs: {url: string}[];};
-export class Songs extends Component<oProps> {
+export class Songs extends Component<SProps> {
   o: any;
 
   commonUtils: any;

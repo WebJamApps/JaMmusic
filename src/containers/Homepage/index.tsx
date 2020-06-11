@@ -10,7 +10,7 @@ import commonUtils from '../../lib/commonUtils';
 
 interface HomepageState { width: number }
 
-export default class Home extends Component<{}, HomepageState> {
+export default class Home extends Component<any, HomepageState> {
   parentRef: any;
 
   commonUtils: any;
