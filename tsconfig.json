@@ -86,5 +86,5 @@
     /* Advanced Options */
     "forceConsistentCasingInFileNames": true /* Disallow inconsistently-cased references to the same file. */
   },
-  "exclude": ["dist", "node_modules", "**/*.spec.js"]
+  "exclude": ["dist", "node_modules", "test"]
 }
