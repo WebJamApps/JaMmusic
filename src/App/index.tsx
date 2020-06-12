@@ -29,18 +29,18 @@ export class App extends Component<AppProps> {
   connectToSC: any;
 
   static defaultProps = {
-    dispatch: () => {},
+    dispatch: ():any => {},
     songs: [],
     images: [],
     auth: { isAuthenticated: false, user: { userType: '' } },
   };
 
-  constructor(props: any) {
+  constructor(props: AppProps) {
     super(props);
     this.connectToSC = connectToSC;
   }
 
-  async componentDidMount() {
+  async componentDidMount(): Promise<void> {
     const { dispatch, songs } = this.props;
     if (songs.length === 0) dispatch(getSongs());
     await this.connectToSC.connectToSCC(dispatch);
