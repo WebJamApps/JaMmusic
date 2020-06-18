@@ -131,7 +131,7 @@ export class MusicPlayer extends Component<{ songs: any; filterBy: any }, MusicP
     quote = `Click the graphic below to hear ${song.artist} performing the song, "${song.title}"${composer}`;
     if (song.category === 'original')quote = quote.replace('performing the song', 'performing their song');
     return (
-      <div id="share-buttons" style={{ display: 'inline-block' }}>
+      <div id="share-buttons" style={{ display: 'inline-block', marginTop: '3px' }}>
         <button type="button" id="share-button" role="menu" onClick={() => this.musicPlayerUtils.share(this)}>Share</button>
         <FacebookShareButton
           resetButtonStyle={false}
