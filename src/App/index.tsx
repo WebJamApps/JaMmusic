@@ -29,7 +29,7 @@ export class App extends Component<AppProps> {
   connectToSC: any;
 
   static defaultProps = {
-    dispatch: ():any => {},
+    dispatch: (): any => {},
     songs: [],
     images: [],
     auth: { isAuthenticated: false, user: { userType: '' } },

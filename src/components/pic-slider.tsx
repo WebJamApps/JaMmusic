@@ -25,7 +25,7 @@ class PicSlider extends Component<PicSliderProps> {
     fade: boolean;
   };
 
-  constructor(props) {
+  constructor(props: PicSliderProps) {
     super(props);
     this.settings = {
       autoplay: true,
