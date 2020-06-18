@@ -16,6 +16,25 @@
   vertical-align: middle;
 }
 
+#play-buttons {
+  display: inline-block;
+  height: 40px;
+  vertical-align: middle;
+  line-height: 40px;
+}
+
+#copyButton {
+  cursor: pointer;
+  margin-top: 11px;
+}
+
+#copy-url {
+  background-color: #ccc;
+  padding: 4px 15px;
+  border-radius: 5px;
+  font-size: 0.8em;
+}
+
 #playSection audio {
   background-image: url("/static/imgs/webjamlogo1.png");
   background-position: center;
@@ -69,6 +88,11 @@ button.on {
 .missionon, .pubon, .originalon{
   background-color:green !important;
   color:white !important;
+}
+
+#playSection {
+    display: inline;
+    text-align: center;
 }
 
 #mainPlayer iFrame {

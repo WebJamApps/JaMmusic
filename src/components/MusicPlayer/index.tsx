@@ -159,12 +159,7 @@ export class MusicPlayer extends Component<{ songs: any; filterBy: string }, Mus
     const url = this.playUrl();
     return (
       <section className="mt-0 col-12 col-md-10" style={{ marginTop: '4px', paddingTop: 0 }}>
-        <div
-          id="play-buttons"
-          style={{
-            display: 'inline-block', height: '40px', verticalAlign: 'middle', lineHeight: '40px',
-          }}
-        >
+        <div id="play-buttons">
           <button type="button" id="play-pause" role="menu" className={playing ? 'on' : 'off'} onClick={this.play}>Play/Pause</button>
           <button type="button" role="menu" id="next" onClick={this.next}>Next</button>
           <button type="button" role="menu" id="prev" onClick={this.prev}>Prev</button>
@@ -235,12 +230,8 @@ export class MusicPlayer extends Component<{ songs: any; filterBy: string }, Mus
           id="copyButton"
           role="presentation"
           onClick={() => this.musicPlayerUtils.copyShare(this)}
-          style={{ cursor: 'pointer', marginTop: '11px' }}
         >
-          <span style={{
-            backgroundColor: '#ccc', padding: '4px 15px', borderRadius: '5px', fontSize: '0.8em',
-          }}
-          >
+          <span className="copy-url">
             Copy URL
           </span>
         </div>
@@ -257,7 +248,7 @@ export class MusicPlayer extends Component<{ songs: any; filterBy: string }, Mus
       <div className="container-fluid">
         {this.musicUtils.pageH4(pageTitle)}
         <div id="player" className="mb-2 row justify-content-md-center">
-          <section id="playSection" className="col-12 mt-2 mr-0 col-md-7" style={{ display: 'inline', textAlign: 'center', marginBottom: '0' }}>
+          <section id="playSection" className="col-12 mt-2 mr-0 col-md-7">
             <div className={classOverlay} />
             {song !== null && song !== undefined && song.url !== undefined ? this.reactPlayer() : null}
           </section>
