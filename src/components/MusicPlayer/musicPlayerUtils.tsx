@@ -104,7 +104,7 @@ const shuffleThem = (songs) => {
 function toggleOn(lcType: string, view: any, type: string, typeInState: string) {
   const { songs } = view.props;
   const { player } = view.state;
-  let { songsState, pageTitle } = view.state, shuffled: any[];
+  let { songsState, pageTitle } = view.state, shuffled: string[];
   songsState = [
     ...songsState,
     ...songs.filter((song: any) => song.category === lcType),
@@ -126,7 +126,7 @@ function toggleSongTypes(type: string, view: any) {
   const lcType = type.toLowerCase();
   const { player, missionState, pubState } = view.state;
   if (lcType === 'original' && missionState === 'off' && pubState === 'off') return false;
-  let { songsState, pageTitle } = view.state, shuffled: any[];
+  let { songsState, pageTitle } = view.state, shuffled: string[];
   const { songs } = view.props;
   const typeInState = `${lcType}State`;
   const typeState = view.state[typeInState.toString()]; // eslint-disable-line react/destructuring-assignment

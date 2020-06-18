@@ -9,19 +9,18 @@ import TableTheme from '../lib/tourTableTheme';
 type TourTableProps = {
   dispatch: (...args: any[]) => any;
   tourUpdated: boolean;
-  tour: any[];
+  tour: (object | string[] | number[])[];
   auth: {token: string};
   deleteButton?: boolean;
   scc: {transmit: (...args: any[]) => any};
 };
 type TourTableState = {
-  columns: any[];
+  columns: string[];
 };
 export class TourTable extends Component<TourTableProps, TourTableState> {
-  constructor(props: any) {
+  constructor(props: TourTableProps) {
     super(props);
     this.setColumns = this.setColumns.bind(this);
-    // this.getMuiTheme = this.getMuiTheme.bind(this);
     this.checkTourTable = this.checkTourTable.bind(this);
     this.setColumns = this.setColumns.bind(this);
     this.state = { columns: [] };
@@ -30,7 +29,7 @@ export class TourTable extends Component<TourTableProps, TourTableState> {
 
   componentDidMount() { this.setColumns(); }
 
-  componentDidUpdate(prevProps: any) {
+  componentDidUpdate(prevProps: TourTableProps) {
     const { tourUpdated } = this.props;
     return this.checkTourTable(prevProps.tourUpdated, tourUpdated);
   }
@@ -48,7 +47,7 @@ export class TourTable extends Component<TourTableProps, TourTableState> {
         options: {
           filter: false,
           sort: false,
-          customBodyRender: (value: any) => (
+          customBodyRender: (value: string) => (
             <div style={{ minWidth: '1.3in', margin: 0, fontSize: '12pt' }}>
               {label !== 'Modify' ? ReactHtmlParser(value) : value}
             </div>
@@ -59,7 +58,7 @@ export class TourTable extends Component<TourTableProps, TourTableState> {
     this.setState({ columns });
   }
 
-  checkTourTable(pTupdated: any, nTupdated: boolean) {
+  checkTourTable(pTupdated: boolean, nTupdated: boolean) {
     if (!pTupdated && nTupdated) {
       const { dispatch } = this.props;
       dispatch({ type: 'RESET_TOUR' });
@@ -81,7 +80,7 @@ export class TourTable extends Component<TourTableProps, TourTableState> {
     } return false;
   }
 
-  editTour(data: any) {
+  editTour(data: string) {
     const { dispatch } = this.props;
     dispatch({ type: 'EDIT_TOUR', data });
     return true;

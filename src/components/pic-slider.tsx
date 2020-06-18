@@ -6,9 +6,9 @@ import 'slick-carousel/slick/slick-theme.css';
 import Caption from './PicSlider/caption';
 
 export interface PicSliderProps {
-  settings: any;
+  settings: string;
   data: any;
-  slider?: any;
+  slider?: Slider;
 }
 
 class PicSlider extends Component<PicSliderProps> {

@@ -5,25 +5,25 @@ import stateData from '../lib/StateData.json';
 import countryData from '../lib/CountryData.json';
 
 interface InquiryState {
-  country: any;
-  uSAstate: any;
-  firstname: any;
-  lastname: any;
-  zipcode: any;
-  comments: any;
-  emailaddress: any;
-  formError: any;
-  phonenumber: any;
-  submitted: any;
-  [x: number]: any;
+  country: string;
+  uSAstate: string;
+  firstname: string;
+  lastname: string;
+  zipcode: string;
+  comments: string;
+  emailaddress: string;
+  formError: string;
+  phonenumber: string;
+  submitted: boolean;
+  [x: number]: number;
 }
 
-export default class Inquiry extends Component<any, InquiryState> {
+export default class Inquiry extends Component<{}, InquiryState> {
   stateValues: string[];
 
   forms: {
-    makeInput: (type: any, label: any, isRequired: any, onChange: any, value: any, width?: any) => JSX.Element;
-    makeDropdown: (htmlFor: any, labelText: any, value: any, onChange: any, options: any) => JSX.Element;
+    makeInput: (type: string, label: string, isRequired: boolean, onChange: any, value: string, width?: string) => JSX.Element;
+    makeDropdown: (htmlFor: string, labelText: string, value: string, onChange: any, options: string[]) => JSX.Element;
   };
 
   countryValues: string[];
@@ -63,7 +63,7 @@ export default class Inquiry extends Component<any, InquiryState> {
     return this.setState({ [evt.target.id]: evt.target.value.trim() });
   }
 
-  handleChange(event: any) { return this.setState({ country: event.target.value }); }
+  handleChange(event: React.ChangeEvent<HTMLInputElement>) { return this.setState({ country: event.target.value }); }
 
   continueValidating(validEmail: boolean) {
     const {
@@ -103,7 +103,8 @@ export default class Inquiry extends Component<any, InquiryState> {
     return this.continueValidating(validEmail);
   }
 
-  async createEmailApi(emailForm1: any) {
+  async createEmailApi(emailForm1: { firstname: string; lastname: string; emailaddress: string; uSAstate: string; country: string;
+    phonenumber: string; zipcode: string; comments: string; }) {
     let r: any;
     const emailForm = emailForm1;
     try {
