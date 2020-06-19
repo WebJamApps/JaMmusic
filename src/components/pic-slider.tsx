@@ -6,13 +6,14 @@ import 'slick-carousel/slick/slick-theme.css';
 import Caption from './PicSlider/caption';
 
 export interface PicSliderProps {
-  settings: string;
-  data: any;
+  settings?: string;
+  data?: PicSliderProps;
   slider?: Slider;
+  map?: (arg0: (d: any) => JSX.Element) => React.ReactNode;
 }
 
 class PicSlider extends Component<PicSliderProps> {
-  static defaultProps: { data: [{ url: ''; title: '';_id: 0 }]; settings };
+  static defaultProps: { data: [{ url: ''; title: ''; _id: 0 }]; settings };
 
   settings: {
     autoplay: boolean;

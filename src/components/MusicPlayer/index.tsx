@@ -22,7 +22,7 @@ export interface MusicPlayerState {
 export class MusicPlayer extends Component<{ songs: any; filterBy: string }, MusicPlayerState> {
   navigator: Navigator;
 
-  musicUtils: { pageH4: (pageTitle: string) => JSX.Element; setIndex: (songs: any[], category: string) => string[];
+  musicUtils: { pageH4: (pageTitle: string) => JSX.Element; setIndex: (songs: string[], category: string) => string[];
     textUnderPlayer: (song: string) => JSX.Element; copyRight: () => JSX.Element; };
 
   commonUtils: { setTitleAndScroll: (pageTitle: string, width: number) => void };
@@ -31,7 +31,7 @@ export class MusicPlayer extends Component<{ songs: any; filterBy: string }, Mus
     checkOnePlayer: (params: URLSearchParams, player: { playing: boolean; shown: boolean; isShuffleOn: boolean; displayCopier: string;
       displayCopyMessage: boolean; onePlayerMode: boolean; }, view: any) => Promise<boolean>; runIfOnePlayer: (controller: any) => boolean;
     toggleOn: (lcType: string, view: any, type: string, typeInState: string) => any;
-    homeButton: (onePlayerMode: boolean) => any; share: (view: any) => any; copyShare: (view: any) => any;
+    homeButton: (onePlayerMode: boolean) => JSX.Element; share: (view: any) => any; copyShare: (view: any) => any;
     showHideButtons: (display: string) => boolean; };
 
   static defaultProps: { songs: { url: string; title: string }[] };

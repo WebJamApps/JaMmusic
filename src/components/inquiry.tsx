@@ -22,8 +22,8 @@ export default class Inquiry extends Component<any, InquiryState> {
   stateValues: string[];
 
   forms: {
-    makeInput: (type: string, label: string, isRequired: boolean, onChange: any, value: string, width?: string) => JSX.Element;
-    makeDropdown: (htmlFor: string, labelText: string, value: string, onChange: any, options: string[]) => JSX.Element;
+    makeInput: (type: string, label: string, isRequired: boolean, onChange: React.ChangeEventHandler, value: string, width?: string) => JSX.Element;
+    makeDropdown: (htmlFor: string, labelText: string, value: string, onChange: React.ChangeEventHandler, options: string[]) => JSX.Element;
   };
 
   countryValues: string[];
