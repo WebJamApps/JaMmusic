@@ -9,13 +9,13 @@ import TableTheme from '../lib/tourTableTheme';
 type TourTableProps = {
   dispatch: (...args: any[]) => any;
   tourUpdated: boolean;
-  tour: (object | string[] | number[])[];
+  tour: Array<number[] | string[]>;
   auth: {token: string};
   deleteButton?: boolean;
   scc: {transmit: (...args: any[]) => any};
 };
 type TourTableState = {
-  columns: string[];
+  columns: any;
 };
 export class TourTable extends Component<TourTableProps, TourTableState> {
   constructor(props: TourTableProps) {

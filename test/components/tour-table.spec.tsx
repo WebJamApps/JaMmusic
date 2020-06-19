@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-ts-ignore */
 import * as React from 'react';
 import { shallow } from 'enzyme';
 import { TourTable } from '../../src/components/tour-table';
@@ -26,7 +25,6 @@ describe('tour-table component test', () => {
     const { wrapper } = setup();
     expect(typeof wrapper.instance().setColumns).toBe('function');
     wrapper.instance().setColumns();
-    // @ts-ignore
     wrapper.instance().state.columns[0].options.customBodyRender('<a href="http://collegelutheran.org/"'
       + ' rel="noopener noreferrer" target="_blank">College Lutheran Church</a>');
   });
@@ -37,7 +35,7 @@ describe('tour-table component test', () => {
   });
   it('renders with delete buttons', () => {
     const wrapper2 = shallow(<TourTable
-      tour={[{ _id: '123' }]}
+      tour={[['{ _id: "123" }']]}
       dispatch={() => {}}
       tourUpdated={false}
       deleteButton
@@ -48,7 +46,7 @@ describe('tour-table component test', () => {
   });
   it('sets the columns with customBodyRender for Modify column', () => {
     const wrapper2 = shallow<TourTable>(<TourTable
-      tour={[{ _id: '123' }]}
+      tour={[['{ _id: "123" }']]}
       dispatch={() => {}}
       tourUpdated={false}
       deleteButton
@@ -58,13 +56,12 @@ describe('tour-table component test', () => {
     const buttonjsx = (<button type="button" style={{ display: 'block' }}>howdy</button>);
     expect(typeof wrapper2.instance().setColumns).toBe('function');
     wrapper2.instance().setColumns();
-    // @ts-ignore
     const custom = wrapper2.instance().state.columns[5].options.customBodyRender(buttonjsx);
     expect(custom.type).toBe('div');
   });
   it('handles click on delete tour button', () => {
     const wrapper2 = shallow<TourTable>(<TourTable
-      tour={[{ _id: '123' }]}
+      tour={[['{ _id: "123" }']]}
       dispatch={() => {}}
       tourUpdated={false}
       deleteButton
@@ -80,7 +77,7 @@ describe('tour-table component test', () => {
   });
   it('sends the deleteTour socket', () => {
     const wrapper2 = shallow<TourTable>(<TourTable
-      tour={[{ _id: '123' }]}
+      tour={[['{ _id: "123" }']]}
       dispatch={() => {}}
       tourUpdated={false}
       deleteButton
@@ -102,7 +99,7 @@ describe('tour-table component test', () => {
   });
   it('handles cancel on the deletTour', async () => {
     const wrapper2 = shallow<TourTable>(<TourTable
-      tour={[{ _id: '123' }]}
+      tour={[['{ _id: "123" }']]}
       dispatch={() => {}}
       tourUpdated={false}
       deleteButton
@@ -116,7 +113,7 @@ describe('tour-table component test', () => {
   });
   it('handles click on edit pic button', () => {
     const wrapper2 = shallow<TourTable>(<TourTable
-      tour={[{ _id: '123' }]}
+      tour={[['{ _id: "123" }']]}
       dispatch={() => {}}
       tourUpdated={false}
       deleteButton
@@ -132,15 +129,14 @@ describe('tour-table component test', () => {
   });
   it('stores the edit pic data to redux', () => {
     const wrapper2 = shallow<TourTable>(<TourTable
-      tour={[{ _id: '123' }]}
+      tour={[['{ _id: "123" }']]}
       dispatch={() => {}}
       tourUpdated={false}
       deleteButton
       auth={{ token: 'token' }}
       scc={{ transmit: () => {} }}
     />);
-    // @ts-ignore
-    r = wrapper2.instance().editTour({});
+    r = wrapper2.instance().editTour('');
     expect(r).toBe(true);
   });
 });
