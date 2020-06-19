@@ -37,11 +37,11 @@ describe('Music player component init', () => {
     expect(wrapper.instance().state.player.playing).toBe(false);
   });
   it('shuffles the songs', () => {
-    const mp = new MusicPlayer({ songs: [{ _id: '123' }, { _id: '456' }], filterBy: '' });
+    const mp = new MusicPlayer({ songs: ['{ _id: "123" }', '{ _id: "456" }'], filterBy: '' });
     mp.state = {
       song: { _id: '789' },
-      songsState: [{ _id: '123' }, { _id: '456' }],
-      copy: [{ _id: '123' }, { _id: '456' }],
+      songsState: ['{ _id: "123" }', '{ _id: "456" }'],
+      copy: ['{ _id: "123" }', '{ _id: "456" }'],
       player: {
         isShuffleOn: false, playing: true, shown: true, displayCopier: '', displayCopyMessage: false, onePlayerMode: false,
       },
@@ -61,11 +61,11 @@ describe('Music player component init', () => {
     expect(wrapper.instance().state.index).toBe(0);
   });
   it('advances to the next song', () => {
-    const mp = new MusicPlayer({ songs: [{ _id: '123' }, { _id: '456' }], filterBy: {} });
+    const mp = new MusicPlayer({ songs: ['{ _id: "123" }', '{ _id: "456" }'], filterBy: '' });
     mp.state = {
       index: 0,
-      songsState: [{ _id: '123' }, { _id: '456' }],
-      copy: [{ _id: '123' }, { _id: '456' }],
+      songsState: ['{ _id: "123" }', '{ _id: "456" }'],
+      copy: ['{ _id: "123" }', '{ _id: "456" }'],
       player: {
         isShuffleOn: false, playing: true, shown: true, displayCopier: '', displayCopyMessage: false, onePlayerMode: false,
       },
@@ -150,7 +150,7 @@ describe('Music player component init', () => {
   it('should resort songs', async () => {
     const { wrapper } = setup();
     const songs = ['mission'];
-    const result = await wrapper.instance().musicUtils.setIndex(songs);
+    const result = await wrapper.instance().musicUtils.setIndex(songs, 'mission');
     expect(result).toBeTruthy();
   });
   it('allows click on share button', () => {
@@ -172,7 +172,7 @@ describe('Music player component init', () => {
     });
     wrapper.find('button.missionoff').simulate('click');
     wrapper.find('button#shuffle').simulate('click');
-    const songsState = 'mission';
+    const songsState = ['mission'];
     const missionState = 'on';
     if (missionState === 'on') {
       let reset = songsState;
@@ -190,7 +190,7 @@ describe('Music player component init', () => {
     });
     wrapper.find('button.puboff').simulate('click');
     wrapper.find('button#shuffle').simulate('click');
-    const songsState = 'pub';
+    const songsState = ['pub'];
     const pubState = 'on';
     if (pubState === 'on') {
       let reset = songsState;

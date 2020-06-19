@@ -9,7 +9,7 @@ import TableTheme from '../lib/tourTableTheme';
 type TourTableProps = {
   dispatch: (...args: any[]) => any;
   tourUpdated: boolean;
-  tour: (string[] | number[])[];
+  tour: (object | string[] | number[])[];
   auth: {token: string};
   deleteButton?: boolean;
   scc: {transmit: (...args: any[]) => any};

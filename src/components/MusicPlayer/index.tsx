@@ -15,7 +15,7 @@ export interface MusicPlayerState {
   songsState: string[];
   index: number;
   song: any;
-  copy?: string;
+  copy?: string[];
   player: { playing: boolean; shown: boolean; isShuffleOn: boolean; displayCopier: string; displayCopyMessage: boolean; onePlayerMode: boolean };
 }
 
@@ -36,11 +36,11 @@ export class MusicPlayer extends Component<{ songs: any; filterBy: string }, Mus
 
   static defaultProps: { songs: { url: string; title: string }[] };
 
-  constructor(props: { songs: string; filterBy: string }) {
+  constructor(props: { songs: string[]; filterBy: string }) {
     super(props);
     this.state = {
       pageTitle: 'Original Songs',
-      songsState: [],
+      songsState: [''],
       song: null,
       index: 0,
       missionState: 'off',
