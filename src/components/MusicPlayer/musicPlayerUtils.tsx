@@ -1,5 +1,15 @@
 import React from 'react';
 
+export interface MusicPlayerUtils {
+  shuffleThem: (songs: string[]) => string[]; toggleSongTypes: (type: string, view: any) => any;
+  checkOnePlayer: (params: URLSearchParams, player: {
+    playing: boolean; shown: boolean; isShuffleOn: boolean; displayCopier: string;
+    displayCopyMessage: boolean; onePlayerMode: boolean;
+  }, view: any) => Promise<boolean>; runIfOnePlayer: (controller: any) => boolean;
+  toggleOn: (lcType: string, view: any, type: string, typeInState: string) => any;
+  homeButton: (onePlayerMode: boolean) => JSX.Element; share: (view: any) => any; copyShare: (view: any) => any;
+  showHideButtons: (display: string) => boolean;
+}
 const showHideButtons = (display: string) => {
   const mAndP = document.getElementById('mAndP');
   const sb = document.getElementById('share-buttons');

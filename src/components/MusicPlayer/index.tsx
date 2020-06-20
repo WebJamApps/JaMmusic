@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import ReactPlayer from 'react-player';
 import { FacebookShareButton, FacebookIcon } from 'react-share';
-import musicPlayerUtils from './musicPlayerUtils';
-import mapStoreToProps from '../../redux/mapStoreToProps';
+import musicPlayerUtils, { MusicPlayerUtils } from './musicPlayerUtils';
+import mapStoreToProps, { Song } from '../../redux/mapStoreToProps';
 import musicUtils from './musicUtils';
 import commonUtils from '../../lib/commonUtils';
 
@@ -12,35 +12,37 @@ export interface MusicPlayerState {
   pageTitle: string;
   pubState: string;
   originalState: string;
-  songsState: string[];
+  songsState: Song[];
   index: number;
-  song: any;
+  song: Song|null;
   copy?: string[];
   player: { playing: boolean; shown: boolean; isShuffleOn: boolean; displayCopier: string; displayCopyMessage: boolean; onePlayerMode: boolean };
 }
 
-export class MusicPlayer extends Component<{ songs: any; filterBy: string }, MusicPlayerState> {
+interface MProps {
+  songs: Song[],
+  filterBy: string,
+}
+
+export class MusicPlayer extends Component<MProps, MusicPlayerState> {
   navigator: Navigator;
 
-  musicUtils: { pageH4: (pageTitle: string) => JSX.Element; setIndex: (songs: string[], category: string) => string[];
-    textUnderPlayer: (song: string) => JSX.Element; copyRight: () => JSX.Element; };
+  musicUtils: {
+    pageH4: (pageTitle: string) => JSX.Element; setIndex: (songs: string[], category: string) => string[];
+    textUnderPlayer: (song: string) => JSX.Element; copyRight: () => JSX.Element;
+  };
 
   commonUtils: { setTitleAndScroll: (pageTitle: string, width: number) => void };
 
-  musicPlayerUtils: { shuffleThem: (songs: string[]) => string[]; toggleSongTypes: (type: string, view: any) => any;
-    checkOnePlayer: (params: URLSearchParams, player: { playing: boolean; shown: boolean; isShuffleOn: boolean; displayCopier: string;
-      displayCopyMessage: boolean; onePlayerMode: boolean; }, view: any) => Promise<boolean>; runIfOnePlayer: (controller: any) => boolean;
-    toggleOn: (lcType: string, view: any, type: string, typeInState: string) => any;
-    homeButton: (onePlayerMode: boolean) => JSX.Element; share: (view: any) => any; copyShare: (view: any) => any;
-    showHideButtons: (display: string) => boolean; };
+  musicPlayerUtils: MusicPlayerUtils;
 
   static defaultProps: { songs: { url: string; title: string }[] };
 
-  constructor(props: { songs: string[]; filterBy: string }) {
+  constructor(props: MProps) {
     super(props);
     this.state = {
       pageTitle: 'Original Songs',
-      songsState: [''],
+      songsState: [],
       song: null,
       index: 0,
       missionState: 'off',
@@ -51,7 +53,6 @@ export class MusicPlayer extends Component<{ songs: any; filterBy: string }, Mus
       },
     };
     this.play = this.play.bind(this);
-    this.playEnd = this.playEnd.bind(this);
     this.pause = this.pause.bind(this);
     this.shuffle = this.shuffle.bind(this);
     this.next = this.next.bind(this);
@@ -65,18 +66,18 @@ export class MusicPlayer extends Component<{ songs: any; filterBy: string }, Mus
     this.commonUtils = commonUtils;
   }
 
-  async componentDidMount() {
+  async componentDidMount(): Promise<boolean> {
     const params = new URLSearchParams(window.location.search);
     const { player } = this.state;
     const { songs, filterBy } = this.props;
     this.commonUtils.setTitleAndScroll('', window.screen.width);
-    const newSongs = songs.filter((song) => song.category === filterBy);
+    const newSongs = songs.filter((song: { category: string; }) => song.category === filterBy);
     this.setState({ song: newSongs[0], songsState: newSongs });
     await this.musicPlayerUtils.checkOnePlayer(params, player, this);
     return this.musicPlayerUtils.runIfOnePlayer(this);
   }
 
-  setClassOverlay() {
+  setClassOverlay(): string {
     const { song, player } = this.state;
     let classOverlay = 'mainPlayer';
     if (player.playing === false) {
@@ -86,13 +87,13 @@ export class MusicPlayer extends Component<{ songs: any; filterBy: string }, Mus
     return classOverlay;
   }
 
-  playUrl() {
+  playUrl(): string | null {
     const { song } = this.state;
     if (song && song._id) return `https://web-jam.com/music/songs?oneplayer=true&id=${song._id}`;
     return null;
   }
 
-  reactPlayer() {
+  reactPlayer(): JSX.Element {
     const { song } = this.state;
     const { player } = this.state;
     return (
@@ -101,7 +102,7 @@ export class MusicPlayer extends Component<{ songs: any; filterBy: string }, Mus
         url={song.url}
         playing={player.playing}
         controls
-        onEnded={this.playEnd}
+        onEnded={this.next}
         width="100%"
         height="40vh"
         id="mainPlayer"
@@ -110,7 +111,7 @@ export class MusicPlayer extends Component<{ songs: any; filterBy: string }, Mus
     );
   }
 
-  lineTwoButtons() {
+  lineTwoButtons(): JSX.Element {
     const {
       missionState, pubState, originalState, player: { onePlayerMode },
     } = this.state;
@@ -130,12 +131,12 @@ export class MusicPlayer extends Component<{ songs: any; filterBy: string }, Mus
     );
   }
 
-  lineThreeButtons(url: string) {
+  lineThreeButtons(url: string): JSX.Element {
     let { song } = this.state, composer = '', quote = '';
     if (!song) song = {};
     if (song.composer !== undefined && !song.composer.includes('Josh')) composer = ` by ${song.composer}`;
     quote = `Click the graphic below to hear ${song.artist} performing the song, "${song.title}"${composer}`;
-    if (song.category === 'original')quote = quote.replace('performing the song', 'performing their song');
+    if (song.category === 'original') quote = quote.replace('performing the song', 'performing their song');
     return (
       <div id="share-buttons" style={{ display: 'inline-block', marginTop: '3px' }}>
         <button type="button" id="share-button" role="menu" onClick={() => this.musicPlayerUtils.share(this)}>Share</button>
@@ -154,7 +155,7 @@ export class MusicPlayer extends Component<{ songs: any; filterBy: string }, Mus
     );
   }
 
-  buttons() {
+  buttons(): JSX.Element {
     const { player: { playing, isShuffleOn } } = this.state;
     const url = this.playUrl();
     return (
@@ -171,7 +172,7 @@ export class MusicPlayer extends Component<{ songs: any; filterBy: string }, Mus
     );
   }
 
-  shuffle() {
+  shuffle(): void {
     const {
       player, songsState, missionState, pubState,
     } = this.state;
@@ -190,9 +191,9 @@ export class MusicPlayer extends Component<{ songs: any; filterBy: string }, Mus
     }
   }
 
-  playEnd() { this.next(); }
+  // playEnd():void { this.next(); }
 
-  prev() {
+  prev(): void {
     const { index, songsState } = this.state;
     const minusIndex = index - 1;
     if (minusIndex < 0 || minusIndex > songsState.length) {
@@ -201,18 +202,18 @@ export class MusicPlayer extends Component<{ songs: any; filterBy: string }, Mus
     } else this.setState({ song: songsState[minusIndex], index: minusIndex });// eslint-disable-line security/detect-object-injection
   }
 
-  play() {
+  play(): void {
     const { player } = this.state;
     const isPlaying = !player.playing;
     this.setState({ player: { ...player, playing: isPlaying } });
   }
 
-  pause() {
+  pause(): void {
     const { player } = this.state;
     this.setState({ player: { ...player, playing: false } });
   }
 
-  next() {
+  next(): void {
     let { index } = this.state;
     index += 1;
     const { songsState } = this.state;
@@ -220,7 +221,7 @@ export class MusicPlayer extends Component<{ songs: any; filterBy: string }, Mus
     else this.setState({ song: songsState[index], index });// eslint-disable-line security/detect-object-injection
   }
 
-  copyInput(player: any, song: any) {
+  copyInput(player: MusicPlayerState['player'], song: any): JSX.Element {
     return (
       <div id="copyInput" style={{ marginTop: '-20px', marginBottom: '40px' }}>
         {player.displayCopyMessage && <div className="copySuccess"> Url copied Url to clipboard </div>}
