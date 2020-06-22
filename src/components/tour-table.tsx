@@ -3,13 +3,13 @@ import MUIDataTable from 'mui-datatables';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import ReactHtmlParser from 'react-html-parser';
 import { connect } from 'react-redux';
-import mapStoreToProps from '../redux/mapStoreToProps';
+import mapStoreToProps, { Song, Tour } from '../redux/mapStoreToProps';
 import TableTheme from '../lib/tourTableTheme';
 
 type TourTableProps = {
   dispatch?: (...args: any[]) => any;
   tourUpdated?: boolean;
-  tour?: Array<number[] | string[]>;
+  tour?: Song[];
   auth?: {token: string};
   deleteButton?: boolean;
   scc?: {transmit: (...args: any[]) => any};
@@ -80,7 +80,7 @@ export class TourTable extends Component<TourTableProps, TourTableState> {
     } return false;
   }
 
-  editTour(data: string) {
+  editTour(data: Tour) {
     const { dispatch } = this.props;
     dispatch({ type: 'EDIT_TOUR', data });
     return true;

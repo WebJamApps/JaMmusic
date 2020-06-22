@@ -4,9 +4,13 @@ export interface Song {
   composer?: string;
   category: string;
   album?: string;
-  year?: string;
+  year?: number;
   url: string;
   _id: string;
+}
+
+export interface Tour {
+  date: string; time: string; tickets: string; more?: string; venue: string; location: string; _id: string; datetime?: string;
 }
 export interface Store {
   sc: {scc: any; userCount: number};

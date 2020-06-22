@@ -136,7 +136,7 @@ export class MusicPlayer extends Component<MProps, MusicPlayerState> {
     let { song } = this.state, composer = '', quote = '';
     if (!song) {
       song = {
-        title: '', artist: '', composer: '', category: '', album: '', year: '', url: '', _id: '',
+        title: '', artist: '', composer: '', category: '', album: '', year: 0, url: '', _id: '',
       };
     }
     if (song.composer !== undefined && !song.composer.includes('Josh')) composer = ` by ${song.composer}`;
