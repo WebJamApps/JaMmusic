@@ -7,12 +7,12 @@ import mapStoreToProps from '../redux/mapStoreToProps';
 import TableTheme from '../lib/tourTableTheme';
 
 type TourTableProps = {
-  dispatch: (...args: any[]) => any;
-  tourUpdated: boolean;
-  tour: Array<number[] | string[]>;
-  auth: {token: string};
+  dispatch?: (...args: any[]) => any;
+  tourUpdated?: boolean;
+  tour?: Array<number[] | string[]>;
+  auth?: {token: string};
   deleteButton?: boolean;
-  scc: {transmit: (...args: any[]) => any};
+  scc?: {transmit: (...args: any[]) => any};
 };
 type TourTableState = {
   columns: any;

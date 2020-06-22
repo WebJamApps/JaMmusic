@@ -20,15 +20,15 @@ export interface MusicPlayerState {
 }
 
 interface MProps {
-  songs: Song[],
-  filterBy: string,
+  songs?: Song[];
+  filterBy?: string;
 }
 
 export class MusicPlayer extends Component<MProps, MusicPlayerState> {
   navigator: Navigator;
 
   musicUtils: {
-    pageH4: (pageTitle: string) => JSX.Element; setIndex: (songs: string[], category: string) => string[];
+    pageH4: (pageTitle: string) => JSX.Element; setIndex: (songs: Song[], category: string) => Song[];
     textUnderPlayer: (song: string) => JSX.Element; copyRight: () => JSX.Element;
   };
 
@@ -36,7 +36,7 @@ export class MusicPlayer extends Component<MProps, MusicPlayerState> {
 
   musicPlayerUtils: MusicPlayerUtils;
 
-  static defaultProps: { songs: { url: string; title: string }[] };
+  // static defaultProps: { songs: { url: string; title: string }[] };
 
   constructor(props: MProps) {
     super(props);
@@ -53,6 +53,7 @@ export class MusicPlayer extends Component<MProps, MusicPlayerState> {
       },
     };
     this.play = this.play.bind(this);
+    this.playEnd = this.playEnd.bind(this);
     this.pause = this.pause.bind(this);
     this.shuffle = this.shuffle.bind(this);
     this.next = this.next.bind(this);
@@ -71,7 +72,7 @@ export class MusicPlayer extends Component<MProps, MusicPlayerState> {
     const { player } = this.state;
     const { songs, filterBy } = this.props;
     this.commonUtils.setTitleAndScroll('', window.screen.width);
-    const newSongs = songs.filter((song: { category: string; }) => song.category === filterBy);
+    const newSongs = songs.filter((song: { category?: string }) => song.category === filterBy);
     this.setState({ song: newSongs[0], songsState: newSongs });
     await this.musicPlayerUtils.checkOnePlayer(params, player, this);
     return this.musicPlayerUtils.runIfOnePlayer(this);
@@ -133,7 +134,11 @@ export class MusicPlayer extends Component<MProps, MusicPlayerState> {
 
   lineThreeButtons(url: string): JSX.Element {
     let { song } = this.state, composer = '', quote = '';
-    if (!song) song = {};
+    if (!song) {
+      song = {
+        title: '', artist: '', composer: '', category: '', album: '', year: '', url: '', _id: '',
+      };
+    }
     if (song.composer !== undefined && !song.composer.includes('Josh')) composer = ` by ${song.composer}`;
     quote = `Click the graphic below to hear ${song.artist} performing the song, "${song.title}"${composer}`;
     if (song.category === 'original') quote = quote.replace('performing the song', 'performing their song');
@@ -191,7 +196,7 @@ export class MusicPlayer extends Component<MProps, MusicPlayerState> {
     }
   }
 
-  // playEnd():void { this.next(); }
+  playEnd(): void { this.next(); }
 
   prev(): void {
     const { index, songsState } = this.state;
@@ -221,7 +226,7 @@ export class MusicPlayer extends Component<MProps, MusicPlayerState> {
     else this.setState({ song: songsState[index], index });// eslint-disable-line security/detect-object-injection
   }
 
-  copyInput(player: MusicPlayerState['player'], song: any): JSX.Element {
+  copyInput(player: MusicPlayerState['player'], song: Song): JSX.Element {
     return (
       <div id="copyInput" style={{ marginTop: '-20px', marginBottom: '40px' }}>
         {player.displayCopyMessage && <div className="copySuccess"> Url copied Url to clipboard </div>}
@@ -253,7 +258,7 @@ export class MusicPlayer extends Component<MProps, MusicPlayerState> {
             <div className={classOverlay} />
             {song !== null && song !== undefined && song.url !== undefined ? this.reactPlayer() : null}
           </section>
-          {song ? this.musicUtils.textUnderPlayer(song) : null}
+          {song ? this.musicUtils.textUnderPlayer(song as unknown as string) : null}
           {this.buttons()}
           <section className="mt-1 col-12" id="copier" style={{ display: player.displayCopier, marginTop: '0' }}>
             {this.copyInput(player, song)}
@@ -264,4 +269,4 @@ export class MusicPlayer extends Component<MProps, MusicPlayerState> {
   }
 }
 
-export default connect(mapStoreToProps, null)(MusicPlayer);
+export default connect(mapStoreToProps)(MusicPlayer);

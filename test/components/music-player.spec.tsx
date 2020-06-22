@@ -37,10 +37,23 @@ describe('Music player component init', () => {
     expect(wrapper.instance().state.player.playing).toBe(false);
   });
   it('shuffles the songs', () => {
-    const mp = new MusicPlayer({ songs: ['{ _id: "123" }', '{ _id: "456" }'], filterBy: '' });
+    const mp = new MusicPlayer({
+      songs: [{
+        _id: '123', url: '', category: '', title: '',
+      }, {
+        _id: '456', url: '', category: '', title: '',
+      }],
+      filterBy: '',
+    });
     mp.state = {
-      song: { _id: '789' },
-      songsState: ['{ _id: "123" }', '{ _id: "456" }'],
+      song: {
+        _id: '789', url: '', category: '', title: '',
+      },
+      songsState: [{
+        _id: '123', url: '', category: '', title: '',
+      }, {
+        _id: '456', url: '', category: '', title: '',
+      }],
       copy: ['{ _id: "123" }', '{ _id: "456" }'],
       player: {
         isShuffleOn: false, playing: true, shown: true, displayCopier: '', displayCopyMessage: false, onePlayerMode: false,
@@ -61,10 +74,21 @@ describe('Music player component init', () => {
     expect(wrapper.instance().state.index).toBe(0);
   });
   it('advances to the next song', () => {
-    const mp = new MusicPlayer({ songs: ['{ _id: "123" }', '{ _id: "456" }'], filterBy: '' });
+    const mp = new MusicPlayer({
+      songs: [{
+        _id: '123', url: '', category: '', title: '',
+      }, {
+        _id: '456', url: '', category: '', title: '',
+      }],
+      filterBy: '',
+    });
     mp.state = {
       index: 0,
-      songsState: ['{ _id: "123" }', '{ _id: "456" }'],
+      songsState: [{
+        _id: '123', url: '', category: 'original', title: '',
+      }, {
+        _id: '456', url: '', category: 'original', title: '',
+      }],
       copy: ['{ _id: "123" }', '{ _id: "456" }'],
       player: {
         isShuffleOn: false, playing: true, shown: true, displayCopier: '', displayCopyMessage: false, onePlayerMode: false,
@@ -73,7 +97,9 @@ describe('Music player component init', () => {
       pageTitle: 'Original',
       pubState: 'off',
       originalState: 'on',
-      song: { _id: '789' },
+      song: {
+        _id: '789', url: '', category: 'original', title: '',
+      },
     };
     mp.setState = (obj: MusicPlayerState) => { expect(obj.index).toBe(1); };
     mp.next();
@@ -149,8 +175,10 @@ describe('Music player component init', () => {
   });
   it('should resort songs', async () => {
     const { wrapper } = setup();
-    const songs = ['mission'];
-    const result = await wrapper.instance().musicUtils.setIndex(songs, 'mission');
+    const songs = [{
+      _id: '123', url: 'yes.com', category: 'mission', title: 'A Song',
+    }];
+    const result = wrapper.instance().musicUtils.setIndex(songs, 'mission');
     expect(result).toBeTruthy();
   });
   it('allows click on share button', () => {
@@ -172,7 +200,9 @@ describe('Music player component init', () => {
     });
     wrapper.find('button.missionoff').simulate('click');
     wrapper.find('button#shuffle').simulate('click');
-    const songsState = ['mission'];
+    const songsState = [{
+      _id: '123', url: 'yes.com', category: 'mission', title: 'A Song',
+    }];
     const missionState = 'on';
     if (missionState === 'on') {
       let reset = songsState;
@@ -190,7 +220,9 @@ describe('Music player component init', () => {
     });
     wrapper.find('button.puboff').simulate('click');
     wrapper.find('button#shuffle').simulate('click');
-    const songsState = ['pub'];
+    const songsState = [{
+      _id: '123', url: 'yes.com', category: 'mission', title: 'A Song',
+    }];
     const pubState = 'on';
     if (pubState === 'on') {
       let reset = songsState;
@@ -200,7 +232,9 @@ describe('Music player component init', () => {
   });
   it('checks if youtube is about to be played', () => {
     const { songs } = songData;
-    const song = { url: 'https://www.youtube.com/embed/mCvUBjuzfo8' };
+    const song = {
+      _id: '123', category: 'mission', title: 'Hey Red', url: 'https://www.youtube.com/embed/mCvUBjuzfo8',
+    };
     const wrapper = shallow<MusicPlayer>(<MusicPlayer songs={songs} filterBy="originals" />);
     wrapper.instance().setState({
       song,

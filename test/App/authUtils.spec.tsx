@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-ignore */
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import jwt from 'jwt-simple';
 import superagent from 'superagent';
