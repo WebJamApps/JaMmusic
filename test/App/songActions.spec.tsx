@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-ts-ignore */
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
