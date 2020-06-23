@@ -1,5 +1,16 @@
 import React from 'react';
+import { Song } from '../../redux/mapStoreToProps';
 
+export interface MusicPlayerUtils {
+  shuffleThem: (songs: Song[]) => Song[]; toggleSongTypes: (type: string, view: any) => any;
+  checkOnePlayer: (params: URLSearchParams, player: {
+    playing: boolean; shown: boolean; isShuffleOn: boolean; displayCopier: string;
+    displayCopyMessage: boolean; onePlayerMode: boolean;
+  }, view: any) => Promise<boolean>; runIfOnePlayer: (controller: any) => boolean;
+  toggleOn: (lcType: string, view: any, type: string, typeInState: string) => any;
+  homeButton: (onePlayerMode: boolean) => JSX.Element; share: (view: any) => any; copyShare: (view: any) => any;
+  showHideButtons: (display: string) => boolean;
+}
 const showHideButtons = (display: string) => {
   const mAndP = document.getElementById('mAndP');
   const sb = document.getElementById('share-buttons');
@@ -104,10 +115,10 @@ const shuffleThem = (songs) => {
 function toggleOn(lcType: string, view: any, type: string, typeInState: string) {
   const { songs } = view.props;
   const { player } = view.state;
-  let { songsState, pageTitle } = view.state, shuffled: any[];
+  let { songsState, pageTitle } = view.state, shuffled: string[];
   songsState = [
     ...songsState,
-    ...songs.filter((song: any) => song.category === lcType),
+    ...songs.filter((song: Song) => song.category === lcType),
   ];
   if (player.isShuffleOn) shuffled = shuffleThem(songsState);
   else { songsState = view.musicUtils.setIndex(songsState, lcType); }
@@ -126,17 +137,17 @@ function toggleSongTypes(type: string, view: any) {
   const lcType = type.toLowerCase();
   const { player, missionState, pubState } = view.state;
   if (lcType === 'original' && missionState === 'off' && pubState === 'off') return false;
-  let { songsState, pageTitle } = view.state, shuffled: any[];
+  let { songsState, pageTitle } = view.state, shuffled: string[];
   const { songs } = view.props;
   const typeInState = `${lcType}State`;
   const typeState = view.state[typeInState.toString()]; // eslint-disable-line react/destructuring-assignment
   if (typeState === 'off') return toggleOn(lcType, view, type, typeInState);
-  songsState = songsState.filter((song: any) => song.category !== lcType);
+  songsState = songsState.filter((song: Song) => song.category !== lcType);
   pageTitle = pageTitle.replace(` & ${type}`, '');
   if (songsState.length === 0) {
     songsState = [
       ...songsState,
-      ...songs.filter((song: any) => song.category === 'original'),
+      ...songs.filter((song: Song) => song.category === 'original'),
     ];
     pageTitle = 'Original Songs';
     view.setState({ originalState: 'on' });
