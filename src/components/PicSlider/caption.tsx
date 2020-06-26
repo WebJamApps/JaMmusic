@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Caption = (props: { caption: any }) => {
+const Caption = (props: { caption: string }) => {
   const { caption } = props;
   return (
     <div
