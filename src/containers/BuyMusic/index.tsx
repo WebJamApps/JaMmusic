@@ -5,7 +5,7 @@ import Jssp from './joshShermanSpotify';
 import commonUtils from '../../lib/commonUtils';
 
 export default class BuyMusic extends Component {
-  commonUtils: any;
+  commonUtils: { setTitleAndScroll: (pageTitle: string, width: number) => void };
 
   constructor(props: any) {
     super(props);

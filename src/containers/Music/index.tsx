@@ -9,15 +9,15 @@ import mapStoreToProps from '../../redux/mapStoreToProps';
 import commonUtils from '../../lib/commonUtils';
 
 type MusicProps = {
-  images: {url: string;title: string}[];};
+  images: {url: string; title: string}[];};
 export class Music extends Component<MusicProps> {
-  commonUtils: any;
+  commonUtils: { setTitleAndScroll: (pageTitle: string, width: number) => void };
 
   static defaultProps = {
     images: [],
   };
 
-  constructor(props: any) {
+  constructor(props: MusicProps) {
     super(props);
     this.commonUtils = commonUtils;
   }

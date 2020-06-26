@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, RefObject } from 'react';
 import ReactResizeDetector from 'react-resize-detector';
 import WideAboutUs from './Widescreen/WideAbout';
 import WideCurrentProjects from './Widescreen/WideCurrentProjects';
@@ -11,9 +11,9 @@ import commonUtils from '../../lib/commonUtils';
 interface HomepageState { width: number }
 
 export default class Home extends Component<any, HomepageState> {
-  parentRef: any;
+  parentRef: RefObject<unknown>;
 
-  commonUtils: any;
+  commonUtils: { setTitleAndScroll: (pageTitle: string, width: number) => void };
 
   constructor(props: any) {
     super(props);

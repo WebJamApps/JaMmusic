@@ -8,8 +8,15 @@ describe('Dashboard Container', () => {
   let wrapper: any;
   const auth = { token: '' };
   beforeEach(() => {
-    // @ts-ignore
-    wrapper = shallow<MusicDashboard>(<MusicDashboard auth={auth} scc={{ transmit: () => {} }} dispatch={() => {}} editTour={{}} />);
+    wrapper = shallow<MusicDashboard>(<MusicDashboard
+      auth={auth}
+      scc={{ transmit: () => {} }}
+      dispatch={() => {}}
+      editTour={{}}
+      history={null}
+      location={null}
+      match={null}
+    />);
   });
   it('is defined', () => {
     expect(MusicDashboard).toBeDefined();
@@ -24,8 +31,15 @@ describe('Dashboard Container', () => {
   });
   it('handles onChange with editTour', () => {
     const wrapper2 = shallow<MusicDashboard>(
-    // @ts-ignore
-      <MusicDashboard auth={auth} scc={{ transmit: () => {} }} dispatch={() => {}} editTour={{ venue: 'wjllc' }} />,
+      <MusicDashboard
+        auth={auth}
+        scc={{ transmit: () => {} }}
+        dispatch={() => {}}
+        editTour={{ venue: 'wjllc' }}
+        history={null}
+        location={null}
+        match={null}
+      />,
     );
     wrapper2.instance().checkEdit = jest.fn();
     wrapper2.instance().onChange({ preventDefault: () => {}, target: { id: 'hi', value: 11 } });
@@ -81,7 +95,6 @@ describe('Dashboard Container', () => {
     wrapper.instance().setState = jest.fn((obj) => { expect(obj.time).toBe('12:00 pm'); });
   });
   it('renders with edit tour', () => {
-    // @ts-ignore
     const wrapper2 = shallow(<MusicDashboard
       auth={auth}
       scc={{ transmit: () => {} }}
@@ -96,11 +109,13 @@ describe('Dashboard Container', () => {
         venue: 'beer garden',
         location: 'salem, va',
       }}
+      history={null}
+      location={null}
+      match={null}
     />);
     expect(wrapper2.find('h5').text()).toBe('Edit Tour Event');
   });
   it('checks edit when editTour', () => {
-    // @ts-ignore
     const wrapper2 = shallow<MusicDashboard>(<MusicDashboard
       auth={auth}
       scc={{ transmit: () => {} }}
@@ -115,6 +130,9 @@ describe('Dashboard Container', () => {
         venue: 'beer garden',
         location: 'salem, va',
       }}
+      history={null}
+      location={null}
+      match={null}
     />);
     wrapper2.instance().setState = jest.fn();
     const sO = {
@@ -124,12 +142,14 @@ describe('Dashboard Container', () => {
     expect(wrapper2.instance().setState).toHaveBeenCalledWith(sO);
   });
   it('checks edit when not editTour', () => {
-    // @ts-ignore
     const wrapper2 = shallow<MusicDashboard>(<MusicDashboard
       auth={auth}
       scc={{ transmit: () => {} }}
       dispatch={() => {}}
       editTour={{}}
+      history={null}
+      location={null}
+      match={null}
     />);
     wrapper2.instance().setState = jest.fn();
     const sO = {
@@ -139,7 +159,6 @@ describe('Dashboard Container', () => {
     expect(wrapper2.instance().setState).toHaveBeenCalledWith(sO);
   });
   it('resets edit form when editTour', () => {
-    // @ts-ignore
     const wrapper2 = shallow<MusicDashboard>(<MusicDashboard
       auth={auth}
       scc={{ transmit: () => {} }}
@@ -154,6 +173,9 @@ describe('Dashboard Container', () => {
         venue: 'beer garden',
         location: 'salem, va',
       }}
+      history={null}
+      location={null}
+      match={null}
     />);
     wrapper2.setState({ venue: 'beer garden' });
     wrapper2.instance().setState = jest.fn();
@@ -164,7 +186,6 @@ describe('Dashboard Container', () => {
     expect(wrapper2.instance().setState).toHaveBeenCalledWith(sO);
   });
   it('calls edit tour api', async () => {
-    // @ts-ignore
     const wrapper2 = shallow<MusicDashboard>(<MusicDashboard
       auth={auth}
       scc={{ transmit: () => {} }}
@@ -179,6 +200,9 @@ describe('Dashboard Container', () => {
         venue: 'beer garden',
         location: 'salem, va',
       }}
+      history={null}
+      location={null}
+      match={null}
     />);
     wrapper2.setState({
       date: '2020-10-10',
