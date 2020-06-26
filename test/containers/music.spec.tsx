@@ -3,7 +3,7 @@ import { shallow } from 'enzyme';
 import { Music } from '../../src/containers/Music';
 import PicSlider from '../../src/components/pic-slider';
 
-function setup(data: any[]) {
+function setup(data: {url: string; title: string}[]) {
   let wrapper: any;
   if (data !== null && data !== undefined) {
     wrapper = shallow<Music>(<Music images={data} />);
