@@ -23,12 +23,12 @@ type MusicDashboardState = {
   time: string;
   tickets: string;
   more: string;
-  [x: number]: any;
+  [x: number]: number;
 };
 export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboardState> {
   forms: any;
 
-  commonUtils: any;
+  commonUtils: { setTitleAndScroll: (pageTitle: string, width: number) => void };
 
   constructor(props: any) {
     super(props);
@@ -48,7 +48,7 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
     this.resetEditForm = this.resetEditForm.bind(this);
   }
 
-  componentDidMount() { this.commonUtils.setTitleAndScroll('Music Dashboard'); }
+  componentDidMount() { this.commonUtils.setTitleAndScroll('Music Dashboard', window.screen.width); }
 
   onChange(evt: any) {
     const { editTour } = this.props;
