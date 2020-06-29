@@ -1,4 +1,5 @@
 export interface Song {
+  image: string;
   title: string;
   artist?: string;
   composer?: string;
