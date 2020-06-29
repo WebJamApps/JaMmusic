@@ -39,9 +39,9 @@ describe('Music player component init', () => {
   it('shuffles the songs', () => {
     const mp = new MusicPlayer({
       songs: [{
-        _id: '123', url: '', category: '', title: '',
+        _id: '123', url: '', category: '', title: '', image: '',
       }, {
-        _id: '456', url: '', category: '', title: '',
+        _id: '456', url: '', category: '', title: '', image: '',
       }],
       filterBy: '',
     });

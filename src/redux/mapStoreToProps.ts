@@ -1,24 +1,24 @@
 export interface Song {
-  image: string;
-  title: string;
   artist?: string;
   composer?: string;
   category: string;
   album?: string;
   year?: number;
+  image?: string;
+  title: string;
   url: string;
   _id: string;
 }
 
 export interface Tour {
+  datetime?: string;
+  more?: string;
   date: string;
   time: string;
   tickets: string;
-  more?: string;
   venue: string;
   location: string;
   _id: string;
-  datetime?: string;
 }
 export interface Store {
   sc: {scc: any; userCount: number};
