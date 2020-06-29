@@ -30,6 +30,7 @@ export class MusicPlayer extends Component<MProps, MusicPlayerState> {
   musicUtils: {
     pageH4: (pageTitle: string) => JSX.Element; setIndex: (songs: Song[], category: string) => Song[];
     textUnderPlayer: (song: string) => JSX.Element; copyRight: () => JSX.Element;
+    setPlayerStyle: (playerStyle: {}) => {};
   };
 
   commonUtils: { setTitleAndScroll: (pageTitle: string, width: number) => void };
@@ -97,38 +98,9 @@ export class MusicPlayer extends Component<MProps, MusicPlayerState> {
   reactPlayer(): JSX.Element {
     const { song } = this.state;
     const { player } = this.state;
-    let playerStyle = {
-      backgroundColor: '#2a2a2a',
-      textAlign: 'center',
-      backgroundImage: `url(${song.image})`,
-      backgroundPosition: 'center',
-      backgroundSize: '80%',
-      backgroundRepeat: 'no-repeat',
-    };
-
-    if (song.image === undefined || song.image === '') {
-      playerStyle = {
-        backgroundImage: 'url("/static/imgs/webjamlogo1.png")',
-        backgroundColor: '#2a2a2a',
-        textAlign: 'center',
-        backgroundPosition: 'center',
-        backgroundSize: '80%',
-        backgroundRepeat: 'no-repeat',
-      };
-      if (song.url[8] === 's' || song.url[12] === 'y') {
-        playerStyle = {
-          backgroundImage: '',
-          backgroundColor: '#eee',
-          textAlign: 'center',
-          backgroundPosition: 'center',
-          backgroundSize: '80%',
-          backgroundRepeat: 'no-repeat',
-        };
-      }
-    }
     return (
       <ReactPlayer
-        style={playerStyle}
+        style={this.musicUtils.setPlayerStyle(song as any)}
         url={song.url}
         playing={player.playing}
         controls
