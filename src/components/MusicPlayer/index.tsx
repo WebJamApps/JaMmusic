@@ -118,7 +118,7 @@ export class MusicPlayer extends Component<MProps, MusicPlayerState> {
       if (song.url[8] === 's' || song.url[12] === 'y') {
         playerStyle = {
           backgroundImage: '',
-          backgroundColor: '',
+          backgroundColor: '#eee',
           textAlign: 'center',
           backgroundPosition: 'center',
           backgroundSize: '80%',
