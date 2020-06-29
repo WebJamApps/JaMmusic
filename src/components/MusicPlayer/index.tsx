@@ -97,9 +97,17 @@ export class MusicPlayer extends Component<MProps, MusicPlayerState> {
   reactPlayer(): JSX.Element {
     const { song } = this.state;
     const { player } = this.state;
+    const playerStyle = {
+      backgroundColor: '#2a2a2a',
+      textAlign: 'center',
+      backgroundImage: `url(${song.image})`,
+      backgroundPosition: 'center',
+      backgroundSize: '80%',
+      backgroundRepeat: 'no-repeat',
+    };
     return (
       <ReactPlayer
-        style={{ backgroundColor: '#eee', textAlign: 'center', backgroundImage: `url(${song.image})` }}
+        style={playerStyle}
         url={song.url}
         playing={player.playing}
         controls
@@ -107,6 +115,7 @@ export class MusicPlayer extends Component<MProps, MusicPlayerState> {
         width="100%"
         height="40vh"
         id="mainPlayer"
+        className="audio"
         config={{ youtube: { playerVars: { controls: 0 } }, file: { attributes: { controlsList: 'nodownload' } } }}
       />
     );
