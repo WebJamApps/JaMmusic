@@ -243,6 +243,15 @@ describe('Music player component init', () => {
       },
     });
     const overlay = wrapper.instance().setClassOverlay();
+    const setPlayerClassStyle = wrapper.instance().musicUtils.setPlayerStyle(song);
+    expect(setPlayerClassStyle).toStrictEqual({
+      backgroundImage: '',
+      backgroundColor: '#eee',
+      textAlign: 'center',
+      backgroundPosition: 'center',
+      backgroundSize: '80%',
+      backgroundRepeat: 'no-repeat',
+    });
     expect(overlay).toBe('youtubeOverlay');
   });
   it('handles null song when textUnderPlayer', () => {

@@ -30,7 +30,7 @@ export class MusicPlayer extends Component<MProps, MusicPlayerState> {
   musicUtils: {
     pageH4: (pageTitle: string) => JSX.Element; setIndex: (songs: Song[], category: string) => Song[];
     textUnderPlayer: (song: string) => JSX.Element; copyRight: () => JSX.Element;
-    setPlayerStyle: (playerStyle: {}) => {};
+    setPlayerStyle: (playerStyle: Record<string, unknown>) => Record<string, unknown>;
   };
 
   commonUtils: { setTitleAndScroll: (pageTitle: string, width: number) => void };
