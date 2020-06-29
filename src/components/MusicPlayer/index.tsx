@@ -97,7 +97,7 @@ export class MusicPlayer extends Component<MProps, MusicPlayerState> {
   reactPlayer(): JSX.Element {
     const { song } = this.state;
     const { player } = this.state;
-    const playerStyle = {
+    let playerStyle = {
       backgroundColor: '#2a2a2a',
       textAlign: 'center',
       backgroundImage: `url(${song.image})`,
@@ -105,6 +105,27 @@ export class MusicPlayer extends Component<MProps, MusicPlayerState> {
       backgroundSize: '80%',
       backgroundRepeat: 'no-repeat',
     };
+
+    if (song.image === undefined || song.image === '') {
+      playerStyle = {
+        backgroundImage: 'url("/static/imgs/webjamlogo1.png")',
+        backgroundColor: '#2a2a2a',
+        textAlign: 'center',
+        backgroundPosition: 'center',
+        backgroundSize: '80%',
+        backgroundRepeat: 'no-repeat',
+      };
+      if (song.url[8] === 's' || song.url[12] === 'y') {
+        playerStyle = {
+          backgroundImage: '',
+          backgroundColor: '',
+          textAlign: 'center',
+          backgroundPosition: 'center',
+          backgroundSize: '80%',
+          backgroundRepeat: 'no-repeat',
+        };
+      }
+    }
     return (
       <ReactPlayer
         style={playerStyle}
