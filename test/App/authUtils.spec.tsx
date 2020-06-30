@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
 import jwt from 'jwt-simple';
 import superagent from 'superagent';
 import authUtils from '../../src/App/authUtils';
@@ -25,8 +24,8 @@ describe('authUtils', () => {
     };
     jwt.decode = jest.fn(() => ({ sub: '123' }));
     jwt.encode = jest.fn(() => 'token');
-    // @ts-ignore
-    superagent.get = jest.fn(() => ({ set: () => ({ set: () => Promise.resolve({ body: {} }) }) }));
+    const sa: any = superagent;
+    sa.get = jest.fn(() => ({ set: () => ({ set: () => Promise.resolve({ body: {} }) }) }));
     Object.defineProperty(window, 'location', { value: { assign: () => { }, reload: () => { } }, writable: true });
     window.location.reload = jest.fn();
     const result = await authUtils.setUser(cStub2);
@@ -34,8 +33,8 @@ describe('authUtils', () => {
   });
   it('cathes fetch user error when sets the user', async () => {
     jwt.decode = jest.fn(() => ({ sub: '123' }));
-    // @ts-ignore
-    superagent.get = jest.fn(() => ({ set: () => ({ set: () => Promise.reject(new Error('bad')) }) }));
+    const sa: any = superagent;
+    sa.get = jest.fn(() => ({ set: () => ({ set: () => Promise.reject(new Error('bad')) }) }));
     await expect(authUtils.setUser(controllerStub)).rejects.toThrow('bad');
   });
   it('sets the user to the already decoded user', async () => {
