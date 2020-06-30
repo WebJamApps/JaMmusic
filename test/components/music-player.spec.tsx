@@ -260,4 +260,26 @@ describe('Music player component init', () => {
     const r = wrapper.instance().musicUtils.textUnderPlayer(null);
     expect(r.type).toBe('section');
   });
+  it('checks if dropbox is about to be played', () => {
+    const { songs } = songData;
+    const song = {
+      _id: '123', category: 'mission', title: 'Hey Red', url: 'something.test.com',
+    };
+    const wrapper = shallow<MusicPlayer>(<MusicPlayer songs={songs} filterBy="originals" />);
+    wrapper.instance().setState({
+      song,
+      player: {
+        isShuffleOn: false, playing: false, shown: true, displayCopier: '', displayCopyMessage: false, onePlayerMode: false,
+      },
+    });
+    const setPlayerClassStyle = wrapper.instance().musicUtils.setPlayerStyle(song);
+    expect(setPlayerClassStyle).toStrictEqual({
+      backgroundImage: 'url("/static/imgs/webjamlogo1.png")',
+      backgroundColor: '#2a2a2a',
+      textAlign: 'center',
+      backgroundPosition: 'center',
+      backgroundSize: '80%',
+      backgroundRepeat: 'no-repeat',
+    });
+  });
 });
