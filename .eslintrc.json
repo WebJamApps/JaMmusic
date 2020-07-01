@@ -45,7 +45,8 @@
     "page": true,
     "browser": true,
     "context": true,
-    "jestPuppeteer": true
+    "jestPuppeteer": true,
+    "google": true
   },
   "parser": "@typescript-eslint/parser",
   "parserOptions": {

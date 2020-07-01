@@ -245,7 +245,7 @@ export class MusicPlayer extends Component<MProps, MusicPlayerState> {
     );
   }
 
-  render() {
+  render():JSX.Element {
     const {
       song, player, pageTitle,
     } = this.state;
