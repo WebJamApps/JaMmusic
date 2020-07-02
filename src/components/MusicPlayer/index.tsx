@@ -30,7 +30,7 @@ export class MusicPlayer extends Component<MProps, MusicPlayerState> {
   musicUtils: {
     pageH4: (pageTitle: string) => JSX.Element; setIndex: (songs: Song[], category: string) => Song[];
     textUnderPlayer: (song: string) => JSX.Element; copyRight: () => JSX.Element;
-    setPlayerStyle: (playerStyle: Record<string, unknown>) => Record<string, unknown>;
+    setPlayerStyle: (playerStyle: Song) => Record<string, unknown>;
   };
 
   commonUtils: { setTitleAndScroll: (pageTitle: string, width: number) => void };
@@ -100,7 +100,7 @@ export class MusicPlayer extends Component<MProps, MusicPlayerState> {
     const { player } = this.state;
     return (
       <ReactPlayer
-        style={this.musicUtils.setPlayerStyle(song as any)}
+        style={this.musicUtils.setPlayerStyle(song as Song)}
         url={song.url}
         playing={player.playing}
         controls

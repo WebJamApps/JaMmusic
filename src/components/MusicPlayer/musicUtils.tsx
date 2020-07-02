@@ -1,4 +1,5 @@
 import React from 'react';
+import { Song } from '../../redux/mapStoreToProps';
 
 const pageH4 = (pageTitle: string) => (
   <h4
@@ -61,7 +62,7 @@ function textUnderPlayer(song: any) {
   );
 }
 
-function setPlayerStyle(song) {
+function setPlayerStyle(song: Song) {
   let playerStyle = {
     backgroundColor: '#2a2a2a',
     textAlign: 'center',
@@ -91,7 +92,7 @@ function setPlayerStyle(song) {
       };
     }
   }
-  return playerStyle;
+  return playerStyle as Record<string, unknown>;
 }
 
 export default {
