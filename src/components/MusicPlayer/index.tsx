@@ -30,6 +30,7 @@ export class MusicPlayer extends Component<MProps, MusicPlayerState> {
   musicUtils: {
     pageH4: (pageTitle: string) => JSX.Element; setIndex: (songs: Song[], category: string) => Song[];
     textUnderPlayer: (song: string) => JSX.Element; copyRight: () => JSX.Element;
+    setPlayerStyle: (playerStyle: Song) => Record<string, unknown>;
   };
 
   commonUtils: { setTitleAndScroll: (pageTitle: string, width: number) => void };
@@ -99,7 +100,7 @@ export class MusicPlayer extends Component<MProps, MusicPlayerState> {
     const { player } = this.state;
     return (
       <ReactPlayer
-        style={{ backgroundColor: '#eee', textAlign: 'center' }}
+        style={this.musicUtils.setPlayerStyle(song as Song)}
         url={song.url}
         playing={player.playing}
         controls
@@ -107,6 +108,7 @@ export class MusicPlayer extends Component<MProps, MusicPlayerState> {
         width="100%"
         height="40vh"
         id="mainPlayer"
+        className="audio"
         config={{ youtube: { playerVars: { controls: 0 } }, file: { attributes: { controlsList: 'nodownload' } } }}
       />
     );
@@ -136,7 +138,7 @@ export class MusicPlayer extends Component<MProps, MusicPlayerState> {
     let { song } = this.state, composer = '', quote = '';
     if (!song) {
       song = {
-        title: '', artist: '', composer: '', category: '', album: '', year: 0, url: '', _id: '',
+        title: '', artist: '', composer: '', category: '', album: '', year: 0, url: '', _id: '', image: '',
       };
     }
     if (song.composer !== undefined && !song.composer.includes('Josh')) composer = ` by ${song.composer}`;
