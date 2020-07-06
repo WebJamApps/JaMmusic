@@ -39,9 +39,9 @@ describe('Music player component init', () => {
   it('shuffles the songs', () => {
     const mp = new MusicPlayer({
       songs: [{
-        _id: '123', url: '', category: '', title: '',
+        _id: '123', url: '', category: '', title: '', image: '',
       }, {
-        _id: '456', url: '', category: '', title: '',
+        _id: '456', url: '', category: '', title: '', image: '',
       }],
       filterBy: '',
     });
@@ -243,6 +243,15 @@ describe('Music player component init', () => {
       },
     });
     const overlay = wrapper.instance().setClassOverlay();
+    const setPlayerClassStyle = wrapper.instance().musicUtils.setPlayerStyle(song);
+    expect(setPlayerClassStyle).toStrictEqual({
+      backgroundImage: '',
+      backgroundColor: '#eee',
+      textAlign: 'center',
+      backgroundPosition: 'center',
+      backgroundSize: '80%',
+      backgroundRepeat: 'no-repeat',
+    });
     expect(overlay).toBe('youtubeOverlay');
   });
   it('handles null song when textUnderPlayer', () => {
@@ -250,5 +259,27 @@ describe('Music player component init', () => {
     const wrapper = shallow<MusicPlayer>(<MusicPlayer songs={songs} filterBy="originals" />);
     const r = wrapper.instance().musicUtils.textUnderPlayer(null);
     expect(r.type).toBe('section');
+  });
+  it('checks if dropbox is about to be played', () => {
+    const { songs } = songData;
+    const song = {
+      _id: '123', category: 'mission', title: 'Hey Red', url: 'something.test.com',
+    };
+    const wrapper = shallow<MusicPlayer>(<MusicPlayer songs={songs} filterBy="originals" />);
+    wrapper.instance().setState({
+      song,
+      player: {
+        isShuffleOn: false, playing: false, shown: true, displayCopier: '', displayCopyMessage: false, onePlayerMode: false,
+      },
+    });
+    const setPlayerClassStyle = wrapper.instance().musicUtils.setPlayerStyle(song);
+    expect(setPlayerClassStyle).toStrictEqual({
+      backgroundImage: 'url("/static/imgs/webjamlogo1.png")',
+      backgroundColor: '#2a2a2a',
+      textAlign: 'center',
+      backgroundPosition: 'center',
+      backgroundSize: '80%',
+      backgroundRepeat: 'no-repeat',
+    });
   });
 });

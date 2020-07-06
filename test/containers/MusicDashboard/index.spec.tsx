@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
 import * as React from 'react';
 import { shallow } from 'enzyme';
 import { Redirect } from 'react-router-dom';

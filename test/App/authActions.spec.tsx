@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import superagent from 'superagent';
@@ -9,8 +8,8 @@ const mockStore = configureMockStore(middlewares);
 
 describe('authActions', () => {
   it('authenticates', async () => {
-    // @ts-ignore
-    superagent.post = jest.fn(() => ({ set: () => ({ send: () => Promise.resolve({ body: '123' }) }) }));
+    const sa: any = superagent;
+    sa.post = jest.fn(() => ({ set: () => ({ send: () => Promise.resolve({ body: '123' }) }) }));
     const store = mockStore({ auth: { isAuthenticated: false } });
     const result = await store.dispatch(authenticate({ code: 'someCode' }));
     expect(result).toBe(true);
@@ -22,8 +21,8 @@ describe('authActions', () => {
   });
   it('returns false when nothing is returned from Google', async () => {
     const store = mockStore({ auth: { isAuthenticated: false } });
-    superagent.post = () => ({
-      // @ts-ignore
+    const sa: any = superagent;
+    sa.post = () => ({
       set: () => ({ send: async () => ({ body: undefined }) }),
     });
     const result = await store.dispatch(authenticate({ code: 'someCode' }));
@@ -31,8 +30,8 @@ describe('authActions', () => {
   });
   it('returns false when fetch error', async () => {
     const store = mockStore({ auth: { isAuthenticated: false } });
-    superagent.post = () => ({
-      // @ts-ignore
+    const sa: any = superagent;
+    sa.post = () => ({
       set: () => ({ send: () => Promise.reject(new Error('bad')) }),
     });
     await expect(store.dispatch(authenticate({ code: 'someCode' }))).rejects.toThrow('bad');
