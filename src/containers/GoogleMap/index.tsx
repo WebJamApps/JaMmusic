@@ -1,24 +1,56 @@
 import React from 'react';
-import UserMap from './UserMap';
-import CompanyMap from './CompanyMap';
+import UMap, { UserMap } from './UserMap';
+import CMap, { CompanyMap } from './CompanyMap';
 
 class GoogleMap extends React.Component {
+  gMap: any;
+
+  companyMap: any;
+
+  userMap: any;
+
+  constructor(props: any) {
+    super(props);
+    this.gMap = null;
+    this.userMap = null;
+    this.companyMap = null;
+  }
+
   componentDidMount() {
-    const gMap = new google.maps.Map(document.getElementById('googleMap'), { zoom: 3, center: { lat: 40, lng: -100 } });
+    this.gMap = new google.maps.Map(document.getElementById('googleMap'), { zoom: 1, center: { lat: 40, lng: -100 } });
+    this.userMap = new UMap();
+    this.companyMap = new CMap();
+    this.addUserMarker(this.userMap);
+    this.addCompanyMarker(this.companyMap);
     console.log('did mount');
-    console.log(gMap);
+  }
+
+  addUserMarker(user: UserMap): void {
+    const marker = new google.maps.Marker({
+      map: this.gMap,
+      position: {
+        lat: user.loc.lat, lng: user.loc.lng,
+      },
+    });
+    console.log(marker);
+  }
+
+  addCompanyMarker(c: CompanyMap): void {
+    const marker = new google.maps.Marker({
+      map: this.gMap,
+      position: {
+        lat: c.loc.lat, lng: c.loc.lng,
+      },
+    });
+    console.log(marker);
   }
 
   render() {
-    const userMap = new UserMap();
-    console.log(userMap);
-    const companyMap = new CompanyMap();
-    console.log(companyMap);
     return (
       <div className="page-content">
         <div style={{ margin: 'auto', textAlign: 'center' }}>
           <h2 style={{ marginTop: '10px' }}>Google Map Here</h2>
-          <div id="googleMap" style={{ height: '4in' }} />
+          <div id="googleMap" style={{ height: '7in', maxWidth: '9in', margin: 'auto' }} />
         </div>
       </div>
     );

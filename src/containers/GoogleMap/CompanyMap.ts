@@ -1,6 +1,6 @@
 import faker from 'faker';
 
-class CompanyMap {
+export class CompanyMap {
   name: string;
 
   catchPhrase: string;

@@ -30,7 +30,7 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
 
   commonUtils: { setTitleAndScroll: (pageTitle: string, width: number) => void };
 
-  constructor(props: any) {
+  constructor(props: MusicDashboardProps) {
     super(props);
     this.state = {
       redirect: false, date: '', time: '', tickets: '', more: '', venue: '', location: '',

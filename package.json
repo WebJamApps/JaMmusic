@@ -9,7 +9,7 @@
   },
   "author": "https://github.com/orgs/WebJamApps/teams/handlersandkickers",
   "engines": {
-    "node": ">=14.3.0"
+    "node": ">=14.4.0"
   },
   "files": [
     "webpack.config.js",

@@ -1,18 +1,20 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 
 import * as React from 'react';
-import { shallow } from 'enzyme';
+import { shallow, ShallowWrapper } from 'enzyme';
 import GoogleMap from '../../../src/containers/GoogleMap';
 
 describe('GoogleMap container', () => {
-  let wrapper;
-  const mapFunc: (...args: any) => any = jest.fn();
+  let wrapper: ShallowWrapper<Readonly<any> & Readonly<{ children?: React.ReactNode; }>, Readonly<any>, GoogleMap>;
+  const fakeFunc: (...args: any) => any = jest.fn();
   beforeEach(() => {
     global.google = {
       maps: {
         ...window.google.maps,
         // @ts-ignore
-        Map: mapFunc,
+        Marker: fakeFunc,
+        // @ts-ignore
+        Map: fakeFunc,
       },
     };
     wrapper = shallow<GoogleMap>(<GoogleMap />);

@@ -1,6 +1,6 @@
 import faker from 'faker';
 
-class UserMap {
+export class UserMap {
   name: string;
 
   loc: { lat: number, lng: number };
