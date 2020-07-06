@@ -7,6 +7,7 @@ import DefaultMusic from '../containers/Music';
 import DefaultMusicDashboard from '../containers/MusicDashboard';
 import BuyMusic from '../containers/BuyMusic';
 import AppFourOhFour from './404';
+import GoogleMap from '../containers/GoogleMap';
 import AppMain from './app-main';
 import DefaultSongs from '../containers/Songs';
 import HomePage from '../containers/Homepage';
@@ -29,7 +30,7 @@ export class App extends Component<AppProps> {
   connectToSC: any;
 
   static defaultProps = {
-    dispatch: (): any => {},
+    dispatch: (): any => { },
     songs: [],
     images: [],
     auth: { isAuthenticated: false, user: { userType: '' } },
@@ -46,7 +47,7 @@ export class App extends Component<AppProps> {
     await this.connectToSC.connectToSCC(dispatch);
   }
 
-  render() {
+  render():JSX.Element {
     const { auth } = this.props;
     const userRoles = JSON.parse(process.env.userRoles).roles;
     return (
@@ -55,6 +56,8 @@ export class App extends Component<AppProps> {
           <AppMain>
             <Switch>
               <Route exact path="/" component={HomePage} />
+              {auth.isAuthenticated && userRoles.indexOf(auth.user.userType) !== -1
+                ? <Route exact path="/map" component={GoogleMap} /> : null}
               <Route exact path="/music" component={DefaultMusic} />
               <Route path="/music/buymusic" component={BuyMusic} />
               <Route path="/music/originals" component={DefaultSongs} />
