@@ -1,6 +1,7 @@
 import React from 'react';
 import UMap, { UserMap } from './UserMap';
 import CMap, { CompanyMap } from './CompanyMap';
+import { Loc } from './gMapTypes';
 
 class GoogleMap extends React.Component {
   gMap: any;
@@ -20,30 +21,30 @@ class GoogleMap extends React.Component {
     this.gMap = new google.maps.Map(document.getElementById('googleMap'), { zoom: 1, center: { lat: 40, lng: -100 } });
     this.userMap = new UMap();
     this.companyMap = new CMap();
-    this.addUserMarker(this.userMap);
-    this.addCompanyMarker(this.companyMap);
+    this.addMarker(this.userMap);
+    this.addMarker(this.companyMap);
     console.log('did mount');
   }
 
-  addUserMarker(user: UserMap): void {
+  addMarker(obj: { loc: Loc }): void {
     const marker = new google.maps.Marker({
       map: this.gMap,
       position: {
-        lat: user.loc.lat, lng: user.loc.lng,
+        lat: obj.loc.lat, lng: obj.loc.lng,
       },
     });
     console.log(marker);
   }
 
-  addCompanyMarker(c: CompanyMap): void {
-    const marker = new google.maps.Marker({
-      map: this.gMap,
-      position: {
-        lat: c.loc.lat, lng: c.loc.lng,
-      },
-    });
-    console.log(marker);
-  }
+  // addCompanyMarker(c: CompanyMap): void {
+  //   const marker = new google.maps.Marker({
+  //     map: this.gMap,
+  //     position: {
+  //       lat: c.loc.lat, lng: c.loc.lng,
+  //     },
+  //   });
+  //   console.log(marker);
+  // }
 
   render() {
     return (

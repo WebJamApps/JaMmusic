@@ -1,9 +1,10 @@
 import faker from 'faker';
+import { Loc } from './gMapTypes';
 
 export class UserMap {
   name: string;
 
-  loc: { lat: number, lng: number };
+  loc: Loc;
 
   constructor() {
     this.name = faker.name.firstName();

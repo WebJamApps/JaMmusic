@@ -1,11 +1,12 @@
 import faker from 'faker';
+import { Loc } from './gMapTypes';
 
 export class CompanyMap {
   name: string;
 
   catchPhrase: string;
 
-  loc: { lat: number, lng: number };
+  loc: Loc;
 
   constructor() {
     this.name = faker.company.companyName();
