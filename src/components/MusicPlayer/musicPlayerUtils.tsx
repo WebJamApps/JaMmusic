@@ -1,17 +1,15 @@
 import React from 'react';
 import { Song } from '../../redux/mapStoreToProps';
+import { Iplayer } from './musicPlayerTypes';
 
 export interface MusicPlayerUtils {
   shuffleThem: (songs: Song[]) => Song[]; toggleSongTypes: (type: string, view: any) => any;
-  checkOnePlayer: (params: URLSearchParams, player: {
-    playing: boolean; shown: boolean; isShuffleOn: boolean; displayCopier: string;
-    displayCopyMessage: boolean; onePlayerMode: boolean;
-  }, view: any) => Promise<boolean>; runIfOnePlayer: (controller: any) => boolean;
+  checkOnePlayer: (params: URLSearchParams, player: Iplayer, view: any) => Promise<boolean>; runIfOnePlayer: (controller: any) => boolean;
   toggleOn: (lcType: string, view: any, type: string, typeInState: string) => any;
   homeButton: (onePlayerMode: boolean) => JSX.Element; share: (view: any) => any; copyShare: (view: any) => any;
   showHideButtons: (display: string) => boolean;
 }
-const showHideButtons = (display: string) => {
+const showHideButtons = (display: string): boolean => {
   const mAndP = document.getElementById('mAndP');
   const sb = document.getElementById('share-buttons');
   const pb = document.getElementById('play-buttons');
@@ -22,13 +20,13 @@ const showHideButtons = (display: string) => {
   } catch (e) { return false; }
   return true;
 };
-const share = (view: any) => {
+const share = (view: any): void => {
   const { player, player: { displayCopier } } = view.state;
   if (displayCopier === 'none') view.setState({ player: { ...player, displayCopier: 'block' } });
   else view.setState({ player: { ...player, displayCopier: 'none' } });
   showHideButtons('none');
 };
-const copyShare = (view: any) => {
+const copyShare = (view: any): void => {
   const { player } = view.state;
   view.navigator.clipboard.writeText(view.playUrl()).then(() => {
     view.setState({ player: { ...player, displayCopyMessage: true } });
@@ -38,7 +36,16 @@ const copyShare = (view: any) => {
     }, 1500);
   });
 };
-const checkOnePlayer = async (params, player, view) => {
+async function checkOnePlayer(params: { get: (arg0: string) => any; },
+  player: Iplayer,
+  view: {
+    props: { songs: any; };
+    setState: (arg0: {
+      player: any; song: any;
+      index: any; missionState: string; pubState: string;
+      originalState: string; songsState: any[];
+    }) => void;
+  }): Promise<boolean> {
   const { songs } = view.props;
   let missionState = 'off', pubState = 'off', originalState = 'off', newSongs = [];
   if (params.get('oneplayer')) {
@@ -60,9 +67,9 @@ const checkOnePlayer = async (params, player, view) => {
     return true;
   }
   return false;
-};
+}
 
-const makeOnePlayerMode = () => {
+const makeOnePlayerMode = (): boolean => {
   const sidebar = document.getElementById('sidebar');
   const header = document.getElementById('header');
   const footer = document.getElementById('wjfooter');
@@ -87,13 +94,13 @@ const makeOnePlayerMode = () => {
   return true;
 };
 
-const runIfOnePlayer = (controller) => {
+function runIfOnePlayer(controller: { state: { player: { onePlayerMode: any; }; }; }): boolean {
   const { player: { onePlayerMode } } = controller.state;
   if (onePlayerMode) return makeOnePlayerMode();
-  return null;
-};
+  return false;
+}
 
-const homeButton = (onePlayerMode) => (
+const homeButton = (onePlayerMode: any): JSX.Element => (
   <button
     type="button"
     id="h"
@@ -104,7 +111,7 @@ const homeButton = (onePlayerMode) => (
     <span id="homeLink">Home</span>
   </button>
 );
-const shuffleThem = (songs) => {
+const shuffleThem = (songs: any): any => {
   const shuffled = songs;
   for (let i = shuffled.length - 1; i > 0; i -= 1) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -112,7 +119,7 @@ const shuffleThem = (songs) => {
   }
   return shuffled;
 };
-function toggleOn(lcType: string, view: any, type: string, typeInState: string) {
+function toggleOn(lcType: string, view: any, type: string, typeInState: string): boolean {
   const { songs } = view.props;
   const { player } = view.state;
   let { songsState, pageTitle } = view.state, shuffled: string[];
@@ -124,7 +131,7 @@ function toggleOn(lcType: string, view: any, type: string, typeInState: string) 
   else { songsState = view.musicUtils.setIndex(songsState, lcType); }
   pageTitle = pageTitle.replace('Songs', '');
   pageTitle += ` & ${type} Songs`;
-  return view.setState({
+  view.setState({
     player: { ...player },
     pageTitle,
     songsState: player.isShuffleOn ? shuffled : songsState,
@@ -132,8 +139,9 @@ function toggleOn(lcType: string, view: any, type: string, typeInState: string) 
     song: player.isShuffleOn ? shuffled[0] : songsState[0],
     index: 0,
   });
+  return true;
 }
-function toggleSongTypes(type: string, view: any) {
+function toggleSongTypes(type: string, view: any): boolean {
   const lcType = type.toLowerCase();
   const { player, missionState, pubState } = view.state;
   if (lcType === 'original' && missionState === 'off' && pubState === 'off') return false;
@@ -154,7 +162,7 @@ function toggleSongTypes(type: string, view: any) {
   }
   pageTitle = pageTitle.replace(`${type}`, '').replace('&', '');
   if (player.isShuffleOn) shuffled = shuffleThem(songsState);
-  return view.setState({
+  view.setState({
     player: { ...player },
     pageTitle,
     songsState: player.isShuffleOn ? shuffled : songsState,
@@ -162,6 +170,7 @@ function toggleSongTypes(type: string, view: any) {
     song: player.isShuffleOn ? shuffled[0] : songsState[0],
     index: 0,
   });
+  return true;
 }
 export default {
   shuffleThem,
