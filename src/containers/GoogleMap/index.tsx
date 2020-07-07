@@ -1,6 +1,6 @@
 import React from 'react';
-import UMap, { UserMap } from './UserMap';
-import CMap, { CompanyMap } from './CompanyMap';
+import UMap from './UserMap';
+import CMap from './CompanyMap';
 import { Loc } from './gMapTypes';
 
 class GoogleMap extends React.Component {
@@ -10,48 +10,51 @@ class GoogleMap extends React.Component {
 
   userMap: any;
 
+  content: string;
+
   constructor(props: any) {
     super(props);
     this.gMap = null;
     this.userMap = null;
     this.companyMap = null;
+    this.content = '';
   }
 
-  componentDidMount() {
-    this.gMap = new google.maps.Map(document.getElementById('googleMap'), { zoom: 1, center: { lat: 40, lng: -100 } });
+  componentDidMount(): void {
+    this.gMap = new google.maps.Map(document.getElementById('googleMap'), { zoom: 2, center: { lat: 40, lng: -100 } });
     this.userMap = new UMap();
-    this.companyMap = new CMap();
+    this.content = `<div><p><strong>User Name:</strong> ${this.userMap.name}</p></div>`;
     this.addMarker(this.userMap);
-    this.addMarker(this.companyMap);
-    console.log('did mount');
+    this.companyMap = new CMap();
+    this.content = `<div><p><strong>Company Name:</strong> ${this.companyMap.name}</p>`
+      + `<p><strong>Company Slogan:</strong> ${this.companyMap.catchPhrase}</p></div>`;
+    this.addMarker(this.companyMap, {
+      scaledSize: { width: 40, height: 40 },
+      url: 'https://cdn0.iconfinder.com/data/icons/financial-business/512/company_building-512.png'
+    });
   }
 
-  addMarker(obj: { loc: Loc }): void {
+  addMarker(obj: { loc: Loc }, icon?: any): void {
+    const infoWindow = new google.maps.InfoWindow({ content: this.content });
     const marker = new google.maps.Marker({
       map: this.gMap,
       position: {
         lat: obj.loc.lat, lng: obj.loc.lng,
       },
+      icon,
     });
-    console.log(marker);
+    marker.addListener('click', () => {
+      // eslint-disable-next-line security/detect-non-literal-fs-filename
+      infoWindow.open(this.gMap, marker);
+    });
   }
 
-  // addCompanyMarker(c: CompanyMap): void {
-  //   const marker = new google.maps.Marker({
-  //     map: this.gMap,
-  //     position: {
-  //       lat: c.loc.lat, lng: c.loc.lng,
-  //     },
-  //   });
-  //   console.log(marker);
-  // }
-
-  render() {
+  render(): JSX.Element {
     return (
       <div className="page-content">
         <div style={{ margin: 'auto', textAlign: 'center' }}>
-          <h2 style={{ marginTop: '10px' }}>Google Map Here</h2>
-          <div id="googleMap" style={{ height: '7in', maxWidth: '9in', margin: 'auto' }} />
+          <h3 style={{ marginTop: '10px' }}>Google Map Here</h3>
+          <div id="googleMap" style={{ height: '10in', maxWidth: '10in', margin: 'auto' }} />
         </div>
       </div>
     );
