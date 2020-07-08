@@ -14,9 +14,9 @@ const showHideButtons = (display: string): boolean => {
   const sb = document.getElementById('share-buttons');
   const pb = document.getElementById('play-buttons');
   try {
-    mAndP.style.display = display;
-    sb.style.display = display;
-    pb.style.display = display;
+    if (mAndP) mAndP.style.display = display;
+    if (sb) sb.style.display = display;
+    if (pb) pb.style.display = display;
   } catch (e) { return false; }
   return true;
 };
@@ -49,12 +49,12 @@ async function checkOnePlayer(params: { get: (arg0: string) => any; },
   const { songs } = view.props;
   let missionState = 'off', pubState = 'off', originalState = 'off', newSongs = [];
   if (params.get('oneplayer')) {
-    const song = songs.filter((s) => s._id === params.get('id'));
-    const index = songs.findIndex((s) => s._id === params.get('id'));
+    const song = songs.filter((s: Song) => s._id === params.get('id'));
+    const index = songs.findIndex((s: Song) => s._id === params.get('id'));
     if (song.length === 0) song.push(songs[0]);
-    if (song[0].category === 'mission') { missionState = 'on'; newSongs = songs.filter((s) => s.category === 'mission'); }
-    if (song[0].category === 'pub') { pubState = 'on'; newSongs = songs.filter((s) => s.category === 'pub'); }
-    if (song[0].category === 'original') { originalState = 'on'; newSongs = songs.filter((s) => s.category === 'original'); }
+    if (song[0].category === 'mission') { missionState = 'on'; newSongs = songs.filter((s: Song) => s.category === 'mission'); }
+    if (song[0].category === 'pub') { pubState = 'on'; newSongs = songs.filter((s: Song) => s.category === 'pub'); }
+    if (song[0].category === 'original') { originalState = 'on'; newSongs = songs.filter((s: Song) => s.category === 'original'); }
     view.setState({
       player: { ...player, onePlayerMode: true },
       song: song[0],
@@ -122,7 +122,7 @@ const shuffleThem = (songs: any): any => {
 function toggleOn(lcType: string, view: any, type: string, typeInState: string): boolean {
   const { songs } = view.props;
   const { player } = view.state;
-  let { songsState, pageTitle } = view.state, shuffled: string[];
+  let { songsState, pageTitle } = view.state, shuffled: string[] = songsState;
   songsState = [
     ...songsState,
     ...songs.filter((song: Song) => song.category === lcType),
@@ -145,7 +145,7 @@ function toggleSongTypes(type: string, view: any): boolean {
   const lcType = type.toLowerCase();
   const { player, missionState, pubState } = view.state;
   if (lcType === 'original' && missionState === 'off' && pubState === 'off') return false;
-  let { songsState, pageTitle } = view.state, shuffled: string[];
+  let { songsState, pageTitle } = view.state, shuffled: string[] = songsState;
   const { songs } = view.props;
   const typeInState = `${lcType}State`;
   const typeState = view.state[typeInState.toString()]; // eslint-disable-line react/destructuring-assignment

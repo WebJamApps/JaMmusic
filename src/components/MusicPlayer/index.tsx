@@ -73,8 +73,9 @@ export class MusicPlayer extends Component<MProps, MusicPlayerState> {
     const params = new URLSearchParams(window.location.search);
     const { player } = this.state;
     const { songs, filterBy } = this.props;
+    let newSongs: any[] = [];
     this.commonUtils.setTitleAndScroll('', window.screen.width);
-    const newSongs = songs.filter((song: { category?: string }) => song.category === filterBy);
+    if (songs) newSongs = songs.filter((song: { category?: string }) => song.category === filterBy);
     this.setState({ song: newSongs[0], songsState: newSongs });
     await this.musicPlayerUtils.checkOnePlayer(params, player, this);
     return this.musicPlayerUtils.runIfOnePlayer(this);
@@ -90,10 +91,10 @@ export class MusicPlayer extends Component<MProps, MusicPlayerState> {
     return classOverlay;
   }
 
-  playUrl(): string | null {
+  playUrl(): string {
     const { song } = this.state;
     if (song && song._id) return `https://web-jam.com/music/songs?oneplayer=true&id=${song._id}`;
-    return null;
+    return 'https://web-jam.com/music/songs';
   }
 
   reactPlayer(): JSX.Element {
@@ -102,7 +103,7 @@ export class MusicPlayer extends Component<MProps, MusicPlayerState> {
     return (
       <ReactPlayer
         style={this.musicUtils.setPlayerStyle(song as Song)}
-        url={song.url}
+        url={song ? song.url : undefined}
         playing={player.playing}
         controls
         onEnded={this.next}
@@ -229,11 +230,11 @@ export class MusicPlayer extends Component<MProps, MusicPlayerState> {
     else this.setState({ song: songsState[index], index });// eslint-disable-line security/detect-object-injection
   }
 
-  copyInput(player: MusicPlayerState['player'], song: Song): JSX.Element {
+  copyInput(player: MusicPlayerState['player'], song: Song | null): JSX.Element {
     return (
       <div id="copyInput" style={{ marginTop: '-20px', marginBottom: '40px' }}>
         {player.displayCopyMessage && <div className="copySuccess"> Url copied Url to clipboard </div>}
-        {song !== null ? <input id="copyUrl" disabled value={this.playUrl()} style={{ backgroundColor: '#fff' }} className="form-control" />
+        {song ? <input id="copyUrl" disabled value={this.playUrl()} style={{ backgroundColor: '#fff' }} className="form-control" />
           : null}
         <div
           id="copyButton"

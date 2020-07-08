@@ -14,6 +14,7 @@ import HomePage from '../containers/Homepage';
 import connectToSC from './connectToSC';
 import mapStoreToProps from '../redux/mapStoreToProps';
 import getSongs from './songsActions';
+import commonUtils from '../lib/commonUtils';
 
 export interface AppProps {
   dispatch: (...args: any[]) => any;
@@ -49,20 +50,20 @@ export class App extends Component<AppProps> {
 
   render():JSX.Element {
     const { auth } = this.props;
-    const userRoles = JSON.parse(process.env.userRoles).roles;
+    const userRoles: string[] = commonUtils.getUserRoles();
     return (
       <div id="App" className="App">
         <Router>
           <AppMain>
             <Switch>
               <Route exact path="/" component={HomePage} />
-              {auth.isAuthenticated && userRoles.indexOf(auth.user.userType) !== -1
+              {auth.isAuthenticated && auth.user.userType && userRoles.indexOf(auth.user.userType) !== -1
                 ? <Route exact path="/map" component={GoogleMap} /> : null}
               <Route exact path="/music" component={DefaultMusic} />
               <Route path="/music/buymusic" component={BuyMusic} />
               <Route path="/music/originals" component={DefaultSongs} />
               <Route path="/music/songs" component={DefaultSongs} />
-              {auth.isAuthenticated && userRoles.indexOf(auth.user.userType) !== -1
+              {auth.isAuthenticated && auth.user.userType && userRoles.indexOf(auth.user.userType) !== -1
                 ? <Route path="/music/dashboard" component={DefaultMusicDashboard} /> : null}
               <Route component={AppFourOhFour} />
             </Switch>

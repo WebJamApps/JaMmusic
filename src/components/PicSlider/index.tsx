@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import Caption from './PicSlider/caption';
+import Caption from './caption';
 
 export interface PicSliderProps {
   settings?: string;
@@ -13,7 +13,7 @@ export interface PicSliderProps {
 }
 
 class PicSlider extends Component<PicSliderProps> {
-  static defaultProps: { data: [{ url: ''; title: ''; _id: 0 }]; settings };
+  static defaultProps: { data: [{ url: ''; title: ''; _id: 0 }];};
 
   settings: {
     autoplay: boolean;
@@ -40,13 +40,13 @@ class PicSlider extends Component<PicSliderProps> {
     };
   }
 
-  render() {
+  render(): JSX.Element {
     const { data } = this.props;
     return (
       <div>
         <Slider {...this.settings}>
           {
-            data.map((d) => (
+            Array.isArray(data) ? data.map((d) => (
               <div key={d._id}>
                 {' '}
                 <img width="100%" height="100%" src={d.url} alt={d.title} />
@@ -54,6 +54,7 @@ class PicSlider extends Component<PicSliderProps> {
                 <Caption caption={d.title} />
               </div>
             ))
+              : null
           }
         </Slider>
       </div>

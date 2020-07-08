@@ -25,7 +25,8 @@ class GoogleMap extends React.Component {
   }
 
   componentDidMount(): void {
-    this.gMap = new google.maps.Map(document.getElementById('googleMap'), { zoom: 2, center: { lat: 40, lng: -100 } });
+    const mapDiv = document.getElementById('googleMap');
+    if (mapDiv) this.gMap = new google.maps.Map(mapDiv, { zoom: 2, center: { lat: 40, lng: -100 } });
     this.userMap = new UMap();
     this.userMap = this.gMapUtils.limitLat(this.userMap);
     // if (this.userMap.loc.lat > 83) this.userMap.loc.lat = 83;

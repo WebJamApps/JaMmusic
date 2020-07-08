@@ -1,6 +1,8 @@
 import scc from 'socketcluster-client';
 
-const listenForMessages = (socket, method, name, type, dispatch) => {
+const listenForMessages = (socket: any,
+  method: string, name: string, type: string,
+  dispatch: (arg0: { type: any; data: any; }) => void) => {
   (async () => {
     let receiver; // eslint-disable-next-line security/detect-object-injection
     const consumer = socket[method](name).createConsumer();
@@ -11,7 +13,7 @@ const listenForMessages = (socket, method, name, type, dispatch) => {
     }
   })();
 };
-const connectToSCC = (dispatch) => {
+const connectToSCC = (dispatch:any):boolean => {
   const socket = scc.create({
     hostname: process.env.SCS_HOST,
     port: Number(process.env.SCS_PORT),
@@ -27,6 +29,6 @@ const connectToSCC = (dispatch) => {
   listenForMessages(socket, 'receiver', 'pulse', 'SC_HEARTBEAT', dispatch);
   listenForMessages(socket, 'receiver', 'num_clients', 'NUM_USERS', dispatch);
   listenForMessages(socket, 'subscribe', 'sample', 'NUM_USERS', dispatch);
-  return Promise.resolve(true);
+  return true;
 };
 export default { connectToSCC, listenForMessages };

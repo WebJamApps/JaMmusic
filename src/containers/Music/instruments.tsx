@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const Instruments = (props) => {
+const Instruments = (props: any): JSX.Element => {
   const { type } = props;
   return (
     <ol className="instruments">
