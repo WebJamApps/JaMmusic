@@ -256,12 +256,6 @@ describe('Music player component init', () => {
     });
     expect(overlay).toBe('youtubeOverlay');
   });
-  // it('handles null song when textUnderPlayer', () => {
-  //   const { songs } = songData;
-  //   const wrapper = shallow<MusicPlayer>(<MusicPlayer songs={songs} filterBy="originals" />);
-  //   const r = wrapper.instance().musicUtils.textUnderPlayer('');
-  //   expect(r.type).toBe('section');
-  // });
   it('checks if dropbox is about to be played', () => {
     const { songs } = songData;
     const song = {
