@@ -1,6 +1,6 @@
-let mockError,
+let mockError: string,
   mockResponse = {
-    status: () => 200,
+    status: (): number => 200,
     ok: true,
     get: jest.fn(),
     toError: jest.fn(),
@@ -29,13 +29,13 @@ const Request = {
     }
     return resolve(callback(mockResponse));
   })),
-  setMockResponse: (mockRes) => {
+  setMockResponse: (mockRes: { status: () => number; ok: boolean; get: jest.Mock<any, any>; toError: jest.Mock<any, any>; body: any; }): any => {
     mockResponse = mockRes;
   },
-  setMockError: (mockErr) => {
+  setMockError: (mockErr: string): void => {
     mockError = mockErr;
   },
-  __setMockResponseBody: (body) => {
+  __setMockResponseBody: (body: any): void => {
     mockResponse.body = body;
   },
 };

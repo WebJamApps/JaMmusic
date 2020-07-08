@@ -1,5 +1,6 @@
+const tour:any[] = [];
 const initialState = {
-  tour: [],
+  tour,
   tourUpdated: false,
   editTour: {},
 };

@@ -12,11 +12,11 @@ describe('authUtils', () => {
     done();
   }));
   it('handles google login with bad token', async () => {
-    await expect(authUtils.responseGoogleLogin({}, controllerStub)).rejects.toThrow('Not enough or too many segments');
+    await expect(authUtils.responseGoogleLogin({ code: '' }, controllerStub)).rejects.toThrow('Not enough or too many segments');
   });
   it('handles google login with authenticate error', async () => {
     controllerStub.props.dispatch = () => Promise.reject(new Error('bad'));
-    await expect(authUtils.responseGoogleLogin({}, controllerStub)).rejects.toThrow('bad');
+    await expect(authUtils.responseGoogleLogin({ code: '' }, controllerStub)).rejects.toThrow('bad');
   });
   it('sets the user', async () => {
     const cStub2 = {

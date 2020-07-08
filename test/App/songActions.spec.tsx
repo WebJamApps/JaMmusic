@@ -11,6 +11,8 @@ const store = mockStore({
   },
 });
 describe('async actions', () => {
+  const anyVar:any = {};
+
   it('test got songs', async () => {
     const data = gotSongs('nothing');
     expect(data.type).toBe('GOT_SONGS');
@@ -23,16 +25,16 @@ describe('async actions', () => {
       search: '?oneplayer=true&id=28ru9weis2309urihw9098ewuis',
       pathname: '/music/original',
       href: 'http://this.is.for.fun/',
-      ancestorOrigins: null,
+      ancestorOrigins: anyVar,
       hash: '',
       host: '',
       hostname: '',
       origin: '',
       port: '',
       protocol: '',
-      assign: null,
-      reload: null,
-      replace: null,
+      assign: anyVar,
+      reload: anyVar,
+      replace: anyVar,
     };
     const data = await getSongs()(fn);
     expect(data).toBeTruthy();
@@ -45,16 +47,16 @@ describe('async actions', () => {
       search: '?oneplayer=true&id=28ru9weis2309urihw9098ewuis',
       pathname: '/music/original',
       href: 'https://this.is.for.fun/',
-      ancestorOrigins: null,
+      ancestorOrigins: anyVar,
       hash: '',
       host: '',
       hostname: '',
       origin: '',
       port: '',
       protocol: '',
-      assign: null,
-      reload: null,
-      replace: null,
+      assign: anyVar,
+      reload: anyVar,
+      replace: anyVar,
     };
     const result = await store.dispatch<any>(getSongs());
     expect(result).toBe(true);
