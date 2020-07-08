@@ -20,22 +20,26 @@ describe('musicPlayerUtils', () => {
     },
   };
   it('checks for one player then sets the song when pub', async () => {
-    const result = await musicPlayerUtils.checkOnePlayer(params, { onePlayerMode: false }, view);
+    const player: any = { onePlayerMode: false };
+    const result = await musicPlayerUtils.checkOnePlayer(params, player, view);
     expect(result).toBe(true);
   });
   it('handles one player when mission', async () => {
     view.props.songs = [{ _id: '123', category: 'mission' }, { _id: '456', category: 'pub' }];
-    const result = await musicPlayerUtils.checkOnePlayer(params, { onePlayerMode: false }, view);
+    const player: any = { onePlayerMode: false };
+    const result = await musicPlayerUtils.checkOnePlayer(params, player, view);
     expect(result).toBe(true);
   });
   it('handles one player when original', async () => {
     view.props.songs = [{ _id: '123', category: 'original' }, { _id: '456', category: 'pub' }];
-    const result = await musicPlayerUtils.checkOnePlayer(params, { onePlayerMode: false }, view);
+    const player: any = { onePlayerMode: false };
+    const result = await musicPlayerUtils.checkOnePlayer(params, player, view);
     expect(result).toBe(true);
   });
   it('handles one player when song id does not match', async () => {
     view.props.songs = [{ _id: '999', category: 'original' }, { _id: '888', category: 'pub' }, { _id: '777', category: 'mission' }];
-    const result = await musicPlayerUtils.checkOnePlayer(params, { onePlayerMode: false }, view);
+    const player: any = { onePlayerMode: false };
+    const result = await musicPlayerUtils.checkOnePlayer(params, player, view);
     expect(result).toBe(true);
   });
   it('makes one player', () => {

@@ -1,19 +1,18 @@
 import faker from 'faker';
+import { Loc } from './gMapTypes';
+import gMapUtils from './gMapUtils';
 
-class CompanyMap {
+export class CompanyMap {
   name: string;
 
   catchPhrase: string;
 
-  loc: { lat: number, lng: number };
+  loc: Loc;
 
   constructor() {
     this.name = faker.company.companyName();
     this.catchPhrase = faker.company.catchPhrase();
-    this.loc = {
-      lat: parseFloat(faker.address.latitude()),
-      lng: parseFloat(faker.address.longitude()),
-    };
+    this.loc = gMapUtils.makeLoc(faker);
   }
 }
 

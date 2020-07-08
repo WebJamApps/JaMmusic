@@ -6,6 +6,7 @@ import musicPlayerUtils, { MusicPlayerUtils } from './musicPlayerUtils';
 import mapStoreToProps, { Song } from '../../redux/mapStoreToProps';
 import musicUtils from './musicUtils';
 import commonUtils from '../../lib/commonUtils';
+import { Iplayer } from './musicPlayerTypes';
 
 export interface MusicPlayerState {
   missionState: string;
@@ -14,9 +15,9 @@ export interface MusicPlayerState {
   originalState: string;
   songsState: Song[];
   index: number;
-  song: Song|null;
+  song: Song | null;
   copy?: string[];
-  player: { playing: boolean; shown: boolean; isShuffleOn: boolean; displayCopier: string; displayCopyMessage: boolean; onePlayerMode: boolean };
+  player: Iplayer;
 }
 
 interface MProps {
@@ -247,7 +248,7 @@ export class MusicPlayer extends Component<MProps, MusicPlayerState> {
     );
   }
 
-  render():JSX.Element {
+  render(): JSX.Element {
     const {
       song, player, pageTitle,
     } = this.state;

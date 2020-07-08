@@ -1,16 +1,15 @@
 import faker from 'faker';
+import { Loc } from './gMapTypes';
+import gMapUtils from './gMapUtils';
 
-class UserMap {
+export class UserMap {
   name: string;
 
-  loc: { lat: number, lng: number };
+  loc: Loc;
 
   constructor() {
     this.name = faker.name.firstName();
-    this.loc = {
-      lat: parseFloat(faker.address.latitude()),
-      lng: parseFloat(faker.address.longitude()),
-    };
+    this.loc = gMapUtils.makeLoc(faker);
   }
 }
 
