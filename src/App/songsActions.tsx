@@ -1,11 +1,11 @@
 import songData from './songs.json';
 
-export const gotSongs = (docs) => ({
+export const gotSongs = (docs: any): any => ({
   type: 'GOT_SONGS',
   data: docs,
 });
 
-const getSongs = () => (dispatch) => {
+const getSongs = () => (dispatch: any): boolean => {
   const { songs } = songData;
   if (window.location.href.includes('http:')) {
     for (let i = 0; i < songs.length; i += 1) { // eslint-disable-next-line security/detect-object-injection
@@ -18,6 +18,6 @@ const getSongs = () => (dispatch) => {
     }
   }
   dispatch(gotSongs(songs));
-  return Promise.resolve(true);
+  return true;
 };
 export default getSongs;

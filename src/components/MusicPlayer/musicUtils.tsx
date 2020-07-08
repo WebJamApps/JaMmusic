@@ -17,8 +17,8 @@ const pageH4 = (pageTitle: string) => (
 );
 
 const setIndex = (songs: any[], category: string) => {
-  let categorySongs = [];
-  const otherSongs = [];
+  let categorySongs: any[] = [];
+  const otherSongs: any[] = [];
   for (let i = 0; songs.length > i; i += 1) {
     // eslint-disable-next-line security/detect-object-injection
     if (songs[i].category === category) categorySongs.push(songs[i]);

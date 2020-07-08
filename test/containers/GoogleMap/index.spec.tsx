@@ -7,7 +7,7 @@ import GoogleMap from '../../../src/containers/GoogleMap';
 describe('GoogleMap container', () => {
   let lType = '', wrapper: ShallowWrapper<Readonly<any> & Readonly<{ children?: React.ReactNode; }>, Readonly<any>, GoogleMap>;
   const fakeFunc: any = jest.fn();
-  class Marker { addListener(type, cb) { lType = type; cb(); } }
+  class Marker { addListener(type: string, cb: () => void) { lType = type; cb(); } }
   class InfoWindow { open() { } }
   const fakeMarker: any = Marker;
   const fakeInfoWindow: any = InfoWindow;
@@ -25,5 +25,10 @@ describe('GoogleMap container', () => {
   it('renders correctly', () => {
     expect(wrapper).toMatchSnapshot();
     expect(lType).toBe('click');
+  });
+  it('does not render the map', () => {
+    document.body.innerHTML = '<div></div>';
+    const wrapper2 = shallow<GoogleMap>(<GoogleMap />);
+    expect(wrapper2.instance().gMap).toBe(null);
   });
 });

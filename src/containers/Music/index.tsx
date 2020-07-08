@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
+import React, { Component, Dispatch } from 'react';
 import { connect } from 'react-redux';
-import PicSlider from '../../components/pic-slider';
-import DefaultTable from '../../components/tour-table';
+import PicSlider from '../../components/PicSlider';
+import DefaultTable from '../../components/TourTable';
 import JoshBio from './joshBio';
 import MariaBio from './mariaBio';
 import Intro from './intro';
@@ -9,7 +9,9 @@ import mapStoreToProps from '../../redux/mapStoreToProps';
 import commonUtils from '../../lib/commonUtils';
 
 type MusicProps = {
-  images: {url: string; title: string}[];};
+  dispatch: Dispatch<unknown>;
+  images: { url: string; title: string }[];
+};
 export class Music extends Component<MusicProps> {
   commonUtils: { setTitleAndScroll: (pageTitle: string, width: number) => void };
 
@@ -39,7 +41,7 @@ export class Music extends Component<MusicProps> {
   }
 
   render() {
-    const { images } = this.props;
+    const { images, dispatch } = this.props;
     return (
       <div className="page-content">
         <div style={{ paddingTop: '1px', paddingBottom: 0, marginBottom: 0 }}>
@@ -54,7 +56,7 @@ export class Music extends Component<MusicProps> {
             position: 'relative', overflowX: 'auto', maxWidth: '96%', margin: 'auto', zIndex: 0,
           }}
         >
-          <DefaultTable />
+          <DefaultTable dispatch={dispatch} />
         </div>
         <div style={{ height: '10px' }}>
           <p>{' '}</p>

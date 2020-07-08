@@ -2,7 +2,7 @@ import React from 'react';
 import CollegeLutheran from '../CollegeLutheran';
 import AppersonAutomotive from '../AppersonAutomotive';
 import WideFacebookFeed from './WideFacebookFeed';
-import Inquiry from '../../../components/inquiry';
+import Inquiry from '../../../components/Inquiry';
 
 const WideCurrentProjects = () => (
   <div className="widescreenHomepage" style={{ maxWidth: '17in', margin: 'auto' }}>

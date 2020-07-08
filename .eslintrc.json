@@ -5,7 +5,7 @@
   ],
   "rules": {
     "react/jsx-filename-extension": [1, {
-      "extensions": [".js", "tsx"]
+      "extensions": ["tsx"]
     }],
     "react/static-property-placement": 0,
     "react/prop-types": 0,

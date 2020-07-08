@@ -1,5 +1,5 @@
 import { shallow } from 'enzyme';
-import musicPlayerUtils from '../../src/components/MusicPlayer/musicPlayerUtils';
+import musicPlayerUtils from '../../../src/components/MusicPlayer/musicPlayerUtils';
 
 describe('musicPlayerUtils', () => {
   beforeEach(() => {
@@ -73,7 +73,8 @@ describe('musicPlayerUtils', () => {
   });
   it('hides the buttons', () => {
     musicPlayerUtils.showHideButtons('none');
-    expect(document.getElementById('mAndP').style.display).toBe('none');
+    const testDiv = document.getElementById('mAndP');
+    if (testDiv) expect(testDiv.style.display).toBe('none');
   });
   it('hides the home button', () => {
     const wrapper = shallow(musicPlayerUtils.homeButton(false));
@@ -82,7 +83,7 @@ describe('musicPlayerUtils', () => {
   it('does nothing to the mission and pub buttons when they do not exist', () => {
     document.body.innerHTML = '';
     const result = musicPlayerUtils.showHideButtons('none');
-    expect(result).toBe(false);
+    expect(result).toBe(true);
   });
   it('reshuffled the songs if shuffle is on and type is deselected', () => {
     view.setState = jest.fn(() => true);

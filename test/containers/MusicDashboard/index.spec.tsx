@@ -6,15 +6,16 @@ import { MusicDashboard } from '../../../src/containers/MusicDashboard';
 describe('Dashboard Container', () => {
   let wrapper: any;
   const auth = { token: '' };
+  const anyProp: any = {};
   beforeEach(() => {
     wrapper = shallow<MusicDashboard>(<MusicDashboard
       auth={auth}
-      scc={{ transmit: () => {} }}
-      dispatch={() => {}}
+      scc={{ transmit: () => { } }}
+      dispatch={() => { }}
       editTour={{}}
-      history={null}
-      location={null}
-      match={null}
+      history={anyProp}
+      location={anyProp}
+      match={anyProp}
     />);
   });
   it('is defined', () => {
@@ -26,22 +27,22 @@ describe('Dashboard Container', () => {
   it('calls on change', () => {
     wrapper.instance().checkEdit = jest.fn();
     wrapper.instance().setState = jest.fn((boobyJ) => { expect(boobyJ.hi).toBe(11); });
-    wrapper.instance().onChange({ preventDefault: () => {}, target: { id: 'hi', value: 11 } });
+    wrapper.instance().onChange({ preventDefault: () => { }, target: { id: 'hi', value: 11 } });
   });
   it('handles onChange with editTour', () => {
     const wrapper2 = shallow<MusicDashboard>(
       <MusicDashboard
         auth={auth}
-        scc={{ transmit: () => {} }}
-        dispatch={() => {}}
+        scc={{ transmit: () => { } }}
+        dispatch={() => { }}
         editTour={{ venue: 'wjllc' }}
-        history={null}
-        location={null}
-        match={null}
+        history={anyProp}
+        location={anyProp}
+        match={anyProp}
       />,
     );
     wrapper2.instance().checkEdit = jest.fn();
-    wrapper2.instance().onChange({ preventDefault: () => {}, target: { id: 'hi', value: 11 } });
+    wrapper2.instance().onChange({ preventDefault: () => { }, target: { id: 'hi', value: 11 } });
     expect(wrapper2.instance().checkEdit).toHaveBeenCalled();
   });
   it('calls handleEditorChange', () => {
@@ -83,7 +84,7 @@ describe('Dashboard Container', () => {
   it('resets the edit form', () => {
     wrapper.instance().setState = jest.fn((obj) => expect(obj.date).toBe(''));
     wrapper.update();
-    wrapper.instance().resetEditForm({ preventDefault: () => {} });
+    wrapper.instance().resetEditForm({ preventDefault: () => { } });
   });
   it('calls checkEdit', () => {
     wrapper.instance().checkEdit('<p>Cool Venue</p>');
@@ -96,8 +97,8 @@ describe('Dashboard Container', () => {
   it('renders with edit tour', () => {
     const wrapper2 = shallow(<MusicDashboard
       auth={auth}
-      scc={{ transmit: () => {} }}
-      dispatch={() => {}}
+      scc={{ transmit: () => { } }}
+      dispatch={() => { }}
       editTour={{
         datetime: '2020-10-10T000',
         _id: '123',
@@ -108,17 +109,17 @@ describe('Dashboard Container', () => {
         venue: 'beer garden',
         location: 'salem, va',
       }}
-      history={null}
-      location={null}
-      match={null}
+      history={anyProp}
+      location={anyProp}
+      match={anyProp}
     />);
     expect(wrapper2.find('h5').text()).toBe('Edit Tour Event');
   });
   it('checks edit when editTour', () => {
     const wrapper2 = shallow<MusicDashboard>(<MusicDashboard
       auth={auth}
-      scc={{ transmit: () => {} }}
-      dispatch={() => {}}
+      scc={{ transmit: () => { } }}
+      dispatch={() => { }}
       editTour={{
         datetime: '2020-10-10T000',
         _id: '123',
@@ -129,9 +130,9 @@ describe('Dashboard Container', () => {
         venue: 'beer garden',
         location: 'salem, va',
       }}
-      history={null}
-      location={null}
-      match={null}
+      history={anyProp}
+      location={anyProp}
+      match={anyProp}
     />);
     wrapper2.instance().setState = jest.fn();
     const sO = {
@@ -143,12 +144,12 @@ describe('Dashboard Container', () => {
   it('checks edit when not editTour', () => {
     const wrapper2 = shallow<MusicDashboard>(<MusicDashboard
       auth={auth}
-      scc={{ transmit: () => {} }}
-      dispatch={() => {}}
+      scc={{ transmit: () => { } }}
+      dispatch={() => { }}
       editTour={{}}
-      history={null}
-      location={null}
-      match={null}
+      history={anyProp}
+      location={anyProp}
+      match={anyProp}
     />);
     wrapper2.instance().setState = jest.fn();
     const sO = {
@@ -160,8 +161,8 @@ describe('Dashboard Container', () => {
   it('resets edit form when editTour', () => {
     const wrapper2 = shallow<MusicDashboard>(<MusicDashboard
       auth={auth}
-      scc={{ transmit: () => {} }}
-      dispatch={() => {}}
+      scc={{ transmit: () => { } }}
+      dispatch={() => { }}
       editTour={{
         datetime: '2020-10-10T000',
         _id: '123',
@@ -172,13 +173,13 @@ describe('Dashboard Container', () => {
         venue: 'beer garden',
         location: 'salem, va',
       }}
-      history={null}
-      location={null}
-      match={null}
+      history={anyProp}
+      location={anyProp}
+      match={anyProp}
     />);
     wrapper2.setState({ venue: 'beer garden' });
     wrapper2.instance().setState = jest.fn();
-    wrapper2.instance().resetEditForm({ preventDefault: () => {} });
+    wrapper2.instance().resetEditForm({ preventDefault: () => { } });
     const sO = {
       date: '', time: '', tickets: '', more: '', venue: '', location: '',
     };
@@ -187,8 +188,8 @@ describe('Dashboard Container', () => {
   it('calls edit tour api', async () => {
     const wrapper2 = shallow<MusicDashboard>(<MusicDashboard
       auth={auth}
-      scc={{ transmit: () => {} }}
-      dispatch={() => {}}
+      scc={{ transmit: () => { } }}
+      dispatch={() => { }}
       editTour={{
         datetime: '2020-10-10T000',
         _id: '123',
@@ -199,9 +200,9 @@ describe('Dashboard Container', () => {
         venue: 'beer garden',
         location: 'salem, va',
       }}
-      history={null}
-      location={null}
-      match={null}
+      history={anyProp}
+      location={anyProp}
+      match={anyProp}
     />);
     wrapper2.setState({
       date: '2020-10-10',

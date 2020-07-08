@@ -4,7 +4,7 @@ const initialState = {
   scc: {},
 };
 
-const reducer = (state = initialState, action) => {
+const reducer = (state = initialState, action: any): any => {
   switch (action.type) {
     case 'SCC': return { ...state, scc: action.scc };
     case 'NUM_USERS': return { ...state, userCount: parseInt(action.data, 10) };

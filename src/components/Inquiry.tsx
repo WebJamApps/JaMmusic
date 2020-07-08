@@ -30,7 +30,7 @@ export default class Inquiry extends Component<any, InquiryState> {
 
   superagent: superagent.SuperAgentStatic;
 
-  constructor(props) {
+  constructor(props:any) {
     super(props);
     this.state = {
       submitted: false,

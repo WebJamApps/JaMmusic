@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import { GoogleLogin, GoogleLogout } from 'react-google-login';
 import { connect } from 'react-redux';
@@ -12,15 +12,15 @@ interface AppMainProps {
   location: { pathname: string };
   heartBeat: string;
   userCount: number;
-  auth: { isAuthenticated: boolean; user: { userType: string }};
+  auth: { isAuthenticated: boolean; user: { userType: string } };
   dispatch: (...args: any) => any;
 }
 
 interface AppMainState { menuOpen: boolean }
 
-export class AppTemplate extends Component<AppMainProps, AppMainState> {
+export class AppTemplate extends React.Component<AppMainProps, AppMainState> {
   static defaultProps = {
-    dispatch: /* istanbul ignore next */() => {}, auth: { isAuthenticated: false, user: { userType: '' } }, userCount: 0, heartBeat: 'white',
+    dispatch: /* istanbul ignore next */() => { }, auth: { isAuthenticated: false, user: { userType: '' } }, userCount: 0, heartBeat: 'white',
   };
 
   menuUtils: any;
@@ -48,7 +48,7 @@ export class AppTemplate extends Component<AppMainProps, AppMainState> {
     this.appMainUtils = appMainUtils;
   }
 
-  get currentStyles() { // eslint-disable-line class-methods-use-this
+  get currentStyles(): any { // eslint-disable-line class-methods-use-this
     const result = {
       headerImagePath: '../static/imgs/webjamicon7.png',
       headerText1: 'Web Jam LLC',
@@ -61,7 +61,7 @@ export class AppTemplate extends Component<AppMainProps, AppMainState> {
     return result;
   }
 
-  get menus() { // eslint-disable-line class-methods-use-this
+  get menus(): any[] { // eslint-disable-line class-methods-use-this
     return [
       {
         className: '', type: 'link', iconClass: 'fas fa-music', link: '/music', name: 'Music',
@@ -87,17 +87,17 @@ export class AppTemplate extends Component<AppMainProps, AppMainState> {
     ];
   }
 
-  toggleMobileMenu() {
+  toggleMobileMenu(): void {
     const { menuOpen } = this.state;
     const mO = !menuOpen;
     this.setState({ menuOpen: mO });
   }
 
   // eslint-disable-next-line react/destructuring-assignment
-  responseGoogleLogin(response: any) { return this.authUtils.responseGoogleLogin(response, this); }
+  responseGoogleLogin(response: any): Promise<string> { return this.authUtils.responseGoogleLogin(response, this); }
 
   // eslint-disable-next-line react/destructuring-assignment
-  responseGoogleLogout() { return this.authUtils.responseGoogleLogout(this.props.dispatch); }
+  responseGoogleLogout(): string { return this.authUtils.responseGoogleLogout(this.props.dispatch); }
 
   close() {
     this.setState({ menuOpen: false });
@@ -115,7 +115,7 @@ export class AppTemplate extends Component<AppMainProps, AppMainState> {
   }
 
   googleButtons(type: string, index: number) {
-    const cId = process.env.GoogleClientId;
+    const cId = process.env.GoogleClientId || /* istanbul ignore next */'';
     if (type === 'login') {
       return (
         <div key={index} className="menu-item googleLogin">
@@ -199,7 +199,7 @@ export class AppTemplate extends Component<AppMainProps, AppMainState> {
               style={{ width: '182px', marginRight: 0, marginLeft: 0 }}
             />
           </div>
-          { this.navLinks() }
+          {this.navLinks()}
         </div>
       </div>
     );
@@ -219,7 +219,7 @@ export class AppTemplate extends Component<AppMainProps, AppMainState> {
             <div className="swipe-area" />
             {this.headerSection()}
             <div style={{ width: 'auto' }} id="contentBlock" className="content-block">
-              { this.children }
+              {this.children}
               <Footer />
             </div>
           </div>

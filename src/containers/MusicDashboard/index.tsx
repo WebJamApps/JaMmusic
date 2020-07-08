@@ -7,7 +7,7 @@ import mapStoreToProps from '../../redux/mapStoreToProps';
 import forms from '../../lib/forms';
 import commonUtils from '../../lib/commonUtils';
 import AddTime from '../../lib/timeKeeper';
-import Ttable from '../../components/tour-table';
+import Ttable from '../../components/TourTable';
 
 interface MusicDashboardProps extends RouteComponentProps<any> {
   dispatch: (...args: any) => any;
@@ -201,7 +201,7 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
     );
   }
 
-  newTourForm():JSX.Element {
+  newTourForm(): JSX.Element {
     let {
       location, tickets, more, date, time, venue,
     } = this.state;
@@ -233,7 +233,7 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
 
   render() {
     const { redirect } = this.state;
-    const { editTour } = this.props;
+    const { editTour, dispatch } = this.props;
     return (
       <div className="page-content">
         {redirect ? <Redirect to="/music" /> : null}
@@ -250,7 +250,7 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
         {!editTour._id ? (
           <div className="material-content elevation3" style={{ maxWidth: '10in', margin: 'auto' }}>
             <h5 style={{ textAlign: 'center', marginBottom: 0 }}>Modify Event</h5>
-            <Ttable deleteButton />
+            <Ttable deleteButton dispatch={dispatch} />
           </div>
         ) : null}
         <p>&nbsp;</p>

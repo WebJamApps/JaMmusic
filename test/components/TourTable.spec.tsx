@@ -1,16 +1,16 @@
 import * as React from 'react';
 import { shallow } from 'enzyme';
-import { TourTable } from '../../src/components/tour-table';
+import { TourTable } from '../../src/components/TourTable';
 
 function setup() {
   const props = {};
-  const tour = [];
+  const tour: any[] = [];
   const wrapper = shallow<TourTable>(<TourTable
     tour={tour}
-    dispatch={() => {}}
+    dispatch={() => { }}
     tourUpdated={false}
     auth={{ token: 'token' }}
-    scc={{ transmit: () => {} }}
+    scc={{ transmit: () => { } }}
   />);
   return { wrapper, props };
 }
@@ -38,11 +38,11 @@ describe('tour-table component test', () => {
       tour={[{
         _id: '123', title: '', url: '', category: '',
       }]}
-      dispatch={() => {}}
+      dispatch={() => { }}
       tourUpdated={false}
       deleteButton
       auth={{ token: 'token' }}
-      scc={{ transmit: () => {} }}
+      scc={{ transmit: () => { } }}
     />);
     expect(wrapper2.find('.tourTable').exists()).toBe(true);
   });
@@ -51,11 +51,11 @@ describe('tour-table component test', () => {
       tour={[{
         _id: '123', title: '', url: '', category: '',
       }]}
-      dispatch={() => {}}
+      dispatch={() => { }}
       tourUpdated={false}
       deleteButton
       auth={{ token: 'token' }}
-      scc={{ transmit: () => {} }}
+      scc={{ transmit: () => { } }}
     />);
     const buttonjsx = (<button type="button" style={{ display: 'block' }}>howdy</button>);
     expect(typeof wrapper2.instance().setColumns).toBe('function');
@@ -68,11 +68,11 @@ describe('tour-table component test', () => {
       tour={[{
         _id: '123', title: '', url: '', category: '',
       }]}
-      dispatch={() => {}}
+      dispatch={() => { }}
       tourUpdated={false}
       deleteButton
       auth={{ token: 'token' }}
-      scc={{ transmit: () => {} }}
+      scc={{ transmit: () => { } }}
     />);
     wrapper2.instance().deleteTour = jest.fn();
     wrapper2.update();
@@ -86,11 +86,11 @@ describe('tour-table component test', () => {
       tour={[{
         _id: '123', title: '', url: '', category: '',
       }]}
-      dispatch={() => {}}
+      dispatch={() => { }}
       tourUpdated={false}
       deleteButton
       auth={{ token: 'token' }}
-      scc={{ transmit: () => {} }}
+      scc={{ transmit: () => { } }}
     />);
     const globalAny: any = global;
     globalAny.confirm = jest.fn(() => true);
@@ -110,11 +110,11 @@ describe('tour-table component test', () => {
       tour={[{
         _id: '123', title: '', url: '', category: '',
       }]}
-      dispatch={() => {}}
+      dispatch={() => { }}
       tourUpdated={false}
       deleteButton
       auth={{ token: 'token' }}
-      scc={{ transmit: () => {} }}
+      scc={{ transmit: () => { } }}
     />);
     const globalAny: any = global;
     globalAny.confirm = jest.fn(() => false);
@@ -126,11 +126,11 @@ describe('tour-table component test', () => {
       tour={[{
         _id: '123', title: '', url: '', category: '',
       }]}
-      dispatch={() => {}}
+      dispatch={() => { }}
       tourUpdated={false}
       deleteButton
       auth={{ token: 'token' }}
-      scc={{ transmit: () => {} }}
+      scc={{ transmit: () => { } }}
     />);
     wrapper2.instance().editTour = jest.fn();
     wrapper2.update();
@@ -144,16 +144,22 @@ describe('tour-table component test', () => {
       tour={[{
         _id: '123', title: '', url: '', category: '',
       }]}
-      dispatch={() => {}}
+      dispatch={() => { }}
       tourUpdated={false}
       deleteButton
       auth={{ token: 'token' }}
-      scc={{ transmit: () => {} }}
+      scc={{ transmit: () => { } }}
     />);
     const tour = {
       date: '5-5-2020', time: '5:00 pm', tickets: 'no', more: 'no', venue: 'a venue', location: 'Salem', _id: '1',
     };
     r = wrapper2.instance().editTour(tour);
     expect(r).toBe(true);
+  });
+  it('renders without tour data and handles delete', () => {
+    const wrapper3 = shallow<TourTable>(<TourTable dispatch={jest.fn()} />);
+    const globalAny: any = global;
+    globalAny.confirm = jest.fn(() => true);
+    expect(wrapper3.instance().deleteTour('1')).toBe(false);
   });
 });

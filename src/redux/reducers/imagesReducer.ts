@@ -5,7 +5,7 @@ const initialState = {
   error: '',
 };
 
-const imagesReducer = (state = initialState, action) => {
+const imagesReducer = (state = initialState, action: any): any => {
   switch (action.type) {
     case 'FETCH_IMAGES':
       return {

@@ -1,7 +1,7 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import { GoogleLogin } from 'react-google-login';
-import { AppTemplate } from '../../src/App/app-main';
+import { AppTemplate } from '../../src/App/AppTemplate';
 import authUtils from '../../src/App/authUtils';
 
 const dFunc = () => {};
@@ -29,7 +29,7 @@ describe('app-main component test setup', () => {
     expect(result).toBe(true);
   });
   it('handles response from google logout', async () => {
-    authUtils.responseGoogleLogout = jest.fn(() => Promise.resolve(true));
+    authUtils.responseGoogleLogout = jest.fn(() => true);
     const wrapper2 = shallow<AppTemplate>(<AppTemplate dispatch={dFunc} location={{ pathname: '/music' }}><div /></AppTemplate>);
     const result = await wrapper2.instance().responseGoogleLogout();
     expect(result).toBe(true);

@@ -1,28 +1,20 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import Home from '../../src/containers/Homepage';
+import { Homepage } from '../../src/containers/Homepage';
 import WideAboutUs from '../../src/containers/Homepage/Widescreen/WideAbout';
 import WideCurrentProjects from '../../src/containers/Homepage/Widescreen/WideCurrentProjects';
 import WideFacebookFeed from '../../src/containers/Homepage/Widescreen/WideFacebookFeed';
-import Inquiry from '../../src/components/inquiry';
 
-const wrapper = shallow<Home>(<Home />);
+const targetRef: any = {};
+const wrapper = shallow<Homepage>(<Homepage targetRef={targetRef} width={1200} height={1800} />);
 
 describe('Home', () => {
   it('Renders the homepage', () => {
-    wrapper.instance().setState({ width: 1009 });
-    wrapper.instance().forceUpdate();
     expect(wrapper.find(WideAboutUs).exists()).toBe(true);
     expect(wrapper.find(WideAboutUs).dive().find('div.widescreenHomepage').exists()).toBe(true);
     expect(wrapper.find(WideCurrentProjects).dive().find('div.widescreenHomepage').exists()).toBe(true);
     expect(wrapper.find(WideCurrentProjects).dive().find(WideFacebookFeed).dive()
       .find('div')
       .exists()).toBe(true);
-  });
-  it('Resizes the page', () => {
-    wrapper.instance().onResize(100);
-    expect(wrapper.instance().state.width).toBe(100);
-    const i = wrapper.find(Inquiry).get(0);
-    expect(i).toBeDefined();
   });
 });

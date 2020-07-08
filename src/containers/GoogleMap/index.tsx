@@ -25,18 +25,15 @@ class GoogleMap extends React.Component {
   }
 
   componentDidMount(): void {
-    this.gMap = new google.maps.Map(document.getElementById('googleMap'), { zoom: 2, center: { lat: 40, lng: -100 } });
+    const mapDiv = document.getElementById('googleMap');
+    if (mapDiv) this.gMap = new google.maps.Map(mapDiv, { zoom: 2, center: { lat: 40, lng: -100 } });
     this.userMap = new UMap();
     this.userMap = this.gMapUtils.limitLat(this.userMap);
-    // if (this.userMap.loc.lat > 83) this.userMap.loc.lat = 83;
-    // if (this.userMap.loc.lat < -70) this.userMap.loc.lat = -70;
     this.content = `<div><p><strong>User Name:</strong> ${this.userMap.name}</p>`
       + `<p><strong>Latitude:</strong> ${this.userMap.loc.lat}</p></div>`;
     this.addMarker(this.userMap);
     this.companyMap = new CMap();
     this.companyMap = this.gMapUtils.limitLat(this.companyMap);
-    // if (this.companyMap.loc.lat > 83) this.companyMap.loc.lat = 83;
-    // if (this.companyMap.loc.lat < -70) this.companyMap.loc.lat = -70;
     this.content = `<div><p><strong>Company Name:</strong> ${this.companyMap.name}</p>`
       + `<p><strong>Company Slogan:</strong> ${this.companyMap.catchPhrase}</p>`
       + `<p><strong>Latitude:</strong> ${this.companyMap.loc.lat}</p></div>`;

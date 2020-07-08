@@ -73,8 +73,9 @@ export class MusicPlayer extends Component<MProps, MusicPlayerState> {
     const params = new URLSearchParams(window.location.search);
     const { player } = this.state;
     const { songs, filterBy } = this.props;
+    let newSongs: any[] = [];
     this.commonUtils.setTitleAndScroll('', window.screen.width);
-    const newSongs = songs.filter((song: { category?: string }) => song.category === filterBy);
+    if (songs) newSongs = songs.filter((song: { category?: string }) => song.category === filterBy);
     this.setState({ song: newSongs[0], songsState: newSongs });
     await this.musicPlayerUtils.checkOnePlayer(params, player, this);
     return this.musicPlayerUtils.runIfOnePlayer(this);
@@ -90,14 +91,13 @@ export class MusicPlayer extends Component<MProps, MusicPlayerState> {
     return classOverlay;
   }
 
-  playUrl(): string | null {
+  playUrl(): string {
     const { song } = this.state;
     if (song && song._id) return `https://web-jam.com/music/songs?oneplayer=true&id=${song._id}`;
-    return null;
+    return 'https://web-jam.com/music/songs';
   }
 
-  reactPlayer(): JSX.Element {
-    const { song } = this.state;
+  reactPlayer(song: Song): JSX.Element {
     const { player } = this.state;
     return (
       <ReactPlayer
@@ -229,11 +229,11 @@ export class MusicPlayer extends Component<MProps, MusicPlayerState> {
     else this.setState({ song: songsState[index], index });// eslint-disable-line security/detect-object-injection
   }
 
-  copyInput(player: MusicPlayerState['player'], song: Song): JSX.Element {
+  copyInput(player: MusicPlayerState['player'], song: Song | null): JSX.Element {
     return (
       <div id="copyInput" style={{ marginTop: '-20px', marginBottom: '40px' }}>
         {player.displayCopyMessage && <div className="copySuccess"> Url copied Url to clipboard </div>}
-        {song !== null ? <input id="copyUrl" disabled value={this.playUrl()} style={{ backgroundColor: '#fff' }} className="form-control" />
+        {song ? <input id="copyUrl" disabled value={this.playUrl()} style={{ backgroundColor: '#fff' }} className="form-control" />
           : null}
         <div
           id="copyButton"
@@ -259,7 +259,7 @@ export class MusicPlayer extends Component<MProps, MusicPlayerState> {
         <div id="player" className="mb-2 row justify-content-md-center">
           <section id="playSection" className="col-12 mt-2 mr-0 col-md-7">
             <div className={classOverlay} />
-            {song !== null && song !== undefined && song.url !== undefined ? this.reactPlayer() : null}
+            {song !== null && song !== undefined && song.url !== undefined ? this.reactPlayer(song) : null}
           </section>
           {song ? this.musicUtils.textUnderPlayer(song as unknown as string) : null}
           {this.buttons()}
