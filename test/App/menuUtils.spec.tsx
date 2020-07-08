@@ -6,21 +6,19 @@ describe('menuUtils', () => {
     makeMenuLink: () => true,
     props: {
       location: { pathname: '/music' },
-      auth: { token: 'token', isAuthenticated: true, user: { userType: 'Developer' } },
-      dispatch: () => Promise.resolve(true),
+      auth: { token: 'token', isAuthenticated: true, user: { userType: '' } },
+      dispatch: () => jest.fn(),
     },
   };
-  it('handles menuItem for Develper', () => new Promise((done) => {
+  it('handles menuItem for Develper', () => {
     const item: any = { link: '/music', type: 'link', auth: true };
     const result = menuUtils.menuItem(item,
       1, controllerStub);
     expect(result).toBe(true);
-    done();
-  }));
-  it('handles menuItem for GoogleLogout', () => new Promise((done) => {
+  });
+  it('handles menuItem for GoogleLogout', () => {
     const result = menuUtils.continueMenuItem({ link: '/', type: 'googleLogout', auth: true },
       1, { pathname: '/music' }, { isAuthenticated: true }, controllerStub);
     expect(result).toBe(true);
-    done();
-  }));
+  });
 });

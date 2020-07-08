@@ -49,7 +49,7 @@ const responseGoogleFailLogin = (response: any): boolean => {
 
 const responseGoogleLogout = (dispatch: (arg0: any) => void): boolean => {
   dispatch(logout());
-  if (window.location.href.includes('/dashboard')) window.location.assign('/music');
+  window.location.reload();
   return true;
 };
 

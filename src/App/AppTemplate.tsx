@@ -76,6 +76,9 @@ export class AppTemplate extends React.Component<AppMainProps, AppMainState> {
         className: 'dashboard', type: 'link', iconClass: 'fas fa-user-secret', link: '/music/dashboard', name: 'Dashboard', auth: true,
       },
       {
+        className: '', type: 'link', iconClass: 'fas fa-map-marker', link: '/map', name: 'Map', auth: true,
+      },
+      {
         className: 'home', type: 'link', iconClass: 'fas fa-home', link: '/', name: 'Web Jam LLC',
       },
       {
@@ -138,7 +141,7 @@ export class AppTemplate extends React.Component<AppMainProps, AppMainState> {
     );
   }
 
-  makeMenuLink(menu: any, index: number) {
+  makeMenuLink(menu: any, index: number):JSX.Element {
     return (
       <div key={index} className="menu-item">
         <Link to={menu.link} className="nav-link" onClick={this.close}>
@@ -150,7 +153,7 @@ export class AppTemplate extends React.Component<AppMainProps, AppMainState> {
     );
   }
 
-  navLinks() {
+  navLinks():JSX.Element {
     const { userCount, heartBeat } = this.props;
     return (
       <div className="nav-list" style={{ width: '180px' }}>

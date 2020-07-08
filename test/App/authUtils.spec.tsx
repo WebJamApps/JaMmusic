@@ -47,19 +47,20 @@ describe('authUtils', () => {
     const result = await authUtils.setUser(cStub3);
     expect(result).toBe(true);
   });
-  it('logs out when not /dashboard', async () => {
+  it('logs out when not /dashboard', () => {
     Object.defineProperty(window, 'location', { value: { href: '/booya', assign: () => { }, reload: () => { } }, writable: true });
-    const result = await authUtils.responseGoogleLogout(() => { });
+    const result = authUtils.responseGoogleLogout(() => { });
     expect(result).toBe(true);
   });
-  it('logs out when /dashboard', async () => {
+  it('logs out when /dashboard', () => {
     delete window.location;
     window.location = {
       ...window.location,
       href: '/dashboard',
       assign: jest.fn(),
+      reload: jest.fn(),
     };
-    const result = await authUtils.responseGoogleLogout(() => { });
+    const result = authUtils.responseGoogleLogout(() => { });
     expect(result).toBe(true);
   });
 });
