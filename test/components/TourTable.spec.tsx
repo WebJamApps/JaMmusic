@@ -156,4 +156,10 @@ describe('tour-table component test', () => {
     r = wrapper2.instance().editTour(tour);
     expect(r).toBe(true);
   });
+  it('renders without tour data and handles delete', () => {
+    const wrapper3 = shallow<TourTable>(<TourTable dispatch={jest.fn()} />);
+    const globalAny: any = global;
+    globalAny.confirm = jest.fn(() => true);
+    expect(wrapper3.instance().deleteTour('1')).toBe(false);
+  });
 });

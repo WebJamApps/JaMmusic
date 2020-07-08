@@ -25,4 +25,12 @@ describe('picture slider component test', () => {
     expect(wrapper.find('Caption').first().dive().find('.slider-caption')
       .exists()).toBe(true);
   });
+  it('renders correctly', () => {
+    const { wrapper } = setup();
+    expect(wrapper).toMatchSnapshot();
+  });
+  it('renders without data', () => {
+    const wrapper = shallow(<PicSlider />);
+    expect(wrapper.find('div').exists()).toBe(true);
+  });
 });

@@ -97,13 +97,12 @@ export class MusicPlayer extends Component<MProps, MusicPlayerState> {
     return 'https://web-jam.com/music/songs';
   }
 
-  reactPlayer(): JSX.Element {
-    const { song } = this.state;
+  reactPlayer(song: Song): JSX.Element {
     const { player } = this.state;
     return (
       <ReactPlayer
         style={this.musicUtils.setPlayerStyle(song as Song)}
-        url={song ? song.url : undefined}
+        url={song.url}
         playing={player.playing}
         controls
         onEnded={this.next}
@@ -260,7 +259,7 @@ export class MusicPlayer extends Component<MProps, MusicPlayerState> {
         <div id="player" className="mb-2 row justify-content-md-center">
           <section id="playSection" className="col-12 mt-2 mr-0 col-md-7">
             <div className={classOverlay} />
-            {song !== null && song !== undefined && song.url !== undefined ? this.reactPlayer() : null}
+            {song !== null && song !== undefined && song.url !== undefined ? this.reactPlayer(song) : null}
           </section>
           {song ? this.musicUtils.textUnderPlayer(song as unknown as string) : null}
           {this.buttons()}

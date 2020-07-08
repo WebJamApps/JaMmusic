@@ -30,6 +30,16 @@ describe('tour reducer', () => {
       },
     );
   });
+  it('handles NEW_TOUR with missing data', () => {
+    const t1:any = { datetime: `${new Date().toISOString}`, _id: '' };
+    expect(reducer({ tour: [t1], tourUpdated: true, editTour: {} }, { type: 'NEW_TOUR', data: undefined })).toEqual(
+      {
+        tour: [t1],
+        tourUpdated: true,
+        editTour: {},
+      },
+    );
+  });
   it('handles EDIT_TOUR', () => {
     expect(reducer(undefined, { type: 'EDIT_TOUR', data: { _id: '123', datetime: 'string' } })).toEqual(
       {

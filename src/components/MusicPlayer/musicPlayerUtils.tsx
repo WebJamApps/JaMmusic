@@ -13,11 +13,9 @@ const showHideButtons = (display: string): boolean => {
   const mAndP = document.getElementById('mAndP');
   const sb = document.getElementById('share-buttons');
   const pb = document.getElementById('play-buttons');
-  try {
-    if (mAndP) mAndP.style.display = display;
-    if (sb) sb.style.display = display;
-    if (pb) pb.style.display = display;
-  } catch (e) { return false; }
+  if (mAndP) mAndP.style.display = display;
+  if (sb) sb.style.display = display;
+  if (pb) pb.style.display = display;
   return true;
 };
 const share = (view: any): void => {

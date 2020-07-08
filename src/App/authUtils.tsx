@@ -5,7 +5,9 @@ import authenticate, { logout } from './authActions';
 const setUser = async (controller: any): Promise<boolean> => {
   const { auth, dispatch } = controller.props;
   let decoded, user;
-  try { decoded = jwt.decode(auth.token, process.env.HashString || ''); } catch (e) { return Promise.reject(e); }
+  try {
+    decoded = jwt.decode(auth.token, process.env.HashString || /* istanbul ignore next */'');
+  } catch (e) { return Promise.reject(e); }
   if (decoded.user) dispatch({ type: 'SET_USER', data: decoded.user });
   else {
     try {
@@ -14,7 +16,7 @@ const setUser = async (controller: any): Promise<boolean> => {
     } catch (e) { return Promise.reject(e); }
     dispatch({ type: 'SET_USER', data: user.body });
     decoded.user = user.body;
-    const newToken = jwt.encode(decoded, process.env.HashString || '');
+    const newToken = jwt.encode(decoded, process.env.HashString || /* istanbul ignore next */'');
     dispatch({ type: 'GOT_TOKEN', data: { token: newToken, email: auth.email } });
   }
   window.location.reload();

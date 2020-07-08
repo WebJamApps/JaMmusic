@@ -26,4 +26,9 @@ describe('GoogleMap container', () => {
     expect(wrapper).toMatchSnapshot();
     expect(lType).toBe('click');
   });
+  it('does not render the map', () => {
+    document.body.innerHTML = '<div></div>';
+    const wrapper2 = shallow<GoogleMap>(<GoogleMap />);
+    expect(wrapper2.instance().gMap).toBe(null);
+  });
 });
