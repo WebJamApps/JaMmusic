@@ -124,14 +124,14 @@ describe('Music player component init', () => {
     wrapper.find('#copyButton').simulate('click');
     expect(wrapper.instance().state.player.displayCopier).toBe('none');
   });
-  it('hides copier message after showing for 1.5s', () => new Promise((done) => {
+  it('hides copier message after showing for 1.5s', () => {
     const { wrapper } = setup();
     wrapper.instance().navigator = { ...navigator, clipboard: { ...navigator.clipboard, writeText: () => Promise.resolve() } };
     wrapper.update();
+    jest.runOnlyPendingTimers();
     wrapper.instance().musicPlayerUtils.copyShare(wrapper.instance());
     expect(wrapper.instance().state.player.displayCopier).toBe('none');
-    setTimeout(() => done(), 1501);
-  }));
+  });
   it('toggles off copying/share pane', () => {
     const { wrapper } = setup();
     wrapper.instance().setState({

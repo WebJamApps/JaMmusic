@@ -15,4 +15,9 @@ describe('menuUtils', () => {
       1, { pathname: '/music' }, { isAuthenticated: true }, vStub);
     expect(result).toBe(true);
   });
+  it('returns null if auth role is not a match', () => {
+    const menu: any = { auth: true };
+    const result = menuUtils.menuItem(menu, 1, vStub);
+    expect(result).toBe(null);
+  });
 });
