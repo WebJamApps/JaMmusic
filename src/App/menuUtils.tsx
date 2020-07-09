@@ -1,7 +1,7 @@
 import commonUtils from '../lib/commonUtils';
 
-const continueMenuItem = (menu: { link: any; name?: string; type: any; auth?: any; },
-  index: any, location: { pathname: string; },
+const continueMenuItem = (menu: { link: string; name?: string; type: string; auth?: boolean; },
+  index: number, location: { pathname: string; },
   auth: { isAuthenticated: any; },
   view: {
     props?: { location: any; auth: any; };
@@ -12,20 +12,19 @@ const continueMenuItem = (menu: { link: any; name?: string; type: any; auth?: an
   return null;
 };
 
-const menuItem = (menu: { link: string | string[]; name: string; type: string; auth: any; },
-  index: any,
+const menuItem = (menu: { link: string; name: string; type: string; auth: boolean; },
+  index: number,
   view: {
     props: { location: any; auth: any; };
     makeMenuLink: (arg0: any, arg1: any) => any;
   }): any => {
   const userRoles: any[] = commonUtils.getUserRoles();
   const { location, auth } = view.props;
-  if ((menu.name === 'Dashboard' || menu.name === 'Map') && (!auth.isAuthenticated || userRoles.indexOf(auth.user.userType) === -1)) return null;
+  if (menu.auth && (!auth.isAuthenticated || userRoles.indexOf(auth.user.userType) === -1)) return null;
   if (location.pathname.includes('/music') && (menu.link.includes('/music') || menu.name === 'Web Jam LLC')) {
     return view.makeMenuLink(menu, index);
   }
-  if ((location.pathname === '/' || location.pathname === '/map')
-    && (menu.link === '/map' || menu.link === '/music' || menu.link === '/' || menu.link.includes('/dashboard'))) {
+  if (menu.link === '/map' || menu.link === '/music' || menu.link === '/' || menu.link.includes('/dashboard')) {
     return view.makeMenuLink(menu, index);
   }
   return continueMenuItem(menu, index, location, auth, view);

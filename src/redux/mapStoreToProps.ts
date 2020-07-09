@@ -1,3 +1,12 @@
+export interface Auth {
+  isAuthenticated: boolean,
+  error: string,
+  email: string,
+  token: string,
+  user: {
+    userType: string;
+  };
+}
 export interface Song {
   artist?: string;
   composer?: string;

@@ -5,9 +5,16 @@
     "core-js/stable",
     "regenerator-runtime/runtime"
   ],
+  "timers": "fake",
   "testURL": "http://localhost/",
   "transform": {
     "^.+\\.tsx?$": "ts-jest"
   },
-  "moduleFileExtensions": ["js", "json", "jsx", "ts", "tsx"]
+  "moduleFileExtensions": [
+    "js",
+    "json",
+    "jsx",
+    "ts",
+    "tsx"
+  ]
 }

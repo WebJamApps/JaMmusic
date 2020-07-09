@@ -1,10 +1,13 @@
 import * as React from 'react';
 import { shallow } from 'enzyme';
+import env from 'dotenv';
 import { App } from '../../src/App';
+import { Auth } from '../../src/redux/mapStoreToProps';
 
+env.config();
 describe('App component', () => {
   const dp = (fun: any) => fun;
-  const wrapper = shallow(<App dispatch={dp} />);
+  const wrapper = shallow<App>(<App dispatch={dp} />);
   it('renders the component', () => {
     expect(wrapper.find('div#App').exists()).toBe(true);
   });
@@ -21,5 +24,15 @@ describe('App component', () => {
   it('renders when dispatch is not defined', () => {
     const wrapper2 = shallow(<App />);
     expect(wrapper2).toBeDefined();
+  });
+  it('renders the routes when authenticated', () => {
+    let authRole = '';
+    // eslint-disable-next-line prefer-destructuring
+    if (process.env.userRoles) authRole = JSON.parse(process.env.userRoles).roles[1];
+    const auth2: Auth = {
+      isAuthenticated: true, error: 'none', email: 'devemail@cool.com', token: '', user: { userType: authRole },
+    };
+    const wrapper2 = shallow(<App dispatch={jest.fn()} auth={auth2} />);
+    expect(wrapper2.find('div#App').exists()).toBe(true);
   });
 });
