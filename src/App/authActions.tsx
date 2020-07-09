@@ -1,5 +1,6 @@
 import superagent from 'superagent';
-import { AppProps, GoogleBody } from './AppTypes';
+import { GoogleBody } from './AppTypes';
+import type { AppTemplateProps } from './AppTemplate';
 
 export const gotToken = (doc: unknown): { type: string; data: unknown } => ({
   type: 'GOT_TOKEN',
@@ -11,7 +12,7 @@ export const authError = (e: unknown): { type: string; error: unknown } => ({
   error: e,
 });
 
-async function authFunc(body: GoogleBody, props: AppProps): Promise<string|Error> {
+async function authFunc(body: GoogleBody, props: AppTemplateProps): Promise<string|Error> {
   const { auth } = props;
   if (auth.isAuthenticated) return 'authenticated';
   let data;

@@ -13,7 +13,7 @@ import menuUtils, { ImenuUtils } from './menuUtils';
 import menuItems, { ImenuItem } from './menuItems';
 import authActions from './authActions';
 
-interface AppTemplateProps extends RouteComponentProps {
+export interface AppTemplateProps extends RouteComponentProps {
   heartBeat: string;
   userCount: number;
   auth: Auth;
@@ -89,10 +89,12 @@ export class AppTemplate extends React.Component<AppTemplateProps, AppMainState>
   }
 
   // eslint-disable-next-line react/destructuring-assignment
-  responseGoogleLogin(response: GoogleLoginResponse | GoogleLoginResponseOffline): void { return this.authUtils.responseGoogleLogin(response, this); }
+  responseGoogleLogin(response: GoogleLoginResponseOffline | GoogleLoginResponse): Promise<string> {
+    return this.authUtils.responseGoogleLogin(response, this);
+  }
 
   // eslint-disable-next-line react/destructuring-assignment
-  responseGoogleLogout(): string { return this.authUtils.responseGoogleLogout(this.props.dispatch); }
+  responseGoogleLogout(): boolean { return this.authUtils.responseGoogleLogout(this.props.dispatch); }
 
   close(): boolean {
     this.setState({ menuOpen: false });
@@ -120,6 +122,7 @@ export class AppTemplate extends React.Component<AppTemplateProps, AppMainState>
             responseType="code"
             clientId={cId}
             buttonText="Login"
+            accessType="offline"
             onSuccess={this.responseGoogleLogin}
             onFailure={this.authUtils.responseGoogleFailLogin}
             cookiePolicy="single_host_origin"

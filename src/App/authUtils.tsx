@@ -1,13 +1,16 @@
 import superagent from 'superagent';
 import jwt from 'jwt-simple';
 import { Dispatch } from 'react';
+import { GoogleLoginResponseOffline, GoogleLoginResponse } from 'react-google-login';
 import type { AppTemplate } from './AppTemplate';
 
 export interface IauthUtils {
-  responseGoogleLogin: (...args: any) => any;
-  responseGoogleLogout: (...args: any) => any;
-  responseGoogleFailLogin: (...args: any) => any;
-  setUser: (...args: any) => any;
+  setUser: (view: AppTemplate) => Promise<string>;
+  responseGoogleLogin: (response: GoogleLoginResponseOffline | GoogleLoginResponse,
+    view: AppTemplate) => Promise<string>;
+  responseGoogleFailLogin: (response: unknown) => string;
+  responseGoogleLogout: (dispatch: Dispatch<unknown>) => boolean;
+
 }
 const setUser = async (view: AppTemplate): Promise<string> => {
   const { auth, dispatch } = view.props;
@@ -29,7 +32,7 @@ const setUser = async (view: AppTemplate): Promise<string> => {
   window.location.reload();
   return 'set user';
 };
-const responseGoogleLogin = async (response: { code: string; },
+const responseGoogleLogin = async (response: GoogleLoginResponseOffline | GoogleLoginResponse,
   view: AppTemplate): Promise<string> => {
   const uri = window.location.href;
   const baseUri = uri.split('/')[2];
@@ -47,9 +50,7 @@ const responseGoogleLogin = async (response: { code: string; },
   }
   return setUser(view);
 };
-
 const responseGoogleFailLogin = (response: unknown): string => `${response}`;
-
 const responseGoogleLogout = (dispatch: Dispatch<unknown>): boolean => {
   dispatch({ type: 'LOGOUT' });
   window.location.reload();
