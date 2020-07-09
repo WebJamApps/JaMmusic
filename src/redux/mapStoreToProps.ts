@@ -33,7 +33,7 @@ export interface Store {
   sc: {scc: any; userCount: number};
   songs: {songs: Song[]};
   images: {images: any[]};
-  auth: any;
+  auth: Auth;
   tour: {tour: any[]; tourUpdated: boolean; editTour: any};
 }
 const mapStoreToProps = (store: Store): any => ({

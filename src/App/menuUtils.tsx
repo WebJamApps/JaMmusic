@@ -1,5 +1,9 @@
 import commonUtils from '../lib/commonUtils';
 
+export interface ImenuUtils {
+  continueMenuItem: (...args: any) => any;
+  menuItem: (...args: any) => any;
+}
 const continueMenuItem = (menu: { link: string; name?: string; type: string; auth?: boolean; },
   index: number, location: { pathname: string; },
   auth: { isAuthenticated: any; },
