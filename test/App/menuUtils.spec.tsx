@@ -1,7 +1,7 @@
 import menuUtils from '../../src/App/menuUtils';
 
 describe('menuUtils', () => {
-  const vStub = {
+  const vStub:any = {
     googleButtons: () => true,
     makeMenuLink: () => true,
     props: {
@@ -11,8 +11,10 @@ describe('menuUtils', () => {
     },
   };
   it('handles menuItem for GoogleLogout', () => {
-    const result = menuUtils.continueMenuItem({ link: '/', type: 'googleLogout', auth: true },
-      1, { pathname: '/music' }, { isAuthenticated: true }, vStub);
+    const menuItem:any = { link: '/', type: 'googleLogout', auth: true };
+    const auth:any = { isAuthenticated: true };
+    const result = menuUtils.continueMenuItem(menuItem,
+      1, auth, vStub);
     expect(result).toBe(true);
   });
   it('returns null if auth role is not a match', () => {

@@ -15,8 +15,8 @@ describe('App component', () => {
     expect(wrapper).toMatchSnapshot();
   });
   it('does not fetch the images or songs if they already exist', () => new Promise((done) => {
-    const songs = [{}];
-    const images = [{}];
+    const songs:any[] = [{}];
+    const images:any[] = [{}];
     const wrapper2 = shallow(<App dispatch={dp} songs={songs} images={images} />);
     expect(wrapper2.find('div#App').exists()).toBe(true);
     done();

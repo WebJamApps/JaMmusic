@@ -1,11 +1,12 @@
 import scc from 'socketcluster-client';
+import { Dispatch } from 'react';
 
-const listenForMessages = (socket: any,
+const listenForMessages = (socket: scc.AGClientSocket,
   method: string, name: string, type: string,
-  dispatch: (arg0: { type: any; data: any; }) => void) => {
+  dispatch: Dispatch<unknown>): void => {
   (async () => {
-    let receiver; // eslint-disable-next-line security/detect-object-injection
-    const consumer = socket[method](name).createConsumer();
+    let receiver;
+    const consumer = method === 'subscribe' ? socket.subscribe(name).createConsumer() : socket.receiver(name).createConsumer();
     while (true) { // eslint-disable-line no-constant-condition
       receiver = await consumer.next();// eslint-disable-line no-await-in-loop
       dispatch({ type, data: receiver.value });
@@ -13,7 +14,7 @@ const listenForMessages = (socket: any,
     }
   })();
 };
-const connectToSCC = (dispatch:any):boolean => {
+const connectToSCC = (dispatch: Dispatch<unknown>): boolean => {
   const socket = scc.create({
     hostname: process.env.SCS_HOST,
     port: Number(process.env.SCS_PORT),

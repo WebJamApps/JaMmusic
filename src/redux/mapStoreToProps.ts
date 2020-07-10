@@ -29,13 +29,22 @@ export interface Tour {
   location: string;
   _id: string;
 }
-export interface Store {
-  sc: {scc: any; userCount: number};
-  songs: {songs: Song[]};
-  images: {images: any[]};
-  auth: Auth;
-  tour: {tour: any[]; tourUpdated: boolean; editTour: any};
+export interface Iimage {
+  '_id': string;
+  'url': string;
+  'title': string;
+  'type': string;
+  'created_at': string;
+  'updated_at': string;
 }
+export interface Store {
+  sc: { scc: any; userCount: number };
+  songs: { songs: Song[] };
+  images: { images: any[] };
+  auth: Auth;
+  tour: { tour: any[]; tourUpdated: boolean; editTour: any };
+}
+
 const mapStoreToProps = (store: Store): any => ({
   songs: store.songs.songs,
   images: store.images.images,

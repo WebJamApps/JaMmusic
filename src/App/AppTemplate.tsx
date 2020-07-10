@@ -6,10 +6,10 @@ import {
 import { connect } from 'react-redux';
 import { Auth } from '../redux/mapStoreToProps';
 import authUtils, { IauthUtils } from './authUtils';
-import mapStoreToProps from '../redux/mapStoreToAllProps';
+import mapStoreToProps from '../redux/mapStoreToAppTemplateProps';
 import appTemplateUtils from './appTemplateUtils';
 import Footer from './Footer';
-import menuUtils, { ImenuUtils } from './menuUtils';
+import menuUtils from './menuUtils';
 import menuItems, { ImenuItem } from './menuItems';
 import authActions from './authActions';
 
@@ -41,7 +41,7 @@ export class AppTemplate extends React.Component<AppTemplateProps, AppMainState>
     heartBeat: 'white',
   };
 
-  menuUtils: ImenuUtils;
+  menuUtils: typeof menuUtils;
 
   authUtils: IauthUtils;
 
