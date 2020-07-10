@@ -29,7 +29,7 @@ const footerLinks = () => {
   );
 };
 
-const Footer = () => (
+const Footer = (): JSX.Element => (
   <div
     id="wjfooter"
     className="footer"
@@ -37,7 +37,7 @@ const Footer = () => (
       backgroundColor: '#565656', paddingTop: '20px', paddingBottom: '20px', bottom: '0',
     }}
   >
-    { footerLinks() }
+    {footerLinks()}
   </div>
 );
 

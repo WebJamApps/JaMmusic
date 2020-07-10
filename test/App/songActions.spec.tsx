@@ -14,10 +14,10 @@ describe('async actions', () => {
   const anyVar:any = {};
 
   it('test got songs', async () => {
-    const data = gotSongs('nothing');
+    const data = gotSongs([]);
     expect(data.type).toBe('GOT_SONGS');
   });
-  it('test get songs', async () => {
+  it('test get songs', () => {
     const { location } = window;
     delete window.location;
     const fn = jest.fn();
@@ -36,7 +36,7 @@ describe('async actions', () => {
       reload: anyVar,
       replace: anyVar,
     };
-    const data = await getSongs()(fn);
+    const data = getSongs()(fn);
     expect(data).toBeTruthy();
     window.location = location;
   });

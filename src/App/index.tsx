@@ -1,6 +1,6 @@
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
-import React, { Component } from 'react';
+import React, { Component, Dispatch } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { connect } from 'react-redux';
 import DefaultMusic from '../containers/Music';
@@ -12,29 +12,27 @@ import AppMain from './AppTemplate';
 import DefaultSongs from '../containers/Songs';
 import HomePage from '../containers/Homepage';
 import connectToSC from './connectToSC';
-import mapStoreToProps from '../redux/mapStoreToProps';
+import mapStoreToProps, { Song, Iimage, Auth } from '../redux/mapStoreToProps';
 import getSongs from './songsActions';
 import commonUtils from '../lib/commonUtils';
 
 export interface AppProps {
-  dispatch: (...args: any[]) => any;
-  songs: any[];
-  images: any[];
-  auth: {
-    user: {
-      userType?: string;
-    };
-    isAuthenticated?: boolean;
-  };
+  dispatch: Dispatch<unknown>;
+  songs: Song[];
+  images: Iimage[];
+  auth: Auth;
 }
+
 export class App extends Component<AppProps> {
-  connectToSC: any;
+  connectToSC: typeof connectToSC;
 
   static defaultProps = {
-    dispatch: (): any => { },
+    dispatch: (): void => { },
     songs: [],
     images: [],
-    auth: { isAuthenticated: false, user: { userType: '' } },
+    auth: {
+      isAuthenticated: false, token: '', error: '', email: '', user: { userType: '' },
+    },
   };
 
   constructor(props: AppProps) {
