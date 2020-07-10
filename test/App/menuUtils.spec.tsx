@@ -20,4 +20,14 @@ describe('menuUtils', () => {
     const result = menuUtils.menuItem(menu, 1, vStub);
     expect(result).toBe(null);
   });
+  it('handles menuItem for music/songs', () => {
+    const menu: any = { auth: false, link: '/music/songs' };
+    const result = menuUtils.menuItem(menu, 1, vStub);
+    expect(result).toBe(true);
+  });
+  it('handles menuItem for Web Jam LLC', () => {
+    const menu: any = { auth: false, link: '/', name: 'Web Jam LLC' };
+    const result = menuUtils.menuItem(menu, 1, vStub);
+    expect(result).toBe(true);
+  });
 });

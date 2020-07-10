@@ -1,40 +1,59 @@
-import React from 'react';
-import { Link, withRouter } from 'react-router-dom';
-import { GoogleLogin, GoogleLogout } from 'react-google-login';
+import React, { Dispatch } from 'react';
+import { Link, withRouter, RouteComponentProps } from 'react-router-dom';
+import {
+  GoogleLogin, GoogleLogout, GoogleLoginResponse, GoogleLoginResponseOffline,
+} from 'react-google-login';
 import { connect } from 'react-redux';
-import authUtils from './authUtils';
+import { Auth } from '../redux/mapStoreToProps';
+import authUtils, { IauthUtils } from './authUtils';
 import mapStoreToProps from '../redux/mapStoreToAllProps';
-import appMainUtils from './appMainUtils';
+import appTemplateUtils from './appTemplateUtils';
 import Footer from './Footer';
-import menuUtils from './menuUtils';
+import menuUtils, { ImenuUtils } from './menuUtils';
+import menuItems, { ImenuItem } from './menuItems';
+import authActions from './authActions';
 
-interface AppMainProps {
-  location: { pathname: string };
+export interface AppTemplateProps extends RouteComponentProps {
   heartBeat: string;
   userCount: number;
-  auth: { isAuthenticated: boolean; user: { userType: string } };
-  dispatch: (...args: any) => any;
+  auth: Auth;
+  dispatch: Dispatch<unknown>;
+  children?: React.ReactNode;
 }
 
 interface AppMainState { menuOpen: boolean }
-
-export class AppTemplate extends React.Component<AppMainProps, AppMainState> {
+interface CurrentStyles {
+  headerImagePath: string;
+  headerText1: string;
+  headerClass: string;
+  headerImageClass: string;
+  sidebarClass: string;
+  menuToggleClass: string;
+  sidebarImagePath: string;
+}
+export class AppTemplate extends React.Component<AppTemplateProps, AppMainState> {
   static defaultProps = {
-    dispatch: /* istanbul ignore next */() => { }, auth: { isAuthenticated: false, user: { userType: '' } }, userCount: 0, heartBeat: 'white',
+    dispatch: /* istanbul ignore next */(): void => { },
+    auth: {
+      isAuthenticated: false, token: '', error: '', email: '', user: { userType: '' },
+    },
+    userCount: 0,
+    heartBeat: 'white',
   };
 
-  menuUtils: any;
+  menuUtils: ImenuUtils;
 
-  children: any;
+  authUtils: IauthUtils;
 
-  authUtils: any;
+  appTemplateUtils: { activeUsers: (arg0: string, arg1: number) => React.ReactNode };
 
-  appMainUtils: any;
+  menus: ImenuItem[];
 
-  constructor(props: any) {
+  authenticate: typeof authActions;
+
+  constructor(props: AppTemplateProps) {
     super(props);
     this.menuUtils = menuUtils;
-    this.children = props.children;
     this.state = { menuOpen: false };
     this.close = this.close.bind(this);
     this.handleKeyPress = this.handleKeyPress.bind(this);
@@ -45,10 +64,12 @@ export class AppTemplate extends React.Component<AppMainProps, AppMainState> {
     this.responseGoogleLogout = this.responseGoogleLogout.bind(this);
     this.googleButtons = this.googleButtons.bind(this);
     this.authUtils = authUtils;
-    this.appMainUtils = appMainUtils;
+    this.appTemplateUtils = appTemplateUtils;
+    this.menus = menuItems;
+    this.authenticate = authActions;
   }
 
-  get currentStyles(): any { // eslint-disable-line class-methods-use-this
+  get currentStyles(): CurrentStyles { // eslint-disable-line class-methods-use-this
     const result = {
       headerImagePath: '../static/imgs/webjamicon7.png',
       headerText1: 'Web Jam LLC',
@@ -61,35 +82,6 @@ export class AppTemplate extends React.Component<AppMainProps, AppMainState> {
     return result;
   }
 
-  get menus(): any[] { // eslint-disable-line class-methods-use-this
-    return [
-      {
-        className: '', type: 'link', iconClass: 'fas fa-music', link: '/music', name: 'Music',
-      },
-      {
-        className: '', type: 'link', iconClass: 'far fa-money-bill-alt', link: '/music/buymusic', name: 'Buy Music',
-      },
-      {
-        className: 'songs', type: 'link', iconClass: 'far fa-lightbulb', link: '/music/songs', name: 'Songs',
-      },
-      {
-        className: 'dashboard', type: 'link', iconClass: 'fas fa-user-secret', link: '/music/dashboard', name: 'Dashboard', auth: true,
-      },
-      {
-        className: '', type: 'link', iconClass: 'fas fa-map-marker', link: '/map', name: 'Map', auth: true,
-      },
-      {
-        className: 'home', type: 'link', iconClass: 'fas fa-home', link: '/', name: 'Web Jam LLC',
-      },
-      {
-        className: 'login', type: 'googleLogin', iconClass: 'fas fa-login', link: '', name: 'Login',
-      },
-      {
-        className: 'logout', type: 'googleLogout', iconClass: 'fas fa-logout', link: '', name: 'Logout', auth: true,
-      },
-    ];
-  }
-
   toggleMobileMenu(): void {
     const { menuOpen } = this.state;
     const mO = !menuOpen;
@@ -97,27 +89,29 @@ export class AppTemplate extends React.Component<AppMainProps, AppMainState> {
   }
 
   // eslint-disable-next-line react/destructuring-assignment
-  responseGoogleLogin(response: any): Promise<string> { return this.authUtils.responseGoogleLogin(response, this); }
+  responseGoogleLogin(response: GoogleLoginResponseOffline | GoogleLoginResponse): Promise<string> {
+    return this.authUtils.responseGoogleLogin(response, this);
+  }
 
   // eslint-disable-next-line react/destructuring-assignment
-  responseGoogleLogout(): string { return this.authUtils.responseGoogleLogout(this.props.dispatch); }
+  responseGoogleLogout(): boolean { return this.authUtils.responseGoogleLogout(this.props.dispatch); }
 
-  close() {
+  close(): boolean {
     this.setState({ menuOpen: false });
     return true;
   }
 
-  handleKeyPress(e: any) {
+  handleKeyPress(e: { key: string; }): (void | null) {
     if (e.key === 'Escape') return this.setState({ menuOpen: false });
     return null;
   }
 
-  handleKeyMenu(e: any) {
+  handleKeyMenu(e: { key: string; }): (void | null) {
     if (e.key === 'Enter') return this.toggleMobileMenu();
     return null;
   }
 
-  googleButtons(type: string, index: number) {
+  googleButtons(type: string, index: number): JSX.Element {
     const cId = process.env.GoogleClientId || /* istanbul ignore next */'';
     if (type === 'login') {
       return (
@@ -128,6 +122,7 @@ export class AppTemplate extends React.Component<AppMainProps, AppMainState> {
             responseType="code"
             clientId={cId}
             buttonText="Login"
+            accessType="offline"
             onSuccess={this.responseGoogleLogin}
             onFailure={this.authUtils.responseGoogleFailLogin}
             cookiePolicy="single_host_origin"
@@ -141,7 +136,7 @@ export class AppTemplate extends React.Component<AppMainProps, AppMainState> {
     );
   }
 
-  makeMenuLink(menu: any, index: number):JSX.Element {
+  makeMenuLink(menu: ImenuItem, index: number): JSX.Element {
     return (
       <div key={index} className="menu-item">
         <Link to={menu.link} className="nav-link" onClick={this.close}>
@@ -153,7 +148,7 @@ export class AppTemplate extends React.Component<AppMainProps, AppMainState> {
     );
   }
 
-  navLinks():JSX.Element {
+  navLinks(): JSX.Element {
     const { userCount, heartBeat } = this.props;
     return (
       <div className="nav-list" style={{ width: '180px' }}>
@@ -167,12 +162,12 @@ export class AppTemplate extends React.Component<AppMainProps, AppMainState> {
         </div>
         {this.menus.map((menu, index) => (this.menuUtils.menuItem(menu, index, this)))}
         <p style={{ margin: 0, padding: 0, fontSize: '6pt' }}>&nbsp;</p>
-        {this.appMainUtils.activeUsers(heartBeat, userCount)}
+        {this.appTemplateUtils.activeUsers(heartBeat, userCount)}
       </div>
     );
   }
 
-  headerSection() {
+  headerSection(): JSX.Element {
     return (
       <div id="header" className={`material-header ${this.currentStyles.headerClass}`}>
         <div id="ohaflogo" className="headercontent">
@@ -185,7 +180,7 @@ export class AppTemplate extends React.Component<AppMainProps, AppMainState> {
     );
   }
 
-  drawerContainer(style: string) {
+  drawerContainer(style: string): JSX.Element {
     return (
       <div tabIndex={0} role="button" id="sidebar" onClick={this.close} onKeyPress={this.handleKeyPress} className={`${style} drawer-container`}>
         <div
@@ -208,8 +203,9 @@ export class AppTemplate extends React.Component<AppMainProps, AppMainState> {
     );
   }
 
-  render() {
+  render(): JSX.Element {
     const { menuOpen } = this.state;
+    const { children } = this.props;
     const style = `${this.currentStyles.sidebarClass} ${menuOpen ? 'open' : 'close'}`;
     return (
       <div className="page-host">
@@ -222,7 +218,7 @@ export class AppTemplate extends React.Component<AppMainProps, AppMainState> {
             <div className="swipe-area" />
             {this.headerSection()}
             <div style={{ width: 'auto' }} id="contentBlock" className="content-block">
-              {this.children}
+              {children}
               <Footer />
             </div>
           </div>

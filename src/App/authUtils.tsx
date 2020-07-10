@@ -1,30 +1,39 @@
-import request from 'superagent';
+import superagent from 'superagent';
 import jwt from 'jwt-simple';
-import authenticate, { logout } from './authActions';
+import { Dispatch } from 'react';
+import { GoogleLoginResponseOffline, GoogleLoginResponse } from 'react-google-login';
+import type { AppTemplate } from './AppTemplate';
 
-const setUser = async (controller: any): Promise<boolean> => {
-  const { auth, dispatch } = controller.props;
+export interface IauthUtils {
+  setUser: (view: AppTemplate) => Promise<string>;
+  responseGoogleLogin: (response: GoogleLoginResponseOffline | GoogleLoginResponse,
+    view: AppTemplate) => Promise<string>;
+  responseGoogleFailLogin: (response: unknown) => string;
+  responseGoogleLogout: (dispatch: Dispatch<unknown>) => boolean;
+
+}
+const setUser = async (view: AppTemplate): Promise<string> => {
+  const { auth, dispatch } = view.props;
   let decoded, user;
   try {
     decoded = jwt.decode(auth.token, process.env.HashString || /* istanbul ignore next */'');
-  } catch (e) { return Promise.reject(e); }
+  } catch (e) { return `${e.message}`; }
   if (decoded.user) dispatch({ type: 'SET_USER', data: decoded.user });
   else {
     try {
-      user = await request.get(`${process.env.BackendUrl}/user/${decoded.sub}`)
+      user = await superagent.get(`${process.env.BackendUrl}/user/${decoded.sub}`)
         .set('Accept', 'application/json').set('Authorization', `Bearer ${auth.token}`);
-    } catch (e) { return Promise.reject(e); }
+    } catch (e) { return `${e.message}`; }
     dispatch({ type: 'SET_USER', data: user.body });
     decoded.user = user.body;
     const newToken = jwt.encode(decoded, process.env.HashString || /* istanbul ignore next */'');
     dispatch({ type: 'GOT_TOKEN', data: { token: newToken, email: auth.email } });
   }
   window.location.reload();
-  return Promise.resolve(true);
+  return 'set user';
 };
-const responseGoogleLogin = async (response: { code: any; },
-  controller: { props: { dispatch: any; }; }): Promise<unknown> => {
-  const { dispatch } = controller.props;
+const responseGoogleLogin = async (response: GoogleLoginResponseOffline | GoogleLoginResponse,
+  view: AppTemplate): Promise<string> => {
   const uri = window.location.href;
   const baseUri = uri.split('/')[2];
   const body = {
@@ -36,19 +45,14 @@ const responseGoogleLogin = async (response: { code: any; },
       return encodeURIComponent(rand);
     },
   };
-  try { await dispatch(authenticate(body)); } catch (e) {
-    return Promise.reject(e);
+  try { await view.authenticate(body, view.props); } catch (e) {
+    return `${e.message}`;
   }
-  return setUser(controller);
+  return setUser(view);
 };
-
-const responseGoogleFailLogin = (response: any): boolean => {
-  console.log(response);// eslint-disable-line no-console
-  return false;
-};
-
-const responseGoogleLogout = (dispatch: (arg0: any) => void): boolean => {
-  dispatch(logout());
+const responseGoogleFailLogin = (response: unknown): string => `${response}`;
+const responseGoogleLogout = (dispatch: Dispatch<unknown>): boolean => {
+  dispatch({ type: 'LOGOUT' });
   window.location.reload();
   return true;
 };

@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import { shallow } from 'enzyme';
 import env from 'dotenv';
 import { App } from '../../src/App';
