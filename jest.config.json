@@ -1,5 +1,6 @@
 {
   "verbose": true,
+  "timers": "fake",
   "bail": true,
   "resetMocks": true,
   "notify": true,

@@ -1,26 +1,23 @@
 import menuUtils from '../../src/App/menuUtils';
 
 describe('menuUtils', () => {
-  const controllerStub = {
+  const vStub = {
     googleButtons: () => true,
     makeMenuLink: () => true,
     props: {
       location: { pathname: '/music' },
-      auth: { token: 'token', isAuthenticated: true, user: { userType: 'Developer' } },
-      dispatch: () => Promise.resolve(true),
+      auth: { token: 'token', isAuthenticated: true, user: { userType: '' } },
+      dispatch: () => jest.fn(),
     },
   };
-  it('handles menuItem for Develper', () => new Promise((done) => {
-    const item: any = { link: '/music', type: 'link', auth: true };
-    const result = menuUtils.menuItem(item,
-      1, controllerStub);
-    expect(result).toBe(true);
-    done();
-  }));
-  it('handles menuItem for GoogleLogout', () => new Promise((done) => {
+  it('handles menuItem for GoogleLogout', () => {
     const result = menuUtils.continueMenuItem({ link: '/', type: 'googleLogout', auth: true },
-      1, { pathname: '/music' }, { isAuthenticated: true }, controllerStub);
+      1, { pathname: '/music' }, { isAuthenticated: true }, vStub);
     expect(result).toBe(true);
-    done();
-  }));
+  });
+  it('returns null if auth role is not a match', () => {
+    const menu: any = { auth: true };
+    const result = menuUtils.menuItem(menu, 1, vStub);
+    expect(result).toBe(null);
+  });
 });
