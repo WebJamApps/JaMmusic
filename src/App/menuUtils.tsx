@@ -21,9 +21,7 @@ const menuItem = (menu: ImenuItem,
   if (location.pathname.includes('/music') && (menu.link.includes('/music') || menu.name === 'Web Jam LLC')) {
     return view.makeMenuLink(menu, index);
   }
-  if (menu.link === '/map' || menu.link === '/music' || menu.link === '/' || menu.link.includes('/dashboard')) {
-    return view.makeMenuLink(menu, index);
-  }
+  if (menu.type === 'link' && !menu.link.includes('/music/') && !location.pathname.includes('/music')) return view.makeMenuLink(menu, index);
   return continueMenuItem(menu, index, auth, view);
 };
 

@@ -3,6 +3,7 @@ import 'regenerator-runtime/runtime';
 import React, { Component, Dispatch } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { connect } from 'react-redux';
+import DefaultSort from '../containers/SortContainer';
 import DefaultMusic from '../containers/Music';
 import DefaultMusicDashboard from '../containers/MusicDashboard';
 import BuyMusic from '../containers/BuyMusic';
@@ -46,7 +47,7 @@ export class App extends Component<AppProps> {
     await this.connectToSC.connectToSCC(dispatch);
   }
 
-  render():JSX.Element {
+  render(): JSX.Element {
     const { auth } = this.props;
     const userRoles: string[] = commonUtils.getUserRoles();
     return (
@@ -57,6 +58,8 @@ export class App extends Component<AppProps> {
               <Route exact path="/" component={HomePage} />
               {auth.isAuthenticated && auth.user.userType && userRoles.indexOf(auth.user.userType) !== -1
                 ? <Route exact path="/map" component={GoogleMap} /> : null}
+              {auth.isAuthenticated && auth.user.userType && userRoles.indexOf(auth.user.userType) !== -1
+                ? <Route exact path="/sort" component={DefaultSort} /> : null}
               <Route exact path="/music" component={DefaultMusic} />
               <Route path="/music/buymusic" component={BuyMusic} />
               <Route path="/music/originals" component={DefaultSongs} />
