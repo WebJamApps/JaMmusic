@@ -155,7 +155,7 @@
     "identity-obj-proxy": "latest",
     "jest": "latest",
     "jest-puppeteer": "latest",
-    "puppeteer": "^3.0.4",
+    "puppeteer": "latest",
     "react-hot-loader": "latest",
     "redux-mock-store": "latest",
     "stylelint": "latest",

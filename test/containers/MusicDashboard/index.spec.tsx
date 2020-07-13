@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import { shallow } from 'enzyme';
 import { Redirect } from 'react-router-dom';
 import { MusicDashboard } from '../../../src/containers/MusicDashboard';
@@ -12,7 +12,7 @@ describe('Dashboard Container', () => {
       auth={auth}
       scc={{ transmit: () => { } }}
       dispatch={() => { }}
-      editTour={{}}
+      editTour={anyProp}
       history={anyProp}
       location={anyProp}
       match={anyProp}

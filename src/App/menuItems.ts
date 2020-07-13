@@ -24,6 +24,9 @@ const menuItems = [
     className: '', type: 'link', iconClass: 'fas fa-map-marker', link: '/map', name: 'Map', auth: true,
   },
   {
+    className: '', type: 'link', iconClass: 'fas fa-sort', link: '/sort', name: 'Sort', auth: true,
+  },
+  {
     className: 'home', type: 'link', iconClass: 'fas fa-home', link: '/', name: 'Web Jam LLC',
   },
   {
