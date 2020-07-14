@@ -1,14 +1,23 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import { GoogleLogin } from 'react-google-login';
-import { AppTemplate } from '../../src/App/app-main';
+import { AppTemplate } from '../../src/App/AppTemplate';
 import authUtils from '../../src/App/authUtils';
 
-const dFunc = () => {};
+const anyProp: any = {};
+const location: any = { pathname: '/' };
+const dFunc = () => { };
 function setup() {
   const props = { children: '<div></div>' };
   document.body.innerHTML = '<div class="page-content"></div>';
-  const wrapper = shallow<AppTemplate>(<AppTemplate dispatch={dFunc} location={{ pathname: '/' }}><div /></AppTemplate>);
+  const wrapper = shallow<AppTemplate>(
+    <AppTemplate
+      dispatch={dFunc}
+      location={location}
+      history={anyProp}
+      match={anyProp}
+    />,
+  );
   return { wrapper, props };
 }
 
@@ -23,14 +32,27 @@ describe('app-main component test setup', () => {
     expect(wrapper.find('div.open').length).toBe(1);
   });
   it('handles response from google login', async () => {
-    authUtils.responseGoogleLogin = jest.fn(() => Promise.resolve(true));
-    const wrapper2 = shallow<AppTemplate>(<AppTemplate dispatch={dFunc} location={{ pathname: '/music' }}><div /></AppTemplate>);
-    const result = await wrapper2.instance().responseGoogleLogin({});
-    expect(result).toBe(true);
+    authUtils.responseGoogleLogin = jest.fn(() => Promise.resolve('true'));
+    const wrapper2 = shallow<AppTemplate>(
+      <AppTemplate
+        dispatch={dFunc}
+        location={location}
+        history={anyProp}
+        match={anyProp}
+      />,
+    );
+    const gRes: any = {};
+    const result = await wrapper2.instance().responseGoogleLogin(gRes);
+    expect(result).toBe('true');
   });
   it('handles response from google logout', async () => {
-    authUtils.responseGoogleLogout = jest.fn(() => Promise.resolve(true));
-    const wrapper2 = shallow<AppTemplate>(<AppTemplate dispatch={dFunc} location={{ pathname: '/music' }}><div /></AppTemplate>);
+    authUtils.responseGoogleLogout = jest.fn(() => true);
+    const wrapper2 = shallow<AppTemplate>(<AppTemplate
+      dispatch={dFunc}
+      location={location}
+      history={anyProp}
+      match={anyProp}
+    />);
     const result = await wrapper2.instance().responseGoogleLogout();
     expect(result).toBe(true);
   });
@@ -43,38 +65,39 @@ describe('app-main component test setup', () => {
   }));
   it('closes the menu without navigating away from the react app', () => {
     document.body.innerHTML = '<button class="googleLogin"/><button class="googleLogout"/>';
-    const aT = new AppTemplate({ dispatch: () => Promise.resolve(true) });
-    aT.setState = () => {};
+    const aProps: any = { dispatch: () => Promise.resolve(true) };
+    const aT = new AppTemplate(aProps);
+    aT.setState = () => { };
     const result = aT.close();
     expect(result).toBe(true);
   });
-  it('closes the mobile menu on clicking escape key', () => new Promise((done) => {
-    const aT = new AppTemplate({ dispatch: () => Promise.resolve(true) });
+  it('closes the mobile menu on clicking escape key', () => {
+    const aProps: any = { dispatch: () => Promise.resolve(true) };
+    const aT = new AppTemplate(aProps);
     aT.setState = jest.fn(() => true);
     const result = aT.handleKeyPress({ key: 'Escape' });
     expect(result).toBe(true);
-    done();
-  }));
-  it('does not closes the mobile menu on clicking Enter key', () => new Promise((done) => {
-    const aT = new AppTemplate({ dispatch: () => Promise.resolve(true) });
+  });
+  it('does not closes the mobile menu on clicking Enter key', () => {
+    const aProps: any = { dispatch: () => Promise.resolve(true) };
+    const aT = new AppTemplate(aProps);
     const result = aT.handleKeyPress({ key: 'Enter' });
     expect(result).toBe(null);
-    done();
-  }));
-  it('toggles the mobile menu on clicking Enter key', () => new Promise((done) => {
-    const aT = new AppTemplate({ dispatch: () => Promise.resolve(true) });
+  });
+  it('toggles the mobile menu on clicking Enter key', () => {
+    const aProps: any = { dispatch: () => Promise.resolve(true) };
+    const aT = new AppTemplate(aProps);
     aT.toggleMobileMenu = () => true;
     const result = aT.handleKeyMenu({ key: 'Enter' });
     expect(result).toBe(true);
-    done();
-  }));
-  it('does not toggle the mobile menu on clicking Escape key', () => new Promise((done) => {
-    const aT = new AppTemplate({ dispatch: () => Promise.resolve(true) });
+  });
+  it('does not toggle the mobile menu on clicking Escape key', () => {
+    const aProps: any = { dispatch: () => Promise.resolve(true) };
+    const aT = new AppTemplate(aProps);
     aT.toggleMobileMenu = () => true;
     const result = aT.handleKeyMenu({ key: 'Escape' });
     expect(result).toBe(null);
-    done();
-  }));
+  });
   it('toggles the mobile menu', () => {
     const { wrapper } = setup();
     wrapper.instance().setState = jest.fn();
@@ -82,7 +105,12 @@ describe('app-main component test setup', () => {
     expect(wrapper.instance().setState).toHaveBeenCalledWith({ menuOpen: true });
   });
   it('runs onAutoLoadFinished props from GoogleLogin component', () => {
-    const wrapper2 = shallow<AppTemplate>(<AppTemplate dispatch={dFunc} location={{ pathname: '/music' }}><div /></AppTemplate>);
+    const wrapper2 = shallow<AppTemplate>(<AppTemplate
+      dispatch={dFunc}
+      location={location}
+      history={anyProp}
+      match={anyProp}
+    />);
     const bu = wrapper2.instance().googleButtons('login', 1);
     const gb = shallow(bu);
     const auto = gb.find(GoogleLogin).get(0).props.onAutoLoadFinished(false);

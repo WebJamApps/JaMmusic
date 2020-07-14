@@ -20,11 +20,21 @@ describe('tour reducer', () => {
     );
   });
   it('handles NEW_TOUR', () => {
-    const t1 = { datetime: `${new Date().toISOString}`, _id: '' };
-    const t2 = { datetime: `${new Date().toISOString}`, _id: '' };
+    const t1:any = { datetime: `${new Date().toISOString}`, _id: '' };
+    const t2:any = { datetime: `${new Date().toISOString}`, _id: '' };
     expect(reducer({ tour: [t1], tourUpdated: true, editTour: {} }, { type: 'NEW_TOUR', data: t2 })).toEqual(
       {
         tour: [t2, t1],
+        tourUpdated: true,
+        editTour: {},
+      },
+    );
+  });
+  it('handles NEW_TOUR with missing data', () => {
+    const t1:any = { datetime: `${new Date().toISOString}`, _id: '' };
+    expect(reducer({ tour: [t1], tourUpdated: true, editTour: {} }, { type: 'NEW_TOUR', data: undefined })).toEqual(
+      {
+        tour: [t1],
         tourUpdated: true,
         editTour: {},
       },

@@ -3,7 +3,7 @@ const initialState = {
   error: '',
 };
 
-const reducer = (state = initialState, action) => {
+const reducer = (state = initialState, action: any): any => {
   switch (action.type) {
     case 'GOT_SONGS':
       return {

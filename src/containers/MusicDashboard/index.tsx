@@ -7,7 +7,7 @@ import mapStoreToProps from '../../redux/mapStoreToProps';
 import forms from '../../lib/forms';
 import commonUtils from '../../lib/commonUtils';
 import AddTime from '../../lib/timeKeeper';
-import Ttable from '../../components/tour-table';
+import Ttable from '../../components/TourTable';
 
 interface MusicDashboardProps extends RouteComponentProps<any> {
   dispatch: (...args: any) => any;
@@ -23,14 +23,14 @@ type MusicDashboardState = {
   time: string;
   tickets: string;
   more: string;
-  [x: number]: any;
+  [x: number]: number;
 };
 export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboardState> {
   forms: any;
 
-  commonUtils: any;
+  commonUtils: { setTitleAndScroll: (pageTitle: string, width: number) => void };
 
-  constructor(props: any) {
+  constructor(props: MusicDashboardProps) {
     super(props);
     this.state = {
       redirect: false, date: '', time: '', tickets: '', more: '', venue: '', location: '',
@@ -48,7 +48,7 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
     this.resetEditForm = this.resetEditForm.bind(this);
   }
 
-  componentDidMount() { this.commonUtils.setTitleAndScroll('Music Dashboard'); }
+  componentDidMount() { this.commonUtils.setTitleAndScroll('Music Dashboard', window.screen.width); }
 
   onChange(evt: any) {
     const { editTour } = this.props;
@@ -60,12 +60,24 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
     this.setState({ time: data });
   }
 
+  // eslint-disable-next-line class-methods-use-this
+  fixDate(date: string,
+    editTour: {
+      date?: string; time?: string; tickets?: string; more?: string;
+      venue?: string; location?: string; _id?: string; datetime?: string;
+    }): string {
+    let newDate = date;
+    // eslint-disable-next-line prefer-destructuring
+    if (date === '' && editTour.datetime !== undefined) newDate = editTour.datetime.split('T')[0];
+    return newDate;
+  }
+
   checkEdit() {
     let {
       date, time, tickets, more, venue, location,
     } = this.state;
     const { editTour, dispatch } = this.props;
-    if (date === '' && editTour.date !== undefined) { date = editTour.datetime.split('T')[0]; }//eslint-disable-line
+    date = this.fixDate(date, editTour);
     if (time === '' && editTour.time !== undefined) { time = editTour.time; }
     if (tickets === '' && editTour.tickets !== undefined) { tickets = editTour.tickets; }
     if (more === '' && editTour.more !== undefined) { more = editTour.more; }
@@ -189,12 +201,12 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
     );
   }
 
-  newTourForm() {
+  newTourForm(): JSX.Element {
     let {
       location, tickets, more, date, time, venue,
     } = this.state;
     const { editTour } = this.props;
-    if (date === '' && editTour.date !== undefined) { date = editTour.datetime.split('T')[0]; }//eslint-disable-line
+    date = this.fixDate(date, editTour);
     if (time === '' && editTour.time !== undefined) { time = editTour.time; }
     if (tickets === '' && editTour.tickets !== undefined) { tickets = editTour.tickets; }
     if (more === '' && editTour.more !== undefined) { more = editTour.more; }
@@ -221,7 +233,7 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
 
   render() {
     const { redirect } = this.state;
-    const { editTour } = this.props;
+    const { editTour, dispatch } = this.props;
     return (
       <div className="page-content">
         {redirect ? <Redirect to="/music" /> : null}
@@ -238,7 +250,7 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
         {!editTour._id ? (
           <div className="material-content elevation3" style={{ maxWidth: '10in', margin: 'auto' }}>
             <h5 style={{ textAlign: 'center', marginBottom: 0 }}>Modify Event</h5>
-            <Ttable deleteButton />
+            <Ttable deleteButton dispatch={dispatch} />
           </div>
         ) : null}
         <p>&nbsp;</p>

@@ -1,42 +1,47 @@
-version:                  "2"
+version: "2"
 checks:
   return-statements:
     config:
-      threshold:          5
+      threshold: 5
   method-lines:
     config:
-      threshold:          30
+      threshold: 30
   similar-code:
     config:
-      threshold:          85
+      threshold: 80
   identical-code:
     config:
-      threshold:          50
+      threshold: 45
   method-complexity:
     config:
-      threshold:          10
+      threshold: 10
   argument-count:
     config:
-      threshold:          5
+      threshold: 5
+  file-lines:
+    config:
+      threshold: 300
 plugins:
   duplication:
-    enabled:              true
+    enabled: true
     checks:
       Similar Code:
-        enabled:          true
+        enabled: true
     config:
       languages:
-        javascript:
+        typescript:
           mass_threshold: 45
   fixme:
-    enabled:              true
+    enabled: true
 ratings:
   paths:
-  - "**.js"
-  - "**.jsx"
+    - "**.js"
+    - "**.jsx"
+    - "**.ts"
+    - "**.tsx"
 exclude_paths:
-- test/
-- node_modules/
-- coverage/
-- dist/
-- codeclimate.html
+  - test/
+  - node_modules/
+  - coverage/
+  - dist/
+  - codeclimate.html

@@ -1,37 +1,35 @@
 import menuUtils from '../../src/App/menuUtils';
 
 describe('menuUtils', () => {
-  const controllerStub = {
+  const vStub:any = {
     googleButtons: () => true,
     makeMenuLink: () => true,
     props: {
       location: { pathname: '/music' },
-      auth: { token: 'token', isAuthenticated: true, user: { userType: 'Developer' } },
-      dispatch: () => Promise.resolve(true),
+      auth: { token: 'token', isAuthenticated: true, user: { userType: '' } },
+      dispatch: () => jest.fn(),
     },
   };
-  it('handles menuItem for Develper', () => new Promise((done) => {
-    const result = menuUtils.menuItem({ link: '/music', type: 'link', auth: true },
-      1, controllerStub);
+  it('handles menuItem for GoogleLogout', () => {
+    const menuItem:any = { link: '/', type: 'googleLogout', auth: true };
+    const auth:any = { isAuthenticated: true };
+    const result = menuUtils.continueMenuItem(menuItem,
+      1, auth, vStub);
     expect(result).toBe(true);
-    done();
-  }));
-  it('handles menuItem for Shop', () => new Promise((done) => {
-    const result = menuUtils.continueMenuItem({ link: '/shop', type: 'link', auth: true },
-      1, { pathname: '/shop' }, {}, controllerStub);
+  });
+  it('returns null if auth role is not a match', () => {
+    const menu: any = { auth: true };
+    const result = menuUtils.menuItem(menu, 1, vStub);
+    expect(result).toBe(null);
+  });
+  it('handles menuItem for music/songs', () => {
+    const menu: any = { auth: false, link: '/music/songs' };
+    const result = menuUtils.menuItem(menu, 1, vStub);
     expect(result).toBe(true);
-    done();
-  }));
-  it('handles menuItem for Shop when at root', () => new Promise((done) => {
-    const result = menuUtils.continueMenuItem({ link: '/', type: 'link', auth: true },
-      1, { pathname: '/shop' }, {}, controllerStub);
+  });
+  it('handles menuItem for Web Jam LLC', () => {
+    const menu: any = { auth: false, link: '/', name: 'Web Jam LLC' };
+    const result = menuUtils.menuItem(menu, 1, vStub);
     expect(result).toBe(true);
-    done();
-  }));
-  it('handles menuItem for GoogleLogout', () => new Promise((done) => {
-    const result = menuUtils.continueMenuItem({ link: '/', type: 'googleLogout', auth: true },
-      1, { pathname: '/music' }, { isAuthenticated: true }, controllerStub);
-    expect(result).toBe(true);
-    done();
-  }));
+  });
 });

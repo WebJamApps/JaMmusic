@@ -1,6 +1,6 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import PicSlider from '../../src/components/pic-slider';
+import PicSlider from '../../src/components/PicSlider';
 
 function setup() {
   const data = [
@@ -24,5 +24,13 @@ describe('picture slider component test', () => {
     expect(wrapper.find('div').exists()).toBe(true);
     expect(wrapper.find('Caption').first().dive().find('.slider-caption')
       .exists()).toBe(true);
+  });
+  it('renders correctly', () => {
+    const { wrapper } = setup();
+    expect(wrapper).toMatchSnapshot();
+  });
+  it('renders without data', () => {
+    const wrapper = shallow(<PicSlider />);
+    expect(wrapper.find('div').exists()).toBe(true);
   });
 });

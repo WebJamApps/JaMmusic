@@ -1,38 +1,32 @@
-import React, { Component } from 'react';
-import ReactResizeDetector from 'react-resize-detector';
+import React, { RefObject } from 'react';
+import { withResizeDetector } from 'react-resize-detector';
 import WideAboutUs from './Widescreen/WideAbout';
 import WideCurrentProjects from './Widescreen/WideCurrentProjects';
 import NarrowAboutUs from './Narrowscreen/NarrowAbout';
 import NarrowCurrentProjects from './Narrowscreen/NarrowCurrentProjects';
 import FacebookFeed from './Narrowscreen/NarrowFacebookFeed';
-import Inquiry from '../../components/inquiry';
+import Inquiry from '../../components/Inquiry';
 import commonUtils from '../../lib/commonUtils';
 
-interface HomepageState { width: number }
-
-export default class Home extends Component<any, HomepageState> {
-  parentRef: any;
-
-  commonUtils: any;
+interface HomepageProps {
+  targetRef: RefObject<HTMLDivElement>;
+  width: number;
+  height: number;
+}
+export class Homepage extends React.Component<HomepageProps, unknown> {
+  commonUtils: { setTitleAndScroll: (pageTitle: string, width: number) => void };
 
   constructor(props: any) {
     super(props);
-    this.parentRef = React.createRef();
-    this.onResize = this.onResize.bind(this);
-    this.state = { width: 320 };
     this.commonUtils = commonUtils;
   }
 
   componentDidMount() { this.commonUtils.setTitleAndScroll('', window.screen.width); }
 
-  onResize(width: number) {
-    this.setState({ width });
-  }
-
   render() {
-    const { width } = this.state;
+    const { width, targetRef } = this.props;
     return (
-      <div>
+      <div ref={targetRef}>
         {width >= 1004
           ? (
             <div className="page-content">
@@ -55,8 +49,9 @@ export default class Home extends Component<any, HomepageState> {
               <p style={{ fontSize: '6pt', marginBottom: '0' }}>&nbsp;</p>
             </div>
           )}
-        <ReactResizeDetector handleWidth handleHeight onResize={this.onResize} targetDomEl={this.parentRef.current} />
       </div>
     );
   }
 }
+
+export default withResizeDetector(Homepage);

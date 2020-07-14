@@ -1,27 +1,26 @@
-import React, { Component } from 'react';
+import React, { Component, Dispatch } from 'react';
 import MUIDataTable from 'mui-datatables';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import ReactHtmlParser from 'react-html-parser';
 import { connect } from 'react-redux';
-import mapStoreToProps from '../redux/mapStoreToProps';
+import mapStoreToProps, { Song, Tour } from '../redux/mapStoreToProps';
 import TableTheme from '../lib/tourTableTheme';
 
 type TourTableProps = {
-  dispatch: (...args: any[]) => any;
-  tourUpdated: boolean;
-  tour: any[];
-  auth: {token: string};
+  dispatch: Dispatch<unknown>;
+  tourUpdated?: boolean;
+  tour?: Song[];
+  auth?: { token: string };
   deleteButton?: boolean;
-  scc: {transmit: (...args: any[]) => any};
+  scc?: { transmit: (...args: any[]) => any };
 };
 type TourTableState = {
-  columns: any[];
+  columns: any;
 };
 export class TourTable extends Component<TourTableProps, TourTableState> {
-  constructor(props: any) {
+  constructor(props: TourTableProps) {
     super(props);
     this.setColumns = this.setColumns.bind(this);
-    // this.getMuiTheme = this.getMuiTheme.bind(this);
     this.checkTourTable = this.checkTourTable.bind(this);
     this.setColumns = this.setColumns.bind(this);
     this.state = { columns: [] };
@@ -30,16 +29,16 @@ export class TourTable extends Component<TourTableProps, TourTableState> {
 
   componentDidMount() { this.setColumns(); }
 
-  componentDidUpdate(prevProps: any) {
+  componentDidUpdate(prevProps: TourTableProps) {
     const { tourUpdated } = this.props;
-    return this.checkTourTable(prevProps.tourUpdated, tourUpdated);
+    return this.checkTourTable(prevProps.tourUpdated || false, tourUpdated || false);
   }
 
-  setColumns() {
+  setColumns(): void {
     const { deleteButton } = this.props;
     const columns = [];
     const titles = ['Date', 'Time', 'Location', 'Venue', 'Tickets'];
-    if (deleteButton)titles.push('Modify');
+    if (deleteButton) titles.push('Modify');
     for (let i = 0; i < titles.length; i += 1) {
       const label = titles[i];// eslint-disable-line security/detect-object-injection
       columns.push({
@@ -48,7 +47,7 @@ export class TourTable extends Component<TourTableProps, TourTableState> {
         options: {
           filter: false,
           sort: false,
-          customBodyRender: (value: any) => (
+          customBodyRender: (value: string) => (
             <div style={{ minWidth: '1.3in', margin: 0, fontSize: '12pt' }}>
               {label !== 'Modify' ? ReactHtmlParser(value) : value}
             </div>
@@ -59,29 +58,31 @@ export class TourTable extends Component<TourTableProps, TourTableState> {
     this.setState({ columns });
   }
 
-  checkTourTable(pTupdated: any, nTupdated: boolean) {
+  checkTourTable(pTupdated: boolean, nTupdated: boolean): boolean {
     if (!pTupdated && nTupdated) {
       const { dispatch } = this.props;
       dispatch({ type: 'RESET_TOUR' });
       this.setState({ columns: [] });
       this.setColumns();
-      return Promise.resolve(true);
+      return true;
     }
-    return Promise.resolve(false);
+    return false;
   }
 
-  deleteTour(tourId: string) { // eslint-disable-next-line no-restricted-globals
+  deleteTour(tourId: string): boolean { // eslint-disable-next-line no-restricted-globals
     const result = confirm('Deleting Event, are you sure?');// eslint-disable-line no-alert
     if (result) {
       const { scc, auth } = this.props;
       const tour = { tourId };
-      scc.transmit('deleteTour', { tour, token: auth.token });
-      window.location.assign('/music');
-      return true;
+      if (scc && auth) {
+        scc.transmit('deleteTour', { tour, token: auth.token });
+        window.location.assign('/music');
+        return true;
+      } return false;
     } return false;
   }
 
-  editTour(data: any) {
+  editTour(data: Tour) {
     const { dispatch } = this.props;
     dispatch({ type: 'EDIT_TOUR', data });
     return true;
@@ -106,8 +107,8 @@ export class TourTable extends Component<TourTableProps, TourTableState> {
   render() {
     const { columns } = this.state;
     const { tour, deleteButton } = this.props;
-    let tableData = tour;
-    if (deleteButton)tableData = this.addDeleteButton(tableData);
+    let tableData = tour || [];
+    if (deleteButton) tableData = this.addDeleteButton(tableData);
     return (
       <div className="tourTable">
         <div style={{ maxWidth: '100%' }}>

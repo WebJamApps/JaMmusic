@@ -1,6 +1,6 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import Inquiry from '../../../src/components/inquiry';
+import Inquiry from '../../../src/components/Inquiry';
 
 describe('Inquiry Form', () => {
   let wrapper: any;

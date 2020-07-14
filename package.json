@@ -9,7 +9,7 @@
   },
   "author": "https://github.com/orgs/WebJamApps/teams/handlersandkickers",
   "engines": {
-    "node": ">=14.3.0"
+    "node": ">=14.4.0"
   },
   "files": [
     "webpack.config.js",
@@ -50,6 +50,8 @@
     "@types/domutils": "^1.7.2",
     "@types/ejs": "^3.0.1",
     "@types/enzyme": "^3.10.5",
+    "@types/faker": "^4.1.12",
+    "@types/googlemaps": "^3.39.8",
     "@types/html-webpack-plugin": "^3.2.2",
     "@types/jest": "^25.1.4",
     "@types/mini-css-extract-plugin": "^0.9.1",
@@ -59,6 +61,7 @@
     "@types/react-dom": "^16.9.5",
     "@types/react-html-parser": "^2.0.1",
     "@types/react-redux": "^7.1.7",
+    "@types/react-resize-detector": "^4.2.0",
     "@types/react-router-dom": "^5.1.5",
     "@types/react-slick": "^0.23.4",
     "@types/redux-logger": "^3.0.7",
@@ -76,6 +79,7 @@
     "expose-loader": "latest",
     "express": "latest",
     "express-sslify": "latest",
+    "faker": "^4.1.0",
     "file-loader": "latest",
     "html-loader": "latest",
     "html-webpack-plugin": "latest",
@@ -142,6 +146,7 @@
     "eslint-plugin-es": "latest",
     "eslint-plugin-import": "latest",
     "eslint-plugin-jest": "latest",
+    "eslint-plugin-json": "^2.1.1",
     "eslint-plugin-jsx-a11y": "latest",
     "eslint-plugin-node": "latest",
     "eslint-plugin-react": "latest",
@@ -150,7 +155,7 @@
     "identity-obj-proxy": "latest",
     "jest": "latest",
     "jest-puppeteer": "latest",
-    "puppeteer": "^3.0.4",
+    "puppeteer": "latest",
     "react-hot-loader": "latest",
     "redux-mock-store": "latest",
     "stylelint": "latest",

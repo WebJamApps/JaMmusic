@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, RefObject } from 'react';
 import { connect } from 'react-redux';
 import DefaultMusicPlayer from '../../components/MusicPlayer';
 import mapStoreToProps from '../../redux/mapStoreToProps';
@@ -7,13 +7,13 @@ import commonUtils from '../../lib/commonUtils';
 type SProps = {
   songs: {url: string}[];};
 export class Songs extends Component<SProps> {
-  o: any;
+  o: RefObject<unknown>;
 
-  commonUtils: any;
+  commonUtils: { setTitleAndScroll: (pageTitle: string, width: number) => void };
 
   static defaultProps = { songs: [{ url: '' }] };
 
-  constructor(props: any) {
+  constructor(props: SProps) {
     super(props);
     this.o = React.createRef();
     this.commonUtils = commonUtils;

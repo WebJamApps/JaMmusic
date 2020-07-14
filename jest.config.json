@@ -1,5 +1,6 @@
-{ 
+{
   "verbose": true,
+  "timers": "fake",
   "bail": true,
   "resetMocks": true,
   "notify": true,
@@ -12,12 +13,26 @@
   "moduleNameMapper": {
     "\\.(css|less|scss|sass)$": "identity-obj-proxy"
   },
-  "moduleFileExtensions": ["js", "json", "jsx", "ts", "tsx"],
-  "testPathIgnorePatterns": ["/node_modules/", "/puppeteer/"],
-  "collectCoverageFrom": ["src/**/*.{js,jsx,ts,tsx}"],
+  "moduleFileExtensions": [
+    "js",
+    "json",
+    "jsx",
+    "ts",
+    "tsx"
+  ],
+  "testPathIgnorePatterns": [
+    "/node_modules/",
+    "/puppeteer/"
+  ],
+  "collectCoverageFrom": [
+    "src/**/*.{js,jsx,ts,tsx}"
+  ],
   "collectCoverage": true,
   "testURL": "http://localhost/",
   "transform": {
     "^.+\\.tsx?$": "ts-jest"
+  },
+  "globals": {
+    "google": {}
   }
 }

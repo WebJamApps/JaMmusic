@@ -1,40 +1,43 @@
 {
-  "songs": [
-    {
+  "songs": [{
       "title": "Allelulia Alleluia Give Thanks",
       "artist": "Josh & Maria Sherman",
       "category": "mission",
       "album": "Shelter In Place",
-      "year": "2020",
+      "year": 2020,
       "url": "https://dl.dropboxusercontent.com/s/p7wzn7x02253kfo/Allelulia_Alleluia_Give_Thanks.mp3?dl=0",
-      "_id": "29ru9weis2309urihw9q34u"
+      "_id": "29ru9weis2309urihw9q34u",
+      "image": "https://dl.dropboxusercontent.com/s/u782sh722u5rpu9/Album_1.png?dl=0"
     },
     {
       "title": "Bind Us Together",
       "artist": "Josh & Maria Sherman",
       "category": "mission",
       "album": "Shelter In Place",
-      "year": "2020",
+      "year": 2020,
       "url": "https://dl.dropboxusercontent.com/s/7lo4l95ak70t5fu/Bind%20Us%20Together%203-29-20.mp3?dl=0",
-      "_id": "30ru9weis2309urihw9q34u"
+      "_id": "30ru9weis2309urihw9q34u",
+      "image": "https://dl.dropboxusercontent.com/s/u782sh722u5rpu9/Album_1.png?dl=0"
     },
     {
       "title": "Holy Holy Holy Lord",
       "artist": "Josh & Maria Sherman",
       "category": "mission",
       "album": "Shelter In Place",
-      "year": "2020",
+      "year": 2020,
       "url": "https://dl.dropboxusercontent.com/s/fk32mop4djtt78y/HolyHolyHolyLord.mp3?dl=0",
-      "_id": "31ru9weis2309urihw9q34u"
+      "_id": "31ru9weis2309urihw9q34u",
+      "image": "https://dl.dropboxusercontent.com/s/u782sh722u5rpu9/Album_1.png?dl=0"
     },
     {
       "title": "Jesus Christ Has Risen Today",
       "artist": "Josh & Maria Sherman",
       "category": "mission",
       "album": "Shelter In Place",
-      "year": "2020",
+      "year": 2020,
       "url": "https://dl.dropboxusercontent.com/s/qg9wbqqvasd8eco/JesusChristRisenToday-verse1.mp3?dl=0",
-      "_id": "32ru9weis2309urihw9q34u"
+      "_id": "32ru9weis2309urihw9q34u",
+      "image": "https://dl.dropboxusercontent.com/s/u782sh722u5rpu9/Album_1.png?dl=0"
     },
     {
       "title": "Kyrie, Glory In the Highest",
@@ -42,70 +45,78 @@
       "artist": "Josh & Maria Sherman",
       "category": "mission",
       "album": "Shelter In Place",
-      "year": "2020",
+      "year": 2020,
       "url": "https://dl.dropboxusercontent.com/s/w8qg2bm1zfqyach/Kyrie-GloryInHighest_FolkService.mp3?dl=0",
-      "_id": "33ru9weis2309urihw9q34u"
+      "_id": "33ru9weis2309urihw9q34u",
+      "image": "https://dl.dropboxusercontent.com/s/u782sh722u5rpu9/Album_1.png?dl=0"
     },
     {
       "title": "Agnus Dei",
       "artist": "Josh & Maria Sherman",
       "category": "mission",
       "album": "Shelter In Place",
-      "year": "2020",
+      "year": 2020,
       "url": "https://dl.dropboxusercontent.com/s/nsckl9shnz35baj/Agnus-Dei.mp3?dl=0",
-      "_id": "34ru9weis2309urihw9q34u"
+      "_id": "34ru9weis2309urihw9q34u",
+      "image": "https://dl.dropboxusercontent.com/s/u782sh722u5rpu9/Album_1.png?dl=0"
     },
     {
       "title": "Where You There, Tomb?",
       "artist": "Maria Sherman",
       "category": "mission",
       "album": "Shelter In Place",
-      "year": "2020",
+      "year": 2020,
       "url": "https://dl.dropboxusercontent.com/s/qc7oqlv8mkxbpo7/Where-You-There_Tomb.mp3?dl=0",
-      "_id": "35ru9weis2309urihw9q34u"
+      "_id": "35ru9weis2309urihw9q34u",
+      "image": "https://dl.dropboxusercontent.com/s/u782sh722u5rpu9/Album_1.png?dl=0"
     },
     {
       "title": "Wood of the Cross",
       "artist": "Josh & Maria Sherman",
       "category": "mission",
       "album": "Shelter In Place",
-      "year": "2020",
+      "year": 2020,
       "url": "https://dl.dropboxusercontent.com/s/2mgnbnqntftvmja/Wood-of-the-Cross.mp3?dl=0",
-      "_id": "36ru9weis2309urihw9q34u"
+      "_id": "36ru9weis2309urihw9q34u",
+      "image": "https://dl.dropboxusercontent.com/s/u782sh722u5rpu9/Album_1.png?dl=0"
     },
     {
       "title": "Come, My Way, My Truth, My Life",
       "category": "mission",
       "artist": "Josh & Maria Sherman",
       "album": "Shelter In Place",
-      "year": "2020",
+      "year": 2020,
       "url": "https://dl.dropboxusercontent.com/s/axgzbvg8apagvuq/Come_My_Way_My_Truth_My_Life.mp3?dl=0",
-      "_id": "37ru9weis2309urih3i4re80u9"
+      "_id": "37ru9weis2309urih3i4re80u9",
+      "image": "https://dl.dropboxusercontent.com/s/u782sh722u5rpu9/Album_1.png?dl=0"
     },
     {
       "title": "Down In The River",
       "artist": "Josh & Maria Sherman",
       "category": "mission",
       "album": "Live at College Lutheran Church",
-      "year": "2018",
+      "year": 2018,
       "url": "https://dl.dropboxusercontent.com/s/stfr1y2x6ciov07/DITR.mp3?dl=0",
-      "_id": "28ru9weis2309urihw9q34u"
-    }, {
+      "_id": "28ru9weis2309urihw9q34u",
+      "image": "https://dl.dropboxusercontent.com/s/75zc6nngz9y6y57/Album_2.png?dl=0"
+    },
+    {
       "title": "Narthex",
       "composer": "Jonathan Rundman",
       "artist": "Josh & Maria Sherman",
       "category": "mission",
       "album": "Live at College Lutheran Church",
-      "year": "2018",
+      "year": 2018,
       "url": "https://dl.dropboxusercontent.com/s/umeqd0irknjymnp/Narthex.mp3?dl=0",
-      "_id": "28ru9weis20894y3rueighf"
+      "_id": "28ru9weis20894y3rueighf",
+      "image": "https://dl.dropboxusercontent.com/s/75zc6nngz9y6y57/Album_2.png?dl=0"
     },
     {
       "title": "Come All You People",
       "artist": "Josh & Maria Sherman",
       "category": "mission",
       "album": "Live from Salem, VA",
-      "year": "2016",
+      "year": 2016,
       "url": "https://soundcloud.com/joshandmariamusic/comeallyoupeople",
       "_id": "28ru9weis2309urihw9384ueigh"
     },
@@ -114,7 +125,7 @@
       "artist": "Josh & Maria Sherman",
       "category": "mission",
       "album": "Live from Salem, VA",
-      "year": "2016",
+      "year": 2016,
       "url": "https://soundcloud.com/joshandmariamusic/ithelordofseaandskyhereiamlord",
       "_id": "28ru9wifdu90i4o3ergiuhjf"
     },
@@ -123,7 +134,7 @@
       "artist": "Josh & Maria Sherman",
       "category": "mission",
       "album": "Live from Salem, VA",
-      "year": "2016",
+      "year": 2016,
       "url": "https://soundcloud.com/joshandmariamusic/one-bread-one-body",
       "_id": "28ru9weis2309ugre8fy9huie"
     },
@@ -133,9 +144,10 @@
       "composer": "Jonathan Rundman",
       "category": "mission",
       "album": "Live from Salem, VA",
-      "year": "2016",
+      "year": 2016,
       "url": "https://dl.dropboxusercontent.com/s/go5e9bghw6a52nn/Canticle%20For%20Departure.mp3?dl=0",
-      "_id": "28ru9weis2309u90iurghebuhfdi"
+      "_id": "28ru9weis2309u90iurghebuhfdi",
+      "image": "https://dl.dropboxusercontent.com/s/95lgyr7yn0yasoh/Album_3.png?dl=0"
     },
     {
       "title": "I Still Haven't Found What I'm Looking For",
@@ -143,7 +155,7 @@
       "composer": "U2",
       "category": "pub",
       "album": "Live from Salem, VA",
-      "year": "2016",
+      "year": 2016,
       "url": "https://soundcloud.com/joshandmariamusic/still-havent-found-what-im-looking-for",
       "_id": "28ru9weis2309uoi4jrgbefieqr"
     },
@@ -153,7 +165,7 @@
       "composer": "A. P. Carter",
       "category": "pub",
       "album": "Live from Salem, VA",
-      "year": "2016",
+      "year": 2016,
       "url": "https://soundcloud.com/joshandmariamusic/cups-when-im-gone",
       "_id": "28ru9weisriutr8eg7fy9hiiujn"
     },
@@ -163,7 +175,7 @@
       "composer": "Jason Mraz",
       "category": "pub",
       "album": "Live from Salem, VA",
-      "year": "2016",
+      "year": 2016,
       "url": "https://soundcloud.com/joshandmariamusic/im-yours",
       "_id": "28ru9weis2309kjh34ig9gfui"
     },
@@ -173,9 +185,10 @@
       "composer": "Paul Williams & Kenneth Ascher",
       "category": "pub",
       "album": "Shelter In Place",
-      "year": "2020",
+      "year": 2020,
       "url": "https://dl.dropboxusercontent.com/s/3hfxf45infac29w/Rainbow_Connection.mp3?dl=0",
-      "_id": "48ru9weis2309kjh34ig9gfui"
+      "_id": "48ru9weis2309kjh34ig9gfui",
+      "image": "https://dl.dropboxusercontent.com/s/u782sh722u5rpu9/Album_1.png?dl=0"
     },
     {
       "title": "Mary Jane's Last Dance",
@@ -183,9 +196,10 @@
       "composer": "Tom Pettty",
       "category": "pub",
       "album": "Live from Villa Appalaccia",
-      "year": "2019",
+      "year": 2019,
       "url": "https://dl.dropboxusercontent.com/s/h8l70lopm6egj1n/MaryJanesLastDance-VillaAppalaccia2019.mp3?dl=0",
-      "_id": "49ru9weis2309kjh34ig9gfui"
+      "_id": "49ru9weis2309kjh34ig9gfui",
+      "image": "https://dl.dropboxusercontent.com/s/ipqpye8h43zus63/Album_4.png?dl=0"
     },
     {
       "title": "Summertime",
@@ -193,9 +207,10 @@
       "composer": "George Gershwin",
       "category": "pub",
       "album": "Live from Villa Appalaccia",
-      "year": "2019",
+      "year": 2019,
       "url": "https://dl.dropboxusercontent.com/s/x5kadmvlt9xrmbf/SummerTime-liveFromVillaAppalaccia2019.mp3?dl=0",
-      "_id": "50ru9weis2309kjh34ig9gfui"
+      "_id": "50ru9weis2309kjh34ig9gfui",
+      "image": "https://dl.dropboxusercontent.com/s/ipqpye8h43zus63/Album_4.png?dl=0"
     },
     {
       "title": "Dark Light",
@@ -203,9 +218,10 @@
       "composer": "Josh & Maria Sherman",
       "category": "original",
       "album": "Live from College Lutheran Church",
-      "year": "2018",
+      "year": 2018,
       "url": "https://dl.dropboxusercontent.com/s/h7xolhpjst6spbd/Dark%20Light.mp3?dl=0",
-      "_id": "28ru9weis2309ur9r7ifuviuiu"
+      "_id": "28ru9weis2309ur9r7ifuviuiu",
+      "image": "https://dl.dropboxusercontent.com/s/u782sh722u5rpu9/Album_1.png?dl=0"
     },
     {
       "title": "Good Enough",
@@ -213,7 +229,7 @@
       "composer": "Josh & Maria Sherman",
       "category": "original",
       "album": "Live from College Lutheran Church",
-      "year": "2018",
+      "year": 2018,
       "url": "https://dl.dropboxusercontent.com/s/3tisiordjrgjkoq/Good%20Enough.mp3?dl=0",
       "_id": "28ru9weis2309urihw9098ewuis"
     },
@@ -223,7 +239,7 @@
       "artist": "Web Jam Band",
       "category": "original",
       "album": "The Flat Five Sessions",
-      "year": "2018",
+      "year": 2018,
       "url": "https://dl.dropboxusercontent.com/s/ceqa0bk1swccgs2/Don%27t%20Go.mp3?dl=0",
       "_id": "28ru9weis2309urihwfe9sipfe",
       "image": "https://dl.dropboxusercontent.com/s/o3jqcahsg97lnpa/webjamlogo1.png?dl=0"
@@ -234,7 +250,7 @@
       "artist": "Web Jam Band",
       "category": "original",
       "album": "The Flat Five Sessions",
-      "year": "2018",
+      "year": 2018,
       "url": "https://dl.dropboxusercontent.com/s/4axpaf98kbvcykg/Misty%20Rainy%20Morning.mp3?dl=0",
       "_id": "28ru9weis2309uri36ewfysdiuh",
       "image": "https://dl.dropboxusercontent.com/s/o3jqcahsg97lnpa/webjamlogo1.png?dl=0"
@@ -245,7 +261,7 @@
       "artist": "Web Jam Band",
       "category": "original",
       "album": "The Flat Five Sessions",
-      "year": "2018",
+      "year": 2018,
       "url": "https://dl.dropboxusercontent.com/s/dyge7did0ex79e0/Alone%20Time.mp3?dl=0",
       "_id": "28ru9weis2309urih23fw7ef9tiugsdj",
       "image": "https://dl.dropboxusercontent.com/s/o3jqcahsg97lnpa/webjamlogo1.png?dl=0"
@@ -256,7 +272,7 @@
       "artist": "Web Jam Band",
       "category": "original",
       "album": "The Flat Five Sessions",
-      "year": "2018",
+      "year": 2018,
       "url": "https://dl.dropboxusercontent.com/s/knagdurqg6q48zf/Try%20To%20Get%20Along.mp3?dl=0",
       "_id": "28ru9weis2309uri2678t4ywgrh",
       "image": "https://dl.dropboxusercontent.com/s/o3jqcahsg97lnpa/webjamlogo1.png?dl=0"
@@ -267,7 +283,7 @@
       "composer": "Joshua V Sherman",
       "category": "original",
       "album": "Live From Myrtle Beach",
-      "year": "2011",
+      "year": 2011,
       "url": "https://www.youtube.com/embed/ach2ubW21h4?enablejsapi=1&origin=https://web-jam.com",
       "_id": "28ru9weis2309ur4y7wi8094hjrg"
     },
@@ -277,7 +293,7 @@
       "composer": "Joshua V Sherman",
       "category": "original",
       "album": "Live From Myrtle Beach",
-      "year": "2011",
+      "year": 2011,
       "url": "https://www.youtube.com/embed/mCvUBjuzfo8?enablejsapi=1&origin=https://web-jam.com",
       "_id": "28ru9weis2309urw9y8iusjvc67rwe"
     },
@@ -287,7 +303,7 @@
       "composer": "Joshua V Sherman",
       "category": "original",
       "album": "Live From Salem, VA",
-      "year": "2016",
+      "year": 2016,
       "url": "https://soundcloud.com/joshandmariamusic/good-enough",
       "_id": "28ru9weis2309urihw9q3rwy7fuih"
     },
@@ -297,9 +313,10 @@
       "composer": "The Foo Fighters",
       "category": "pub",
       "album": "Live From Full Sail, Orlando, FL",
-      "year": "~2006",
+      "year": 2006,
       "url": "https://dl.dropboxusercontent.com/s/ijanc4hktk7exp4/learn-to-fly.mp3?dl=0",
-      "_id": "124"
+      "_id": "124",
+      "image": "https://dl.dropboxusercontent.com/s/u782sh722u5rpu9/Album_1.png?dl=0"
     },
     {
       "title": "Black Water",
@@ -307,52 +324,57 @@
       "composer": "The Doobie Brothers",
       "category": "pub",
       "album": "Live From Full Sail, Orlando, FL",
-      "year": "~2006",
+      "year": 2006,
       "url": "https://dl.dropboxusercontent.com/s/3kzoptad7pqdf0o/old-black-water.mp3?dl=0",
-      "_id": "130"
+      "_id": "130",
+      "image": "https://dl.dropboxusercontent.com/s/u782sh722u5rpu9/Album_1.png?dl=0"
     },
     {
       "title": "I'm So Glad",
       "artist": "Josh & Maria Sherman",
       "category": "mission",
       "album": "Live From Salem, VA",
-      "year": "2016",
+      "year": 2016,
       "url": "https://dl.dropboxusercontent.com/s/so18qplh6ed5sed/im-so-glad.mp3?dl=0",
-      "_id": "136"
+      "_id": "136",
+      "image": "https://dl.dropboxusercontent.com/s/95lgyr7yn0yasoh/Album_3.png?dl=0"
     },
     {
       "title": "Leaning On the Everlasting Arms",
       "artist": "Josh & Maria Sherman",
       "category": "mission",
       "album": "Live From Salem, VA",
-      "year": "2016",
+      "year": 2016,
       "url": "https://dl.dropboxusercontent.com/s/zowak812ztpl7lt/LeaningOnTheEverlastingArms.mp3?dl=0",
-      "_id": "142"
+      "_id": "142",
+      "image": "https://dl.dropboxusercontent.com/s/95lgyr7yn0yasoh/Album_3.png?dl=0"
     },
     {
       "title": "Let Us Break Bread Together On Our Knees",
       "artist": "Josh & Maria Sherman",
       "category": "mission",
       "album": "Live From Salem, VA",
-      "year": "2016",
+      "year": 2016,
       "url": "https://dl.dropboxusercontent.com/s/60qze2fecfcbymv/let-us-break-bread-together.mp3?dl=0",
-      "_id": "148"
+      "_id": "148",
+      "image": "https://dl.dropboxusercontent.com/s/95lgyr7yn0yasoh/Album_3.png?dl=0"
     },
     {
       "title": "Lord Listen to Your Children Praying",
       "artist": "Josh & Maria Sherman",
       "category": "mission",
       "album": "Live From Salem, VA",
-      "year": "2016",
+      "year": 2016,
       "url": "https://dl.dropboxusercontent.com/s/c25ciaa2su1mcst/lord-listen-to-your-children.mp3?dl=0",
-      "_id": "154"
+      "_id": "154",
+      "image": "https://dl.dropboxusercontent.com/s/95lgyr7yn0yasoh/Album_3.png?dl=0"
     },
     {
       "title": "What Child is This",
       "artist": "Josh, Maria, & Tim Sherman",
       "category": "mission",
       "album": "Live From College Lutheran Church",
-      "year": "2017",
+      "year": 2017,
       "url": "https://dl.dropboxusercontent.com/s/g8nz8leu4a5hk6t/What%20Child%20Is%20This.mp3?dl=0",
       "_id": "160"
     }
