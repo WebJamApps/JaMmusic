@@ -38,7 +38,8 @@ const responseGoogleLogin = async (response: GoogleLoginResponseOffline | Google
   const baseUri = uri.split('/')[2];
   const body = {
     clientId: process.env.GoogleClientId,
-    redirectUri: /* istanbul ignore next */process.env.NODE_ENV === 'production' ? `https://${baseUri}` : `http://${baseUri}`,
+    redirectUri: /* istanbul ignore next */!baseUri.includes('localhost')
+    && process.env.NODE_ENV === 'production' ? `https://${baseUri}` : `http://${baseUri}`,
     code: `${response.code}`,
     /* istanbul ignore next */state() {
       const rand = Math.random().toString(36).substr(2);
