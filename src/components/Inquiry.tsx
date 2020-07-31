@@ -18,7 +18,7 @@ interface InquiryState {
   [x: number]: number;
 }
 
-export default class Inquiry extends Component<any, InquiryState> {
+export default class Inquiry extends Component<unknown, InquiryState> {
   stateValues: string[];
 
   forms: {
@@ -30,7 +30,7 @@ export default class Inquiry extends Component<any, InquiryState> {
 
   superagent: superagent.SuperAgentStatic;
 
-  constructor(props:any) {
+  constructor(props: unknown) {
     super(props);
     this.state = {
       submitted: false,
@@ -58,14 +58,15 @@ export default class Inquiry extends Component<any, InquiryState> {
     this.superagent = superagent;
   }
 
-  onChange(evt: any, isSelect?: boolean) {
+  onChange(evt: React.ChangeEvent<HTMLInputElement>, isSelect?: boolean): void {
     if (isSelect) return this.setState({ uSAstate: evt.target.value });
-    return this.setState({ [evt.target.id]: evt.target.value.trim() });
+    // eslint-disable-next-line react/no-access-state-in-setstate
+    return this.setState({ ...this.state, [evt.target.id]: evt.target.value.trim() });
   }
 
-  handleChange(event: React.ChangeEvent<HTMLInputElement>) { return this.setState({ country: event.target.value }); }
+  handleChange(event: React.ChangeEvent<HTMLInputElement>): void { return this.setState({ country: event.target.value }); }
 
-  continueValidating(validEmail: boolean) {
+  continueValidating(validEmail: boolean): boolean {
     const {
       country, uSAstate, firstname, lastname, zipcode, comments, formError,
     } = this.state;
@@ -81,7 +82,7 @@ export default class Inquiry extends Component<any, InquiryState> {
     return true;
   }
 
-  validateForm() {
+  validateForm(): boolean {
     const {
       emailaddress, phonenumber, formError,
     } = this.state;
@@ -103,9 +104,11 @@ export default class Inquiry extends Component<any, InquiryState> {
     return this.continueValidating(validEmail);
   }
 
-  async createEmailApi(emailForm1: { firstname: string; lastname: string; emailaddress: string; uSAstate: string; country: string;
-    phonenumber: string; zipcode: string; comments: string; }) {
-    let r: any;
+  async createEmailApi(emailForm1: {
+    firstname: string; lastname: string; emailaddress: string; uSAstate: string; country: string;
+    phonenumber: string; zipcode: string; comments: string;
+  }): Promise<number> {
+    let r: superagent.Response;
     const emailForm = emailForm1;
     try {
       r = await this.superagent.post(`${process.env.BackendUrl}/inquiry`)
@@ -116,7 +119,7 @@ export default class Inquiry extends Component<any, InquiryState> {
     return r.status;
   }
 
-  createEmail() {
+  createEmail(): Promise<number> {
     const {
       firstname, lastname, emailaddress, uSAstate, country, phonenumber, zipcode, comments,
     } = this.state;
@@ -126,7 +129,7 @@ export default class Inquiry extends Component<any, InquiryState> {
     return this.createEmailApi(emailForm);
   }
 
-  tableSection() {
+  tableSection(): JSX.Element {
     const {
       firstname, lastname, emailaddress, phonenumber,
     } = this.state;
@@ -148,7 +151,7 @@ export default class Inquiry extends Component<any, InquiryState> {
             <td style={{ border: 'none', padding: '8px' }}>{' '}</td>
             <td style={{ border: 'none', padding: 0 }}>
               {' '}
-              { this.forms.makeInput('tel', 'Phone Number', false, this.onChange, phonenumber, '140px')}
+              {this.forms.makeInput('tel', 'Phone Number', false, this.onChange, phonenumber, '140px')}
             </td>
           </tr>
         </tbody>
@@ -156,7 +159,7 @@ export default class Inquiry extends Component<any, InquiryState> {
     );
   }
 
-  commentsSection(comments: string) {
+  commentsSection(comments: string): JSX.Element {
     return (
       <label htmlFor="comments">
         * Comments
@@ -170,18 +173,18 @@ export default class Inquiry extends Component<any, InquiryState> {
     );
   }
 
-  newContactForm() {
+  newContactForm(): JSX.Element {
     const {
       country, formError, uSAstate, zipcode, comments,
     } = this.state;
     return (
       <form id="new-contact" style={{ maxWidth: '316px', marginLeft: '10px' }}>
         {this.tableSection()}
-        { this.forms.makeDropdown('country', '* Country', country, this.handleChange, this.countryValues) }
-        { country === 'United States'
+        {this.forms.makeDropdown('country', '* Country', country, this.handleChange, this.countryValues)}
+        {country === 'United States'
           ? this.forms.makeDropdown('state', '* State', uSAstate, this.onChange, this.stateValues)
           : null}
-        { this.forms.makeInput('zip', 'Zipcode', true, this.onChange, zipcode)}
+        {this.forms.makeInput('zip', 'Zipcode', true, this.onChange, zipcode)}
         {this.commentsSection(comments)}
         <p className="form-errors" style={{ color: 'red' }}>{formError}</p>
         <div className="inquiryValidation" style={{ marginBottom: '12px' }}>
@@ -192,11 +195,11 @@ export default class Inquiry extends Component<any, InquiryState> {
     );
   }
 
-  render() {
+  render(): JSX.Element {
     const { submitted } = this.state;
     return (
       <div style={{ maxWidth: '320px', margin: 'auto', border: '1px solid black' }}>
-        { submitted === false ? (
+        {submitted === false ? (
           <div className="contact-form">
             <h4 style={{
               textAlign: 'center', marginBottom: '0', marginTop: '10px', paddingTop: 0, fontWeight: 'bold',

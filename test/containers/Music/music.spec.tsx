@@ -1,9 +1,9 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import { Music } from '../../src/containers/Music';
-import PicSlider from '../../src/components/PicSlider';
+import { Music } from '../../../src/containers/Music';
+import PicSlider from '../../../src/components/PicSlider';
 
-function setup(images: { url: string; title: string }[] | undefined) {
+function setup(images: any) {
   let wrapper: any;
   if (images) {
     wrapper = shallow<Music>(<Music images={images} dispatch={jest.fn()} />);
@@ -24,7 +24,7 @@ describe('/music', () => {
     expect(wrapper.find('WjBand').dive().find('.wjBand').exists()).toBe(true);
   });
   it('renders with images', () => new Promise((done) => {
-    const data = [{ url: '', title: '' }];
+    const data:any = [{ url: '', title: '' }];
     const wrapper2 = shallow<Music>(<Music images={data} dispatch={jest.fn()} />);
     expect(wrapper2.find(PicSlider).exists()).toBe(true);
     done();

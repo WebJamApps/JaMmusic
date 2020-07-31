@@ -5,13 +5,13 @@ import DefaultTable from '../../components/TourTable';
 import JoshBio from './joshBio';
 import MariaBio from './mariaBio';
 import Intro from './intro';
-import mapStoreToProps from '../../redux/mapStoreToProps';
+import mapStoreToProps, { Iimage } from '../../redux/mapStoreToProps';
 import commonUtils from '../../lib/commonUtils';
 import WjBand from './wjBand';
 
 type MusicProps = {
   dispatch: Dispatch<unknown>;
-  images: { url: string; title: string }[];
+  images: Iimage[];
 };
 export class Music extends Component<MusicProps> {
   commonUtils: { setTitleAndScroll: (pageTitle: string, width: number) => void };

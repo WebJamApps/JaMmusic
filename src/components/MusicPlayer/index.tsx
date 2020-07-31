@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import ReactPlayer from 'react-player';
 import { FacebookShareButton, FacebookIcon } from 'react-share';
-import musicPlayerUtils, { MusicPlayerUtils } from './musicPlayerUtils';
+import musicPlayerUtils from './musicPlayerUtils';
 import mapStoreToProps, { Song } from '../../redux/mapStoreToProps';
 import musicUtils from './musicUtils';
 import commonUtils from '../../lib/commonUtils';
@@ -28,17 +28,11 @@ interface MProps {
 export class MusicPlayer extends Component<MProps, MusicPlayerState> {
   navigator: Navigator;
 
-  musicUtils: {
-    pageH4: (pageTitle: string) => JSX.Element; setIndex: (songs: Song[], category: string) => Song[];
-    textUnderPlayer: (song: string) => JSX.Element; copyRight: () => JSX.Element;
-    setPlayerStyle: (playerStyle: Song) => Record<string, unknown>;
-  };
+  musicUtils: typeof musicUtils;
 
   commonUtils: { setTitleAndScroll: (pageTitle: string, width: number) => void };
 
-  musicPlayerUtils: MusicPlayerUtils;
-
-  // static defaultProps: { songs: { url: string; title: string }[] };
+  musicPlayerUtils: typeof musicPlayerUtils;
 
   constructor(props: MProps) {
     super(props);
@@ -73,7 +67,7 @@ export class MusicPlayer extends Component<MProps, MusicPlayerState> {
     const params = new URLSearchParams(window.location.search);
     const { player } = this.state;
     const { songs, filterBy } = this.props;
-    let newSongs: any[] = [];
+    let newSongs: Song[] = [];
     this.commonUtils.setTitleAndScroll('', window.screen.width);
     if (songs) newSongs = songs.filter((song: { category?: string }) => song.category === filterBy);
     this.setState({ song: newSongs[0], songsState: newSongs });
@@ -261,7 +255,7 @@ export class MusicPlayer extends Component<MProps, MusicPlayerState> {
             <div className={classOverlay} />
             {song !== null && song !== undefined && song.url !== undefined ? this.reactPlayer(song) : null}
           </section>
-          {song ? this.musicUtils.textUnderPlayer(song as unknown as string) : null}
+          {song ? this.musicUtils.textUnderPlayer(song) : null}
           {this.buttons()}
           <section className="mt-1 col-12" id="copier" style={{ display: player.displayCopier, marginTop: '0' }}>
             {this.copyInput(player, song)}
