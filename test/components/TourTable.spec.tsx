@@ -27,11 +27,11 @@ describe('tour-table component test', () => {
     const { wrapper } = setup();
     expect(typeof wrapper.instance().setColumns).toBe('function');
     wrapper.instance().setColumns();
+    const meta:any = {};
     // @ts-ignore
     const custom = wrapper.instance().state.columns[0].options.customBodyRender('<a href="http://collegelutheran.org/"'
-      + ' rel="noopener noreferrer" target="_blank">College Lutheran Church</a>');
-    // @ts-ignore
-    expect(custom.type).toBe('div');
+      + ' rel="noopener noreferrer" target="_blank">College Lutheran Church</a>', meta, jest.fn());
+    expect(custom).toBeDefined();
   });
   it('rebuilds the tour table after the data updates', () => {
     const { wrapper } = setup();
@@ -70,33 +70,30 @@ describe('tour-table component test', () => {
     expect(typeof wrapper2.instance().setColumns).toBe('function');
     wrapper2.instance().setColumns();
     // @ts-ignore
-    const custom = wrapper2.instance().state.columns[5].options.customBodyRender(buttonjsx);
-    // @ts-ignore
-    expect(custom.type).toBe('div');
+    const custom = wrapper2.instance().state.columns[5].options.customBodyRender(buttonjsx, undefined, undefined);
+    expect(custom).toBeDefined();
   });
-  // it('handles click on delete tour button', () => {
-  //   const tour:any = {
-  //     _id: '123', venue: '', location: '', tickets: '',
-  //   };
-  //   const scc:any = { transmit: () => { } };
-  //   const wrapper2 = shallow<TourTable>(<TourTable
-  //     tour={[tour]}
-  //     dispatch={() => { }}
-  //     tourUpdated={false}
-  //     deleteButton
-  //     auth={{ token: 'token' }}
-  //     scc={scc}
-  //   />);
-  //   wrapper2.instance().deleteTour = jest.fn();
-  //   wrapper2.instance().deleteTour = jest.fn();
-  //   wrapper2.update();
-  //   const newArr = wrapper2.instance().addDeleteButton([tour]);
-  //   console.log(newArr[0].modify);
-  //   const button = shallow(newArr[0].modify);
-  //   console.log(button.debug());
-  //   // button.find('button#deletePic456').simulate('click');
-  //   // expect(wrapper2.instance().deleteTour).toHaveBeenCalled();
-  // });
+  it('handles click on delete tour button', () => {
+    const tour: any = {
+      _id: '123', venue: '', location: '', tickets: '',
+    };
+    const scc: any = { transmit: () => { } };
+    const wrapper2 = shallow<TourTable>(<TourTable
+      tour={[tour]}
+      dispatch={() => { }}
+      tourUpdated={false}
+      deleteButton
+      auth={{ token: 'token' }}
+      scc={scc}
+    />);
+    wrapper2.instance().deleteTour = jest.fn();
+    wrapper2.instance().editTour = jest.fn();
+    wrapper2.update();
+    const newArr = wrapper2.instance().addDeleteButton([tour]);
+    const button = shallow(newArr[0].modify || (<div />));
+    button.find('button#deletePic123').simulate('click');
+    expect(wrapper2.instance().deleteTour).toHaveBeenCalled();
+  });
   it('sends the deleteTour socket', () => {
     const tour: any = {
       _id: '123', venue: '', location: '', tickets: '',
@@ -141,26 +138,26 @@ describe('tour-table component test', () => {
     r = wrapper2.instance().deleteTour('456');
     expect(r).toBe(false);
   });
-  // it('handles click on edit pic button', () => {
-  //   const tour:any = {
-  //     _id: '123', venue: '', location: '', tickets: '',
-  //   };
-  //   const scc:any = { transmit: () => { } };
-  //   const wrapper2 = shallow<TourTable>(<TourTable
-  //     tour={[tour]}
-  //     dispatch={() => { }}
-  //     tourUpdated={false}
-  //     deleteButton
-  //     auth={{ token: 'token' }}
-  //     scc={scc}
-  //   />);
-  //   wrapper2.instance().editTour = jest.fn();
-  //   wrapper2.update();
-  //   const newArr = wrapper2.instance().addDeleteButton([tour]);
-  //   const button:any = shallow(newArr[0].modify);
-  //   button.find('button#editPic456').simulate('click');
-  //   expect(wrapper2.instance().editTour).toHaveBeenCalled();
-  // });
+  it('handles click on edit pic button', () => {
+    const tour: any = {
+      _id: '123', venue: '', location: '', tickets: '',
+    };
+    const scc: any = { transmit: () => { } };
+    const wrapper2 = shallow<TourTable>(<TourTable
+      tour={[tour]}
+      dispatch={() => { }}
+      tourUpdated={false}
+      deleteButton
+      auth={{ token: 'token' }}
+      scc={scc}
+    />);
+    wrapper2.instance().editTour = jest.fn();
+    wrapper2.update();
+    const newArr = wrapper2.instance().addDeleteButton([tour]);
+    const button = shallow(newArr[0].modify || (<div />));
+    button.find('button#editPic123').simulate('click');
+    expect(wrapper2.instance().editTour).toHaveBeenCalled();
+  });
   it('stores the edit pic data to redux', () => {
     const tour: any = {
       _id: '123', venue: '', location: '', tickets: '',
