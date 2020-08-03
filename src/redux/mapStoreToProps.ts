@@ -20,6 +20,7 @@ export interface Song {
 }
 
 export interface Tour {
+  modify?:JSX.Element,
   datetime?: string;
   more?: string;
   date: string;
