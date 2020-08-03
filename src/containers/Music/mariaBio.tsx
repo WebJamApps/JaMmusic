@@ -1,7 +1,7 @@
 import React from 'react';
 import Instruments from './instruments';
 
-const MariaBio = () => (
+const MariaBio = ():JSX.Element => (
   <div className="mariaBio">
     <h4 id="mariabio" style={{ marginBottom: '4px' }}>Maria Sherman</h4>
     <div><img className="alignnone size-medium wp-image-50" src="/static/imgs/maria01.jpg" alt="maria01" width="288px" /></div>

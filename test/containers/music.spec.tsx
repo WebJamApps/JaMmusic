@@ -21,6 +21,7 @@ describe('/music', () => {
       .find('.instruments')
       .exists()).toBe(true);
     expect(wrapper.find('MariaBio').dive().find('.mariaBio').exists()).toBe(true);
+    expect(wrapper.find('WjBand').dive().find('.wjBand').exists()).toBe(true);
   });
   it('renders with images', () => new Promise((done) => {
     const data = [{ url: '', title: '' }];

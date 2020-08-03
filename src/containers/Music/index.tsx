@@ -7,6 +7,7 @@ import MariaBio from './mariaBio';
 import Intro from './intro';
 import mapStoreToProps from '../../redux/mapStoreToProps';
 import commonUtils from '../../lib/commonUtils';
+import WjBand from './wjBand';
 
 type MusicProps = {
   dispatch: Dispatch<unknown>;
@@ -24,15 +25,17 @@ export class Music extends Component<MusicProps> {
     this.commonUtils = commonUtils;
   }
 
-  componentDidMount() { this.commonUtils.setTitleAndScroll('Music', window.screen.width); }
+  componentDidMount(): void { this.commonUtils.setTitleAndScroll('Music', window.screen.width); }
 
-  musicians() { // eslint-disable-line class-methods-use-this
+  musicians(): JSX.Element { // eslint-disable-line class-methods-use-this
     return (
       <div className="elevation3" style={{ maxWidth: '1000px', margin: 'auto' }}>
         <section>
           <JoshBio />
           <hr />
           <MariaBio />
+          <hr />
+          <WjBand />
         </section>
         <p>{' '}</p>
         <p>{' '}</p>
@@ -40,7 +43,7 @@ export class Music extends Component<MusicProps> {
     );
   }
 
-  render() {
+  render(): JSX.Element {
     const { images, dispatch } = this.props;
     return (
       <div className="page-content">
