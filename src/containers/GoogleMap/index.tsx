@@ -2,20 +2,20 @@ import React from 'react';
 import UMap from './UserMap';
 import CMap from './CompanyMap';
 import { Loc } from './gMapTypes';
-import gMapUtils, { IgMapUtils } from './gMapUtils';
+import gMapUtils from './gMapUtils';
 
 class GoogleMap extends React.Component {
-  gMap: any;
+  gMap: google.maps.Map<HTMLElement> | null;
 
-  companyMap: any;
+  companyMap: CMap | null;
 
-  userMap: any;
+  userMap: UMap | null;
 
   content: string;
 
-  gMapUtils: IgMapUtils;
+  gMapUtils: typeof gMapUtils;
 
-  constructor(props: any) {
+  constructor(props: Record<string, unknown>) {
     super(props);
     this.gMap = null;
     this.userMap = null;
@@ -28,34 +28,35 @@ class GoogleMap extends React.Component {
     const mapDiv = document.getElementById('googleMap');
     if (mapDiv) this.gMap = new google.maps.Map(mapDiv, { zoom: 2, center: { lat: 40, lng: -100 } });
     this.userMap = new UMap();
-    this.userMap = this.gMapUtils.limitLat(this.userMap);
+    this.userMap = this.gMapUtils.limitUserLat(this.userMap);
     this.content = `<div><p><strong>User Name:</strong> ${this.userMap.name}</p>`
       + `<p><strong>Latitude:</strong> ${this.userMap.loc.lat}</p></div>`;
     this.addMarker(this.userMap);
     this.companyMap = new CMap();
-    this.companyMap = this.gMapUtils.limitLat(this.companyMap);
+    this.companyMap = this.gMapUtils.limitCompanyLat(this.companyMap);
     this.content = `<div><p><strong>Company Name:</strong> ${this.companyMap.name}</p>`
       + `<p><strong>Company Slogan:</strong> ${this.companyMap.catchPhrase}</p>`
       + `<p><strong>Latitude:</strong> ${this.companyMap.loc.lat}</p></div>`;
     this.addMarker(this.companyMap, {
-      scaledSize: { width: 40, height: 40 },
+      scaledSize: { width: 40, height: 40, equals: () => true },
       url: 'https://image.flaticon.com/icons/png/512/63/63838.png',
     });
   }
 
-  addMarker(obj: { loc: Loc }, icon?: any): void {
+  addMarker(obj: { loc: Loc }, icon?: google.maps.ReadonlyIcon | undefined): void {
     const infoWindow = new google.maps.InfoWindow({ content: this.content });
-    const marker = new google.maps.Marker({
-      map: this.gMap,
-      position: {
-        lat: obj.loc.lat, lng: obj.loc.lng,
-      },
-      icon,
-    });
-    marker.addListener('click', () => {
-      // eslint-disable-next-line security/detect-non-literal-fs-filename
-      infoWindow.open(this.gMap, marker);
-    });
+    if (this.gMap !== null) {
+      const marker = new google.maps.Marker({
+        map: this.gMap,
+        position: {
+          lat: obj.loc.lat, lng: obj.loc.lng,
+        },
+        icon,
+      });
+      marker.addListener('click', () => { // eslint-disable-next-line security/detect-non-literal-fs-filename
+        if (this.gMap !== null)infoWindow.open(this.gMap, marker);
+      });
+    }
   }
 
   render(): JSX.Element {
