@@ -1,6 +1,6 @@
 import React from 'react';
 
-const CollegeLutheran = () => (
+const CollegeLutheran = (): JSX.Element => (
   <div className="elevation2 project" style={{ minWidth: '313px' }}>
     <h4>College Lutheran Church</h4>
     <img

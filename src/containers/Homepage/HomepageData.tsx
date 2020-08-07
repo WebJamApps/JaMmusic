@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Faqs = () => (
+const Faqs = (): JSX.Element => (
   <div className="faqs">
     <h3>FAQs</h3>
     <div className="qAnda">

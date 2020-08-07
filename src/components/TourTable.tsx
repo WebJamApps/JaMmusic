@@ -70,7 +70,7 @@ export class TourTable extends Component<TourTableProps, TourTableState> {
     return false;
   }
 
-  deleteTour(tourId: string): boolean { // eslint-disable-next-line no-restricted-globals
+  deleteTour(tourId: string | undefined): boolean { // eslint-disable-next-line no-restricted-globals
     const result = confirm('Deleting Event, are you sure?');// eslint-disable-line no-alert
     if (result) {
       const { scc, auth } = this.props;

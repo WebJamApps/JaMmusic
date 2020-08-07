@@ -29,7 +29,7 @@ describe('Inquiry Form', () => {
   });
   it('calls handleChange for country dropdown', () => {
     wrapper.instance().setState = jest.fn((obj) => { expect(obj.country).toBe('Spain'); });
-    wrapper.instance().handleChange({ target: { value: 'Spain' } }, true);
+    wrapper.instance().handleCountryChange({ target: { value: 'Spain' } }, true);
   });
   it('checks for invalid phone numbers', () => {
     wrapper.setState({
