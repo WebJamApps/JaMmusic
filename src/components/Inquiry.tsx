@@ -50,6 +50,7 @@ export default class Inquiry extends Component<unknown, InquiryState> {
     this.validateForm = this.validateForm.bind(this);
     this.continueValidating = this.continueValidating.bind(this);
     this.createEmailApi = this.createEmailApi.bind(this);
+    this.setFormField = this.setFormField.bind(this);
     this.stateValues.sort();
     this.countryValues = countryData;
     this.countryValues.sort();
@@ -58,14 +59,14 @@ export default class Inquiry extends Component<unknown, InquiryState> {
 
   onChange(evt: React.ChangeEvent<HTMLSelectElement>, isSelect?: boolean): void {
     if (isSelect) return this.setState({ uSAstate: evt.target.value });
-    // eslint-disable-next-line react/no-access-state-in-setstate
-    return this.setState({ ...this.state, [evt.target.id]: evt.target.value.trim() });
+    return this.setFormField(evt.target.id, evt.target.value);
   }
 
   onInputChange(evt: React.ChangeEvent<HTMLInputElement>): void {
-    // eslint-disable-next-line react/no-access-state-in-setstate
-    return this.setState({ ...this.state, [evt.target.id]: evt.target.value.trim() });
+    return this.setFormField(evt.target.id, evt.target.value);
   }
+
+  setFormField(id: string, value: string): void { return this.setState((preS) => ({ ...preS, [id]: value.trim() })); }
 
   handleCountryChange(event: React.ChangeEvent<HTMLSelectElement>): void { return this.setState({ country: event.target.value }); }
 
