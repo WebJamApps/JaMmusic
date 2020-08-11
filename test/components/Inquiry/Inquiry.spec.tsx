@@ -21,13 +21,18 @@ describe('Inquiry Form', () => {
   });
   it('calls on change for text input', () => {
     wrapper.instance().setState = jest.fn();
-    const evt:any = { target: { id: 'hi', value: '11 ' } };
+    const evt: any = { target: { id: 'hi', value: '11 ' } };
     wrapper.instance().onInputChange(evt);
     expect(wrapper.instance().setState).toHaveBeenCalled();
   });
   it('calls on change for uSAstate dropdown', () => {
     wrapper.instance().setState = jest.fn((obj) => { expect(obj.uSAstate).toBe('Alaska'); });
     wrapper.instance().onChange({ target: { value: 'Alaska' } }, true);
+  });
+  it('calls on change for country dropdown', () => {
+    wrapper.instance().setState = jest.fn((cb) => cb());
+    wrapper.instance().onChange({ target: { id: 'countryState', value: 'USA' } }, false);
+    expect(wrapper.instance().setState).toHaveBeenCalled();
   });
   it('calls handleChange for country dropdown', () => {
     wrapper.instance().setState = jest.fn((obj) => { expect(obj.country).toBe('Spain'); });

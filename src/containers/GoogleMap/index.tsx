@@ -38,7 +38,7 @@ class GoogleMap extends React.Component {
       + `<p><strong>Company Slogan:</strong> ${this.companyMap.catchPhrase}</p>`
       + `<p><strong>Latitude:</strong> ${this.companyMap.loc.lat}</p></div>`;
     this.addMarker(this.companyMap, {
-      scaledSize: { width: 40, height: 40, equals: () => true },
+      scaledSize: { width: 40, height: 40, equals: /* istanbul ignore next */() => true },
       url: 'https://image.flaticon.com/icons/png/512/63/63838.png',
     });
   }
@@ -54,7 +54,7 @@ class GoogleMap extends React.Component {
         icon,
       });
       marker.addListener('click', () => { // eslint-disable-next-line security/detect-non-literal-fs-filename
-        if (this.gMap !== null)infoWindow.open(this.gMap, marker);
+        /* istanbul ignore else */if (this.gMap !== null)infoWindow.open(this.gMap, marker);
       });
     }
   }
