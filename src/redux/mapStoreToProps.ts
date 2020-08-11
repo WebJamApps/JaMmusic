@@ -1,3 +1,5 @@
+import { AGClientSocket } from "socketcluster-client";
+
 export interface Auth {
   isAuthenticated: boolean,
   error: string,
@@ -39,7 +41,7 @@ export interface Iimage {
   'updated_at': string;
 }
 export interface Store {
-  sc: { scc: any; userCount: number };
+  sc: { scc: AGClientSocket; userCount: number };
   songs: { songs: Song[] };
   images: { images: any[] };
   auth: Auth;

@@ -4,8 +4,8 @@ import { MuiThemeProvider } from '@material-ui/core/styles';
 import ReactHtmlParser from 'react-html-parser';
 import { connect } from 'react-redux';
 import { AGClientSocket } from 'socketcluster-client';
-import mapStoreToProps, { Tour } from '../redux/mapStoreToProps';
-import TableTheme from '../lib/tourTableTheme';
+import mapStoreToProps, { Tour } from '../../redux/mapStoreToProps';
+import TableTheme from './tourTableTheme';
 
 type TourTableProps = {
   dispatch: Dispatch<unknown>;
