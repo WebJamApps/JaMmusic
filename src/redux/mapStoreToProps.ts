@@ -1,4 +1,4 @@
-import { AGClientSocket } from "socketcluster-client";
+import { AGClientSocket } from 'socketcluster-client';
 
 export interface Auth {
   isAuthenticated: boolean,
