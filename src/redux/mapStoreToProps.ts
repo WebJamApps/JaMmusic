@@ -28,7 +28,7 @@ export interface Tour {
   tickets: string;
   venue: string;
   location: string;
-  _id: string;
+  _id?: string;
 }
 export interface Iimage {
   '_id': string;

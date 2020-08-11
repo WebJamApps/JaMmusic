@@ -1,19 +1,25 @@
 import { Loc } from './gMapTypes';
+import type UMap from './UserMap';
+import type CMap from './CompanyMap';
 
-export interface IgMapUtils {
-  makeLoc: any; limitLat: any
-}
-function makeLoc(faker: any): Loc {
+function makeLoc(faker: { address: { latitude: () => string; longitude: () => string; }; }): Loc {
   return {
     lat: parseFloat(faker.address.latitude()),
     lng: parseFloat(faker.address.longitude()),
   };
 }
-function limitLat(obj: any): any {
+function limitUserLat(obj: UMap): UMap {
   const newObj = obj;
   if (obj.loc.lat > 83) newObj.loc.lat = 83;
   if (obj.loc.lat < -70) newObj.loc.lat = -70;
   return newObj;
 }
 
-export default { makeLoc, limitLat };
+function limitCompanyLat(obj: CMap): CMap {
+  const newObj = obj;
+  if (obj.loc.lat > 83) newObj.loc.lat = 83;
+  if (obj.loc.lat < -70) newObj.loc.lat = -70;
+  return newObj;
+}
+
+export default { makeLoc, limitUserLat, limitCompanyLat };

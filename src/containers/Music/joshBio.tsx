@@ -1,7 +1,7 @@
 import React from 'react';
 import Instruments from './instruments';
 
-const JoshBio = () => (
+const JoshBio = (): JSX.Element => (
   <div className="joshBio">
     <div style={{ height: '10px' }}><p>{' '}</p></div>
     <h4 id="joshbio" style={{ marginBottom: '4px', marginTop: '8px' }}>Josh Sherman</h4>
