@@ -44,7 +44,7 @@ export class App extends Component<AppProps> {
   async componentDidMount(): Promise<void> {
     const { dispatch, songs } = this.props;
     if (songs.length === 0) dispatch(getSongs());
-    await this.connectToSC.connectToSCC(dispatch);
+    this.connectToSC.connectToSCC(dispatch);
   }
 
   render(): JSX.Element {

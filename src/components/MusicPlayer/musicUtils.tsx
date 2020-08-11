@@ -41,16 +41,16 @@ function textUnderPlayer(song: Song): JSX.Element {
       }}
     >
       <strong>
-        {song !== null ? song.title : null}
-        {song !== null && song.composer !== undefined && song.category !== 'original' ? ` by ${song.composer}` : null}
-        {song !== null && song.artist !== undefined ? ` - ${song.artist}` : null}
+        {song.title ? song.title : null}
+        {song.composer && song.category !== 'original' ? ` by ${song.composer}` : null}
+        {song.artist ? ` - ${song.artist}` : null}
       </strong>
       <p style={{
         textAlign: 'center', fontSize: '8pt', marginTop: '4px', marginBottom: 0,
       }}
       >
-        {song !== null && song.album !== undefined ? song.album : null}
-        {song !== null && song.year !== undefined ? `, ${song.year}` : null}
+        {song.album ? song.album : null}
+        {song.year ? `, ${song.year}` : null}
       </p>
       <p style={{
         textAlign: 'center', fontSize: '8pt', marginTop: '2px', marginBottom: 0,

@@ -14,16 +14,16 @@ interface HomepageProps {
   height: number;
 }
 export class Homepage extends React.Component<HomepageProps, unknown> {
-  commonUtils: { setTitleAndScroll: (pageTitle: string, width: number) => void };
+  commonUtils: typeof commonUtils;
 
-  constructor(props: any) {
+  constructor(props: HomepageProps) {
     super(props);
     this.commonUtils = commonUtils;
   }
 
-  componentDidMount() { this.commonUtils.setTitleAndScroll('', window.screen.width); }
+  componentDidMount(): void { this.commonUtils.setTitleAndScroll('', window.screen.width); }
 
-  render() {
+  render(): JSX.Element {
     const { width, targetRef } = this.props;
     return (
       <div ref={targetRef}>

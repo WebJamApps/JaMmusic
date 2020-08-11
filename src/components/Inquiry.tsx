@@ -21,10 +21,7 @@ interface InquiryState {
 export default class Inquiry extends Component<unknown, InquiryState> {
   stateValues: string[];
 
-  forms: {
-    makeInput: (type: string, label: string, isRequired: boolean, onChange: React.ChangeEventHandler, value: string, width?: string) => JSX.Element;
-    makeDropdown: (htmlFor: string, labelText: string, value: string, onChange: React.ChangeEventHandler, options: string[]) => JSX.Element;
-  };
+  forms: typeof forms;
 
   countryValues: string[];
 
@@ -47,24 +44,31 @@ export default class Inquiry extends Component<unknown, InquiryState> {
     this.stateValues = stateData;
     this.forms = forms;
     this.onChange = this.onChange.bind(this);
-    this.handleChange = this.handleChange.bind(this);
+    this.onInputChange = this.onInputChange.bind(this);
+    this.handleCountryChange = this.handleCountryChange.bind(this);
     this.createEmail = this.createEmail.bind(this);
     this.validateForm = this.validateForm.bind(this);
     this.continueValidating = this.continueValidating.bind(this);
     this.createEmailApi = this.createEmailApi.bind(this);
+    this.setFormField = this.setFormField.bind(this);
     this.stateValues.sort();
     this.countryValues = countryData;
     this.countryValues.sort();
     this.superagent = superagent;
   }
 
-  onChange(evt: React.ChangeEvent<HTMLInputElement>, isSelect?: boolean): void {
+  onChange(evt: React.ChangeEvent<HTMLSelectElement>, isSelect?: boolean): void {
     if (isSelect) return this.setState({ uSAstate: evt.target.value });
-    // eslint-disable-next-line react/no-access-state-in-setstate
-    return this.setState({ ...this.state, [evt.target.id]: evt.target.value.trim() });
+    return this.setFormField(evt.target.id, evt.target.value);
   }
 
-  handleChange(event: React.ChangeEvent<HTMLInputElement>): void { return this.setState({ country: event.target.value }); }
+  onInputChange(evt: React.ChangeEvent<HTMLInputElement>): void {
+    return this.setFormField(evt.target.id, evt.target.value);
+  }
+
+  setFormField(id: string, value: string): void { return this.setState((preS) => ({ ...preS, [id]: value.trim() })); }
+
+  handleCountryChange(event: React.ChangeEvent<HTMLSelectElement>): void { return this.setState({ country: event.target.value }); }
 
   continueValidating(validEmail: boolean): boolean {
     const {
@@ -140,18 +144,18 @@ export default class Inquiry extends Component<unknown, InquiryState> {
       >
         <tbody>
           <tr>
-            <td style={{ border: 'none', padding: 0 }}>{this.forms.makeInput('text', 'First Name', true, this.onChange, firstname, '140px')}</td>
+            <td style={{ border: 'none', padding: 0 }}>{this.forms.makeInput('text', 'First Name', true, this.onInputChange, firstname, '140px')}</td>
             <td style={{ border: 'none', padding: '8px' }}>{' '}</td>
-            <td style={{ border: 'none', padding: 0 }}>{this.forms.makeInput('text', 'Last Name', true, this.onChange, lastname, '140px')}</td>
+            <td style={{ border: 'none', padding: 0 }}>{this.forms.makeInput('text', 'Last Name', true, this.onInputChange, lastname, '140px')}</td>
           </tr>
           <tr>
             <td style={{ border: 'none', padding: 0 }}>
-              {this.forms.makeInput('email', 'Email Address', true, this.onChange, emailaddress, '140px')}
+              {this.forms.makeInput('email', 'Email Address', true, this.onInputChange, emailaddress, '140px')}
             </td>
             <td style={{ border: 'none', padding: '8px' }}>{' '}</td>
             <td style={{ border: 'none', padding: 0 }}>
               {' '}
-              {this.forms.makeInput('tel', 'Phone Number', false, this.onChange, phonenumber, '140px')}
+              {this.forms.makeInput('tel', 'Phone Number', false, this.onInputChange, phonenumber, '140px')}
             </td>
           </tr>
         </tbody>
@@ -180,11 +184,11 @@ export default class Inquiry extends Component<unknown, InquiryState> {
     return (
       <form id="new-contact" style={{ maxWidth: '316px', marginLeft: '10px' }}>
         {this.tableSection()}
-        {this.forms.makeDropdown('country', '* Country', country, this.handleChange, this.countryValues)}
+        {this.forms.makeDropdown('country', '* Country', country, this.handleCountryChange, this.countryValues)}
         {country === 'United States'
           ? this.forms.makeDropdown('state', '* State', uSAstate, this.onChange, this.stateValues)
           : null}
-        {this.forms.makeInput('zip', 'Zipcode', true, this.onChange, zipcode)}
+        {this.forms.makeInput('zip', 'Zipcode', true, this.onInputChange, zipcode)}
         {this.commentsSection(comments)}
         <p className="form-errors" style={{ color: 'red' }}>{formError}</p>
         <div className="inquiryValidation" style={{ marginBottom: '12px' }}>

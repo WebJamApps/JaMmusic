@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-const Intro = () => (
+const Intro = (): JSX.Element => (
   <div
     className="intro"
     style={{

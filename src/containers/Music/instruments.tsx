@@ -1,7 +1,6 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
-const Instruments = (props: any): JSX.Element => {
+const Instruments = (props: { type: string }): JSX.Element => {
   const { type } = props;
   return (
     <ol className="instruments">
@@ -28,11 +27,5 @@ const Instruments = (props: any): JSX.Element => {
     </ol>
   );
 };
-Instruments.defaultProps = {
-  type: '',
-};
 
-Instruments.propTypes = {
-  type: PropTypes.string,
-};
 export default Instruments;

@@ -1,6 +1,6 @@
 import React from 'react';
 
-const JoshShermanSpotify = () => (
+const JoshShermanSpotify = (): JSX.Element => (
   <div className="spotify">
     <h5>Also On Spotify</h5>
     <div className="row">

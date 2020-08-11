@@ -5,7 +5,8 @@ import mapStoreToProps from '../../redux/mapStoreToProps';
 import commonUtils from '../../lib/commonUtils';
 
 type SProps = {
-  songs: {url: string}[];};
+  songs: { url: string }[];
+};
 export class Songs extends Component<SProps> {
   o: RefObject<unknown>;
 
@@ -19,9 +20,9 @@ export class Songs extends Component<SProps> {
     this.commonUtils = commonUtils;
   }
 
-  componentDidMount() { this.commonUtils.setTitleAndScroll('Songs', window.screen.width); }
+  componentDidMount(): void { this.commonUtils.setTitleAndScroll('Songs', window.screen.width); }
 
-  render() {
+  render(): JSX.Element {
     const { songs } = this.props;
     return (
       <div id="pageContent" className="page-content">

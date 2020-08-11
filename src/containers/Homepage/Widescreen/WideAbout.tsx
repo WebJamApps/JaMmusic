@@ -1,7 +1,7 @@
 import React from 'react';
 import Faqs from '../HomepageData';
 
-const WideAboutUs = () => (
+const WideAboutUs = (): JSX.Element => (
   <div className="widescreenHomepage">
     <div className="container-fluid">
       <div className="row">
