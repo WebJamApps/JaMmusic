@@ -53,6 +53,7 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
   componentDidMount(): void { this.commonUtils.setTitleAndScroll('Music Dashboard', window.screen.width); }
 
   onChange(evt: React.ChangeEvent<HTMLInputElement>): void {
+    evt.persist();
     const { editTour } = this.props;
     if (editTour.venue !== undefined) this.checkEdit();
     this.setState((prevState) => ({ ...prevState, [evt.target.id]: evt.target.value }));
