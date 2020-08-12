@@ -32,7 +32,7 @@ describe('Dashboard Container', () => {
     wrapper.instance().checkEdit = jest.fn();
     wrapper.instance().setState = jest.fn();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const evt:any = { preventDefault: () => { }, target: { id: 'hi', value: 11 } };
+    const evt:any = { preventDefault: () => { }, persist: jest.fn(), target: { id: 'hi', value: 11 } };
     wrapper.instance().onChange(evt);
     expect(wrapper.instance().setState).toHaveBeenCalled();
   });
@@ -50,7 +50,7 @@ describe('Dashboard Container', () => {
     );
     wrapper2.instance().checkEdit = jest.fn();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const evt:any = { preventDefault: () => { }, target: { id: 'hi', value: '11' } };
+    const evt:any = { preventDefault: () => { }, persist: jest.fn(), target: { id: 'hi', value: '11' } };
     wrapper2.instance().onChange(evt);
     expect(wrapper2.instance().checkEdit).toHaveBeenCalled();
   });
