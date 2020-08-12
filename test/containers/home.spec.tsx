@@ -5,6 +5,7 @@ import WideAboutUs from '../../src/containers/Homepage/Widescreen/WideAbout';
 import WideCurrentProjects from '../../src/containers/Homepage/Widescreen/WideCurrentProjects';
 import WideFacebookFeed from '../../src/containers/Homepage/Widescreen/WideFacebookFeed';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const targetRef: any = {};
 const wrapper = shallow<Homepage>(<Homepage targetRef={targetRef} width={1200} height={1800} />);
 

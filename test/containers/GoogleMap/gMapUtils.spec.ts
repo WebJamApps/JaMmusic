@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import gMapUtils from '../../../src/containers/GoogleMap/gMapUtils';
 
 describe('gMapUtils', () => {

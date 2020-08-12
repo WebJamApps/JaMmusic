@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import getSongs, { gotSongs } from '../../src/App/songsActions';

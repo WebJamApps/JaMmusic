@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { shallow } from 'enzyme';
 import musicPlayerUtils from '../../../src/components/MusicPlayer/musicPlayerUtils';
 

@@ -1,10 +1,6 @@
-import configureMockStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import superagent from 'superagent';
 import authenticate from '../../src/App/authActions';
-
-const middlewares = [thunk];
-const mockStore = configureMockStore(middlewares);
 
 describe('authActions', () => {
   it('authenticates', async () => {

@@ -4,7 +4,8 @@ import { Songs } from '../../src/containers/Songs';
 import DefaultMusicPlayer from '../../src/components/MusicPlayer';
 
 function setup() {
-  const songs = [{ url: '', category: 'originals' }, { url: '', category: 'originals' }];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const songs:any[] = [{ url: '', category: 'originals' }, { url: '', category: 'originals' }];
   const wrapper = shallow<Songs>(<Songs songs={songs} />);
   return { wrapper };
 }
@@ -20,7 +21,9 @@ describe('Songs component', () => {
     expect(wrapper.find(DefaultMusicPlayer).exists()).toBe(true);
   });
   it('should not display the music player', () => new Promise((done) => {
-    const wrapper = shallow(<Songs />);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const songs:any[] = [];
+    const wrapper = shallow(<Songs songs={songs} />);
     expect(wrapper.find(DefaultMusicPlayer).exists()).toBe(false);
     done();
   }));

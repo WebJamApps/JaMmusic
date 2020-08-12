@@ -4,6 +4,7 @@ import moment from 'moment';
 import { withRouter, Redirect, RouteComponentProps } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { AGClientSocket } from 'socketcluster-client';
+import { AnyAction } from 'redux';
 import mapStoreToProps, { Tour } from '../../redux/mapStoreToProps';
 import forms from '../../lib/forms';
 import commonUtils from '../../lib/commonUtils';
@@ -11,7 +12,7 @@ import AddTime from '../../lib/timeKeeper';
 import Ttable from '../../components/TourTable';
 
 interface MusicDashboardProps extends RouteComponentProps<Record<string, string | undefined>> {
-  dispatch: Dispatch<unknown>;
+  dispatch: Dispatch<AnyAction>;
   scc: AGClientSocket;
   auth: { token: string };
   editTour: { date?: string; time?: string; tickets?: string; more?: string; venue?: string; location?: string; _id?: string; datetime?: string };
@@ -231,7 +232,7 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
 
   render(): JSX.Element {
     const { redirect } = this.state;
-    const { editTour, dispatch } = this.props;
+    const { editTour } = this.props;
     return (
       <div className="page-content">
         {redirect ? <Redirect to="/music" /> : null}
@@ -248,7 +249,7 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
         {!editTour._id ? (
           <div className="material-content elevation3" style={{ maxWidth: '10in', margin: 'auto' }}>
             <h5 style={{ textAlign: 'center', marginBottom: 0 }}>Modify Event</h5>
-            <Ttable deleteButton dispatch={dispatch} />
+            <Ttable deleteButton />
           </div>
         ) : null}
         <p>&nbsp;</p>

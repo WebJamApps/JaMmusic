@@ -4,6 +4,7 @@ import TimeKeeper from 'react-timekeeper';
 import AddTime from '../../src/lib/timeKeeper';
 
 describe('timeKeeper component', () => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let wrapper: any;
   beforeEach(() => {
     wrapper = shallow(<AddTime setFormTime={() => {}} initTime="1:45 am" />);
