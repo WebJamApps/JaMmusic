@@ -1,11 +1,9 @@
 import React, { Component, Dispatch } from 'react';
 import MUIDataTable, { MUIDataTableColumn } from 'mui-datatables';
-import { MuiThemeProvider } from '@material-ui/core/styles';
 import ReactHtmlParser from 'react-html-parser';
 import { connect } from 'react-redux';
 import { AGClientSocket } from 'socketcluster-client';
 import mapStoreToProps, { Tour } from '../../redux/mapStoreToProps';
-import TableTheme from './tourTableTheme';
 
 type TourTableProps = {
   dispatch: Dispatch<unknown>;
@@ -113,25 +111,23 @@ export class TourTable extends Component<TourTableProps, TourTableState> {
     return (
       <div className="tourTable">
         <div style={{ maxWidth: '100%' }}>
-          <MuiThemeProvider theme={TableTheme}>
-            <MUIDataTable
-              options={{
-                filterType: 'dropdown',
-                pagination: false,
-                responsive: 'scrollMaxHeight',
-                filter: false,
-                download: false,
-                search: false,
-                print: false,
-                viewColumns: false,
-                selectableRows: 'none',
-                fixedHeader: false,
-              }}
-              columns={columns}
-              data={tableData}
-              title="Tour"
-            />
-          </MuiThemeProvider>
+          <MUIDataTable
+            options={{
+              filterType: 'dropdown',
+              pagination: false,
+              responsive: 'scrollMaxHeight',
+              filter: false,
+              download: false,
+              search: false,
+              print: false,
+              viewColumns: false,
+              selectableRows: 'none',
+              fixedHeader: false,
+            }}
+            columns={columns}
+            data={tableData}
+            title="Tour"
+          />
         </div>
       </div>
     );
