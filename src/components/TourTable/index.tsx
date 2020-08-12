@@ -3,10 +3,11 @@ import MUIDataTable, { MUIDataTableColumn } from 'mui-datatables';
 import ReactHtmlParser from 'react-html-parser';
 import { connect } from 'react-redux';
 import { AGClientSocket } from 'socketcluster-client';
-import mapStoreToProps, { Tour } from '../redux/mapStoreToProps';
+import { AnyAction } from 'redux';
+import mapStoreToProps, { Tour } from '../../redux/mapStoreToProps';
 
 type TourTableProps = {
-  dispatch: Dispatch<unknown>;
+  dispatch: Dispatch<AnyAction>;
   tourUpdated?: boolean;
   tour?: Tour[];
   auth?: { token: string };

@@ -1,5 +1,6 @@
 import React, { Component, Dispatch } from 'react';
 import { connect } from 'react-redux';
+import { AnyAction } from 'redux';
 import PicSlider from '../../components/PicSlider';
 import DefaultTable from '../../components/TourTable';
 import JoshBio from './joshBio';
@@ -10,7 +11,7 @@ import commonUtils from '../../lib/commonUtils';
 import WjBand from './wjBand';
 
 type MusicProps = {
-  dispatch: Dispatch<unknown>;
+  dispatch: Dispatch<AnyAction>;
   images: Iimage[];
 };
 export class Music extends Component<MusicProps> {
@@ -44,7 +45,7 @@ export class Music extends Component<MusicProps> {
   }
 
   render(): JSX.Element {
-    const { images, dispatch } = this.props;
+    const { images } = this.props;
     return (
       <div className="page-content">
         <div style={{ paddingTop: '1px', paddingBottom: 0, marginBottom: 0 }}>
@@ -59,7 +60,7 @@ export class Music extends Component<MusicProps> {
             position: 'relative', overflowX: 'auto', maxWidth: '96%', margin: 'auto', zIndex: 0,
           }}
         >
-          <DefaultTable dispatch={dispatch} />
+          <DefaultTable />
         </div>
         <div style={{ height: '10px' }}>
           <p>{' '}</p>

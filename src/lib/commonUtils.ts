@@ -7,7 +7,7 @@ const setTitleAndScroll = (pageTitle: string, width: number): void => {
   if (top !== undefined && typeof top.scrollIntoView === 'function') top.scrollIntoView();
 };
 
-function getUserRoles(): any[] {
+function getUserRoles(): string[] {
   let userRoles: string[] = [];
   try {
     userRoles = JSON.parse(process.env.userRoles || /* istanbul ignore next */'').roles;

@@ -4,9 +4,12 @@ import { Redirect } from 'react-router-dom';
 import { MusicDashboard } from '../../../src/containers/MusicDashboard';
 
 describe('Dashboard Container', () => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let wrapper: any;
   const auth = { token: '' };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const anyProp: any = {};
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const scc:any = { transmit: () => { } };
   beforeEach(() => {
     wrapper = shallow<MusicDashboard>(<MusicDashboard
@@ -28,6 +31,7 @@ describe('Dashboard Container', () => {
   it('calls on change', () => {
     wrapper.instance().checkEdit = jest.fn();
     wrapper.instance().setState = jest.fn();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const evt:any = { preventDefault: () => { }, target: { id: 'hi', value: 11 } };
     wrapper.instance().onChange(evt);
     expect(wrapper.instance().setState).toHaveBeenCalled();
@@ -45,6 +49,7 @@ describe('Dashboard Container', () => {
       />,
     );
     wrapper2.instance().checkEdit = jest.fn();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const evt:any = { preventDefault: () => { }, target: { id: 'hi', value: '11' } };
     wrapper2.instance().onChange(evt);
     expect(wrapper2.instance().checkEdit).toHaveBeenCalled();
@@ -183,6 +188,7 @@ describe('Dashboard Container', () => {
     />);
     wrapper2.setState({ venue: 'beer garden' });
     wrapper2.instance().setState = jest.fn();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const evt:any = { preventDefault: () => { } };
     wrapper2.instance().resetEditForm(evt);
     const sO = {

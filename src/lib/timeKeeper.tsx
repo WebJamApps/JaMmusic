@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import TimeKeeper from 'react-timekeeper';
 
-export default function AddTime({ setFormTime, initTime }: any): JSX.Element { // eslint-disable-line react/prop-types
+type Props = {
+  setFormTime: (args0: string) => void, initTime: string
+};
+export default function AddTime({ setFormTime, initTime }: Props): JSX.Element { // eslint-disable-line react/prop-types
   const time = initTime !== '' ? initTime : '12:34pm';
   const [showTime, setShowTime] = useState(true);
   return (

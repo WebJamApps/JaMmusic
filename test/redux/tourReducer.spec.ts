@@ -20,7 +20,9 @@ describe('tour reducer', () => {
     );
   });
   it('handles NEW_TOUR', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const t1:any = { datetime: `${new Date().toISOString}`, _id: '' };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const t2:any = { datetime: `${new Date().toISOString}`, _id: '' };
     expect(reducer({ tour: [t1], tourUpdated: true, editTour: {} }, { type: 'NEW_TOUR', data: t2 })).toEqual(
       {
@@ -31,6 +33,7 @@ describe('tour reducer', () => {
     );
   });
   it('handles NEW_TOUR with missing data', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const t1:any = { datetime: `${new Date().toISOString}`, _id: '' };
     expect(reducer({ tour: [t1], tourUpdated: true, editTour: {} }, { type: 'NEW_TOUR', data: undefined })).toEqual(
       {

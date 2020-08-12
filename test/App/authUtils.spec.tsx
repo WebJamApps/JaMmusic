@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import jwt from 'jwt-simple';
 import superagent from 'superagent';
 import authUtils from '../../src/App/authUtils';
