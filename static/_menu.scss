@@ -26,10 +26,6 @@ button.nav-link:hover {
   margin-right: 0;
 }
 
-.menu-item:hover {
-  background-color: white;
-}
-
 .menu-item {
   padding-left: 10px;
   display: flex;
@@ -45,6 +41,10 @@ button.nav-link:hover {
   padding-top: 0;
   padding-right: 16px;
   box-sizing: border-box;
+}
+
+.menu-item:hover {
+  background-color: white;
 }
 
 .menu-toggle {

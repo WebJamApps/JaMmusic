@@ -30,10 +30,6 @@
   font-size: 0.8em;
 }
 
-#playSection audio {
-  border-radius: 0 !important;
-}
-
 button.on {
   background-color: #c0c0c0 !important;
 }
@@ -133,17 +129,6 @@ button.on {
   margin-top: 11px;
 }
 
-#playSection audio::-webkit-media-controls-play-button {
-  display: none;
-}
-
-#homeLink {
-  color: #000;
-  text-decoration: None;
-  font-size: inherit;
-  font-weight: inherit;
-}
-
 audio::-internal-media-controls-download-button {
   display: none;
 }
@@ -155,4 +140,19 @@ audio::-webkit-media-controls-enclosure {
 audio::-webkit-media-controls-panel {
   width: calc(100% + 30px);
   /* Adjust as needed */
+}
+
+#playSection audio {
+  border-radius: 0 !important;
+}
+
+#playSection audio::-webkit-media-controls-play-button {
+  display: none;
+}
+
+#homeLink {
+  color: #000;
+  text-decoration: None;
+  font-size: inherit;
+  font-weight: inherit;
 }
