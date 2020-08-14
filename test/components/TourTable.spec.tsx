@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-import * as React from 'react';
+import React from 'react';
 import { shallow } from 'enzyme';
 import { TourTable } from '../../src/components/TourTable';
 
@@ -28,11 +27,13 @@ describe('tour-table component test', () => {
     const { wrapper } = setup();
     expect(typeof wrapper.instance().setColumns).toBe('function');
     wrapper.instance().setColumns();
-    const meta:any = {};
-    // @ts-ignore
-    const custom = wrapper.instance().state.columns[0].options.customBodyRender('<a href="http://collegelutheran.org/"'
-      + ' rel="noopener noreferrer" target="_blank">College Lutheran Church</a>', meta, jest.fn());
-    expect(custom).toBeDefined();
+    const meta: any = {};
+    const myOptions: any = wrapper.instance().state.columns[0].options;
+    if (myOptions) {
+      const custom = myOptions.customBodyRender('<a href="http://collegelutheran.org/"'
+        + ' rel="noopener noreferrer" target="_blank">College Lutheran Church</a>', meta, jest.fn());
+      expect(custom).toBeDefined();
+    }
   });
   it('rebuilds the tour table after the data updates', () => {
     const { wrapper } = setup();
@@ -70,9 +71,11 @@ describe('tour-table component test', () => {
     const buttonjsx = (<button type="button" style={{ display: 'block' }}>howdy</button>);
     expect(typeof wrapper2.instance().setColumns).toBe('function');
     wrapper2.instance().setColumns();
-    // @ts-ignore
-    const custom = wrapper2.instance().state.columns[5].options.customBodyRender(buttonjsx, undefined, undefined);
-    expect(custom).toBeDefined();
+    const myOptions:any = wrapper2.instance().state.columns[5].options;
+    if (myOptions) {
+      const custom = myOptions.customBodyRender(buttonjsx, undefined, undefined);
+      expect(custom).toBeDefined();
+    }
   });
   it('handles click on delete tour button', () => {
     const tour: any = {

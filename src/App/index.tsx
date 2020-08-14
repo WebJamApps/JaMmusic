@@ -24,8 +24,14 @@ export interface AppProps {
   auth: Auth;
 }
 
-export class App extends Component<AppProps> {
+interface Astate {
+  userRoles:string[];
+}
+
+export class App extends Component<AppProps, Astate> {
   connectToSC: typeof connectToSC;
+
+  utils: typeof commonUtils;
 
   static defaultProps = {
     dispatch: (): void => { },
@@ -38,6 +44,10 @@ export class App extends Component<AppProps> {
 
   constructor(props: AppProps) {
     super(props);
+    this.state = {
+      userRoles: [],
+    };
+    this.utils = commonUtils;
     this.connectToSC = connectToSC;
   }
 
@@ -45,11 +55,13 @@ export class App extends Component<AppProps> {
     const { dispatch, songs } = this.props;
     if (songs.length === 0) dispatch(getSongs());
     this.connectToSC.connectToSCC(dispatch);
+    const userRoles: string[] = this.utils.getUserRoles();
+    this.setState({ userRoles });
   }
 
   render(): JSX.Element {
     const { auth } = this.props;
-    const userRoles: string[] = commonUtils.getUserRoles();
+    const { userRoles } = this.state;
     return (
       <div id="App" className="App">
         <Router>
