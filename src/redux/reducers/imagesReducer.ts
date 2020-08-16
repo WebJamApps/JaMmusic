@@ -5,7 +5,7 @@ const initialState = {
   error: '',
 };
 
-const imagesReducer = (state = initialState, action: any): any => {
+const imagesReducer = (state = initialState, action: any): Record<string, unknown> => {
   switch (action.type) {
     case 'FETCH_IMAGES':
       return {
