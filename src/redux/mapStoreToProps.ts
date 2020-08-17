@@ -33,12 +33,12 @@ export interface Tour {
   _id?: string;
 }
 export interface Iimage {
-  '_id': string;
+  '_id'?: string;
   'url': string;
   'title': string;
   'type': string;
-  'created_at': string;
-  'updated_at': string;
+  'created_at'?: string;
+  'updated_at'?: string;
 }
 export interface Store {
   sc: { scc: AGClientSocket; userCount: number };
