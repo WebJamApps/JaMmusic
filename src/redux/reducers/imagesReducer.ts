@@ -1,3 +1,11 @@
+import { Iimage } from '../mapStoreToProps';
+
+export interface IImageReducer {
+  images: Iimage[],
+  isFetching: boolean,
+  isError: boolean,
+}
+
 const initialState = {
   images: [],
   isFetching: false,
@@ -5,7 +13,7 @@ const initialState = {
   error: '',
 };
 
-const imagesReducer = (state = initialState, action: any): Record<string, unknown> => {
+const imagesReducer = (state = initialState, action: { type: string, data: IImageReducer, error: { message: string } }): Record<string, unknown> => {
   switch (action.type) {
     case 'FETCH_IMAGES':
       return {
