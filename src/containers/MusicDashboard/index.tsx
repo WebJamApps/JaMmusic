@@ -5,19 +5,23 @@ import { withRouter, Redirect, RouteComponentProps } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { AGClientSocket } from 'socketcluster-client';
 import { AnyAction } from 'redux';
-import mapStoreToProps, { Tour } from '../../redux/mapStoreToProps';
+import mapStoreToProps, { Tour, Iimage } from '../../redux/mapStoreToProps';
 import forms from '../../lib/forms';
 import commonUtils from '../../lib/commonUtils';
 import AddTime from '../../lib/timeKeeper';
 import Ttable from '../../components/TourTable';
+import Controller, { MusicDashboardController } from './MusicDashboardController';
 
 interface MusicDashboardProps extends RouteComponentProps<Record<string, string | undefined>> {
   dispatch: Dispatch<AnyAction>;
   scc: AGClientSocket;
   auth: { token: string };
+  editPic?: Iimage,
   editTour: { date?: string; time?: string; tickets?: string; more?: string; venue?: string; location?: string; _id?: string; datetime?: string };
 }
 type MusicDashboardState = {
+  picTitle: string,
+  picUrl: string,
   location: string;
   venue: string;
   redirect: boolean;
@@ -32,12 +36,15 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
 
   commonUtils: { setTitleAndScroll: (pageTitle: string, width: number) => void };
 
+  controller: MusicDashboardController;
+
   constructor(props: MusicDashboardProps) {
     super(props);
     this.state = {
-      redirect: false, date: '', time: '', tickets: '', more: '', venue: '', location: '',
+      picTitle: '', picUrl: '', redirect: false, date: '', time: '', tickets: '', more: '', venue: '', location: '',
     };
     this.forms = forms;
+    this.controller = new Controller(this);
     this.onChange = this.onChange.bind(this);
     this.createTour = this.createTour.bind(this);
     this.validateForm = this.validateForm.bind(this);
@@ -138,8 +145,8 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
         value={venue}
         apiKey={process.env.TINY_KEY}
         init={{
-          height: 400,
-          menubar: 'insert',
+          height: 500,
+          menubar: 'insert tools',
           selector: 'textarea',
           menu: { format: { title: 'Format', items: 'forecolor backcolor' } },
           plugins: [
@@ -178,7 +185,7 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
     return (
       <div style={{ textAlign: 'left', marginTop: '10px', maxWidth: '85%' }}>
         <span style={{
-          fontSize: '16px', marginRight: '20px', fontFamily: 'Habibi', position: 'relative', display: 'inline-block',
+          fontSize: '16px', marginRight: '20px', position: 'relative', display: 'inline-block',
         }}
         >
           <i>* Required</i>
@@ -239,6 +246,11 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
         {redirect ? <Redirect to="/music" /> : null}
         <h3 style={{ textAlign: 'center', margin: '14px', fontWeight: 'bold' }}>Music Dashboard</h3>
         <div className="material-content elevation3" style={{ maxWidth: '9.1in', margin: 'auto' }}>
+          <h5 style={{ textAlign: 'center', marginBottom: 0 }}>Modify Photo Slideshow</h5>
+          {this.controller.changePicDiv()}
+        </div>
+        <p>&nbsp;</p>
+        <div className="material-content elevation3" style={{ maxWidth: '9.1in', margin: 'auto' }}>
           <h5 style={{ textAlign: 'center', marginBottom: 0 }}>
             {editTour._id ? 'Edit' : 'Create a New'}
             {' '}
@@ -249,7 +261,7 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
         <p>&nbsp;</p>
         {!editTour._id ? (
           <div className="material-content elevation3" style={{ maxWidth: '10in', margin: 'auto' }}>
-            <h5 style={{ textAlign: 'center', marginBottom: 0 }}>Modify Event</h5>
+            <h5 style={{ textAlign: 'center', marginBottom: '3px' }}>Modify</h5>
             <Ttable deleteButton />
           </div>
         ) : null}
