@@ -103,27 +103,6 @@ describe('Dashboard Container', () => {
     wrapper.instance().setFormTime('12:00 pm');
     wrapper.instance().setState = jest.fn((obj) => { expect(obj.time).toBe('12:00 pm'); });
   });
-  // it('renders with edit tour', () => {
-  //   const wrapper2 = shallow(<MusicDashboard
-  //     auth={auth}
-  //     scc={scc}
-  //     dispatch={() => { }}
-  //     editTour={{
-  //       datetime: '2020-10-10T000',
-  //       _id: '123',
-  //       date: '2020-10-10',
-  //       time: '5 pm',
-  //       tickets: 'free',
-  //       more: '',
-  //       venue: 'beer garden',
-  //       location: 'salem, va',
-  //     }}
-  //     history={anyProp}
-  //     location={anyProp}
-  //     match={anyProp}
-  //   />);
-  //   expect(wrapper2.find('h5').get(1).text()).toBe('Edit Tour Event');
-  // });
   it('checks edit when editTour', () => {
     const wrapper2 = shallow<MusicDashboard>(<MusicDashboard
       auth={auth}
