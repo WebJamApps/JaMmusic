@@ -1,7 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
 import { shallow } from 'enzyme';
+import MUIDataTable from 'mui-datatables';
 import { TourTable } from '../../src/components/TourTable';
+import DTable from '../../src/components/TourTable/DataTable';
 
 function setup() {
   const props = {};
@@ -22,17 +24,34 @@ describe('tour-table component test', () => {
   it('renders the component', () => {
     const { wrapper } = setup();
     expect(wrapper.find('.tourTable').exists()).toBe(true);
+    expect(wrapper.find(DTable).dive().find(MUIDataTable).exists()).toBe(true);
   });
-  it('sets the columns with customBodyRender', () => {
+  it('sets the columns with customBodyRender and customHeadRender', () => {
     const { wrapper } = setup();
     expect(typeof wrapper.instance().setColumns).toBe('function');
     wrapper.instance().setColumns();
     const meta: any = {};
     const myOptions: any = wrapper.instance().state.columns[0].options;
     if (myOptions) {
-      const custom = myOptions.customBodyRender('<a href="http://collegelutheran.org/"'
+      const customBody = myOptions.customBodyRender('<a href="http://collegelutheran.org/"'
         + ' rel="noopener noreferrer" target="_blank">College Lutheran Church</a>', meta, jest.fn());
-      expect(custom).toBeDefined();
+      const customHead = myOptions.customHeadRender({ index: 1 });
+      expect(customBody).toBeDefined();
+      expect(customHead).toBeDefined();
+    }
+  });
+  it('sets the columns with customBodyRender and customHeadRender for Time', () => {
+    const { wrapper } = setup();
+    expect(typeof wrapper.instance().setColumns).toBe('function');
+    wrapper.instance().setColumns();
+    const meta: any = {};
+    const myOptions: any = wrapper.instance().state.columns[1].options;
+    if (myOptions) {
+      const customBody = myOptions.customBodyRender('<a href="http://collegelutheran.org/"'
+        + ' rel="noopener noreferrer" target="_blank">College Lutheran Church</a>', meta, jest.fn());
+      const customHead = myOptions.customHeadRender({ index: 1, label: 'Time' });
+      expect(customBody).toBeDefined();
+      expect(customHead).toBeDefined();
     }
   });
   it('rebuilds the tour table after the data updates', () => {
@@ -71,7 +90,7 @@ describe('tour-table component test', () => {
     const buttonjsx = (<button type="button" style={{ display: 'block' }}>howdy</button>);
     expect(typeof wrapper2.instance().setColumns).toBe('function');
     wrapper2.instance().setColumns();
-    const myOptions:any = wrapper2.instance().state.columns[5].options;
+    const myOptions: any = wrapper2.instance().state.columns[5].options;
     if (myOptions) {
       const custom = myOptions.customBodyRender(buttonjsx, undefined, undefined);
       expect(custom).toBeDefined();

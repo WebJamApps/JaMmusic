@@ -1,10 +1,12 @@
 import React, { Component, Dispatch } from 'react';
-import MUIDataTable, { MUIDataTableColumn } from 'mui-datatables';
+import { TableCell } from '@material-ui/core';
+import { MUIDataTableColumn } from 'mui-datatables';
 import ReactHtmlParser from 'react-html-parser';
 import { connect } from 'react-redux';
 import { AGClientSocket } from 'socketcluster-client';
 import { AnyAction } from 'redux';
 import mapStoreToProps, { Tour } from '../../redux/mapStoreToProps';
+import DTable from './DataTable';
 
 type TourTableProps = {
   dispatch: Dispatch<AnyAction>;
@@ -36,7 +38,7 @@ export class TourTable extends Component<TourTableProps, TourTableState> {
 
   setColumns(): void {
     const { deleteButton } = this.props;
-    const columns:MUIDataTableColumn[] = [];
+    const columns: MUIDataTableColumn[] = [];
     const titles = ['Date', 'Time', 'Location', 'Venue', 'Tickets'];
     if (deleteButton) titles.push('Modify');
     for (let i = 0; i < titles.length; i += 1) {
@@ -47,8 +49,13 @@ export class TourTable extends Component<TourTableProps, TourTableState> {
         options: {
           filter: false,
           sort: false,
-          customBodyRender: (value:string) => (
-            <div style={{ minWidth: '1.3in', margin: 0, fontSize: '12pt' }}>
+          customHeadRender: ({ index, ...column }) => (
+            <TableCell key={index} style={{ fontWeight: 'bold', width: column.label === 'Time' ? '20px' : 'auto' }}>
+              {column.label}
+            </TableCell>
+          ),
+          customBodyRender: (value: string) => (
+            <div style={{ minWidth: '.65in', margin: 0, fontSize: '12pt' }}>
               {label !== 'Modify' ? ReactHtmlParser(value) : value}
             </div>
           ),
@@ -88,7 +95,7 @@ export class TourTable extends Component<TourTableProps, TourTableState> {
     return true;
   }
 
-  addDeleteButton(arr: Tour[]):Tour[] {
+  addDeleteButton(arr: Tour[]): Tour[] {
     const newArr = arr;/* eslint-disable security/detect-object-injection */
     for (let i = 0; i < arr.length; i += 1) { // eslint-disable-next-line security/detect-object-injection
       const deletePicId = `deletePic${newArr[i]._id}`;// eslint-disable-line security/detect-object-injection
@@ -112,23 +119,8 @@ export class TourTable extends Component<TourTableProps, TourTableState> {
     return (
       <div className="tourTable">
         <div style={{ maxWidth: '100%' }}>
-          <MUIDataTable
-            options={{
-              filterType: 'dropdown',
-              pagination: false,
-              responsive: 'scrollMaxHeight',
-              filter: false,
-              download: false,
-              search: false,
-              print: false,
-              viewColumns: false,
-              selectableRows: 'none',
-              fixedHeader: false,
-            }}
-            columns={columns}
-            data={tableData}
-            title="Tour"
-          />
+          <h4 style={{ textAlign: 'center', marginBottom: 0 }}>Tour Schedule</h4>
+          <DTable columns={columns} data={tableData} />
         </div>
       </div>
     );

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Song } from '../../redux/mapStoreToProps';
+import { ISong } from '../../providers/Songs.provider';
 
 const pageH4 = (pageTitle: string): JSX.Element => (
   <h4
@@ -16,9 +16,9 @@ const pageH4 = (pageTitle: string): JSX.Element => (
   </h4>
 );
 
-const setIndex = (songs: Song[], category: string): Song[] => {
-  let categorySongs: Song[] = [];
-  const otherSongs: Song[] = [];
+const setIndex = (songs: ISong[], category: string): ISong[] => {
+  let categorySongs: ISong[] = [];
+  const otherSongs: ISong[] = [];
   for (let i = 0; songs.length > i; i += 1) {
     // eslint-disable-next-line security/detect-object-injection
     if (songs[i].category === category) categorySongs.push(songs[i]);
@@ -32,7 +32,7 @@ function copyRight(): JSX.Element { // eslint-disable-line class-methods-use-thi
   return (<span>All Original Songs &copy;2019 &ndash; 2020 Web Jam LLC</span>);
 }
 
-function textUnderPlayer(song: Song): JSX.Element {
+function textUnderPlayer(song: ISong): JSX.Element {
   return (
     <section
       className="col-12 mt-1"
@@ -62,7 +62,7 @@ function textUnderPlayer(song: Song): JSX.Element {
   );
 }
 
-function setPlayerStyle(song: Song):Record<string, unknown> {
+function setPlayerStyle(song: ISong):Record<string, unknown> {
   let playerStyle = {
     backgroundColor: '#2a2a2a',
     textAlign: 'center',
