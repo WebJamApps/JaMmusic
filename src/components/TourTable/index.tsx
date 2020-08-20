@@ -1,11 +1,12 @@
 import React, { Component, Dispatch } from 'react';
 import { TableCell } from '@material-ui/core';
-import MUIDataTable, { MUIDataTableColumn } from 'mui-datatables';
+import { MUIDataTableColumn } from 'mui-datatables';
 import ReactHtmlParser from 'react-html-parser';
 import { connect } from 'react-redux';
 import { AGClientSocket } from 'socketcluster-client';
 import { AnyAction } from 'redux';
 import mapStoreToProps, { Tour } from '../../redux/mapStoreToProps';
+import DTable from './DataTable';
 
 type TourTableProps = {
   dispatch: Dispatch<AnyAction>;
@@ -119,23 +120,7 @@ export class TourTable extends Component<TourTableProps, TourTableState> {
       <div className="tourTable">
         <div style={{ maxWidth: '100%' }}>
           <h4 style={{ textAlign: 'center', marginBottom: 0 }}>Tour Schedule</h4>
-          <MUIDataTable
-            options={{
-              filterType: 'dropdown',
-              pagination: false,
-              responsive: 'scrollMaxHeight',
-              filter: false,
-              download: false,
-              search: false,
-              print: false,
-              viewColumns: false,
-              selectableRows: 'none',
-              fixedHeader: false,
-            }}
-            columns={columns}
-            data={tableData}
-            title=""
-          />
+          <DTable columns={columns} data={tableData} />
         </div>
       </div>
     );

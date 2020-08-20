@@ -1,7 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
 import { shallow } from 'enzyme';
+import MUIDataTable from 'mui-datatables';
 import { TourTable } from '../../src/components/TourTable';
+import DTable from '../../src/components/TourTable/DataTable';
 
 function setup() {
   const props = {};
@@ -22,6 +24,7 @@ describe('tour-table component test', () => {
   it('renders the component', () => {
     const { wrapper } = setup();
     expect(wrapper.find('.tourTable').exists()).toBe(true);
+    expect(wrapper.find(DTable).dive().find(MUIDataTable).exists()).toBe(true);
   });
   it('sets the columns with customBodyRender and customHeadRender', () => {
     const { wrapper } = setup();

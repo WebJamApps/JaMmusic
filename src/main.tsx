@@ -4,15 +4,18 @@ import { render } from 'react-dom';
 import { PersistGate } from 'redux-persist/integration/react';
 import ConnectedApp from './App/index';
 import store from './redux/store/index';
+import TourTableProvider from './providers/TourTable.provider';
 
 import '../static/styles.scss';
 
 render(
-  <Provider store={store.store}>
-    <PersistGate loading={null} persistor={store.persistor}>
-      <ConnectedApp />
-    </PersistGate>
-  </Provider>, document.getElementById('root'),
+  <TourTableProvider>
+    <Provider store={store.store}>
+      <PersistGate loading={null} persistor={store.persistor}>
+        <ConnectedApp />
+      </PersistGate>
+    </Provider>
+  </TourTableProvider>, document.getElementById('root'),
 );
 
 /* istanbul ignore next */
