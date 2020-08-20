@@ -1,6 +1,18 @@
 import React, { createContext, useState, ReactChild } from 'react';
 import songData from '../containers/Songs/songs.json';
 
+export interface ISong {
+  artist?: string;
+  composer?: string;
+  category: string;
+  album?: string;
+  year?: number;
+  image?: string;
+  title: string;
+  url: string;
+  _id: string;
+}
+
 export const SongsContext = createContext({
   test: '',
   songs: songData.songs,

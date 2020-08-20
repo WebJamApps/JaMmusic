@@ -9,18 +9,6 @@ export interface Auth {
     userType: string;
   };
 }
-export interface Song {
-  artist?: string;
-  composer?: string;
-  category: string;
-  album?: string;
-  year?: number;
-  image?: string;
-  title: string;
-  url: string;
-  _id: string;
-}
-
 export interface Tour {
   modify?:JSX.Element,
   datetime?: string;
@@ -42,19 +30,17 @@ export interface Iimage {
 }
 export interface Store {
   sc: { scc: AGClientSocket; userCount: number };
-  songs: { songs: Song[] };
   images: { images: Iimage[] };
   auth: Auth;
   tour: { tour: Tour[]; tourUpdated: boolean; editTour: Tour };
 }
 
 interface MapProps {
-  songs:Song[];images:Iimage[];userCount:number;auth:Auth;tour:Tour[];
+  images:Iimage[];userCount:number;auth:Auth;tour:Tour[];
   scc:AGClientSocket;tourUpdated:boolean;editTour:Tour
 }
 
 const mapStoreToProps = (store: Store): MapProps => ({
-  songs: store.songs.songs,
   images: store.images.images,
   userCount: store.sc.userCount,
   auth: store.auth,
