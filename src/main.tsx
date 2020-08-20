@@ -5,17 +5,20 @@ import { PersistGate } from 'redux-persist/integration/react';
 import ConnectedApp from './App/index';
 import store from './redux/store/index';
 import TourTableProvider from './providers/TourTable.provider';
+import SongsProvider from './providers/Songs.provider';
 
 import '../static/styles.scss';
 
 render(
-  <TourTableProvider>
-    <Provider store={store.store}>
-      <PersistGate loading={null} persistor={store.persistor}>
-        <ConnectedApp />
-      </PersistGate>
-    </Provider>
-  </TourTableProvider>, document.getElementById('root'),
+  <SongsProvider>
+    <TourTableProvider>
+      <Provider store={store.store}>
+        <PersistGate loading={null} persistor={store.persistor}>
+          <ConnectedApp />
+        </PersistGate>
+      </Provider>
+    </TourTableProvider>
+  </SongsProvider>, document.getElementById('root'),
 );
 
 /* istanbul ignore next */

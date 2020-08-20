@@ -31,8 +31,8 @@ const copyShare = (view: MusicPlayer): void => {
 async function checkOnePlayer(params: URLSearchParams,
   player: Iplayer,
   view: MusicPlayer): Promise<boolean> {
-  let { songs } = view.props, missionState = 'off', pubState = 'off', originalState = 'off', newSongs: Song[] = [];
-  if (!songs) songs = [];
+  const { songs } = view.props;
+  let missionState = 'off', pubState = 'off', originalState = 'off', newSongs: Song[] = [];
   if (params.get('oneplayer')) {
     const song = songs.filter((s: Song) => s._id === params.get('id'));
     const index = songs.findIndex((s: Song) => s._id === params.get('id'));

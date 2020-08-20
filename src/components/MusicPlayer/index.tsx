@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
+// import { connect } from 'react-redux';
 import ReactPlayer from 'react-player';
 import { FacebookShareButton, FacebookIcon } from 'react-share';
 import musicPlayerUtils from './musicPlayerUtils';
-import mapStoreToProps, { Song } from '../../redux/mapStoreToProps';
+import { Song } from '../../redux/mapStoreToProps';
 import musicUtils from './musicUtils';
 import commonUtils from '../../lib/commonUtils';
 import { Iplayer } from './musicPlayerTypes';
@@ -21,8 +21,8 @@ export interface MusicPlayerState {
 }
 
 interface MProps {
-  songs?: Song[];
-  filterBy?: string;
+  songs: Song[];
+  filterBy: string;
 }
 
 export class MusicPlayer extends Component<MProps, MusicPlayerState> {
@@ -69,7 +69,7 @@ export class MusicPlayer extends Component<MProps, MusicPlayerState> {
     const { songs, filterBy } = this.props;
     let newSongs: Song[] = [];
     this.commonUtils.setTitleAndScroll('', window.screen.width);
-    if (songs) newSongs = songs.filter((song: { category?: string }) => song.category === filterBy);
+    newSongs = songs.filter((song: { category?: string }) => song.category === filterBy);
     this.setState({ song: newSongs[0], songsState: newSongs });
     await this.musicPlayerUtils.checkOnePlayer(params, player, this);
     return this.musicPlayerUtils.runIfOnePlayer(this);
@@ -266,4 +266,4 @@ export class MusicPlayer extends Component<MProps, MusicPlayerState> {
   }
 }
 
-export default connect(mapStoreToProps)(MusicPlayer);
+export default MusicPlayer;

@@ -1,7 +1,7 @@
 import React from 'react';
 import { mount, shallow } from 'enzyme';
 import { MusicPlayer, MusicPlayerState } from '../../../src/components/MusicPlayer';
-import songData from '../../../src/App/songs.json';
+import songData from '../../../src/containers/Songs/songs.json';
 
 function setup() {
   const { songs } = songData;
@@ -277,9 +277,5 @@ describe('Music player component init', () => {
       backgroundSize: '80%',
       backgroundRepeat: 'no-repeat',
     });
-  });
-  it('renders without songs', () => {
-    const wrapper = shallow<MusicPlayer>(<MusicPlayer />);
-    expect(wrapper.find('div.container-fluid').exists()).toBe(true);
   });
 });
