@@ -13,13 +13,11 @@ import AppMain from './AppTemplate';
 import DefaultSongs from '../containers/Songs';
 import HomePage from '../containers/Homepage';
 import connectToSC from './connectToSC';
-import mapStoreToProps, { Song, Iimage, Auth } from '../redux/mapStoreToProps';
-import getSongs from './songsActions';
+import mapStoreToProps, { Iimage, Auth } from '../redux/mapStoreToProps';
 import commonUtils from '../lib/commonUtils';
 
 export interface AppProps {
   dispatch: Dispatch<unknown>;
-  songs: Song[];
   images: Iimage[];
   auth: Auth;
 }
@@ -52,8 +50,7 @@ export class App extends Component<AppProps, Astate> {
   }
 
   async componentDidMount(): Promise<void> {
-    const { dispatch, songs } = this.props;
-    if (songs.length === 0) dispatch(getSongs());
+    const { dispatch } = this.props;
     this.connectToSC.connectToSCC(dispatch);
     const userRoles: string[] = this.utils.getUserRoles();
     this.setState({ userRoles });
