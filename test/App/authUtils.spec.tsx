@@ -62,13 +62,7 @@ describe('authUtils', () => {
     expect(result).toBe(true);
   });
   it('logs out when /dashboard', () => {
-    delete window.location;
-    window.location = {
-      ...window.location,
-      href: '/dashboard',
-      assign: jest.fn(),
-      reload: jest.fn(),
-    };
+    Object.defineProperty(window, 'location', { value: { assign: () => { }, reload: () => { } }, writable: true });
     const result = authUtils.responseGoogleLogout(() => { });
     expect(result).toBe(true);
   });

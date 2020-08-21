@@ -1,10 +1,10 @@
 import React, { Component, Dispatch } from 'react';
 import { TableCell } from '@material-ui/core';
-import { MUIDataTableColumn } from 'mui-datatables';
+import type { MUIDataTableColumn } from 'mui-datatables';
 import ReactHtmlParser from 'react-html-parser';
 import { connect } from 'react-redux';
-import { AGClientSocket } from 'socketcluster-client';
-import { AnyAction } from 'redux';
+import type { AGClientSocket } from 'socketcluster-client';
+import type { AnyAction } from 'redux';
 import mapStoreToProps, { Tour } from '../../redux/mapStoreToProps';
 import DTable from './DataTable';
 

@@ -1,8 +1,8 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import { Songs } from '../../src/containers/Songs';
-import DefaultMusicPlayer from '../../src/components/MusicPlayer';
-import DPlayer from '../../src/containers/Songs/Player';
+import { Songs } from '../../../src/containers/Songs';
+import DefaultMusicPlayer from '../../../src/components/MusicPlayer';
+import DPlayer from '../../../src/containers/Songs/Player';
 
 function setup() {
   const wrapper = shallow<Songs>(<Songs />);
@@ -19,9 +19,8 @@ describe('Songs component', () => {
     const { wrapper } = setup();
     expect(wrapper.find(DPlayer).dive().find('div.playerDiv').exists()).toBe(true);
   });
-  it('should not display the music player', () => new Promise((done) => {
+  it('should not display the music player', () => {
     const wrapper = shallow(<Songs />);
     expect(wrapper.find(DefaultMusicPlayer).exists()).toBe(false);
-    done();
-  }));
+  });
 });

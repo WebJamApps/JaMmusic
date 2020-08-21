@@ -3,7 +3,7 @@ import React from 'react';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import { Iimage } from '../../redux/mapStoreToProps';
+import type { Iimage } from '../../redux/mapStoreToProps';
 import Caption from './caption';
 
 export interface PicSliderProps {

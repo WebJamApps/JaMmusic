@@ -132,14 +132,7 @@ describe('tour-table component test', () => {
     />);
     const globalAny: any = global;
     globalAny.confirm = jest.fn(() => true);
-    const loc = window.location;
-    delete window.location;
-    window.location = {
-      ...loc,
-      href: '/',
-      assign: jest.fn(),
-      reload: jest.fn(),
-    };
+    Object.defineProperty(window, 'location', { value: { assign: () => { }, reload: () => { } }, writable: true });
     r = wrapper2.instance().deleteTour('456');
     expect(r).toBe(true);
   });

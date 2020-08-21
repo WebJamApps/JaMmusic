@@ -1,5 +1,5 @@
 import scc from 'socketcluster-client';
-import { Dispatch } from 'react';
+import type { Dispatch } from 'react';
 
 const listenForMessages = (socket: scc.AGClientSocket,
   method: string, name: string, type: string,

@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import ReactPlayer from 'react-player';
 import { FacebookShareButton, FacebookIcon } from 'react-share';
 import musicPlayerUtils from './musicPlayerUtils';
-import { ISong } from '../../providers/Songs.provider';
+import type { ISong } from '../../providers/Songs.provider';
 import musicUtils from './musicUtils';
 import commonUtils from '../../lib/commonUtils';
-import { Iplayer } from './musicPlayerTypes';
+import type { Iplayer } from './musicPlayerTypes';
 
 export interface MusicPlayerState {
   missionState: string;
@@ -66,9 +66,9 @@ export class MusicPlayer extends Component<MProps, MusicPlayerState> {
     const params = new URLSearchParams(window.location.search);
     const { player } = this.state;
     const { songs, filterBy } = this.props;
-    let newSongs: ISong[] = [];
+    // let newSongs: ISong[];
     this.commonUtils.setTitleAndScroll('', window.screen.width);
-    newSongs = songs.filter((song: { category?: string }) => song.category === filterBy);
+    const newSongs = songs.filter((song: { category?: string }) => song.category === filterBy);
     this.setState({ song: newSongs[0], songsState: newSongs });
     await this.musicPlayerUtils.checkOnePlayer(params, player, this);
     return this.musicPlayerUtils.runIfOnePlayer(this);
@@ -194,14 +194,7 @@ export class MusicPlayer extends Component<MProps, MusicPlayerState> {
 
   playEnd(): void { this.next(); }
 
-  prev(): void {
-    const { index, songsState } = this.state;
-    const minusIndex = index - 1;
-    if (minusIndex < 0 || minusIndex > songsState.length) {
-      const newIndex = songsState.length - 1;
-      this.setState({ index: newIndex, song: songsState[newIndex] });// eslint-disable-line security/detect-object-injection
-    } else this.setState({ song: songsState[minusIndex], index: minusIndex });// eslint-disable-line security/detect-object-injection
-  }
+  prev(): void { this.musicPlayerUtils.prev(this); }
 
   play(): void {
     const { player } = this.state;
