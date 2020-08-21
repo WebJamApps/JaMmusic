@@ -2,7 +2,7 @@ import reducer from '../../src/redux/reducers/authReducer';
 
 describe('auth reducer', () => {
   it('returns the initial state', () => {
-    expect(reducer(undefined, {})).toEqual(
+    expect(reducer(undefined, { type: '' })).toEqual(
       {
         isAuthenticated: false,
         error: '',
@@ -25,6 +25,19 @@ describe('auth reducer', () => {
       },
     );
   });
+  it('handles GOT_TOKEN with undefined data', () => {
+    expect(
+      reducer(undefined, { type: 'GOT_TOKEN', data: undefined }),
+    ).toEqual(
+      {
+        isAuthenticated: true,
+        error: '',
+        email: '',
+        token: '',
+        user: {},
+      },
+    );
+  });
   it('handles LOGOUT', () => {
     expect(
       reducer(undefined, { type: 'LOGOUT' }),
@@ -42,12 +55,26 @@ describe('auth reducer', () => {
     expect(
       reducer(undefined, {
         type: 'AUTH_ERROR',
-        error: { message: 'bad' },
+        error: { message: 'Error' },
+      }),
+    ).toEqual({
+      isAuthenticated: false,
+      error: 'Error',
+      email: '',
+      token: '',
+      user: {},
+    });
+  });
+  it('handles AUTH_ERROR with no error', () => {
+    expect(
+      reducer(undefined, {
+        type: 'AUTH_ERROR',
+        error: undefined,
       }),
     ).toEqual(
       {
         isAuthenticated: false,
-        error: 'bad',
+        error: undefined,
         email: '',
         token: '',
         user: {},

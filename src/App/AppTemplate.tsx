@@ -4,9 +4,8 @@ import {
   GoogleLogin, GoogleLogout, GoogleLoginResponse, GoogleLoginResponseOffline,
 } from 'react-google-login';
 import { connect } from 'react-redux';
-import { Auth } from '../redux/mapStoreToProps';
+import mapStoreToProps, { Auth } from '../redux/mapStoreToProps';
 import authUtils, { IauthUtils } from './authUtils';
-import mapStoreToProps from '../redux/mapStoreToAppTemplateProps';
 import appTemplateUtils from './appTemplateUtils';
 import Footer from './Footer';
 import menuUtils from './menuUtils';
