@@ -6,7 +6,6 @@ import {
 import { connect } from 'react-redux';
 import mapStoreToProps, { Auth } from '../redux/mapStoreToProps';
 import authUtils, { IauthUtils } from './authUtils';
-// import mapStoreToProps from '../redux/mapStoreToProps';
 import appTemplateUtils from './appTemplateUtils';
 import Footer from './Footer';
 import menuUtils from './menuUtils';

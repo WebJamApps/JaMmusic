@@ -39,21 +39,6 @@ describe('fetch reducer', () => {
       },
     );
   });
-  // it('should handle fetched images', () => {
-  //   expect(
-  //     reducer(undefined, {
-  //       type: 'FETCHED_IMAGES',
-  //       data: [{}],
-  //     }),
-  //   ).toEqual(
-  //     {
-  //       images: [{}],
-  //       isFetching: false,
-  //       isError: false,
-  //       error: '',
-  //     },
-  //   );
-  // });
   it('should handle receive error', () => {
     expect(
       reducer(undefined, {
