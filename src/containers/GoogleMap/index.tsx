@@ -1,7 +1,7 @@
 import React from 'react';
 import UMap from './UserMap';
 import CMap from './CompanyMap';
-import { Loc } from './gMapTypes';
+import type { Loc } from './gMapTypes';
 import gMapUtils from './gMapUtils';
 
 class GoogleMap extends React.Component {

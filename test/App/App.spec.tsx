@@ -4,7 +4,7 @@ import { shallow } from 'enzyme';
 import { Route } from 'react-router-dom';
 import env from 'dotenv';
 import { App } from '../../src/App';
-import { Auth } from '../../src/redux/mapStoreToProps';
+import type { Auth } from '../../src/redux/mapStoreToProps';
 
 env.config();
 describe('App component', () => {

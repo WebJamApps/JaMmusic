@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import MUIDataTable, { MUIDataTableColumn } from 'mui-datatables';
-import { Tour } from '../../redux/mapStoreToProps';
+import type { Tour } from '../../redux/mapStoreToProps';
 import { TourTableContext } from '../../providers/TourTable.provider';
 
 type Props = {

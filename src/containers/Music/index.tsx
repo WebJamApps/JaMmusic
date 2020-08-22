@@ -1,6 +1,6 @@
 import React, { Component, Dispatch } from 'react';
 import { connect } from 'react-redux';
-import { AnyAction } from 'redux';
+import type { AnyAction } from 'redux';
 import PicSlider from '../../components/PicSlider';
 import DefaultTable from '../../components/TourTable';
 import JoshBio from './joshBio';

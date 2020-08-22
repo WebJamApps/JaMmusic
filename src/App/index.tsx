@@ -9,7 +9,7 @@ import DefaultMusicDashboard from '../containers/MusicDashboard';
 import BuyMusic from '../containers/BuyMusic';
 import AppFourOhFour from './404';
 import GoogleMap from '../containers/GoogleMap';
-import AppMain from './AppTemplate';
+import ATemplate from './AppTemplate';
 import DefaultSongs from '../containers/Songs';
 import HomePage from '../containers/Homepage';
 import connectToSC from './connectToSC';
@@ -62,7 +62,7 @@ export class App extends Component<AppProps, Astate> {
     return (
       <div id="App" className="App">
         <Router>
-          <AppMain>
+          <ATemplate>
             <Switch>
               <Route exact path="/" component={HomePage} />
               {auth.isAuthenticated && auth.user.userType && userRoles.indexOf(auth.user.userType) !== -1
@@ -77,7 +77,7 @@ export class App extends Component<AppProps, Astate> {
                 ? <Route path="/music/dashboard" component={DefaultMusicDashboard} /> : null}
               <Route component={AppFourOhFour} />
             </Switch>
-          </AppMain>
+          </ATemplate>
         </Router>
       </div>
     );

@@ -1,4 +1,4 @@
-import { Loc } from './gMapTypes';
+import type { Loc } from './gMapTypes';
 import type UMap from './UserMap';
 import type CMap from './CompanyMap';
 

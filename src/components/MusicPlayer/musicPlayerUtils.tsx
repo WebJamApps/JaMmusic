@@ -1,6 +1,6 @@
 import React from 'react';
-import { ISong } from '../../providers/Songs.provider';
-import { Iplayer } from './musicPlayerTypes';
+import type { ISong } from '../../providers/Songs.provider';
+import type { Iplayer } from './musicPlayerTypes';
 import type { MusicPlayer } from '.';
 
 const showHideButtons = (display: string): boolean => {
@@ -163,7 +163,16 @@ function toggleSongTypes(type: string, view: MusicPlayer): boolean {
   });
   return true;
 }
+function prev(view:MusicPlayer): void {
+  const { index, songsState } = view.state;
+  const minusIndex = index - 1;
+  if (minusIndex < 0 || minusIndex > songsState.length) {
+    const newIndex = songsState.length - 1;
+    view.setState({ index: newIndex, song: songsState[newIndex] });// eslint-disable-line security/detect-object-injection
+  } else view.setState({ song: songsState[minusIndex], index: minusIndex });// eslint-disable-line security/detect-object-injection
+}
 export default {
+  prev,
   shuffleThem,
   toggleSongTypes,
   checkOnePlayer,

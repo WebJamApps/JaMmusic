@@ -7,7 +7,7 @@ type SProps = {
 export class Songs extends Component<SProps> {
   o: RefObject<unknown>;
 
-  commonUtils: { setTitleAndScroll: (pageTitle: string, width: number) => void };
+  commonUtils: typeof commonUtils;
 
   constructor(props: SProps) {
     super(props);
@@ -16,6 +16,8 @@ export class Songs extends Component<SProps> {
   }
 
   componentDidMount(): void { this.commonUtils.setTitleAndScroll('Songs', window.screen.width); }
+
+  componentDidUpdate(): void { this.commonUtils.setTitleAndScroll('Songs', window.screen.width); }
 
   render(): JSX.Element {
     return (

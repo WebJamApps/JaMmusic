@@ -114,4 +114,11 @@ describe('musicPlayerUtils', () => {
     const r = musicPlayerUtils.toggleOn('', view, '', '');
     expect(r).toBe(true);
   });
+  it('handles click on prev button', () => {
+    view.setState = jest.fn();
+    view.state.index = 0;
+    view.state.songsState = [{}, {}, {}, {}];
+    musicPlayerUtils.prev(view);
+    expect(view.setState).toHaveBeenCalled();
+  });
 });

@@ -1,4 +1,4 @@
-import { Iimage } from '../mapStoreToProps';
+import type { Iimage } from '../mapStoreToProps';
 
 export interface IImageReducer {
   images: Iimage[],
