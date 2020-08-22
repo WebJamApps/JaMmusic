@@ -1,5 +1,5 @@
 describe('Originals', () => {
-  it('should be titled "Originals | Web Jam LLC"', async () => {
+  it('should be titled "Songs | Web Jam LLC"', async () => {
     const page = await browser.newPage();
     await page.goto('http://localhost:7878/music/songs', {
       waitUntil: 'load',
