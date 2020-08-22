@@ -5,6 +5,7 @@ describe('Originals', () => {
       waitUntil: 'load',
     });
     await page.reload();
+    await page.waitForNavigation();
     await expect(page.title()).resolves.toMatch('Songs | Web Jam LLC');
   });
 });
