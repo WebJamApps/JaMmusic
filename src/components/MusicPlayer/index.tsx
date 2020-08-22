@@ -66,7 +66,6 @@ export class MusicPlayer extends Component<MProps, MusicPlayerState> {
     const params = new URLSearchParams(window.location.search);
     const { player } = this.state;
     const { songs, filterBy } = this.props;
-    // let newSongs: ISong[];
     this.commonUtils.setTitleAndScroll('', window.screen.width);
     const newSongs = songs.filter((song: { category?: string }) => song.category === filterBy);
     this.setState({ song: newSongs[0], songsState: newSongs });
