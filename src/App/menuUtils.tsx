@@ -1,6 +1,6 @@
-import { Auth } from '../redux/mapStoreToProps';
+import type { Auth } from '../redux/mapStoreToProps';
 import commonUtils from '../lib/commonUtils';
-import { ImenuItem } from './menuItems';
+import type { ImenuItem } from './menuItems';
 import type { AppTemplate } from './AppTemplate';
 
 const continueMenuItem = (menu: ImenuItem,

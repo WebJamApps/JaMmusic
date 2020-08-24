@@ -1,3 +1,5 @@
+import type { AGClientSocket } from 'socketcluster-client';
+
 export interface Auth {
   isAuthenticated: boolean,
   error: string,
@@ -7,19 +9,8 @@ export interface Auth {
     userType: string;
   };
 }
-export interface Song {
-  artist?: string;
-  composer?: string;
-  category: string;
-  album?: string;
-  year?: number;
-  image?: string;
-  title: string;
-  url: string;
-  _id: string;
-}
-
 export interface Tour {
+  modify?:JSX.Element,
   datetime?: string;
   more?: string;
   date: string;
@@ -27,26 +18,29 @@ export interface Tour {
   tickets: string;
   venue: string;
   location: string;
-  _id: string;
+  _id?: string;
 }
 export interface Iimage {
-  '_id': string;
+  '_id'?: string;
   'url': string;
   'title': string;
   'type': string;
-  'created_at': string;
-  'updated_at': string;
+  'created_at'?: string;
+  'updated_at'?: string;
 }
 export interface Store {
-  sc: { scc: any; userCount: number };
-  songs: { songs: Song[] };
-  images: { images: any[] };
+  sc: { scc: AGClientSocket; userCount: number };
+  images: { images: Iimage[] };
   auth: Auth;
-  tour: { tour: any[]; tourUpdated: boolean; editTour: any };
+  tour: { tour: Tour[]; tourUpdated: boolean; editTour: Tour };
 }
 
-const mapStoreToProps = (store: Store): any => ({
-  songs: store.songs.songs,
+interface MapProps {
+  images:Iimage[];userCount:number;auth:Auth;tour:Tour[];
+  scc:AGClientSocket;tourUpdated:boolean;editTour:Tour
+}
+
+const mapStoreToProps = (store: Store): MapProps => ({
   images: store.images.images,
   userCount: store.sc.userCount,
   auth: store.auth,

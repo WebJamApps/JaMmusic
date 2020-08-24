@@ -1,6 +1,6 @@
 import React from 'react';
 
-const WideFacebookFeed = () => (
+const WideFacebookFeed = (): JSX.Element => (
   <div style={{ maxWidth: '500px', margin: 'auto' }}>
     <iframe
       className="widescreenHomepage"

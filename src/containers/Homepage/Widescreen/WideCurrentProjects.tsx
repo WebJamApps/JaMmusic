@@ -4,7 +4,7 @@ import AppersonAutomotive from '../AppersonAutomotive';
 import WideFacebookFeed from './WideFacebookFeed';
 import Inquiry from '../../../components/Inquiry';
 
-const WideCurrentProjects = () => (
+const WideCurrentProjects = (): JSX.Element => (
   <div className="widescreenHomepage" style={{ maxWidth: '17in', margin: 'auto' }}>
     <div className="material-content">
       <div className="container">

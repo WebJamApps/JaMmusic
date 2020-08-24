@@ -1,16 +1,14 @@
 import React from 'react';
 import { mount, shallow } from 'enzyme';
 import { MusicPlayer, MusicPlayerState } from '../../../src/components/MusicPlayer';
-import songData from '../../../src/App/songs.json';
+import TSongs from '../../testSongs';
 
 function setup() {
-  const { songs } = songData;
-
   window.document.body.innerHTML = '<div id="sidebar"></div><div id="header"/><div id="contentBlock"/>'
     + '<div id="wjfooter"/><div id="mobilemenutoggle"/><div id="pageContent"/><h4 id="headerTitle">'
     + '<div id="mainPlayer"/>';
 
-  const wrapper = mount<MusicPlayer>(<MusicPlayer songs={songs} filterBy="original" />, {
+  const wrapper = mount<MusicPlayer>(<MusicPlayer songs={TSongs} filterBy="original" />, {
     attachTo: document.getElementById('sidebar'),
   });
   return { wrapper };
@@ -19,7 +17,7 @@ function setup() {
 describe('Music player component init', () => {
   it('renders the Music Player component', () => {
     const { wrapper } = setup();
-    expect(wrapper.find('#mainPlayer').exists()).toBe(true);
+    expect(wrapper.find('div#player').exists()).toBe(true);
   });
   it('should find and simulate play/pause', () => {
     const { wrapper } = setup();
@@ -105,11 +103,6 @@ describe('Music player component init', () => {
     };
     mp.setState = (obj: MusicPlayerState) => { expect(obj.index).toBe(1); };
     mp.next();
-  });
-  it('should find and simulate a previous song function', () => {
-    const { wrapper } = setup();
-    wrapper.find('button#prev').simulate('click');
-    expect(wrapper.instance().state.index).not.toBe(0);
   });
   it('should test previous song which has an index > 0', () => {
     const { wrapper } = setup();
@@ -233,11 +226,10 @@ describe('Music player component init', () => {
     }
   });
   it('checks if youtube is about to be played', () => {
-    const { songs } = songData;
     const song = {
       _id: '123', category: 'mission', title: 'Hey Red', url: 'https://www.youtube.com/embed/mCvUBjuzfo8',
     };
-    const wrapper = shallow<MusicPlayer>(<MusicPlayer songs={songs} filterBy="originals" />);
+    const wrapper = shallow<MusicPlayer>(<MusicPlayer songs={TSongs} filterBy="originals" />);
     wrapper.instance().setState({
       song,
       player: {
@@ -256,12 +248,25 @@ describe('Music player component init', () => {
     });
     expect(overlay).toBe('youtubeOverlay');
   });
+  it('checks if soundcloud is about to be played', () => {
+    const song = {
+      _id: '123', category: 'mission', title: 'lord', url: 'https://soundcloud.com/joshandmariamusic/ithelordofseaandskyhereiamlord',
+    };
+    const wrapper = shallow<MusicPlayer>(<MusicPlayer songs={TSongs} filterBy="originals" />);
+    wrapper.instance().setState({
+      song,
+      player: {
+        isShuffleOn: false, playing: false, shown: true, displayCopier: '', displayCopyMessage: false, onePlayerMode: false,
+      },
+    });
+    const overlay = wrapper.instance().setClassOverlay();
+    expect(overlay).toBe('soundcloudOverlay');
+  });
   it('checks if dropbox is about to be played', () => {
-    const { songs } = songData;
     const song = {
       _id: '123', category: 'mission', title: 'Hey Red', url: 'something.test.com',
     };
-    const wrapper = shallow<MusicPlayer>(<MusicPlayer songs={songs} filterBy="originals" />);
+    const wrapper = shallow<MusicPlayer>(<MusicPlayer songs={TSongs} filterBy="originals" />);
     wrapper.instance().setState({
       song,
       player: {
@@ -277,9 +282,5 @@ describe('Music player component init', () => {
       backgroundSize: '80%',
       backgroundRepeat: 'no-repeat',
     });
-  });
-  it('renders without songs', () => {
-    const wrapper = shallow<MusicPlayer>(<MusicPlayer />);
-    expect(wrapper.find('div.container-fluid').exists()).toBe(true);
   });
 });

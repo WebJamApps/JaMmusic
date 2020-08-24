@@ -1,7 +1,7 @@
 import React from 'react';
-import { Song } from '../../redux/mapStoreToProps';
+import type { ISong } from '../../providers/Songs.provider';
 
-const pageH4 = (pageTitle: string) => (
+const pageH4 = (pageTitle: string): JSX.Element => (
   <h4
     style={{
       textAlign: 'center',
@@ -16,9 +16,9 @@ const pageH4 = (pageTitle: string) => (
   </h4>
 );
 
-const setIndex = (songs: any[], category: string) => {
-  let categorySongs: any[] = [];
-  const otherSongs: any[] = [];
+const setIndex = (songs: ISong[], category: string): ISong[] => {
+  let categorySongs: ISong[] = [];
+  const otherSongs: ISong[] = [];
   for (let i = 0; songs.length > i; i += 1) {
     // eslint-disable-next-line security/detect-object-injection
     if (songs[i].category === category) categorySongs.push(songs[i]);
@@ -28,11 +28,11 @@ const setIndex = (songs: any[], category: string) => {
   return categorySongs;
 };
 
-function copyRight() { // eslint-disable-line class-methods-use-this
+function copyRight(): JSX.Element { // eslint-disable-line class-methods-use-this
   return (<span>All Original Songs &copy;2019 &ndash; 2020 Web Jam LLC</span>);
 }
 
-function textUnderPlayer(song: any) {
+function textUnderPlayer(song: ISong): JSX.Element {
   return (
     <section
       className="col-12 mt-1"
@@ -41,16 +41,16 @@ function textUnderPlayer(song: any) {
       }}
     >
       <strong>
-        {song !== null ? song.title : null}
-        {song !== null && song.composer !== undefined && song.category !== 'original' ? ` by ${song.composer}` : null}
-        {song !== null && song.artist !== undefined ? ` - ${song.artist}` : null}
+        {song.title ? song.title : null}
+        {song.composer && song.category !== 'original' ? ` by ${song.composer}` : null}
+        {song.artist ? ` - ${song.artist}` : null}
       </strong>
       <p style={{
         textAlign: 'center', fontSize: '8pt', marginTop: '4px', marginBottom: 0,
       }}
       >
-        {song !== null && song.album !== undefined ? song.album : null}
-        {song !== null && song.year !== undefined ? `, ${song.year}` : null}
+        {song.album ? song.album : null}
+        {song.year ? `, ${song.year}` : null}
       </p>
       <p style={{
         textAlign: 'center', fontSize: '8pt', marginTop: '2px', marginBottom: 0,
@@ -62,7 +62,7 @@ function textUnderPlayer(song: any) {
   );
 }
 
-function setPlayerStyle(song: Song) {
+function setPlayerStyle(song: ISong):Record<string, unknown> {
   let playerStyle = {
     backgroundColor: '#2a2a2a',
     textAlign: 'center',
@@ -71,7 +71,6 @@ function setPlayerStyle(song: Song) {
     backgroundSize: '80%',
     backgroundRepeat: 'no-repeat',
   };
-
   if (song.image === undefined || song.image === '') {
     playerStyle = {
       backgroundImage: 'url("/static/imgs/webjamlogo1.png")',
@@ -92,7 +91,7 @@ function setPlayerStyle(song: Song) {
       };
     }
   }
-  return playerStyle as Record<string, unknown>;
+  return playerStyle;
 }
 
 export default {

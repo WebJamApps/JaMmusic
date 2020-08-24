@@ -1,6 +1,6 @@
 import React from 'react';
 
-const JoshShermanSolo = () => (
+const JoshShermanSolo = (): JSX.Element => (
   <div className="material-content elevation2" style={{ margin: 'auto', maxWidth: '3in', height: '3in' }}>
     <h5 style={{ textAlign: 'center' }}>Solo Acoustic</h5>
     <div style={{ textAlign: 'center' }}>

@@ -1,7 +1,7 @@
 import React from 'react';
 import Faqs from '../HomepageData';
 
-const NarrowAboutUs = () => (
+const NarrowAboutUs = (): JSX.Element => (
   <div className="notWidescreen" style={{ marginTop: '1px' }}>
     <div id="slideshow">
       <img alt="Web Jam Banner" src="../static/imgs/banner1.jpg" />

@@ -1,17 +1,13 @@
 import React, { Component, RefObject } from 'react';
-import { connect } from 'react-redux';
-import DefaultMusicPlayer from '../../components/MusicPlayer';
-import mapStoreToProps from '../../redux/mapStoreToProps';
 import commonUtils from '../../lib/commonUtils';
+import DefaultPlayer from './Player';
 
 type SProps = {
-  songs: {url: string}[];};
+};
 export class Songs extends Component<SProps> {
   o: RefObject<unknown>;
 
-  commonUtils: { setTitleAndScroll: (pageTitle: string, width: number) => void };
-
-  static defaultProps = { songs: [{ url: '' }] };
+  commonUtils: typeof commonUtils;
 
   constructor(props: SProps) {
     super(props);
@@ -19,25 +15,16 @@ export class Songs extends Component<SProps> {
     this.commonUtils = commonUtils;
   }
 
-  componentDidMount() { this.commonUtils.setTitleAndScroll('Songs', window.screen.width); }
+  componentDidMount(): void { this.commonUtils.setTitleAndScroll('Songs', window.screen.width); }
 
-  render() {
-    const { songs } = this.props;
+  componentDidUpdate(): void { this.commonUtils.setTitleAndScroll('Songs', window.screen.width); }
+
+  render(): JSX.Element {
     return (
       <div id="pageContent" className="page-content">
-        <div style={{ maxWidth: '5in', margin: 'auto', textAlign: 'center' }}>
-          {
-            songs !== null && songs.length > 1
-              ? (
-                <div id="playerAndButtons">
-                  <DefaultMusicPlayer filterBy="original" />
-                </div>
-              )
-              : null
-          }
-        </div>
+        <DefaultPlayer />
       </div>
     );
   }
 }
-export default connect(mapStoreToProps)(Songs);
+export default Songs;

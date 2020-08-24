@@ -1,11 +1,11 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import { Songs } from '../../src/containers/Songs';
-import DefaultMusicPlayer from '../../src/components/MusicPlayer';
+import { Songs } from '../../../src/containers/Songs';
+import DefaultMusicPlayer from '../../../src/components/MusicPlayer';
+import DPlayer from '../../../src/containers/Songs/Player';
 
 function setup() {
-  const songs = [{ url: '', category: 'originals' }, { url: '', category: 'originals' }];
-  const wrapper = shallow<Songs>(<Songs songs={songs} />);
+  const wrapper = shallow<Songs>(<Songs />);
   return { wrapper };
 }
 
@@ -17,11 +17,10 @@ describe('Songs component', () => {
 
   it('expect the presence of Music player', () => {
     const { wrapper } = setup();
-    expect(wrapper.find(DefaultMusicPlayer).exists()).toBe(true);
+    expect(wrapper.find(DPlayer).dive().find('div.playerDiv').exists()).toBe(true);
   });
-  it('should not display the music player', () => new Promise((done) => {
+  it('should not display the music player', () => {
     const wrapper = shallow(<Songs />);
     expect(wrapper.find(DefaultMusicPlayer).exists()).toBe(false);
-    done();
-  }));
+  });
 });

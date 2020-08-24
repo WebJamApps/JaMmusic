@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import jwt from 'jwt-simple';
 import superagent from 'superagent';
 import authUtils from '../../src/App/authUtils';
@@ -61,13 +62,7 @@ describe('authUtils', () => {
     expect(result).toBe(true);
   });
   it('logs out when /dashboard', () => {
-    delete window.location;
-    window.location = {
-      ...window.location,
-      href: '/dashboard',
-      assign: jest.fn(),
-      reload: jest.fn(),
-    };
+    Object.defineProperty(window, 'location', { value: { assign: () => { }, reload: () => { } }, writable: true });
     const result = authUtils.responseGoogleLogout(() => { });
     expect(result).toBe(true);
   });

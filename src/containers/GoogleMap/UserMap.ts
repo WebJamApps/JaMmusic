@@ -1,5 +1,5 @@
 import faker from 'faker';
-import { Loc } from './gMapTypes';
+import type { Loc } from './gMapTypes';
 import gMapUtils from './gMapUtils';
 
 export class UserMap {

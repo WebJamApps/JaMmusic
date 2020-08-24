@@ -7,14 +7,14 @@ import commonUtils from '../../lib/commonUtils';
 export default class BuyMusic extends Component {
   commonUtils: { setTitleAndScroll: (pageTitle: string, width: number) => void };
 
-  constructor(props: any) {
+  constructor(props: Record<string, unknown>) {
     super(props);
     this.commonUtils = commonUtils;
   }
 
-  componentDidMount() { this.commonUtils.setTitleAndScroll('Buy Music', window.screen.width); }
+  componentDidMount(): void { this.commonUtils.setTitleAndScroll('Buy Music', window.screen.width); }
 
-  render() {
+  render(): JSX.Element {
     return (
       <div
         className="page-content"

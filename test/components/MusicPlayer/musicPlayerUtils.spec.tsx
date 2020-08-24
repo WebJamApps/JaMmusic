@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { shallow } from 'enzyme';
 import musicPlayerUtils from '../../../src/components/MusicPlayer/musicPlayerUtils';
 
@@ -6,13 +7,13 @@ describe('musicPlayerUtils', () => {
     document.body.innerHTML = "<div id='sidebar'></div> <div id='header'></div><div id='wjfooter'></div><div id='mobilemenutoggle'></div>"
       + "<div id='contentBlock'></div><div id='pageContent'></div><div id='headerTitle'></div><div id='mainPlayer'><div id='mAndP'></div></div>";
   });
-  const params = {
+  const params:any = {
     get: (item: string) => {
       if (item === 'oneplayer') return true;
       return '123' || '456';
     },
   };
-  const view = {
+  const view:any = {
     setState: (obj: any) => { if (obj) return true; return false; },
     props: { songs: [{ _id: '123', category: 'pub' }] },
     state: {
@@ -98,5 +99,26 @@ describe('musicPlayerUtils', () => {
     view.state.originalState = 'on';
     const r = musicPlayerUtils.toggleSongTypes('original', view);
     expect(r).toBe(false);
+  });
+  it('runs toggle song types with no songs', () => {
+    view.state.missionState = 'on';
+    view.state.originalState = 'on';
+    view.props.songs = null;
+    const r = musicPlayerUtils.toggleSongTypes('original', view);
+    expect(r).toBe(true);
+  });
+  it('runs toggleOn with no songs', () => {
+    view.state.missionState = 'off';
+    view.state.originalState = 'on';
+    view.props.songs = null;
+    const r = musicPlayerUtils.toggleOn('', view, '', '');
+    expect(r).toBe(true);
+  });
+  it('handles click on prev button', () => {
+    view.setState = jest.fn();
+    view.state.index = 0;
+    view.state.songsState = [{}, {}, {}, {}];
+    musicPlayerUtils.prev(view);
+    expect(view.setState).toHaveBeenCalled();
   });
 });

@@ -1,7 +1,7 @@
 import superagent from 'superagent';
 import jwt from 'jwt-simple';
-import { Dispatch } from 'react';
-import { GoogleLoginResponseOffline, GoogleLoginResponse } from 'react-google-login';
+import type { Dispatch } from 'react';
+import type { GoogleLoginResponseOffline, GoogleLoginResponse } from 'react-google-login';
 import type { AppTemplate } from './AppTemplate';
 
 export interface IauthUtils {

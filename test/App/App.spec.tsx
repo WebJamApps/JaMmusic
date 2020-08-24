@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
 import { shallow } from 'enzyme';
+import { Route } from 'react-router-dom';
 import env from 'dotenv';
 import { App } from '../../src/App';
-import { Auth } from '../../src/redux/mapStoreToProps';
+import type { Auth } from '../../src/redux/mapStoreToProps';
 
 env.config();
 describe('App component', () => {
@@ -15,9 +17,8 @@ describe('App component', () => {
     expect(wrapper).toMatchSnapshot();
   });
   it('does not fetch the images or songs if they already exist', () => new Promise((done) => {
-    const songs:any[] = [{}];
-    const images:any[] = [{}];
-    const wrapper2 = shallow(<App dispatch={dp} songs={songs} images={images} />);
+    const images: any[] = [{}];
+    const wrapper2 = shallow(<App dispatch={dp} images={images} />);
     expect(wrapper2.find('div#App').exists()).toBe(true);
     done();
   }));
@@ -26,13 +27,14 @@ describe('App component', () => {
     expect(wrapper2).toBeDefined();
   });
   it('renders the routes when authenticated', () => {
-    let authRole = '';
-    // eslint-disable-next-line prefer-destructuring
-    if (process.env.userRoles) authRole = JSON.parse(process.env.userRoles).roles[1];
     const auth2: Auth = {
-      isAuthenticated: true, error: 'none', email: 'devemail@cool.com', token: '', user: { userType: authRole },
+      isAuthenticated: true, error: 'none', email: 'devemail@cool.com', token: '', user: { userType: 'booya' },
     };
-    const wrapper2 = shallow(<App dispatch={jest.fn()} auth={auth2} />);
-    expect(wrapper2.find('div#App').exists()).toBe(true);
+    const wrapper2 = shallow<App>(<App dispatch={jest.fn()} auth={auth2} />);
+    wrapper2.instance().utils.getUserRoles = jest.fn(() => ['booya']);
+    wrapper2.update();
+    wrapper2.setState({ userRoles: ['booya'] });
+    const mapRoute = wrapper2.find(Route).get(1);
+    expect(mapRoute.props.path).toBe('/map');
   });
 });

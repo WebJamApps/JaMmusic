@@ -1,6 +1,6 @@
 import React from 'react';
 
-const FacebookFeed = () => (
+const FacebookFeed = (): JSX.Element => (
   <div className="notWidescreen" style={{ maxWidth: '300px', margin: 'auto' }}>
     <iframe
       className="notWideScreen"

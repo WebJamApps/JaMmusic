@@ -1,0 +1,42 @@
+const TestSongs = [
+  {
+    title: 'Boogie Board Rash',
+    artist: 'Josh Sherman & Jim Kelly',
+    composer: 'Joshua V Sherman',
+    category: 'original',
+    album: 'Live From Myrtle Beach',
+    year: 2011,
+    url: 'https://www.youtube.com/embed/ach2ubW21h4?enablejsapi=1&origin=https://web-jam.com',
+    _id: '28ru9weis2309ur4y7wi8094hjrg',
+  },
+  {
+    title: 'Rainbow Connection',
+    artist: 'Josh & Maria Sherman',
+    composer: 'Paul Williams & Kenneth Ascher',
+    category: 'pub',
+    album: 'Shelter In Place',
+    year: 2020,
+    url: 'https://dl.dropboxusercontent.com/s/3hfxf45infac29w/Rainbow_Connection.mp3?dl=0',
+    _id: '48ru9weis2309kjh34ig9gfui',
+    image: 'https://dl.dropboxusercontent.com/s/f9oilir6vwpyqe7/valhalla.png?dl=0',
+  },
+  {
+    title: 'I The Lord of Sea and Sky (Here I Am Lord)',
+    artist: 'Josh & Maria Sherman',
+    category: 'mission',
+    album: 'Live from Salem, VA',
+    year: 2016,
+    url: 'https://soundcloud.com/joshandmariamusic/ithelordofseaandskyhereiamlord',
+    _id: '28ru9wifdu90i4o3ergiuhjf',
+  },
+  {
+    title: 'Allelulia Alleluia Give Thanks',
+    artist: 'Josh & Maria Sherman',
+    category: 'mission',
+    album: 'Shelter In Place',
+    year: 2020,
+    url: 'https://dl.dropboxusercontent.com/s/p7wzn7x02253kfo/Allelulia_Alleluia_Give_Thanks.mp3?dl=0',
+    _id: '29ru9weis2309urihw9q34u',
+    image: 'https://dl.dropboxusercontent.com/s/0tgafd3no74ggkf/JoshMariaCLC.png?dl=0',
+  }];
+export default TestSongs;

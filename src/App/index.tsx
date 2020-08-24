@@ -9,23 +9,27 @@ import DefaultMusicDashboard from '../containers/MusicDashboard';
 import BuyMusic from '../containers/BuyMusic';
 import AppFourOhFour from './404';
 import GoogleMap from '../containers/GoogleMap';
-import AppMain from './AppTemplate';
+import ATemplate from './AppTemplate';
 import DefaultSongs from '../containers/Songs';
 import HomePage from '../containers/Homepage';
 import connectToSC from './connectToSC';
-import mapStoreToProps, { Song, Iimage, Auth } from '../redux/mapStoreToProps';
-import getSongs from './songsActions';
+import mapStoreToProps, { Iimage, Auth } from '../redux/mapStoreToProps';
 import commonUtils from '../lib/commonUtils';
 
 export interface AppProps {
   dispatch: Dispatch<unknown>;
-  songs: Song[];
   images: Iimage[];
   auth: Auth;
 }
 
-export class App extends Component<AppProps> {
+interface Astate {
+  userRoles:string[];
+}
+
+export class App extends Component<AppProps, Astate> {
   connectToSC: typeof connectToSC;
+
+  utils: typeof commonUtils;
 
   static defaultProps = {
     dispatch: (): void => { },
@@ -38,22 +42,27 @@ export class App extends Component<AppProps> {
 
   constructor(props: AppProps) {
     super(props);
+    this.state = {
+      userRoles: [],
+    };
+    this.utils = commonUtils;
     this.connectToSC = connectToSC;
   }
 
   async componentDidMount(): Promise<void> {
-    const { dispatch, songs } = this.props;
-    if (songs.length === 0) dispatch(getSongs());
-    await this.connectToSC.connectToSCC(dispatch);
+    const { dispatch } = this.props;
+    this.connectToSC.connectToSCC(dispatch);
+    const userRoles: string[] = this.utils.getUserRoles();
+    this.setState({ userRoles });
   }
 
   render(): JSX.Element {
     const { auth } = this.props;
-    const userRoles: string[] = commonUtils.getUserRoles();
+    const { userRoles } = this.state;
     return (
       <div id="App" className="App">
         <Router>
-          <AppMain>
+          <ATemplate>
             <Switch>
               <Route exact path="/" component={HomePage} />
               {auth.isAuthenticated && auth.user.userType && userRoles.indexOf(auth.user.userType) !== -1
@@ -68,7 +77,7 @@ export class App extends Component<AppProps> {
                 ? <Route path="/music/dashboard" component={DefaultMusicDashboard} /> : null}
               <Route component={AppFourOhFour} />
             </Switch>
-          </AppMain>
+          </ATemplate>
         </Router>
       </div>
     );

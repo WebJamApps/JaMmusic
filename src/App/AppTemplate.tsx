@@ -4,9 +4,9 @@ import {
   GoogleLogin, GoogleLogout, GoogleLoginResponse, GoogleLoginResponseOffline,
 } from 'react-google-login';
 import { connect } from 'react-redux';
-import { Auth } from '../redux/mapStoreToProps';
+import type { Auth } from '../redux/mapStoreToProps';
+import mapStoreToATemplateProps from '../redux/mapStoreToAppTemplateProps';
 import authUtils, { IauthUtils } from './authUtils';
-import mapStoreToProps from '../redux/mapStoreToAppTemplateProps';
 import appTemplateUtils from './appTemplateUtils';
 import Footer from './Footer';
 import menuUtils from './menuUtils';
@@ -228,4 +228,4 @@ export class AppTemplate extends React.Component<AppTemplateProps, AppMainState>
   }
 }
 
-export default withRouter(connect(mapStoreToProps, null)(AppTemplate));
+export default withRouter(connect(mapStoreToATemplateProps, null)(AppTemplate));

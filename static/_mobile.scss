@@ -210,14 +210,6 @@
   width             : 12px;
 }
 
-::-webkit-scrollbar:vertical {
-  width: 12px;
-}
-
-::-webkit-scrollbar:horizontal {
-  height: 12px;
-}
-
 ::-webkit-scrollbar-thumb {
   background-color: rgba(0, 0, 0, 0.5);
   border-radius   : 10px;
@@ -227,6 +219,14 @@
 ::-webkit-scrollbar-track {
   border-radius   : 10px;
   background-color: #ffffff;
+}
+
+::-webkit-scrollbar:vertical {
+  width: 12px;
+}
+
+::-webkit-scrollbar:horizontal {
+  height: 12px;
 }
 
 .swipe-area {

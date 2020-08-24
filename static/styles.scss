@@ -74,7 +74,7 @@ h5 {
 h1, h2, h3, h4, h5, h6 {
   margin-top: 0;
   margin-bottom: .5rem;
-  font-family: 'PT Sans Caption';
+  font-family: 'PT Sans Caption', sans-serif;
 }
 
 h6 {
@@ -214,18 +214,9 @@ tbody.regformtbody td {
 
 /* Links */
 
-a:not([href]):not([tabindex]) {
-  text-decoration: underline;
-  color: #007bff;
-}
-
-a:not([href]):not([tabindex]):hover {
-  text-decoration: underline;
-  color: #0056b3;
-}
 
 p, a, label {
-  font-family: 'Habibi';
+  font-family: 'Habibi', sans-serif;
   font-size: 12pt;
 }
 
@@ -237,6 +228,16 @@ a {
 }
 
 a:hover {
+  color: #0056b3;
+}
+
+a:not([href]):not([tabindex]) {
+  text-decoration: underline;
+  color: #007bff;
+}
+
+a:not([href]):not([tabindex]):hover {
+  text-decoration: underline;
   color: #0056b3;
 }
 

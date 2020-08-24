@@ -1,17 +1,18 @@
 import React, { Component, Dispatch } from 'react';
 import { connect } from 'react-redux';
+import type { AnyAction } from 'redux';
 import PicSlider from '../../components/PicSlider';
 import DefaultTable from '../../components/TourTable';
 import JoshBio from './joshBio';
 import MariaBio from './mariaBio';
 import Intro from './intro';
-import mapStoreToProps from '../../redux/mapStoreToProps';
+import mapStoreToProps, { Iimage } from '../../redux/mapStoreToProps';
 import commonUtils from '../../lib/commonUtils';
 import WjBand from './wjBand';
 
 type MusicProps = {
-  dispatch: Dispatch<unknown>;
-  images: { url: string; title: string }[];
+  dispatch: Dispatch<AnyAction>;
+  images: Iimage[];
 };
 export class Music extends Component<MusicProps> {
   commonUtils: { setTitleAndScroll: (pageTitle: string, width: number) => void };
@@ -44,7 +45,7 @@ export class Music extends Component<MusicProps> {
   }
 
   render(): JSX.Element {
-    const { images, dispatch } = this.props;
+    const { images } = this.props;
     return (
       <div className="page-content">
         <div style={{ paddingTop: '1px', paddingBottom: 0, marginBottom: 0 }}>
@@ -59,7 +60,7 @@ export class Music extends Component<MusicProps> {
             position: 'relative', overflowX: 'auto', maxWidth: '96%', margin: 'auto', zIndex: 0,
           }}
         >
-          <DefaultTable dispatch={dispatch} />
+          <DefaultTable />
         </div>
         <div style={{ height: '10px' }}>
           <p>{' '}</p>
