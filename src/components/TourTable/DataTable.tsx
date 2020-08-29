@@ -16,7 +16,7 @@ export const DataTable = ({ columns, data }: Props):JSX.Element => {
       options={{
         filterType: 'dropdown',
         pagination: false,
-        responsive: 'scrollMaxHeight',
+        responsive: 'standard',
         filter: false,
         download: false,
         search: false,
