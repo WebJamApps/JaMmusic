@@ -24,7 +24,6 @@ export class TourTable extends Component<TourTableProps, TourTableState> {
     super(props);
     this.setColumns = this.setColumns.bind(this);
     this.checkTourTable = this.checkTourTable.bind(this);
-    this.setColumns = this.setColumns.bind(this);
     this.state = { columns: [] };
     this.addDeleteButton = this.addDeleteButton.bind(this);
   }
@@ -68,9 +67,9 @@ export class TourTable extends Component<TourTableProps, TourTableState> {
   checkTourTable(pTupdated: boolean, nTupdated: boolean): boolean {
     if (!pTupdated && nTupdated) {
       const { dispatch } = this.props;
-      dispatch({ type: 'RESET_TOUR' });
       this.setState({ columns: [] });
       this.setColumns();
+      dispatch({ type: 'RESET_TOUR' });
       return true;
     }
     return false;
