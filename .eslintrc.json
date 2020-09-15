@@ -4,6 +4,7 @@
     "plugin:node/recommended", "plugin:jest/recommended", "plugin:@typescript-eslint/recommended"
   ],
   "rules": {
+    "jest/no-conditional-expect": 0,
     "react/jsx-filename-extension": [1, {
       "extensions": ["tsx"]
     }],
