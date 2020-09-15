@@ -17,10 +17,10 @@
     </title>
     <base href="<%- htmlWebpackPlugin.options.metadata.baseUrl %>" />
     <link
-      href="//fonts.googleapis.com/css?family=PT Sans Caption"
+      href="https://fonts.googleapis.com/css?family=PT Sans Caption"
       rel="stylesheet"
     />
-    <link href="//fonts.googleapis.com/css?family=Habibi" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Habibi" rel="stylesheet" />
     <link
       href="https://fonts.googleapis.com/icon?family=Material+Icons"
       rel="stylesheet"
@@ -37,7 +37,7 @@
   </head>
 
   <body>
-    <script src='https://maps.googleapis.com/maps/api/js?key=AIzaSyAjCkjOsEllUookXVbzLRHrUalkhev6aPg'></script>
+    <script src="<%- htmlWebpackPlugin.options.metadata.googleMapKey %>"></script>
     <div>
       <div id="root">
         <div class="splash">

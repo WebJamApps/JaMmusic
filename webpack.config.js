@@ -14,12 +14,12 @@ const ensureArray = (config) => config && (Array.isArray(config) ? config : [con
 const when = (condition, config, negativeConfig) => (condition ? ensureArray(config) : ensureArray(negativeConfig));
 
 // primary config:
-const mapKey = process.env.GOOGLE_MAP_KEY;
 const title = 'Web Jam LLC';
 const outDir = path.resolve(__dirname, 'dist');
 const srcDir = path.resolve(__dirname, 'src');
 const baseUrl = '/';
 const scssRules = [{ loader: 'sass-loader' }];
+const googleMapKey = `https://maps.googleapis.com/maps/api/js?key=${process.env.GOOGLE_MAPS_API_KEY}`;
 
 module.exports = ({
   production, analyze,
@@ -127,12 +127,12 @@ module.exports = ({
     new HtmlWebpackPlugin({
       template: `${srcDir}/index.ejs`,
       minify: production ? { removeComments: true, collapseWhitespace: true } : undefined,
-      metadata: { title, baseUrl },
+      metadata: { title, baseUrl, googleMapKey },
     }),
     new MiniCssExtractPlugin({
       filename: '[name].[contenthash].css',
       allChunks: true,
-      metadata: { title, baseUrl, mapKey },
+      metadata: { title, baseUrl },
     }),
     new CopyPlugin({
       patterns: [
