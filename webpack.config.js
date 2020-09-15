@@ -14,7 +14,6 @@ const ensureArray = (config) => config && (Array.isArray(config) ? config : [con
 const when = (condition, config, negativeConfig) => (condition ? ensureArray(config) : ensureArray(negativeConfig));
 
 // primary config:
-const mapKey = process.env.GOOGLE_MAP_KEY;
 const title = 'Web Jam LLC';
 const outDir = path.resolve(__dirname, 'dist');
 const srcDir = path.resolve(__dirname, 'src');
@@ -132,7 +131,7 @@ module.exports = ({
     new MiniCssExtractPlugin({
       filename: '[name].[contenthash].css',
       allChunks: true,
-      metadata: { title, baseUrl, mapKey },
+      metadata: { title, baseUrl },
     }),
     new CopyPlugin({
       patterns: [
