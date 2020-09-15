@@ -6,12 +6,12 @@ import storageSession from 'redux-persist/lib/storage/session';
 import allReducers from '../allReducers';
 import jsonTransform from './jsonTransform';
 
-const JSOGTransform = jsonTransform.makeTransform(createTransform);
+const FlattedTransform = jsonTransform.makeTransform(createTransform);
 const persistConfig = {
   key: 'root',
   storage: storageSession,
   blacklist: ['sc'],
-  transforms: [JSOGTransform],
+  transforms: [FlattedTransform],
 };
 let mWares = applyMiddleware(thunk);
 /* istanbul ignore if */
