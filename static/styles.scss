@@ -104,6 +104,7 @@ label {
   padding-bottom: 0;
   display: block;
   width: 100%;
+  color: #212529 !important;
 }
 
 /* Tables Generic */
@@ -115,6 +116,10 @@ table {
 
 tbody tr:nth-child(odd) {
   background-color: #d8ecf3;
+}
+
+tbody .white-background {
+  background-color: white !important;
 }
 
 tbody.regformtbody tr:nth-child(odd) {

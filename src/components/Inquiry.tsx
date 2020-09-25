@@ -143,7 +143,7 @@ export default class Inquiry extends Component<unknown, InquiryState> {
       }}
       >
         <tbody>
-          <tr>
+          <tr className="white-background">
             <td style={{ border: 'none', padding: 0 }}>{this.forms.makeInput('text', 'First Name', true, this.onInputChange, firstname, '140px')}</td>
             <td style={{ border: 'none', padding: '8px' }}>{' '}</td>
             <td style={{ border: 'none', padding: 0 }}>{this.forms.makeInput('text', 'Last Name', true, this.onInputChange, lastname, '140px')}</td>
