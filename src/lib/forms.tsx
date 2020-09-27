@@ -31,12 +31,6 @@ const makeDropdown = (htmlFor: string | undefined,
           options.map((cv) => <option id={cv} key={cv} value={cv}>{cv}</option>)
         }
       </Select>
-
-      {/* <select id={htmlFor} value={value} onChange={(event) => onChange(event, true)}>
-        {
-          options.map((cv) => <option id={cv} key={cv} value={cv}>{cv}</option>)
-        }
-      </select> */}
     </label>
 );
 const makeInput = (type: string | undefined,

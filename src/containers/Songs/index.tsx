@@ -17,8 +17,6 @@ export class Songs extends Component<SProps> {
 
   componentDidMount(): void { this.commonUtils.setTitleAndScroll('Songs', window.screen.width); }
 
-  // componentDidUpdate(): void { this.commonUtils.setTitleAndScroll('Songs', window.screen.width); }
-
   render(): JSX.Element {
     return (
       <div id="pageContent" className="page-content">
