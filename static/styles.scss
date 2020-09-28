@@ -107,10 +107,6 @@ label {
   color: #212529 !important;
 }
 
-.dropdown-content li > a, .dropdown-content li > span {
-  color: #000; // Change to something closer to original, but still WCAG approved
-}
-
 .input-field {
   margin-top: -1rem;
 }
@@ -256,6 +252,10 @@ a:not([href]):not([tabindex]) {
 a:not([href]):not([tabindex]):hover {
   text-decoration: underline;
   color: #0056b3;
+}
+
+.dropdown-content li > a, .dropdown-content li > span {
+  color: #000; // Change to something closer to original, but still WCAG approved
 }
 
 .regularLink {
