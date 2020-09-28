@@ -107,11 +107,23 @@ label {
   color: #212529 !important;
 }
 
+.dropdown-content li > a, .dropdown-content li > span {
+  color: #000; // Change to something closer to original, but still WCAG approved
+}
+
+.input-field {
+  margin-top: -1rem;
+}
+
 /* Tables Generic */
 
 table {
   margin: auto;
   border-collapse: collapse;
+}
+
+tr {
+  border: none;
 }
 
 tbody tr:nth-child(odd) {
