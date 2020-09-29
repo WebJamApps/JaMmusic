@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
 import { shallow } from 'enzyme';
+import { Select } from 'react-materialize';
 import Inquiry from '../../../src/components/Inquiry';
 
 describe('Inquiry Form', () => {
@@ -14,12 +15,12 @@ describe('Inquiry Form', () => {
   it('renders correctly', () => {
     expect(wrapper).toMatchSnapshot();
   });
-  // it('displays the usa state dropdown when country selected is United States', () => {
-  //   wrapper.instance().setState({ country: 'United States' });
-  //   const dropdown = wrapper.find('select#state').get(0);
-  //   dropdown.props.onChange({ target: { value: 'Alaska' } });
-  //   expect(wrapper.instance().state.uSAstate).toBe('Alaska');
-  // });
+  it('displays the usa state dropdown when country selected is United States', () => {
+    wrapper.instance().setState({ country: 'United States' });
+    const dropdown = wrapper.find(Select).get(1);
+    dropdown.props.onChange({ target: { value: 'Virginia' } });
+    expect(wrapper.instance().state.uSAstate).toBe('Virginia');
+  });
   it('calls on change for text input', () => {
     wrapper.instance().setState = jest.fn();
     const evt: any = { target: { id: 'hi', value: '11 ' } };
