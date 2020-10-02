@@ -11,6 +11,7 @@ import commonUtils from '../../lib/commonUtils';
 import AddTime from '../../lib/timeKeeper';
 import Ttable from '../../components/TourTable';
 import Controller, { MusicDashboardController } from './MusicDashboardController';
+import SongsTable from './SongsTable';
 
 interface MusicDashboardProps extends RouteComponentProps<Record<string, string | undefined>> {
   dispatch: Dispatch<AnyAction>;
@@ -266,6 +267,10 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
           </div>
         ) : null}
         <p>&nbsp;</p>
+        <div className="material-content elevation3" style={{ maxWidth: '10in', margin: 'auto' }}>
+          <h5 style={{ textAlign: 'center', marginBottom: '3px' }}>Modify Songs</h5>
+          <SongsTable />
+        </div>
         <p>&nbsp;</p>
       </div>
     );
