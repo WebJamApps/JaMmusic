@@ -1,16 +1,36 @@
 import React from 'react';
+import 'materialize-css';
+import { Select } from 'react-materialize';
 
 const makeDropdown = (htmlFor: string | undefined,
-  labelText: React.ReactNode, value: string | number | readonly string[] | undefined,
+  labelText: React.ReactNode, value: string | undefined,
   onChange: (event: React.ChangeEvent<HTMLSelectElement>, isSelected: boolean) => void, options: string[]): JSX.Element => (
     <label htmlFor={htmlFor} style={{ paddingTop: '12px' }} id={htmlFor}>
       {labelText}
       <br />
-      <select id={htmlFor} value={value} onChange={(event) => onChange(event, true)}>
+      <Select
+        id={htmlFor}
+        multiple={false}
+        onChange={(event) => onChange(event, true)}
+        options={{
+          classes: '',
+          dropdownOptions: {
+            alignment: 'left',
+            autoTrigger: true,
+            closeOnClick: true,
+            constrainWidth: true,
+            coverTrigger: true,
+            hover: false,
+            inDuration: 150,
+            outDuration: 250,
+          },
+        }}
+        value={value}
+      >
         {
           options.map((cv) => <option id={cv} key={cv} value={cv}>{cv}</option>)
         }
-      </select>
+      </Select>
     </label>
 );
 const makeInput = (type: string | undefined,

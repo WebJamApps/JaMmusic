@@ -57,8 +57,10 @@ export default class Inquiry extends Component<unknown, InquiryState> {
     this.superagent = superagent;
   }
 
-  onChange(evt: React.ChangeEvent<HTMLSelectElement>, isSelect?: boolean): void {
-    if (isSelect) return this.setState({ uSAstate: evt.target.value });
+  onChange(evt: React.ChangeEvent<HTMLSelectElement>, isSelected?: boolean): void {
+    if (isSelected) {
+      return this.setState({ uSAstate: evt.target.value });
+    }
     return this.setFormField(evt.target.id, evt.target.value);
   }
 
@@ -143,7 +145,7 @@ export default class Inquiry extends Component<unknown, InquiryState> {
       }}
       >
         <tbody>
-          <tr>
+          <tr className="white-background">
             <td style={{ border: 'none', padding: 0 }}>{this.forms.makeInput('text', 'First Name', true, this.onInputChange, firstname, '140px')}</td>
             <td style={{ border: 'none', padding: '8px' }}>{' '}</td>
             <td style={{ border: 'none', padding: 0 }}>{this.forms.makeInput('text', 'Last Name', true, this.onInputChange, lastname, '140px')}</td>
