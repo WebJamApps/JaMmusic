@@ -1,6 +1,6 @@
 {
   "name": "jammusic",
-  "version": "0.1.8",
+  "version": "1.0.0",
   "description": "joshandmariamusic.com",
   "main": "dist/index.html",
   "repository": {
@@ -9,7 +9,7 @@
   },
   "author": "https://github.com/orgs/WebJamApps/teams/handlersandkickers",
   "engines": {
-    "node": ">=14.10.0"
+    "node": ">=14.12.0"
   },
   "files": [
     "webpack.config.js",
