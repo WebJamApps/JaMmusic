@@ -105,7 +105,17 @@ const shuffleThem = (songs: ISong[]): ISong[] => {
   }
   return shuffled;
 };
-
+const resetState = (view: MusicPlayer, player: Iplayer, pageTitle: string, songsState: any[], typeInState: string, shuffled: any[], type:string) => {
+  view.setState({
+    ...view.state,
+    player: { ...player },
+    pageTitle,
+    songsState: player.isShuffleOn ? shuffled : songsState,
+    [typeInState]: type,
+    song: player.isShuffleOn ? shuffled[0] : songsState[0],
+    index: 0,
+  });
+};
 function toggleOn(lcType: string, view: MusicPlayer, type: string, typeInState: string): boolean {
   const { player } = view.state;
   let { songsState, pageTitle } = view.state, shuffled: ISong[] = songsState, { songs } = view.props;
@@ -118,15 +128,7 @@ function toggleOn(lcType: string, view: MusicPlayer, type: string, typeInState: 
   else { songsState = view.musicUtils.setIndex(songsState, lcType); }
   pageTitle = pageTitle.replace('Songs', '');
   pageTitle += ` & ${type} Songs`;
-  view.setState({
-    ...view.state,
-    player: { ...player },
-    pageTitle,
-    songsState: player.isShuffleOn ? shuffled : songsState,
-    [typeInState]: 'on',
-    song: player.isShuffleOn ? shuffled[0] : songsState[0],
-    index: 0,
-  });
+  resetState(view, player, pageTitle, songsState, typeInState, shuffled, 'on');
   return true;
 }
 function toggleSongTypes(type: string, view: MusicPlayer): boolean {
@@ -143,24 +145,12 @@ function toggleSongTypes(type: string, view: MusicPlayer): boolean {
   songsState = songsState.filter((song: ISong) => song.category !== lcType);
   pageTitle = pageTitle.replace(` & ${type}`, '');
   if (songsState.length === 0) {
-    songsState = [
-      ...songsState,
-      ...songs.filter((song: ISong) => song.category === 'original'),
-    ];
-    pageTitle = 'Original Songs';
+    songsState = [...songsState, ...songs.filter((song: ISong) => song.category === 'original')]; pageTitle = 'Original Songs';
     view.setState({ originalState: 'on' });
   }
   pageTitle = pageTitle.replace(`${type}`, '').replace('&', '');
   if (player.isShuffleOn) shuffled = shuffleThem(songsState);
-  view.setState({
-    ...view.state,
-    player: { ...player },
-    pageTitle,
-    songsState: player.isShuffleOn ? shuffled : songsState,
-    [typeInState]: 'off',
-    song: player.isShuffleOn ? shuffled[0] : songsState[0],
-    index: 0,
-  });
+  resetState(view, player, pageTitle, songsState, typeInState, shuffled, 'off');
   return true;
 }
 function prev(view:MusicPlayer): void {
