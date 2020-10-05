@@ -2,13 +2,17 @@ import React from 'react';
 import MUIDataTable from 'mui-datatables';
 import { SongsContext } from '../../providers/Songs.provider';
 
-const SongsTable = (): JSX.Element => {
+type Props = {
+  sData?:any[]
+};
+const SongsTable:React.FC<Props> = ({ sData }): JSX.Element => {
   const { test, songs } = React.useContext(SongsContext);
+  const tableData = sData !== undefined ? sData : songs;
   // eslint-disable-next-line no-console
   console.log(test);
   return (
     <div style={{ padding: '10px', marginBottom: '-20px' }}>
-      {songs.length > 0 ? (
+      {tableData.length > 0 ? (
         <MUIDataTable
           options={{
             filterType: 'dropdown',
@@ -23,7 +27,7 @@ const SongsTable = (): JSX.Element => {
             fixedHeader: false,
           }}
           columns={['title', 'url', 'artist', 'category', 'album', 'image', 'composer', 'year']}
-          data={songs}
+          data={tableData}
           title=""
         />
       ) : null }
