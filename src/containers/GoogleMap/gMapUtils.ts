@@ -8,7 +8,7 @@ function makeLoc(faker: { address: { latitude: () => string; longitude: () => st
     lng: parseFloat(faker.address.longitude()),
   };
 }
-const limitLat = (obj: UMap | CMap):any => {
+const limitLat = (obj: UMap | CMap):UMap | CMap => {
   const newObj = obj;
   if (obj.loc.lat > 83) newObj.loc.lat = 83;
   if (obj.loc.lat < -70) newObj.loc.lat = -70;

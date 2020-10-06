@@ -1,9 +1,9 @@
 import React from 'react';
 import MUIDataTable from 'mui-datatables';
-import { SongsContext } from '../../providers/Songs.provider';
+import { ISong, SongsContext } from '../../providers/Songs.provider';
 
 type Props = {
-  sData?:any[]
+  sData?:ISong[]
 };
 const SongsTable:React.FC<Props> = ({ sData }): JSX.Element => {
   const { test, songs } = React.useContext(SongsContext);

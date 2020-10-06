@@ -105,7 +105,8 @@ const shuffleThem = (songs: ISong[]): ISong[] => {
   }
   return shuffled;
 };
-const resetState = (view: MusicPlayer, player: Iplayer, pageTitle: string, songsState: any[], typeInState: string, shuffled: any[], type:string) => {
+const resetState = (view: MusicPlayer, player: Iplayer, pageTitle: string, songsState: ISong[],
+  typeInState: string, shuffled: ISong[], type:string) => {
   view.setState({
     ...view.state,
     player: { ...player },
