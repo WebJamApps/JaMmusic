@@ -244,9 +244,9 @@ a:hover {
   color: #0056b3;
 }
 
-.dropdown-content li > a, .dropdown-content li > span {
-  color: #000; // Change to something closer to original, but still WCAG approved
-}
+// .dropdown-content li > a, .dropdown-content li > span {
+//   color: #000; // Change to something closer to original, but still WCAG approved
+// }
 
 a:not([href]):not([tabindex]) {
   text-decoration: underline;

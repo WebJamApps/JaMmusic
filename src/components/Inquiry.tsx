@@ -140,28 +140,14 @@ export default class Inquiry extends Component<unknown, InquiryState> {
       firstname, lastname, emailaddress, phonenumber,
     } = this.state;
     return (
-      <table style={{
-        border: 'none', textAlign: 'left', margin: 0, padding: 0,
-      }}
-      >
-        <tbody>
-          <tr className="white-background">
-            <td style={{ border: 'none', padding: 0 }}>{this.forms.makeInput('text', 'First Name', true, this.onInputChange, firstname, '140px')}</td>
-            <td style={{ border: 'none', padding: '8px' }}>{' '}</td>
-            <td style={{ border: 'none', padding: 0 }}>{this.forms.makeInput('text', 'Last Name', true, this.onInputChange, lastname, '140px')}</td>
-          </tr>
-          <tr>
-            <td style={{ border: 'none', padding: 0 }}>
-              {this.forms.makeInput('email', 'Email Address', true, this.onInputChange, emailaddress, '140px')}
-            </td>
-            <td style={{ border: 'none', padding: '8px' }}>{' '}</td>
-            <td style={{ border: 'none', padding: 0 }}>
-              {' '}
-              {this.forms.makeInput('tel', 'Phone Number', false, this.onInputChange, phonenumber, '140px')}
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <div>
+        {this.forms.makeInput('text', 'First Name', true, this.onInputChange, firstname)}
+
+        {this.forms.makeInput('text', 'Last Name', true, this.onInputChange, lastname)}
+        {this.forms.makeInput('email', 'Email Address', true, this.onInputChange, emailaddress)}
+
+        {this.forms.makeInput('tel', 'Phone Number', false, this.onInputChange, phonenumber)}
+      </div>
     );
   }
 
@@ -184,7 +170,7 @@ export default class Inquiry extends Component<unknown, InquiryState> {
       country, formError, uSAstate, zipcode, comments,
     } = this.state;
     return (
-      <form id="new-contact" style={{ maxWidth: '316px', marginLeft: '10px' }}>
+      <form id="new-contact" className="col s12" style={{ maxWidth: '316px' }}>
         {this.tableSection()}
         {this.forms.makeDropdown('country', '* Country', country, this.handleCountryChange, this.countryValues)}
         {country === 'United States'
@@ -204,7 +190,7 @@ export default class Inquiry extends Component<unknown, InquiryState> {
   render(): JSX.Element {
     const { submitted } = this.state;
     return (
-      <div style={{ maxWidth: '320px', margin: 'auto', border: '1px solid black' }}>
+      <div className="row" style={{ maxWidth: '340px', margin: 'auto', border: '1px solid black' }}>
         {submitted === false ? (
           <div className="contact-form">
             <h4 style={{
