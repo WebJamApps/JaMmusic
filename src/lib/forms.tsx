@@ -11,7 +11,6 @@ const makeDropdown = (htmlFor: string | undefined,
       multiple={false}
       onChange={(event) => onChange(event, false)}
       options={{
-        classes: '',
         dropdownOptions: {
           alignment: 'left',
           autoTrigger: true,

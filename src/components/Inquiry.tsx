@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import superagent from 'superagent';
+import 'materialize-css';
+import { Textarea } from 'react-materialize';
 import forms from '../lib/forms';
 import stateData from '../lib/StateData.json';
 import countryData from '../lib/CountryData.json';
@@ -151,15 +153,11 @@ export default class Inquiry extends Component<unknown, InquiryState> {
 
   commentsSection(comments: string): JSX.Element {
     return (
-      <label htmlFor="comments">
-        * Comments
-        <br />
-        <textarea
-          style={{ minWidth: '3in', paddingLeft: '5px' }}
-          value={comments}
-          onChange={(evt) => this.setState({ comments: evt.target.value.trim() })}
-        />
-      </label>
+      <Textarea
+        label="* Comments"
+        value={comments}
+        onChange={(evt) => this.setState({ comments: evt.target.value.trim() })}
+      />
     );
   }
 
@@ -168,7 +166,7 @@ export default class Inquiry extends Component<unknown, InquiryState> {
       country, formError, uSAstate, zipcode, comments,
     } = this.state;
     return (
-      <form id="new-contact" className="col s12" style={{ maxWidth: '316px' }}>
+      <form id="new-contact" className="col s12">
         {this.tableSection()}
         {this.forms.makeDropdown('country', 'Country', country, this.handleCountryChange, this.countryValues)}
         {country === 'United States'
@@ -177,7 +175,7 @@ export default class Inquiry extends Component<unknown, InquiryState> {
         {this.forms.makeInput('zip', 'Zipcode', true, this.onInputChange, zipcode)}
         {this.commentsSection(comments)}
         <p className="form-errors" style={{ color: 'red' }}>{formError}</p>
-        <div className="inquiryValidation" style={{ marginBottom: '12px' }}>
+        <div className="inquiryValidation input-field col" style={{ marginBottom: '12px' }}>
           <span className="inquiryValidation">* Required</span>
           <button disabled={this.validateForm()} type="button" onClick={this.createEmail}>Send</button>
         </div>
