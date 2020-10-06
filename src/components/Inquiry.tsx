@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import superagent from 'superagent';
 import 'materialize-css';
-import { Textarea } from 'react-materialize';
+import { Textarea, Button } from 'react-materialize';
 import forms from '../lib/forms';
 import stateData from '../lib/StateData.json';
 import countryData from '../lib/CountryData.json';
@@ -177,7 +177,15 @@ export default class Inquiry extends Component<unknown, InquiryState> {
         <p className="form-errors" style={{ color: 'red' }}>{formError}</p>
         <div className="inquiryValidation input-field col" style={{ marginBottom: '12px' }}>
           <span className="inquiryValidation">* Required</span>
-          <button disabled={this.validateForm()} type="button" onClick={this.createEmail}>Send</button>
+          <Button
+            flat
+            node="button"
+            waves="light"
+            disabled={this.validateForm()}
+            onClick={this.createEmail}
+          >
+            Send
+          </Button>
         </div>
       </form>
     );
