@@ -3,36 +3,32 @@ import 'materialize-css';
 import { Select, TextInput } from 'react-materialize';
 
 const makeDropdown = (htmlFor: string | undefined,
-  labelText: React.ReactNode, value: string | undefined,
+  labelText: string, value: string | undefined,
   onChange: (event: React.ChangeEvent<HTMLSelectElement>, isSelected: boolean) => void, options: string[]): JSX.Element => (
-    <label className="black-text" htmlFor={htmlFor} style={{ paddingTop: '12px' }} id={htmlFor}>
-      {labelText}
-      <br />
-      <Select
-        id={htmlFor}
-        className="black-text"
-        multiple={false}
-        onChange={(event) => onChange(event, true)}
-        options={{
-          dropdownOptions: {
-            alignment: 'left',
-            autoTrigger: true,
-            closeOnClick: true,
-            constrainWidth: true,
-            coverTrigger: true,
-            hover: false,
-            inDuration: 150,
-            outDuration: 250,
-          },
-        }}
-        value={value}
-      >
-
-        {
+    <Select
+      id={htmlFor}
+      label={`* Select your ${labelText}`}
+      multiple={false}
+      onChange={(event) => onChange(event, false)}
+      options={{
+        classes: '',
+        dropdownOptions: {
+          alignment: 'left',
+          autoTrigger: true,
+          closeOnClick: true,
+          constrainWidth: true,
+          coverTrigger: true,
+          hover: false,
+          inDuration: 150,
+          outDuration: 250,
+        },
+      }}
+      value={value}
+    >
+      {
           options.map((cv) => <option id={cv} key={cv} value={cv}>{cv}</option>)
         }
-      </Select>
-    </label>
+    </Select>
 );
 const makeInput = (type: string | undefined,
   label: string, isRequired: boolean | undefined,

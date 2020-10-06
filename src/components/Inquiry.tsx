@@ -142,10 +142,8 @@ export default class Inquiry extends Component<unknown, InquiryState> {
     return (
       <div>
         {this.forms.makeInput('text', 'First Name', true, this.onInputChange, firstname)}
-
         {this.forms.makeInput('text', 'Last Name', true, this.onInputChange, lastname)}
         {this.forms.makeInput('email', 'Email Address', true, this.onInputChange, emailaddress)}
-
         {this.forms.makeInput('tel', 'Phone Number', false, this.onInputChange, phonenumber)}
       </div>
     );
@@ -172,9 +170,9 @@ export default class Inquiry extends Component<unknown, InquiryState> {
     return (
       <form id="new-contact" className="col s12" style={{ maxWidth: '316px' }}>
         {this.tableSection()}
-        {this.forms.makeDropdown('country', '* Country', country, this.handleCountryChange, this.countryValues)}
+        {this.forms.makeDropdown('country', 'Country', country, this.handleCountryChange, this.countryValues)}
         {country === 'United States'
-          ? this.forms.makeDropdown('state', '* State', uSAstate, this.onChange, this.stateValues)
+          ? this.forms.makeDropdown('state', 'State', uSAstate, this.onChange, this.stateValues)
           : null}
         {this.forms.makeInput('zip', 'Zipcode', true, this.onInputChange, zipcode)}
         {this.commentsSection(comments)}
