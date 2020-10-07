@@ -11,6 +11,7 @@ import commonUtils from '../../lib/commonUtils';
 import AddTime from '../../lib/timeKeeper';
 import Ttable from '../../components/TourTable';
 import Controller, { MusicDashboardController } from './MusicDashboardController';
+import SongsTable from './SongsTable';
 
 interface MusicDashboardProps extends RouteComponentProps<Record<string, string | undefined>> {
   dispatch: Dispatch<AnyAction>;
@@ -55,6 +56,7 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
     this.checkEdit = this.checkEdit.bind(this);
     this.editTourAPI = this.editTourAPI.bind(this);
     this.resetEditForm = this.resetEditForm.bind(this);
+    this.modifySongsSection = this.modifySongsSection.bind(this);
   }
 
   componentDidMount(): void { this.commonUtils.setTitleAndScroll('Music Dashboard', window.screen.width); }
@@ -238,6 +240,16 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
     );
   }
 
+  // eslint-disable-next-line class-methods-use-this
+  modifySongsSection():JSX.Element {
+    return (
+      <div className="material-content elevation3" style={{ maxWidth: '10in', margin: 'auto' }}>
+        <h5 style={{ textAlign: 'center', marginBottom: '3px' }}>Modify Songs</h5>
+        <SongsTable />
+      </div>
+    );
+  }
+
   render(): JSX.Element {
     const { redirect } = this.state;
     const { editTour } = this.props;
@@ -252,8 +264,7 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
         <p>&nbsp;</p>
         <div className="material-content elevation3" style={{ maxWidth: '9.1in', margin: 'auto' }}>
           <h5 style={{ textAlign: 'center', marginBottom: 0 }}>
-            {editTour._id ? 'Edit' : 'Create a New'}
-            {' '}
+            {editTour._id ? 'Edit ' : 'Create a New '}
             Tour Event
           </h5>
           {this.newTourForm()}
@@ -266,6 +277,7 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
           </div>
         ) : null}
         <p>&nbsp;</p>
+        {this.modifySongsSection()}
         <p>&nbsp;</p>
       </div>
     );

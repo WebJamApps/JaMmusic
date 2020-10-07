@@ -1,6 +1,7 @@
 import Controller from '../../../src/containers/MusicDashboard/MusicDashboardController';
 
 describe('MusicDashboardController', () => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const viewStub: any = {
     props: { auth: { token: 'token' }, editPic: { _id: '5' }, scc: { transmit: jest.fn() } }, state: { picTitle: 'Title', picUrl: 'url' },
   };
