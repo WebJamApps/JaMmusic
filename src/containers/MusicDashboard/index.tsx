@@ -243,7 +243,12 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
   // eslint-disable-next-line class-methods-use-this
   modifySongsSection():JSX.Element {
     return (
-      <div className="material-content elevation3" style={{ maxWidth: '10in', margin: 'auto' }}>
+      <div
+        className="search-table-outer"
+        style={{
+          position: 'relative', overflowX: 'auto', maxWidth: '96%', margin: 'auto', zIndex: 0, height: '400px',
+        }}
+      >
         <h5 style={{ textAlign: 'center', marginBottom: '3px' }}>Modify Songs</h5>
         <SongsTable />
       </div>
@@ -271,7 +276,12 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
         </div>
         <p>&nbsp;</p>
         {!editTour._id ? (
-          <div className="material-content elevation3" style={{ maxWidth: '10in', margin: 'auto' }}>
+          <div
+            className="search-table-outer"
+            style={{
+              position: 'relative', overflowX: 'auto', maxWidth: '96%', margin: 'auto', zIndex: 0, height: '400px',
+            }}
+          >
             <h5 style={{ textAlign: 'center', marginBottom: '3px' }}>Modify</h5>
             <Ttable deleteButton />
           </div>
