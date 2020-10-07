@@ -1,6 +1,6 @@
 {
   "name": "jammusic",
-  "version": "0.1.8",
+  "version": "1.0.0",
   "description": "joshandmariamusic.com",
   "main": "dist/index.html",
   "repository": {
@@ -9,7 +9,7 @@
   },
   "author": "https://github.com/orgs/WebJamApps/teams/handlersandkickers",
   "engines": {
-    "node": ">=14.10.0"
+    "node": ">=14.11.0"
   },
   "files": [
     "webpack.config.js",
@@ -34,7 +34,7 @@
     "test": "yarn test:lint && yarn test:jest",
     "test:local": "yarn test:lint-fix && yarn test:jest && yarn test:puppeteer && yarn cc",
     "test:jest": "jest --config jest.config.json --no-cache --runInBand",
-    "test:puppeteer": "jest --preset jest-puppeteer --config jest.puppeteer-config.json /test/puppeteer",
+    "test:puppeteer": "jest --preset jest-puppeteer --config jest.puppeteer-config.json /test/puppeteer --runInBand",
     "installglobals": "yarn config set registry https://registry.yarnpkg.com -g",
     "cleaninstall": "rm -rf yarn.lock && rm -rf node_modules && yarn cache clean && yarn installglobals && yarn install",
     "snyk-protect": "snyk protect",
