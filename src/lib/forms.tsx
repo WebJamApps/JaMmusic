@@ -9,7 +9,7 @@ const makeDropdown = (htmlFor: string | undefined,
       id={htmlFor}
       label={`* Select your ${labelText}`}
       multiple={false}
-      onChange={(event) => onChange(event, false)}
+      onChange={(event) => onChange(event, true)}
       options={{
         dropdownOptions: {
           alignment: 'left',
