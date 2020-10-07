@@ -246,7 +246,7 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
       <div
         className="search-table-outer"
         style={{
-          position: 'relative', overflowX: 'auto', maxWidth: '96%', margin: 'auto', zIndex: 0, height: '400px',
+          maxWidth: '96%', margin: 'auto', zIndex: 0,
         }}
       >
         <h5 style={{ textAlign: 'center', marginBottom: '3px' }}>Modify Songs</h5>
@@ -279,7 +279,7 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
           <div
             className="search-table-outer"
             style={{
-              position: 'relative', overflowX: 'auto', maxWidth: '96%', margin: 'auto', zIndex: 0, height: '400px',
+              maxWidth: '96%', margin: 'auto', zIndex: 0,
             }}
           >
             <h5 style={{ textAlign: 'center', marginBottom: '3px' }}>Modify</h5>
