@@ -1,13 +1,11 @@
 import React from 'react';
-import 'materialize-css';
 import { Select, TextInput } from 'react-materialize';
 
 const makeDropdown = (htmlFor: string | undefined,
-  labelText: string, value: string | undefined,
+  value: string | undefined,
   onChange: (event: React.ChangeEvent<HTMLSelectElement>, isSelected: boolean) => void, options: string[]): JSX.Element => (
     <Select
       id={htmlFor}
-      label={`* Select your ${labelText}`}
       multiple={false}
       onChange={(event) => onChange(event, true)}
       options={{

@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import superagent from 'superagent';
-import 'materialize-css';
 import { Textarea, Button } from 'react-materialize';
 import forms from '../lib/forms';
 import stateData from '../lib/StateData.json';
@@ -34,8 +33,8 @@ export default class Inquiry extends Component<unknown, InquiryState> {
     this.state = {
       submitted: false,
       comments: '',
-      uSAstate: '--',
-      country: '--',
+      uSAstate: '* Select your State',
+      country: '* Select your Country',
       zipcode: '',
       phonenumber: '',
       emailaddress: '',
@@ -79,10 +78,10 @@ export default class Inquiry extends Component<unknown, InquiryState> {
       country, uSAstate, firstname, lastname, zipcode, comments, formError,
     } = this.state;
     let validState = false, notEmpty = false;
-    if (country === 'United States' && uSAstate !== '--') validState = true;
+    if (country === 'United States' && uSAstate !== '* Select your State') validState = true;
     if (country !== 'United States') validState = true;
     if (firstname !== '' && lastname !== '' && zipcode !== '' && comments !== '') notEmpty = true;
-    if (notEmpty && validEmail && country !== '--' && validState) {
+    if (notEmpty && validEmail && country !== '* Select your Country' && validState) {
       if (formError !== '') this.setState({ formError: '' });
       return false;
     }
@@ -168,9 +167,9 @@ export default class Inquiry extends Component<unknown, InquiryState> {
     return (
       <form id="new-contact" className="col s12">
         {this.tableSection()}
-        {this.forms.makeDropdown('country', 'Country', country, this.handleCountryChange, this.countryValues)}
+        {this.forms.makeDropdown('country', country, this.handleCountryChange, this.countryValues)}
         {country === 'United States'
-          ? this.forms.makeDropdown('state', 'State', uSAstate, this.onChange, this.stateValues)
+          ? this.forms.makeDropdown('state', uSAstate, this.onChange, this.stateValues)
           : null}
         {this.forms.makeInput('zip', 'Zipcode', true, this.onInputChange, zipcode)}
         {this.commentsSection(comments)}

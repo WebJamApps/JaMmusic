@@ -128,7 +128,7 @@ describe('Inquiry Form', () => {
       validEmail: true,
       formError: 'Ten-digit phone number',
       country: 'United States',
-      uSAstate: '--',
+      uSAstate: '* Select your State',
     });
     const result = wrapper.instance().validateForm();
     expect(result).toBe(true);

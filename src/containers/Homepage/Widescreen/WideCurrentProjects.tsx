@@ -17,8 +17,6 @@ const WideCurrentProjects = (): JSX.Element => (
           <div className="col">
             <AppersonAutomotive />
           </div>
-        </div>
-        <div className="row">
           <div className="col">
             <WideFacebookFeed />
           </div>
