@@ -169,6 +169,7 @@ export default class Inquiry extends Component<unknown, InquiryState> {
   commentsSection(comments: string): JSX.Element {
     return (
       <Textarea
+        className="comments"
         label="* Comments"
         value={comments}
         onChange={(evt) => this.setState({ comments: evt.target.value.trim() })}
