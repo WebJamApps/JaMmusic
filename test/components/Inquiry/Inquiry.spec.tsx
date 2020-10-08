@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
 import { shallow } from 'enzyme';
-import { Select } from 'react-materialize';
+import { Button, Select } from 'react-materialize';
 import Inquiry from '../../../src/components/Inquiry';
 
 describe('Inquiry Form', () => {
@@ -75,9 +75,10 @@ describe('Inquiry Form', () => {
       phonenumber: '5405555555',
       validPhoneNumber: true,
       validEmail: true,
+      validState: true,
       formError: 'Invalid email format',
-      country: 'United States',
-      uSAstate: 'Alaska',
+      country: 'Europe',
+      uSAstate: '* Select Your State',
     });
     const result = wrapper.instance().validateForm();
     expect(result).toBe(false);
@@ -99,26 +100,9 @@ describe('Inquiry Form', () => {
     const result = wrapper.instance().validateForm();
     expect(result).toBe(true);
   });
-  it('returns the validation when bad phone number', () => {
-    wrapper.setState({
-      firstname: 'Bob',
-      lastname: 'McBobPerson',
-      emailaddress: 'example@example.com',
-      comments: 'A comment',
-      zipcode: '24179',
-      phonenumber: '540',
-      validPhoneNumber: true,
-      validEmail: true,
-      formError: '',
-      country: 'United States',
-      uSAstate: 'Alaska',
-    });
-    const result = wrapper.instance().validateForm();
-    expect(result).toBe(true);
-  });
   it('returns the validation when form not complete', () => {
     wrapper.setState({
-      firstname: 'Bob',
+      firstname: '',
       lastname: 'McBobPerson',
       emailaddress: 'example@example.com',
       comments: 'A comment',
@@ -128,7 +112,7 @@ describe('Inquiry Form', () => {
       validEmail: true,
       formError: 'Ten-digit phone number',
       country: 'United States',
-      uSAstate: '--',
+      uSAstate: '* Select Your State',
     });
     const result = wrapper.instance().validateForm();
     expect(result).toBe(true);
@@ -139,6 +123,7 @@ describe('Inquiry Form', () => {
     wrapper.instance().createEmailApi({ submitted: true });
   });
   it('creates an email', async () => {
+    const evt:any = { preventDefault: () => { } };
     wrapper.instance().superagent.post = jest.fn(() => ({ set: () => ({ send: () => Promise.resolve({ status: 200 }) }) }));
     wrapper.update();
     wrapper.setState({
@@ -147,10 +132,11 @@ describe('Inquiry Form', () => {
       comments: 'A comment',
       uSAstate: 'Virginia',
     });
-    const result = await wrapper.instance().createEmail();
+    const result = await wrapper.instance().createEmail(evt);
     expect(result).toBe(200);
   });
   it('catches error when posting email to backend', async () => {
+    const evt:any = { preventDefault: () => { } };
     wrapper.instance().superagent.post = jest.fn(() => ({ set: () => ({ send: () => Promise.reject(new Error('bad')) }) }));
     wrapper.update();
     wrapper.setState({
@@ -159,7 +145,7 @@ describe('Inquiry Form', () => {
       comments: 'A comment',
       uSAstate: 'Virginia',
     });
-    await expect(wrapper.instance().createEmail()).rejects.toThrow('bad');
+    await expect(wrapper.instance().createEmail(evt)).rejects.toThrow('bad');
   });
   it('calls the thank you statement', () => {
     wrapper.setState({
@@ -173,5 +159,14 @@ describe('Inquiry Form', () => {
     const cs = shallow(commentsSec);
     cs.find('textarea').at(0).simulate('change', { target: { name: 'comments', value: 'howdy' } });
     expect(wrapper.instance().setState).toHaveBeenCalled();
+  });
+  it('handles onClick for button', () => {
+    const evt:any = { preventDefault: () => { } };
+    wrapper.isFormValid = jest.fn(() => false);
+    wrapper.instance().createEmail = jest.fn();
+    wrapper.update();
+    const button = wrapper.find(Button).get(0);
+    button.props.onClick(evt);
+    expect(wrapper.instance().createEmail).toHaveBeenCalled();
   });
 });
