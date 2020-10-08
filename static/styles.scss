@@ -94,7 +94,9 @@ form {
 }
 
 .form-row {
-  width: 340px;
+  min-width: 320px;
+  max-width: 340px;
+  height: 500px;
 }
 
 input {
@@ -115,7 +117,6 @@ label {
 }
 
 /* Required for accessibility purposes. */
-
 ::placeholder {
   color: #595959 !important;
 }
