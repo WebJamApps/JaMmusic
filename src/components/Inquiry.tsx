@@ -108,7 +108,6 @@ export default class Inquiry extends Component<unknown, InquiryState> {
 
   isFormValid(): boolean {
     const { formError } = this.state;
-    console.log(formError);
     return formError !== '';
   }
 
@@ -127,7 +126,7 @@ export default class Inquiry extends Component<unknown, InquiryState> {
     return r.status;
   }
 
-  createEmail(evt: any): Promise<number> {
+  createEmail(evt: React.MouseEvent<HTMLButtonElement, MouseEvent>): Promise<number> {
     evt.preventDefault();
     const {
       firstname, lastname, emailaddress, uSAstate, country, phonenumber, zipcode, comments,
