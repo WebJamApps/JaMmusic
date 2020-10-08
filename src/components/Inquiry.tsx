@@ -86,7 +86,7 @@ export default class Inquiry extends Component<unknown, InquiryState> {
       this.setState({ formError: '' });
       return false;
     }
-    this.setState({ formError: 'Complete missing form' });
+    this.setState({ formError: 'Complete all required fields' });
     return true;
   }
 

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
 import { shallow } from 'enzyme';
-import { Select } from 'react-materialize';
+import { Button, Select } from 'react-materialize';
 import Inquiry from '../../../src/components/Inquiry';
 
 describe('Inquiry Form', () => {
@@ -75,9 +75,10 @@ describe('Inquiry Form', () => {
       phonenumber: '5405555555',
       validPhoneNumber: true,
       validEmail: true,
+      validState: true,
       formError: 'Invalid email format',
-      country: 'United States',
-      uSAstate: 'Alaska',
+      country: 'Europe',
+      uSAstate: '* Select Your State',
     });
     const result = wrapper.instance().validateForm();
     expect(result).toBe(false);
@@ -101,7 +102,7 @@ describe('Inquiry Form', () => {
   });
   it('returns the validation when form not complete', () => {
     wrapper.setState({
-      firstname: 'Bob',
+      firstname: '',
       lastname: 'McBobPerson',
       emailaddress: 'example@example.com',
       comments: 'A comment',
@@ -158,5 +159,14 @@ describe('Inquiry Form', () => {
     const cs = shallow(commentsSec);
     cs.find('textarea').at(0).simulate('change', { target: { name: 'comments', value: 'howdy' } });
     expect(wrapper.instance().setState).toHaveBeenCalled();
+  });
+  it('handles onClick for button', () => {
+    const evt:any = { preventDefault: () => { } };
+    wrapper.isFormValid = jest.fn(() => false);
+    wrapper.instance().createEmail = jest.fn();
+    wrapper.update();
+    const button = wrapper.find(Button).get(0);
+    button.props.onClick(evt);
+    expect(wrapper.instance().createEmail).toHaveBeenCalled();
   });
 });
