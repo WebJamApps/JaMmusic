@@ -93,8 +93,11 @@ form {
   margin-top: 0;
 }
 
+.form-row {
+  width: 340px;
+}
+
 input {
-  min-width: 3in;
   padding-left: 5px;
 }
 
@@ -108,7 +111,13 @@ label {
 }
 
 .input-field {
-  margin-top: -1rem;
+  margin-top: -2rem;
+}
+
+/* Required for accessibility purposes. */
+
+::placeholder {
+  color: #595959 !important;
 }
 
 /* Tables Generic */
