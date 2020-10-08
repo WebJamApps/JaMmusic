@@ -183,7 +183,7 @@ export default class Inquiry extends Component<unknown, InquiryState> {
       country, formError, uSAstate, zipcode, comments,
     } = this.state;
     return (
-      <form onSubmit={() => null} id="new-contact" className="col">
+      <form id="new-contact" className="col">
         {this.tableSection()}
         {this.forms.makeDropdown('country', country, this.handleCountryChange, this.countryValues)}
         {country === 'United States'

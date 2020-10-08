@@ -99,23 +99,6 @@ describe('Inquiry Form', () => {
     const result = wrapper.instance().validateForm();
     expect(result).toBe(true);
   });
-  it('returns the validation when bad phone number', () => {
-    wrapper.setState({
-      firstname: 'Bob',
-      lastname: 'McBobPerson',
-      emailaddress: 'example@example.com',
-      comments: 'A comment',
-      zipcode: '24179',
-      phonenumber: '540',
-      validPhoneNumber: true,
-      validEmail: true,
-      formError: '',
-      country: 'United States',
-      uSAstate: 'Alaska',
-    });
-    const result = wrapper.instance().validateForm();
-    expect(result).toBe(true);
-  });
   it('returns the validation when form not complete', () => {
     wrapper.setState({
       firstname: 'Bob',
@@ -139,6 +122,7 @@ describe('Inquiry Form', () => {
     wrapper.instance().createEmailApi({ submitted: true });
   });
   it('creates an email', async () => {
+    const evt:any = { preventDefault: () => { } };
     wrapper.instance().superagent.post = jest.fn(() => ({ set: () => ({ send: () => Promise.resolve({ status: 200 }) }) }));
     wrapper.update();
     wrapper.setState({
@@ -147,10 +131,11 @@ describe('Inquiry Form', () => {
       comments: 'A comment',
       uSAstate: 'Virginia',
     });
-    const result = await wrapper.instance().createEmail();
+    const result = await wrapper.instance().createEmail(evt);
     expect(result).toBe(200);
   });
   it('catches error when posting email to backend', async () => {
+    const evt:any = { preventDefault: () => { } };
     wrapper.instance().superagent.post = jest.fn(() => ({ set: () => ({ send: () => Promise.reject(new Error('bad')) }) }));
     wrapper.update();
     wrapper.setState({
@@ -159,7 +144,7 @@ describe('Inquiry Form', () => {
       comments: 'A comment',
       uSAstate: 'Virginia',
     });
-    await expect(wrapper.instance().createEmail()).rejects.toThrow('bad');
+    await expect(wrapper.instance().createEmail(evt)).rejects.toThrow('bad');
   });
   it('calls the thank you statement', () => {
     wrapper.setState({
