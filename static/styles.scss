@@ -114,6 +114,7 @@ label {
 
 .input-field {
   margin-top: -2rem;
+  margin-bottom: 4px !important;
 }
 
 /* Required for accessibility purposes. */
@@ -395,6 +396,9 @@ div.fof {
   .active-users-text {
     margin-top: 7px !important;
   }
+}
+.comments {
+  margin-top:0 !important;
 }
 
 @import 'footer';
