@@ -158,7 +158,7 @@ export default class Inquiry extends Component<unknown, InquiryState> {
               {this.forms.makeInput('email', 'Email Address', true, this.onInputChange, emailaddress)}
             </td>
             <td style={{ border: 'none', padding: '8px' }}>{' '}</td>
-            <td style={{ border: 'none', padding: 0 }}>
+            <td className="phone" style={{ border: 'none', padding: 0 }}>
               {' '}
               {this.forms.makeInput('tel', 'Phone Number', false, this.onInputChange, phonenumber)}
             </td>
@@ -192,7 +192,7 @@ export default class Inquiry extends Component<unknown, InquiryState> {
           : null}
         {this.forms.makeInput('text', 'Zipcode', true, this.onInputChange, zipcode)}
         {this.commentsSection(comments)}
-        <p className="form-errors" style={{ color: 'red' }}>{formError}</p>
+        <p className="form-errors" style={{ color: 'red', marginBottom: '-15px' }}>{formError}</p>
         <div className="inquiryValidation input-field col" style={{ marginBottom: '12px' }}>
           <span className="inquiryValidation">* Required</span>
           <Button
