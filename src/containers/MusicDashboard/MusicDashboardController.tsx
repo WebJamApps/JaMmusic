@@ -1,5 +1,6 @@
 import React from 'react';
 import superagent from 'superagent';
+import type { ISong } from '../../providers/Songs.provider';
 import type { MusicDashboard } from './index';
 import forms from '../../lib/forms';
 
@@ -71,6 +72,50 @@ export class MusicDashboardController {
     );
   }
 
+  songForm(songState: ISong):JSX.Element {
+    return (
+      <>
+        <label htmlFor="title">
+          * Title
+          <input id="title" value={songState.title} onChange={this.view.onChangeSong} />
+        </label>
+        <label htmlFor="url">
+          * Url
+          <input id="url" value={songState.url} onChange={this.view.onChangeSong} />
+        </label>
+        <label htmlFor="artist">
+          * Artist
+          <input id="artist" value={songState.artist} onChange={this.view.onChangeSong} />
+        </label>
+        <p>* Category</p>
+        {this.forms.makeDropdown('category', songState.category, this.view.handleCategoryChange, ['original', 'mission', 'pub'])}
+      </>
+    );
+  }
+
+  moreSongForm(songState: ISong):JSX.Element {
+    return (
+      <>
+        <label htmlFor="artist">
+          Album
+          <input id="album" value={songState.album} onChange={this.view.onChangeSong} />
+        </label>
+        <label htmlFor="image">
+          Image
+          <input id="image" value={songState.image} onChange={this.view.onChangeSong} />
+        </label>
+        <label htmlFor="composer">
+          Composer
+          <input id="composer" value={songState.composer} onChange={this.view.onChangeSong} />
+        </label>
+        <label htmlFor="year">
+          Year
+          <input type="number" id="year" value={songState.year} onChange={this.view.onChangeSong} />
+        </label>
+      </>
+    );
+  }
+
   changeSongDiv(): JSX.Element {
     let { editSong } = this.view.props;
     const { songState } = this.view.state;
@@ -89,36 +134,8 @@ export class MusicDashboardController {
           Song
         </h5>
         <form id="picsForm">
-          <label htmlFor="title">
-            * Title
-            <input id="title" value={songState.title} onChange={this.view.onChangeSong} />
-          </label>
-          <label htmlFor="url">
-            * Url
-            <input id="url" value={songState.url} onChange={this.view.onChangeSong} />
-          </label>
-          <label htmlFor="artist">
-            * Artist
-            <input id="artist" value={songState.artist} onChange={this.view.onChangeSong} />
-          </label>
-          <p>* Category</p>
-          {this.forms.makeDropdown('category', songState.category, this.view.handleCategoryChange, ['original', 'mission', 'pub'])}
-          <label htmlFor="artist">
-            Album
-            <input id="album" value={songState.album} onChange={this.view.onChangeSong} />
-          </label>
-          <label htmlFor="image">
-            Image
-            <input id="image" value={songState.image} onChange={this.view.onChangeSong} />
-          </label>
-          <label htmlFor="composer">
-            Composer
-            <input id="composer" value={songState.composer} onChange={this.view.onChangeSong} />
-          </label>
-          <label htmlFor="year">
-            Year
-            <input type="number" id="year" value={songState.year} onChange={this.view.onChangeSong} />
-          </label>
+          {this.songForm(songState)}
+          {this.moreSongForm(songState)}
           <p>{' '}</p>
           <button
             disabled={!(songState.title && songState.url && songState.artist && songState.category)}
