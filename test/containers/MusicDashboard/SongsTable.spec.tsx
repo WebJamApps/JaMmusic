@@ -7,11 +7,11 @@ describe('SongsTable', () => {
     expect(SongsTable).toBeDefined();
   });
   it('renders correctly', () => {
-    const wrapper = shallow(<SongsTable />);
+    const wrapper = shallow(<SongsTable token="token" />);
     expect(wrapper).toMatchSnapshot();
   });
   it('does not make the table if there are no songs', () => {
-    const wrapper = shallow(<SongsTable sData={[]} />);
+    const wrapper = shallow(<SongsTable token="token" sData={[]} />);
     expect(wrapper.find('div').get(0)).toBeDefined();
   });
 });

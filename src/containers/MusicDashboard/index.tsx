@@ -248,6 +248,7 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
 
   // eslint-disable-next-line class-methods-use-this
   modifySongsSection():JSX.Element {
+    const { auth } = this.props;
     return (
       <div
         className="search-table-outer"
@@ -256,7 +257,7 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
         }}
       >
         <h5 style={{ textAlign: 'center', marginBottom: '3px' }}>Modify Songs</h5>
-        <SongsTable />
+        <SongsTable token={auth.token} />
       </div>
     );
   }

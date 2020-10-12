@@ -4,12 +4,12 @@ import { ISong, SongsContext } from '../../providers/Songs.provider';
 import songsTableUtils from './songsTableUtils';
 
 type Props = {
-  sData?:ISong[]
+  sData?:ISong[], token:string
 };
-const SongsTable:React.FC<Props> = ({ sData }): JSX.Element => {
+const SongsTable:React.FC<Props> = ({ sData, token }): JSX.Element => {
   const { test, songs } = React.useContext(SongsContext);
   let tableData = sData !== undefined ? sData : songs;
-  tableData = tableData.length > 0 ? songsTableUtils.addButtons(tableData) : [];
+  tableData = tableData.length > 0 ? songsTableUtils.addButtons(tableData, token) : [];
   // eslint-disable-next-line no-console
   console.log(test);
   return (

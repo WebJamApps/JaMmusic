@@ -14,7 +14,7 @@ import DefaultSongs from '../containers/Songs';
 import HomePage from '../containers/Homepage';
 import connectToSC from './connectToSC';
 import mapStoreToProps, { Iimage, Auth } from '../redux/mapStoreToProps';
-import commonUtils from '../lib/commonUtils';
+import PrivateRoute from './PrivateRoute';
 
 export interface AppProps {
   dispatch: Dispatch<unknown>;
@@ -22,14 +22,8 @@ export interface AppProps {
   auth: Auth;
 }
 
-interface Astate {
-  userRoles:string[];
-}
-
-export class App extends Component<AppProps, Astate> {
+export class App extends Component<AppProps> {
   connectToSC: typeof connectToSC;
-
-  utils: typeof commonUtils;
 
   static defaultProps = {
     dispatch: (): void => { },
@@ -42,39 +36,28 @@ export class App extends Component<AppProps, Astate> {
 
   constructor(props: AppProps) {
     super(props);
-    this.state = {
-      userRoles: [],
-    };
-    this.utils = commonUtils;
     this.connectToSC = connectToSC;
   }
 
   async componentDidMount(): Promise<void> {
     const { dispatch } = this.props;
     this.connectToSC.connectToSCC(dispatch);
-    const userRoles: string[] = this.utils.getUserRoles();
-    this.setState({ userRoles });
   }
 
   render(): JSX.Element {
-    const { auth } = this.props;
-    const { userRoles } = this.state;
     return (
       <div id="App" className="App">
         <Router>
           <ATemplate>
             <Switch>
               <Route exact path="/" component={HomePage} />
-              {auth.isAuthenticated && auth.user.userType && userRoles.indexOf(auth.user.userType) !== -1
-                ? <Route exact path="/map" component={GoogleMap} /> : null}
-              {auth.isAuthenticated && auth.user.userType && userRoles.indexOf(auth.user.userType) !== -1
-                ? <Route exact path="/sort" component={DefaultSort} /> : null}
+              <PrivateRoute Container={GoogleMap} path="/map" />
+              <PrivateRoute path="/sort" Container={DefaultSort} />
               <Route exact path="/music" component={DefaultMusic} />
-              <Route path="/music/buymusic" component={BuyMusic} />
-              <Route path="/music/originals" component={DefaultSongs} />
-              <Route path="/music/songs" component={DefaultSongs} />
-              {auth.isAuthenticated && auth.user.userType && userRoles.indexOf(auth.user.userType) !== -1
-                ? <Route path="/music/dashboard" component={DefaultMusicDashboard} /> : null}
+              <Route exact path="/music/buymusic" component={BuyMusic} />
+              <Route exact path="/music/originals" component={DefaultSongs} />
+              <Route exact path="/music/songs" component={DefaultSongs} />
+              <PrivateRoute path="/music/dashboard" Container={DefaultMusicDashboard} />
               <Route component={AppFourOhFour} />
             </Switch>
           </ATemplate>

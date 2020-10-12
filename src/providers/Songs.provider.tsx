@@ -13,6 +13,7 @@ export interface ISong {
   title: string;
   url: string;
   _id: string;
+  modify?:JSX.Element
 }
 
 export const defaultSong = {

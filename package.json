@@ -37,7 +37,6 @@
     "test:puppeteer": "jest --preset jest-puppeteer --config jest.puppeteer-config.json /test/puppeteer --runInBand",
     "installglobals": "yarn config set registry https://registry.yarnpkg.com -g",
     "cleaninstall": "rm -rf yarn.lock && rm -rf node_modules && yarn cache clean && yarn installglobals && yarn install",
-    "snyk-protect": "snyk protect",
     "postinstall": "yarn start build",
     "test:stylelint": "stylelint \"static/**/*.scss\""
   },
@@ -114,7 +113,6 @@
     "regenerator-runtime": "latest",
     "sass-loader": "latest",
     "slick-carousel": "latest",
-    "snyk": "^1.317.0",
     "socketcluster-client": "latest",
     "source-map-loader": "latest",
     "style-loader": "latest",
