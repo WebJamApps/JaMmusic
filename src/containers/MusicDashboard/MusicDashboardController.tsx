@@ -1,13 +1,22 @@
 import React from 'react';
+import superagent from 'superagent';
 import type { MusicDashboard } from './index';
+import forms from '../../lib/forms';
 
 export class MusicDashboardController {
   view: MusicDashboard;
 
+  forms: typeof forms;
+
+  superagent: typeof superagent;
+
   constructor(view: MusicDashboard) {
     this.view = view;
+    this.forms = forms;
     this.changePicDiv = this.changePicDiv.bind(this);
     this.addPic = this.addPic.bind(this);
+    this.addSong = this.addSong.bind(this);
+    this.superagent = superagent;
   }
 
   addPic(): void {
@@ -16,6 +25,21 @@ export class MusicDashboardController {
     const image = { title: picTitle, url: picUrl, type: 'JaMmusic-music' };
     scc.transmit('newImage', { image, token: auth.token });
     window.location.assign('/music');
+  }
+
+  async addSong(): Promise<string> {
+    const { songState } = this.view.state;
+    const { auth } = this.view.props;
+    const newSong = { ...songState, _id: undefined };
+    let r: superagent.Response;
+    try {
+      r = await this.superagent.post(`${process.env.BackendUrl}/song`)
+        .set('Content-Type', 'application/json')
+        .set('Authorization', `Bearer ${auth.token}`)
+        .send(newSong);
+    } catch (e) { return `${e.message}`; }
+    if (r.status === 201) { window.location.reload(); return 'song created'; }
+    return `${r.status} song was not created`;
   }
 
   changePicDiv(): JSX.Element {
@@ -42,6 +66,67 @@ export class MusicDashboardController {
           </label>
           <p>{' '}</p>
           <button disabled={!(picTitle && picUrl)} type="button" onClick={this.addPic}>Add Picture</button>
+        </form>
+      </div>
+    );
+  }
+
+  changeSongDiv(): JSX.Element {
+    let { editSong } = this.view.props;
+    const { songState } = this.view.state;
+    if (!editSong) {
+      editSong = {
+        title: '', url: '', artist: '', category: 'original', _id: '',
+      };
+    }
+    return (
+      <div
+        className="material-content elevation3"
+        style={{ maxWidth: '320px', margin: '30px auto' }}
+      >
+        <h5 style={{ marginBottom: 0 }}>
+          {editSong && editSong._id ? 'Edit ' : 'Add '}
+          Song
+        </h5>
+        <form id="picsForm">
+          <label htmlFor="title">
+            * Title
+            <input id="title" value={songState.title} onChange={this.view.onChangeSong} />
+          </label>
+          <label htmlFor="url">
+            * Url
+            <input id="url" value={songState.url} onChange={this.view.onChangeSong} />
+          </label>
+          <label htmlFor="artist">
+            * Artist
+            <input id="artist" value={songState.artist} onChange={this.view.onChangeSong} />
+          </label>
+          <p>* Category</p>
+          {this.forms.makeDropdown('category', songState.category, this.view.handleCategoryChange, ['original', 'mission', 'pub'])}
+          <label htmlFor="artist">
+            Album
+            <input id="album" value={songState.album} onChange={this.view.onChangeSong} />
+          </label>
+          <label htmlFor="image">
+            Image
+            <input id="image" value={songState.image} onChange={this.view.onChangeSong} />
+          </label>
+          <label htmlFor="composer">
+            Composer
+            <input id="composer" value={songState.composer} onChange={this.view.onChangeSong} />
+          </label>
+          <label htmlFor="year">
+            Year
+            <input type="number" id="year" value={songState.year} onChange={this.view.onChangeSong} />
+          </label>
+          <p>{' '}</p>
+          <button
+            disabled={!(songState.title && songState.url && songState.artist && songState.category)}
+            type="button"
+            onClick={this.addSong}
+          >
+            Add Song
+          </button>
         </form>
       </div>
     );
