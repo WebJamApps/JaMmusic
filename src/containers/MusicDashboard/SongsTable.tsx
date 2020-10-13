@@ -1,13 +1,15 @@
 import React from 'react';
 import MUIDataTable from 'mui-datatables';
 import { ISong, SongsContext } from '../../providers/Songs.provider';
+import songsTableUtils from './songsTableUtils';
 
 type Props = {
-  sData?:ISong[]
+  sData?:ISong[], token:string
 };
-const SongsTable:React.FC<Props> = ({ sData }): JSX.Element => {
+const SongsTable:React.FC<Props> = ({ sData, token }): JSX.Element => {
   const { test, songs } = React.useContext(SongsContext);
-  const tableData = sData !== undefined ? sData : songs;
+  let tableData = sData !== undefined ? sData : songs;
+  tableData = tableData.length > 0 ? songsTableUtils.addButtons(tableData, token) : [];
   // eslint-disable-next-line no-console
   console.log(test);
   return (
@@ -26,7 +28,7 @@ const SongsTable:React.FC<Props> = ({ sData }): JSX.Element => {
             selectableRows: 'none',
             fixedHeader: false,
           }}
-          columns={['title', 'url', 'artist', 'category', 'album', 'image', 'composer', 'year']}
+          columns={['modify', 'title', 'url', 'artist', 'category', 'album', 'image', 'composer', 'year']}
           data={tableData}
           title=""
         />

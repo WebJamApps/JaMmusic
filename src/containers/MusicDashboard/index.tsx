@@ -143,26 +143,31 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
 
   editor(venue: string): JSX.Element {
     return (
-      <Editor
-        value={venue}
-        apiKey={process.env.TINY_KEY}
-        init={{
-          height: 500,
-          menubar: 'insert tools',
-          selector: 'textarea',
-          menu: { format: { title: 'Format', items: 'forecolor backcolor' } },
-          plugins: [
-            'advlist autolink lists link image charmap print preview anchor',
-            'searchreplace visualblocks code fullscreen',
-            'insertdatetime media table paste code help wordcount',
-          ],
-          toolbar:
+      <div className="horiz-scroll">
+        <div style={{ width: '850px', margin: 'auto' }}>
+          <p style={{ marginBottom: 0 }}>* Venue</p>
+          <Editor
+            value={venue}
+            apiKey={process.env.TINY_KEY}
+            init={{
+              height: 500,
+              menubar: 'insert tools',
+              selector: 'textarea',
+              menu: { format: { title: 'Format', items: 'forecolor backcolor' } },
+              plugins: [
+                'advlist autolink lists link image charmap print preview anchor',
+                'searchreplace visualblocks code fullscreen',
+                'insertdatetime media table paste code help wordcount',
+              ],
+              toolbar:
             'undo redo | formatselect | bold italic backcolor forecolor |'
             + 'alignleft aligncenter alignright alignjustify |'
             + 'bullist numlist outdent indent | removeformat | help',
-        }}
-        onEditorChange={this.handleEditorChange}
-      />
+            }}
+            onEditorChange={this.handleEditorChange}
+          />
+        </div>
+      </div>
     );
   }
 
@@ -223,29 +228,36 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
     if (venue === '' && editTour.venue !== undefined) { venue = editTour.venue; }
     if (location === '' && editTour.location !== undefined) { location = editTour.location; }
     return (
-      <form id="new-tour" style={{ marginLeft: '4px', marginTop: '4px' }}>
-        {this.forms.makeInput('date', 'Date', true, this.onChange, date)}
-        <AddTime setFormTime={this.setFormTime} initTime={time} />
-        <div className="horiz-scroll">
-          <div style={{ width: '850px', margin: 'auto' }}>
-            <p style={{ marginBottom: 0 }}>* Venue</p>
-            {this.editor(venue)}
-          </div>
-        </div>
-        {this.forms.makeInput('text', 'Location', true, this.onChange, location)}
-        {this.forms.makeInput('text', 'Tickets', false, this.onChange, tickets)}
-        {this.forms.makeInput('text', 'More', false, this.onChange, more)}
-        {this.tourButtons()}
-      </form>
+      <div className="material-content elevation3" style={{ maxWidth: '9.1in', margin: 'auto' }}>
+        <h5 style={{ textAlign: 'center', marginBottom: 0 }}>
+          {editTour._id ? 'Edit ' : 'Create a New '}
+          Tour Event
+        </h5>
+        <form id="new-tour" style={{ marginLeft: '4px', marginTop: '4px' }}>
+          {this.forms.makeInput('date', 'Date', true, this.onChange, date)}
+          <AddTime setFormTime={this.setFormTime} initTime={time} />
+          {this.editor(venue)}
+          {this.forms.makeInput('text', 'Location', true, this.onChange, location)}
+          {this.forms.makeInput('text', 'Tickets', false, this.onChange, tickets)}
+          {this.forms.makeInput('text', 'More', false, this.onChange, more)}
+          {this.tourButtons()}
+        </form>
+      </div>
     );
   }
 
   // eslint-disable-next-line class-methods-use-this
   modifySongsSection():JSX.Element {
+    const { auth } = this.props;
     return (
-      <div className="material-content elevation3" style={{ maxWidth: '10in', margin: 'auto' }}>
+      <div
+        className="search-table-outer"
+        style={{
+          maxWidth: '96%', margin: 'auto', zIndex: 0,
+        }}
+      >
         <h5 style={{ textAlign: 'center', marginBottom: '3px' }}>Modify Songs</h5>
-        <SongsTable />
+        <SongsTable token={auth.token} />
       </div>
     );
   }
@@ -262,16 +274,10 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
           {this.controller.changePicDiv()}
         </div>
         <p>&nbsp;</p>
-        <div className="material-content elevation3" style={{ maxWidth: '9.1in', margin: 'auto' }}>
-          <h5 style={{ textAlign: 'center', marginBottom: 0 }}>
-            {editTour._id ? 'Edit ' : 'Create a New '}
-            Tour Event
-          </h5>
-          {this.newTourForm()}
-        </div>
+        {this.newTourForm()}
         <p>&nbsp;</p>
         {!editTour._id ? (
-          <div className="material-content elevation3" style={{ maxWidth: '10in', margin: 'auto' }}>
+          <div className="search-table-outer" style={{ maxWidth: '96%', margin: 'auto', zIndex: 0 }}>
             <h5 style={{ textAlign: 'center', marginBottom: '3px' }}>Modify</h5>
             <Ttable deleteButton />
           </div>
