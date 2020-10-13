@@ -117,21 +117,21 @@ export class MusicDashboardController {
   }
 
   changeSongDiv(): JSX.Element {
-    let { editSong } = this.view.props;
+    // const { editSong } = this.view.props;
     const { songState } = this.view.state;
-    if (!editSong) {
-      editSong = {
-        title: '', url: '', artist: '', category: 'original', _id: '',
-      };
-    }
+    // if (!editSong) {
+    //   editSong = {
+    //     title: '', url: '', artist: '', category: 'original', _id: '',
+    //   };
+    // }
     return (
       <div
         className="material-content elevation3"
         style={{ maxWidth: '320px', margin: '30px auto' }}
       >
         <h5 style={{ marginBottom: 0 }}>
-          {editSong && editSong._id ? 'Edit ' : 'Add '}
-          Song
+          {/* {editSong && editSong._id ? 'Edit ' : 'Add '} */}
+          Add Song
         </h5>
         <form id="picsForm">
           {this.songForm(songState)}
