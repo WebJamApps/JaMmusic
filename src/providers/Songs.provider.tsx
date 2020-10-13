@@ -8,7 +8,7 @@ export interface ISong {
   composer?: string;
   category: string;
   album?: string;
-  year?: number;
+  year: number;
   image?: string;
   title: string;
   url: string;
@@ -17,7 +17,7 @@ export interface ISong {
 }
 
 export const defaultSong = {
-  category: '', title: '', url: '', _id: '',
+  category: '', title: '', url: '', _id: '', year: 2000,
 };
 
 export const fetchSongs = async ():Promise<ISong[]> => {
@@ -26,7 +26,9 @@ export const fetchSongs = async ():Promise<ISong[]> => {
     res = await superagent.get(`${process.env.BackendUrl}/song`).set('Accept', 'application/json');
   // eslint-disable-next-line no-console
   } catch (e) { console.log(e.message); return [defaultSong]; }
-  return res.body;
+  const newSongs = res.body.sort((a, b) => b.year - a.year);
+  console.log(res.body);
+  return newSongs;
 };
 
 export const SongsContext = createContext({
