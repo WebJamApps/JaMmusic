@@ -37,20 +37,20 @@ describe('Music player component init', () => {
   it('shuffles the songs', () => {
     const mp = new MusicPlayer({
       songs: [{
-        _id: '123', url: '', category: '', title: '', image: '',
+        _id: '123', url: '', category: '', title: '', image: '', year: 2000,
       }, {
-        _id: '456', url: '', category: '', title: '', image: '',
+        _id: '456', url: '', category: '', title: '', image: '', year: 2003,
       }],
       filterBy: '',
     });
     mp.state = {
       song: {
-        _id: '789', url: '', category: '', title: '',
+        _id: '789', url: '', category: '', title: '', year: 2000,
       },
       songsState: [{
-        _id: '123', url: '', category: '', title: '',
+        _id: '123', url: '', category: '', title: '', year: 2003,
       }, {
-        _id: '456', url: '', category: '', title: '',
+        _id: '456', url: '', category: '', title: '', year: 2004,
       }],
       copy: ['{ _id: "123" }', '{ _id: "456" }'],
       player: {
@@ -76,18 +76,18 @@ describe('Music player component init', () => {
   it('advances to the next song', () => {
     const mp = new MusicPlayer({
       songs: [{
-        _id: '123', url: '', category: '', title: '',
+        _id: '123', url: '', category: '', title: '', year: 2000,
       }, {
-        _id: '456', url: '', category: '', title: '',
+        _id: '456', url: '', category: '', title: '', year: 2003,
       }],
       filterBy: '',
     });
     mp.state = {
       index: 0,
       songsState: [{
-        _id: '123', url: '', category: 'original', title: '',
+        _id: '123', url: '', category: 'original', title: '', year: 2000,
       }, {
-        _id: '456', url: '', category: 'original', title: '',
+        _id: '456', url: '', category: 'original', title: '', year: 2003,
       }],
       copy: ['{ _id: "123" }', '{ _id: "456" }'],
       player: {
@@ -98,7 +98,7 @@ describe('Music player component init', () => {
       pubState: 'off',
       originalState: 'on',
       song: {
-        _id: '789', url: '', category: 'original', title: '',
+        _id: '789', url: '', category: 'original', title: '', year: 2000,
       },
     };
     mp.setState = (obj: MusicPlayerState) => { expect(obj.index).toBe(1); };
@@ -171,7 +171,7 @@ describe('Music player component init', () => {
   it('should resort songs', async () => {
     const { wrapper } = setup();
     const songs = [{
-      _id: '123', url: 'yes.com', category: 'mission', title: 'A Song',
+      _id: '123', url: 'yes.com', category: 'mission', title: 'A Song', year: 2000,
     }];
     const result = wrapper.instance().musicUtils.setIndex(songs, 'mission');
     expect(result).toBeTruthy();
@@ -196,7 +196,7 @@ describe('Music player component init', () => {
     wrapper.find('button.missionoff').simulate('click');
     wrapper.find('button#shuffle').simulate('click');
     const songsState = [{
-      _id: '123', url: 'yes.com', category: 'mission', title: 'A Song',
+      _id: '123', url: 'yes.com', category: 'mission', title: 'A Song', year: 2000,
     }];
     const missionState = 'on';
     if (missionState === 'on') {
@@ -216,7 +216,7 @@ describe('Music player component init', () => {
     wrapper.find('button.puboff').simulate('click');
     wrapper.find('button#shuffle').simulate('click');
     const songsState = [{
-      _id: '123', url: 'yes.com', category: 'mission', title: 'A Song',
+      _id: '123', url: 'yes.com', category: 'mission', title: 'A Song', year: 2000,
     }];
     const pubState = 'on';
     if (pubState === 'on') {
@@ -227,7 +227,7 @@ describe('Music player component init', () => {
   });
   it('checks if youtube is about to be played', () => {
     const song = {
-      _id: '123', category: 'mission', title: 'Hey Red', url: 'https://www.youtube.com/embed/mCvUBjuzfo8',
+      _id: '123', category: 'mission', title: 'Hey Red', url: 'https://www.youtube.com/embed/mCvUBjuzfo8', year: 2000,
     };
     const wrapper = shallow<MusicPlayer>(<MusicPlayer songs={TSongs} filterBy="originals" />);
     wrapper.instance().setState({
@@ -250,7 +250,7 @@ describe('Music player component init', () => {
   });
   it('checks if soundcloud is about to be played', () => {
     const song = {
-      _id: '123', category: 'mission', title: 'lord', url: 'https://soundcloud.com/joshandmariamusic/ithelordofseaandskyhereiamlord',
+      _id: '123', category: 'mission', title: 'lord', url: 'https://soundcloud.com/joshandmariamusic/ithelordofseaandskyhereiamlord', year: 2000,
     };
     const wrapper = shallow<MusicPlayer>(<MusicPlayer songs={TSongs} filterBy="originals" />);
     wrapper.instance().setState({
@@ -264,7 +264,7 @@ describe('Music player component init', () => {
   });
   it('checks if dropbox is about to be played', () => {
     const song = {
-      _id: '123', category: 'mission', title: 'Hey Red', url: 'something.test.com',
+      _id: '123', category: 'mission', title: 'Hey Red', url: 'something.test.com', year: 2000,
     };
     const wrapper = shallow<MusicPlayer>(<MusicPlayer songs={TSongs} filterBy="originals" />);
     wrapper.instance().setState({
