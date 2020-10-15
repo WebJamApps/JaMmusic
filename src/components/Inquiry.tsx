@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import superagent from 'superagent';
+import { Textarea, Button } from 'react-materialize';
 import forms from '../lib/forms';
 import stateData from '../lib/StateData.json';
 import countryData from '../lib/CountryData.json';
@@ -32,14 +33,14 @@ export default class Inquiry extends Component<unknown, InquiryState> {
     this.state = {
       submitted: false,
       comments: '',
-      uSAstate: '--',
-      country: '--',
+      uSAstate: '* Select Your State',
+      country: '* Select Your Country',
       zipcode: '',
       phonenumber: '',
       emailaddress: '',
       lastname: '',
       firstname: '',
-      formError: '',
+      formError: ' ',
     };
     this.stateValues = stateData;
     this.forms = forms;
@@ -57,13 +58,16 @@ export default class Inquiry extends Component<unknown, InquiryState> {
     this.superagent = superagent;
   }
 
-  onChange(evt: React.ChangeEvent<HTMLSelectElement>, isSelect?: boolean): void {
-    if (isSelect) return this.setState({ uSAstate: evt.target.value });
-    return this.setFormField(evt.target.id, evt.target.value);
+  onChange(evt: React.ChangeEvent<HTMLSelectElement>, isSelected?: boolean): void {
+    if (isSelected) {
+      this.setState({ uSAstate: evt.target.value });
+    } else { this.setFormField(evt.target.id, evt.target.value); }
+    this.validateForm();
   }
 
   onInputChange(evt: React.ChangeEvent<HTMLInputElement>): void {
-    return this.setFormField(evt.target.id, evt.target.value);
+    this.setFormField(evt.target.id, evt.target.value);
+    this.validateForm();
   }
 
   setFormField(id: string, value: string): void { return this.setState((preS) => ({ ...preS, [id]: value.trim() })); }
@@ -72,40 +76,39 @@ export default class Inquiry extends Component<unknown, InquiryState> {
 
   continueValidating(validEmail: boolean): boolean {
     const {
-      country, uSAstate, firstname, lastname, zipcode, comments, formError,
+      country, uSAstate, firstname, lastname, zipcode, comments,
     } = this.state;
     let validState = false, notEmpty = false;
-    if (country === 'United States' && uSAstate !== '--') validState = true;
+    if (country === 'United States' && uSAstate !== '* Select Your State') validState = true;
     if (country !== 'United States') validState = true;
     if (firstname !== '' && lastname !== '' && zipcode !== '' && comments !== '') notEmpty = true;
-    if (notEmpty && validEmail && country !== '--' && validState) {
-      if (formError !== '') this.setState({ formError: '' });
+    if (notEmpty && validEmail && country !== '* Select Your Country' && validState) {
+      this.setState({ formError: '' });
       return false;
     }
-    if (formError === '' || formError === 'Ten-digit phone number') this.setState({ formError: 'Complete missing form fields' });
+    this.setState({ formError: 'Complete all required fields' });
     return true;
   }
 
   validateForm(): boolean {
     const {
-      emailaddress, phonenumber, formError,
+      emailaddress,
     } = this.state;
     let validEmail = false;
     // eslint-disable-next-line no-useless-escape
     const regEx = RegExp('^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$');
-    const phoneno = /^\d{10}$/;
     if (regEx.test(emailaddress) && emailaddress.includes('.')) {
       validEmail = true;
-      if (formError === 'Invalid email format') this.setState({ formError: '' });
     } else {
-      if (formError === '' && emailaddress !== '') this.setState({ formError: 'Invalid email format' });
-      return true;
-    }
-    if (phonenumber !== '' && !phoneno.test(phonenumber)) {
-      if (formError !== 'Ten-digit phone number') this.setState({ formError: 'Ten-digit phone number' });
+      if (emailaddress !== '') this.setState({ formError: 'Invalid email format' });
       return true;
     }
     return this.continueValidating(validEmail);
+  }
+
+  isFormValid(): boolean {
+    const { formError } = this.state;
+    return formError !== '';
   }
 
   async createEmailApi(emailForm1: {
@@ -123,7 +126,8 @@ export default class Inquiry extends Component<unknown, InquiryState> {
     return r.status;
   }
 
-  createEmail(): Promise<number> {
+  createEmail(evt: React.MouseEvent<HTMLButtonElement, MouseEvent>): Promise<number> {
+    evt.preventDefault();
     const {
       firstname, lastname, emailaddress, uSAstate, country, phonenumber, zipcode, comments,
     } = this.state;
@@ -143,19 +147,19 @@ export default class Inquiry extends Component<unknown, InquiryState> {
       }}
       >
         <tbody>
-          <tr>
-            <td style={{ border: 'none', padding: 0 }}>{this.forms.makeInput('text', 'First Name', true, this.onInputChange, firstname, '140px')}</td>
+          <tr className="white-background">
+            <td style={{ border: 'none', padding: 0 }}>{this.forms.makeInput('text', 'First Name', true, this.onInputChange, firstname)}</td>
             <td style={{ border: 'none', padding: '8px' }}>{' '}</td>
-            <td style={{ border: 'none', padding: 0 }}>{this.forms.makeInput('text', 'Last Name', true, this.onInputChange, lastname, '140px')}</td>
+            <td style={{ border: 'none', padding: 0 }}>{this.forms.makeInput('text', 'Last Name', true, this.onInputChange, lastname)}</td>
           </tr>
           <tr>
             <td style={{ border: 'none', padding: 0 }}>
-              {this.forms.makeInput('email', 'Email Address', true, this.onInputChange, emailaddress, '140px')}
+              {this.forms.makeInput('email', 'Email Address', true, this.onInputChange, emailaddress)}
             </td>
             <td style={{ border: 'none', padding: '8px' }}>{' '}</td>
-            <td style={{ border: 'none', padding: 0 }}>
+            <td className="phone" style={{ border: 'none', padding: 0 }}>
               {' '}
-              {this.forms.makeInput('tel', 'Phone Number', false, this.onInputChange, phonenumber, '140px')}
+              {this.forms.makeInput('tel', 'Phone Number', false, this.onInputChange, phonenumber)}
             </td>
           </tr>
         </tbody>
@@ -165,15 +169,12 @@ export default class Inquiry extends Component<unknown, InquiryState> {
 
   commentsSection(comments: string): JSX.Element {
     return (
-      <label htmlFor="comments">
-        * Comments
-        <br />
-        <textarea
-          style={{ minWidth: '3in', paddingLeft: '5px' }}
-          value={comments}
-          onChange={(evt) => this.setState({ comments: evt.target.value.trim() })}
-        />
-      </label>
+      <Textarea
+        className="comments"
+        label="* Comments"
+        value={comments}
+        onChange={(evt) => { this.setState({ comments: evt.target.value.trim() }); this.validateForm(); }}
+      />
     );
   }
 
@@ -182,18 +183,25 @@ export default class Inquiry extends Component<unknown, InquiryState> {
       country, formError, uSAstate, zipcode, comments,
     } = this.state;
     return (
-      <form id="new-contact" style={{ maxWidth: '316px', marginLeft: '10px' }}>
+      <form id="new-contact" className="col">
         {this.tableSection()}
-        {this.forms.makeDropdown('country', '* Country', country, this.handleCountryChange, this.countryValues)}
+        {this.forms.makeDropdown('country', country, this.handleCountryChange, this.countryValues)}
         {country === 'United States'
-          ? this.forms.makeDropdown('state', '* State', uSAstate, this.onChange, this.stateValues)
+          ? this.forms.makeDropdown('state', uSAstate, this.onChange, this.stateValues)
           : null}
-        {this.forms.makeInput('zip', 'Zipcode', true, this.onInputChange, zipcode)}
+        {this.forms.makeInput('text', 'Zipcode', true, this.onInputChange, zipcode)}
         {this.commentsSection(comments)}
-        <p className="form-errors" style={{ color: 'red' }}>{formError}</p>
-        <div className="inquiryValidation" style={{ marginBottom: '12px' }}>
+        <p className="form-errors" style={{ color: 'red', marginBottom: '-15px' }}>{formError}</p>
+        <div className="inquiryValidation input-field col" style={{ marginBottom: '12px' }}>
           <span className="inquiryValidation">* Required</span>
-          <button disabled={this.validateForm()} type="button" onClick={this.createEmail}>Send</button>
+          <Button
+            node="button"
+            waves="light"
+            disabled={this.isFormValid()}
+            onClick={(evt) => this.createEmail(evt)}
+          >
+            Send
+          </Button>
         </div>
       </form>
     );
@@ -202,7 +210,7 @@ export default class Inquiry extends Component<unknown, InquiryState> {
   render(): JSX.Element {
     const { submitted } = this.state;
     return (
-      <div style={{ maxWidth: '320px', margin: 'auto', border: '1px solid black' }}>
+      <div className="row form-row" style={{ margin: 'auto', border: '1px solid black' }}>
         {submitted === false ? (
           <div className="contact-form">
             <h4 style={{

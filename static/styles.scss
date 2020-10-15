@@ -93,8 +93,13 @@ form {
   margin-top: 0;
 }
 
+.form-row {
+  min-width: 320px;
+  max-width: 340px;
+  height: 500px;
+}
+
 input {
-  min-width: 3in;
   padding-left: 5px;
 }
 
@@ -104,6 +109,17 @@ label {
   padding-bottom: 0;
   display: block;
   width: 100%;
+  color: #212529 !important;
+}
+
+.input-field {
+  margin-top: -2rem;
+  margin-bottom: 4px !important;
+}
+
+/* Required for accessibility purposes. */
+::placeholder {
+  color: #595959 !important;
 }
 
 /* Tables Generic */
@@ -113,8 +129,16 @@ table {
   border-collapse: collapse;
 }
 
+tr {
+  border: none;
+}
+
 tbody tr:nth-child(odd) {
   background-color: #d8ecf3;
+}
+
+tbody .white-background {
+  background-color: white !important;
 }
 
 tbody.regformtbody tr:nth-child(odd) {
@@ -231,6 +255,10 @@ a:hover {
   color: #0056b3;
 }
 
+// .dropdown-content li > a, .dropdown-content li > span {
+//   color: #000; // Change to something closer to original, but still WCAG approved
+// }
+
 a:not([href]):not([tabindex]) {
   text-decoration: underline;
   color: #007bff;
@@ -240,6 +268,7 @@ a:not([href]):not([tabindex]):hover {
   text-decoration: underline;
   color: #0056b3;
 }
+
 
 .regularLink {
   text-decoration: underline;
@@ -367,6 +396,9 @@ div.fof {
   .active-users-text {
     margin-top: 7px !important;
   }
+}
+.comments {
+  margin-top:0 !important;
 }
 
 @import 'footer';

@@ -1,15 +1,13 @@
 import React from 'react';
 import { shallow } from 'enzyme';
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Redirect } from 'react-router-dom';
 import { MusicDashboard } from '../../../src/containers/MusicDashboard';
 
 describe('Dashboard Container', () => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let wrapper: any;
   const auth = { token: '' };
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const anyProp: any = {};
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const scc:any = { transmit: () => { } };
   beforeEach(() => {
     wrapper = shallow<MusicDashboard>(<MusicDashboard
@@ -31,7 +29,6 @@ describe('Dashboard Container', () => {
   it('calls on change', () => {
     wrapper.instance().checkEdit = jest.fn();
     wrapper.instance().setState = jest.fn();
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const evt:any = { preventDefault: () => { }, persist: jest.fn(), target: { id: 'hi', value: 11 } };
     wrapper.instance().onChange(evt);
     expect(wrapper.instance().setState).toHaveBeenCalled();
@@ -49,7 +46,6 @@ describe('Dashboard Container', () => {
       />,
     );
     wrapper2.instance().checkEdit = jest.fn();
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const evt:any = { preventDefault: () => { }, persist: jest.fn(), target: { id: 'hi', value: '11' } };
     wrapper2.instance().onChange(evt);
     expect(wrapper2.instance().checkEdit).toHaveBeenCalled();
@@ -167,7 +163,6 @@ describe('Dashboard Container', () => {
     />);
     wrapper2.setState({ venue: 'beer garden' });
     wrapper2.instance().setState = jest.fn();
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const evt:any = { preventDefault: () => { } };
     wrapper2.instance().resetEditForm(evt);
     const sO = {
@@ -204,5 +199,17 @@ describe('Dashboard Container', () => {
     });
     const r = wrapper2.instance().editTourAPI();
     expect(r).toBe(true);
+  });
+  it('handles onChangeSong', () => {
+    wrapper.instance().setState = jest.fn((cb) => cb({}));
+    wrapper.update();
+    wrapper.instance().onChangeSong({ persist: jest.fn(), target: { id: 'title', value: 'Happy Song' } });
+    expect(wrapper.instance().setState).toHaveBeenCalled();
+  });
+  it('handles song catagory change', () => {
+    wrapper.instance().setState = jest.fn();
+    wrapper.update();
+    wrapper.instance().handleCategoryChange({ persist: jest.fn(), target: { id: 'title', value: 'Happy Song' } });
+    expect(wrapper.instance().setState).toHaveBeenCalled();
   });
 });

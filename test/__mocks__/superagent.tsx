@@ -12,7 +12,7 @@ let mockError: string,
 const Request = {
   text: JSON.stringify(mockResponse),
   body: mockResponse,
-
+  delete: jest.fn().mockReturnThis(),
   post: jest.fn().mockReturnThis(),
   get: jest.fn().mockReturnThis(),
   send: jest.fn().mockReturnThis(),

@@ -5,7 +5,7 @@ import gMapUtils from './gMapUtils';
 export class CompanyMap {
   name: string;
 
-  catchPhrase: string;
+  catchPhrase?: string;
 
   loc: Loc;
 

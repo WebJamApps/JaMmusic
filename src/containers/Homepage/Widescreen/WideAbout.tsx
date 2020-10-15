@@ -22,7 +22,7 @@ const WideAboutUs = (): JSX.Element => (
           <Faqs />
         </div>
 
-        <div className="col-md-6" style={{ padding: '1px', paddingRight: '0' }}>
+        <div className="col-md-6 wideSlideshow">
           <div id="slideshow1">
             <img alt="Web Jam Banner Large" src="../static/imgs/banner1.jpg" />
           </div>
