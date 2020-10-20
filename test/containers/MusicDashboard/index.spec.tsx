@@ -13,11 +13,12 @@ describe('Dashboard Container', () => {
     wrapper = shallow<MusicDashboard>(<MusicDashboard
       auth={auth}
       scc={scc}
-      dispatch={() => { }}
+      dispatch={jest.fn()}
       editTour={anyProp}
       history={anyProp}
       location={anyProp}
       match={anyProp}
+      editSong={anyProp}
     />);
   });
   it('is defined', () => {
@@ -38,11 +39,12 @@ describe('Dashboard Container', () => {
       <MusicDashboard
         auth={auth}
         scc={scc}
-        dispatch={() => { }}
+        dispatch={jest.fn()}
         editTour={{ venue: 'wjllc' }}
         history={anyProp}
         location={anyProp}
         match={anyProp}
+        editSong={anyProp}
       />,
     );
     wrapper2.instance().checkEdit = jest.fn();
@@ -103,7 +105,7 @@ describe('Dashboard Container', () => {
     const wrapper2 = shallow<MusicDashboard>(<MusicDashboard
       auth={auth}
       scc={scc}
-      dispatch={() => { }}
+      dispatch={jest.fn()}
       editTour={{
         datetime: '2020-10-10T000',
         _id: '123',
@@ -117,6 +119,7 @@ describe('Dashboard Container', () => {
       history={anyProp}
       location={anyProp}
       match={anyProp}
+      editSong={anyProp}
     />);
     wrapper2.instance().setState = jest.fn();
     const sO = {
@@ -129,8 +132,9 @@ describe('Dashboard Container', () => {
     const wrapper2 = shallow<MusicDashboard>(<MusicDashboard
       auth={auth}
       scc={scc}
-      dispatch={() => { }}
+      dispatch={jest.fn()}
       editTour={{}}
+      editSong={anyProp}
       history={anyProp}
       location={anyProp}
       match={anyProp}
@@ -146,7 +150,8 @@ describe('Dashboard Container', () => {
     const wrapper2 = shallow<MusicDashboard>(<MusicDashboard
       auth={auth}
       scc={scc}
-      dispatch={() => { }}
+      dispatch={jest.fn()}
+      editSong={anyProp}
       editTour={{
         datetime: '2020-10-10T000',
         _id: '123',
@@ -174,7 +179,8 @@ describe('Dashboard Container', () => {
     const wrapper2 = shallow<MusicDashboard>(<MusicDashboard
       auth={auth}
       scc={scc}
-      dispatch={() => { }}
+      dispatch={jest.fn()}
+      editSong={anyProp}
       editTour={{
         datetime: '2020-10-10T000',
         _id: '123',

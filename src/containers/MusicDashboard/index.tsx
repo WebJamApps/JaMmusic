@@ -1,10 +1,10 @@
-import React, { Component, Dispatch } from 'react';
+import React, { Component } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
 import moment from 'moment';
 import { withRouter, Redirect, RouteComponentProps } from 'react-router-dom';
 import { connect } from 'react-redux';
 import type { AGClientSocket } from 'socketcluster-client';
-import type { AnyAction } from 'redux';
+import type { Dispatch, AnyAction } from 'redux';
 import type { ISong } from '../../providers/Songs.provider';
 import mapStoreToProps, { Tour, Iimage } from '../../redux/mapStoreToProps';
 import forms from '../../lib/forms';
@@ -19,7 +19,7 @@ interface MusicDashboardProps extends RouteComponentProps<Record<string, string 
   scc: AGClientSocket;
   auth: { token: string };
   editPic?: Iimage,
-  editSong?: ISong,
+  editSong: ISong | {_id:'', category:'', year:2020, title:'', url:''},
   editTour: { date?: string; time?: string; tickets?: string; more?: string; venue?: string; location?: string; _id?: string; datetime?: string };
 }
 type MusicDashboardState = {
@@ -73,9 +73,27 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
     this.modifySongsSection = this.modifySongsSection.bind(this);
     this.onChangeSong = this.onChangeSong.bind(this);
     this.handleCategoryChange = this.handleCategoryChange.bind(this);
+    this.setSongState = this.setSongState.bind(this);
   }
 
   componentDidMount(): void { this.commonUtils.setTitleAndScroll('Music Dashboard', window.screen.width); }
+
+  componentDidUpdate(prevProps:MusicDashboardProps): void {
+    let { editSong } = this.props;
+    console.log(this.props);
+    if (!editSong) {
+      editSong = {
+        _id: '',
+        category: '',
+        year: 2020,
+        title: '',
+        url: '',
+      };
+    }
+    if (editSong._id !== prevProps.editSong._id) {
+      this.setSongState(editSong);
+    }
+  }
 
   onChange(evt: React.ChangeEvent<HTMLInputElement>): void {
     evt.persist();
@@ -91,6 +109,12 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
     // const { editSong } = this.props;
     // if (editTour.venue !== undefined) this.checkEdit();
     this.setState((prevState) => ({ ...prevState, songState }));
+  }
+
+  setSongState(editSong: ISong | { _id: ''; category: ''; year: 2020; title: ''; url: '';composer:'' }):void {
+    // eslint-disable-next-line no-param-reassign
+    if (!editSong.composer)editSong.composer = '';
+    this.setState({ songState: editSong });
   }
 
   setFormTime(time: string): void { this.setState({ time }); }
@@ -281,7 +305,7 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
 
   // eslint-disable-next-line class-methods-use-this
   modifySongsSection():JSX.Element {
-    const { auth } = this.props;
+    const { auth, dispatch } = this.props;
     return (
       <div
         className="search-table-outer"
@@ -290,7 +314,7 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
         }}
       >
         <h5 style={{ textAlign: 'center', marginBottom: '3px' }}>Modify Songs</h5>
-        <SongsTable token={auth.token} />
+        <SongsTable token={auth.token} dispatch={dispatch} />
       </div>
     );
   }

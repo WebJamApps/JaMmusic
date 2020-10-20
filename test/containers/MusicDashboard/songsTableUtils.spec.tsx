@@ -10,7 +10,7 @@ describe('songsTableUtils', () => {
   });
   it('adds buttons to the modify column', () => {
     const song:any = { _id: '123' };
-    const result = songsTableUtils.addButtons([song], 'token');
+    const result = songsTableUtils.addButtons([song], 'token', jest.fn());
     expect(result[0].modify).toBeDefined();
     window.confirm = jest.fn(() => false);
     const buttonDiv = shallow(result[0].modify || <div />);

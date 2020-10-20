@@ -3,6 +3,7 @@ const initialState = {
   tour,
   tourUpdated: false,
   editTour: {},
+  editSong: { _id: '' },
 };
 
 const modifyTour = (state: { tour: { _id: string }[] }, action: { data?: { _id: string }}) => {
@@ -20,13 +21,15 @@ const addTour = (state: { tour: { datetime: string }[] }, action: { data?: { dat
   return { ...state, tour: tArr, tourUpdated: true };
 };
 
-const reducer = (state = initialState, action: { type: string; data?: { datetime: string; _id: string } }): Record<string, unknown> => {
+const reducer = (state = initialState, action:
+{ songData?: any, type: string; data?: { datetime: string; _id: string } }): Record<string, unknown> => {
   switch (action.type) {
     case 'NEW_TOUR': return addTour(state, action);
     case 'UPDATED_TOUR': return modifyTour(state, action);
     case 'ALL_TOUR': return { ...state, tour: action.data, tourUpdated: false };
     case 'RESET_TOUR': return { ...state, tourUpdated: false };
     case 'EDIT_TOUR': return { ...state, editTour: action.data };
+    case 'EDIT_SONG': return { ...state, editSong: action.songData };
     default: return state;
   }
 };

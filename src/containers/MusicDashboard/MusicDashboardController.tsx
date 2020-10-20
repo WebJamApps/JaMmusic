@@ -109,10 +109,47 @@ export class MusicDashboardController {
           <input id="composer" value={songState.composer} onChange={this.view.onChangeSong} />
         </label>
         <label htmlFor="year">
-          Year
+          * Year
           <input type="number" id="year" value={songState.year} onChange={this.view.onChangeSong} />
         </label>
       </>
+    );
+  }
+
+  songButtons(): JSX.Element {
+    const { songState } = this.view.state;
+    // const { editTour } = this.props;
+    return (
+      <div style={{ textAlign: 'left', marginTop: '10px', maxWidth: '85%' }}>
+        <span style={{
+          fontSize: '16px', marginRight: '20px', position: 'relative', display: 'inline-block',
+        }}
+        >
+          <i>* Required</i>
+        </span>
+        {/* {editTour._id ? (
+          <button className="floatRight" type="button" id="cancel-edit-pic" onClick={this.resetEditForm}>
+            Cancel
+          </button>
+        ) : null} */}
+        {/* <button
+          className="floatRight"
+          disabled={this.validateForm()}
+          type="button"
+          onClick={editTour._id ? this.editTourAPI : this.createTour}
+        >
+          {editTour._id ? 'Edit' : 'Create'}
+          {' '}
+          Tour
+        </button> */}
+        <button
+          disabled={!(songState.year && songState.title && songState.url && songState.artist && songState.category)}
+          type="button"
+          onClick={this.addSong}
+        >
+          Add Song
+        </button>
+      </div>
     );
   }
 
@@ -137,13 +174,14 @@ export class MusicDashboardController {
           {this.songForm(songState)}
           {this.moreSongForm(songState)}
           <p>{' '}</p>
-          <button
+          {this.songButtons()}
+          {/* <button
             disabled={!(songState.title && songState.url && songState.artist && songState.category)}
             type="button"
             onClick={this.addSong}
           >
             Add Song
-          </button>
+          </button> */}
         </form>
       </div>
     );
