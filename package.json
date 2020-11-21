@@ -88,7 +88,7 @@
     "materialize-css": "^1.0.0",
     "mini-css-extract-plugin": "latest",
     "moment": "latest",
-    "mui-datatables": "latest",
+    "mui-datatables": "3.7.0",
     "node-sass": "latest",
     "nps": "latest",
     "nps-utils": "latest",
@@ -123,9 +123,9 @@
     "typescript": "latest",
     "url-loader": "latest",
     "url-search-params-polyfill": "latest",
-    "webpack": "latest",
+    "webpack": "5.1.1",
     "webpack-bundle-analyzer": "latest",
-    "webpack-cli": "latest"
+    "webpack-cli": "4.0.0"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "latest",
