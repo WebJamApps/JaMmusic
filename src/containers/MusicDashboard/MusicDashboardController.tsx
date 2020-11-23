@@ -17,6 +17,7 @@ export class MusicDashboardController {
     this.changePicDiv = this.changePicDiv.bind(this);
     this.addPic = this.addPic.bind(this);
     this.addSong = this.addSong.bind(this);
+    this.editButton = this.editButton.bind(this);
     this.superagent = superagent;
   }
 
@@ -116,23 +117,17 @@ export class MusicDashboardController {
     );
   }
 
-  songButtons(): JSX.Element {
-    const { songState } = this.view.state;
+  // eslint-disable-next-line class-methods-use-this
+  editButton():null {
     // const { editTour } = this.props;
-    return (
-      <div style={{ textAlign: 'left', marginTop: '10px', maxWidth: '85%' }}>
-        <span style={{
-          fontSize: '16px', marginRight: '20px', position: 'relative', display: 'inline-block',
-        }}
-        >
-          <i>* Required</i>
-        </span>
-        {/* {editTour._id ? (
+    // eslint-disable-next-line no-lone-blocks
+    { /* {editTour._id ? (
           <button className="floatRight" type="button" id="cancel-edit-pic" onClick={this.resetEditForm}>
             Cancel
           </button>
-        ) : null} */}
-        {/* <button
+        ) : null} */ }
+    // eslint-disable-next-line no-lone-blocks
+    { /* <button
           className="floatRight"
           disabled={this.validateForm()}
           type="button"
@@ -141,7 +136,21 @@ export class MusicDashboardController {
           {editTour._id ? 'Edit' : 'Create'}
           {' '}
           Tour
-        </button> */}
+        </button> */ }
+    return null;
+  }
+
+  songButtons(): JSX.Element {
+    const { songState } = this.view.state;
+    return (
+      <div style={{ textAlign: 'left', marginTop: '10px', maxWidth: '85%' }}>
+        <span style={{
+          fontSize: '16px', marginRight: '20px', position: 'relative', display: 'inline-block',
+        }}
+        >
+          <i>* Required</i>
+        </span>
+        {this.editButton()}
         <button
           disabled={!(songState.year && songState.title && songState.url && songState.artist && songState.category)}
           type="button"
