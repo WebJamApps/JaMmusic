@@ -77,14 +77,14 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
   componentDidMount(): void { this.commonUtils.setTitleAndScroll('Music Dashboard', window.screen.width); }
 
   componentDidUpdate(prevProps:MusicDashboardProps): void {
-    let { editSong } = this.props;
-    // eslint-disable-next-line no-console
-    console.log(this.props);
-    if (!editSong) {
-      editSong = {
-        _id: '', category: '', year: 2020, title: '', url: '',
-      };
-    }
+    const { editSong } = this.props;
+    // // eslint-disable-next-line no-console
+    // console.log(this.props);
+    // if (!editSong) {
+    //   editSong = {
+    //     _id: '', category: '', year: 2020, title: '', url: '',
+    //   };
+    // }
     if (editSong._id !== prevProps.editSong._id) { this.setSongState(editSong); }
   }
 

@@ -76,4 +76,19 @@ describe('tour reducer', () => {
       },
     );
   });
+  it('handles EDIT_SONG', () => {
+    expect(reducer({
+      tour: [{ _id: '456', datetime: '' }, { _id: '123', datetime: '' }],
+      tourUpdated: false,
+      editTour: {},
+      editSong: { _id: '' },
+    }, { type: 'EDIT_SONG', songData: { _id: '789' } })).toEqual(
+      {
+        tour: [{ _id: '456', datetime: '' }, { _id: '123', datetime: '' }],
+        tourUpdated: false,
+        editTour: {},
+        editSong: { _id: '789' },
+      },
+    );
+  });
 });

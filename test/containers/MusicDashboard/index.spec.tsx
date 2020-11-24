@@ -218,4 +218,10 @@ describe('Dashboard Container', () => {
     wrapper.instance().handleCategoryChange({ persist: jest.fn(), target: { id: 'title', value: 'Happy Song' } });
     expect(wrapper.instance().setState).toHaveBeenCalled();
   });
+  it('handles editSong change', () => {
+    wrapper.instance().setState = jest.fn();
+    wrapper.update();
+    wrapper.instance().componentDidUpdate({ editSong: { _id: '999999' } });
+    expect(wrapper.instance().setState).toHaveBeenCalled();
+  });
 });
