@@ -3,6 +3,7 @@ import superagent from 'superagent';
 import type { ISong } from '../../providers/Songs.provider';
 import type { MusicDashboard } from './index';
 import forms from '../../lib/forms';
+import SongsTable from './SongsTable';
 
 export class MusicDashboardController {
   view: MusicDashboard;
@@ -19,6 +20,23 @@ export class MusicDashboardController {
     this.addSong = this.addSong.bind(this);
     this.editButton = this.editButton.bind(this);
     this.superagent = superagent;
+    this.modifySongsSection = this.modifySongsSection.bind(this);
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  modifySongsSection():JSX.Element {
+    const { auth, dispatch } = this.view.props;
+    return (
+      <div
+        className="search-table-outer"
+        style={{
+          maxWidth: '96%', margin: 'auto', zIndex: 0,
+        }}
+      >
+        <h5 style={{ textAlign: 'center', marginBottom: '3px' }}>Modify Songs</h5>
+        <SongsTable token={auth.token} dispatch={dispatch} />
+      </div>
+    );
   }
 
   addPic(): void {

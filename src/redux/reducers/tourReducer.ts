@@ -22,6 +22,7 @@ const addTour = (state: { tour: { datetime: string }[] }, action: { data?: { dat
 };
 
 const reducer = (state = initialState, action:
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 { songData?: any, type: string; data?: { datetime: string; _id: string } }): Record<string, unknown> => {
   switch (action.type) {
     case 'NEW_TOUR': return addTour(state, action);

@@ -27,6 +27,7 @@ export const fetchSongs = async ():Promise<ISong[]> => {
   // eslint-disable-next-line no-console
   } catch (e) { console.log(e.message); return [defaultSong]; }
   const newSongs = res.body.sort((a, b) => b.year - a.year);
+  // eslint-disable-next-line no-console
   console.log(res.body);
   return newSongs;
 };

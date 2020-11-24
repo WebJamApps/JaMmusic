@@ -12,7 +12,6 @@ import commonUtils from '../../lib/commonUtils';
 import AddTime from '../../lib/timeKeeper';
 import Ttable from '../../components/TourTable';
 import Controller, { MusicDashboardController } from './MusicDashboardController';
-import SongsTable from './SongsTable';
 
 interface MusicDashboardProps extends RouteComponentProps<Record<string, string | undefined>> {
   dispatch: Dispatch<AnyAction>;
@@ -70,7 +69,6 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
     this.checkEdit = this.checkEdit.bind(this);
     this.editTourAPI = this.editTourAPI.bind(this);
     this.resetEditForm = this.resetEditForm.bind(this);
-    this.modifySongsSection = this.modifySongsSection.bind(this);
     this.onChangeSong = this.onChangeSong.bind(this);
     this.handleCategoryChange = this.handleCategoryChange.bind(this);
     this.setSongState = this.setSongState.bind(this);
@@ -80,19 +78,14 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
 
   componentDidUpdate(prevProps:MusicDashboardProps): void {
     let { editSong } = this.props;
+    // eslint-disable-next-line no-console
     console.log(this.props);
     if (!editSong) {
       editSong = {
-        _id: '',
-        category: '',
-        year: 2020,
-        title: '',
-        url: '',
+        _id: '', category: '', year: 2020, title: '', url: '',
       };
     }
-    if (editSong._id !== prevProps.editSong._id) {
-      this.setSongState(editSong);
-    }
+    if (editSong._id !== prevProps.editSong._id) { this.setSongState(editSong); }
   }
 
   onChange(evt: React.ChangeEvent<HTMLInputElement>): void {
@@ -303,22 +296,6 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
     );
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  modifySongsSection():JSX.Element {
-    const { auth, dispatch } = this.props;
-    return (
-      <div
-        className="search-table-outer"
-        style={{
-          maxWidth: '96%', margin: 'auto', zIndex: 0,
-        }}
-      >
-        <h5 style={{ textAlign: 'center', marginBottom: '3px' }}>Modify Songs</h5>
-        <SongsTable token={auth.token} dispatch={dispatch} />
-      </div>
-    );
-  }
-
   render(): JSX.Element {
     const { redirect } = this.state;
     const { editTour } = this.props;
@@ -342,7 +319,7 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
         <p>&nbsp;</p>
         {this.controller.changeSongDiv()}
         <p>&nbsp;</p>
-        {this.modifySongsSection()}
+        {this.controller.modifySongsSection()}
         <p>&nbsp;</p>
       </div>
     );
