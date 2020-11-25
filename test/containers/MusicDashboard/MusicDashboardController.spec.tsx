@@ -20,7 +20,7 @@ describe('MusicDashboardController', () => {
   it('renders the submit song button not disabled', () => {
     viewStub.state = {
       songState: {
-        url: 'url', artist: 'artist', category: 'original', title: 'title',
+        url: 'url', artist: 'artist', category: 'original', title: 'title', year: 2020,
       },
     };
     const controller = new Controller(viewStub);

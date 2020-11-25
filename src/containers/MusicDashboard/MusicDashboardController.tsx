@@ -3,6 +3,7 @@ import superagent from 'superagent';
 import type { ISong } from '../../providers/Songs.provider';
 import type { MusicDashboard } from './index';
 import forms from '../../lib/forms';
+import SongsTable from './SongsTable';
 
 export class MusicDashboardController {
   view: MusicDashboard;
@@ -17,7 +18,25 @@ export class MusicDashboardController {
     this.changePicDiv = this.changePicDiv.bind(this);
     this.addPic = this.addPic.bind(this);
     this.addSong = this.addSong.bind(this);
+    this.editButton = this.editButton.bind(this);
     this.superagent = superagent;
+    this.modifySongsSection = this.modifySongsSection.bind(this);
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  modifySongsSection():JSX.Element {
+    const { auth, dispatch } = this.view.props;
+    return (
+      <div
+        className="search-table-outer"
+        style={{
+          maxWidth: '96%', margin: 'auto', zIndex: 0,
+        }}
+      >
+        <h5 style={{ textAlign: 'center', marginBottom: '3px' }}>Modify Songs</h5>
+        <SongsTable token={auth.token} dispatch={dispatch} />
+      </div>
+    );
   }
 
   addPic(): void {
@@ -109,10 +128,55 @@ export class MusicDashboardController {
           <input id="composer" value={songState.composer} onChange={this.view.onChangeSong} />
         </label>
         <label htmlFor="year">
-          Year
+          * Year
           <input type="number" id="year" value={songState.year} onChange={this.view.onChangeSong} />
         </label>
       </>
+    );
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  editButton():null {
+    // const { editTour } = this.props;
+    // eslint-disable-next-line no-lone-blocks
+    { /* {editTour._id ? (
+          <button className="floatRight" type="button" id="cancel-edit-pic" onClick={this.resetEditForm}>
+            Cancel
+          </button>
+        ) : null} */ }
+    // eslint-disable-next-line no-lone-blocks
+    { /* <button
+          className="floatRight"
+          disabled={this.validateForm()}
+          type="button"
+          onClick={editTour._id ? this.editTourAPI : this.createTour}
+        >
+          {editTour._id ? 'Edit' : 'Create'}
+          {' '}
+          Tour
+        </button> */ }
+    return null;
+  }
+
+  songButtons(): JSX.Element {
+    const { songState } = this.view.state;
+    return (
+      <div style={{ textAlign: 'left', marginTop: '10px', maxWidth: '85%' }}>
+        <span style={{
+          fontSize: '16px', marginRight: '20px', position: 'relative', display: 'inline-block',
+        }}
+        >
+          <i>* Required</i>
+        </span>
+        {this.editButton()}
+        <button
+          disabled={!(songState.year && songState.title && songState.url && songState.artist && songState.category)}
+          type="button"
+          onClick={this.addSong}
+        >
+          Add Song
+        </button>
+      </div>
     );
   }
 
@@ -137,13 +201,14 @@ export class MusicDashboardController {
           {this.songForm(songState)}
           {this.moreSongForm(songState)}
           <p>{' '}</p>
-          <button
+          {this.songButtons()}
+          {/* <button
             disabled={!(songState.title && songState.url && songState.artist && songState.category)}
             type="button"
             onClick={this.addSong}
           >
             Add Song
-          </button>
+          </button> */}
         </form>
       </div>
     );
