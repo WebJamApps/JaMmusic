@@ -18,16 +18,17 @@ const title = 'Web Jam LLC';
 const outDir = path.resolve(__dirname, 'dist');
 const srcDir = path.resolve(__dirname, 'src');
 const baseUrl = '/';
-const scssRules = [{ loader: 'sass-loader' }];
+// const scssRules = [{ loader: 'sass-loader' }];
 const googleMapKey = `https://maps.googleapis.com/maps/api/js?key=${process.env.GOOGLE_MAPS_API_KEY}`;
 
-module.exports = ({
-  production, analyze,
-} = {
-}) => ({
+module.exports = (env) => ({
   resolve: {
     extensions: ['.js', '.jsx', '.ts', '.tsx'],
     // modules: [srcDir, 'node_modules'],
+    fallback: {
+      crypto: require.resolve('crypto-browserify'),
+      stream: require.resolve('stream-browserify'),
+    }, // needed for jwt-simple
   },
 
   entry: {
@@ -35,14 +36,14 @@ module.exports = ({
     vendor: ['jquery', 'bootstrap'],
   },
 
-  mode: production ? 'production' : 'development',
+  mode: env.production ? 'production' : 'development',
 
   output: {
     path: outDir,
     publicPath: baseUrl,
-    filename: production ? '[name].[chunkhash].bundle.js' : '[name].[hash].bundle.js',
+    filename: env.production ? '[name].[chunkhash].bundle.js' : '[name].[hash].bundle.js',
     // sourceMapFilename: production ? '[name].[chunkhash].bundle.map' : '[name].[hash].bundle.map',
-    chunkFilename: production ? '[name].[chunkhash].chunk.js' : '[name].[hash].chunk.js',
+    chunkFilename: env.production ? '[name].[chunkhash].chunk.js' : '[name].[hash].chunk.js',
   },
 
   performance: { hints: false },
@@ -60,7 +61,7 @@ module.exports = ({
     port: parseInt(process.env.PORT, 10),
   },
 
-  devtool: production ? 'nosources-source-map' : 'source-map',
+  devtool: env.production ? 'nosources-source-map' : 'source-map',
 
   optimization: {
     splitChunks: {
@@ -88,7 +89,7 @@ module.exports = ({
       // only when the issuer is a .js/.ts file, so the loaders are not applied inside html templates
       {
         test: /\.scss$/,
-        issuer: [{ not: [{ test: /\.html$/i }] }],
+        // issuer: [{ not: [{ test: /\.html$/i }] }],
         use: [
           process.env.NODE_ENV !== 'production' ? 'style-loader' : MiniCssExtractPlugin.loader,
           'css-loader', // translates CSS into CommonJS
@@ -98,15 +99,15 @@ module.exports = ({
       // Still needed for some node modules that use CSS
       {
         test: /\.css$/i,
-        issuer: [{ not: [{ test: /\.html$/i }] }],
+        // issuer: [{ not: [{ test: /\.html$/i }] }],
         use: [MiniCssExtractPlugin.loader, 'css-loader'],
       },
-      {
-        test: /\.scss$/i,
-        issuer: [{ test: /\.html$/i }],
-        // SCSS required in templates cannot be extracted safely
-        use: scssRules,
-      },
+      // {
+      //   test: /\.scss$/i,
+      //   issuer: [{ test: /\.html$/i }],
+      //   // SCSS required in templates cannot be extracted safely
+      //   use: scssRules,
+      // },
       { test: /\.html$/i, loader: 'html-loader' }, // eslint-disable-next-line no-useless-escape
       // embed small images and fonts as Data Urls and larger ones as files:
       { test: /\.(png|gif|jpg|cur)$/i, loader: 'url-loader', options: { limit: 8192 } },
@@ -123,16 +124,15 @@ module.exports = ({
       jQuery: 'jquery',
       'window.jQuery': 'jquery',
       Popper: ['popper.js', 'default'],
+      process: 'process/browser',
     }),
     new HtmlWebpackPlugin({
       template: `${srcDir}/index.ejs`,
-      minify: production ? { removeComments: true, collapseWhitespace: true } : undefined,
+      minify: env.production ? { removeComments: true, collapseWhitespace: true } : undefined,
       metadata: { title, baseUrl, googleMapKey },
     }),
     new MiniCssExtractPlugin({
       filename: '[name].[contenthash].css',
-      allChunks: true,
-      metadata: { title, baseUrl },
     }),
     new CopyPlugin({
       patterns: [
@@ -142,6 +142,6 @@ module.exports = ({
     }),
     new webpack.EnvironmentPlugin(['SCS_PORT', 'SCS_HOST', 'SOCKETCLUSTER_SECURE', 'NODE_ENV',
       'AuthProductionBaseURL', 'PORT', 'BackendUrl', 'GoogleClientId', 'userRoles', 'HashString', 'TINY_KEY']),
-    ...when(analyze, new BundleAnalyzerPlugin()),
+    ...when(env.analyze, new BundleAnalyzerPlugin()),
   ],
 });
