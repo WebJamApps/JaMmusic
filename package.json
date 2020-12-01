@@ -26,7 +26,7 @@
   "license": "MIT",
   "scripts": {
     "start:dist": "node server.js",
-    "build:prod": "rm -rf  dist && webpack --progress -p --env.production",
+    "build:prod": "rm -rf dist && yarn start build",
     "cc": "codeclimate analyze -f html > codeclimate.html",
     "start": "nps",
     "test:lint-fix": "yarn test:stylelint && nps test.lint.fix",
@@ -37,7 +37,7 @@
     "test:puppeteer": "jest --preset jest-puppeteer --config jest.puppeteer-config.json /test/puppeteer --runInBand",
     "installglobals": "yarn config set registry https://registry.yarnpkg.com -g",
     "cleaninstall": "rm -rf yarn.lock && rm -rf node_modules && yarn cache clean && yarn installglobals && yarn install",
-    "postinstall": "yarn start build",
+    "postinstall": "yarn build:prod",
     "test:stylelint": "stylelint \"static/**/*.scss\""
   },
   "dependencies": {
