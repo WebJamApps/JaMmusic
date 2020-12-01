@@ -1,26 +1,17 @@
 import React from 'react';
-import { mount, shallow } from 'enzyme';
+import { shallow } from 'enzyme';
 import { MusicPlayer, MusicPlayerState } from '../../../src/components/MusicPlayer';
 import TSongs from '../../testSongs';
 
-function setup() {
-  window.document.body.innerHTML = '<div id="sidebar"></div><div id="header"/><div id="contentBlock"/>'
-    + '<div id="wjfooter"/><div id="mobilemenutoggle"/><div id="pageContent"/><h4 id="headerTitle">'
-    + '<div id="mainPlayer"/>';
-
-  const wrapper = mount<MusicPlayer>(<MusicPlayer songs={TSongs} filterBy="original" />, {
-    attachTo: document.getElementById('sidebar'),
-  });
-  return { wrapper };
-}
-
 describe('Music player component init', () => {
   it('renders the Music Player component', () => {
-    const { wrapper } = setup();
+    // const { wrapper } = setup();
+    const wrapper = shallow<MusicPlayer>(<MusicPlayer songs={TSongs} filterBy="originals" />);
     expect(wrapper.find('div#player').exists()).toBe(true);
   });
   it('should find and simulate play/pause', () => {
-    const { wrapper } = setup();
+    // const { wrapper } = setup();
+    const wrapper = shallow<MusicPlayer>(<MusicPlayer songs={TSongs} filterBy="originals" />);
     wrapper.setState({
       player: {
         playing: false, isShuffleOn: false, onePlayerMode: true, shown: true, displayCopier: '', displayCopyMessage: true,
@@ -30,7 +21,7 @@ describe('Music player component init', () => {
     expect(wrapper.instance().state.player.playing).toBe(true);
   });
   it('should simulate the pause function', () => {
-    const { wrapper } = setup();
+    const wrapper = shallow<MusicPlayer>(<MusicPlayer songs={TSongs} filterBy="originals" />);
     wrapper.instance().pause();
     expect(wrapper.instance().state.player.playing).toBe(false);
   });
@@ -68,7 +59,7 @@ describe('Music player component init', () => {
     mp.shuffle();
   });
   it('should find and simulate stop shuffle and confirm shuffling is off', () => {
-    const { wrapper } = setup();
+    const wrapper = shallow<MusicPlayer>(<MusicPlayer songs={TSongs} filterBy="originals" />);
     wrapper.instance().setState({ index: 100 });
     wrapper.instance().playEnd();
     expect(wrapper.instance().state.index).toBe(0);
@@ -105,20 +96,20 @@ describe('Music player component init', () => {
     mp.next();
   });
   it('should test previous song which has an index > 0', () => {
-    const { wrapper } = setup();
+    const wrapper = shallow<MusicPlayer>(<MusicPlayer songs={TSongs} filterBy="originals" />);
     wrapper.instance().setState({ index: 1 });
     wrapper.instance().prev();
     expect(wrapper.instance().state.index).toBe(0);
   });
   it('should find and copy a playing song url', () => {
-    const { wrapper } = setup();
+    const wrapper = shallow<MusicPlayer>(<MusicPlayer songs={TSongs} filterBy="originals" />);
     wrapper.instance().navigator = { ...navigator, clipboard: { ...navigator.clipboard, writeText: () => Promise.resolve() } };
     wrapper.update();
     wrapper.find('#copyButton').simulate('click');
     expect(wrapper.instance().state.player.displayCopier).toBe('none');
   });
   it('hides copier message after showing for 1.5s', () => {
-    const { wrapper } = setup();
+    const wrapper = shallow<MusicPlayer>(<MusicPlayer songs={TSongs} filterBy="originals" />);
     wrapper.instance().navigator = { ...navigator, clipboard: { ...navigator.clipboard, writeText: () => Promise.resolve() } };
     wrapper.update();
     jest.runOnlyPendingTimers();
@@ -126,7 +117,7 @@ describe('Music player component init', () => {
     expect(wrapper.instance().state.player.displayCopier).toBe('none');
   });
   it('toggles off copying/share pane', () => {
-    const { wrapper } = setup();
+    const wrapper = shallow<MusicPlayer>(<MusicPlayer songs={TSongs} filterBy="originals" />);
     wrapper.instance().setState({
       player: {
         isShuffleOn: false, playing: true, shown: true, displayCopier: 'block', displayCopyMessage: false, onePlayerMode: false,
@@ -136,7 +127,7 @@ describe('Music player component init', () => {
     expect(wrapper.instance().state.player.displayCopier).toBe('none');
   });
   it('toggles on copying/share pane', () => {
-    const { wrapper } = setup();
+    const wrapper = shallow<MusicPlayer>(<MusicPlayer songs={TSongs} filterBy="originals" />);
     wrapper.instance().setState({
       player: {
         isShuffleOn: false, playing: true, shown: true, displayCopier: 'none', displayCopyMessage: false, onePlayerMode: false,
@@ -146,30 +137,19 @@ describe('Music player component init', () => {
     expect(wrapper.instance().state.player.displayCopier).toBe('block');
   });
   it('returns a default playUrl', () => {
-    const { wrapper } = setup();
+    const wrapper = shallow<MusicPlayer>(<MusicPlayer songs={TSongs} filterBy="originals" />);
     wrapper.instance().setState({ song: null });
     const result = wrapper.instance().playUrl();
     expect(result).toBe('https://web-jam.com/music/songs');
   });
-  it('should simulate a click on adding mission/pub song types when either is off', () => {
-    const { wrapper } = setup();
-    wrapper.find('button.puboff').simulate('click');
-    expect(wrapper.instance().state.pubState).toBe('on');
-  });
-  it('should simulate a click on adding mission/pub song types when either is on', () => {
-    const { wrapper } = setup();
-    wrapper.instance().setState({ missionState: 'on' });
-    wrapper.find('button.missionoff').simulate('click');
-    expect(wrapper.instance().state.missionState).toBe('off');
-  });
   it('should simulate a click on original song type button', () => {
-    const { wrapper } = setup();
+    const wrapper = shallow<MusicPlayer>(<MusicPlayer songs={TSongs} filterBy="originals" />);
     wrapper.instance().setState({ missionState: 'on', originalState: 'on' });
     wrapper.find('button.originalon').simulate('click');
     expect(wrapper.instance().state.originalState).toBe('off');
   });
   it('should resort songs', async () => {
-    const { wrapper } = setup();
+    const wrapper = shallow<MusicPlayer>(<MusicPlayer songs={TSongs} filterBy="originals" />);
     const songs = [{
       _id: '123', url: 'yes.com', category: 'mission', title: 'A Song', year: 2000,
     }];
@@ -177,7 +157,7 @@ describe('Music player component init', () => {
     expect(result).toBeTruthy();
   });
   it('allows click on share button', () => {
-    const { wrapper } = setup();
+    const wrapper = shallow<MusicPlayer>(<MusicPlayer songs={TSongs} filterBy="originals" />);
     wrapper.instance().musicPlayerUtils.share = jest.fn();
     wrapper.update();
     const buttons = wrapper.instance().buttons();
@@ -186,7 +166,7 @@ describe('Music player component init', () => {
     expect(wrapper.instance().musicPlayerUtils.share).toHaveBeenCalled();
   });
   it('should reset songs if missionState on', async () => {
-    const { wrapper } = setup();
+    const wrapper = shallow<MusicPlayer>(<MusicPlayer songs={TSongs} filterBy="originals" />);
     wrapper.instance().setState({
       player: {
         isShuffleOn: true, playing: true, shown: true, displayCopier: '', displayCopyMessage: false, onePlayerMode: false,
@@ -206,7 +186,7 @@ describe('Music player component init', () => {
     }
   });
   it('should reset songs if pubState on', async () => {
-    const { wrapper } = setup();
+    const wrapper = shallow<MusicPlayer>(<MusicPlayer songs={TSongs} filterBy="originals" />);
     wrapper.instance().setState({
       player: {
         isShuffleOn: true, playing: true, shown: true, displayCopier: 'none', displayCopyMessage: false, onePlayerMode: false,

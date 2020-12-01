@@ -14,12 +14,11 @@ describe('App component', () => {
   it('renders correctly', () => {
     expect(wrapper).toMatchSnapshot();
   });
-  it('does not fetch the images or songs if they already exist', () => new Promise((done) => {
+  it('does not fetch the images or songs if they already exist', () => {
     const images: any[] = [{}];
     const wrapper2 = shallow(<App dispatch={dp} images={images} />);
     expect(wrapper2.find('div#App').exists()).toBe(true);
-    done();
-  }));
+  });
   it('renders when dispatch is not defined', () => {
     const wrapper2 = shallow(<App />);
     expect(wrapper2).toBeDefined();

@@ -14,10 +14,16 @@ describe('musicPlayerUtils', () => {
     },
   };
   const view:any = {
+    musicUtils: { setIndex: () => [{}] },
     setState: (obj: any) => { if (obj) return true; return false; },
     props: { songs: [{ _id: '123', category: 'pub' }] },
     state: {
-      songsState: [], player: { onePlayerMode: true, isShuffleOn: true }, pageTitle: '', missionState: 'on', pubState: 'off', originalState: 'on',
+      songsState: [{}],
+      player: { onePlayerMode: true, isShuffleOn: true },
+      pageTitle: '',
+      missionState: 'on',
+      pubState: 'off',
+      originalState: 'on',
     },
   };
   it('checks for one player then sets the song when pub', async () => {
@@ -120,5 +126,9 @@ describe('musicPlayerUtils', () => {
     view.state.songsState = [{}, {}, {}, {}];
     musicPlayerUtils.prev(view);
     expect(view.setState).toHaveBeenCalled();
+  });
+  it('toggleOn when !player.isShuffleOn', () => {
+    view.state.player.isShuffleOn = false;
+    expect(musicPlayerUtils.toggleOn('mission', view, '', '')).toBe(true);
   });
 });

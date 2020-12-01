@@ -57,13 +57,12 @@ describe('app-main component test setup', () => {
     const result = await wrapper2.instance().responseGoogleLogout();
     expect(result).toBe(true);
   });
-  it('renders the logout button', () => new Promise((done) => {
+  it('renders the logout button', () => {
     const { wrapper } = setup();
     const logoutButton = wrapper.instance().googleButtons('logout', 5);
     const rLogout = shallow(logoutButton);
     expect(rLogout.find('div.googleLogout').length).toBe(1);
-    done();
-  }));
+  });
   it('closes the menu without navigating away from the react app', () => {
     document.body.innerHTML = '<button class="googleLogin"/><button class="googleLogout"/>';
     const aProps: any = { dispatch: () => Promise.resolve(true) };
