@@ -7,7 +7,6 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const { ProvidePlugin } = require('webpack');
 const webpack = require('webpack');
-// const TerserPlugin = require('terser-webpack-plugin');
 
 // config helpers:
 const ensureArray = (config) => config && (Array.isArray(config) ? config : [config]) || []; // eslint-disable-line no-mixed-operators
@@ -18,17 +17,16 @@ const title = 'Web Jam LLC';
 const outDir = path.resolve(__dirname, 'dist');
 const srcDir = path.resolve(__dirname, 'src');
 const baseUrl = '/';
-// const scssRules = [{ loader: 'sass-loader' }];
 const googleMapKey = `https://maps.googleapis.com/maps/api/js?key=${process.env.GOOGLE_MAPS_API_KEY}`;
 
 module.exports = (env) => ({
   resolve: {
     extensions: ['.js', '.jsx', '.ts', '.tsx'],
-    // modules: [srcDir, 'node_modules'],
-    fallback: {
+    fallback: { // needed for jsonwebtoken
       crypto: require.resolve('crypto-browserify'),
       stream: require.resolve('stream-browserify'),
-    }, // needed for jwt-simple
+      util: require.resolve('util/'),
+    },
   },
 
   entry: {
@@ -42,7 +40,6 @@ module.exports = (env) => ({
     path: outDir,
     publicPath: baseUrl,
     filename: env.production ? '[name].[chunkhash].bundle.js' : '[name].[hash].bundle.js',
-    // sourceMapFilename: production ? '[name].[chunkhash].bundle.map' : '[name].[hash].bundle.map',
     chunkFilename: env.production ? '[name].[chunkhash].chunk.js' : '[name].[hash].chunk.js',
   },
 
@@ -89,7 +86,6 @@ module.exports = (env) => ({
       // only when the issuer is a .js/.ts file, so the loaders are not applied inside html templates
       {
         test: /\.scss$/,
-        // issuer: [{ not: [{ test: /\.html$/i }] }],
         use: [
           process.env.NODE_ENV !== 'production' ? 'style-loader' : MiniCssExtractPlugin.loader,
           'css-loader', // translates CSS into CommonJS
@@ -99,15 +95,8 @@ module.exports = (env) => ({
       // Still needed for some node modules that use CSS
       {
         test: /\.css$/i,
-        // issuer: [{ not: [{ test: /\.html$/i }] }],
         use: [MiniCssExtractPlugin.loader, 'css-loader'],
       },
-      // {
-      //   test: /\.scss$/i,
-      //   issuer: [{ test: /\.html$/i }],
-      //   // SCSS required in templates cannot be extracted safely
-      //   use: scssRules,
-      // },
       { test: /\.html$/i, loader: 'html-loader' }, // eslint-disable-next-line no-useless-escape
       // embed small images and fonts as Data Urls and larger ones as files:
       { test: /\.(png|gif|jpg|cur)$/i, loader: 'url-loader', options: { limit: 8192 } },

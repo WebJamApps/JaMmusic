@@ -85,7 +85,7 @@
     "html-loader": "latest",
     "html-webpack-plugin": "latest",
     "jquery": "latest",
-    "jwt-simple": "latest",
+    "jsonwebtoken": "^8.5.1",
     "materialize-css": "^1.0.0",
     "mini-css-extract-plugin": "^1.3.1",
     "moment": "latest",
@@ -125,6 +125,7 @@
     "typescript": "latest",
     "url-loader": "latest",
     "url-search-params-polyfill": "latest",
+    "util": "^0.12.3",
     "webpack": "^5.7.0",
     "webpack-bundle-analyzer": "latest",
     "webpack-cli": "^4.2.0"
