@@ -78,13 +78,6 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
 
   componentDidUpdate(prevProps:MusicDashboardProps): void {
     const { editSong } = this.props;
-    // // eslint-disable-next-line no-console
-    // console.log(this.props);
-    // if (!editSong) {
-    //   editSong = {
-    //     _id: '', category: '', year: 2020, title: '', url: '',
-    //   };
-    // }
     if (editSong._id !== prevProps.editSong._id) { this.setSongState(editSong); }
   }
 
@@ -99,8 +92,6 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
     evt.persist();
     let { songState } = this.state;
     songState = { ...songState, [evt.target.id]: evt.target.value };
-    // const { editSong } = this.props;
-    // if (editTour.venue !== undefined) this.checkEdit();
     this.setState((prevState) => ({ ...prevState, songState }));
   }
 
@@ -199,7 +190,6 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
             init={{
               height: 500,
               menubar: 'insert tools',
-              selector: 'textarea',
               menu: { format: { title: 'Format', items: 'forecolor backcolor' } },
               plugins: [
                 'advlist autolink lists link image charmap print preview anchor',

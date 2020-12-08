@@ -61,11 +61,10 @@ describe('Dashboard Container', () => {
     wrapper.instance().setState = jest.fn((obJ) => { expect(obJ.redirect).toBe(true); });
     wrapper.instance().createTourApi({ date: '2019-10-10' });
   });
-  it('redirects to /music', () => new Promise((done) => {
+  it('redirects to /music', () => {
     wrapper.setState({ redirect: true });
     expect(wrapper.find(Redirect).length).toBe(1);
-    done();
-  }));
+  });
   it('returns the validation', () => {
     wrapper.setState({
       date: '10-24-2019',
@@ -100,6 +99,11 @@ describe('Dashboard Container', () => {
   it('calls setFormTime', () => {
     wrapper.instance().setFormTime('12:00 pm');
     wrapper.instance().setState = jest.fn((obj) => { expect(obj.time).toBe('12:00 pm'); });
+  });
+  it('setSongState when editSong.composer', () => {
+    const song:any = { composer: 'Josh' };
+    wrapper.instance().setSongState(song);
+    expect(wrapper.instance().state.songState.composer).toBe('Josh');
   });
   it('checks edit when editTour', () => {
     const wrapper2 = shallow<MusicDashboard>(<MusicDashboard

@@ -1,10 +1,6 @@
 {
   "verbose": true,
   "bail": true,
-  "setupFiles": [
-    "core-js/stable",
-    "regenerator-runtime/runtime"
-  ],
   "timers": "fake",
   "testURL": "http://localhost/",
   "transform": {

@@ -25,11 +25,10 @@ describe('/music', () => {
     expect(wrapper.find('MariaBio').dive().find('.mariaBio').exists()).toBe(true);
     expect(wrapper.find('WjBand').dive().find('.wjBand').exists()).toBe(true);
   });
-  it('renders with images', () => new Promise((done) => {
+  it('renders with images', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const data:any = [{ url: '', title: '' }];
     const wrapper2 = shallow<Music>(<Music images={data} dispatch={jest.fn()} />);
     expect(wrapper2.find(PicSlider).exists()).toBe(true);
-    done();
-  }));
+  });
 });
