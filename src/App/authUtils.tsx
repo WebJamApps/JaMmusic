@@ -1,5 +1,6 @@
 import superagent from 'superagent';
-import jwt from 'jwt-simple';
+// import jwt from 'jwt-simple';
+import jwt from 'jsonwebtoken';
 import type { Dispatch } from 'react';
 import type { GoogleLoginResponseOffline, GoogleLoginResponse } from 'react-google-login';
 import type { AppTemplate } from './AppTemplate';
@@ -14,9 +15,9 @@ export interface IauthUtils {
 }
 const setUser = async (view: AppTemplate): Promise<string> => {
   const { auth, dispatch } = view.props;
-  let decoded, user;
+  let decoded: any, user;
   try {
-    decoded = jwt.decode(auth.token, process.env.HashString || /* istanbul ignore next */'');
+    decoded = jwt.verify(auth.token, process.env.HashString || /* istanbul ignore next */'');
   } catch (e) { return `${e.message}`; }
   if (decoded.user) dispatch({ type: 'SET_USER', data: decoded.user });
   else {
@@ -25,9 +26,9 @@ const setUser = async (view: AppTemplate): Promise<string> => {
         .set('Accept', 'application/json').set('Authorization', `Bearer ${auth.token}`);
     } catch (e) { return `${e.message}`; }
     dispatch({ type: 'SET_USER', data: user.body });
-    decoded.user = user.body;
-    const newToken = jwt.encode(decoded, process.env.HashString || /* istanbul ignore next */'');
-    dispatch({ type: 'GOT_TOKEN', data: { token: newToken, email: auth.email } });
+    // decoded.user = user.body;
+    // const newToken = jwt.encode(decoded, process.env.HashString || /* istanbul ignore next */'');
+    // dispatch({ type: 'GOT_TOKEN', data: { token: newToken, email: auth.email } });
   }
   window.location.reload();
   return 'set user';

@@ -13,11 +13,12 @@ describe('Dashboard Container', () => {
     wrapper = shallow<MusicDashboard>(<MusicDashboard
       auth={auth}
       scc={scc}
-      dispatch={() => { }}
+      dispatch={jest.fn()}
       editTour={anyProp}
       history={anyProp}
       location={anyProp}
       match={anyProp}
+      editSong={anyProp}
     />);
   });
   it('is defined', () => {
@@ -38,11 +39,12 @@ describe('Dashboard Container', () => {
       <MusicDashboard
         auth={auth}
         scc={scc}
-        dispatch={() => { }}
+        dispatch={jest.fn()}
         editTour={{ venue: 'wjllc' }}
         history={anyProp}
         location={anyProp}
         match={anyProp}
+        editSong={anyProp}
       />,
     );
     wrapper2.instance().checkEdit = jest.fn();
@@ -59,11 +61,10 @@ describe('Dashboard Container', () => {
     wrapper.instance().setState = jest.fn((obJ) => { expect(obJ.redirect).toBe(true); });
     wrapper.instance().createTourApi({ date: '2019-10-10' });
   });
-  it('redirects to /music', () => new Promise((done) => {
+  it('redirects to /music', () => {
     wrapper.setState({ redirect: true });
     expect(wrapper.find(Redirect).length).toBe(1);
-    done();
-  }));
+  });
   it('returns the validation', () => {
     wrapper.setState({
       date: '10-24-2019',
@@ -99,11 +100,16 @@ describe('Dashboard Container', () => {
     wrapper.instance().setFormTime('12:00 pm');
     wrapper.instance().setState = jest.fn((obj) => { expect(obj.time).toBe('12:00 pm'); });
   });
+  it('setSongState when editSong.composer', () => {
+    const song:any = { composer: 'Josh' };
+    wrapper.instance().setSongState(song);
+    expect(wrapper.instance().state.songState.composer).toBe('Josh');
+  });
   it('checks edit when editTour', () => {
     const wrapper2 = shallow<MusicDashboard>(<MusicDashboard
       auth={auth}
       scc={scc}
-      dispatch={() => { }}
+      dispatch={jest.fn()}
       editTour={{
         datetime: '2020-10-10T000',
         _id: '123',
@@ -117,6 +123,7 @@ describe('Dashboard Container', () => {
       history={anyProp}
       location={anyProp}
       match={anyProp}
+      editSong={anyProp}
     />);
     wrapper2.instance().setState = jest.fn();
     const sO = {
@@ -129,8 +136,9 @@ describe('Dashboard Container', () => {
     const wrapper2 = shallow<MusicDashboard>(<MusicDashboard
       auth={auth}
       scc={scc}
-      dispatch={() => { }}
+      dispatch={jest.fn()}
       editTour={{}}
+      editSong={anyProp}
       history={anyProp}
       location={anyProp}
       match={anyProp}
@@ -146,7 +154,8 @@ describe('Dashboard Container', () => {
     const wrapper2 = shallow<MusicDashboard>(<MusicDashboard
       auth={auth}
       scc={scc}
-      dispatch={() => { }}
+      dispatch={jest.fn()}
+      editSong={anyProp}
       editTour={{
         datetime: '2020-10-10T000',
         _id: '123',
@@ -174,7 +183,8 @@ describe('Dashboard Container', () => {
     const wrapper2 = shallow<MusicDashboard>(<MusicDashboard
       auth={auth}
       scc={scc}
-      dispatch={() => { }}
+      dispatch={jest.fn()}
+      editSong={anyProp}
       editTour={{
         datetime: '2020-10-10T000',
         _id: '123',
@@ -210,6 +220,12 @@ describe('Dashboard Container', () => {
     wrapper.instance().setState = jest.fn();
     wrapper.update();
     wrapper.instance().handleCategoryChange({ persist: jest.fn(), target: { id: 'title', value: 'Happy Song' } });
+    expect(wrapper.instance().setState).toHaveBeenCalled();
+  });
+  it('handles editSong change', () => {
+    wrapper.instance().setState = jest.fn();
+    wrapper.update();
+    wrapper.instance().componentDidUpdate({ editSong: { _id: '999999' } });
     expect(wrapper.instance().setState).toHaveBeenCalled();
   });
 });

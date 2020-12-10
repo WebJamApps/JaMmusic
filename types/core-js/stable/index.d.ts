@@ -1,3 +1,0 @@
-declare module 'core-js'{
-
-}

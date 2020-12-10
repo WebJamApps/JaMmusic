@@ -173,7 +173,7 @@ export default class Inquiry extends Component<unknown, InquiryState> {
         className="comments"
         label="* Comments"
         value={comments}
-        onChange={(evt) => { this.setState({ comments: evt.target.value.trim() }); this.validateForm(); }}
+        onChange={(evt) => { this.setState({ comments: evt.target.value }); this.validateForm(); }}
       />
     );
   }

@@ -1,15 +1,15 @@
 import React from 'react';
+import type { Dispatch, AnyAction } from 'redux';
 import superagent from 'superagent';
 import type { ISong } from '../../providers/Songs.provider';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const editSong = (data: ISong, token:string): boolean => {
+const editSong = (data: ISong, dispatch:Dispatch<AnyAction>): boolean => {
   // const { dispatch } = this.props;
-  const s = data;
-  delete s.modify;
+  const s = { ...data, modify: undefined };
   // eslint-disable-next-line no-console
   console.log('display the create new song form with the edit song content prepopulated');
-  //   window.location.reload();
+  dispatch({ type: 'EDIT_SONG', songData: s });
   return true;
 };
 
@@ -27,7 +27,7 @@ const deleteSong = async (id: string, token:string): Promise<string> => { // esl
   return 'no delete';
 };
 
-const addButtons = (arr: ISong[], token:string): ISong[] => {
+const addButtons = (arr: ISong[], token:string, dispatch:Dispatch<AnyAction>): ISong[] => {
   const newArr = arr;/* eslint-disable security/detect-object-injection */
   for (let i = 0; i < arr.length; i += 1) {
     const deleteSongId = `deleteSong${newArr[i]._id}`;
@@ -36,7 +36,7 @@ const addButtons = (arr: ISong[], token:string): ISong[] => {
       <div>
         <button type="button" id={deleteSongId} onClick={() => deleteSong(newArr[i]._id, token)}>Delete</button>
         <p>{' '}</p>
-        <button type="button" id={editSongId} onClick={() => editSong(newArr[i], token)}>Edit</button>
+        <button type="button" id={editSongId} onClick={() => editSong(newArr[i], dispatch)}>Edit</button>
       </div>
     );
   }

@@ -1,4 +1,5 @@
 import type { AGClientSocket } from 'socketcluster-client';
+import type { ISong } from '../providers/Songs.provider';
 
 export interface Auth {
   isAuthenticated: boolean,
@@ -32,21 +33,26 @@ export interface Store {
   sc: { scc: AGClientSocket; userCount: number };
   images: { images: Iimage[] };
   auth: Auth;
-  tour: { tour: Tour[]; tourUpdated: boolean; editTour: Tour };
+  tour: { tour: Tour[]; tourUpdated: boolean; editTour: Tour; editSong: ISong };
 }
 
 interface MapProps {
   images:Iimage[];userCount:number;auth:Auth;tour:Tour[];
-  scc:AGClientSocket;tourUpdated:boolean;editTour:Tour
+  scc:AGClientSocket;tourUpdated:boolean;editTour:Tour;editSong:ISong
 }
 
-const mapStoreToProps = (store: Store): MapProps => ({
-  images: store.images.images,
-  userCount: store.sc.userCount,
-  auth: store.auth,
-  tour: store.tour.tour,
-  scc: store.sc.scc,
-  tourUpdated: store.tour.tourUpdated,
-  editTour: store.tour.editTour,
-});
+// eslint-disable-next-line arrow-body-style
+const mapStoreToProps = (store: Store): MapProps => {
+  // console.log(store);
+  return ({
+    images: store.images.images,
+    userCount: store.sc.userCount,
+    auth: store.auth,
+    tour: store.tour.tour,
+    scc: store.sc.scc,
+    tourUpdated: store.tour.tourUpdated,
+    editTour: store.tour.editTour,
+    editSong: store.tour.editSong,
+  });
+};
 export default mapStoreToProps;
