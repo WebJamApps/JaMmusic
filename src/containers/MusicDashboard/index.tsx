@@ -333,7 +333,7 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
 
    dashNavigationButtons(): JSX.Element {
     return(
-      <div style={{ textAlign: 'right', marginTop: '10px', maxWidth: '85%' }}>
+      <div style={{padding:'10px', display:'inline', textAlign: 'right', marginTop: '10px', maxWidth: '50%' }}>
             {this.photoButton()}
             {this.tourButton()}
             {this.songButton()}
@@ -357,7 +357,6 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
     this.setState({navSong: false});
     this.setState({navTour: false});
   }
-
   }
 
   photoButton(): JSX.Element {
@@ -377,12 +376,10 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
   }
 
   songButton(): JSX.Element {
-    
     return (      
     <button className="floatRight" type="button" id="Songs-Button" onClick={this.handleNavClick}>
       Songs
     </button>
-    
     );
   }
 
@@ -393,12 +390,10 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
     return (
       <div className="page-content">
         {redirect ? <Redirect to="/music" /> : null}
-        <h3 style={{ textAlign: 'center', margin: '14px', fontWeight: 'bold' }}>Music Dashboard </h3>
-        {this.dashNavigationButtons()}
+        <h3 style={{ textAlign: 'center', margin: '14px', fontWeight: 'bold' }}>Music Dashboard {this.dashNavigationButtons()}</h3>
         {this.state.navSong ? (this.songBlock()): null}
         {this.state.navPhoto ? (this.pictureBlock()): null}
         {this.state.navTour ? (this.tourBlock()): null}
-        
       </div>
     );
   }
