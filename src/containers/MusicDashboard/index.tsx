@@ -9,8 +9,6 @@ import type { ISong } from '../../providers/Songs.provider';
 import mapStoreToProps, { Tour, Iimage } from '../../redux/mapStoreToProps';
 import forms from '../../lib/forms';
 import commonUtils from '../../lib/commonUtils';
-import AddTime from '../../lib/timeKeeper';
-import Ttable from '../../components/TourTable';
 import Controller, { MusicDashboardController } from './MusicDashboardController';
 import { ButtonProps } from 'react-materialize';
 
@@ -333,7 +331,7 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
 
    dashNavigationButtons(): JSX.Element {
     return(
-      <div style={{padding:'10px', display:'inline', textAlign: 'right', marginTop: '10px', maxWidth: '50%' }}>
+      <div className="Nav-Buttons" style={{padding:'10px', display:'inline', textAlign: 'right', marginTop: '10px', maxWidth: '50%' }}>
             {this.photoButton()}
             {this.tourButton()}
             {this.songButton()}
@@ -387,13 +385,16 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
   render(): JSX.Element {
     const { redirect } = this.state;
     const { editTour } = this.props;
+    const { navSong } = this.state;
+    const { navTour } = this.state;
+    const { navPhoto } = this.state;
     return (
       <div className="page-content">
         {redirect ? <Redirect to="/music" /> : null}
         <h3 style={{ textAlign: 'center', margin: '14px', fontWeight: 'bold' }}>Music Dashboard {this.dashNavigationButtons()}</h3>
-        {this.state.navSong ? (this.songBlock()): null}
-        {this.state.navPhoto ? (this.pictureBlock()): null}
-        {this.state.navTour ? (this.tourBlock()): null}
+        {navSong ? (this.songBlock()): null}
+        {navPhoto ? (this.pictureBlock()): null}
+        {navTour ? (this.tourBlock()): null}
       </div>
     );
   }
