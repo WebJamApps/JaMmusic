@@ -11,6 +11,7 @@ import forms from '../../lib/forms';
 import commonUtils from '../../lib/commonUtils';
 import Controller, { MusicDashboardController } from './MusicDashboardController';
 import { ButtonProps } from 'react-materialize';
+import { TourEditor } from '../../components/TourEditor';
 
 interface MusicDashboardProps extends RouteComponentProps<Record<string, string | undefined>> {
   dispatch: Dispatch<AnyAction>;
@@ -298,24 +299,6 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
          </div>
     );
    }
- 
- 
-   tourBlock(): JSX.Element {
-     const { editTour } = this.props;
-     return (
-       <div className="Tour-Block">
-       <p>&nbsp;</p>
-       {this.newTourForm()}
-       <p>&nbsp;</p>
-       {!editTour._id ? (
-         <div className="search-table-outer" style={{ maxWidth: '96%', margin: 'auto', zIndex: 0 }}>
-           <h5 style={{ textAlign: 'center', marginBottom: '3px' }}>Modify</h5>
-           <Ttable deleteButton />
-         </div>
-       ) : null}
-       </div>
-     );
-   }
 
    songBlock(): JSX.Element {
      return (
@@ -394,7 +377,7 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
         <h3 style={{ textAlign: 'center', margin: '14px', fontWeight: 'bold' }}>Music Dashboard {this.dashNavigationButtons()}</h3>
         {navSong ? (this.songBlock()): null}
         {navPhoto ? (this.pictureBlock()): null}
-        {navTour ? (this.tourBlock()): null}
+        {navTour ? <TourEditor comp={this} editTour={editTour} /> : null}
       </div>
     );
   }
