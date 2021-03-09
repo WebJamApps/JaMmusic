@@ -45,9 +45,7 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
   constructor(props: MusicDashboardProps) {
     super(props);
     this.state = {
-      songState: {
-        image: '', composer: '', year: 2020, album: '', title: '', url: '', artist: '', category: 'original', _id: '',
-      },
+      songState: {image: '', composer: '', year: 2020, album: '', title: '', url: '', artist: '', category: 'original', _id: '',},
       picTitle: '',
       picUrl: '',
       redirect: false,
