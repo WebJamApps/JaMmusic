@@ -213,5 +213,26 @@ export class MusicDashboardController {
       </div>
     );
   }
+
+  pictureBlock(): JSX.Element {
+    return (
+      <div className="material-content elevation3" style={{ maxWidth: '9.1in', margin: 'auto' }}>
+        <h5 style={{ textAlign: 'center', marginBottom: 0 }}>Modify Photo Slideshow</h5>
+        {this.changePicDiv()}
+      </div>
+    );
+  }
+
+  songBlock(): JSX.Element {
+    return (
+      <div className="Song-Block">
+        <p>&nbsp;</p>
+        {this.changeSongDiv()}
+        <p>&nbsp;</p>
+        {this.modifySongsSection()}
+        <p>&nbsp;</p>
+      </div>
+    );
+  }
 }
 export default MusicDashboardController;
