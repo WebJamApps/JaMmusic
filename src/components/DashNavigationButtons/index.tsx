@@ -34,3 +34,4 @@ export const DashNavigationButtons = ({ comp }:PageProps): JSX.Element =>(
     {songButton({comp})}
   </div>
 );
+export default DashNavigationButtons;
