@@ -1,10 +1,12 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { Redirect } from 'react-router-dom';
+import { TourEditor } from '../../../src/components/TourEditor';
 import { MusicDashboard } from '../../../src/containers/MusicDashboard';
 
-describe('Dashboard Container', () => {
+describe('TourEditor', () => {
+  it('is defined', () => {
+    expect(TourEditor).toBeDefined();
+  });
   let wrapper: any;
   const auth = { token: '' };
   const anyProp: any = {};
@@ -20,12 +22,6 @@ describe('Dashboard Container', () => {
       match={anyProp}
       editSong={anyProp}
     />);
-  });
-  it('is defined', () => {
-    expect(MusicDashboard).toBeDefined();
-  });
-  it('renders correctly', () => {
-    expect(wrapper).toMatchSnapshot();
   });
   it('calls on change', () => {
     wrapper.instance().checkEdit = jest.fn();
@@ -60,10 +56,6 @@ describe('Dashboard Container', () => {
   it('calls the tour API', () => {
     wrapper.instance().setState = jest.fn((obJ) => { expect(obJ.redirect).toBe(true); });
     wrapper.instance().createTourApi({ date: '2019-10-10' });
-  });
-  it('redirects to /music', () => {
-    wrapper.setState({ redirect: true });
-    expect(wrapper.find(Redirect).length).toBe(1);
   });
   it('returns the validation', () => {
     wrapper.setState({
@@ -209,44 +201,5 @@ describe('Dashboard Container', () => {
     });
     const r = wrapper2.instance().editTourAPI();
     expect(r).toBe(true);
-  });
-  it('handles onChangeSong', () => {
-    wrapper.instance().setState = jest.fn((cb) => cb({}));
-    wrapper.update();
-    wrapper.instance().onChangeSong({ persist: jest.fn(), target: { id: 'title', value: 'Happy Song' } });
-    expect(wrapper.instance().setState).toHaveBeenCalled();
-  });
-  it('handles song catagory change', () => {
-    wrapper.instance().setState = jest.fn();
-    wrapper.update();
-    wrapper.instance().handleCategoryChange({ persist: jest.fn(), target: { id: 'title', value: 'Happy Song' } });
-    expect(wrapper.instance().setState).toHaveBeenCalled();
-  });
-  it('handles editSong change', () => {
-    wrapper.instance().setState = jest.fn();
-    wrapper.update();
-    wrapper.instance().componentDidUpdate({ editSong: { _id: '999999' } });
-    expect(wrapper.instance().setState).toHaveBeenCalled();
-  });
-  it('handle song edit button', () => {
-    wrapper.instance().handleNavClick({ target: { id: 'Songs-Button' } });
-    expect(wrapper.instance().state.navSong).toBe(true);
-    expect(wrapper.instance().state.navTour).toBe(false);
-    expect(wrapper.instance().state.navPhoto).toBe(false);
-    wrapper.instance().controller.songBlock();
-  });
-  it('handle tour editor button', () => {
-    wrapper.instance().handleNavClick({ target: { id: 'Tours-Button' } });
-    expect(wrapper.instance().state.navTour).toBe(true);
-    expect(wrapper.instance().state.navPhoto).toBe(false);
-    expect(wrapper.instance().state.navSong).toBe(false);
-    wrapper.instance(<TourEditor comp={wrapper} editTour={{}} />);
-  });
-  it('handle photo editor button', () => {
-    wrapper.instance().handleNavClick({ target: { id: 'Photos-Button' } });
-    expect(wrapper.instance().state.navPhoto).toBe(true);
-    expect(wrapper.instance().state.navSong).toBe(false);
-    expect(wrapper.instance().state.navTour).toBe(false);
-    wrapper.instance().controller.pictureBlock();
   });
 });

@@ -9,9 +9,9 @@ import type { ISong } from '../../providers/Songs.provider';
 import mapStoreToProps, { Tour, Iimage } from '../../redux/mapStoreToProps';
 import forms from '../../lib/forms';
 import commonUtils from '../../lib/commonUtils';
-import AddTime from '../../lib/timeKeeper';
-import Ttable from '../../components/TourTable';
 import Controller, { MusicDashboardController } from './MusicDashboardController';
+import { TourEditor } from '../../components/TourEditor';
+import { DashNavigationButtons } from '../../components/DashNavigationButtons';
 
 interface MusicDashboardProps extends RouteComponentProps<Record<string, string | undefined>> {
   dispatch: Dispatch<AnyAction>;
@@ -33,6 +33,7 @@ type MusicDashboardState = {
   more: string;
   [x: number]: number;
   songState: ISong;
+  navState:{navSong:boolean, navPhoto:boolean, navTour: boolean};
 };
 export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboardState> {
   forms: typeof forms;
@@ -44,9 +45,7 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
   constructor(props: MusicDashboardProps) {
     super(props);
     this.state = {
-      songState: {
-        image: '', composer: '', year: 2020, album: '', title: '', url: '', artist: '', category: 'original', _id: '',
-      },
+      songState: {image: '', composer: '', year: 2020, album: '', title: '', url: '', artist: '', category: 'original', _id: '',},
       picTitle: '',
       picUrl: '',
       redirect: false,
@@ -56,6 +55,7 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
       more: '',
       venue: '',
       location: '',
+      navState: {navSong: true,navPhoto: false,navTour: false},
     };
     this.forms = forms;
     this.controller = new Controller(this);
@@ -72,6 +72,7 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
     this.onChangeSong = this.onChangeSong.bind(this);
     this.handleCategoryChange = this.handleCategoryChange.bind(this);
     this.setSongState = this.setSongState.bind(this);
+    this.handleNavClick = this.handleNavClick.bind(this);
   }
 
   componentDidMount(): void { this.commonUtils.setTitleAndScroll('Music Dashboard', window.screen.width); }
@@ -252,69 +253,38 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
       </div>
     );
   }
+  
+  handleNavClick(e:AnyAction): void {
+    if (e.target.id === 'Songs-Button') {
+      this.setState({ navState:{navSong: true, navPhoto: false, navTour: false }});
+    }
+    if (e.target.id === 'Tours-Button') {
+      this.setState({ navState: {navSong: false , navPhoto: false ,navTour: true }});
 
-  newTourForm(): JSX.Element {
-    let {
-      location, tickets, more, date, time, venue,
-    } = this.state;
-    const { editTour } = this.props;
-    date = this.fixDate(date, editTour);
-    if (time === '' && editTour.time !== undefined) { time = editTour.time; }
-    if (tickets === '' && editTour.tickets !== undefined) { tickets = editTour.tickets; }
-    if (more === '' && editTour.more !== undefined) { more = editTour.more; }
-    if (venue === '' && editTour.venue !== undefined) { venue = editTour.venue; }
-    if (location === '' && editTour.location !== undefined) { location = editTour.location; }
-    return (
-      <div className="material-content elevation3" style={{ maxWidth: '9.1in', margin: 'auto' }}>
-        <h5 style={{ textAlign: 'center', marginBottom: '30px' }}>
-          {editTour._id ? 'Edit ' : 'Create a New '}
-          Tour Event
-        </h5>
-        <p>{' '}</p>
-        <form id="new-tour" style={{ marginLeft: '4px', marginTop: '12px' }}>
-          <p>* Date</p>
-          {this.forms.makeInput('date', 'Date', true, this.onChange, date)}
-          <AddTime setFormTime={this.setFormTime} initTime={time} />
-          {this.editor(venue)}
-          <p>{' '}</p>
-          {this.forms.makeInput('text', 'Location', true, this.onChange, location)}
-          {this.forms.makeInput('text', 'Tickets', false, this.onChange, tickets)}
-          {this.forms.makeInput('text', 'More', false, this.onChange, more)}
-          {this.tourButtons()}
-        </form>
-      </div>
-    );
+    }
+    if (e.target.id === 'Photos-Button') {
+      this.setState({ navState:{navSong: false, navPhoto: true, navTour: false }});
+    }
   }
-
+  
   render(): JSX.Element {
     const { redirect } = this.state;
     const { editTour } = this.props;
+    const { navState } = this.state;
     return (
       <div className="page-content">
         {redirect ? <Redirect to="/music" /> : null}
-        <h3 style={{ textAlign: 'center', margin: '14px', fontWeight: 'bold' }}>Music Dashboard</h3>
-        <div className="material-content elevation3" style={{ maxWidth: '9.1in', margin: 'auto' }}>
-          <h5 style={{ textAlign: 'center', marginBottom: 0 }}>Modify Photo Slideshow</h5>
-          {this.controller.changePicDiv()}
-        </div>
-        <p>&nbsp;</p>
-        {this.newTourForm()}
-        <p>&nbsp;</p>
-        {!editTour._id ? (
-          <div className="search-table-outer" style={{ maxWidth: '96%', margin: 'auto', zIndex: 0 }}>
-            <h5 style={{ textAlign: 'center', marginBottom: '3px' }}>Modify</h5>
-            <Ttable deleteButton />
-          </div>
-        ) : null}
-        <p>&nbsp;</p>
-        {this.controller.changeSongDiv()}
-        <p>&nbsp;</p>
-        {this.controller.modifySongsSection()}
-        <p>&nbsp;</p>
+        <h3 style={{ textAlign: 'center', margin: '14px', fontWeight: 'bold' }}>
+          Music Dashboard
+          <DashNavigationButtons comp={this}/>
+        </h3>
+        {navState.navSong ? (this.controller.songBlock()) : null}
+        {navState.navPhoto ? (this.controller.pictureBlock()) : null}
+        {navState.navTour ? <TourEditor comp={this} editTour={editTour} /> : null}
       </div>
     );
   }
+  
 }
 
 export default withRouter(connect(mapStoreToProps, null)(MusicDashboard));
-
