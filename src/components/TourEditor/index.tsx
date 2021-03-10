@@ -3,7 +3,10 @@ import AddTime from '../../lib/timeKeeper';
 import type { MusicDashboard } from '../../containers/MusicDashboard';
 import Ttable from '../TourTable';
 
-export interface IeditTour { date?:string; time?:string; tickets?:string; more?:string; venue?:string; location?:string; _id?:string; datetime?:string }
+export interface IeditTour {
+  date?:string; time?:string;
+  tickets?:string; more?:string; venue?:string; location?:string; _id?:string; datetime?:string
+}
 type PageProps = { editTour:IeditTour, comp:MusicDashboard };
 
 const newTourForm = (comp:MusicDashboard, editTour:IeditTour): JSX.Element => {

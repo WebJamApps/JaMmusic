@@ -7,7 +7,7 @@ import type { AGClientSocket } from 'socketcluster-client';
 import type { Dispatch, AnyAction } from 'redux';
 import type { ISong } from '../../providers/Songs.provider';
 import mapStoreToProps, { Tour, Iimage } from '../../redux/mapStoreToProps';
-import forms from '../../lib/forms';
+import Forms from '../../lib/forms';
 import commonUtils from '../../lib/commonUtils';
 import Controller, { MusicDashboardController } from './MusicDashboardController';
 import { TourEditor } from '../../components/TourEditor';
@@ -35,29 +35,32 @@ type MusicDashboardState = {
   songState: ISong;
   navState:{navSong:boolean, navPhoto:boolean, navTour: boolean};
 };
-export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboardState> {
-  forms: typeof forms;
 
+const InitialState = {
+  songState: {
+    image: '', composer: '', year: 2020, album: '', title: '', url: '', artist: '', category: 'original', _id: '',
+  },
+  picTitle: '',
+  picUrl: '',
+  redirect: false,
+  date: '',
+  time: '',
+  tickets: '',
+  more: '',
+  venue: '',
+  location: '',
+  navState: { navSong: true, navPhoto: false, navTour: false },
+};
+export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboardState> {
   commonUtils: { setTitleAndScroll: (pageTitle: string, width: number) => void };
 
   controller: MusicDashboardController;
 
+  public forms = Forms;
+
   constructor(props: MusicDashboardProps) {
     super(props);
-    this.state = {
-      songState: {image: '', composer: '', year: 2020, album: '', title: '', url: '', artist: '', category: 'original', _id: '',},
-      picTitle: '',
-      picUrl: '',
-      redirect: false,
-      date: '',
-      time: '',
-      tickets: '',
-      more: '',
-      venue: '',
-      location: '',
-      navState: {navSong: true,navPhoto: false,navTour: false},
-    };
-    this.forms = forms;
+    this.state = InitialState;
     this.controller = new Controller(this);
     this.onChange = this.onChange.bind(this);
     this.createTour = this.createTour.bind(this);
@@ -253,20 +256,19 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
       </div>
     );
   }
-  
+
   handleNavClick(e:AnyAction): void {
     if (e.target.id === 'Songs-Button') {
-      this.setState({ navState:{navSong: true, navPhoto: false, navTour: false }});
+      this.setState({ navState: { navSong: true, navPhoto: false, navTour: false } });
     }
     if (e.target.id === 'Tours-Button') {
-      this.setState({ navState: {navSong: false , navPhoto: false ,navTour: true }});
-
+      this.setState({ navState: { navSong: false, navPhoto: false, navTour: true } });
     }
     if (e.target.id === 'Photos-Button') {
-      this.setState({ navState:{navSong: false, navPhoto: true, navTour: false }});
+      this.setState({ navState: { navSong: false, navPhoto: true, navTour: false } });
     }
   }
-  
+
   render(): JSX.Element {
     const { redirect } = this.state;
     const { editTour } = this.props;
@@ -276,7 +278,7 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
         {redirect ? <Redirect to="/music" /> : null}
         <h3 style={{ textAlign: 'center', margin: '14px', fontWeight: 'bold' }}>
           Music Dashboard
-          <DashNavigationButtons comp={this}/>
+          <DashNavigationButtons comp={this} />
         </h3>
         {navState.navSong ? (this.controller.songBlock()) : null}
         {navState.navPhoto ? (this.controller.pictureBlock()) : null}
@@ -284,7 +286,6 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
       </div>
     );
   }
-  
 }
 
 export default withRouter(connect(mapStoreToProps, null)(MusicDashboard));
