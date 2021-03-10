@@ -233,7 +233,7 @@ describe('Dashboard Container', () => {
     expect(wrapper.instance().state.navSong).toBe(true);
     expect(wrapper.instance().state.navTour).toBe(false);
     expect(wrapper.instance().state.navPhoto).toBe(false);
-    wrapper.instance().songBlock();
+    wrapper.instance().controller.songBlock();
   });
   it('handle tour editor button', () => {
     wrapper.instance().handleNavClick({ target: { id: 'Tours-Button' } });
@@ -247,6 +247,6 @@ describe('Dashboard Container', () => {
     expect(wrapper.instance().state.navPhoto).toBe(true);
     expect(wrapper.instance().state.navSong).toBe(false);
     expect(wrapper.instance().state.navTour).toBe(false);
-    wrapper.instance().pictureBlock();
+    wrapper.instance().controller.pictureBlock();
   });
 });
