@@ -61,6 +61,18 @@ export class MusicDashboardController {
     if (r.status === 201) { window.location.reload(); return 'song created'; }
     return `${r.status} song was not created`;
   }
+  
+  async editSong(): Promise<string> {
+    const { songState } = this.view.state;
+    const { auth } = this.view.props;
+    const newSong = { ...songState, _id:undefined };
+    let r: superagent.Response;
+    try {
+      r = await this.superagent.put(`${process.env.BackendUrl}/song/${newSong._id}`);
+    } catch (e) { return `${e.message}`; }
+    if (r.status === 201) { window.location.reload(); return 'song edited'; }
+    return `${r.status} song was not edited`;
+  }
 
   changePicDiv(): JSX.Element {
     let { editPic } = this.view.props;
@@ -158,7 +170,7 @@ export class MusicDashboardController {
     return null;
   }
 
-  songButtons(): JSX.Element {
+  addSongButton(): JSX.Element {
     const { songState } = this.view.state;
     return (
       <div style={{ textAlign: 'left', marginTop: '10px', maxWidth: '85%' }}>
@@ -168,7 +180,7 @@ export class MusicDashboardController {
         >
           <i>* Required</i>
         </span>
-        {this.editButton()}
+        
         <button
           disabled={!(songState.year && songState.title && songState.url && songState.artist && songState.category)}
           type="button"
@@ -176,39 +188,59 @@ export class MusicDashboardController {
         >
           Add Song
         </button>
+        
+      </div>
+    );
+  }
+
+  editSongButton(): JSX.Element {
+    const { songState } = this.view.state;
+    return (
+      <div style={{ textAlign: 'left', marginTop: '10px', maxWidth: '85%' }}>
+        <span style={{
+          fontSize: '16px', marginRight: '20px', position: 'relative', display: 'inline-block',
+        }}
+        >
+          <i>* Required</i>
+        </span>
+        <button
+          style={{ position: 'relative',display:'inline-block'}}
+          type="button"
+          onClick={this.songBlock}
+        >
+          Cancel
+        </button>
+
+        <button
+          disabled={!(songState.year && songState.title && songState.url && songState.artist && songState.category)}
+          style={{ position: 'relative',display:'inline-block'}}
+          type="button"
+          onClick={this.editSong}
+        >
+          Edit Song
+        </button>
       </div>
     );
   }
 
   changeSongDiv(): JSX.Element {
-    // const { editSong } = this.view.props;
+    let { editSong } = this.view.props;
     const { songState } = this.view.state;
-    // if (!editSong) {
-    //   editSong = {
-    //     title: '', url: '', artist: '', category: 'original', _id: '',
-    //   };
-    // }
+    if (!editSong) editSong = {_id: '', category: 'original', year:2021, title:'',  url: ''};
     return (
       <div
         className="material-content elevation3"
         style={{ maxWidth: '320px', margin: '30px auto' }}
       >
         <h5 style={{ marginBottom: 0 }}>
-          {/* {editSong && editSong._id ? 'Edit ' : 'Add '} */}
-          Add Song
+          {editSong && editSong._id ? 'Edit ' : 'Add '}
+          Song
         </h5>
         <form id="picsForm">
           {this.songForm(songState)}
           {this.moreSongForm(songState)}
           <p>{' '}</p>
-          {this.songButtons()}
-          {/* <button
-            disabled={!(songState.title && songState.url && songState.artist && songState.category)}
-            type="button"
-            onClick={this.addSong}
-          >
-            Add Song
-          </button> */}
+          {songState!==editSong ? this.addSongButton():this.editSongButton()}
         </form>
       </div>
     );
