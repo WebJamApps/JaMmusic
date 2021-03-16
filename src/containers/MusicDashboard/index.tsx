@@ -34,6 +34,7 @@ type MusicDashboardState = {
   [x: number]: number;
   songState: ISong;
   navState:{navSong:boolean, navPhoto:boolean, navTour: boolean};
+  editSong: ISong | { _id:'', category:'', year:2020, title:'', url:'' },
 };
 
 const InitialState = {
@@ -50,6 +51,7 @@ const InitialState = {
   venue: '',
   location: '',
   navState: { navSong: true, navPhoto: false, navTour: false },
+  editSong: { _id:'', category:'', year:2021, title:'', url:'' },
 };
 export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboardState> {
   commonUtils: { setTitleAndScroll: (pageTitle: string, width: number) => void };
