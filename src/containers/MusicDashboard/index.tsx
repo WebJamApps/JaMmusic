@@ -76,7 +76,7 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
     this.handleCategoryChange = this.handleCategoryChange.bind(this);
     this.setSongState = this.setSongState.bind(this);
     this.handleNavClick = this.handleNavClick.bind(this);
-    this.resetSongForm = this.resetSongForm.bind(this);
+    // this.resetSongForm = this.resetSongForm.bind(this);
   }
 
   componentDidMount(): void { this.commonUtils.setTitleAndScroll('Music Dashboard', window.screen.width); }
@@ -270,21 +270,21 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
     }
   }
 
-  resetSongForm():void {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'EDIT_SONG',
-      songData: {
-        _id: '', category: '', year: 2021, title: '', url: '',
-      },
-    });
-    this.setState({
-      songState: {
-        _id: '', category: '', year: 2021, title: '', url: '',
-      },
-    });
-    window.location.reload();
-  }
+  // resetSongForm():void {
+  //   const { dispatch } = this.props;
+  //   dispatch({
+  //     type: 'EDIT_SONG',
+  //     songData: {
+  //       _id: '', category: '', year: 2021, title: '', url: '',
+  //     },
+  //   });
+  //   this.setState({
+  //     songState: {
+  //       _id: '', category: '', year: 2021, title: '', url: '',
+  //     },
+  //   });
+  //   window.location.reload();
+  // }
 
   render(): JSX.Element {
     const { redirect } = this.state;

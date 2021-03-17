@@ -22,6 +22,7 @@ export class MusicDashboardController {
     this.superagent = superagent;
     this.modifySongsSection = this.modifySongsSection.bind(this);
     this.updateSongAPI = this.updateSongAPI.bind(this);
+    this.resetSongForm = this.resetSongForm.bind(this);
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -153,10 +154,10 @@ export class MusicDashboardController {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  editSongButtons(editSong: ISong | { _id: ''; category: ''; year: 2020; title: ''; url: ''; }):JSX.Element | null {
+  editSongButtons(editSong: ISong):JSX.Element | null {
     return (editSong._id !== '' ? (
       <span>
-        <button className="floatRight" type="button" id="cancel-edit-song" onClick={this.view.resetSongForm}>
+        <button className="floatRight" type="button" id="cancel-edit-song" onClick={this.resetSongForm}>
           Cancel
         </button>
         <button
@@ -172,7 +173,7 @@ export class MusicDashboardController {
     ) : null);
   }
 
-  songButtons(editSong: ISong | { _id: ''; category: ''; year: 2020; title: ''; url: ''; }): JSX.Element {
+  songButtons(editSong: ISong): JSX.Element {
     const { songState } = this.view.state;
     return (
       <div style={{ textAlign: 'left', marginTop: '10px' }}>
@@ -221,6 +222,22 @@ export class MusicDashboardController {
         </form>
       </div>
     );
+  }
+
+  resetSongForm():void {
+    const { dispatch } = this.view.props;
+    dispatch({
+      type: 'EDIT_SONG',
+      songData: {
+        _id: '', category: '', year: 2021, title: '', url: '',
+      },
+    });
+    this.view.setState({
+      songState: {
+        _id: '', category: '', year: 2021, title: '', url: '',
+      },
+    });
+    window.location.reload();
   }
 
   pictureBlock(): JSX.Element {
