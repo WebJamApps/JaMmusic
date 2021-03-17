@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Editor } from '@tinymce/tinymce-react';
 import moment from 'moment';
 import { withRouter, Redirect, RouteComponentProps } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -76,7 +75,6 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
     this.handleCategoryChange = this.handleCategoryChange.bind(this);
     this.setSongState = this.setSongState.bind(this);
     this.handleNavClick = this.handleNavClick.bind(this);
-    // this.resetSongForm = this.resetSongForm.bind(this);
   }
 
   componentDidMount(): void { this.commonUtils.setTitleAndScroll('Music Dashboard', window.screen.width); }
@@ -184,35 +182,6 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
     return this.createTourApi(tour);
   }
 
-  editor(venue: string): JSX.Element {
-    return (
-      <div className="horiz-scroll">
-        <div style={{ width: '850px', margin: 'auto' }}>
-          <p style={{ marginBottom: 0 }}>* Venue</p>
-          <Editor
-            value={venue}
-            apiKey={process.env.TINY_KEY}
-            init={{
-              height: 500,
-              menubar: 'insert tools',
-              menu: { format: { title: 'Format', items: 'forecolor backcolor' } },
-              plugins: [
-                'advlist autolink lists link image charmap print preview anchor',
-                'searchreplace visualblocks code fullscreen',
-                'insertdatetime media table paste code help wordcount',
-              ],
-              toolbar:
-            'undo redo | formatselect | bold italic backcolor forecolor |'
-            + 'alignleft aligncenter alignright alignjustify |'
-            + 'bullist numlist outdent indent | removeformat | help',
-            }}
-            onEditorChange={this.handleEditorChange}
-          />
-        </div>
-      </div>
-    );
-  }
-
   editTourAPI(): boolean {
     const {
       date, time, location, venue, tickets, more,
@@ -229,35 +198,6 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
     return true;
   }
 
-  tourButtons(): JSX.Element {
-    const { editTour } = this.props;
-    return (
-      <div style={{ textAlign: 'left', marginTop: '10px', maxWidth: '85%' }}>
-        <span style={{
-          fontSize: '16px', marginRight: '20px', position: 'relative', display: 'inline-block',
-        }}
-        >
-          <i>* Required</i>
-        </span>
-        {editTour._id ? (
-          <button className="floatRight" type="button" id="cancel-edit-pic" onClick={this.resetEditForm}>
-            Cancel
-          </button>
-        ) : null}
-        <button
-          className="floatRight"
-          disabled={this.validateForm()}
-          type="button"
-          onClick={editTour._id ? this.editTourAPI : this.createTour}
-        >
-          {editTour._id ? 'Edit' : 'Create'}
-          {' '}
-          Tour
-        </button>
-      </div>
-    );
-  }
-
   handleNavClick(e:AnyAction): void {
     if (e.target.id === 'Songs-Button') {
       this.setState({ navState: { navSong: true, navPhoto: false, navTour: false } });
@@ -269,22 +209,6 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
       this.setState({ navState: { navSong: false, navPhoto: true, navTour: false } });
     }
   }
-
-  // resetSongForm():void {
-  //   const { dispatch } = this.props;
-  //   dispatch({
-  //     type: 'EDIT_SONG',
-  //     songData: {
-  //       _id: '', category: '', year: 2021, title: '', url: '',
-  //     },
-  //   });
-  //   this.setState({
-  //     songState: {
-  //       _id: '', category: '', year: 2021, title: '', url: '',
-  //     },
-  //   });
-  //   window.location.reload();
-  // }
 
   render(): JSX.Element {
     const { redirect } = this.state;

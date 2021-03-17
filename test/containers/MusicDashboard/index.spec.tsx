@@ -228,6 +228,9 @@ describe('Dashboard Container', () => {
     wrapper.instance().componentDidUpdate({ editSong: { _id: '999999' } });
     expect(wrapper.instance().setState).toHaveBeenCalled();
   });
+  it('validates the tour form and returns true to disable the submit button when not valid', () => {
+    expect(wrapper.instance().validateForm()).toBe(true);
+  });
   // it('handle song edit button', () => {
   //   wrapper.instance().handleNavClick({ target: { id: 'Songs-Button' } });
   //   expect(wrapper.instance().state.navSong).toBe(true);
