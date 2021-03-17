@@ -18,7 +18,7 @@ interface MusicDashboardProps extends RouteComponentProps<Record<string, string 
   scc: AGClientSocket;
   auth: { token: string };
   editPic?: Iimage,
-  editSong: ISong | {_id:'', category:'', year:2020, title:'', url:''},
+  editSong: ISong | {_id:'', category:'', year:2021, title:'', url:''},
   editTour: { date?: string; time?: string; tickets?: string; more?: string; venue?: string; location?: string; _id?: string; datetime?: string };
 }
 type MusicDashboardState = {
@@ -76,6 +76,7 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
     this.handleCategoryChange = this.handleCategoryChange.bind(this);
     this.setSongState = this.setSongState.bind(this);
     this.handleNavClick = this.handleNavClick.bind(this);
+    this.resetSongForm = this.resetSongForm.bind(this);
   }
 
   componentDidMount(): void { this.commonUtils.setTitleAndScroll('Music Dashboard', window.screen.width); }
@@ -267,6 +268,22 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
     if (e.target.id === 'Photos-Button') {
       this.setState({ navState: { navSong: false, navPhoto: true, navTour: false } });
     }
+  }
+
+  resetSongForm():void {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'EDIT_SONG',
+      songData: {
+        _id: '', category: '', year: 2021, title: '', url: '',
+      },
+    });
+    this.setState({
+      songState: {
+        _id: '', category: '', year: 2021, title: '', url: '',
+      },
+    });
+    window.location.reload();
   }
 
   render(): JSX.Element {
