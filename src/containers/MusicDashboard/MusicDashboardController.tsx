@@ -1,28 +1,26 @@
 import React from 'react';
-import superagent from 'superagent';
+import Superagent from 'superagent';
 import type { ISong } from '../../providers/Songs.provider';
 import type { MusicDashboard } from './index';
-import forms from '../../lib/forms';
+import Forms from '../../lib/forms';
 import SongsTable from './SongsTable';
+import SongEditorUtils from '../../components/SongEditor/songEditorUtils';
 
 export class MusicDashboardController {
   view: MusicDashboard;
 
-  forms: typeof forms;
+  forms = Forms;
 
-  superagent: typeof superagent;
+  superagent = Superagent;
+
+  songEditorUtils = SongEditorUtils;
 
   constructor(view: MusicDashboard) {
     this.view = view;
-    this.forms = forms;
     this.changePicDiv = this.changePicDiv.bind(this);
     this.addPic = this.addPic.bind(this);
     this.addSong = this.addSong.bind(this);
-    this.editSongButtons = this.editSongButtons.bind(this);
-    this.superagent = superagent;
     this.modifySongsSection = this.modifySongsSection.bind(this);
-    this.updateSongAPI = this.updateSongAPI.bind(this);
-    this.resetSongForm = this.resetSongForm.bind(this);
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -53,7 +51,7 @@ export class MusicDashboardController {
     const { songState } = this.view.state;
     const { auth } = this.view.props;
     const newSong = { ...songState, _id: undefined };
-    let r: superagent.Response;
+    let r: Superagent.Response;
     try {
       r = await this.superagent.post(`${process.env.BackendUrl}/song`)
         .set('Content-Type', 'application/json')
@@ -62,22 +60,6 @@ export class MusicDashboardController {
     } catch (e) { return `${e.message}`; }
     if (r.status === 201) { window.location.reload(); return 'song created'; }
     return `${r.status} song was not created`;
-  }
-
-  async updateSongAPI(): Promise<string> {
-    const { songState } = this.view.state;
-    const { editSong } = this.view.props;
-    const { auth } = this.view.props;
-    const songChanges = { ...songState, _id: undefined };
-    let r: superagent.Response;
-    try {
-      r = await this.superagent.put(`${process.env.BackendUrl}/song/${editSong._id}`)
-        .set('Content-Type', 'application/json')
-        .set('Authorization', `Bearer ${auth.token}`)
-        .send(songChanges);
-    } catch (e) { return `${e.message}`; }
-    if (r.status === 200) { window.location.reload(); return 'song updated'; }
-    return `${r.status} song was not updated`;
   }
 
   changePicDiv(): JSX.Element {
@@ -153,27 +135,7 @@ export class MusicDashboardController {
     );
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  editSongButtons(editSong: ISong):JSX.Element | null {
-    return (editSong._id !== '' ? (
-      <span>
-        <button className="floatRight" type="button" id="cancel-edit-song" onClick={this.resetSongForm}>
-          Cancel
-        </button>
-        <button
-          className=""
-          type="button"
-          onClick={this.updateSongAPI}
-        >
-          Edit
-          {' '}
-          Song
-        </button>
-      </span>
-    ) : null);
-  }
-
-  songButtons(editSong: ISong): JSX.Element {
+  songButtons(editSong?: ISong): JSX.Element {
     const { songState } = this.view.state;
     return (
       <div style={{ textAlign: 'left', marginTop: '10px' }}>
@@ -183,8 +145,8 @@ export class MusicDashboardController {
         >
           <i>* Required</i>
         </span>
-        {this.editSongButtons(editSong)}
-        {editSong._id === '' ? (
+        {this.songEditorUtils.editSongButtons(this.view, editSong)}
+        {!editSong || editSong._id === '' ? (
           <button
             disabled={!(songState.year && songState.title && songState.url && songState.artist && songState.category)}
             type="button"
@@ -198,13 +160,8 @@ export class MusicDashboardController {
   }
 
   changeSongDiv(): JSX.Element {
-    let { editSong } = this.view.props;
+    const { editSong } = this.view.props;
     const { songState } = this.view.state;
-    if (!editSong) {
-      editSong = {
-        title: '', url: '', artist: '', category: 'original', _id: '', year: 2021,
-      };
-    }
     return (
       <div
         className="material-content elevation3"
@@ -222,22 +179,6 @@ export class MusicDashboardController {
         </form>
       </div>
     );
-  }
-
-  resetSongForm():void {
-    const { dispatch } = this.view.props;
-    dispatch({
-      type: 'EDIT_SONG',
-      songData: {
-        _id: '', category: '', year: 2021, title: '', url: '',
-      },
-    });
-    this.view.setState({
-      songState: {
-        _id: '', category: '', year: 2021, title: '', url: '',
-      },
-    });
-    window.location.reload();
   }
 
   pictureBlock(): JSX.Element {

@@ -198,14 +198,14 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
     return true;
   }
 
-  handleNavClick(e:AnyAction): void {
-    if (e.target.id === 'Songs-Button') {
+  handleNavClick(e: React.MouseEvent<HTMLButtonElement>): void {
+    if (e.currentTarget.id === 'Songs-Button') {
       this.setState({ navState: { navSong: true, navPhoto: false, navTour: false } });
     }
-    if (e.target.id === 'Tours-Button') {
+    if (e.currentTarget.id === 'Tours-Button') {
       this.setState({ navState: { navSong: false, navPhoto: false, navTour: true } });
     }
-    if (e.target.id === 'Photos-Button') {
+    if (e.currentTarget.id === 'Photos-Button') {
       this.setState({ navState: { navSong: false, navPhoto: true, navTour: false } });
     }
   }
