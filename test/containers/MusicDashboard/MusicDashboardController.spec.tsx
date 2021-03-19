@@ -28,25 +28,25 @@ describe('MusicDashboardController', () => {
   //   const sButton = result.find('button').get(0);
   //   expect(sButton.props.disabled).toBe(false);
   // });
-  it('adds song to database', async () => {
-    const controller = new Controller(viewStub);
-    const sa:any = { post: jest.fn(() => ({ set: () => ({ set: () => ({ send: () => Promise.resolve({ status: 201 }) }) }) })) };
-    controller.superagent = sa;
-    const result = await controller.addSong();
-    expect(result).toBe('song created');
-  });
-  it('catches error when adds song to database', async () => {
-    const controller = new Controller(viewStub);
-    const sa:any = { post: jest.fn(() => ({ set: () => ({ set: () => ({ send: () => Promise.reject(new Error('bad')) }) }) })) };
-    controller.superagent = sa;
-    const result = await controller.addSong();
-    expect(result).toBe('bad');
-  });
-  it('handles 300 status when adds song to database', async () => {
-    const controller = new Controller(viewStub);
-    const sa:any = { post: jest.fn(() => ({ set: () => ({ set: () => ({ send: () => Promise.resolve({ status: 300 }) }) }) })) };
-    controller.superagent = sa;
-    const result = await controller.addSong();
-    expect(result).toBe('300 song was not created');
-  });
+  // it('adds song to database', async () => {
+  //   const controller = new Controller(viewStub);
+  //   const sa:any = { post: jest.fn(() => ({ set: () => ({ set: () => ({ send: () => Promise.resolve({ status: 201 }) }) }) })) };
+  //   controller.superagent = sa;
+  //   const result = await controller.addSong();
+  //   expect(result).toBe('song created');
+  // });
+  // it('catches error when adds song to database', async () => {
+  //   const controller = new Controller(viewStub);
+  //   const sa:any = { post: jest.fn(() => ({ set: () => ({ set: () => ({ send: () => Promise.reject(new Error('bad')) }) }) })) };
+  //   controller.superagent = sa;
+  //   const result = await controller.addSong();
+  //   expect(result).toBe('bad');
+  // });
+  // it('handles 300 status when adds song to database', async () => {
+  //   const controller = new Controller(viewStub);
+  //   const sa:any = { post: jest.fn(() => ({ set: () => ({ set: () => ({ send: () => Promise.resolve({ status: 300 }) }) }) })) };
+  //   controller.superagent = sa;
+  //   const result = await controller.addSong();
+  //   expect(result).toBe('300 song was not created');
+  // });
 });
