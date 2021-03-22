@@ -137,5 +137,5 @@ function songButtons(songState: ISong, comp:MusicDashboard, editSong?: ISong): J
 }
 
 export default {
-  updateSongAPI, resetSongForm, editSongButtons, songForm, moreSongForm, songButtons,
+  updateSongAPI, addSongAPI, resetSongForm, editSongButtons, songForm, moreSongForm, songButtons,
 };
