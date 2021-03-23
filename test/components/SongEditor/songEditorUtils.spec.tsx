@@ -1,9 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import songEditorUtils from '../../../src/components/SongEditor/songEditorUtils';
 import { shallow } from 'enzyme';
-import React from 'react';
-import SongEditor from '../../../src/components/SongEditor';
-import { toEditorSettings } from 'typescript';
+import songEditorUtils from '../../../src/components/SongEditor/songEditorUtils';
 
 describe('songEditorUtils', () => {
   let compStub:any = {};
@@ -69,8 +66,10 @@ describe('songEditorUtils', () => {
     const res = await songEditorUtils.addSongAPI(compStub.props.editSong, compStub.props.auth, compStub.controller);
     expect(res).toBe('400 song was not created');
   });
-   it('SongButtons calls addSongAPI', async () => {
-    compStub.props.editSong={_id: '', category: '', year: 2021, title: '', url: ''};
+  it('SongButtons calls addSongAPI', async () => {
+    compStub.props.editSong = {
+      _id: '', category: '', year: 2021, title: '', url: '',
+    };
     compStub.state.songState = {
       year: 2021, title: 'title', url: 'url', artist: 'artist', category: 'category',
     };
@@ -78,13 +77,13 @@ describe('songEditorUtils', () => {
     wrapper.find('button').at(0).simulate('click');
     expect(wrapper.find('button').at(0).text()).toBe('Add Song');
     expect(compStub.controller.superagent.post).toHaveBeenCalled();
-   });
-   it('SongButtons emulates click on editButton', () => {
+  });
+  it('SongButtons emulates click on editButton', () => {
     const wrapper = shallow(songEditorUtils.songButtons(compStub.state.songState, compStub, compStub.props.editSong));
     wrapper.find('button').at(1).simulate('click');
     expect(compStub.controller.superagent.put).toHaveBeenCalled();
   });
-  it('SongButtons emulates click on editButton', () => {
+  it('SongButtons emulates click on cancel button', () => {
     const wrapper = shallow(songEditorUtils.songButtons(compStub.state.songState, compStub, compStub.props.editSong));
     wrapper.find('button').at(0).simulate('click');
     expect(window.location.reload).toHaveBeenCalled();
