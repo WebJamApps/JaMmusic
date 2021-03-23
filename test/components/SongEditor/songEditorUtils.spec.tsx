@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { shallow } from 'enzyme';
+// import React from 'react';
 import songEditorUtils from '../../../src/components/SongEditor/songEditorUtils';
 
 describe('songEditorUtils', () => {
@@ -13,7 +15,12 @@ describe('songEditorUtils', () => {
     compStub = {
       state: { songState: {} },
       props: { editSong: {}, auth: {}, dispatch: jest.fn() },
-      controller: { superagent: { put: () => ({ set: () => ({ set: () => ({ send: () => Promise.resolve({ status: 200 }) }) }) }) } },
+      controller: {
+        superagent: {
+          put: () => ({ set: () => ({ set: () => ({ send: () => Promise.resolve({ status: 200 }) }) }) }),
+          post: jest.fn(() => ({ set: () => ({ set: () => ({ send: () => Promise.resolve({ status: 201 }) }) }) })),
+        },
+      },
       setState: jest.fn(),
     };
   });
@@ -60,12 +67,13 @@ describe('songEditorUtils', () => {
     const res = await songEditorUtils.addSongAPI(compStub.props.editSong, compStub.props.auth, compStub.controller);
     expect(res).toBe('400 song was not created');
   });
-  // it('SongButtons calls editButton', () => {
-  //   songEditorUtils.songButtons(compStub.state.songState, compStub, compStub.props.editSong);
-  //   songEditorUtils.editSongButtons(compStub, compStub.props.editSong);
-  // });
-  // it('SongButtons calls addSongAPI', () => {
-  //   songEditorUtils.songButtons(compStub.state.songState, compStub, compStub.props.editSong);
-  //   songEditorUtils.addSongAPI(compStub.props.editSong, compStub.props.auth, compStub.controller);
-  // });
+  it('SongButtons calls addSongAPI', () => {
+    compStub.props.editSong = undefined;
+    compStub.state.songState = {
+      year: 2021, title: 'title', url: 'url', artist: 'artist', category: 'category',
+    };
+    const wrapper = shallow(songEditorUtils.songButtons(compStub.state.songState, compStub, compStub.props.editSong));
+    wrapper.find('button#add-song-button').simulate('click');
+    expect(compStub.controller.superagent.post).toHaveBeenCalled();
+  });
 });

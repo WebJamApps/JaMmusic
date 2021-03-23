@@ -100,7 +100,7 @@ function moreSongForm(songState: ISong, onChangeSong: React.ChangeEventHandler<H
   );
 }
 
-async function addSongAPI(songState: ISong, auth: { token: string; }, controller: MusicDashboardController): Promise<string> {
+const addSongAPI = async (songState: ISong, auth: { token: string; }, controller: MusicDashboardController): Promise<string> => {
   const newSong = { ...songState, _id: undefined };
   let r: superagent.Response;
   try {
@@ -111,30 +111,29 @@ async function addSongAPI(songState: ISong, auth: { token: string; }, controller
   } catch (e) { return `${e.message}`; }
   if (r.status === 201) { window.location.reload(); return 'song created'; }
   return `${r.status} song was not created`;
-}
+};
 
-function songButtons(songState: ISong, comp:MusicDashboard, editSong?: ISong): JSX.Element {
-  return (
-    <div style={{ textAlign: 'left', marginTop: '10px' }}>
-      <span style={{
-        fontSize: '16px', marginRight: '20px', position: 'relative', display: 'inline-block',
-      }}
+const songButtons = (songState: ISong, comp:MusicDashboard, editSong?: ISong): JSX.Element => (
+  <div style={{ textAlign: 'left', marginTop: '10px' }}>
+    <span style={{
+      fontSize: '16px', marginRight: '20px', position: 'relative', display: 'inline-block',
+    }}
+    >
+      <i>* Required</i>
+    </span>
+    {editSongButtons(comp, editSong)}
+    {!editSong || editSong._id === '' ? (
+      <button
+        id="add-song-button"
+        disabled={!(songState.year && songState.title && songState.url && songState.artist && songState.category)}
+        type="button"
+        onClick={() => addSongAPI(songState, comp.props.auth, comp.controller)}
       >
-        <i>* Required</i>
-      </span>
-      {editSongButtons(comp, editSong)}
-      {!editSong || editSong._id === '' ? (
-        <button
-          disabled={!(songState.year && songState.title && songState.url && songState.artist && songState.category)}
-          type="button"
-          onClick={() => addSongAPI(songState, comp.props.auth, comp.controller)}
-        >
-          Add Song
-        </button>
-      ) : null}
-    </div>
-  );
-}
+        Add Song
+      </button>
+    ) : null}
+  </div>
+);
 
 export default {
   updateSongAPI, addSongAPI, resetSongForm, editSongButtons, songForm, moreSongForm, songButtons,
