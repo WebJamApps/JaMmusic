@@ -1,5 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import songEditorUtils from '../../../src/components/SongEditor/songEditorUtils';
+import { shallow } from 'enzyme';
+import React from 'react';
+import SongEditor from '../../../src/components/SongEditor';
+import { toEditorSettings } from 'typescript';
 
 describe('songEditorUtils', () => {
   let compStub:any = {};
@@ -13,7 +17,12 @@ describe('songEditorUtils', () => {
     compStub = {
       state: { songState: {} },
       props: { editSong: {}, auth: {}, dispatch: jest.fn() },
-      controller: { superagent: { put: () => ({ set: () => ({ set: () => ({ send: () => Promise.resolve({ status: 200 }) }) }) }) } },
+      controller: {
+        superagent: {
+          put: jest.fn(() => ({ set: () => ({ set: () => ({ send: () => Promise.resolve({ status: 200 }) }) }) })),
+          post: jest.fn(() => ({ set: () => ({ set: () => ({ send: () => Promise.resolve({ status: 201 }) }) }) })),
+        },
+      },
       setState: jest.fn(),
     };
   });
@@ -60,12 +69,24 @@ describe('songEditorUtils', () => {
     const res = await songEditorUtils.addSongAPI(compStub.props.editSong, compStub.props.auth, compStub.controller);
     expect(res).toBe('400 song was not created');
   });
-  // it('SongButtons calls editButton', () => {
-  //   songEditorUtils.songButtons(compStub.state.songState, compStub, compStub.props.editSong);
-  //   songEditorUtils.editSongButtons(compStub, compStub.props.editSong);
-  // });
-  // it('SongButtons calls addSongAPI', () => {
-  //   songEditorUtils.songButtons(compStub.state.songState, compStub, compStub.props.editSong);
-  //   songEditorUtils.addSongAPI(compStub.props.editSong, compStub.props.auth, compStub.controller);
-  // });
+   it('SongButtons calls addSongAPI', async () => {
+    compStub.props.editSong={_id: '', category: '', year: 2021, title: '', url: ''};
+    compStub.state.songState = {
+      year: 2021, title: 'title', url: 'url', artist: 'artist', category: 'category',
+    };
+    const wrapper = shallow(songEditorUtils.songButtons(compStub.state.songState, compStub, compStub.props.editSong));
+    wrapper.find('button').at(0).simulate('click');
+    expect(wrapper.find('button').at(0).text()).toBe('Add Song');
+    expect(compStub.controller.superagent.post).toHaveBeenCalled();
+   });
+   it('SongButtons emulates click on editButton', () => {
+    const wrapper = shallow(songEditorUtils.songButtons(compStub.state.songState, compStub, compStub.props.editSong));
+    wrapper.find('button').at(1).simulate('click');
+    expect(compStub.controller.superagent.put).toHaveBeenCalled();
+  });
+  it('SongButtons emulates click on editButton', () => {
+    const wrapper = shallow(songEditorUtils.songButtons(compStub.state.songState, compStub, compStub.props.editSong));
+    wrapper.find('button').at(0).simulate('click');
+    expect(window.location.reload).toHaveBeenCalled();
+  });
 });
