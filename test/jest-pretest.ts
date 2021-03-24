@@ -17,6 +17,7 @@ document.body.innerHTML = '<div id="root"><div id="mAndP"></div><div id="play-bu
 window.HTMLMediaElement.prototype.load = () => { /* do nothing */ };
 window.HTMLMediaElement.prototype.play = () => Promise.resolve();
 window.HTMLMediaElement.prototype.pause = () => { /* do nothing */ };
+Object.defineProperty(window, 'location', { value: { assign: () => { }, reload: () => { } }, writable: true });
 window.location = {
   ...window.location,
   href: 'https://web-jam.com',

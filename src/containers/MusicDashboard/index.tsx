@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Editor } from '@tinymce/tinymce-react';
 import moment from 'moment';
 import { withRouter, Redirect, RouteComponentProps } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -18,7 +17,7 @@ interface MusicDashboardProps extends RouteComponentProps<Record<string, string 
   scc: AGClientSocket;
   auth: { token: string };
   editPic?: Iimage,
-  editSong: ISong | {_id:'', category:'', year:2020, title:'', url:''},
+  editSong: ISong | {_id:'', category:'', year:2021, title:'', url:''},
   editTour: { date?: string; time?: string; tickets?: string; more?: string; venue?: string; location?: string; _id?: string; datetime?: string };
 }
 type MusicDashboardState = {
@@ -183,35 +182,6 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
     return this.createTourApi(tour);
   }
 
-  editor(venue: string): JSX.Element {
-    return (
-      <div className="horiz-scroll">
-        <div style={{ width: '850px', margin: 'auto' }}>
-          <p style={{ marginBottom: 0 }}>* Venue</p>
-          <Editor
-            value={venue}
-            apiKey={process.env.TINY_KEY}
-            init={{
-              height: 500,
-              menubar: 'insert tools',
-              menu: { format: { title: 'Format', items: 'forecolor backcolor' } },
-              plugins: [
-                'advlist autolink lists link image charmap print preview anchor',
-                'searchreplace visualblocks code fullscreen',
-                'insertdatetime media table paste code help wordcount',
-              ],
-              toolbar:
-            'undo redo | formatselect | bold italic backcolor forecolor |'
-            + 'alignleft aligncenter alignright alignjustify |'
-            + 'bullist numlist outdent indent | removeformat | help',
-            }}
-            onEditorChange={this.handleEditorChange}
-          />
-        </div>
-      </div>
-    );
-  }
-
   editTourAPI(): boolean {
     const {
       date, time, location, venue, tickets, more,
@@ -228,43 +198,14 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
     return true;
   }
 
-  tourButtons(): JSX.Element {
-    const { editTour } = this.props;
-    return (
-      <div style={{ textAlign: 'left', marginTop: '10px', maxWidth: '85%' }}>
-        <span style={{
-          fontSize: '16px', marginRight: '20px', position: 'relative', display: 'inline-block',
-        }}
-        >
-          <i>* Required</i>
-        </span>
-        {editTour._id ? (
-          <button className="floatRight" type="button" id="cancel-edit-pic" onClick={this.resetEditForm}>
-            Cancel
-          </button>
-        ) : null}
-        <button
-          className="floatRight"
-          disabled={this.validateForm()}
-          type="button"
-          onClick={editTour._id ? this.editTourAPI : this.createTour}
-        >
-          {editTour._id ? 'Edit' : 'Create'}
-          {' '}
-          Tour
-        </button>
-      </div>
-    );
-  }
-
-  handleNavClick(e:AnyAction): void {
-    if (e.target.id === 'Songs-Button') {
+  handleNavClick(e: React.MouseEvent<HTMLButtonElement>): void {
+    if (e.currentTarget.id === 'Songs-Button') {
       this.setState({ navState: { navSong: true, navPhoto: false, navTour: false } });
     }
-    if (e.target.id === 'Tours-Button') {
+    if (e.currentTarget.id === 'Tours-Button') {
       this.setState({ navState: { navSong: false, navPhoto: false, navTour: true } });
     }
-    if (e.target.id === 'Photos-Button') {
+    if (e.currentTarget.id === 'Photos-Button') {
       this.setState({ navState: { navSong: false, navPhoto: true, navTour: false } });
     }
   }

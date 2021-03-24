@@ -228,25 +228,19 @@ describe('Dashboard Container', () => {
     wrapper.instance().componentDidUpdate({ editSong: { _id: '999999' } });
     expect(wrapper.instance().setState).toHaveBeenCalled();
   });
-  // it('handle song edit button', () => {
-  //   wrapper.instance().handleNavClick({ target: { id: 'Songs-Button' } });
-  //   expect(wrapper.instance().state.navSong).toBe(true);
-  //   expect(wrapper.instance().state.navTour).toBe(false);
-  //   expect(wrapper.instance().state.navPhoto).toBe(false);
-  //   wrapper.instance().controller.songBlock();
-  // });
-  // it('handle tour editor button', () => {
-  //   wrapper.instance().handleNavClick({ target: { id: 'Tours-Button' } });
-  //   expect(wrapper.instance().state.navTour).toBe(true);
-  //   expect(wrapper.instance().state.navPhoto).toBe(false);
-  //   expect(wrapper.instance().state.navSong).toBe(false);
-  //   wrapper.instance(<TourEditor comp={wrapper} editTour={{}} />);
-  // });
-  // it('handle photo editor button', () => {
-  //   wrapper.instance().handleNavClick({ target: { id: 'Photos-Button' } });
-  //   expect(wrapper.instance().state.navPhoto).toBe(true);
-  //   expect(wrapper.instance().state.navSong).toBe(false);
-  //   expect(wrapper.instance().state.navTour).toBe(false);
-  //   wrapper.instance().controller.pictureBlock();
-  // });
+  it('validates the tour form and returns true to disable the submit button when not valid', () => {
+    expect(wrapper.instance().validateForm()).toBe(true);
+  });
+  it('handleNavClick for Songs-Button', () => {
+    wrapper.instance().handleNavClick({ currentTarget: { id: 'Songs-Button' } });
+    expect(wrapper.instance().state.navState.navSong).toBe(true);
+  });
+  it('handleNavClick for Tours-Button', () => {
+    wrapper.instance().handleNavClick({ currentTarget: { id: 'Tours-Button' } });
+    expect(wrapper.instance().state.navState.navTour).toBe(true);
+  });
+  it('handleNavClick for Photos-Button', () => {
+    wrapper.instance().handleNavClick({ currentTarget: { id: 'Photos-Button' } });
+    expect(wrapper.instance().state.navState.navPhoto).toBe(true);
+  });
 });

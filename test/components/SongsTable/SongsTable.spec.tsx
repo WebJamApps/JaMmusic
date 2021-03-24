@@ -1,6 +1,6 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import SongsTable from '../../../src/containers/MusicDashboard/SongsTable';
+import SongsTable from '../../../src/components/SongsTable';
 
 describe('SongsTable', () => {
   it('is defined', () => {
