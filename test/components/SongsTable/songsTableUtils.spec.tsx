@@ -2,7 +2,7 @@
 import { shallow } from 'enzyme';
 import React from 'react';
 import superagent from 'superagent';
-import songsTableUtils from '../../../src/containers/MusicDashboard/songsTableUtils';
+import songsTableUtils from '../../../src/components/SongsTable/songsTableUtils';
 
 describe('songsTableUtils', () => {
   it('is defined', () => {

@@ -129,8 +129,10 @@ module.exports = (env) => ({
         { from: 'static/imgs', to: 'static/imgs' },
       ],
     }),
-    new webpack.EnvironmentPlugin(['SCS_PORT', 'SCS_HOST', 'SOCKETCLUSTER_SECURE', 'NODE_ENV',
-      'AuthProductionBaseURL', 'PORT', 'BackendUrl', 'GoogleClientId', 'userRoles', 'HashString', 'TINY_KEY']),
+    env.production ? new webpack.EnvironmentPlugin(['SCS_PORT', 'SCS_HOST', 'SOCKETCLUSTER_SECURE', 'NODE_ENV',
+      'AuthProductionBaseURL', 'BackendUrl', 'GoogleClientId', 'userRoles', 'HashString', 'TINY_KEY'])
+      : new webpack.EnvironmentPlugin(['SCS_PORT', 'SCS_HOST', 'SOCKETCLUSTER_SECURE', 'NODE_ENV',
+        'AuthProductionBaseURL', 'PORT', 'BackendUrl', 'GoogleClientId', 'userRoles', 'HashString', 'TINY_KEY']),
     ...when(env.analyze, new BundleAnalyzerPlugin()),
   ],
 });

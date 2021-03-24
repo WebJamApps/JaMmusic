@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Editor } from '@tinymce/tinymce-react';
 import moment from 'moment';
 import { withRouter, Redirect, RouteComponentProps } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -7,18 +6,18 @@ import type { AGClientSocket } from 'socketcluster-client';
 import type { Dispatch, AnyAction } from 'redux';
 import type { ISong } from '../../providers/Songs.provider';
 import mapStoreToProps, { Tour, Iimage } from '../../redux/mapStoreToProps';
-import forms from '../../lib/forms';
+import Forms from '../../lib/forms';
 import commonUtils from '../../lib/commonUtils';
-import AddTime from '../../lib/timeKeeper';
-import Ttable from '../../components/TourTable';
 import Controller, { MusicDashboardController } from './MusicDashboardController';
+import { TourEditor } from '../../components/TourEditor';
+import { DashNavigationButtons } from '../../components/DashNavigationButtons';
 
 interface MusicDashboardProps extends RouteComponentProps<Record<string, string | undefined>> {
   dispatch: Dispatch<AnyAction>;
   scc: AGClientSocket;
   auth: { token: string };
   editPic?: Iimage,
-  editSong: ISong | {_id:'', category:'', year:2020, title:'', url:''},
+  editSong: ISong | {_id:'', category:'', year:2021, title:'', url:''},
   editTour: { date?: string; time?: string; tickets?: string; more?: string; venue?: string; location?: string; _id?: string; datetime?: string };
 }
 type MusicDashboardState = {
@@ -33,31 +32,34 @@ type MusicDashboardState = {
   more: string;
   [x: number]: number;
   songState: ISong;
+  navState:{navSong:boolean, navPhoto:boolean, navTour: boolean};
+};
+
+const InitialState = {
+  songState: {
+    image: '', composer: '', year: 2020, album: '', title: '', url: '', artist: '', category: 'original', _id: '',
+  },
+  picTitle: '',
+  picUrl: '',
+  redirect: false,
+  date: '',
+  time: '',
+  tickets: '',
+  more: '',
+  venue: '',
+  location: '',
+  navState: { navSong: true, navPhoto: false, navTour: false },
 };
 export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboardState> {
-  forms: typeof forms;
-
   commonUtils: { setTitleAndScroll: (pageTitle: string, width: number) => void };
 
   controller: MusicDashboardController;
 
+  public forms = Forms;
+
   constructor(props: MusicDashboardProps) {
     super(props);
-    this.state = {
-      songState: {
-        image: '', composer: '', year: 2020, album: '', title: '', url: '', artist: '', category: 'original', _id: '',
-      },
-      picTitle: '',
-      picUrl: '',
-      redirect: false,
-      date: '',
-      time: '',
-      tickets: '',
-      more: '',
-      venue: '',
-      location: '',
-    };
-    this.forms = forms;
+    this.state = InitialState;
     this.controller = new Controller(this);
     this.onChange = this.onChange.bind(this);
     this.createTour = this.createTour.bind(this);
@@ -72,6 +74,7 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
     this.onChangeSong = this.onChangeSong.bind(this);
     this.handleCategoryChange = this.handleCategoryChange.bind(this);
     this.setSongState = this.setSongState.bind(this);
+    this.handleNavClick = this.handleNavClick.bind(this);
   }
 
   componentDidMount(): void { this.commonUtils.setTitleAndScroll('Music Dashboard', window.screen.width); }
@@ -179,35 +182,6 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
     return this.createTourApi(tour);
   }
 
-  editor(venue: string): JSX.Element {
-    return (
-      <div className="horiz-scroll">
-        <div style={{ width: '850px', margin: 'auto' }}>
-          <p style={{ marginBottom: 0 }}>* Venue</p>
-          <Editor
-            value={venue}
-            apiKey={process.env.TINY_KEY}
-            init={{
-              height: 500,
-              menubar: 'insert tools',
-              menu: { format: { title: 'Format', items: 'forecolor backcolor' } },
-              plugins: [
-                'advlist autolink lists link image charmap print preview anchor',
-                'searchreplace visualblocks code fullscreen',
-                'insertdatetime media table paste code help wordcount',
-              ],
-              toolbar:
-            'undo redo | formatselect | bold italic backcolor forecolor |'
-            + 'alignleft aligncenter alignright alignjustify |'
-            + 'bullist numlist outdent indent | removeformat | help',
-            }}
-            onEditorChange={this.handleEditorChange}
-          />
-        </div>
-      </div>
-    );
-  }
-
   editTourAPI(): boolean {
     const {
       date, time, location, venue, tickets, more,
@@ -224,97 +198,35 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
     return true;
   }
 
-  tourButtons(): JSX.Element {
-    const { editTour } = this.props;
-    return (
-      <div style={{ textAlign: 'left', marginTop: '10px', maxWidth: '85%' }}>
-        <span style={{
-          fontSize: '16px', marginRight: '20px', position: 'relative', display: 'inline-block',
-        }}
-        >
-          <i>* Required</i>
-        </span>
-        {editTour._id ? (
-          <button className="floatRight" type="button" id="cancel-edit-pic" onClick={this.resetEditForm}>
-            Cancel
-          </button>
-        ) : null}
-        <button
-          className="floatRight"
-          disabled={this.validateForm()}
-          type="button"
-          onClick={editTour._id ? this.editTourAPI : this.createTour}
-        >
-          {editTour._id ? 'Edit' : 'Create'}
-          {' '}
-          Tour
-        </button>
-      </div>
-    );
-  }
-
-  newTourForm(): JSX.Element {
-    let {
-      location, tickets, more, date, time, venue,
-    } = this.state;
-    const { editTour } = this.props;
-    date = this.fixDate(date, editTour);
-    if (time === '' && editTour.time !== undefined) { time = editTour.time; }
-    if (tickets === '' && editTour.tickets !== undefined) { tickets = editTour.tickets; }
-    if (more === '' && editTour.more !== undefined) { more = editTour.more; }
-    if (venue === '' && editTour.venue !== undefined) { venue = editTour.venue; }
-    if (location === '' && editTour.location !== undefined) { location = editTour.location; }
-    return (
-      <div className="material-content elevation3" style={{ maxWidth: '9.1in', margin: 'auto' }}>
-        <h5 style={{ textAlign: 'center', marginBottom: '30px' }}>
-          {editTour._id ? 'Edit ' : 'Create a New '}
-          Tour Event
-        </h5>
-        <p>{' '}</p>
-        <form id="new-tour" style={{ marginLeft: '4px', marginTop: '12px' }}>
-          <p>* Date</p>
-          {this.forms.makeInput('date', 'Date', true, this.onChange, date)}
-          <AddTime setFormTime={this.setFormTime} initTime={time} />
-          {this.editor(venue)}
-          <p>{' '}</p>
-          {this.forms.makeInput('text', 'Location', true, this.onChange, location)}
-          {this.forms.makeInput('text', 'Tickets', false, this.onChange, tickets)}
-          {this.forms.makeInput('text', 'More', false, this.onChange, more)}
-          {this.tourButtons()}
-        </form>
-      </div>
-    );
+  handleNavClick(e: React.MouseEvent<HTMLButtonElement>): void {
+    if (e.currentTarget.id === 'Songs-Button') {
+      this.setState({ navState: { navSong: true, navPhoto: false, navTour: false } });
+    }
+    if (e.currentTarget.id === 'Tours-Button') {
+      this.setState({ navState: { navSong: false, navPhoto: false, navTour: true } });
+    }
+    if (e.currentTarget.id === 'Photos-Button') {
+      this.setState({ navState: { navSong: false, navPhoto: true, navTour: false } });
+    }
   }
 
   render(): JSX.Element {
     const { redirect } = this.state;
     const { editTour } = this.props;
+    const { navState } = this.state;
     return (
       <div className="page-content">
         {redirect ? <Redirect to="/music" /> : null}
-        <h3 style={{ textAlign: 'center', margin: '14px', fontWeight: 'bold' }}>Music Dashboard</h3>
-        <div className="material-content elevation3" style={{ maxWidth: '9.1in', margin: 'auto' }}>
-          <h5 style={{ textAlign: 'center', marginBottom: 0 }}>Modify Photo Slideshow</h5>
-          {this.controller.changePicDiv()}
-        </div>
-        <p>&nbsp;</p>
-        {this.newTourForm()}
-        <p>&nbsp;</p>
-        {!editTour._id ? (
-          <div className="search-table-outer" style={{ maxWidth: '96%', margin: 'auto', zIndex: 0 }}>
-            <h5 style={{ textAlign: 'center', marginBottom: '3px' }}>Modify</h5>
-            <Ttable deleteButton />
-          </div>
-        ) : null}
-        <p>&nbsp;</p>
-        {this.controller.changeSongDiv()}
-        <p>&nbsp;</p>
-        {this.controller.modifySongsSection()}
-        <p>&nbsp;</p>
+        <h3 style={{ textAlign: 'center', margin: '14px', fontWeight: 'bold' }}>
+          Music Dashboard
+          <DashNavigationButtons comp={this} />
+        </h3>
+        {navState.navSong ? (this.controller.songBlock()) : null}
+        {navState.navPhoto ? (this.controller.pictureBlock()) : null}
+        {navState.navTour ? <TourEditor comp={this} editTour={editTour} /> : null}
       </div>
     );
   }
 }
 
 export default withRouter(connect(mapStoreToProps, null)(MusicDashboard));
-
