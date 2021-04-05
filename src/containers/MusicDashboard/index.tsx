@@ -17,7 +17,7 @@ interface MusicDashboardProps extends RouteComponentProps<Record<string, string 
   scc: AGClientSocket;
   auth: { token: string };
   editPic?: Iimage,
-  editSong: ISong | {_id:'', category:'', year:2021, title:'', url:''},
+  editSong: ISong | { _id:'', category:'', year:2021, title:'', url:'' },
   editTour: { date?: string; time?: string; tickets?: string; more?: string; venue?: string; location?: string; _id?: string; datetime?: string };
 }
 type MusicDashboardState = {
@@ -32,12 +32,12 @@ type MusicDashboardState = {
   more: string;
   [x: number]: number;
   songState: ISong;
-  navState:{navSong:boolean, navPhoto:boolean, navTour: boolean};
+  navState:{ navSong:boolean, navPhoto:boolean, navTour: boolean };
 };
 
 const InitialState = {
   songState: {
-    image: '', composer: '', year: 2020, album: '', title: '', url: '', artist: '', category: 'original', _id: '',
+    image: '', composer: '', year: 2021, album: '', title: '', url: '', artist: '', category: 'original', _id: '',
   },
   picTitle: '',
   picUrl: '',
@@ -106,6 +106,7 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
 
   setFormTime(time: string): void { this.setState({ time }); }
 
+  // eslint-disable-next-line react/sort-comp
   handleCategoryChange(event: React.ChangeEvent<HTMLSelectElement>): void {
     const { songState } = this.state;
     this.setState({ songState: { ...songState, category: event.target.value } });
@@ -217,10 +218,7 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
     return (
       <div className="page-content">
         {redirect ? <Redirect to="/music" /> : null}
-        <h3 style={{ textAlign: 'center', margin: '14px', fontWeight: 'bold' }}>
-          Music Dashboard
-          <DashNavigationButtons comp={this} />
-        </h3>
+        <DashNavigationButtons comp={this} />
         {navState.navSong ? (this.controller.songBlock()) : null}
         {navState.navPhoto ? (this.controller.pictureBlock()) : null}
         {navState.navTour ? <TourEditor comp={this} editTour={editTour} /> : null}
