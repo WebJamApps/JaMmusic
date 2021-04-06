@@ -69,6 +69,8 @@ typings/
 # next.js build output
 .next
 
+#yarn path-file
+.yarnrc
 .DS_Store
 .prettierrc
 .gitattributes

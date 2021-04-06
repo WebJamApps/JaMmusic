@@ -37,7 +37,7 @@ type MusicDashboardState = {
 
 const InitialState = {
   songState: {
-    image: '', composer: '', year: 2021, album: '', title: '', url: '', artist: '', category: 'original', _id: '',
+    image: '', composer: '', year: new Date().getFullYear(), album: '', title: '', url: '', artist: '', category: 'original', _id: '',
   },
   picTitle: '',
   picUrl: '',
@@ -106,7 +106,6 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
 
   setFormTime(time: string): void { this.setState({ time }); }
 
-  // eslint-disable-next-line react/sort-comp
   handleCategoryChange(event: React.ChangeEvent<HTMLSelectElement>): void {
     const { songState } = this.state;
     this.setState({ songState: { ...songState, category: event.target.value } });

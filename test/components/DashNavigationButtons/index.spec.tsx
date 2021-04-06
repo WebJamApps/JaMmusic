@@ -3,7 +3,6 @@ import { shallow } from 'enzyme';
 import { DashNavigationButtons } from '../../../src/components/DashNavigationButtons';
 
 describe('Dash Navigation Buttons', () => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let compStub:any = {};
   beforeEach(() => {
     compStub = {
