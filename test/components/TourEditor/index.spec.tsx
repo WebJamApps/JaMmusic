@@ -202,4 +202,68 @@ describe('TourEditor', () => {
     const r = wrapper2.instance().editTourAPI();
     expect(r).toBe(true);
   });
+  it('Tour Block is defined', () => {
+    const wrapper2 = shallow<MusicDashboard>(<MusicDashboard
+      auth={auth}
+      scc={scc}
+      dispatch={jest.fn()}
+      editSong={anyProp}
+      editTour={{
+        datetime: '2020-10-10T000',
+        _id: '123',
+        date: '2020-10-10',
+        time: '5 pm',
+        tickets: 'free',
+        more: '',
+        venue: 'beer garden',
+        location: 'salem, va',
+      }}
+      history={anyProp}
+      location={anyProp}
+      match={anyProp}
+    />);
+    const instance = wrapper2.instance();
+    instance.setState({
+      date: '2020-10-10',
+      time: '5 pm',
+      tickets: 'free',
+      more: '',
+      venue: 'beer garden',
+      location: 'salem, va',
+    });
+    const wrapper3 = shallow(<TourEditor comp={instance} editTour={instance.props.editTour} />);
+    expect(wrapper3.find('Tour-Block')).toBeDefined();
+  });
+  it('reaches Tour table delete button', () => {
+    const wrapper2 = shallow<MusicDashboard>(<MusicDashboard
+      auth={auth}
+      scc={scc}
+      dispatch={jest.fn()}
+      editSong={anyProp}
+      editTour={{
+        datetime: '',
+        _id: '',
+        date: '',
+        time: '',
+        tickets: '',
+        more: '',
+        venue: '',
+        location: '',
+      }}
+      history={anyProp}
+      location={anyProp}
+      match={anyProp}
+    />);
+    const instance = wrapper2.instance();
+    instance.setState({
+      date: '',
+      time: '',
+      tickets: '',
+      more: '',
+      venue: '',
+      location: '',
+    });
+    const wrapper3 = shallow(<TourEditor comp={instance} editTour={instance.props.editTour} />);
+    expect(wrapper3.find('.search-outer-table')).toBeDefined();
+  });
 });
