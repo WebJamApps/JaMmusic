@@ -17,7 +17,7 @@ interface MusicDashboardProps extends RouteComponentProps<Record<string, string 
   scc: AGClientSocket;
   auth: { token: string };
   editPic?: Iimage,
-  editSong: ISong | { _id:'', category:'', year:2021, title:'', url:'' },
+  editSong: ISong | { _id: string, category: string, year: number, title: string, url: string },
   editTour: { date?: string; time?: string; tickets?: string; more?: string; venue?: string; location?: string; _id?: string; datetime?: string };
 }
 type MusicDashboardState = {
@@ -84,6 +84,25 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
     if (editSong._id !== prevProps.editSong._id) { this.setSongState(editSong); }
   }
 
+  handleNavClick(e: React.MouseEvent<HTMLButtonElement>): void {
+    if (e.currentTarget.id === 'Songs-Button') {
+      this.setState({ navState: { navSong: true, navPhoto: false, navTour: false } });
+    }
+    if (e.currentTarget.id === 'Tours-Button') {
+      this.setState({ navState: { navSong: false, navPhoto: false, navTour: true } });
+    }
+    if (e.currentTarget.id === 'Photos-Button') {
+      this.setState({ navState: { navSong: false, navPhoto: true, navTour: false } });
+    }
+  }
+
+  handleCategoryChange(event: React.ChangeEvent<HTMLSelectElement>): void {
+    const { songState } = this.state;
+    this.setState({ songState: { ...songState, category: event.target.value } });
+  }
+
+  handleEditorChange(venue: string): void { this.checkEdit(); this.setState({ venue }); }
+
   onChange(evt: React.ChangeEvent<HTMLInputElement>): void {
     evt.persist();
     const { editTour } = this.props;
@@ -105,11 +124,6 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
   }
 
   setFormTime(time: string): void { this.setState({ time }); }
-
-  handleCategoryChange(event: React.ChangeEvent<HTMLSelectElement>): void {
-    const { songState } = this.state;
-    this.setState({ songState: { ...songState, category: event.target.value } });
-  }
 
   // eslint-disable-next-line class-methods-use-this
   fixDate(date: string,
@@ -150,8 +164,6 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
       date: '', time: '', tickets: '', more: '', venue: '', location: '',
     });
   }
-
-  handleEditorChange(venue: string): void { this.checkEdit(); this.setState({ venue }); }
 
   validateForm(): boolean {
     const {
@@ -196,18 +208,6 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
     this.resetEditForm(null);
     this.setState({ redirect: true });
     return true;
-  }
-
-  handleNavClick(e: React.MouseEvent<HTMLButtonElement>): void {
-    if (e.currentTarget.id === 'Songs-Button') {
-      this.setState({ navState: { navSong: true, navPhoto: false, navTour: false } });
-    }
-    if (e.currentTarget.id === 'Tours-Button') {
-      this.setState({ navState: { navSong: false, navPhoto: false, navTour: true } });
-    }
-    if (e.currentTarget.id === 'Photos-Button') {
-      this.setState({ navState: { navSong: false, navPhoto: true, navTour: false } });
-    }
   }
 
   render(): JSX.Element {
