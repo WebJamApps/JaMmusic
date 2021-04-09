@@ -84,18 +84,6 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
     if (editSong._id !== prevProps.editSong._id) { this.setSongState(editSong); }
   }
 
-  handleNavClick(e: React.MouseEvent<HTMLButtonElement>): void {
-    if (e.currentTarget.id === 'Songs-Button') {
-      this.setState({ navState: { navSong: true, navPhoto: false, navTour: false } });
-    }
-    if (e.currentTarget.id === 'Tours-Button') {
-      this.setState({ navState: { navSong: false, navPhoto: false, navTour: true } });
-    }
-    if (e.currentTarget.id === 'Photos-Button') {
-      this.setState({ navState: { navSong: false, navPhoto: true, navTour: false } });
-    }
-  }
-
   handleCategoryChange(event: React.ChangeEvent<HTMLSelectElement>): void {
     const { songState } = this.state;
     this.setState({ songState: { ...songState, category: event.target.value } });
@@ -124,6 +112,19 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
   }
 
   setFormTime(time: string): void { this.setState({ time }); }
+
+  // eslint-disable-next-line react/sort-comp
+  handleNavClick(e: React.MouseEvent<HTMLButtonElement>): void {
+    if (e.currentTarget.id === 'Songs-Button') {
+      this.setState({ navState: { navSong: true, navPhoto: false, navTour: false } });
+    }
+    if (e.currentTarget.id === 'Tours-Button') {
+      this.setState({ navState: { navSong: false, navPhoto: false, navTour: true } });
+    }
+    if (e.currentTarget.id === 'Photos-Button') {
+      this.setState({ navState: { navSong: false, navPhoto: true, navTour: false } });
+    }
+  }
 
   // eslint-disable-next-line class-methods-use-this
   fixDate(date: string,
