@@ -130,9 +130,9 @@ module.exports = (env) => ({
       ],
     }),
     env.production ? new webpack.EnvironmentPlugin(['SCS_PORT', 'SCS_HOST', 'SOCKETCLUSTER_SECURE', 'NODE_ENV',
-      'AuthProductionBaseURL', 'BackendUrl', 'GoogleClientId', 'userRoles', 'HashString', 'TINY_KEY'])
+      'BackendUrl', 'GoogleClientId', 'userRoles', 'HashString', 'TINY_KEY'])
       : new webpack.EnvironmentPlugin(['SCS_PORT', 'SCS_HOST', 'SOCKETCLUSTER_SECURE', 'NODE_ENV',
-        'AuthProductionBaseURL', 'PORT', 'BackendUrl', 'GoogleClientId', 'userRoles', 'HashString', 'TINY_KEY']),
+        'PORT', 'BackendUrl', 'GoogleClientId', 'userRoles', 'HashString', 'TINY_KEY']),
     ...when(env.analyze, new BundleAnalyzerPlugin()),
   ],
 });
