@@ -32,11 +32,21 @@ const addButtons = (arr: ISong[], token:string, dispatch:Dispatch<AnyAction>): I
   for (let i = 0; i < arr.length; i += 1) {
     const deleteSongId = `deleteSong${newArr[i]._id}`;
     const editSongId = `editSong${newArr[i]._id}`;
+    const topOfForm = document.getElementById('picsForm');
     newArr[i].modify = (
       <div>
         <button type="button" id={deleteSongId} onClick={() => deleteSong(newArr[i]._id, token)}>Delete</button>
         <p>{' '}</p>
-        <button type="button" id={editSongId} onClick={() => editSong(newArr[i], dispatch)}>Edit</button>
+        <button
+          type="button"
+          id={editSongId}
+          onClick={() => {
+            topOfForm?.scrollIntoView({ behavior: 'smooth' });
+            editSong(newArr[i], dispatch);
+          }}
+        >
+          Edit
+        </button>
       </div>
     );
   }

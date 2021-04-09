@@ -17,7 +17,7 @@ interface MusicDashboardProps extends RouteComponentProps<Record<string, string 
   scc: AGClientSocket;
   auth: { token: string };
   editPic?: Iimage,
-  editSong: ISong | {_id:'', category:'', year:2021, title:'', url:''},
+  editSong: ISong | { _id: string, category: string, year: number, title: string, url: string },
   editTour: { date?: string; time?: string; tickets?: string; more?: string; venue?: string; location?: string; _id?: string; datetime?: string };
 }
 type MusicDashboardState = {
@@ -32,12 +32,12 @@ type MusicDashboardState = {
   more: string;
   [x: number]: number;
   songState: ISong;
-  navState:{navSong:boolean, navPhoto:boolean, navTour: boolean};
+  navState:{ navSong:boolean, navPhoto:boolean, navTour: boolean };
 };
 
 const InitialState = {
   songState: {
-    image: '', composer: '', year: 2020, album: '', title: '', url: '', artist: '', category: 'original', _id: '',
+    image: '', composer: '', year: new Date().getFullYear(), album: '', title: '', url: '', artist: '', category: 'original', _id: '',
   },
   picTitle: '',
   picUrl: '',
@@ -106,9 +106,25 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
 
   setFormTime(time: string): void { this.setState({ time }); }
 
+  // eslint-disable-next-line react/sort-comp
   handleCategoryChange(event: React.ChangeEvent<HTMLSelectElement>): void {
     const { songState } = this.state;
     this.setState({ songState: { ...songState, category: event.target.value } });
+  }
+
+  handleEditorChange(venue: string): void { this.checkEdit(); this.setState({ venue }); }
+
+  // eslint-disable-next-line react/sort-comp
+  handleNavClick(e: React.MouseEvent<HTMLButtonElement>): void {
+    if (e.currentTarget.id === 'Songs-Button') {
+      this.setState({ navState: { navSong: true, navPhoto: false, navTour: false } });
+    }
+    if (e.currentTarget.id === 'Tours-Button') {
+      this.setState({ navState: { navSong: false, navPhoto: false, navTour: true } });
+    }
+    if (e.currentTarget.id === 'Photos-Button') {
+      this.setState({ navState: { navSong: false, navPhoto: true, navTour: false } });
+    }
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -150,8 +166,6 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
       date: '', time: '', tickets: '', more: '', venue: '', location: '',
     });
   }
-
-  handleEditorChange(venue: string): void { this.checkEdit(); this.setState({ venue }); }
 
   validateForm(): boolean {
     const {
@@ -198,18 +212,6 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
     return true;
   }
 
-  handleNavClick(e: React.MouseEvent<HTMLButtonElement>): void {
-    if (e.currentTarget.id === 'Songs-Button') {
-      this.setState({ navState: { navSong: true, navPhoto: false, navTour: false } });
-    }
-    if (e.currentTarget.id === 'Tours-Button') {
-      this.setState({ navState: { navSong: false, navPhoto: false, navTour: true } });
-    }
-    if (e.currentTarget.id === 'Photos-Button') {
-      this.setState({ navState: { navSong: false, navPhoto: true, navTour: false } });
-    }
-  }
-
   render(): JSX.Element {
     const { redirect } = this.state;
     const { editTour } = this.props;
@@ -217,10 +219,7 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
     return (
       <div className="page-content">
         {redirect ? <Redirect to="/music" /> : null}
-        <h3 style={{ textAlign: 'center', margin: '14px', fontWeight: 'bold' }}>
-          Music Dashboard
-          <DashNavigationButtons comp={this} />
-        </h3>
+        <DashNavigationButtons comp={this} />
         {navState.navSong ? (this.controller.songBlock()) : null}
         {navState.navPhoto ? (this.controller.pictureBlock()) : null}
         {navState.navTour ? <TourEditor comp={this} editTour={editTour} /> : null}
