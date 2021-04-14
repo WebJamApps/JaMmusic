@@ -4,19 +4,19 @@ import type { MusicDashboard } from '../../containers/MusicDashboard';
 type PageProps = { comp:MusicDashboard };
 
 const photoButton = ({ comp }:PageProps): JSX.Element => (
-  <button className="floatRight" type="button" id="Photos-Button" style={{ margin: '5px', fontSize: '55%' }} onClick={comp.handleNavClick}>
+  <button className="floatRight1" type="button" id="Photos-Button" style={{ margin: '5px', fontSize: '55%' }} onClick={comp.handleNavClick}>
     Photos
   </button>
 );
 
 const tourButton = ({ comp }:PageProps): JSX.Element => (
-  <button className="floatRight" type="button" id="Tours-Button" style={{ margin: '5px', fontSize: '55%' }} onClick={comp.handleNavClick}>
+  <button className="floatRight2" type="button" id="Tours-Button" style={{ margin: '5px', fontSize: '55%' }} onClick={comp.handleNavClick}>
     Tours
   </button>
 );
 
 const songButton = ({ comp }:PageProps): JSX.Element => (
-  <button className="floatRight" type="button" id="Songs-Button" style={{ margin: '5px', fontSize: '55%' }} onClick={comp.handleNavClick}>
+  <button className="floatRight3" type="button" id="Songs-Button" style={{ margin: '5px', fontSize: '55%' }} onClick={comp.handleNavClick}>
     Songs
   </button>
 );
