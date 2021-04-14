@@ -4,39 +4,49 @@ import type { MusicDashboard } from '../../containers/MusicDashboard';
 type PageProps = { comp:MusicDashboard };
 
 const photoButton = ({ comp }:PageProps): JSX.Element => (
-  <button className="waves-effect grey darken-4 btn" type="button" id="Photos-Button" onClick={comp.handleNavClick}>
+  <button className="floatRight" type="button" id="Photos-Button" style={{ margin: '5px', fontSize: '55%' }} onClick={comp.handleNavClick}>
     Photos
   </button>
 );
 
 const tourButton = ({ comp }:PageProps): JSX.Element => (
-  <button className="waves-effect grey darken-4 btn" type="button" id="Tours-Button" onClick={comp.handleNavClick}>
+  <button className="floatRight" type="button" id="Tours-Button" style={{ margin: '5px', fontSize: '55%' }} onClick={comp.handleNavClick}>
     Tours
   </button>
 );
 
 const songButton = ({ comp }:PageProps): JSX.Element => (
-  <button className="waves-effect grey darken-4 btn" type="button" id="Songs-Button" onClick={comp.handleNavClick}>
+  <button className="floatRight" type="button" id="Songs-Button" style={{ margin: '5px', fontSize: '55%' }} onClick={comp.handleNavClick}>
     Songs
   </button>
 );
 
 export const DashNavigationButtons = ({ comp }:PageProps): JSX.Element => (
-  <h3 style={{
-    position: 'fixed', textAlign: 'left', margin: '14px', fontWeight: 'bold',
-  }}
-  >
-    Music Dashboard
+  <nav className="white">
     <div
-      className="Nav-Buttons"
+      className="center"
       style={{
-        position: 'fixed', padding: '10px', marginTop: '10px', maxWidth: '50%',
+        width: '100%', textAlign: 'center', position: 'fixed',
       }}
     >
-      {photoButton({ comp })}
-      {tourButton({ comp })}
-      {songButton({ comp })}
+      <h3 style={{
+        margin: '14px', fontWeight: 'bold', color: 'black',
+      }}
+      >
+        Music Dashboard
+        <div
+          className="Nav-Buttons"
+          id="Nav-Buttons"
+          style={{
+            display: 'inline', paddingLeft: '50px', maxWidth: '50%',
+          }}
+        >
+          {photoButton({ comp })}
+          {tourButton({ comp })}
+          {songButton({ comp })}
+        </div>
+      </h3>
     </div>
-  </h3>
+  </nav>
 );
 export default DashNavigationButtons;
