@@ -3,22 +3,24 @@ import type { MusicDashboard } from '../../containers/MusicDashboard';
 
 type PageProps = { comp:MusicDashboard };
 
-const photoButton = ({ comp }:PageProps): JSX.Element => (
-  <button className="floatRight1" type="button" id="Photos-Button" style={{ margin: '5px', fontSize: '55%' }} onClick={comp.handleNavClick}>
-    Photos
-  </button>
-);
-
-const tourButton = ({ comp }:PageProps): JSX.Element => (
-  <button className="floatRight2" type="button" id="Tours-Button" style={{ margin: '5px', fontSize: '55%' }} onClick={comp.handleNavClick}>
-    Tours
-  </button>
-);
-
-const songButton = ({ comp }:PageProps): JSX.Element => (
-  <button className="floatRight3" type="button" id="Songs-Button" style={{ margin: '5px', fontSize: '55%' }} onClick={comp.handleNavClick}>
-    Songs
-  </button>
+const DashButtons = ({ comp }:PageProps): JSX.Element => (
+  <div
+    className="Nav-Buttons"
+    id="Nav-Buttons"
+    style={{
+      display: 'inline', paddingLeft: '50px', maxWidth: '50%',
+    }}
+  >
+    <button className="floatRight1" type="button" id="Photos-Button" style={{ margin: '5px', fontSize: '55%' }} onClick={comp.handleNavClick}>
+      Photos
+    </button>
+    <button className="floatRight2" type="button" id="Tours-Button" style={{ margin: '5px', fontSize: '55%' }} onClick={comp.handleNavClick}>
+      Tours
+    </button>
+    <button className="floatRight3" type="button" id="Songs-Button" style={{ margin: '5px', fontSize: '55%' }} onClick={comp.handleNavClick}>
+      Songs
+    </button>
+  </div>
 );
 
 export const DashNavigationButtons = ({ comp }:PageProps): JSX.Element => (
@@ -41,9 +43,7 @@ export const DashNavigationButtons = ({ comp }:PageProps): JSX.Element => (
             display: 'inline', paddingLeft: '50px', maxWidth: '50%',
           }}
         >
-          {photoButton({ comp })}
-          {tourButton({ comp })}
-          {songButton({ comp })}
+          {DashButtons({ comp })}
         </div>
       </h3>
     </div>
