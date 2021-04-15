@@ -28,11 +28,11 @@ export const DashNavigationButtons = ({ comp }:PageProps): JSX.Element => (
     <div
       className="center"
       style={{
-        width: '100%', textAlign: 'center', position: 'fixed',
+        width: '100%', textAlign: 'center',
       }}
     >
       <h3 style={{
-        margin: '14px', fontWeight: 'bold', color: 'black',
+        margin: '14px', fontWeight: 'bold', color: 'black', fontSize: '25px',
       }}
       >
         Music Dashboard
