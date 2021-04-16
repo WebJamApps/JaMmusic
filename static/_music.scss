@@ -25,3 +25,20 @@ td p a {
 .tourTable {
   -webkit-overflow-scrolling: touch;
 }
+
+.white {
+  z-index: 5;
+  position: fixed;
+  width: 80vw;
+  margin: auto;
+}
+
+.Nav-Buttons {
+  padding-left: 50px;
+  display: 'inline';
+  max-width: '50%';
+}
+
+.Musicdash-Title {
+  margin: '14px';
+}
