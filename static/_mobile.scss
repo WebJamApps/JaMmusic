@@ -103,6 +103,39 @@
     height    : 75px !important;
   }
 }
+@media only screen and (max-width: 365px){
+  .floatRight3 {
+    display: none;
+  }
+}
+@media only screen and (max-width: 439px){
+  .floatRight2 {
+    display: none;
+  }
+}
+@media only screen and (max-width: 524px){
+  .floatRight1 {
+    display: none;
+  }
+}
+@media only screen and (max-width: 1024px){
+  .horiz-scroll {
+    overflow-y: scroll;
+  }
+}
+@media only screen and (min-width: 1739px){
+  .white {
+    width: 89.5vw;
+  }
+}
+@media only screen and (max-width: 625px){
+  .Nav-Buttons {
+    padding-left: 0;
+  }
+  .white {
+    top: 0;
+  }
+}
 // iPad
 @media screen and (min-width: 750px) and (max-width: 769px) {
   .nav-list {
