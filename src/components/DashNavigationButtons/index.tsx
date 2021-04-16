@@ -6,18 +6,36 @@ type PageProps = { comp:MusicDashboard };
 const DashButtons = ({ comp }:PageProps): JSX.Element => (
   <div
     className="Nav-Buttons"
-    id="Nav-Buttons"
+    id="Nav1"
     style={{
-      display: 'inline', paddingLeft: '50px', maxWidth: '50%',
+      display: 'inline', maxWidth: '50%',
     }}
   >
-    <button className="floatRight1" type="button" id="Photos-Button" style={{ margin: '5px', fontSize: '55%' }} onClick={comp.handleNavClick}>
+    <button
+      className="floatRight1"
+      type="button"
+      id="Photos-Button"
+      style={{ margin: '5px', fontSize: '55%' }}
+      onClick={comp.handleNavClick}
+    >
       Photos
     </button>
-    <button className="floatRight2" type="button" id="Tours-Button" style={{ margin: '5px', fontSize: '55%' }} onClick={comp.handleNavClick}>
+    <button
+      className="floatRight2"
+      type="button"
+      id="Tours-Button"
+      style={{ margin: '5px', fontSize: '55%' }}
+      onClick={comp.handleNavClick}
+    >
       Tours
     </button>
-    <button className="floatRight3" type="button" id="Songs-Button" style={{ margin: '5px', fontSize: '55%' }} onClick={comp.handleNavClick}>
+    <button
+      className="floatRight3"
+      type="button"
+      id="Songs-Button"
+      style={{ margin: '5px', fontSize: '55%' }}
+      onClick={comp.handleNavClick}
+    >
       Songs
     </button>
   </div>
@@ -28,24 +46,26 @@ export const DashNavigationButtons = ({ comp }:PageProps): JSX.Element => (
     <div
       className="center"
       style={{
-        width: '100%', textAlign: 'center',
+        textAlign: 'center',
       }}
     >
-      <h3 style={{
-        margin: '14px', fontWeight: 'bold', color: 'black', fontSize: '25px',
-      }}
+      <h4
+        className="Musicdash-Title"
+        style={{
+          margin: '14px', fontWeight: 'bold', color: 'black',
+        }}
       >
         Music Dashboard
         <div
           className="Nav-Buttons"
           id="Nav-Buttons"
           style={{
-            display: 'inline', paddingLeft: '50px', maxWidth: '50%',
+            display: 'inline', width: '50vw',
           }}
         >
           {DashButtons({ comp })}
         </div>
-      </h3>
+      </h4>
     </div>
   </nav>
 );
