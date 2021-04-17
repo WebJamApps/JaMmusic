@@ -29,14 +29,13 @@ td p a {
 .white {
   z-index: 5;
   position: fixed;
-  width: 80vw;
   margin: auto;
+  white-space: nowrap;
 }
 
 .Nav-Buttons {
   padding-left: 50px;
   display: 'inline';
-  max-width: '50%';
 }
 
 .Musicdash-Title {
