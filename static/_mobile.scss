@@ -103,21 +103,7 @@
     height    : 75px !important;
   }
 }
-@media only screen and (max-width: 365px){
-  .floatRight3 {
-    display: none;
-  }
-}
-@media only screen and (max-width: 439px){
-  .floatRight2 {
-    display: none;
-  }
-}
-@media only screen and (max-width: 524px){
-  .floatRight1 {
-    display: none;
-  }
-}
+
 @media only screen and (max-width: 1024px){
   .horiz-scroll {
     overflow-y: scroll;

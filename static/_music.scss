@@ -27,16 +27,16 @@ td p a {
 }
 
 .white {
-  z-index: 5;
+  z-index: 1;
   position: fixed;
-  width: 80vw;
+  overflow-x: hidden;
   margin: auto;
+  white-space: nowrap;
 }
 
 .Nav-Buttons {
   padding-left: 50px;
   display: 'inline';
-  max-width: '50%';
 }
 
 .Musicdash-Title {
