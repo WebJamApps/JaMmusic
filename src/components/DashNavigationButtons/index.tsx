@@ -6,9 +6,9 @@ type PageProps = { comp:MusicDashboard };
 const DashButtons = ({ comp }:PageProps): JSX.Element => (
   <div
     className="Nav-Buttons"
-    id="Nav1"
+    id="Nav-Buttons"
     style={{
-      display: 'inline', maxWidth: '50%',
+      display: 'inline',
     }}
   >
     <button
@@ -56,15 +56,7 @@ export const DashNavigationButtons = ({ comp }:PageProps): JSX.Element => (
         }}
       >
         Music Dashboard
-        <div
-          className="Nav-Buttons"
-          id="Nav-Buttons"
-          style={{
-            display: 'inline', width: '50vw',
-          }}
-        >
-          {DashButtons({ comp })}
-        </div>
+        {DashButtons({ comp })}
       </h4>
     </div>
   </nav>
