@@ -26,11 +26,14 @@ td p a {
   -webkit-overflow-scrolling: touch;
 }
 
-.white {
+.center {
   z-index: 5;
   position: fixed;
   margin: auto;
   white-space: nowrap;
+  width: 100%;
+  text-align: center;
+  padding-right: 120px;
 }
 
 .Nav-Buttons {

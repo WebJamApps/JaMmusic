@@ -113,8 +113,15 @@
   .Nav-Buttons {
     padding-left: 0;
   }
-  .white {
+  .center {
     top: 0;
+    background-color: white;
+    height: 26vw;
+  }
+}
+@media only screen and (max-width: 400px) and (min-height: 600px){
+  .center {
+    height: 33vw;
   }
 }
 // iPad
@@ -131,6 +138,12 @@
     height: 92% !important;
   }
 }
+
+@media screen and (min-width: 625px) and (max-width: 900px) {
+.material-header {
+  width: 100vw;
+ }
+}
 @media screen and (max-width: 900px) {
   .drawer {
     background-color: rgb(192, 192, 192);
@@ -146,10 +159,6 @@
     width   : 100vw;
     display : block;
     overflow-x: hidden;
-  }
-
-  .material-header {
-    width: 100vw;
   }
 
   .drawer-container.close {
@@ -192,6 +201,10 @@
 
   ::-webkit-scrollbar:vertical {
     width: 0;
+  }
+
+  .center {
+    padding-right: 0;
   }
   // .nav-list {
   //   width: 192px;
