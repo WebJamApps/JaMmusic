@@ -40,25 +40,20 @@ const DashButtons = ({ comp }:PageProps): JSX.Element => (
     </button>
   </div>
 );
-
+//   <nav className="white">
 export const DashNavigationButtons = ({ comp }:PageProps): JSX.Element => (
-  <nav className="white">
-    <div
-      className="center"
+  <div
+    className="center"
+  >
+    <h4
+      className="Musicdash-Title"
       style={{
-        textAlign: 'center',
+        margin: '14px', fontWeight: 'bold', color: 'black',
       }}
     >
-      <h4
-        className="Musicdash-Title"
-        style={{
-          margin: '14px', fontWeight: 'bold', color: 'black',
-        }}
-      >
-        Music Dashboard
-        {DashButtons({ comp })}
-      </h4>
-    </div>
-  </nav>
+      Music Dashboard
+      {DashButtons({ comp })}
+    </h4>
+  </div>
 );
 export default DashNavigationButtons;
