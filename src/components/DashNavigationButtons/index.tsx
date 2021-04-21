@@ -7,9 +7,6 @@ const DashButtons = ({ comp }:PageProps): JSX.Element => (
   <div
     className="Nav-Buttons"
     id="Nav-Buttons"
-    style={{
-      display: 'inline',
-    }}
   >
     <button
       className="floatRight1"
@@ -40,16 +37,13 @@ const DashButtons = ({ comp }:PageProps): JSX.Element => (
     </button>
   </div>
 );
-//   <nav className="white">
+
 export const DashNavigationButtons = ({ comp }:PageProps): JSX.Element => (
   <div
     className="center"
   >
     <h4
       className="Musicdash-Title"
-      style={{
-        margin: '14px', fontWeight: 'bold', color: 'black',
-      }}
     >
       Music Dashboard
       {DashButtons({ comp })}
