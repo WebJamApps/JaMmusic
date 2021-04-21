@@ -112,16 +112,11 @@
 @media only screen and (max-width: 625px){
   .Nav-Buttons {
     padding-left: 0;
+    display: block;
   }
   .center {
     top: 0;
     background-color: white;
-    height: 26vw;
-  }
-}
-@media only screen and (max-width: 400px) and (min-height: 600px){
-  .center {
-    height: 33vw;
   }
 }
 // iPad
