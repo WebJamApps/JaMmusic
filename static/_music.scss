@@ -27,13 +27,13 @@ td p a {
 }
 
 .center {
-  z-index: 5;
+  background-color: white;
+  z-index: 11;
   position: fixed;
   margin: auto;
   white-space: nowrap;
-  width: 100%;
+  width: calc(100vw - 200px);
   text-align: center;
-  padding-right: 120px;
 }
 
 .Nav-Buttons {
