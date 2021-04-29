@@ -2,7 +2,6 @@ import React, { useContext } from 'react';
 import MUIDataTable, { MUIDataTableColumn } from 'mui-datatables';
 import type { Tour } from '../../redux/mapStoreToProps';
 import { TourTableContext } from '../../providers/TourTable.provider';
-import { system } from 'faker';
 
 type Props = {
   columns: MUIDataTableColumn[];
@@ -11,10 +10,11 @@ type Props = {
 export const DataTable = ({ columns, data }: Props):JSX.Element => {
   const { test } = useContext(TourTableContext);
   // eslint-disable-next-line no-console
-  var datearr = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const datearr = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   const curdate: string = datearr[new Date().getMonth()] + ' ' + new Date().getDay() + ', ' + new Date().getFullYear();
-  const sorttours: Tour[] = data.filter(tour => tour.date>curdate).reverse();
-  sorttours.concat(data.filter(tour => tour.date<curdate));
+  let sorttours: Tour[] = data.filter(tour => new Date(tour.date)>new Date(curdate)).reverse();
+  sorttours[sorttours.length]=sorttours[sorttours.length+1];
+  sorttours = sorttours.concat(data.filter(tour => new Date(tour.date)<new Date(curdate)));
   return (
     <MUIDataTable
       options={{
