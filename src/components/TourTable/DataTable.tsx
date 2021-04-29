@@ -9,8 +9,11 @@ type Props = {
 };
 export const DataTable = ({ columns, data }: Props):JSX.Element => {
   const { test } = useContext(TourTableContext);
-  // eslint-disable-next-line no-console
-  console.log(test);
+  const datearr = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const curdate = `${datearr[new Date().getMonth()]} ${new Date().getDay()}, ${new Date().getFullYear()}`;
+  const sorttours = data.filter((tour) => new Date(tour.date) >= new Date(curdate)).reverse();
+  if (sorttours.length > 0)sorttours[sorttours.length] = sorttours[sorttours.length + 1];
+  const sortedtours = [...sorttours, ...data.filter((tour) => new Date(tour.date) < new Date(curdate))];
   return (
     <MUIDataTable
       options={{
@@ -26,7 +29,7 @@ export const DataTable = ({ columns, data }: Props):JSX.Element => {
         fixedHeader: false,
       }}
       columns={columns}
-      data={data}
+      data={sortedtours}
       title=""
     />
   );
