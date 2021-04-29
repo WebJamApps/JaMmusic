@@ -13,7 +13,7 @@ export const DataTable = ({ columns, data }: Props):JSX.Element => {
   const curdate = `${datearr[new Date().getMonth()]} ${new Date().getDay()}, ${new Date().getFullYear()}`;
   const sorttours = data.filter((tour) => new Date(tour.date) >= new Date(curdate)).reverse();
   if (sorttours.length > 0)sorttours[sorttours.length] = sorttours[sorttours.length + 1];
-  const sortedtours = [...sorttours, ...data.filter((tour) => new Date(tour.date) <= new Date(curdate))];
+  const sortedtours = [...sorttours, ...data.filter((tour) => new Date(tour.date) < new Date(curdate))];
   return (
     <MUIDataTable
       options={{
