@@ -12,9 +12,9 @@ export const DataTable = ({ columns, data }: Props):JSX.Element => {
   // eslint-disable-next-line no-console
   const datearr = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   const curdate: string = datearr[new Date().getMonth()] + ' ' + new Date().getDay() + ', ' + new Date().getFullYear();
-  let sorttours: Tour[] = data.filter(tour => new Date(tour.date)>new Date(curdate)).reverse();
-  sorttours[sorttours.length]=sorttours[sorttours.length+1];
-  sorttours = sorttours.concat(data.filter(tour => new Date(tour.date)<new Date(curdate)));
+  let sorttours: Tour[] = data.filter(tour => new Date(tour.date) > new Date(curdate)).reverse();
+  sorttours[sorttours.length] = sorttours[sorttours.length+1];
+  sorttours = sorttours.concat(data.filter(tour => new Date(tour.date) < new Date(curdate)));
   return (
     <MUIDataTable
       options={{
