@@ -48,8 +48,8 @@ export class MusicDashboardController {
 
   changePicDiv(): JSX.Element {
     let { editPic } = this.view.props;
-    const { picTitle, picUrl } = this.view.state;
-    if (!editPic) editPic = { title: '', url: '', type: '' };
+    const { picTitle, picUrl, caption } = this.view.state;
+    if (!editPic) editPic = { title: '', url: '', type: '' , caption: '' || undefined };
     return (
       <div
         className="material-content elevation3"
@@ -67,6 +67,10 @@ export class MusicDashboardController {
           <label htmlFor="picUrl">
             Image Address
             <input id="picUrl" placeholder={editPic.url} value={picUrl} onChange={this.view.onChange} />
+          </label>
+          <label>
+            Picture Caption
+            <input id="picCaption" placeholder={editPic.caption} value={caption} onChange={this.view.onChange} />
           </label>
           <p>{' '}</p>
           <button disabled={!(picTitle && picUrl)} type="button" onClick={this.addPic}>Add Picture</button>

@@ -23,6 +23,7 @@ interface MusicDashboardProps extends RouteComponentProps<Record<string, string 
 type MusicDashboardState = {
   picTitle: string,
   picUrl: string,
+  caption: string,
   location: string;
   venue: string;
   redirect: boolean;
@@ -41,6 +42,7 @@ const InitialState = {
   },
   picTitle: '',
   picUrl: '',
+  caption: '',
   redirect: false,
   date: '',
   time: '',
