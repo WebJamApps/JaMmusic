@@ -26,7 +26,7 @@ const makeDropdown = (htmlFor: string | undefined,
           options.map((cv) => <option id={cv} key={cv} value={cv}>{cv}</option>)
         }
     </Select>
-)
+);
 const makeInput = (type: string | undefined,
   label: string, isRequired: boolean | undefined,
   onChange: ((event: React.ChangeEvent<HTMLInputElement>) => void) | undefined,

@@ -39,17 +39,29 @@ export class MusicDashboardController {
   }
 
   addPic(): void {
-    const { picTitle, picUrl } = this.view.state;
+    const { picTitle, picUrl, showCaption } = this.view.state;
     const { scc, auth } = this.view.props;
-    const image = { title: picTitle, url: picUrl, type: 'JaMmusic-music' };
+    const image = {
+      title: picTitle,
+      url: picUrl,
+      caption: showCaption,
+      type: 'JaMmusic-music',
+    };
     scc.transmit('newImage', { image, token: auth.token });
     window.location.assign('/music');
   }
 
   changePicDiv(): JSX.Element {
     let { editPic } = this.view.props;
-    const { picTitle, picUrl, caption } = this.view.state;
-    if (!editPic) editPic = { title: '', url: '', type: '' , caption: '' || undefined };
+    const { picTitle, picUrl, showCaption } = this.view.state;
+    if (!editPic) {
+      editPic = {
+        title: '',
+        url: '',
+        type: '',
+        caption: '',
+      };
+    }
     return (
       <div
         className="material-content elevation3"
@@ -68,9 +80,9 @@ export class MusicDashboardController {
             Image Address
             <input id="picUrl" placeholder={editPic.url} value={picUrl} onChange={this.view.onChange} />
           </label>
-          <label>
+          <label htmlFor="picCaption">
             Picture Caption
-            <input id="picCaption" placeholder={editPic.caption} value={caption} onChange={this.view.onChange} />
+            <input id="picCaption" placeholder={editPic.caption} value={showCaption} onChange={this.view.onChange} />
           </label>
           <p>{' '}</p>
           <button disabled={!(picTitle && picUrl)} type="button" onClick={this.addPic}>Add Picture</button>
