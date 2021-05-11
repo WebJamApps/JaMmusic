@@ -25,9 +25,9 @@ export const PicEditor = ({ comp, controller, editPic }:PageProps): JSX.Element 
       Image Address
       <input id="picUrl" placeholder={editPic.url} value={comp.state.picUrl} onChange={comp.onChange} />
     </label>
-    <label htmlFor="picCaption">
+    <label htmlFor="showCaption">
       Picture Caption
-      <input id="picCaption" placeholder={editPic.caption} value={comp.state.showCaption} onChange={comp.onChange} />
+      <input id="showCaption" placeholder={editPic.caption} value={comp.state.showCaption} onChange={comp.onChange} />
     </label>
     <p>{' '}</p>
     <button disabled={!(comp.state.picTitle && comp.state.picUrl)} type="button" onClick={controller.addPic}>Add Picture</button>
