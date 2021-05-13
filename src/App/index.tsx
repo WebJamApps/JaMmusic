@@ -23,6 +23,8 @@ export interface AppProps {
 export class App extends Component<AppProps> {
   connectToSC: typeof connectToSC;
 
+  appName = process.env.APP_NAME || '';
+
   static defaultProps = {
     dispatch: (): void => { },
     songs: [],
@@ -43,12 +45,19 @@ export class App extends Component<AppProps> {
   }
 
   render(): JSX.Element {
+    console.log(`app name: ${this.appName}`);
     return (
       <div id="App" className="App">
         <Router>
           <ATemplate>
             <Switch>
-              <Route exact path="/" component={HomePage} />
+              <Route
+                exact
+                path="/"
+                component={
+              this.appName === 'web-jam.com' ? HomePage : DefaultMusic
+              }
+              />
               <PrivateRoute Container={GoogleMap} path="/map" />
               <PrivateRoute path="/sort" Container={DefaultSort} />
               <Route exact path="/music" component={DefaultMusic} />
