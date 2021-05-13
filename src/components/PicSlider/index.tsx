@@ -49,7 +49,7 @@ class PicSlider extends React.Component<PicSliderProps> {
                 {' '}
                 <img width="100%" height="100%" src={d.url} alt={d.title} />
                 {' '}
-                <Caption caption={d.title} />
+               <Caption caption={d.title} />
               </div>
             ))
               : null

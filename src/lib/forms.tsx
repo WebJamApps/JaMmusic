@@ -47,33 +47,5 @@ const makeInput = (type: string | undefined,
     />
   );
 };
-const radioButtons = (showCaption: string, onChange: ((event: React.ChangeEvent<HTMLInputElement>) => void) | undefined): JSX.Element => (
-  <div>
-    <label htmlFor="hide-caption" style={{ position: 'relative', display: 'inline-block', width: '130px' }}>
-      <input
-        id="hide-caption"
-        type="radio"
-        name="hide-caption"
-        value="hideCaption"
-        checked={showCaption !== 'showCaption'}
-        onChange={onChange}
-        className="form-check-input"
-        style={{ minWidth: 0 }}
-      />
-      Hide Caption
-    </label>
-    <label htmlFor="show-caption" style={{ position: 'relative', display: 'inline-block', width: '130px' }}>
-      <input
-        type="radio"
-        name="show-caption"
-        value="showCaption"
-        checked={showCaption === 'showCaption'}
-        onChange={onChange}
-        className="form-check-input"
-        style={{ minWidth: 0 }}
-      />
-      Show Caption
-    </label>
-  </div>
-);
-export default { makeInput, makeDropdown, radioButtons };
+
+export default { makeInput, makeDropdown };

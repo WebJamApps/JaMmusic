@@ -77,6 +77,8 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
     this.handleCategoryChange = this.handleCategoryChange.bind(this);
     this.setSongState = this.setSongState.bind(this);
     this.handleNavClick = this.handleNavClick.bind(this);
+    this.handleRadioChange = this.handleRadioChange.bind(this);
+    this.checkPictureEdit = this.checkPictureEdit.bind(this);
   }
 
   componentDidMount(): void { this.commonUtils.setTitleAndScroll('Music Dashboard', window.screen.width); }
@@ -127,6 +129,24 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
     if (e.currentTarget.id === 'Photos-Button') {
       this.setState({ navState: { navSong: false, navPhoto: true, navTour: false } });
     }
+  }
+
+  handleRadioChange(evt: { target: { value: string } }): void {
+    // this.checkPicEdit();
+    this.setState({ showCaption: evt.target.value });
+  }
+
+  checkPictureEdit(){
+    let {
+      picTitle, picUrl, showCaption
+    } = this.state;
+    const { editPic } = this.props;
+    // if (picTitle === '' && editPic.title !== undefined) picTitle = editPic.title;
+    // if (picUrl === '' && editPic.url !== undefined) picUrl = editPic.url;
+    // if (showCaption === '' && editPic.caption !== undefined) showCaption = editPic.caption;
+    this.setState({
+      picTitle, picUrl, showCaption
+    });
   }
 
   // eslint-disable-next-line class-methods-use-this
