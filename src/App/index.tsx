@@ -23,7 +23,7 @@ export interface AppProps {
 export class App extends Component<AppProps> {
   connectToSC: typeof connectToSC;
 
-  appName = process.env.APP_NAME || '';
+  appName = process.env.APP_NAME || 'web-jam.com';
 
   static defaultProps = {
     dispatch: (): void => { },
