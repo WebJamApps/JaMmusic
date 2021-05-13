@@ -45,7 +45,7 @@ export class App extends Component<AppProps> {
   }
 
   render(): JSX.Element {
-    console.log(`app name: ${this.appName}`);
+    // console.log(`app name: ${this.appName}`);
     return (
       <div id="App" className="App">
         <Router>
