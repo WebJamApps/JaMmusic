@@ -132,20 +132,20 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
   }
 
   handleRadioChange(evt: { target: { value: string } }): void {
-    // this.checkPicEdit();
+    this.checkPictureEdit();
     this.setState({ showCaption: evt.target.value });
   }
 
-  checkPictureEdit(){
-    let {
-      picTitle, picUrl, showCaption
+  checkPictureEdit(): void {
+    const {
+      picTitle, picUrl, showCaption,
     } = this.state;
-    const { editPic } = this.props;
-    // if (picTitle === '' && editPic.title !== undefined) picTitle = editPic.title;
+    // const { editPic } = this.props;
+    // if (picTitle === '' && editPic.title !== undefined) picTitle = editPic.title ;
     // if (picUrl === '' && editPic.url !== undefined) picUrl = editPic.url;
     // if (showCaption === '' && editPic.caption !== undefined) showCaption = editPic.caption;
     this.setState({
-      picTitle, picUrl, showCaption
+      picTitle, picUrl, showCaption,
     });
   }
 

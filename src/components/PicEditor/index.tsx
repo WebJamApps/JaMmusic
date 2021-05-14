@@ -15,6 +15,34 @@ type PageProps = {
   editPic: Iimage,
 };
 
+const radioButtons = (comp:MusicDashboard): JSX.Element => (
+  <div>
+    <label htmlFor="showCaption" style={{ display: 'inline', padding: '10px' }}>
+      Show Caption
+      <input
+        type="radio"
+        name="show-caption"
+        id="showCaption"
+        value="showCaption"
+        checked={comp.state.showCaption === 'showCaption'}
+        onChange={comp.handleRadioChange}
+        style={{ opacity: 1 }}
+      />
+    </label>
+    <label htmlFor="hideCaption" style={{ display: 'inline', padding: '20px' }}>
+      Hide Caption
+      <input
+        type="radio"
+        id="hideCaption"
+        value="hideCaption"
+        checked={comp.state.showCaption !== 'showCaption'}
+        onChange={comp.handleRadioChange}
+        style={{ opacity: 1 }}
+      />
+    </label>
+  </div>
+);
+
 export const PicEditor = ({ comp, controller, editPic }:PageProps): JSX.Element => (
   <form id="picsForm">
     <label htmlFor="picTitle">
@@ -26,12 +54,7 @@ export const PicEditor = ({ comp, controller, editPic }:PageProps): JSX.Element 
       <input id="picUrl" placeholder={editPic.url} value={comp.state.picUrl} onChange={comp.onChange} />
     </label>
     <p>{' '}</p>
-    <label htmlFor="showCaption" style={{ display: 'inline', padding: '10px' }}>Show Caption
-      <input type="radio" id="showCaption" value="showCaption" checked={comp.state.showCaption === 'showCaption'} onChange={comp.handleRadioChange} style={{ opacity:1 }}/>
-    </label>
-    <label htmlFor="hideCaption" style={{ display: 'inline' , padding: '10px' }}> Hide Caption
-      <input type="radio" id="hideCaption" value="hideCaption" checked={comp.state.showCaption !== 'showCaption'}  onChange={comp.handleRadioChange} style={{ opacity:1 }}/>
-    </label>
+    {radioButtons(comp)}
     <button disabled={!(comp.state.picTitle && comp.state.picUrl)} type="button" onClick={controller.addPic}>Add Picture</button>
   </form>
 );

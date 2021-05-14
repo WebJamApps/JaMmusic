@@ -51,7 +51,7 @@ export class MusicDashboardController {
     scc.transmit('newImage', { image, token: auth.token });
     window.location.assign('/music');
   }
-  // {this.view.forms.radioButtons(this.view.state.showCaption, this.view.handleRadioChange)}
+
   changePicDiv(): JSX.Element {
     let { editPic } = this.view.props;
     if (!editPic) {
