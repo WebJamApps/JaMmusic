@@ -132,28 +132,17 @@ export class AppTemplate extends React.Component<AppTemplateProps, AppMainState>
     );
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  makeIconAndText(menu:ImenuItem): JSX.Element {
-    return (
-      <div style={{ display: 'inline' }}>
-        <i className={`${menu.iconClass}`} />
-        &nbsp;
-        <span className="nav-item">{menu.name}</span>
-      </div>
-    );
-  }
-
   makeLink(menu: ImenuItem, index: number, type:string) :JSX.Element {
     return (
       <div key={index} className="menu-item">
         {type === 'Link' ? (
           <Link to={menu.link} className="nav-link" onClick={this.close}>
-            {this.makeIconAndText(menu)}
+            {this.menuUtils.makeIconAndText(menu)}
           </Link>
         )
           : (
             <a href={menu.link} className="nav-link" onClick={this.close}>
-              {this.makeIconAndText(menu)}
+              {this.menuUtils.makeIconAndText(menu)}
             </a>
           )}
       </div>
