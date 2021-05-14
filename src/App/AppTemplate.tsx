@@ -132,28 +132,40 @@ export class AppTemplate extends React.Component<AppTemplateProps, AppMainState>
     );
   }
 
-  makeMenuLink(menu: ImenuItem, index: number): JSX.Element {
+  // eslint-disable-next-line class-methods-use-this
+  makeIconAndText(menu:ImenuItem): JSX.Element {
     return (
-      <div key={index} className="menu-item">
-        <Link to={menu.link} className="nav-link" onClick={this.close}>
-          <i className={`${menu.iconClass}`} />
-          &nbsp;
-          <span className="nav-item">{menu.name}</span>
-        </Link>
+      <div style={{ display: 'inline' }}>
+        <i className={`${menu.iconClass}`} />
+        &nbsp;
+        <span className="nav-item">{menu.name}</span>
       </div>
     );
   }
 
-  makeExternalLink(menu: ImenuItem, index: number): JSX.Element {
+  makeLink(menu: ImenuItem, index: number, type:string) :JSX.Element {
     return (
       <div key={index} className="menu-item">
-        <a href={menu.link} className="nav-link" onClick={this.close}>
-          <i className={`${menu.iconClass}`} />
-          &nbsp;
-          <span className="nav-item">{menu.name}</span>
-        </a>
+        {type === 'Link' ? (
+          <Link to={menu.link} className="nav-link" onClick={this.close}>
+            {this.makeIconAndText(menu)}
+          </Link>
+        )
+          : (
+            <a href={menu.link} className="nav-link" onClick={this.close}>
+              {this.makeIconAndText(menu)}
+            </a>
+          )}
       </div>
     );
+  }
+
+  makeMenuLink(menu: ImenuItem, index: number): JSX.Element {
+    return this.makeLink(menu, index, 'Link');
+  }
+
+  makeExternalLink(menu: ImenuItem, index: number): JSX.Element {
+    return this.makeLink(menu, index, 'a');
   }
 
   navLinks(): JSX.Element {
