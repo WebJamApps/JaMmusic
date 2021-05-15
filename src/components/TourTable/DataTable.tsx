@@ -7,13 +7,18 @@ type Props = {
   columns: MUIDataTableColumn[];
   data: Tour[];
 };
-export const DataTable = ({ columns, data }: Props):JSX.Element => {
-  const { test } = useContext(TourTableContext);
+
+function sortTours(data: Tour[]): Tour[] {
   const datearr = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-  const curdate = `${datearr[new Date().getMonth()]} ${new Date().getDay()}, ${new Date().getFullYear()}`;
+  const curdate = `${datearr[new Date().getMonth()]} ${new Date().getDate()}, ${new Date().getFullYear()}`;
   const sorttours = data.filter((tour) => new Date(tour.date) >= new Date(curdate)).reverse();
   if (sorttours.length > 0)sorttours[sorttours.length] = sorttours[sorttours.length + 1];
   const sortedtours = [...sorttours, ...data.filter((tour) => new Date(tour.date) < new Date(curdate))];
+  return sortedtours;
+}
+
+export const DataTable = ({ columns, data }: Props):JSX.Element => {
+  const { test } = useContext(TourTableContext);
   return (
     <MUIDataTable
       options={{
@@ -29,7 +34,7 @@ export const DataTable = ({ columns, data }: Props):JSX.Element => {
         fixedHeader: false,
       }}
       columns={columns}
-      data={sortedtours}
+      data={sortTours(data)}
       title=""
     />
   );
