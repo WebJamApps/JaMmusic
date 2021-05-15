@@ -10,15 +10,17 @@ import SongsProvider from './providers/Songs.provider';
 import '../static/styles.scss';
 
 render(
-  <SongsProvider>
-    <TourTableProvider>
-      <Provider store={store.store}>
-        <PersistGate loading={null} persistor={store.persistor}>
-          <ConnectedApp />
-        </PersistGate>
-      </Provider>
-    </TourTableProvider>
-  </SongsProvider>, document.getElementById('root'),
+  <React.StrictMode>
+    <SongsProvider>
+      <TourTableProvider>
+        <Provider store={store.store}>
+          <PersistGate loading={null} persistor={store.persistor}>
+            <ConnectedApp />
+          </PersistGate>
+        </Provider>
+      </TourTableProvider>
+    </SongsProvider>
+  </React.StrictMode>, document.getElementById('root'),
 );
 
 /* istanbul ignore next */

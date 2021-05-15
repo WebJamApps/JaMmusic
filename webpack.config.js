@@ -34,13 +34,18 @@ module.exports = (env) => ({
     vendor: ['jquery', 'bootstrap'],
   },
 
+  stats: {
+    children: true,
+    errorDetails: true,
+  },
+
   mode: env.production ? 'production' : 'development',
 
   output: {
     path: outDir,
     publicPath: baseUrl,
-    filename: env.production ? '[name].[chunkhash].bundle.js' : '[name].[hash].bundle.js',
-    chunkFilename: env.production ? '[name].[chunkhash].chunk.js' : '[name].[hash].chunk.js',
+    filename: env.production ? '[name].[chunkhash].bundle.js' : '[name].[fullhash].bundle.js',
+    chunkFilename: env.production ? '[name].[chunkhash].chunk.js' : '[name].[fullhash].chunk.js',
   },
 
   performance: { hints: false },
