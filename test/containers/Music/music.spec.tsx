@@ -30,5 +30,12 @@ describe('/music', () => {
     const data:any = [{ url: '', title: '' }];
     const wrapper2 = shallow<Music>(<Music images={data} dispatch={jest.fn()} />);
     expect(wrapper2.find(PicSlider).exists()).toBe(true);
+    expect(wrapper2).toMatchSnapshot();
+  });
+  it('renders when joshandmariamusic.com', () => {
+    process.env.APP_NAME = 'joshandmariamusic.com';
+    const { wrapper } = setup(undefined);
+    expect(wrapper.find('div.page-content').exists()).toBe(true);
+    expect(wrapper.find('Intro').dive().find('.intro').exists()).toBe(true);
   });
 });

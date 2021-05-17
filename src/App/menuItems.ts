@@ -7,7 +7,16 @@ export interface ImenuItem {
   auth?: boolean,
 }
 
-const menuItems = [
+const jamNav = [
+  {
+    className: 'songs', type: 'link', iconClass: 'far fa-lightbulb', link: 'https://web-jam.com/music/songs', name: 'Songs',
+  },
+  {
+    className: '', type: 'link', iconClass: 'far fa-money-bill-alt', link: 'https://web-jam.com/music/buymusic', name: 'Buy Music',
+  },
+];
+
+const wjNav = [
   {
     className: '', type: 'link', iconClass: 'fas fa-music', link: '/music', name: 'Music',
   },
@@ -36,4 +45,4 @@ const menuItems = [
     className: 'logout', type: 'googleLogout', iconClass: 'fas fa-logout', link: '', name: 'Logout', auth: true,
   },
 ];
-export default menuItems;
+export default { wjNav, jamNav };

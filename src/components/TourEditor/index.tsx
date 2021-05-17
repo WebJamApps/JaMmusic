@@ -10,7 +10,7 @@ export interface IeditTour {
 }
 type PageProps = { editTour:IeditTour, comp:MusicDashboard };
 
-const newTourForm = (comp:MusicDashboard, editTour:IeditTour): JSX.Element => {
+export const newTourForm = (comp:MusicDashboard, editTour:IeditTour): JSX.Element => {
   let {
     location, tickets, more, date, time, venue,
   } = comp.state;
