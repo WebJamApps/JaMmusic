@@ -1,3 +1,4 @@
+/* eslint-disable security/detect-non-literal-fs-filename */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
 import { shallow } from 'enzyme';
@@ -115,5 +116,11 @@ describe('app-main component test setup', () => {
     const gb = shallow(bu);
     const auto = gb.find(GoogleLogin).get(0).props.onAutoLoadFinished(false);
     expect(auto).toBe(false);
+  });
+  it('runs make external link when joshandmariamusic.com', () => {
+    process.env.APP_NAME = 'joshandmariamusic.com';
+    const { wrapper } = setup();
+    wrapper.instance().navLinks();
+    expect(wrapper.find('a').exists()).toBe(true);
   });
 });
