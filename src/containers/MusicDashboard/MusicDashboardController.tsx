@@ -71,7 +71,7 @@ export class MusicDashboardController {
           {editPic && editPic._id ? 'Edit ' : 'Add '}
           Pictures
         </h5>
-        <PicEditor comp={this.view} controller={this} editPic={editPic} />
+        <PicEditor comp={this.view} controller={this} />
       </div>
     );
   }

@@ -140,10 +140,6 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
     const {
       picTitle, picUrl, showCaption,
     } = this.state;
-    // const { editPic } = this.props;
-    // if (picTitle === '' && editPic.title !== undefined) picTitle = editPic.title ;
-    // if (picUrl === '' && editPic.url !== undefined) picUrl = editPic.url;
-    // if (showCaption === '' && editPic.caption !== undefined) showCaption = editPic.caption;
     this.setState({
       picTitle, picUrl, showCaption,
     });
