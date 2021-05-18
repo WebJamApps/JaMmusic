@@ -28,7 +28,6 @@ describe('Picture Edtior', () => {
     const button = wrapper.find('button');
     if (!(compStub.state.picTitle && compStub.state.picUrl)) {
       expect(button.get(0).props.disabled).toBe(true);
-      expect(button.simulate('click')).toEqual(null);
     }
     expect(compStub.state.picTitle).toBeUndefined();
     expect(compStub.state.picUrl).toBeUndefined();
