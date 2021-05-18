@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
 import { shallow } from 'enzyme';
-import { TourEditor } from '../../../src/components/TourEditor';
+import { TourEditor, newTourForm } from '../../../src/components/TourEditor';
 import { MusicDashboard } from '../../../src/containers/MusicDashboard';
 
 describe('TourEditor', () => {
@@ -232,7 +233,7 @@ describe('TourEditor', () => {
       location: 'salem, va',
     });
     const wrapper3 = shallow(<TourEditor comp={instance} editTour={instance.props.editTour} />);
-    expect(wrapper3.find('Tour-Block')).toBeDefined();
+    expect(wrapper3.find('.search-outer-table')).toBeDefined();
   });
   it('reaches Tour table delete button', () => {
     const wrapper2 = shallow<MusicDashboard>(<MusicDashboard
@@ -265,5 +266,34 @@ describe('TourEditor', () => {
     });
     const wrapper3 = shallow(<TourEditor comp={instance} editTour={instance.props.editTour} />);
     expect(wrapper3.find('.search-outer-table')).toBeDefined();
+  });
+  it('newTourForm renders when editTour is missing some attributes', () => {
+    const comp:any = {
+      state: { location: '' },
+      validateForm: jest.fn(),
+      fixDate: jest.fn(),
+      forms: { makeInput: jest.fn() },
+      props: {
+        auth,
+        scc,
+        dispatch: jest.fn(),
+        editSong: anyProp,
+        editTour: {
+          datetime: '',
+          _id: '',
+          date: '',
+          time: '',
+          tickets: '',
+          more: '',
+          venue: '',
+          location: '',
+        },
+        history: anyProp,
+        location: anyProp,
+        match: anyProp,
+      },
+    };
+    const form = shallow(newTourForm(comp, { _id: '123' }));
+    expect(form.find('div.elevation3').exists()).toBe(true);
   });
 });
