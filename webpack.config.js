@@ -13,11 +13,15 @@ const ensureArray = (config) => config && (Array.isArray(config) ? config : [con
 const when = (condition, config, negativeConfig) => (condition ? ensureArray(config) : ensureArray(negativeConfig));
 
 // primary config:
+const nodeEnv = process.env.NODE_ENV || 'development';
 const title = 'Web Jam LLC';
 const outDir = path.resolve(__dirname, 'dist');
 const srcDir = path.resolve(__dirname, 'src');
 const baseUrl = '/';
 const googleMapKey = `https://maps.googleapis.com/maps/api/js?key=${process.env.GOOGLE_MAPS_API_KEY}`;
+const envVars = ['APP_NAME', 'SCS_PORT', 'SCS_HOST', 'SOCKETCLUSTER_SECURE', 'NODE_ENV',
+  'BackendUrl', 'GoogleClientId', 'userRoles', 'HashString', 'TINY_KEY'];
+if (nodeEnv === 'development')envVars.push('PORT');
 
 module.exports = (env) => ({
   resolve: {
@@ -129,10 +133,7 @@ module.exports = (env) => ({
         { from: 'static/imgs', to: 'static/imgs' },
       ],
     }),
-    env.production ? new webpack.EnvironmentPlugin(['SCS_PORT', 'SCS_HOST', 'SOCKETCLUSTER_SECURE', 'NODE_ENV',
-      'BackendUrl', 'GoogleClientId', 'userRoles', 'HashString', 'TINY_KEY'])
-      : new webpack.EnvironmentPlugin(['SCS_PORT', 'SCS_HOST', 'SOCKETCLUSTER_SECURE', 'NODE_ENV',
-        'PORT', 'BackendUrl', 'GoogleClientId', 'userRoles', 'HashString', 'TINY_KEY']),
+    new webpack.EnvironmentPlugin(envVars),
     ...when(env.analyze, new BundleAnalyzerPlugin()),
   ],
 });

@@ -6,11 +6,11 @@ import {
 import { connect } from 'react-redux';
 import type { Auth } from '../redux/mapStoreToProps';
 import mapStoreToATemplateProps from '../redux/mapStoreToAppTemplateProps';
-import authUtils, { IauthUtils } from './authUtils';
-import appTemplateUtils from './appTemplateUtils';
+import AuthUtils from './authUtils';
+import AppTemplateUtils from './appTemplateUtils';
 import Footer from './Footer';
-import menuUtils from './menuUtils';
-import menuItems, { ImenuItem } from './menuItems';
+import MenuUtils from './menuUtils';
+import MenuItems, { ImenuItem } from './menuItems';
 import authActions from './authActions';
 
 export interface AppTemplateProps extends RouteComponentProps {
@@ -41,19 +41,18 @@ export class AppTemplate extends React.Component<AppTemplateProps, AppMainState>
     heartBeat: 'white',
   };
 
-  menuUtils: typeof menuUtils;
+  menuUtils = MenuUtils;
 
-  authUtils: IauthUtils;
+  authUtils = AuthUtils;
 
-  appTemplateUtils: { activeUsers: (arg0: string, arg1: number) => React.ReactNode };
+  appTemplateUtils = AppTemplateUtils;
 
-  menus: ImenuItem[];
+  menuItems = MenuItems;
 
   authenticate: typeof authActions;
 
   constructor(props: AppTemplateProps) {
     super(props);
-    this.menuUtils = menuUtils;
     this.state = { menuOpen: false };
     this.close = this.close.bind(this);
     this.handleKeyPress = this.handleKeyPress.bind(this);
@@ -63,9 +62,6 @@ export class AppTemplate extends React.Component<AppTemplateProps, AppMainState>
     this.responseGoogleLogin = this.responseGoogleLogin.bind(this);
     this.responseGoogleLogout = this.responseGoogleLogout.bind(this);
     this.googleButtons = this.googleButtons.bind(this);
-    this.authUtils = authUtils;
-    this.appTemplateUtils = appTemplateUtils;
-    this.menus = menuItems;
     this.authenticate = authActions;
   }
 
@@ -136,33 +132,50 @@ export class AppTemplate extends React.Component<AppTemplateProps, AppMainState>
     );
   }
 
-  makeMenuLink(menu: ImenuItem, index: number): JSX.Element {
+  makeLink(menu: ImenuItem, index: number, type:string) :JSX.Element {
     return (
       <div key={index} className="menu-item">
-        <Link to={menu.link} className="nav-link" onClick={this.close}>
-          <i className={`${menu.iconClass}`} />
-          &nbsp;
-          <span className="nav-item">{menu.name}</span>
-        </Link>
+        {type === 'Link' ? (
+          <Link to={menu.link} className="nav-link" onClick={this.close}>
+            {this.menuUtils.makeIconAndText(menu)}
+          </Link>
+        )
+          : (
+            <a href={menu.link} className="nav-link" onClick={this.close}>
+              {this.menuUtils.makeIconAndText(menu)}
+            </a>
+          )}
       </div>
     );
+  }
+
+  makeMenuLink(menu: ImenuItem, index: number): JSX.Element {
+    return this.makeLink(menu, index, 'Link');
+  }
+
+  makeExternalLink(menu: ImenuItem, index: number): JSX.Element {
+    return this.makeLink(menu, index, 'a');
   }
 
   navLinks(): JSX.Element {
     const { userCount, heartBeat } = this.props;
     return (
       <div className="nav-list" style={{ width: '180px' }}>
-        <div
-          id="musTT"
-          style={{
-            display: 'none', position: 'absolute', top: '305px', right: '68px', backgroundColor: 'white', padding: '3px',
-          }}
-        >
-          Music
-        </div>
-        {this.menus.map((menu, index) => (this.menuUtils.menuItem(menu, index, this)))}
+        { process.env.APP_NAME !== 'joshandmariamusic.com'
+          ? (
+            <div
+              id="musTT"
+              style={{
+                display: 'none', position: 'absolute', top: '305px', right: '68px', backgroundColor: 'white', padding: '3px',
+              }}
+            >
+              Music
+            </div>
+          ) : null}
+        {process.env.APP_NAME !== 'joshandmariamusic.com' ? this.menuItems.wjNav.map((menu, index) => (this.menuUtils.menuItem(menu, index, this)))
+          : this.menuItems.jamNav.map((menu, index) => (this.makeExternalLink(menu, index)))}
         <p style={{ margin: 0, padding: 0, fontSize: '6pt' }}>&nbsp;</p>
-        {this.appTemplateUtils.activeUsers(heartBeat, userCount)}
+        {process.env.APP_NAME !== 'joshandmariamusic.com' ? this.appTemplateUtils.activeUsers(heartBeat, userCount) : null}
       </div>
     );
   }
