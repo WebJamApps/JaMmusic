@@ -50,7 +50,7 @@ describe('songsTableUtils', () => {
     window.confirm = jest.fn(() => false);
     const wrapper = shallow(result[0].modify || <div />);
     wrapper.find('button#editSong123').simulate('click');
-    expect(dispatch).toBeCalled();
+    expect(dispatch).toHaveBeenCalled();
   });
   it('does notscrollIntoView', () => {
     const anyData:any = {};
