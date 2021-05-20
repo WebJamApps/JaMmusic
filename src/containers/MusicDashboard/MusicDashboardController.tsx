@@ -45,7 +45,7 @@ export class MusicDashboardController {
     const image = {
       title: picTitle,
       url: picUrl,
-      caption: showCaption,
+      comments: showCaption,
       type: 'JaMmusic-music',
     };
     scc.transmit('newImage', { image, token: auth.token });
@@ -59,7 +59,7 @@ export class MusicDashboardController {
         title: '',
         url: '',
         type: '',
-        caption: '',
+        comments: '',
       };
     }
     return (
