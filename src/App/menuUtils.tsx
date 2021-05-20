@@ -1,3 +1,4 @@
+import React from 'react';
 import type { Auth } from '../redux/mapStoreToProps';
 import commonUtils from '../lib/commonUtils';
 import type { ImenuItem } from './menuItems';
@@ -25,4 +26,12 @@ const menuItem = (menu: ImenuItem,
   return continueMenuItem(menu, index, auth, view);
 };
 
-export default { continueMenuItem, menuItem };
+const makeIconAndText = (menu:ImenuItem): JSX.Element => (
+  <div style={{ display: 'inline' }}>
+    <i className={`${menu.iconClass}`} />
+    &nbsp;
+    <span className="nav-item">{menu.name}</span>
+  </div>
+);
+
+export default { continueMenuItem, menuItem, makeIconAndText };

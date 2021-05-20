@@ -12,7 +12,10 @@ const Intro = (): JSX.Element => (
       textAlign: 'center', border: 'solid', margin: 'auto', width: '124px', borderWidth: 'thin', backgroundColor: '#d8ecf3',
     }}
     >
-      <strong><Link to="/music/songs">Click To Listen</Link></strong>
+      <strong>
+        {process.env.APP_NAME !== 'joshandmariamusic.com' ? <Link to="/music/songs">Click To Listen</Link>
+          : <a href="https://web-jam.com/music/songs">Click To Listen</a>}
+      </strong>
     </h4>
     <p style={{ marginTop: '10px', marginBottom: '6px' }}>
       Josh and Maria have been performing their music together for over eight years now!

@@ -23,4 +23,14 @@ describe('App component', () => {
     const wrapper2 = shallow(<App />);
     expect(wrapper2).toBeDefined();
   });
+  it('renders correctly when APP_NAME is missing', () => {
+    delete process.env.APP_NAME;
+    const wrapper2 = shallow(<App />);
+    expect(wrapper2).toBeDefined();
+  });
+  it('renders correctly when APP_NAME is joshandmariamusic.com', () => {
+    process.env.APP_NAME = 'joshandmariamusic.com';
+    const wrapper2 = shallow(<App />);
+    expect(wrapper2).toBeDefined();
+  });
 });
