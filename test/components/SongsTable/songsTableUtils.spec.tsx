@@ -43,16 +43,23 @@ describe('songsTableUtils', () => {
     expect(result.includes('400')).toBe(true);
   });
   it('scrolls to top of form after edit button click', () => {
-    document.body.innerHTML = '<div class="picsForm"></div>';
-    const scrollIntoViewMock = jest.fn();
-    window.HTMLElement.prototype.scrollIntoView = scrollIntoViewMock;
     const song:any = { _id: '123' };
-    const result = songsTableUtils.addButtons([song], 'token', jest.fn());
+    const dispatch = jest.fn();
+    const result = songsTableUtils.addButtons([song], 'token', dispatch);
     expect(result[0].modify).toBeDefined();
     window.confirm = jest.fn(() => false);
     const wrapper = shallow(result[0].modify || <div />);
-    wrapper.find('button#editSong123').simulate('click', scrollIntoViewMock);
-    expect(document.getElementById('picsForm')).toBeDefined();
-    expect(scrollIntoViewMock).toBeCalled();
+    wrapper.find('button#editSong123').simulate('click');
+    expect(dispatch).toHaveBeenCalled();
+  });
+  it('does notscrollIntoView', () => {
+    const anyData:any = {};
+    expect(songsTableUtils.editSong(anyData, jest.fn(), null)).toBe(true);
+  });
+  it('scrollIntoView', () => {
+    const anyData:any = {};
+    const anyElement:any = { scrollIntoView: jest.fn() };
+    expect(songsTableUtils.editSong(anyData, jest.fn(), anyElement)).toBe(true);
+    expect(anyElement.scrollIntoView).toHaveBeenCalled();
   });
 });
