@@ -21,15 +21,18 @@ describe('Picture Edtior', () => {
     const wrapper = shallow(<PicEditor comp={compStub} controller={compStub.controller} />);
     expect(wrapper.find('radio-buttons')).toBeDefined();
   });
-  it('Picture Url and Title Null, button is disabled', () => {
-    compStub.state.picTitle = undefined;
-    compStub.state.picUrl = undefined;
+  it('renders the button is disabled', () => {
     const wrapper = shallow(<PicEditor comp={compStub} controller={compStub.controller} />);
-    const button = wrapper.find('button');
-    if (!(compStub.state.picTitle && compStub.state.picUrl)) {
-      expect(button.get(0).props.disabled).toBe(true);
-    }
-    expect(compStub.state.picTitle).toBeUndefined();
-    expect(compStub.state.picUrl).toBeUndefined();
+    const pButton = wrapper.find('button').get(0);
+    expect(pButton.props.disabled).toBe(true);
+    expect(pButton).toBeDefined();
+  });
+  it('renders the button is enabled', () => {
+    compStub.state.picTitle = 'Title';
+    compStub.state.picUrl = 'Url';
+    const wrapper = shallow(<PicEditor comp={compStub} controller={compStub.controller} />);
+    const pButton = wrapper.find('button').get(0);
+    expect(pButton.props.disabled).toBe(false);
+    expect(pButton).toBeDefined();
   });
 });
