@@ -6,7 +6,7 @@ import PicSlider from '../../src/components/PicSlider';
 function setup() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const data:any = [
-    { _id: 1, url: '../static/imgs/ohaf/slideshow2.png', caption: 'showCaption' },
+    { _id: 1, url: '../static/imgs/ohaf/slideshow2.png', comments: 'showCaption' },
     { _id: 2, url: '../static/imgs/ohaf/slideshow3.png' },
     { _id: 3, url: '../static/imgs/ohaf/slideshow4.png' },
     { _id: 4, url: '../static/imgs/ohaf/slideshow5.png' },
