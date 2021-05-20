@@ -47,4 +47,5 @@ const makeInput = (type: string | undefined,
     />
   );
 };
+
 export default { makeInput, makeDropdown };

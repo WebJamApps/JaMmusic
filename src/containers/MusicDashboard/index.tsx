@@ -23,6 +23,7 @@ interface MusicDashboardProps extends RouteComponentProps<Record<string, string 
 type MusicDashboardState = {
   picTitle: string,
   picUrl: string,
+  showCaption: string,
   location: string;
   venue: string;
   redirect: boolean;
@@ -41,6 +42,7 @@ const InitialState = {
   },
   picTitle: '',
   picUrl: '',
+  showCaption: '',
   redirect: false,
   date: '',
   time: '',
@@ -75,6 +77,8 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
     this.handleCategoryChange = this.handleCategoryChange.bind(this);
     this.setSongState = this.setSongState.bind(this);
     this.handleNavClick = this.handleNavClick.bind(this);
+    this.handleRadioChange = this.handleRadioChange.bind(this);
+    this.checkPictureEdit = this.checkPictureEdit.bind(this);
   }
 
   componentDidMount(): void { this.commonUtils.setTitleAndScroll('Music Dashboard', window.screen.width); }
@@ -125,6 +129,20 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
     if (e.currentTarget.id === 'Photos-Button') {
       this.setState({ navState: { navSong: false, navPhoto: true, navTour: false } });
     }
+  }
+
+  handleRadioChange(evt: { target: { value: string } }): void {
+    this.checkPictureEdit();
+    this.setState({ showCaption: evt.target.value });
+  }
+
+  checkPictureEdit(): void {
+    const {
+      picTitle, picUrl, showCaption,
+    } = this.state;
+    this.setState({
+      picTitle, picUrl, showCaption,
+    });
   }
 
   // eslint-disable-next-line class-methods-use-this

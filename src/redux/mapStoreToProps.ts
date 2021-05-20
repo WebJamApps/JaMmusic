@@ -26,6 +26,7 @@ export interface Iimage {
   'url': string;
   'title': string;
   'type': string;
+  'comments': string;
   'created_at'?: string;
   'updated_at'?: string;
 }
