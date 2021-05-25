@@ -5,6 +5,7 @@ import Forms from '../../lib/forms';
 import SongsTable from '../../components/SongsTable';
 import SongEditorUtils from '../../components/SongEditor/songEditorUtils';
 import SongEditor from '../../components/SongEditor';
+import { PicEditor } from '../../components/PicEditor';
 
 export class MusicDashboardController {
   view: MusicDashboard;
@@ -39,17 +40,28 @@ export class MusicDashboardController {
   }
 
   addPic(): void {
-    const { picTitle, picUrl } = this.view.state;
+    const { picTitle, picUrl, showCaption } = this.view.state;
     const { scc, auth } = this.view.props;
-    const image = { title: picTitle, url: picUrl, type: 'JaMmusic-music' };
+    const image = {
+      title: picTitle,
+      url: picUrl,
+      comments: showCaption,
+      type: 'JaMmusic-music',
+    };
     scc.transmit('newImage', { image, token: auth.token });
     window.location.assign('/music');
   }
 
   changePicDiv(): JSX.Element {
     let { editPic } = this.view.props;
-    const { picTitle, picUrl } = this.view.state;
-    if (!editPic) editPic = { title: '', url: '', type: '' };
+    if (!editPic) {
+      editPic = {
+        title: '',
+        url: '',
+        type: '',
+        comments: '',
+      };
+    }
     return (
       <div
         className="material-content elevation3"
@@ -59,18 +71,7 @@ export class MusicDashboardController {
           {editPic && editPic._id ? 'Edit ' : 'Add '}
           Pictures
         </h5>
-        <form id="picsForm">
-          <label htmlFor="picTitle">
-            Picture Title
-            <input id="picTitle" placeholder={editPic.title} value={picTitle} onChange={this.view.onChange} />
-          </label>
-          <label htmlFor="picUrl">
-            Image Address
-            <input id="picUrl" placeholder={editPic.url} value={picUrl} onChange={this.view.onChange} />
-          </label>
-          <p>{' '}</p>
-          <button disabled={!(picTitle && picUrl)} type="button" onClick={this.addPic}>Add Picture</button>
-        </form>
+        <PicEditor comp={this.view} controller={this} />
       </div>
     );
   }

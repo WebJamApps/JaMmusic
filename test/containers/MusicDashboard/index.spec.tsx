@@ -243,4 +243,10 @@ describe('Dashboard Container', () => {
     wrapper.instance().handleNavClick({ currentTarget: { id: 'Photos-Button' } });
     expect(wrapper.instance().state.navState.navPhoto).toBe(true);
   });
+  it('handles radio change', () => {
+    wrapper.instance().handleRadioChange({ target: { value: 'showCaption' } });
+    expect(wrapper.instance().state.picTitle).toBeDefined();
+    expect(wrapper.instance().state.picUrl).toBeDefined();
+    expect(wrapper.instance().state.showCaption).toBe('showCaption');
+  });
 });
