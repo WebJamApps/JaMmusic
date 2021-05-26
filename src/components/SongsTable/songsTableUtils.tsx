@@ -3,13 +3,12 @@ import type { Dispatch, AnyAction } from 'redux';
 import superagent from 'superagent';
 import type { ISong } from '../../providers/Songs.provider';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const editSong = (data: ISong, dispatch:Dispatch<AnyAction>): boolean => {
-  // const { dispatch } = this.props;
-  const s = { ...data, modify: undefined };
+const editSong = (data: ISong, dispatch:Dispatch<AnyAction>, picsForm:HTMLElement | null): boolean => {
+  const songData = { ...data, modify: undefined };
   // eslint-disable-next-line no-console
   console.log('display the create new song form with the edit song content prepopulated');
-  dispatch({ type: 'EDIT_SONG', songData: s });
+  dispatch({ type: 'EDIT_SONG', songData });
+  if (picsForm && picsForm.scrollIntoView) picsForm.scrollIntoView({ behavior: 'smooth' });
   return true;
 };
 
@@ -27,28 +26,32 @@ const deleteSong = async (id: string, token:string): Promise<string> => { // esl
   return 'no delete';
 };
 
+const makeSongButtons = (deleteSongId: string,
+  editSongId: string, token: string, dispatch: Dispatch<AnyAction>, song: ISong):JSX.Element => {
+  const picsForm = document.getElementById('picsForm');
+  return (
+    <div>
+      <button type="button" id={deleteSongId} onClick={() => deleteSong(song._id, token)}>Delete</button>
+      <p>{' '}</p>
+      <button
+        type="button"
+        id={editSongId}
+        onClick={() => {
+          editSong(song, dispatch, picsForm);
+        }}
+      >
+        Edit
+      </button>
+    </div>
+  );
+};
+
 const addButtons = (arr: ISong[], token:string, dispatch:Dispatch<AnyAction>): ISong[] => {
   const newArr = arr;/* eslint-disable security/detect-object-injection */
   for (let i = 0; i < arr.length; i += 1) {
     const deleteSongId = `deleteSong${newArr[i]._id}`;
     const editSongId = `editSong${newArr[i]._id}`;
-    const topOfForm = document.getElementById('picsForm');
-    newArr[i].modify = (
-      <div>
-        <button type="button" id={deleteSongId} onClick={() => deleteSong(newArr[i]._id, token)}>Delete</button>
-        <p>{' '}</p>
-        <button
-          type="button"
-          id={editSongId}
-          onClick={() => {
-            topOfForm?.scrollIntoView({ behavior: 'smooth' });
-            editSong(newArr[i], dispatch);
-          }}
-        >
-          Edit
-        </button>
-      </div>
-    );
+    newArr[i].modify = makeSongButtons(deleteSongId, editSongId, token, dispatch, newArr[i]);
   }
   return newArr;
 };
