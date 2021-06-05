@@ -9,7 +9,7 @@
   },
   "author": "https://github.com/orgs/WebJamApps/teams/handlersandkickers",
   "engines": {
-    "node": ">=15.13.0"
+    "node": ">=16.1.0"
   },
   "files": [
     "webpack.config.js",
@@ -43,6 +43,7 @@
   "dependencies": {
     "@material-ui/core": "latest",
     "@material-ui/icons": "latest",
+    "@popperjs/core": "^2.9.2",
     "@tinymce/tinymce-react": "latest",
     "@types/copy-webpack-plugin": "latest",
     "@types/core-js": "^2.5.4",
@@ -90,6 +91,7 @@
     "mini-css-extract-plugin": "^1.3.1",
     "moment": "latest",
     "mui-datatables": "latest",
+    "node-notifier": "^10.0.0",
     "node-sass": "latest",
     "nps": "latest",
     "nps-utils": "latest",
@@ -118,7 +120,7 @@
     "source-map-loader": "latest",
     "stream-browserify": "^3.0.0",
     "style-loader": "latest",
-    "stylelint-config-recommended-scss": "latest",
+    "stylelint-config-recommended-scss": "^3.3.0",
     "superagent": "latest",
     "terser-webpack-plugin": "latest",
     "ts-loader": "latest",
@@ -163,8 +165,8 @@
     "react-hot-loader": "latest",
     "react-test-renderer": "^16.14.0",
     "redux-mock-store": "latest",
-    "stylelint": "latest",
-    "stylelint-config-standard": "latest",
+    "stylelint": "^9.3.0",
+    "stylelint-config-standard": "^18.3.0",
     "stylelint-scss": "latest",
     "ts-jest": "latest",
     "webpack-dev-server": "^3.11.0"
