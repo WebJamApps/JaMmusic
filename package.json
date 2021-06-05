@@ -163,6 +163,7 @@
     "jest-puppeteer": "latest",
     "puppeteer": "latest",
     "react-hot-loader": "latest",
+    "resize-observer-polyfill": "latest",
     "react-test-renderer": "^16.14.0",
     "redux-mock-store": "latest",
     "stylelint": "^9.3.0",
