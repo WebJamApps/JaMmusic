@@ -12,7 +12,7 @@ export const authError = (e: unknown): { type: string; error: unknown } => ({
   error: e,
 });
 
-async function authFunc(body: GoogleBody, props: AppTemplateProps): Promise<string|Error> {
+async function authFunc(body: GoogleBody, props: AppTemplateProps): Promise<string | Error> {
   const { auth } = props;
   if (auth.isAuthenticated) return 'authenticated';
   let data;
