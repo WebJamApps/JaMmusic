@@ -1,6 +1,6 @@
 {
   "name": "jammusic",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "joshandmariamusic.com",
   "main": "dist/index.html",
   "repository": {
@@ -92,7 +92,7 @@
     "moment": "latest",
     "mui-datatables": "latest",
     "node-notifier": "^10.0.0",
-    "node-sass": "latest",
+    "node-sass": "^6.0.0",
     "nps": "latest",
     "nps-utils": "latest",
     "popper.js": "latest",
