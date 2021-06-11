@@ -26,8 +26,8 @@ jobs:
       - run:
           name: Test install
           command: |
-          yarn install --immutable
-          node node_modules/puppeteer/install.js
+            yarn install --immutable
+            node node_modules/puppeteer/install.js
       - run:
           name: run all tests
           command: |
