@@ -74,7 +74,6 @@ typings/
 
 .DS_Store
 .prettierrc
-.gitattributes
 
 # Yarn 2.0 - Zero Install method: https://yarnpkg.com/getting-started/qa#which-files-should-be-gitignored
 
