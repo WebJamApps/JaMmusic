@@ -22,6 +22,7 @@ jobs:
             sudo dpkg -i google-chrome.deb
             sudo sed -i 's|HERE/chrome"|HERE/chrome" --no-sandbox|g' /opt/google/chrome/google-chrome
             rm google-chrome.deb
+            npm install -g npm
       - run:
           name: Test install
           command: "yarn install --frozen-lockfile"
