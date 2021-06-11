@@ -25,7 +25,9 @@ jobs:
             sudo npm install -g npm
       - run:
           name: Test install
-          command: "yarn install --immutable"
+          command:  |
+          yarn install --immutable
+          node node_modules/puppeteer/install.js
       - run:
           name: run all tests
           command: |
