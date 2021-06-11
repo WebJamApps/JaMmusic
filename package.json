@@ -36,8 +36,7 @@
     "test:jest": "jest --config jest.config.json --no-cache --runInBand",
     "test:puppeteer": "jest --preset jest-puppeteer --config jest.puppeteer-config.json /test/puppeteer --runInBand",
     "installglobals": "yarn config set registry https://registry.yarnpkg.com -g",
-    "cleaninstall": "rm -rf yarn.lock && rm -rf node_modules && yarn cache clean && yarn installglobals && yarn install",
-    "postinstall": "yarn build:prod",
+    "cleaninstall": "rm -rf yarn.lock && rm -rf node_modules && yarn cache clean && yarn installglobals && yarn install && yarn start build",
     "test:stylelint": "stylelint \"static/**/*.scss\""
   },
   "dependencies": {
@@ -92,7 +91,6 @@
     "moment": "latest",
     "mui-datatables": "latest",
     "node-notifier": "^10.0.0",
-    "node-sass": "^6.0.0",
     "nps": "latest",
     "nps-utils": "latest",
     "popper.js": "latest",
@@ -130,7 +128,7 @@
     "util": "^0.12.3",
     "webpack": "^5.7.0",
     "webpack-bundle-analyzer": "latest",
-    "webpack-cli": "^4.2.0"
+    "webpack-cli": "^4.7.2"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "latest",
@@ -163,9 +161,10 @@
     "jest-puppeteer": "latest",
     "puppeteer": "latest",
     "react-hot-loader": "latest",
-    "resize-observer-polyfill": "latest",
     "react-test-renderer": "^16.14.0",
     "redux-mock-store": "latest",
+    "resize-observer-polyfill": "latest",
+    "sass": "latest",
     "stylelint": "^9.3.0",
     "stylelint-config-standard": "^18.3.0",
     "stylelint-scss": "latest",
