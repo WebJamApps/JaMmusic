@@ -11,7 +11,7 @@ export interface PicSliderProps {
 }
 
 class PicSlider extends React.Component<PicSliderProps> {
-  static defaultProps: { data: [{ url: ''; title: ''; _id: 0 }];};
+  static defaultProps: { data: [{ url: ''; title: ''; _id: 0 }]; };
 
   settings: {
     autoplay: boolean;

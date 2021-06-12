@@ -1,4 +1,4 @@
-const tour: {datetime: string, _id: string}[] = [];
+const tour: { datetime: string, _id: string }[] = [];
 const initialState = {
   tour,
   tourUpdated: false,
@@ -6,7 +6,7 @@ const initialState = {
   editSong: { _id: '' },
 };
 
-const modifyTour = (state: { tour: { _id: string }[] }, action: { data?: { _id: string }}) => {
+const modifyTour = (state: { tour: { _id: string }[] }, action: { data?: { _id: string } }) => {
   const tArr = state.tour;
   for (let i = 0; i < tArr.length; i += 1) { // eslint-disable-next-line security/detect-object-injection
     if (action.data && tArr[i]._id === action.data._id) tArr[i] = action.data;

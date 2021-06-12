@@ -58,6 +58,8 @@ export default class Inquiry extends Component<unknown, InquiryState> {
     this.superagent = superagent;
   }
 
+  handleCountryChange(event: React.ChangeEvent<HTMLSelectElement>): void { return this.setState({ country: event.target.value }); }
+
   onChange(evt: React.ChangeEvent<HTMLSelectElement>, isSelected?: boolean): void {
     if (isSelected) {
       this.setState({ uSAstate: evt.target.value });
@@ -71,8 +73,6 @@ export default class Inquiry extends Component<unknown, InquiryState> {
   }
 
   setFormField(id: string, value: string): void { return this.setState((preS) => ({ ...preS, [id]: value.trim() })); }
-
-  handleCountryChange(event: React.ChangeEvent<HTMLSelectElement>): void { return this.setState({ country: event.target.value }); }
 
   continueValidating(validEmail: boolean): boolean {
     const {
