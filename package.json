@@ -26,18 +26,18 @@
   "license": "MIT",
   "scripts": {
     "start:dist": "node server.js",
-    "build:prod": "rm -rf dist && yarn start build",
+    "build:prod": "rm -rf dist && npm run start build",
     "cc": "codeclimate analyze -f html > codeclimate.html",
     "start": "nps",
-    "test:lint-fix": "yarn test:stylelint && nps test.lint.fix",
-    "test:lint": "yarn test:stylelint && nps test.lint",
-    "test": "yarn test:lint && yarn test:puppeteer && yarn test:jest",
-    "test:local": "yarn test:lint-fix && yarn test:jest && yarn test:puppeteer && yarn cc",
+    "test:lint-fix": "npm run test:stylelint && nps test.lint.fix",
+    "test:lint": "npm run test:stylelint && nps test.lint",
+    "test": "npm run test:lint && npm run test:puppeteer && npm run test:jest",
+    "test:local": "npm run test:lint-fix && npm run test:jest && npm run test:puppeteer && npm run cc",
     "test:jest": "jest --config jest.config.json --no-cache --runInBand",
     "test:puppeteer": "jest --preset jest-puppeteer --config jest.puppeteer-config.json /test/puppeteer --runInBand",
-    "installglobals": "yarn config set registry https://registry.yarnpkg.com -g",
-    "cleaninstall": "rm -rf yarn.lock && rm -rf node_modules && yarn cache clean && yarn installglobals && yarn install",
-    "postinstall": "yarn build:prod",
+    "installglobals": "npm install -g npm && npm install -g snyk",
+    "cleaninstall": "rm -rf yarn.lock && rm -rf node_modules && rm -rf package-lock.json && npm run installglobals && npm install",
+    "postinstall": "npm run build:prod",
     "test:stylelint": "stylelint \"static/**/*.scss\""
   },
   "dependencies": {
@@ -92,7 +92,6 @@
     "moment": "latest",
     "mui-datatables": "latest",
     "node-notifier": "^10.0.0",
-    "node-sass": "^6.0.0",
     "nps": "latest",
     "nps-utils": "latest",
     "popper.js": "latest",
@@ -114,8 +113,11 @@
     "redux-logger": "latest",
     "redux-persist": "latest",
     "redux-thunk": "latest",
-    "sass-loader": "latest",
+    "resize-observer-polyfill": "latest",
+    "sass": "latest",
+    "sass-loader": "^7.3.1",
     "slick-carousel": "latest",
+    "snyk": "^1.630.0",
     "socketcluster-client": "latest",
     "source-map-loader": "latest",
     "stream-browserify": "^3.0.0",
@@ -130,7 +132,7 @@
     "util": "^0.12.3",
     "webpack": "^5.7.0",
     "webpack-bundle-analyzer": "latest",
-    "webpack-cli": "^4.2.0"
+    "webpack-cli": "^4.7.2"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "latest",
@@ -163,14 +165,13 @@
     "jest-puppeteer": "latest",
     "puppeteer": "latest",
     "react-hot-loader": "latest",
-    "resize-observer-polyfill": "latest",
     "react-test-renderer": "^16.14.0",
     "redux-mock-store": "latest",
     "stylelint": "^9.3.0",
     "stylelint-config-standard": "^18.3.0",
     "stylelint-scss": "latest",
     "ts-jest": "latest",
-    "webpack-dev-server": "^3.11.0"
+    "webpack-dev-server": "^3.11.2"
   },
   "snyk": true
 }
