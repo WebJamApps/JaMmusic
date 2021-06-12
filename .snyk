@@ -1,0 +1,13 @@
+# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
+version: v1.19.0
+# ignores vulnerabilities until expiry date; change duration by modifying expiry date
+ignore:
+  SNYK-JS-MATERIALIZECSS-174144:
+    - materialize-css:
+        reason: None given
+        expires: '2021-07-12T15:52:52.315Z'
+  SNYK-JS-MATERIALIZECSS-174148:
+    - materialize-css:
+        reason: None given
+        expires: '2021-07-12T15:52:52.315Z'
+patch: {}

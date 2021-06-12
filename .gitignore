@@ -6,7 +6,6 @@ yarn-debug.log*
 yarn-error.log*
 codeclimate.html
 dist
-package-lock.json
 
 # Runtime data
 pids
@@ -58,12 +57,6 @@ typings/
 # Output of 'npm pack'
 *.tgz
 
-# Yarn Integrity file
-.yarn-integrity
-
-#yarn path file
-.yarnrc
-
 # dotenv environment variables file
 .env
 .env.bak
@@ -75,12 +68,5 @@ typings/
 .DS_Store
 .prettierrc
 
-# Yarn 2.0 - Zero Install method: https://yarnpkg.com/getting-started/qa#which-files-should-be-gitignored
-
-.yarn/*
-!.yarn/cache
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/sdks
-!.yarn/versions
+.yarn
+yarn.lock
