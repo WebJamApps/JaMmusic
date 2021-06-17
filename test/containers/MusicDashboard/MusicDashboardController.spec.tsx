@@ -4,7 +4,12 @@ import Controller from '../../../src/containers/MusicDashboard/MusicDashboardCon
 
 describe('MusicDashboardController', () => {
   const viewStub: any = {
-    props: { auth: { token: 'token' }, editPic: { _id: '5' }, scc: { transmit: jest.fn() } },
+    props: {
+      auth: { token: 'token' },
+      editPic: { _id: '5' },
+      scc: { transmit: jest.fn() },
+      showtable: true,
+    },
     state: { picTitle: 'Title', picUrl: 'url', comments: 'showCaption' },
   };
   it('makes a change picture webform with editPic', () => {

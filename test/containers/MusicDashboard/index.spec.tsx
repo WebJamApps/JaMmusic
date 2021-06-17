@@ -19,6 +19,9 @@ describe('Dashboard Container', () => {
       location={anyProp}
       match={anyProp}
       editSong={anyProp}
+      editPic={anyProp}
+      images={anyProp}
+      showTable={anyProp}
     />);
   });
   it('is defined', () => {
@@ -45,6 +48,9 @@ describe('Dashboard Container', () => {
         location={anyProp}
         match={anyProp}
         editSong={anyProp}
+        editPic={anyProp}
+        images={anyProp}
+        showTable={anyProp}
       />,
     );
     wrapper2.instance().checkEdit = jest.fn();
@@ -124,6 +130,9 @@ describe('Dashboard Container', () => {
       location={anyProp}
       match={anyProp}
       editSong={anyProp}
+      editPic={anyProp}
+      images={anyProp}
+      showTable={anyProp}
     />);
     wrapper2.instance().setState = jest.fn();
     const sO = {
@@ -142,6 +151,9 @@ describe('Dashboard Container', () => {
       history={anyProp}
       location={anyProp}
       match={anyProp}
+      editPic={anyProp}
+      images={anyProp}
+      showTable={anyProp}
     />);
     wrapper2.instance().setState = jest.fn();
     const sO = {
@@ -169,6 +181,9 @@ describe('Dashboard Container', () => {
       history={anyProp}
       location={anyProp}
       match={anyProp}
+      editPic={anyProp}
+      images={anyProp}
+      showTable={anyProp}
     />);
     wrapper2.setState({ venue: 'beer garden' });
     wrapper2.instance().setState = jest.fn();
@@ -198,6 +213,9 @@ describe('Dashboard Container', () => {
       history={anyProp}
       location={anyProp}
       match={anyProp}
+      editPic={anyProp}
+      images={anyProp}
+      showTable={anyProp}
     />);
     wrapper2.setState({
       date: '2020-10-10',

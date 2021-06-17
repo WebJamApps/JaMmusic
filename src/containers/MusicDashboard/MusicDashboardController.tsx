@@ -5,6 +5,7 @@ import Forms from '../../lib/forms';
 import SongsTable from '../../components/SongsTable';
 import SongEditorUtils from '../../components/SongEditor/songEditorUtils';
 import SongEditor from '../../components/SongEditor';
+import PTable from '../../components/PhotoTable/PhotoTable';
 import { PicEditor } from '../../components/PicEditor';
 
 export class MusicDashboardController {
@@ -53,22 +54,14 @@ export class MusicDashboardController {
   }
 
   changePicDiv(): JSX.Element {
-    let { editPic } = this.view.props;
-    if (!editPic) {
-      editPic = {
-        title: '',
-        url: '',
-        type: '',
-        comments: '',
-      };
-    }
+    const { editPic } = this.view.props;
     return (
       <div
         className="material-content elevation3"
         style={{ maxWidth: '320px', margin: '30px auto' }}
       >
         <h5 style={{ marginBottom: 0 }}>
-          {editPic && editPic._id ? 'Edit ' : 'Add '}
+          {editPic && editPic._id && editPic._id !== '' ? 'Edit ' : 'Add '}
           Pictures
         </h5>
         <PicEditor comp={this.view} controller={this} />
@@ -77,10 +70,19 @@ export class MusicDashboardController {
   }
 
   pictureBlock(): JSX.Element {
+    const {
+      dispatch, auth, showTable, images,
+    } = this.view.props;
     return (
       <div className="material-content elevation3" style={{ maxWidth: '9.1in', margin: 'auto' }}>
         <h5 style={{ textAlign: 'center', marginBottom: 0 }}>Modify Photo Slideshow</h5>
         {this.changePicDiv()}
+        {showTable ? (
+          <h4 style={{ textAlign: 'center' }}>
+            All Images
+            <PTable auth={auth} dispatch={dispatch} images={images} />
+          </h4>
+        ) : null}
       </div>
     );
   }
