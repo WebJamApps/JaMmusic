@@ -1,7 +1,9 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const {
-  series, crossEnv, concurrent, rimraf,
+  series, concurrent,
 } = require('nps-utils');
+
+require('dotenv').config();
 
 module.exports = {
   scripts: {
@@ -10,20 +12,13 @@ module.exports = {
       default: 'nps test.jest',
       jest: {
         default: series(
-          rimraf('test/coverage-jest'),
-          crossEnv('BABEL_TARGET=node jest'),
         ),
-        accept: crossEnv('BABEL_TARGET=node jest -u'),
-        watch: crossEnv('BABEL_TARGET=node jest --watch'),
       },
       lint: {
-        default: 'eslint . --ext .js,.tsx,.ts',
-        fix: 'eslint . --ext .js,.tsx,.ts --fix',
+        default: 'eslint . --ext .js,.ts,.tsx',
+        fix: 'eslint . --ext .js,.ts,.tsx --fix',
       },
       react: {
-        default: crossEnv('BABEL_TARGET=node jest --no-cache --config jest.React.json --notify'),
-        accept: crossEnv('BABEL_TARGET=node jest -u --no-cache --config jest.React.json --notify --updateSnapshot'),
-        watch: crossEnv('BABEL_TARGET=node jest --watch --no-cache --config jest.React.json --notify'),
       },
       all: concurrent({
         browser: series.nps('test.lint', 'test.jest', 'test.react', 'e2e'),
@@ -35,12 +30,12 @@ module.exports = {
     webpack: {
       default: 'nps webpack.server',
       build: {
-        before: rimraf('dist'),
+        before: 'rm -rf dist',
         default: 'nps webpack.build.production',
         development: {
           default: series(
             'nps webpack.build.before',
-            'npx webpack --progress --env development',
+            'npx webpack --progress --node-env=development --env.development',
           ),
           serve: series.nps(
             'webpack.build.development',
@@ -50,11 +45,11 @@ module.exports = {
         production: {
           inlineCss: series(
             'nps webpack.build.before',
-            crossEnv('npx webpack --env NODE_ENV=production --progress --env production'),
+            'npx webpack  --node-env=production --progress --env.production',
           ),
           default: series(
             'nps webpack.build.before',
-            crossEnv('npx webpack --env NODE_ENV=production --progress --env production'),
+            'npx webpack --node-env=production --progress --env production',
           ),
           serve: series.nps(
             'webpack.build.production',
@@ -63,9 +58,10 @@ module.exports = {
         },
       },
       server: {
-        default: 'webpack serve --env development --inline',
-        hmr: 'webpack serve --env development --inline --hot',
+        default: 'webpack serve --node-env=development --env --inline',
+        hmr: 'webpack serve --node-env=development --env --inline --hot',
       },
     },
+    serve: 'pushstate-server dist',
   },
 };
