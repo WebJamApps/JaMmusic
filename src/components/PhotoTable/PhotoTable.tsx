@@ -33,6 +33,12 @@ export class PhotoTable extends React.Component<Pprops, Pstate> {
 
   componentDidMount(): void { this.setColumns(); }
 
+  handleHideTable(): boolean {
+    const { dispatch } = this.props;
+    dispatch({ type: 'SHOW_TABLE', showTable: false });
+    return true;
+  }
+
   setColumns(): void {
     const columns: MUIDataTableColumnDef[] = [];
     const titles = ['Thumbnail', 'Title', 'Caption', 'Link', 'Type', 'Modify'];
@@ -56,12 +62,6 @@ export class PhotoTable extends React.Component<Pprops, Pstate> {
       });
     }
     this.setState({ columns });
-  }
-
-  handleHideTable(): boolean {
-    const { dispatch } = this.props;
-    dispatch({ type: 'SHOW_TABLE', showTable: false });
-    return true;
   }
 
   async deletePic(id: string): Promise<string> { // eslint-disable-next-line no-restricted-globals
