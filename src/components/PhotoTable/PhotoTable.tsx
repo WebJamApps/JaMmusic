@@ -1,7 +1,6 @@
 import React, { Dispatch } from 'react';
 import MUIDataTable, { MUIDataTableColumnDef } from 'mui-datatables';
 import ReactHtmlParser from 'react-html-parser';
-// import { HashLink as Link } from 'react-router-hash-link';
 import 'core-js/stable';
 import { connect } from 'react-redux';
 import superagent from 'superagent';
@@ -83,7 +82,6 @@ export class PhotoTable extends React.Component<Pprops, Pstate> {
     const { dispatch } = this.props;
     // eslint-disable-next-line no-param-reassign
     // delete picData.modify;
-    alert(editImage.title);
     dispatch({ type: 'EDIT_PIC', editImage });
     return true;
   }
@@ -100,11 +98,9 @@ export class PhotoTable extends React.Component<Pprops, Pstate> {
         <div>
           <button type="button" id={deletePicId} onClick={() => this.deletePic(newArr[i]._id)}>Delete Pic</button>
           <p>{' '}</p>
-          {/* <Link to="/admin/#picsForm"> */}
           <button type="button" id={editPicId} onClick={() => { this.editPic(newArr[i]); this.handleHideTable(); }}>
             Edit Pic
           </button>
-          {/* </Link> */}
         </div>
       );
     }

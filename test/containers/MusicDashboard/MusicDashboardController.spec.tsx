@@ -17,6 +17,12 @@ describe('MusicDashboardController', () => {
     const result = controller.changePicDiv();
     expect(result.type).toBe('div');
   });
+  it('table is hidden', () => {
+    viewStub.props.showtable = false;
+    const controller = new Controller(viewStub);
+    const result = controller.pictureBlock();
+    expect(result.type).toBe('div');
+  });
   it('handles click to addPic', () => {
     Object.defineProperty(window, 'location', { value: { assign: jest.fn(), reload: () => { } }, writable: true });
     const controller = new Controller(viewStub);

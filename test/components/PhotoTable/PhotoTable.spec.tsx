@@ -11,7 +11,7 @@ describe('PhotoTable', () => {
     props = {
       auth: { token: 'token' },
       images: [{
-        _id: '456', url: 'url', title: 'title', type: 'youthPics',
+        _id: '456', url: 'url', title: 'title', type: 'youthPics', comments: 'showCaption',
       }],
     };
     wrapper = shallow<PhotoTable>(<PhotoTable
