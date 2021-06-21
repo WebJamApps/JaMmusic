@@ -4,12 +4,23 @@ import Controller from '../../../src/containers/MusicDashboard/MusicDashboardCon
 
 describe('MusicDashboardController', () => {
   const viewStub: any = {
-    props: { auth: { token: 'token' }, editPic: { _id: '5' }, scc: { transmit: jest.fn() } },
+    props: {
+      auth: { token: 'token' },
+      editPic: { _id: '5' },
+      scc: { transmit: jest.fn() },
+      showtable: true,
+    },
     state: { picTitle: 'Title', picUrl: 'url', comments: 'showCaption' },
   };
   it('makes a change picture webform with editPic', () => {
     const controller = new Controller(viewStub);
     const result = controller.changePicDiv();
+    expect(result.type).toBe('div');
+  });
+  it('table is hidden', () => {
+    viewStub.props.showtable = false;
+    const controller = new Controller(viewStub);
+    const result = controller.pictureBlock();
     expect(result.type).toBe('div');
   });
   it('handles click to addPic', () => {
