@@ -22,6 +22,9 @@ describe('TourEditor', () => {
       location={anyProp}
       match={anyProp}
       editSong={anyProp}
+      editPic={anyProp}
+      images={anyProp}
+      showTable={anyProp}
     />);
   });
   it('calls on change', () => {
@@ -42,6 +45,9 @@ describe('TourEditor', () => {
         location={anyProp}
         match={anyProp}
         editSong={anyProp}
+        editPic={anyProp}
+        images={anyProp}
+        showTable={anyProp}
       />,
     );
     wrapper2.instance().checkEdit = jest.fn();
@@ -117,6 +123,9 @@ describe('TourEditor', () => {
       location={anyProp}
       match={anyProp}
       editSong={anyProp}
+      editPic={anyProp}
+      images={anyProp}
+      showTable={anyProp}
     />);
     wrapper2.instance().setState = jest.fn();
     const sO = {
@@ -135,6 +144,9 @@ describe('TourEditor', () => {
       history={anyProp}
       location={anyProp}
       match={anyProp}
+      editPic={anyProp}
+      images={anyProp}
+      showTable={anyProp}
     />);
     wrapper2.instance().setState = jest.fn();
     const sO = {
@@ -162,6 +174,9 @@ describe('TourEditor', () => {
       history={anyProp}
       location={anyProp}
       match={anyProp}
+      editPic={anyProp}
+      images={anyProp}
+      showTable={anyProp}
     />);
     wrapper2.setState({ venue: 'beer garden' });
     wrapper2.instance().setState = jest.fn();
@@ -191,6 +206,9 @@ describe('TourEditor', () => {
       history={anyProp}
       location={anyProp}
       match={anyProp}
+      editPic={anyProp}
+      images={anyProp}
+      showTable={anyProp}
     />);
     wrapper2.setState({
       date: '2020-10-10',
@@ -222,6 +240,9 @@ describe('TourEditor', () => {
       history={anyProp}
       location={anyProp}
       match={anyProp}
+      editPic={anyProp}
+      images={anyProp}
+      showTable={anyProp}
     />);
     const instance = wrapper2.instance();
     instance.setState({
@@ -254,6 +275,9 @@ describe('TourEditor', () => {
       history={anyProp}
       location={anyProp}
       match={anyProp}
+      editPic={anyProp}
+      images={anyProp}
+      showTable={anyProp}
     />);
     const instance = wrapper2.instance();
     instance.setState({
