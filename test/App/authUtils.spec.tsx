@@ -40,16 +40,16 @@ describe('authUtils', () => {
     const res = await authUtils.setUser(vStub);
     expect(res).toBe('bad');
   });
-  it('sets the user to the already decoded user', async () => {
-    // jwt.verify = jest.fn(() => ({ sub: '123', user: {} }));
-    Object.defineProperty(window, 'location', { value: { assign: () => { }, reload: () => { } }, writable: true });
-    window.location.reload = jest.fn();
-    const cStub3: any = {
-      props: { auth: { token: 'token' }, dispatch: (obj: any) => { expect(obj.type).toBe('SET_USER'); } },
-    };
-    const result = await authUtils.setUser(cStub3);
-    expect(result).toBe('set user');
-  });
+  // it('sets the user to the already decoded user', async () => {
+  //   jwt.verify = jest.fn(() => ({ sub: '123', user: {} }));
+  //   Object.defineProperty(window, 'location', { value: { assign: () => { }, reload: () => { } }, writable: true });
+  //   window.location.reload = jest.fn();
+  //   const cStub3: any = {
+  //     props: { auth: { token: 'token' }, dispatch: (obj: any) => { expect(obj.type).toBe('SET_USER'); } },
+  //   };
+  //   const result = await authUtils.setUser(cStub3);
+  //   expect(result).toBe('set user');
+  // });
   it('fails to set user when token is bad', async () => {
     jwt.verify = jest.fn(() => { throw new Error('bad'); });
     const res = await authUtils.setUser(vStub);
