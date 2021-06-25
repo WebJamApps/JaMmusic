@@ -44,7 +44,7 @@
     "@material-ui/core": "latest",
     "@material-ui/icons": "latest",
     "@popperjs/core": "^2.9.2",
-    "@tinymce/tinymce-react": "3.10.4",
+    "@tinymce/tinymce-react": "^3.12.6",
     "@types/copy-webpack-plugin": "latest",
     "@types/core-js": "^2.5.4",
     "@types/domutils": "^1.7.2",
