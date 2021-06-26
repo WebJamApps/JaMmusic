@@ -9,7 +9,7 @@
   },
   "author": "https://github.com/orgs/WebJamApps/teams/handlersandkickers",
   "engines": {
-    "node": ">=16.2.0"
+    "node": ">=16.3.0"
   },
   "files": [
     "webpack.config.js",
@@ -93,7 +93,7 @@
     "mui-datatables": "latest",
     "node-notifier": "^10.0.0",
     "nps": "latest",
-    "nps-utils": "latest",
+    "nps-utils": "^1.7.0",
     "popper.js": "latest",
     "process": "^0.11.10",
     "prop-types": "latest",
