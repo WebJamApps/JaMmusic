@@ -9,7 +9,7 @@
   },
   "author": "https://github.com/orgs/WebJamApps/teams/handlersandkickers",
   "engines": {
-    "node": ">=16.2.0"
+    "node": ">=16.3.0"
   },
   "files": [
     "webpack.config.js",
@@ -44,7 +44,7 @@
     "@material-ui/core": "latest",
     "@material-ui/icons": "latest",
     "@popperjs/core": "^2.9.2",
-    "@tinymce/tinymce-react": "latest",
+    "@tinymce/tinymce-react": "^3.12.6",
     "@types/copy-webpack-plugin": "latest",
     "@types/core-js": "^2.5.4",
     "@types/domutils": "^1.7.2",
@@ -58,8 +58,8 @@
     "@types/mini-css-extract-plugin": "latest",
     "@types/mui-datatables": "latest",
     "@types/node": "latest",
-    "@types/react": "^16.14.0",
-    "@types/react-dom": "^16.9.5",
+    "@types/react": "^17.0.1",
+    "@types/react-dom": "^17.0.1",
     "@types/react-html-parser": "^2.0.1",
     "@types/react-redux": "^7.1.7",
     "@types/react-resize-detector": "^4.2.0",
@@ -93,7 +93,7 @@
     "mui-datatables": "latest",
     "node-notifier": "^10.0.0",
     "nps": "latest",
-    "nps-utils": "latest",
+    "nps-utils": "^1.7.0",
     "popper.js": "latest",
     "process": "^0.11.10",
     "prop-types": "latest",
