@@ -52,15 +52,19 @@
 }
 
 @media screen and (max-width: 350px) {
+  .elevation2 {
+    max-width: 290px;
+  }
+
   div.youtubeOverlay {
     position  : absolute;
     margin-top: 60px !important;
     height    : 75px !important;
   }
-
   div.project {
     min-width: 280px !important;
   }
+
   // 320x480 android
   .nav-list {
     overflow-y: auto;
@@ -69,6 +73,15 @@
 }
 // Galaxy S9/S9+
 @media screen and (min-width: 351px) and (max-width: 370px) {
+
+  #contentBlock > div:nth-child(1) > div > div:nth-child(3) > div > div:nth-child(2), div.elevation2 .project {
+    min-width: 280px !important;
+  }
+
+  .elevation2 {
+    max-width: 325px;
+  }
+
   .nav-list {
     overflow-y: auto;
     height: 87% !important;
@@ -76,6 +89,12 @@
 }
 // iPhone 6/7/8 iOS 11 && iPhone X/XS iOS 12
 @media screen and (min-width: 375px) and (max-width: 376px) {
+  #contentBlock > div:nth-child(1) > div > div:nth-child(3) > div > div:nth-child(2), div.elevation2 .project {
+    min-width: 280px !important;
+  }
+  .elevation2 {
+    max-width: 300px;
+  }
   .nav-list {
     overflow-y: auto;
     height: 77% !important;
@@ -83,6 +102,9 @@
 }
 // iPhone 6/7/8 Plus iOS 11
 @media screen and (min-width: 377px) and (max-width: 425px) {
+  .elevation2 {
+    max-width: 360px;
+  }
   #copyInput {
     width      : 95%;
     margin-left: 8px;
@@ -110,6 +132,11 @@
   }
 }
 @media only screen and (max-width: 625px){
+
+  div > div.row.form-row {
+    min-width: 80%;
+    max-width: 90%;
+  }
   .Nav-Buttons {
     padding-left: 0;
     display: block;
