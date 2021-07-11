@@ -70,6 +70,14 @@
     overflow-y: auto;
     height: 80% !important;
   }
+  
+  blockquote {
+    padding-left: 9px !important;
+  }
+
+  .search-table-outer {
+    max-width: 100% !important;
+  }
 }
 // Galaxy S9/S9+
 @media screen and (min-width: 351px) and (max-width: 370px) {
