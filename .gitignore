@@ -58,12 +58,6 @@ typings/
 # Output of 'npm pack'
 *.tgz
 
-# Yarn Integrity file
-.yarn-integrity
-
-#yarn path file
-.yarnrc
-
 # dotenv environment variables file
 .env
 .env.bak
@@ -74,4 +68,6 @@ typings/
 
 .DS_Store
 .prettierrc
-.gitattributes
+
+.yarn
+yarn.lock

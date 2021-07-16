@@ -2,6 +2,8 @@ import { configure } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 import { config } from 'dotenv';
 
+global.ResizeObserver = require('resize-observer-polyfill');
+
 config();
 window.matchMedia = jest.fn().mockImplementation((query) => ({
   matches: false,

@@ -66,6 +66,16 @@ export class AppTemplate extends React.Component<AppTemplateProps, AppMainState>
     this.authenticate = authActions;
   }
 
+  handleKeyPress(e: { key: string; }): (void | null) {
+    if (e.key === 'Escape') return this.setState({ menuOpen: false });
+    return null;
+  }
+
+  handleKeyMenu(e: { key: string; }): (void | null) {
+    if (e.key === 'Enter') return this.toggleMobileMenu();
+    return null;
+  }
+
   get currentStyles(): CurrentStyles { // eslint-disable-line class-methods-use-this
     const result = {
       headerImagePath: '../static/imgs/webjamicon7.png',
@@ -96,16 +106,6 @@ export class AppTemplate extends React.Component<AppTemplateProps, AppMainState>
   close(): boolean {
     this.setState({ menuOpen: false });
     return true;
-  }
-
-  handleKeyPress(e: { key: string; }): (void | null) {
-    if (e.key === 'Escape') return this.setState({ menuOpen: false });
-    return null;
-  }
-
-  handleKeyMenu(e: { key: string; }): (void | null) {
-    if (e.key === 'Enter') return this.toggleMobileMenu();
-    return null;
   }
 
   googleButtons(type: string, index: number): JSX.Element {

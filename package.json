@@ -42,7 +42,8 @@
   "dependencies": {
     "@material-ui/core": "latest",
     "@material-ui/icons": "latest",
-    "@tinymce/tinymce-react": "latest",
+    "@popperjs/core": "^2.9.2",
+    "@tinymce/tinymce-react": "^3.12.6",
     "@types/copy-webpack-plugin": "latest",
     "@types/core-js": "^2.5.4",
     "@types/domutils": "^1.7.2",
@@ -56,8 +57,8 @@
     "@types/mini-css-extract-plugin": "latest",
     "@types/mui-datatables": "latest",
     "@types/node": "latest",
-    "@types/react": "^16.14.0",
-    "@types/react-dom": "^16.9.5",
+    "@types/react": "^17.0.1",
+    "@types/react-dom": "^17.0.1",
     "@types/react-html-parser": "^2.0.1",
     "@types/react-redux": "^7.1.7",
     "@types/react-resize-detector": "^4.2.0",
@@ -90,7 +91,7 @@
     "moment": "latest",
     "mui-datatables": "latest",
     "nps": "latest",
-    "nps-utils": "latest",
+    "nps-utils": "^1.7.0",
     "popper.js": "latest",
     "process": "^0.11.10",
     "prop-types": "latest",
@@ -114,10 +115,12 @@
     "sass-loader": "latest",
     "slick-carousel": "latest",
     "socketcluster-client": "^16.0.3",
+    "resize-observer-polyfill": "latest",
+    "snyk": "^1.630.0",
     "source-map-loader": "latest",
     "stream-browserify": "^3.0.0",
     "style-loader": "latest",
-    "stylelint-config-recommended-scss": "latest",
+    "stylelint-config-recommended-scss": "^3.3.0",
     "superagent": "latest",
     "terser-webpack-plugin": "latest",
     "ts-loader": "latest",
@@ -127,7 +130,7 @@
     "util": "^0.12.3",
     "webpack": "^5.7.0",
     "webpack-bundle-analyzer": "latest",
-    "webpack-cli": "^4.2.0"
+    "webpack-cli": "^4.7.2"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "latest",
@@ -162,11 +165,11 @@
     "react-hot-loader": "latest",
     "react-test-renderer": "^16.14.0",
     "redux-mock-store": "latest",
-    "stylelint": "latest",
-    "stylelint-config-standard": "latest",
+    "stylelint": "^9.3.0",
+    "stylelint-config-standard": "^18.3.0",
     "stylelint-scss": "latest",
     "ts-jest": "latest",
-    "webpack-dev-server": "^3.11.0"
+    "webpack-dev-server": "^3.11.2"
   },
   "snyk": true
 }

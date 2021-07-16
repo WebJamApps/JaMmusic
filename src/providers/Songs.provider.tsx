@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import React, {
   createContext, useState, ReactChild, useEffect,
 } from 'react';
@@ -24,11 +25,14 @@ export const fetchSongs = async ():Promise<ISong[]> => {
   let res:{ body:ISong[] };
   try {
     res = await superagent.get(`${process.env.BackendUrl}/song`).set('Accept', 'application/json');
-  // eslint-disable-next-line no-console
   } catch (e) { console.log(e.message); return [defaultSong]; }
-  const newSongs = res.body.sort((a, b) => b.year - a.year);
-  // eslint-disable-next-line no-console
-  console.log(res.body);
+  const newSongs = res.body;
+  try {
+    newSongs.sort((a, b) => b.year - a.year);
+    console.log(res.body);
+  } catch (error) {
+    console.log(error);
+  }
   return newSongs;
 };
 
