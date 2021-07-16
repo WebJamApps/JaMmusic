@@ -21,7 +21,7 @@ export const defaultSong = {
 };
 
 export const fetchSongs = async ():Promise<ISong[]> => {
-  let res:{body:ISong[]};
+  let res:{ body:ISong[] };
   try {
     res = await superagent.get(`${process.env.BackendUrl}/song`).set('Accept', 'application/json');
   // eslint-disable-next-line no-console
@@ -36,7 +36,7 @@ export const SongsContext = createContext({
   test: '',
   songs: [defaultSong],
 });
-type Props = {children: ReactChild};
+type Props = { children: ReactChild };
 
 const SongsProvider = ({ children }: Props): JSX.Element => {
   const { Provider } = SongsContext;

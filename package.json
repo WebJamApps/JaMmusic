@@ -1,6 +1,6 @@
 {
   "name": "jammusic",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "joshandmariamusic.com",
   "main": "dist/index.html",
   "repository": {
@@ -9,7 +9,7 @@
   },
   "author": "https://github.com/orgs/WebJamApps/teams/handlersandkickers",
   "engines": {
-    "node": ">=16.2.0"
+    "node": ">=16.4.0"
   },
   "files": [
     "webpack.config.js",
@@ -26,18 +26,17 @@
   "license": "MIT",
   "scripts": {
     "start:dist": "node server.js",
-    "build:prod": "rm -rf dist && yarn start build",
+    "build:prod": "rm -rf dist && npm start build",
     "cc": "codeclimate analyze -f html > codeclimate.html",
     "start": "nps",
-    "test:lint-fix": "yarn test:stylelint && nps test.lint.fix",
-    "test:lint": "yarn test:stylelint && nps test.lint",
-    "test": "yarn test:lint && yarn test:puppeteer && yarn test:jest",
-    "test:local": "yarn test:lint-fix && yarn test:jest && yarn test:puppeteer && yarn cc",
+    "test:lint-fix": "npm run test:stylelint && nps test.lint.fix",
+    "test:lint": "npm run test:stylelint && nps test.lint",
+    "test": "npm run test:lint && npm run test:puppeteer && npm run test:jest",
+    "test:local": "npm run test:lint-fix && npm run test:jest && npm run test:puppeteer && npm run cc",
     "test:jest": "jest --config jest.config.json --no-cache --runInBand",
     "test:puppeteer": "jest --preset jest-puppeteer --config jest.puppeteer-config.json /test/puppeteer --runInBand",
-    "installglobals": "yarn config set registry https://registry.yarnpkg.com -g",
-    "cleaninstall": "rm -rf yarn.lock && rm -rf node_modules && yarn cache clean && yarn installglobals && yarn install",
-    "postinstall": "yarn build:prod",
+    "cleaninstall": "rm -rf yarn.lock && rm -rf package-lock.json && rm -rf node_modules && npm install",
+    "postinstall": "npm run build:prod",
     "test:stylelint": "stylelint \"static/**/*.scss\""
   },
   "dependencies": {
@@ -90,7 +89,6 @@
     "mini-css-extract-plugin": "^1.3.1",
     "moment": "latest",
     "mui-datatables": "latest",
-    "node-sass": "^5.0.0",
     "nps": "latest",
     "nps-utils": "latest",
     "popper.js": "latest",
@@ -112,9 +110,10 @@
     "redux-logger": "latest",
     "redux-persist": "latest",
     "redux-thunk": "latest",
+    "sass": "^1.35.2",
     "sass-loader": "latest",
     "slick-carousel": "latest",
-    "socketcluster-client": "latest",
+    "socketcluster-client": "^16.0.3",
     "source-map-loader": "latest",
     "stream-browserify": "^3.0.0",
     "style-loader": "latest",

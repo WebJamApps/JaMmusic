@@ -1,3 +1,4 @@
+/* eslint-disable react/sort-comp */
 import React, { Dispatch } from 'react';
 import { Link, withRouter, RouteComponentProps } from 'react-router-dom';
 import {
