@@ -1,3 +1,4 @@
+/* eslint-disable react/sort-comp */
 import React, { Component } from 'react';
 import superagent from 'superagent';
 import { Textarea, Button } from 'react-materialize';
