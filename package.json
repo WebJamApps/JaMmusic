@@ -1,6 +1,6 @@
 {
   "name": "jammusic",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "joshandmariamusic.com",
   "main": "dist/index.html",
   "repository": {
@@ -9,7 +9,7 @@
   },
   "author": "https://github.com/orgs/WebJamApps/teams/handlersandkickers",
   "engines": {
-    "node": ">=16.3.0"
+    "node": ">=16.4.0"
   },
   "files": [
     "webpack.config.js",
@@ -26,7 +26,7 @@
   "license": "MIT",
   "scripts": {
     "start:dist": "node server.js",
-    "build:prod": "rm -rf dist && npm run start build",
+    "build:prod": "rm -rf dist && npm start build",
     "cc": "codeclimate analyze -f html > codeclimate.html",
     "start": "nps",
     "test:lint-fix": "npm run test:stylelint && nps test.lint.fix",
@@ -35,8 +35,7 @@
     "test:local": "npm run test:lint-fix && npm run test:jest && npm run test:puppeteer && npm run cc",
     "test:jest": "jest --config jest.config.json --no-cache --runInBand",
     "test:puppeteer": "jest --preset jest-puppeteer --config jest.puppeteer-config.json /test/puppeteer --runInBand",
-    "installglobals": "npm install -g npm && npm install -g snyk",
-    "cleaninstall": "rm -rf yarn.lock && rm -rf node_modules && rm -rf package-lock.json && npm run installglobals && npm install",
+    "cleaninstall": "rm -rf yarn.lock && rm -rf package-lock.json && rm -rf node_modules && npm install",
     "postinstall": "npm run build:prod",
     "test:stylelint": "stylelint \"static/**/*.scss\""
   },
@@ -91,7 +90,6 @@
     "mini-css-extract-plugin": "^1.3.1",
     "moment": "latest",
     "mui-datatables": "latest",
-    "node-notifier": "^10.0.0",
     "nps": "latest",
     "nps-utils": "^1.7.0",
     "popper.js": "latest",
@@ -113,12 +111,12 @@
     "redux-logger": "latest",
     "redux-persist": "latest",
     "redux-thunk": "latest",
-    "resize-observer-polyfill": "latest",
-    "sass": "latest",
-    "sass-loader": "^7.3.1",
+    "sass": "^1.35.2",
+    "sass-loader": "latest",
     "slick-carousel": "latest",
+    "socketcluster-client": "^16.0.3",
+    "resize-observer-polyfill": "latest",
     "snyk": "^1.630.0",
-    "socketcluster-client": "latest",
     "source-map-loader": "latest",
     "stream-browserify": "^3.0.0",
     "style-loader": "latest",

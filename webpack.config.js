@@ -93,7 +93,7 @@ module.exports = (env) => ({
         use: [
           process.env.NODE_ENV !== 'production' ? 'style-loader' : MiniCssExtractPlugin.loader,
           'css-loader', // translates CSS into CommonJS
-          'sass-loader', // compiles Sass to CSS, using Node Sass by default
+          'sass-loader', // compiles Sass to CSS, using dart sass
         ],
       },
       // Still needed for some node modules that use CSS
