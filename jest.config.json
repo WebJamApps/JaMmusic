@@ -5,6 +5,7 @@
   "bail": true,
   "resetMocks": true,
   "notify": true,
+  "testEnvironment":"jsdom",
   "setupFiles": [
     "<rootDir>/test/jest-pretest.ts"
   ],
