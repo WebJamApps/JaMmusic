@@ -7,7 +7,6 @@
   "notify": true,
   "testEnvironment":"jsdom",
   "setupFiles": [
-    "enzyme-react-16-adapter-setup",
     "<rootDir>/test/jest-pretest.ts"
   ],
   "moduleNameMapper": {
