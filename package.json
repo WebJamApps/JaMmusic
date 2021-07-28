@@ -116,7 +116,7 @@
     "slick-carousel": "latest",
     "socketcluster-client": "^16.0.3",
     "resize-observer-polyfill": "latest",
-    "snyk": "^1.630.0",
+    "snyk": "^1.667.0",
     "source-map-loader": "latest",
     "stream-browserify": "^3.0.0",
     "style-loader": "latest",
