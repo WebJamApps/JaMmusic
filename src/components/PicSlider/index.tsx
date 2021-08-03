@@ -5,7 +5,6 @@ import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import type { Iimage } from '../../redux/mapStoreToProps';
 import Caption from './caption';
-import { readBuilderProgram } from 'typescript';
 
 export interface PicSliderProps {
   data?: Iimage[];
@@ -23,7 +22,6 @@ class PicSlider extends React.Component<PicSliderProps> {
     slidesToScroll: number;
     arrows: boolean;
     fade: boolean;
-    color: string;
   };
 
   constructor(props: PicSliderProps) {
@@ -37,7 +35,6 @@ class PicSlider extends React.Component<PicSliderProps> {
       slidesToScroll: 1,
       arrows: false,
       fade: true,
-      color: 'rbg(170, 170, 170)',
     };
   }
 
