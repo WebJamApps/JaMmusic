@@ -45,9 +45,9 @@ class PicSlider extends React.Component<PicSliderProps> {
         <Slider {...this.settings}>
           {
             Array.isArray(data) ? data.map((d) => (
-              <div key={d._id} >
+              <div key={d._id}>
                 {' '}
-                <img width="100%" height="400px" style={{backgroundColor: 'black' }} src={d.url} alt={d.title} />
+                <img width="100%" height="400px" style={{ backgroundColor: 'black' }} src={d.url} alt={d.title} />
                 {' '}
                 {d.comments === 'showCaption' ? <Caption caption={d.title} /> : null }
               </div>
