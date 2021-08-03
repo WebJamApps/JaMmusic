@@ -3,8 +3,7 @@
   "timers": "fake",
   "bail": true,
   "resetMocks": true,
-  "notify": true,
-  "testEnvironment":"jsdom",
+  "notify": false,
   "setupFiles": [
     "<rootDir>/test/jest-pretest.ts"
   ],
