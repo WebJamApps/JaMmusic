@@ -1,4 +1,5 @@
 {
+  "environment": "jsdom",
   "verbose": true,
   "timers": "fake",
   "bail": true,
