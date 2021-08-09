@@ -11,6 +11,7 @@
   max-width: 1000px;
   position: relative;
   margin: auto;
+  max-height: 450px;
 }
 
 #libslideshow img,
@@ -54,4 +55,83 @@
 .sidebar-image {
   width: 180px;
   border: 0;
+}
+
+.slide-images {
+  height: auto;
+  max-height: 390px;
+  background-color: black;
+  object-fit:cover;
+}
+
+@media screen and (min-width: 760px) and (max-width: 1000px) {
+  #libslideshow,
+  #libslideshow1,
+  #slideshowMusic,
+  #slideshow1,
+  #slideshow,
+  #musicSlide1,
+  #musicSlide2,
+  #lSlide1,
+  #lSlide2 {
+      height: 390px !important;
+    }
+  .slide-images {
+      height: auto;
+      max-height: 320px;
+  }  
+  }
+
+@media screen and (min-width: 600px) and (max-width: 760px) {
+#libslideshow,
+#libslideshow1,
+#slideshowMusic,
+#slideshow1,
+#slideshow,
+#musicSlide1,
+#musicSlide2,
+#lSlide1,
+#lSlide2 {
+    height: 350px !important;
+  }
+.slide-images {
+    height: auto;
+    max-height: 300px;
+}  
+}
+
+@media screen and (min-width: 400px) and (max-width: 599px) {
+  #libslideshow,
+  #libslideshow1,
+  #slideshowMusic,
+  #slideshow1,
+  #slideshow,
+  #musicSlide1,
+  #musicSlide2,
+  #lSlide1,
+  #lSlide2 {
+      height: 250px !important;
+    }
+  .slide-images {
+      height: auto;
+      max-height: 210px;
+  }
+}
+
+@media screen and (min-width: 200px) and (max-width: 399px) {
+  #libslideshow,
+  #libslideshow1,
+  #slideshowMusic,
+  #slideshow1,
+  #slideshow,
+  #musicSlide1,
+  #musicSlide2,
+  #lSlide1,
+  #lSlide2 {
+      height: 200px !important;
+    }
+  .slide-images {
+      height: auto;
+      max-height: 160px;
+  }
 }
