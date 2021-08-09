@@ -9,7 +9,6 @@ import Intro from './intro';
 import mapStoreToProps, { Iimage } from '../../redux/mapStoreToProps';
 import commonUtils from '../../lib/commonUtils';
 import WjBand from './wjBand';
-import { withResizeDetector } from 'react-resize-detector';
 
 type MusicProps = {
   dispatch: Dispatch<AnyAction>;
@@ -72,4 +71,4 @@ export class Music extends Component<MusicProps> {
   }
 }
 
-export default connect(mapStoreToProps)(withResizeDetector(Music));
+export default connect(mapStoreToProps)(Music);
