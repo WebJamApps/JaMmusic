@@ -58,13 +58,13 @@
 }
 
 .slide-images {
-  height: auto;
-  max-height: 390px;
+  width: 100%;
+  height: 390px;
   background-color: black;
-  object-fit:cover;
+  object-fit: contain;
 }
 
-@media screen and (min-width: 760px) and (max-width: 1000px) {
+/*@media screen and (min-width: 760px) and (max-width: 1000px) {
   #libslideshow,
   #libslideshow1,
   #slideshowMusic,
@@ -134,4 +134,4 @@
       height: auto;
       max-height: 160px;
   }
-}
+}*/
