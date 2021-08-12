@@ -47,29 +47,31 @@ export class App extends Component<AppProps> {
   render(): JSX.Element {
     // console.log(`app name: ${this.appName}`);
     return (
-      <div id="App" className="App">
-        <Router>
-          <ATemplate>
-            <Switch>
-              <Route
-                exact
-                path="/"
-                component={
+      <React.StrictMode>
+        <div id="App" className="App">
+          <Router>
+            <ATemplate>
+              <Switch>
+                <Route
+                  exact
+                  path="/"
+                  component={
               this.appName === 'web-jam.com' ? HomePage : DefaultMusic
               }
-              />
-              <PrivateRoute Container={GoogleMap} path="/map" />
-              <PrivateRoute path="/sort" Container={DefaultSort} />
-              <Route exact path="/music" component={DefaultMusic} />
-              <Route exact path="/music/buymusic" component={BuyMusic} />
-              <Route exact path="/music/originals" component={DefaultSongs} />
-              <Route exact path="/music/songs" component={DefaultSongs} />
-              <PrivateRoute path="/music/dashboard" Container={DefaultMusicDashboard} />
-              <Route component={AppFourOhFour} />
-            </Switch>
-          </ATemplate>
-        </Router>
-      </div>
+                />
+                <PrivateRoute Container={GoogleMap} path="/map" />
+                <PrivateRoute path="/sort" Container={DefaultSort} />
+                <Route exact path="/music" component={DefaultMusic} />
+                <Route exact path="/music/buymusic" component={BuyMusic} />
+                <Route exact path="/music/originals" component={DefaultSongs} />
+                <Route exact path="/music/songs" component={DefaultSongs} />
+                <PrivateRoute path="/music/dashboard" Container={DefaultMusicDashboard} />
+                <Route component={AppFourOhFour} />
+              </Switch>
+            </ATemplate>
+          </Router>
+        </div>
+      </React.StrictMode>
     );
   }
 }

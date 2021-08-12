@@ -119,7 +119,7 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
     this.setState({ songState: { ...songState, category: event.target.value } });
   }
 
-  handleEditorChange(venue: string): void { this.checkEdit(); this.setState({ venue }); }
+  handleEditorChange(venue: string): void { this.setState({ venue }); this.checkEdit(); }
 
   // eslint-disable-next-line react/sort-comp
   handleNavClick(e: React.MouseEvent<HTMLButtonElement>): void {
