@@ -10,11 +10,11 @@ import mapStoreToProps, { Iimage } from '../../redux/mapStoreToProps';
 
 type Pprops = {
   dispatch: Dispatch<AnyAction>,
-  picUpdated?: boolean, 
+  picUpdated?: boolean,
   auth: { token: string },
   images: Iimage[],
   scc?: AGClientSocket
-}
+};
 interface Pstate {
   columns: MUIDataTableColumnDef[]
 }
@@ -65,7 +65,7 @@ export class PhotoTable extends React.Component<Pprops, Pstate> {
     this.setState({ columns });
   }
 
-   /*let res: superagent.Response;
+  /* let res: superagent.Response;
       try {
         res = await this.superagent.delete(`${process.env.BackendUrl}/book/${id}`)
           .set('Authorization', `Bearer ${auth.token}`).set('Accept', 'application/json');
@@ -73,7 +73,7 @@ export class PhotoTable extends React.Component<Pprops, Pstate> {
       if (res.status === 200) { window.location.reload(); return 'deleted pic'; }
       return `${res.status} ${res.body}`;
     }
-    return 'no delete';*/
+    return 'no delete'; */
 
   deletePic(id: string | undefined): boolean { // eslint-disable-next-line no-restricted-globals
     const result = confirm('Deleting picture, are you sure?');// eslint-disable-line no-alert
