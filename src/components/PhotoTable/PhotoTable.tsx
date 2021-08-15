@@ -1,16 +1,19 @@
 import React, { Dispatch } from 'react';
 import MUIDataTable, { MUIDataTableColumnDef } from 'mui-datatables';
 import ReactHtmlParser from 'react-html-parser';
+import type { AGClientSocket } from 'socketcluster-client';
 import 'core-js/stable';
 import { connect } from 'react-redux';
 import superagent from 'superagent';
 import type { AnyAction } from 'redux';
 import mapStoreToProps, { Iimage } from '../../redux/mapStoreToProps';
 
-interface Pprops {
+type Pprops = {
   dispatch: Dispatch<AnyAction>,
+  picUpdated?: boolean, 
   auth: { token: string },
   images: Iimage[],
+  scc?: AGClientSocket
 }
 interface Pstate {
   columns: MUIDataTableColumnDef[]
@@ -21,7 +24,6 @@ export class PhotoTable extends React.Component<Pprops, Pstate> {
   constructor(props: Readonly<Pprops>) {
     super(props);
     this.superagent = superagent;
-    this.setColumns = this.setColumns.bind(this);
     this.setColumns = this.setColumns.bind(this);
     this.handleHideTable = this.handleHideTable.bind(this);
     this.addThumbs = this.addThumbs.bind(this);
@@ -63,11 +65,7 @@ export class PhotoTable extends React.Component<Pprops, Pstate> {
     this.setState({ columns });
   }
 
-  async deletePic(id: string): Promise<string> { // eslint-disable-next-line no-restricted-globals
-    const result = confirm('Deleting picture, are you sure?');// eslint-disable-line no-alert
-    if (result) {
-      const { auth } = this.props;
-      let res: superagent.Response;
+   /*let res: superagent.Response;
       try {
         res = await this.superagent.delete(`${process.env.BackendUrl}/book/${id}`)
           .set('Authorization', `Bearer ${auth.token}`).set('Accept', 'application/json');
@@ -75,7 +73,19 @@ export class PhotoTable extends React.Component<Pprops, Pstate> {
       if (res.status === 200) { window.location.reload(); return 'deleted pic'; }
       return `${res.status} ${res.body}`;
     }
-    return 'no delete';
+    return 'no delete';*/
+
+  deletePic(id: string | undefined): boolean { // eslint-disable-next-line no-restricted-globals
+    const result = confirm('Deleting picture, are you sure?');// eslint-disable-line no-alert
+    if (result) {
+      const { scc, auth } = this.props;
+      const pic = { id };
+      if (scc && auth) {
+        scc.transmit('deleteImage', { pic, token: auth.token });
+        window.location.assign('/music');
+        return true;
+      } return false;
+    } return false;
   }
 
   editPic(editImage: Iimage): boolean {
