@@ -79,9 +79,8 @@ export class PhotoTable extends React.Component<Pprops, Pstate> {
     const result = confirm('Deleting picture, are you sure?');// eslint-disable-line no-alert
     if (result) {
       const { scc, auth } = this.props;
-      const pic = { id };
       if (scc && auth) {
-        scc.transmit('deleteImage', { pic, token: auth.token });
+        scc.transmit('deleteImage', { id, token: auth.token });
         window.location.assign('/music');
         return true;
       } return false;
