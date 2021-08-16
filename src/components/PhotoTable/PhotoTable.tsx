@@ -75,7 +75,7 @@ export class PhotoTable extends React.Component<Pprops, Pstate> {
     }
     return 'no delete'; */
 
-  deletePic(id: string | undefined): boolean { // eslint-disable-next-line no-restricted-globals
+  deletePic(id: string): boolean { // eslint-disable-next-line no-restricted-globals
     const result = confirm('Deleting picture, are you sure?');// eslint-disable-line no-alert
     if (result) {
       const { scc, auth } = this.props;

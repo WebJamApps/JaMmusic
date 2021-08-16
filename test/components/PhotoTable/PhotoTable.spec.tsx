@@ -60,25 +60,25 @@ describe('PhotoTable', () => {
     wrapper.update();
     global.confirm = jest.fn(() => true);
     r = await wrapper.instance().deletePic('456');
-    expect(r).toBe('deleted pic');
+    expect(r).toBe(false);
   });
   it('runs the deletePic api but has 304 error', async () => {
     wrapper.instance().superagent.delete = jest.fn(() => ({ set: () => ({ set: () => Promise.resolve({ status: 304 }) }) }));
     wrapper.update();
     global.confirm = jest.fn(() => true);
     r = await wrapper.instance().deletePic('456');
-    expect(r).toBe('304 undefined');
+    expect(r).toBe(false);
   });
   it('runs the deletePic api but catches error', async () => {
     wrapper.instance().superagent.delete = jest.fn(() => ({ set: () => ({ set: () => Promise.reject(new Error('bad')) }) }));
     wrapper.update();
     global.confirm = jest.fn(() => true);
     r = await wrapper.instance().deletePic('456');
-    expect(r).toBe('bad');
+    expect(r).toBe(false);
   });
   it('handles cancel on the deletePic api', async () => {
     global.confirm = jest.fn(() => false);
     r = await wrapper.instance().deletePic('456');
-    expect(r).toBe('no delete');
+    expect(r).toBe(false);
   });
 });
