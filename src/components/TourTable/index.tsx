@@ -1,7 +1,7 @@
 import React, { Component, Dispatch } from 'react';
 import { TableCell } from '@material-ui/core';
 import type { MUIDataTableColumn } from 'mui-datatables';
-import ReactHtmlParser from 'react-html-parser';
+import HtmlReactParser from 'html-react-parser';
 import { connect } from 'react-redux';
 import type { AGClientSocket } from 'socketcluster-client';
 import type { AnyAction } from 'redux';
@@ -55,7 +55,7 @@ export class TourTable extends Component<TourTableProps, TourTableState> {
           ),
           customBodyRender: (value: string) => (
             <div style={{ minWidth: '.65in', margin: 0, fontSize: '12pt' }}>
-              {label !== 'Modify' ? ReactHtmlParser(value) : value}
+              {label !== 'Modify' ? HtmlReactParser(value) : value}
             </div>
           ),
         },

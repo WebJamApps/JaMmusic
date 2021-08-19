@@ -1,6 +1,6 @@
 import React, { Dispatch } from 'react';
 import MUIDataTable, { MUIDataTableColumnDef } from 'mui-datatables';
-import ReactHtmlParser from 'react-html-parser';
+import HtmlReactParser from 'html-react-parser';
 import 'core-js/stable';
 import { connect } from 'react-redux';
 import superagent from 'superagent';
@@ -54,7 +54,7 @@ export class PhotoTable extends React.Component<Pprops, Pstate> {
               margin: 0, fontSize: '12pt', maxWidth: '200px',
             }}
             >
-              {label !== 'Modify' ? ReactHtmlParser(value) : value}
+              {label !== 'Modify' ? HtmlReactParser(value) : value}
             </div>
           ),
         },

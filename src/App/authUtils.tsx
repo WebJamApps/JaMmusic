@@ -1,5 +1,4 @@
 import superagent from 'superagent';
-// import jwt from 'jwt-simple';
 import jwt from 'jsonwebtoken';
 import type { Dispatch } from 'react';
 import type { GoogleLoginResponseOffline, GoogleLoginResponse } from 'react-google-login';
