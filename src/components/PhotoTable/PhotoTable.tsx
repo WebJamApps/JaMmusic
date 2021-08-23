@@ -65,22 +65,13 @@ export class PhotoTable extends React.Component<Pprops, Pstate> {
     this.setState({ columns });
   }
 
-  /* let res: superagent.Response;
-      try {
-        res = await this.superagent.delete(`${process.env.BackendUrl}/book/${id}`)
-          .set('Authorization', `Bearer ${auth.token}`).set('Accept', 'application/json');
-      } catch (e) { return `${e.message}`; }
-      if (res.status === 200) { window.location.reload(); return 'deleted pic'; }
-      return `${res.status} ${res.body}`;
-    }
-    return 'no delete'; */
-
   deletePic(id: string): boolean { // eslint-disable-next-line no-restricted-globals
     const result = confirm('Deleting picture, are you sure?');// eslint-disable-line no-alert
     if (result) {
       const { scc, auth } = this.props;
+      const image = { id };
       if (scc && auth) {
-        scc.transmit('deleteImage', { id, token: auth.token });
+        scc.transmit('deleteImage', { image, token: auth.token });
         window.location.assign('/music');
         return true;
       } return false;
@@ -107,7 +98,7 @@ export class PhotoTable extends React.Component<Pprops, Pstate> {
         <div>
           <button type="button" id={deletePicId} onClick={() => this.deletePic(newArr[i]._id)}>Delete Pic</button>
           <p>{' '}</p>
-          <button type="button" id={editPicId} onClick={() => { this.editPic(newArr[i]); this.handleHideTable(); }}>
+          <button type="button" id={editPicId} onClick={() => { this.editPic(newArr[i]); }}>
             Edit Pic
           </button>
         </div>
