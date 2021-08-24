@@ -7,13 +7,15 @@ import { connect } from 'react-redux';
 import superagent from 'superagent';
 import type { AnyAction } from 'redux';
 import mapStoreToProps, { Iimage } from '../../redux/mapStoreToProps';
+import type { MusicDashboardController } from '../../containers/MusicDashboard/MusicDashboardController';
 
 type Pprops = {
   dispatch: Dispatch<AnyAction>,
   picUpdated?: boolean,
   auth: { token: string },
   images: Iimage[],
-  scc?: AGClientSocket
+  scc?: AGClientSocket,
+  controller:MusicDashboardController,
 };
 interface Pstate {
   columns: MUIDataTableColumnDef[]
@@ -25,7 +27,6 @@ export class PhotoTable extends React.Component<Pprops, Pstate> {
     super(props);
     this.superagent = superagent;
     this.setColumns = this.setColumns.bind(this);
-    this.handleHideTable = this.handleHideTable.bind(this);
     this.addThumbs = this.addThumbs.bind(this);
     this.state = {
       columns: [],
@@ -33,12 +34,6 @@ export class PhotoTable extends React.Component<Pprops, Pstate> {
   }
 
   componentDidMount(): void { this.setColumns(); }
-
-  handleHideTable(): boolean {
-    const { dispatch } = this.props;
-    dispatch({ type: 'SHOW_TABLE', showTable: false });
-    return true;
-  }
 
   setColumns(): void {
     const columns: MUIDataTableColumnDef[] = [];
@@ -65,19 +60,6 @@ export class PhotoTable extends React.Component<Pprops, Pstate> {
     this.setState({ columns });
   }
 
-  deletePic(id: string): boolean { // eslint-disable-next-line no-restricted-globals
-    const result = confirm('Deleting picture, are you sure?');// eslint-disable-line no-alert
-    if (result) {
-      const { scc, auth } = this.props;
-      const image = { id };
-      if (scc && auth) {
-        scc.transmit('deleteImage', { image, token: auth.token });
-        window.location.assign('/music');
-        return true;
-      } return false;
-    } return false;
-  }
-
   editPic(editImage: Iimage): boolean {
     const { dispatch } = this.props;
     // eslint-disable-next-line no-param-reassign
@@ -87,6 +69,7 @@ export class PhotoTable extends React.Component<Pprops, Pstate> {
   }
 
   addThumbs(arr: Iimage[]): Iimage[] {
+    const { controller } = this.props;
     const newArr = arr;/* eslint-disable security/detect-object-injection */
     for (let i = 0; i < arr.length; i += 1) { // eslint-disable-next-line security/detect-object-injection
       newArr[i].thumbnail = `<img src=${arr[i].url} width="200px"/>`;
@@ -96,7 +79,15 @@ export class PhotoTable extends React.Component<Pprops, Pstate> {
       newArr[i].caption = newArr[i].comments === 'showCaption' ? 'display' : 'hide';
       newArr[i].modify = (// eslint-disable-line security/detect-object-injection
         <div>
-          <button type="button" id={deletePicId} onClick={() => this.deletePic(newArr[i]._id)}>Delete Pic</button>
+          <button
+            type="button"
+            id={deletePicId}
+            onClick={() => {
+              controller.deleteData(newArr[i]._id, 'deleteImage');
+            }}
+          >
+            Delete Pic
+          </button>
           <p>{' '}</p>
           <button type="button" id={editPicId} onClick={() => { this.editPic(newArr[i]); }}>
             Edit Pic

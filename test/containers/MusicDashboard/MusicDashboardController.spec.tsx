@@ -29,6 +29,23 @@ describe('MusicDashboardController', () => {
     controller.addPic();
     expect(window.location.assign).toHaveBeenCalledWith('/music');
   });
+  it('handles click to delete dataand passes', async () => {
+    window.confirm = jest.fn(() => true);
+    const controller = new Controller(viewStub);
+    expect(controller.deleteData('id', 'deleteImage')).toBe(true);
+  });
+  it('handles click to delete data and fails', async () => {
+    window.confirm = jest.fn(() => false);
+    const controller = new Controller(viewStub);
+    expect(controller.deleteData('id', 'deleteImage')).toBe(false);
+  });
+  it('handles click to delete data and fails with undefined', async () => {
+    viewStub.props.scc = null;
+    viewStub.props.auth = null;
+    window.confirm = jest.fn(() => true);
+    const controller = new Controller(viewStub);
+    expect(controller.deleteData(undefined, 'deleteImage')).toBe(false);
+  });
   // it('renders the submit song button not disabled', () => {
   //   viewStub.state = {
   //     songState: {

@@ -53,6 +53,19 @@ export class MusicDashboardController {
     window.location.assign('/music');
   }
 
+  deleteData(id: string | undefined, message: string): boolean { // eslint-disable-next-line no-restricted-globals
+    const result = confirm('Delete, are you sure?'); // eslint-disable-line no-alert
+    if (result) {
+      const { scc, auth } = this.view.props;
+      const image = { id };
+      if (scc && auth && id) {
+        scc.transmit(message, { image, token: auth.token });
+        window.location.assign('/music');
+        return true;
+      } return false;
+    } return false;
+  }
+
   changePicDiv(): JSX.Element {
     const { editPic } = this.view.props;
     return (
@@ -80,7 +93,7 @@ export class MusicDashboardController {
         {showTable ? (
           <h4 style={{ textAlign: 'center' }}>
             All Images
-            <PTable auth={auth} dispatch={dispatch} images={images} />
+            <PTable auth={auth} dispatch={dispatch} images={images} controller={this} />
           </h4>
         ) : null}
       </div>
