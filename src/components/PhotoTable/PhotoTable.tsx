@@ -1,6 +1,7 @@
 import React, { Dispatch } from 'react';
 import MUIDataTable, { MUIDataTableColumnDef } from 'mui-datatables';
 import HtmlReactParser from 'html-react-parser';
+import type { AGClientSocket } from 'socketcluster-client';
 import 'core-js/stable';
 import { connect } from 'react-redux';
 import superagent from 'superagent';
