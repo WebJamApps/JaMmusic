@@ -34,7 +34,7 @@
     "test": "npm run test:lint && npm run test:puppeteer && npm run test:jest",
     "test:local": "npm run test:lint-fix && npm run test:jest && npm run test:puppeteer && npm run cc",
     "test:jest": "jest --config jest.config.json --no-cache --runInBand",
-    "test:puppeteer": "jest --preset jest-puppeteer --config jest.puppeteer-config.json /test/puppeteer --runInBand",
+    "test:puppeteer": "jest --preset jest-puppeteer --config jest.puppeteer-config.json /test/puppeteer --runInBand --forceExit",
     "cleaninstall": "rm -rf yarn.lock && rm -rf package-lock.json && rm -rf node_modules && npm cache clean --force && npm install",
     "postinstall": "npm run build:prod",
     "test:stylelint": "stylelint \"static/**/*.scss\""
@@ -50,7 +50,7 @@
     "@types/ejs": "^3.0.1",
     "@types/enzyme": "^3.10.5",
     "@types/faker": "^4.1.12",
-    "@types/googlemaps": "^3.39.8",
+    "@types/google.maps": "latest",
     "@types/html-webpack-plugin": "latest",
     "@types/jest": "^25.1.4",
     "@types/materialize-css": "^1.0.8",
