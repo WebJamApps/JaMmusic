@@ -82,6 +82,7 @@
     "faker": "^4.1.0",
     "file-loader": "latest",
     "html-loader": "latest",
+    "html-react-parser": "latest",
     "html-webpack-plugin": "latest",
     "jquery": "latest",
     "jsonwebtoken": "^8.5.1",
@@ -97,7 +98,6 @@
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-google-login": "latest",
-    "html-react-parser": "latest",
     "react-materialize": "latest",
     "react-player": "latest",
     "react-redux": "latest",
@@ -166,7 +166,7 @@
     "stylelint-config-standard": "^22.0.0",
     "stylelint-scss": "latest",
     "ts-jest": "latest",
-    "webpack-dev-server": "^3.11.2"
+    "webpack-dev-server": "^4.0.0"
   },
   "snyk": true
 }

@@ -43,14 +43,14 @@ module.exports = (env) => ({
   output: {
     path: outDir,
     publicPath: baseUrl,
-    filename: env.production ? '[name].[chunkhash].bundle.js' : '[name].[hash].bundle.js',
-    chunkFilename: env.production ? '[name].[chunkhash].chunk.js' : '[name].[hash].chunk.js',
+    filename: env.production ? '[name].[chunkhash].bundle.js' : '[name].[fullhash].bundle.js',
+    chunkFilename: env.production ? '[name].[chunkhash].chunk.js' : '[name].[fullhash].chunk.js',
   },
 
   performance: { hints: false },
 
   devServer: {
-    contentBase: outDir,
+    static: outDir,
     hot: true,
     historyApiFallback: { // serve index.html for all 404 (required for push-state)
       rewrites: [
