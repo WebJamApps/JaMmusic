@@ -5,7 +5,7 @@ import type { Loc } from './gMapTypes';
 import gMapUtils from './gMapUtils';
 
 class GoogleMap extends React.Component {
-  gMap: google.maps.Map<HTMLElement> | null;
+  gMap: google.maps.Map | null;
 
   companyMap: CMap | null;
 
@@ -43,7 +43,7 @@ class GoogleMap extends React.Component {
     });
   }
 
-  addMarker(obj: { loc: Loc }, icon?: google.maps.ReadonlyIcon | undefined): void {
+  addMarker(obj: { loc: Loc }, icon?: google.maps.Icon | undefined): void {
     const infoWindow = new google.maps.InfoWindow({ content: this.content });
     if (this.gMap !== null) {
       const marker = new google.maps.Marker({
