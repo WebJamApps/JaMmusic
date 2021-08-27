@@ -6,21 +6,21 @@ import SProvider from '../../src/providers/Songs.provider';
 import testSongs from '../testSongs';
 
 describe('the songs provider', () => {
-  it('fetches the songs', async () => {
+  it('fetches the songs', () => {
     const res:any = { body: testSongs };
     const sa:any = { set: () => Promise.resolve(res) };
     superagent.get = jest.fn(() => sa);
     let component: renderer.ReactTestRenderer;
-    await act(async () => {
+    act(() => {
       component = renderer.create(<SProvider><div /></SProvider>);
       if (component)expect(component.toJSON()).toMatchSnapshot();
     });
     expect(superagent.get).toBeCalledWith(`${process.env.BackendUrl}/song`);
   });
-  it('catches error when fetches the songs', async () => {
+  it('catches error when fetches the songs', () => {
     const sa:any = { set: () => Promise.reject(new Error('bad')) };
     superagent.get = jest.fn(() => sa);
-    await act(async () => {
+    act(() => {
       renderer.create(<SProvider><div /></SProvider>);
     });
     expect(superagent.get).toBeCalledWith(`${process.env.BackendUrl}/song`);
