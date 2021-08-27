@@ -53,13 +53,13 @@ export class MusicDashboardController {
     window.location.assign('/music');
   }
 
-  deleteData(id: string | undefined, message: string): boolean { // eslint-disable-next-line no-restricted-globals
+  deleteData(id: string, message: string): boolean { // eslint-disable-next-line no-restricted-globals
     const result = confirm('Delete, are you sure?'); // eslint-disable-line no-alert
     if (result) {
       const { scc, auth } = this.view.props;
-      const image = { id };
+      const data = { id };
       if (scc && auth && id) {
-        scc.transmit(message, { image, token: auth.token });
+        scc.transmit(message, { data: data.id, token: auth.token });
         window.location.assign('/music');
         return true;
       } return false;
