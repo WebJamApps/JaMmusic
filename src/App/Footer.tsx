@@ -10,7 +10,6 @@ const footerLinks = () => {
     { href: 'https://www.facebook.com/WebJamLLC/', name: 'facebook' },
     { href: 'https://joshuavsherman.tumblr.com/', name: 'tumblr' },
   ];
-
   return (
     <div style={{ textAlign: 'center', padding: '6px' }}>
       {

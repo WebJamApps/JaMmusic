@@ -1,3 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`the songs provider fetches the songs 1`] = `null`;
+
+exports[`the songs provider renders correctly 1`] = `ShallowWrapper {}`;
