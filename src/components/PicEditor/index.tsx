@@ -2,9 +2,16 @@ import React from 'react';
 import type { MusicDashboard } from '../../containers/MusicDashboard';
 import type { MusicDashboardController } from '../../containers/MusicDashboard/MusicDashboardController';
 
+export interface IeditPic {
+  _id?: string;
+ title?: string;
+ url?: string;
+}
+
 type PageProps = {
   comp: MusicDashboard,
   controller: MusicDashboardController,
+  editPic: IeditPic,
 };
 
 const radioButtons = (comp:MusicDashboard): JSX.Element => (
@@ -35,19 +42,28 @@ const radioButtons = (comp:MusicDashboard): JSX.Element => (
   </div>
 );
 
-export const PicEditor = ({ comp, controller }:PageProps): JSX.Element => (
+export const PicEditor = ({ comp, controller, editPic }:PageProps): JSX.Element => {
+  let { picTitle, picUrl } = comp.state;
+  if (picTitle === '' && editPic.title !== undefined){ picTitle = editPic.title; }
+  if (picUrl === '' && editPic.url !== undefined){ picUrl = editPic.url };
+  
+  return(
   <form id="picsForm">
     <label htmlFor="picTitle">
       Picture Title
-      <input id="picTitle" placeholder={comp.state.picTitle} value={comp.state.picTitle} onChange={comp.onChange} />
+      <input id="picTitle" placeholder={picTitle} value={picTitle || ''} onChange={comp.onChange} />
     </label>
     <label htmlFor="picUrl">
       Image Address
-      <input id="picUrl" placeholder={comp.state.picUrl} value={comp.state.picUrl} onChange={comp.onChange} />
+      <input id="picUrl" placeholder={picUrl} value={picUrl || ''} onChange={comp.onChange} />
     </label>
     <p>{' '}</p>
     {radioButtons(comp)}
-    <button disabled={!(comp.state.picTitle && comp.state.picUrl)} type="button" onClick={controller.addPic}>Add Picture</button>
+    <button disabled={!(picTitle && picUrl)} type="button" onClick={editPic._id ? controller.editPic : controller.addPic}>
+      {editPic._id ? 'Edit' : 'Create'}
+        {' '}
+     Picture</button>
   </form>
-);
+  );
+};
 export default PicEditor;

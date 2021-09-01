@@ -2,16 +2,13 @@ import React, { Dispatch } from 'react';
 import MUIDataTable, { MUIDataTableColumnDef } from 'mui-datatables';
 import HtmlReactParser from 'html-react-parser';
 import type { AGClientSocket } from 'socketcluster-client';
-import 'core-js/stable';
 import { connect } from 'react-redux';
-import superagent from 'superagent';
 import type { AnyAction } from 'redux';
 import mapStoreToProps, { Iimage } from '../../redux/mapStoreToProps';
 import type { MusicDashboardController } from '../../containers/MusicDashboard/MusicDashboardController';
 
 type Pprops = {
   dispatch: Dispatch<AnyAction>,
-  picUpdated?: boolean,
   auth: { token: string },
   images: Iimage[],
   scc?: AGClientSocket,
@@ -21,11 +18,9 @@ interface Pstate {
   columns: MUIDataTableColumnDef[]
 }
 export class PhotoTable extends React.Component<Pprops, Pstate> {
-  superagent: superagent.SuperAgentStatic;
 
   constructor(props: Readonly<Pprops>) {
     super(props);
-    this.superagent = superagent;
     this.setColumns = this.setColumns.bind(this);
     this.addThumbs = this.addThumbs.bind(this);
     this.state = {
@@ -60,11 +55,12 @@ export class PhotoTable extends React.Component<Pprops, Pstate> {
     this.setState({ columns });
   }
 
-  editPic(editImage: Iimage): boolean {
+  editPic(data: Iimage): boolean {
     const { dispatch } = this.props;
     // eslint-disable-next-line no-param-reassign
+    const { _id, title, url } = data;
     // delete picData.modify;
-    dispatch({ type: 'EDIT_PIC', editImage });
+    dispatch({ type: 'EDIT_PIC', data: { title, url, _id } });
     return true;
   }
 

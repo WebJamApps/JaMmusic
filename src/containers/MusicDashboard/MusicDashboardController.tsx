@@ -66,6 +66,22 @@ export class MusicDashboardController {
     } return false;
   }
 
+  editPic(): boolean {
+    const { picTitle, picUrl, showCaption } = this.view.state;
+    const { editPic, scc, auth } = this.view.props;
+    const image = {
+      title: picTitle,
+      url: picUrl,
+      comments: showCaption,
+      type: 'JaMmusic-music',
+    };
+    if (picTitle && picUrl && editPic){
+      scc.transmit('editImage', { image, token: auth.token, imageId: editPic._id });
+      window.location.assign('/music');
+      return true;
+    }return false;
+  }
+
   changePicDiv(): JSX.Element {
     const { editPic } = this.view.props;
     return (
@@ -77,7 +93,7 @@ export class MusicDashboardController {
           {editPic && editPic._id && editPic._id !== '' ? 'Edit ' : 'Add '}
           Pictures
         </h5>
-        <PicEditor comp={this.view} controller={this} />
+        <PicEditor comp={this.view} controller={this} editPic={editPic}/>
       </div>
     );
   }
