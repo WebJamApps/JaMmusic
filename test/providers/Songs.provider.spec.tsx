@@ -1,43 +1,24 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
-import superagent from 'superagent';
-import renderer, { act } from 'react-test-renderer';
-import SProvider from '../../src/providers/Songs.provider';
-import testSongs from '../testSongs';
-import { shallow } from 'enzyme';
-
-// jest.mock('../src/providers/Songs.provider', () => {
-//   return function MockedProvider(props: any) {
-//     return (<div id="mockWrapper"></div>);
-//   };
-// });
+import { SongsProvider } from '../../src/providers/Songs.provider';
+import fetchSongs from '../../src/providers/fetchSongs';
+import { act } from 'react-dom/test-utils';
+import ReactDOM from 'react-dom';
 
 describe('the songs provider', () => {
-  const wrapper = shallow(<SProvider><div /></SProvider>);
-  // it('renders', () => {
-  //   expect(wrapper.find('div#wjfooter').exists()).toBe(true);
-  // });
-  it('renders correctly', () => {
-    expect(wrapper).toMatchSnapshot();
+  let container: ReactDOM.Container;
+
+  beforeEach(() => {
+    container = document.createElement('div');
+    document.body.appendChild(container);
   });
-  it
-  //it('fetches the songs', () => {
-  //   const res:any = { body: testSongs };
-  //   const sa:any = { set: () => Promise.resolve(res) };
-  //   superagent.get = jest.fn(() => sa);
-  //   let component: renderer.ReactTestRenderer;
-  //   act(() => {
-  //     component = renderer.create(<SProvider><div /></SProvider>);
-  //     if (component)expect(component.toJSON()).toMatchSnapshot();
-  //   });
-  //   expect(superagent.get).toBeCalledWith(`${process.env.BackendUrl}/song`);
-  // });
-  // it('catches error when fetches the songs', () => {
-  //   const sa:any = { set: () => Promise.reject(new Error('bad')) };
-  //   superagent.get = jest.fn(() => sa);
-  //   act(() => {
-  //     renderer.create(<SProvider><div /></SProvider>);
-  //   });
-  //   expect(superagent.get).toBeCalledWith(`${process.env.BackendUrl}/song`);
-  // });
+
+  afterEach(() => {
+    document.body.removeChild(container);
+  });
+
+  it('SongsProvider is defined', ()=>{
+    fetchSongs.getSongs = jest.fn();
+    act(() => {ReactDOM.render(<SongsProvider><div /></SongsProvider>, container); });
+    expect(document.getElementById('play-buttons')).toBeDefined();
+  });
 });

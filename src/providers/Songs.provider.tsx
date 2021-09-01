@@ -2,7 +2,8 @@
 import React, {
   createContext, useState, ReactChild, useEffect,
 } from 'react';
-import superagent from 'superagent';
+import fetchSongs, { defaultSong } from './fetchSongs';
+// import superagent from 'superagent';
 
 export interface ISong {
   artist?: string;
@@ -17,21 +18,18 @@ export interface ISong {
   modify?:JSX.Element
 }
 
-export const defaultSong = {
-  category: '', title: '', url: '', _id: '', year: 2000,
-};
-
-export const fetchSongs = async ():Promise<ISong[]> => {
-  let res:{ body:ISong[] };
-  try {
-    res = await superagent.get(`${process.env.BackendUrl}/song`).set('Accept', 'application/json');
-  } catch (e) { console.log((e as Error).message); return [defaultSong]; }
-  const newSongs = res.body;
-  try {
-    newSongs.sort((a, b) => b.year - a.year);
-  } catch (error) { console.log(error); }
-  return newSongs;
-};
+// export const fetchSongs = async (setSongs: { (value: React.SetStateAction<ISong[]>): void; (arg0: ISong[]): void; }):Promise<ISong[]> => {
+//   let res:{ body:ISong[] };
+//   try {
+//     res = await superagent.get(`${process.env.BackendUrl}/song`).set('Accept', 'application/json');
+//   } catch (e) { console.log((e as Error).message); return [defaultSong]; }
+//   const newSongs = res.body;
+//   try {
+//     newSongs.sort((a, b) => b.year - a.year);
+//   } catch (error) { console.log(error); }
+//   setSongs(newSongs);
+//   return newSongs;
+// };
 
 export const SongsContext = createContext({
   test: '',
@@ -39,14 +37,12 @@ export const SongsContext = createContext({
 });
 type Props = { children: ReactChild };
 
-const SongsProvider = ({ children }: Props): JSX.Element => {
+export const SongsProvider = ({ children }: Props): JSX.Element => {
   const { Provider } = SongsContext;
   const [test] = useState('the songs provider has been successfully connected :)');
   const [songs, setSongs] = useState<ISong[]>([defaultSong]);
   useEffect(() => {
-    fetchSongs().then((res) => {
-      setSongs(res);
-    });
+    fetchSongs.getSongs(setSongs);
   }, []);
   return (<Provider value={{ test, songs }}>{children}</Provider>
   );
