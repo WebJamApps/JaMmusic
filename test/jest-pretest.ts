@@ -26,3 +26,4 @@ window.location = {
   reload: jest.fn(),
   assign: jest.fn(),
 };
+
