@@ -15,7 +15,7 @@ async function updateSongAPI(comp:MusicDashboard): Promise<string> {
       .set('Content-Type', 'application/json')
       .set('Authorization', `Bearer ${auth.token}`)
       .send(songChanges);
-  } catch (e) { return `${e.message}`; }
+  } catch (e) { return (e as Error).message; }
   if (r.status === 200) { window.location.reload(); return 'song updated'; }
   return `${r.status} song was not updated`;
 }
@@ -108,7 +108,7 @@ const addSongAPI = async (songState: ISong, auth: { token: string; }, controller
       .set('Content-Type', 'application/json')
       .set('Authorization', `Bearer ${auth.token}`)
       .send(newSong);
-  } catch (e) { return `${e.message}`; }
+  } catch (e) { return (e as Error).message; }
   if (r.status === 201) { window.location.reload(); return 'song created'; }
   return `${r.status} song was not created`;
 };

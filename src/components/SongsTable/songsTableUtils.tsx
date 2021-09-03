@@ -19,7 +19,7 @@ const deleteSong = async (id: string, token:string): Promise<string> => { // esl
     try {
       res = await superagent.delete(`${process.env.BackendUrl}/song/${id}`)
         .set('Authorization', `Bearer ${token}`).set('Accept', 'application/json');
-    } catch (e) { return `${e.message}`; }
+    } catch (e) { return (e as Error).message; }
     if (res.status === 200) { window.location.reload(); return 'deleted pic'; }
     return `${res.status} ${res.body}`;
   }
