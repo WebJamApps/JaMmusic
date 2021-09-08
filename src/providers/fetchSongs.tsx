@@ -6,14 +6,14 @@ export const defaultSong = {
 };
 
 export const getSongs = async (setSongs: { (value: React.SetStateAction<ISong[]>): void; (arg0: ISong[]): void; }):Promise<ISong[]> => {
-  let res:{ body:ISong[] };
+  let res:{ body:ISong[] }, newSongs:ISong[];
   try {
     res = await superagent.get(`${process.env.BackendUrl}/song`).set('Accept', 'application/json');
   } catch (e) { console.log((e as Error).message); return [defaultSong]; }
-  const newSongs = res.body;
+  newSongs = res.body;
   try {
     newSongs.sort((a, b) => b.year - a.year);
-  } catch (error) { console.log(error); }
+  } catch (error) { console.log(error); newSongs = []; }
   setSongs(newSongs);
   return newSongs;
 };
