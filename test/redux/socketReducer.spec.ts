@@ -23,4 +23,31 @@ describe('socket reducer', () => {
       },
     );
   });
+  it('changes color to green', () => {
+    expect(reducer({ heartBeat: 'white', userCount: 0, scc: {} }, { type: 'SC_HEARTBEAT', scc: {}, data: '' })).toEqual(
+      {
+        userCount: 0,
+        heartBeat: 'green',
+        scc: {},
+      },
+    );
+  });
+  it('handles SCC', () => {
+    expect(reducer(undefined, { type: 'SCC', scc: { id:'23' }, data: '' })).toEqual(
+      {
+        userCount: 0,
+        heartBeat: 'white',
+        scc: { id:'23' },
+      },
+    );
+  });
+  it('handles NUM_USERS', () => {
+    expect(reducer(undefined, { type: 'NUM_USERS', data:'23', scc:{} })).toEqual(
+      {
+        userCount: 23,
+        heartBeat: 'white',
+        scc: {},
+      },
+    );
+  });
 });
