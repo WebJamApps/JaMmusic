@@ -2,7 +2,7 @@
 import React from 'react';
 import { Route } from 'react-router-dom';
 import { shallow } from 'enzyme';
-import PrivateRoute from '../../src/App/PrivateRoute';
+import { PrivateRoute } from '../../src/App/PrivateRoute';
 import GoogleMap from '../../src/containers/GoogleMap';
 import commonUtils from '../../src/lib/commonUtils';
 

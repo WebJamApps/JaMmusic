@@ -1,6 +1,6 @@
 {
   "name": "jammusic",
-  "version": "1.4.3",
+  "version": "1.4.5",
   "description": "joshandmariamusic.com",
   "main": "dist/index.html",
   "repository": {
@@ -9,7 +9,7 @@
   },
   "author": "https://github.com/orgs/WebJamApps/teams/handlersandkickers",
   "engines": {
-    "node": ">=16.6.0"
+    "node": ">=16.8.0"
   },
   "files": [
     "webpack.config.js",
@@ -42,6 +42,7 @@
   "dependencies": {
     "@material-ui/core": "latest",
     "@material-ui/icons": "latest",
+    "@materializecss/materialize": "latest",
     "@popperjs/core": "^2.9.2",
     "@tinymce/tinymce-react": "^3.12.6",
     "@types/copy-webpack-plugin": "latest",
@@ -61,7 +62,7 @@
     "@types/react-dom": "^17.0.2",
     "@types/react-redux": "^7.1.7",
     "@types/react-resize-detector": "^4.2.0",
-    "@types/react-router-dom": "^5.1.5",
+    "@types/react-router-dom": "^5.1.8",
     "@types/react-slick": "^0.23.4",
     "@types/redux-logger": "^3.0.7",
     "@types/sanitize-html": "^1.22.0",
@@ -86,7 +87,6 @@
     "html-webpack-plugin": "latest",
     "jquery": "latest",
     "jsonwebtoken": "^8.5.1",
-    "materialize-css": "^1.0.0",
     "mini-css-extract-plugin": "^1.3.1",
     "moment": "latest",
     "mui-datatables": "latest",
@@ -102,7 +102,7 @@
     "react-player": "latest",
     "react-redux": "latest",
     "react-resize-detector": "latest",
-    "react-router-dom": "latest",
+    "react-router-dom": "^5.2.1",
     "react-share": "latest",
     "react-slick": "latest",
     "react-timekeeper": "latest",
