@@ -1,7 +1,4 @@
-const image: { picTitle: string, picUrl: string, }[] = [];
 const initialState = {
-  image,
-  imageUpdated: false,
   editPic: {},
 };
 

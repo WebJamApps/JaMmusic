@@ -22,6 +22,7 @@ export class MusicDashboardController {
     this.changePicDiv = this.changePicDiv.bind(this);
     this.addPic = this.addPic.bind(this);
     this.modifySongsSection = this.modifySongsSection.bind(this);
+    this.editPicAPI = this.editPicAPI.bind(this);
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -41,11 +42,11 @@ export class MusicDashboardController {
   }
 
   addPic(): void {
-    const { picTitle, picUrl, showCaption } = this.view.state;
+    const { title, url, showCaption } = this.view.state;
     const { scc, auth } = this.view.props;
     const image = {
-      title: picTitle,
-      url: picUrl,
+      title,
+      url,
       comments: showCaption,
       type: 'JaMmusic-music',
     };
@@ -66,20 +67,20 @@ export class MusicDashboardController {
     } return false;
   }
 
-  editPic(): boolean {
-    const { picTitle, picUrl, showCaption } = this.view.state;
+  editPicAPI(): boolean {
+    const { title, url, showCaption } = this.view.state;
     const { editPic, scc, auth } = this.view.props;
     const image = {
-      title: picTitle,
-      url: picUrl,
+      title,
+      url,
       comments: showCaption,
       type: 'JaMmusic-music',
     };
-    if (picTitle && picUrl && editPic){
+    if (title && url && editPic._id) {
       scc.transmit('editImage', { image, token: auth.token, imageId: editPic._id });
       window.location.assign('/music');
       return true;
-    }return false;
+    } return false;
   }
 
   changePicDiv(): JSX.Element {
@@ -93,7 +94,7 @@ export class MusicDashboardController {
           {editPic && editPic._id && editPic._id !== '' ? 'Edit ' : 'Add '}
           Pictures
         </h5>
-        <PicEditor comp={this.view} controller={this} editPic={editPic}/>
+        <PicEditor comp={this.view} controller={this} editPic={editPic} />
       </div>
     );
   }

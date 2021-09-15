@@ -18,7 +18,6 @@ interface Pstate {
   columns: MUIDataTableColumnDef[]
 }
 export class PhotoTable extends React.Component<Pprops, Pstate> {
-
   constructor(props: Readonly<Pprops>) {
     super(props);
     this.setColumns = this.setColumns.bind(this);
@@ -57,10 +56,7 @@ export class PhotoTable extends React.Component<Pprops, Pstate> {
 
   editPic(data: Iimage): boolean {
     const { dispatch } = this.props;
-    // eslint-disable-next-line no-param-reassign
-    const { _id, title, url } = data;
-    // delete picData.modify;
-    dispatch({ type: 'EDIT_PIC', data: { title, url, _id } });
+    dispatch({ type: 'EDIT_PIC', data });
     return true;
   }
 

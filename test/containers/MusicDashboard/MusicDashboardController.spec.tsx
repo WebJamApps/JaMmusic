@@ -9,7 +9,7 @@ describe('MusicDashboardController', () => {
       scc: { transmit: jest.fn() },
       showtable: true,
     },
-    state: { picTitle: 'Title', picUrl: 'url', comments: 'showCaption' },
+    state: { title: 'title', url: 'url', comments: 'showCaption' },
   };
   it('makes a change picture webform with editPic', () => {
     const controller = new Controller(viewStub);
@@ -28,7 +28,7 @@ describe('MusicDashboardController', () => {
     controller.addPic();
     expect(window.location.assign).toHaveBeenCalledWith('/music');
   });
-  it('handles click to delete dataand passes', async () => {
+  it('handles click to delete data and passes', async () => {
     window.confirm = jest.fn(() => true);
     const controller = new Controller(viewStub);
     expect(controller.deleteData('id', 'deleteImage')).toBe(true);
@@ -45,4 +45,10 @@ describe('MusicDashboardController', () => {
     const controller = new Controller(viewStub);
     expect(controller.deleteData('', 'deleteImage')).toBe(false);
   });
+  /* it('handles the editPicAPI', async () => {
+    Object.defineProperty(window, 'location', { value: { assign: jest.fn(), reload: () => { } }, writable: true });
+    const controller = new Controller(viewStub);
+    controller.editPicAPI();
+    expect(controller.editPicAPI).toBeCalled();
+  }); */
 });

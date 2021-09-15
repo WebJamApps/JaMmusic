@@ -2,6 +2,7 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import { Redirect } from 'react-router-dom';
+import { any } from 'prop-types';
 import { MusicDashboard } from '../../../src/containers/MusicDashboard';
 
 describe('Dashboard Container', () => {
@@ -246,6 +247,100 @@ describe('Dashboard Container', () => {
     wrapper.instance().componentDidUpdate({ editSong: { _id: '999999' } });
     expect(wrapper.instance().setState).toHaveBeenCalled();
   });
+  it('handles onChangePic', () => {
+    const wrapper2 = shallow<MusicDashboard>(<MusicDashboard
+      auth={auth}
+      scc={scc}
+      dispatch={jest.fn()}
+      editSong={anyProp}
+      editTour={anyProp}
+      history={anyProp}
+      location={anyProp}
+      match={anyProp}
+      editPic={{
+        _id: '123',
+        title: 'picTitle',
+        url: 'picUrl',
+        thumbnail: 'string',
+        modify: <div />,
+      }}
+      images={anyProp}
+      showTable={anyProp}
+    />);
+    wrapper2.instance().setState = jest.fn();
+    const evt:any = { persist: jest.fn(), target: { id: 'title', value: 'title' } };
+    wrapper2.update();
+    wrapper2.instance().onChangePic(evt);
+    wrapper2.instance().checkPicEdit();
+    const s0 = {
+      title: 'picTitle', url: 'picUrl',
+    };
+    expect(wrapper2.instance().setState).toHaveBeenCalledWith(s0);
+  });
+  it('checks edit when not editPic', () => {
+    const wrapper2 = shallow<MusicDashboard>(<MusicDashboard
+      auth={auth}
+      scc={scc}
+      dispatch={jest.fn()}
+      editTour={anyProp}
+      editSong={anyProp}
+      history={anyProp}
+      location={anyProp}
+      match={anyProp}
+      editPic={anyProp}
+      images={anyProp}
+      showTable={anyProp}
+    />);
+    wrapper2.instance().setState = jest.fn();
+    const evt:any = { persist: jest.fn(), target: { id: 'title', value: 'title' } };
+    wrapper2.update();
+    const sO = {
+      title: '', url: '',
+    };
+    wrapper2.instance().onChangePic(evt);
+    wrapper2.instance().checkPicEdit();
+    expect(wrapper2.instance().setState).toHaveBeenCalledWith(sO);
+  });
+  it('calls state in handleChangePic', () => {
+    const evt:any = { persist: jest.fn(), target: { id: 'title', value: 'title' } };
+    wrapper.instance().onChangePic(evt);
+    wrapper.instance().checkPicEdit = jest.fn();
+    wrapper.instance().setState = jest.fn((obj) => { expect(obj.title).toBe('title'); });
+  });
+  it('reset editform for pic', () => {
+    wrapper.instance().setState = jest.fn((obj) => expect(obj.title).toBe(''));
+    wrapper.update();
+    wrapper.instance().resetEditPic(null);
+  });
+  it('check state on resetEditPic', () => {
+    const wrapper2 = shallow<MusicDashboard>(<MusicDashboard
+      auth={auth}
+      scc={scc}
+      dispatch={jest.fn()}
+      editSong={anyProp}
+      editTour={anyProp}
+      history={anyProp}
+      location={anyProp}
+      match={anyProp}
+      editPic={{
+        _id: '123',
+        title: 'picTitle',
+        url: 'picUrl',
+        thumbnail: 'string',
+        modify: <div />,
+      }}
+      images={anyProp}
+      showTable={anyProp}
+    />);
+    wrapper2.setState({ title: 'beer garden' });
+    wrapper2.instance().setState = jest.fn();
+    const evt:any = { preventDefault: () => { } };
+    wrapper2.instance().resetEditPic(evt);
+    const sO = {
+      title: '', url: '',
+    };
+    expect(wrapper2.instance().setState).toHaveBeenCalledWith(sO);
+  });
   it('validates the tour form and returns true to disable the submit button when not valid', () => {
     expect(wrapper.instance().validateForm()).toBe(true);
   });
@@ -263,8 +358,8 @@ describe('Dashboard Container', () => {
   });
   it('handles radio change', () => {
     wrapper.instance().handleRadioChange({ target: { value: 'showCaption' } });
-    expect(wrapper.instance().state.picTitle).toBeDefined();
-    expect(wrapper.instance().state.picUrl).toBeDefined();
+    expect(wrapper.instance().state.title).toBeDefined();
+    expect(wrapper.instance().state.url).toBeDefined();
     expect(wrapper.instance().state.showCaption).toBe('showCaption');
   });
 });

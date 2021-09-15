@@ -4,8 +4,8 @@ import type { MusicDashboardController } from '../../containers/MusicDashboard/M
 
 export interface IeditPic {
   _id?: string;
- title?: string;
- url?: string;
+  title?: string;
+  url?: string;
 }
 
 type PageProps = {
@@ -43,27 +43,32 @@ const radioButtons = (comp:MusicDashboard): JSX.Element => (
 );
 
 export const PicEditor = ({ comp, controller, editPic }:PageProps): JSX.Element => {
-  let { picTitle, picUrl } = comp.state;
-  if (picTitle === '' && editPic.title !== undefined){ picTitle = editPic.title; }
-  if (picUrl === '' && editPic.url !== undefined){ picUrl = editPic.url };
-  
-  return(
-  <form id="picsForm">
-    <label htmlFor="picTitle">
-      Picture Title
-      <input id="picTitle" placeholder={picTitle} value={picTitle || ''} onChange={comp.onChange} />
-    </label>
-    <label htmlFor="picUrl">
-      Image Address
-      <input id="picUrl" placeholder={picUrl} value={picUrl || ''} onChange={comp.onChange} />
-    </label>
-    <p>{' '}</p>
-    {radioButtons(comp)}
-    <button disabled={!(picTitle && picUrl)} type="button" onClick={editPic._id ? controller.editPic : controller.addPic}>
-      {editPic._id ? 'Edit' : 'Create'}
+  let { title, url } = comp.state;
+  if (title === '' && editPic.title !== undefined) { title = editPic.title; }
+  if (url === '' && editPic.url !== undefined) { url = editPic.url; }
+  return (
+    <form id="picsForm">
+      <label htmlFor="title">
+        Picture Title
+        <input id="title" placeholder={title} value={title} onChange={comp.onChangePic} />
+      </label>
+      <label htmlFor="url">
+        Image Address
+        <input id="url" placeholder={url} value={url} onChange={comp.onChangePic} />
+      </label>
+      <p>{' '}</p>
+      {radioButtons(comp)}
+      {editPic._id ? (
+        <button className="floatRight" type="button" id="cancel-edit-pic" onClick={comp.resetEditPic}>
+          Cancel
+        </button>
+      ) : null}
+      <button disabled={!(title && url)} type="button" onClick={editPic._id ? controller.editPicAPI : controller.addPic}>
+        {editPic._id ? 'Edit' : 'Create'}
         {' '}
-     Picture</button>
-  </form>
+        Picture
+      </button>
+    </form>
   );
 };
 export default PicEditor;
