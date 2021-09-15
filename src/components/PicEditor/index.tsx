@@ -50,16 +50,16 @@ export const PicEditor = ({ comp, controller, editPic }:PageProps): JSX.Element 
     <form id="picsForm">
       <label htmlFor="title">
         Picture Title
-        <input id="title" placeholder={title} value={title} onChange={comp.onChangePic} />
+        <input id="title" placeholder={title} value={title} onChange={controller.onChangePic} />
       </label>
       <label htmlFor="url">
         Image Address
-        <input id="url" placeholder={url} value={url} onChange={comp.onChangePic} />
+        <input id="url" placeholder={url} value={url} onChange={controller.onChangePic} />
       </label>
       <p>{' '}</p>
       {radioButtons(comp)}
       {editPic._id ? (
-        <button className="floatRight" type="button" id="cancel-edit-pic" onClick={comp.resetEditPic}>
+        <button className="floatRight" type="button" id="cancel-edit-pic" onClick={controller.resetEditPic}>
           Cancel
         </button>
       ) : null}

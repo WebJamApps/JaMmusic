@@ -29,12 +29,11 @@ describe('fetch reducer', () => {
     );
   });
   it('handles FETCHED_IMAGES', () => {
-    const testImage:any = { _id:'testid' };
+    const testImage:any = { _id: 'testid' };
     const newState: any = reducer(undefined, {
       type: 'FETCHED_IMAGES',
       data: [testImage],
-    },
-    );
+    });
     expect(newState.images[0]._id).toBe('testid');
   });
   it('handles RECEIVE_ERROR', () => {

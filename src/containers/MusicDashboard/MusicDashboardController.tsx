@@ -23,6 +23,40 @@ export class MusicDashboardController {
     this.addPic = this.addPic.bind(this);
     this.modifySongsSection = this.modifySongsSection.bind(this);
     this.editPicAPI = this.editPicAPI.bind(this);
+    this.onChangePic = this.onChangePic.bind(this);
+    this.checkPicEdit = this.checkPicEdit.bind(this);
+    this.resetEditPic = this.resetEditPic.bind(this);
+  }
+
+  checkPicEdit(): void {
+    let {
+      title, url,
+    } = this.view.state;
+    const { editPic, dispatch } = this.view.props;
+    if (title === '' && editPic.title !== undefined) { title = editPic.title; }
+    if (url === '' && editPic.url !== undefined) { url = editPic.url; }
+    this.view.setState({
+      title, url,
+    });
+    if (editPic.title !== undefined && editPic.url !== undefined) {
+      dispatch({ type: 'EDIT_PIC', data: { _id: editPic._id } });
+    }
+  }
+
+  onChangePic(evt: React.ChangeEvent<HTMLInputElement>): void {
+    evt.persist();
+    const { editPic } = this.view.props;
+    if (editPic.title !== undefined && editPic.url !== undefined) this.checkPicEdit();
+    this.view.setState((prevState) => ({ ...prevState, [evt.target.id]: evt.target.value }));
+  }
+
+  resetEditPic(evt: React.MouseEvent | null): void {
+    if (evt) evt.preventDefault();
+    const { dispatch } = this.view.props;
+    dispatch({ type: 'EDIT_PIC', data: {} });
+    this.view.setState({
+      title: '', url: '',
+    });
   }
 
   // eslint-disable-next-line class-methods-use-this

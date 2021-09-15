@@ -81,9 +81,6 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
     this.setSongState = this.setSongState.bind(this);
     this.handleNavClick = this.handleNavClick.bind(this);
     this.handleRadioChange = this.handleRadioChange.bind(this);
-    this.onChangePic = this.onChangePic.bind(this);
-    this.checkPicEdit = this.checkPicEdit.bind(this);
-    this.resetEditPic = this.resetEditPic.bind(this);
   }
 
   componentDidMount(): void { this.commonUtils.setTitleAndScroll('Music Dashboard', window.screen.width); }
@@ -97,13 +94,6 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
     evt.persist();
     const { editTour } = this.props;
     if (editTour.venue !== undefined) this.checkEdit();
-    this.setState((prevState) => ({ ...prevState, [evt.target.id]: evt.target.value }));
-  }
-
-  onChangePic(evt: React.ChangeEvent<HTMLInputElement>): void {
-    evt.persist();
-    const { editPic } = this.props;
-    if (editPic.title !== undefined && editPic.url !== undefined) this.checkPicEdit();
     this.setState((prevState) => ({ ...prevState, [evt.target.id]: evt.target.value }));
   }
 
@@ -178,36 +168,12 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
     }
   }
 
-  checkPicEdit(): void {
-    let {
-      title, url,
-    } = this.state;
-    const { editPic, dispatch } = this.props;
-    if (title === '' && editPic.title !== undefined) { title = editPic.title; }
-    if (url === '' && editPic.url !== undefined) { url = editPic.url; }
-    this.setState({
-      title, url,
-    });
-    if (editPic.title !== undefined && editPic.url !== undefined) {
-      dispatch({ type: 'EDIT_PIC', data: { _id: editPic._id } });
-    }
-  }
-
   resetEditForm(evt: React.MouseEvent | null): void {
     if (evt) evt.preventDefault();
     const { dispatch } = this.props;
     dispatch({ type: 'EDIT_TOUR', data: {} });
     this.setState({
       date: '', time: '', tickets: '', more: '', venue: '', location: '',
-    });
-  }
-
-  resetEditPic(evt: React.MouseEvent | null): void {
-    if (evt) evt.preventDefault();
-    const { dispatch } = this.props;
-    dispatch({ type: 'EDIT_PIC', data: {} });
-    this.setState({
-      title: '', url: '',
     });
   }
 

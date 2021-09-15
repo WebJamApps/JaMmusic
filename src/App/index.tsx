@@ -12,7 +12,7 @@ import DefaultSongs from '../containers/Songs';
 import HomePage from '../containers/Homepage';
 import connectToSC from './connectToSC';
 import mapStoreToProps, { Iimage, Auth } from '../redux/mapStoreToProps';
-import { PrivateRoute }  from './PrivateRoute';
+import { PrivateRoute } from './PrivateRoute';
 
 export interface AppProps {
   dispatch: Dispatch<unknown>;

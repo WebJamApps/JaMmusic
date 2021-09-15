@@ -9,17 +9,17 @@ import TourTableProvider from './providers/TourTable.provider';
 import SongsProvider from './providers/Songs.provider';
 import '../static/styles.scss';
 
-export const renderMain = ():void=>{
+export const renderMain = ():void => {
   render(
-  <SongsProvider>
-    <TourTableProvider>
-      <Provider store={store.store}>
-        <PersistGate loading={null} persistor={store.persistor}>
-          <ConnectedApp />
-        </PersistGate>
-      </Provider>
-    </TourTableProvider>
-  </SongsProvider>, document.getElementById('root'),
+    <SongsProvider>
+      <TourTableProvider>
+        <Provider store={store.store}>
+          <PersistGate loading={null} persistor={store.persistor}>
+            <ConnectedApp />
+          </PersistGate>
+        </Provider>
+      </TourTableProvider>
+    </SongsProvider>, document.getElementById('root'),
   );
 
   /* istanbul ignore next */

@@ -51,4 +51,98 @@ describe('MusicDashboardController', () => {
     controller.editPicAPI();
     expect(controller.editPicAPI).toBeCalled();
   }); */
+  it('handles onChangePic', () => {
+    const viewStub2: any = {
+      props: {
+        auth: { token: 'token' },
+        editPic: {
+          _id: '123',
+          title: 'picTitle',
+          url: 'picUrl',
+          thumbnail: 'string',
+          modify: <div />,
+        },
+        scc: { transmit: jest.fn() },
+        showtable: true,
+      },
+      state: { title: 'title', url: 'url', comments: 'showCaption' },
+    };
+    const controller = new Controller(viewStub2);
+    viewStub2.instance().setState = jest.fn();
+    const evt:any = { persist: jest.fn(), target: { id: 'title', value: 'title' } };
+    viewStub2.update();
+    controller.onChangePic(evt);
+    controller.checkPicEdit();
+    const s0 = {
+      title: 'picTitle', url: 'picUrl',
+    };
+    expect(viewStub2.instance().setState).toHaveBeenCalledWith(s0);
+  });
+  it('checks edit when not editPic', () => {
+    const viewStub2: any = {
+      props: {
+        auth: { token: 'token' },
+        editPic: {
+          _id: '123',
+          title: 'picTitle',
+          url: 'picUrl',
+          thumbnail: 'string',
+          modify: <div />,
+        },
+        scc: { transmit: jest.fn() },
+        showtable: true,
+      },
+      state: { title: 'title', url: 'url', comments: 'showCaption' },
+    };
+    const controller = new Controller(viewStub2);
+    viewStub2.instance().setState = jest.fn();
+    const evt:any = { persist: jest.fn(), target: { id: 'title', value: 'title' } };
+    viewStub2.update();
+    const sO = {
+      title: '', url: '',
+    };
+    controller.onChangePic(evt);
+    controller.checkPicEdit();
+    expect(viewStub2.instance().setState).toHaveBeenCalledWith(sO);
+  });
+  it('calls state in handleChangePic', () => {
+    const controller = new Controller(viewStub);
+    const evt:any = { persist: jest.fn(), target: { id: 'title', value: 'title' } };
+    controller.onChangePic(evt);
+    controller.checkPicEdit = jest.fn();
+    viewStub.instance().setState = jest.fn((obj) => { expect(obj.title).toBe('title'); });
+  });
+  it('reset editform for pic', () => {
+    const controller = new Controller(viewStub);
+    viewStub.instance().setState = jest.fn((obj) => expect(obj.title).toBe(''));
+    viewStub.update();
+    controller.resetEditPic(null);
+  });
+  it('check state on resetEditPic', () => {
+    const viewStub2: any = {
+      props: {
+        auth: { token: 'token' },
+        editPic: {
+          _id: '123',
+          title: 'picTitle',
+          url: 'picUrl',
+          thumbnail: 'string',
+          modify: <div />,
+        },
+        scc: { transmit: jest.fn() },
+        showtable: true,
+      },
+      state: { title: 'title', url: 'url', comments: 'showCaption' },
+    };
+    viewStub2.instance().setState = jest.fn();
+    const controller = new Controller(viewStub);
+    viewStub2.setState({ title: 'beer garden' });
+
+    const evt:any = { preventDefault: () => { } };
+    controller.resetEditPic(evt);
+    const sO = {
+      title: '', url: '',
+    };
+    expect(viewStub2.instance().setState).toHaveBeenCalledWith(sO);
+  });
 });

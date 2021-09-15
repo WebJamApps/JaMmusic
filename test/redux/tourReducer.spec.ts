@@ -24,7 +24,7 @@ describe('tour reducer', () => {
     );
   });
   it('handles ALL_TOUR', () => {
-    const data:any = [{ _id:'tourid' }];
+    const data:any = [{ _id: 'tourid' }];
     expect(reducer(undefined, { type: 'ALL_TOUR', data }).tour.length).toBe(1);
   });
   it('handles NEW_TOUR', () => {
