@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import React from 'react';
 import Controller from '../../../src/containers/MusicDashboard/MusicDashboardController';
 
 describe('MusicDashboardController', () => {
