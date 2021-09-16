@@ -10,6 +10,7 @@ describe('mapStoreToProps', () => {
       auth: {},
       tour: {},
       showTable: {},
+      image:{},
     };
     const newStore = mapStoreToProps(store);
     expect(newStore.images.length).toBe(1);
