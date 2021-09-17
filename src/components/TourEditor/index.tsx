@@ -1,5 +1,5 @@
 import React from 'react';
-import AddTime from '../../lib/timeKeeper';
+import AddTime from '../../containers/MusicDashboard/AddTime';
 import type { MusicDashboard } from '../../containers/MusicDashboard';
 import Ttable from '../TourTable';
 import Utils from './tourEditorUtils';
@@ -31,7 +31,7 @@ export const newTourForm = (comp:MusicDashboard, editTour:IeditTour): JSX.Elemen
       <form id="new-tour" style={{ marginLeft: '4px', marginTop: '12px' }}>
         <p>* Date</p>
         {comp.forms.makeInput('date', 'Date', true, comp.onChange, date)}
-        <AddTime setFormTime={comp.setFormTime} initTime={time} />
+        <AddTime setFormTime={comp.setFormTime} initTime={time} show={true}/>
         {Utils.editor(venue, comp)}
         <p>{' '}</p>
         {comp.forms.makeInput('text', 'Location', true, comp.onChange, location)}

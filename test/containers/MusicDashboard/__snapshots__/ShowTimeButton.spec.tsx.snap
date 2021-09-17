@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ShowTimeButton function handles click to show the time widget 1`] = `ShallowWrapper {}`;
