@@ -2,7 +2,6 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { render } from 'react-dom';
 import { PersistGate } from 'redux-persist/integration/react';
-import '@materializecss/materialize';
 import ConnectedApp from './App/index';
 import store from './redux/store/index';
 import TourTableProvider from './providers/TourTable.provider';

@@ -3,7 +3,6 @@
 import React from 'react';
 import { renderMain } from '../src/main';
 import { act } from 'react-dom/test-utils';
-// import SongsProvider from '../src/providers/Songs.provider';
 
 jest.mock('../src/providers/Songs.provider', () => {
   return function MockedProvider(props: any) {
