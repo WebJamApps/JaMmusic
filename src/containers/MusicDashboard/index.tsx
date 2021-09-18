@@ -16,7 +16,7 @@ interface MusicDashboardProps extends RouteComponentProps<Record<string, string 
   dispatch: Dispatch<AnyAction>;
   scc: AGClientSocket;
   auth: { token: string };
-  editPic: Iimage | { _id: string, title: string, url: string, thumbnail: string, modify: JSX.Element };
+  editPic: Iimage | { _id: string, title: string, url: string, thumbnail: string };
   editSong: ISong | { _id: string, category: string, year: number, title: string, url: string },
   editTour: { date?: string; time?: string; tickets?: string; more?: string; venue?: string; location?: string; _id?: string; datetime?: string };
   showTable: boolean;

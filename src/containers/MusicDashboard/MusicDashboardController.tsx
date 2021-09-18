@@ -111,7 +111,7 @@ export class MusicDashboardController {
       type: 'JaMmusic-music',
     };
     if (title && url && editPic._id) {
-      scc.transmit('editImage', { image, token: auth.token, imageId: editPic._id });
+      scc.transmit('editImage', { image, token: auth.token, id: editPic._id });
       window.location.assign('/music');
       return true;
     } return false;
