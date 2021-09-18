@@ -1,0 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Homepage Renders the homepage 1`] = `ShallowWrapper {}`;
+
+exports[`Homepage Renders the homepage on cellphone width 1`] = `ShallowWrapper {}`;

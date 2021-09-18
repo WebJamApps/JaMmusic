@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`NarrowCurrentProjects Renders the NarrowCurrentProjects 1`] = `ShallowWrapper {}`;
