@@ -1,5 +1,5 @@
 export interface ITour {
-  datetime?: string, _id?: string 
+  datetime?: string, _id?: string
 }
 export interface ITourState{
   tour:ITour[],
@@ -29,7 +29,7 @@ const addTour = (state: ITourState, action: { data: { datetime:string, _id:strin
     tArr.push(action.data);
     tArr.sort((a, b) => new Date(b.datetime).getTime() - new Date(a.datetime).getTime());
     return { ...state, tour: tArr, tourUpdated: true };
-  } 
+  }
   return { ...state, tourUpdated: false };
 };
 

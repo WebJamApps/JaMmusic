@@ -16,7 +16,7 @@ interface MusicDashboardProps extends RouteComponentProps<Record<string, string 
   dispatch: Dispatch<AnyAction>;
   scc: AGClientSocket;
   auth: { token: string };
-  editPic: Iimage | { _id: string, title: string, url: string, thumbnail: string, modify: JSX.Element };
+  editPic: Iimage | { _id: string, title: string, url: string, thumbnail: string };
   editSong: ISong | { _id: string, category: string, year: number, title: string, url: string },
   editTour: { date?: string; time?: string; tickets?: string; more?: string; venue?: string; location?: string; _id?: string; datetime?: string };
   showTable: boolean;
@@ -24,8 +24,8 @@ interface MusicDashboardProps extends RouteComponentProps<Record<string, string 
 }
 
 type MusicDashboardState = {
-  picTitle: string,
-  picUrl: string,
+  title: string,
+  url: string,
   showCaption: string,
   location: string;
   venue: string;
@@ -43,8 +43,8 @@ const InitialState = {
   songState: {
     image: '', composer: '', year: new Date().getFullYear(), album: '', title: '', url: '', artist: '', category: 'original', _id: '',
   },
-  picTitle: '',
-  picUrl: '',
+  title: '',
+  url: '',
   showCaption: '',
   redirect: false,
   date: '',
@@ -81,7 +81,6 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
     this.setSongState = this.setSongState.bind(this);
     this.handleNavClick = this.handleNavClick.bind(this);
     this.handleRadioChange = this.handleRadioChange.bind(this);
-    this.checkPictureEdit = this.checkPictureEdit.bind(this);
   }
 
   componentDidMount(): void { this.commonUtils.setTitleAndScroll('Music Dashboard', window.screen.width); }
@@ -135,17 +134,7 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
   }
 
   handleRadioChange(evt: { target: { value: string } }): void {
-    this.checkPictureEdit();
     this.setState({ showCaption: evt.target.value });
-  }
-
-  checkPictureEdit(): void {
-    const {
-      picTitle, picUrl, showCaption,
-    } = this.state;
-    this.setState({
-      picTitle, picUrl, showCaption,
-    });
   }
 
   // eslint-disable-next-line class-methods-use-this

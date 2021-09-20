@@ -22,6 +22,41 @@ export class MusicDashboardController {
     this.changePicDiv = this.changePicDiv.bind(this);
     this.addPic = this.addPic.bind(this);
     this.modifySongsSection = this.modifySongsSection.bind(this);
+    this.editPicAPI = this.editPicAPI.bind(this);
+    this.onChangePic = this.onChangePic.bind(this);
+    this.checkPicEdit = this.checkPicEdit.bind(this);
+    this.resetEditPic = this.resetEditPic.bind(this);
+  }
+
+  checkPicEdit(): void {
+    let {
+      title, url,
+    } = this.view.state;
+    const { editPic, dispatch } = this.view.props;
+    if (title === '' && editPic.title !== undefined) { title = editPic.title; }
+    if (url === '' && editPic.url !== undefined) { url = editPic.url; }
+    this.view.setState({
+      title, url,
+    });
+    if (editPic.title !== undefined && editPic.url !== undefined) {
+      dispatch({ type: 'EDIT_PIC', data: { _id: editPic._id } });
+    }
+  }
+
+  onChangePic(evt: React.ChangeEvent<HTMLInputElement>): void {
+    evt.persist();
+    const { editPic } = this.view.props;
+    if (editPic.title !== undefined && editPic.url !== undefined) this.checkPicEdit();
+    this.view.setState((prevState) => ({ ...prevState, [evt.target.id]: evt.target.value }));
+  }
+
+  resetEditPic(evt: React.MouseEvent | null): void {
+    if (evt) evt.preventDefault();
+    const { dispatch } = this.view.props;
+    dispatch({ type: 'EDIT_PIC', data: {} });
+    this.view.setState({
+      title: '', url: '',
+    });
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -41,11 +76,11 @@ export class MusicDashboardController {
   }
 
   addPic(): void {
-    const { picTitle, picUrl, showCaption } = this.view.state;
+    const { title, url, showCaption } = this.view.state;
     const { scc, auth } = this.view.props;
     const image = {
-      title: picTitle,
-      url: picUrl,
+      title,
+      url,
       comments: showCaption,
       type: 'JaMmusic-music',
     };
@@ -66,6 +101,22 @@ export class MusicDashboardController {
     } return false;
   }
 
+  editPicAPI(): boolean {
+    const { title, url, showCaption } = this.view.state;
+    const { editPic, scc, auth } = this.view.props;
+    const image = {
+      title,
+      url,
+      comments: showCaption,
+      type: 'JaMmusic-music',
+    };
+    if (title && url && editPic._id) {
+      scc.transmit('editImage', { image, token: auth.token, id: editPic._id });
+      window.location.assign('/music');
+      return true;
+    } return false;
+  }
+
   changePicDiv(): JSX.Element {
     const { editPic } = this.view.props;
     return (
@@ -77,7 +128,7 @@ export class MusicDashboardController {
           {editPic && editPic._id && editPic._id !== '' ? 'Edit ' : 'Add '}
           Pictures
         </h5>
-        <PicEditor comp={this.view} controller={this} />
+        <PicEditor comp={this.view} controller={this} editPic={editPic} />
       </div>
     );
   }

@@ -33,16 +33,16 @@ describe('socket reducer', () => {
     );
   });
   it('handles SCC', () => {
-    expect(reducer(undefined, { type: 'SCC', scc: { id:'23' }, data: '' })).toEqual(
+    expect(reducer(undefined, { type: 'SCC', scc: { id: '23' }, data: '' })).toEqual(
       {
         userCount: 0,
         heartBeat: 'white',
-        scc: { id:'23' },
+        scc: { id: '23' },
       },
     );
   });
   it('handles NUM_USERS', () => {
-    expect(reducer(undefined, { type: 'NUM_USERS', data:'23', scc:{} })).toEqual(
+    expect(reducer(undefined, { type: 'NUM_USERS', data: '23', scc: {} })).toEqual(
       {
         userCount: 23,
         heartBeat: 'white',
