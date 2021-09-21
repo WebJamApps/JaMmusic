@@ -31,7 +31,7 @@
     "start": "nps",
     "test:lint-fix": "npm run test:stylelint && nps test.lint.fix",
     "test:lint": "npm run test:stylelint && nps test.lint",
-    "test": "npm run test:lint && npm run test:puppeteer && npm run test:jest",
+    "test": "npm run test:lint && npm run test:jest",
     "test:local": "npm run test:lint-fix && npm run test:jest && npm run test:puppeteer && npm run cc",
     "test:jest": "jest --config jest.config.json --no-cache --runInBand",
     "test:puppeteer": "jest --preset jest-puppeteer --config jest.puppeteer-config.json /test/puppeteer --runInBand --forceExit",
