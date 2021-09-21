@@ -6,7 +6,7 @@ const WideAboutUs = (): JSX.Element => (
     <div className="container-fluid">
       <div className="row">
         <div className="col-md-6" style={{ top: '0', paddingRight: '6px' }}>
-          <p style={{ marginTop: '45px', marginBottom: '40px', fontSize: '18px' }}>
+          <p style={{ marginTop: '32px', marginBottom: '40px', fontSize: '18px' }}>
             Web Jam LLC helps businesses bring their web technologies into the 21st century! Let us
             help make your website mobile-friendly and grow your business by utilizing the power of online services.
             More information is available in our&nbsp;

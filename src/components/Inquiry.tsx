@@ -1,7 +1,7 @@
 /* eslint-disable react/sort-comp */
 import React, { Component } from 'react';
 import superagent from 'superagent';
-import { Textarea, Button } from 'react-materialize';
+import { TextareaAutosize, Button } from '@material-ui/core';
 import forms from '../lib/forms';
 import stateData from '../lib/StateData.json';
 import countryData from '../lib/CountryData.json';
@@ -144,7 +144,7 @@ export default class Inquiry extends Component<unknown, InquiryState> {
     } = this.state;
     return (
       <table style={{
-        border: 'none', textAlign: 'left', margin: 0, padding: 0,
+        border: 'none', textAlign: 'left', margin: 0, padding: 0, marginBottom:'20px',
       }}
       >
         <tbody>
@@ -153,7 +153,8 @@ export default class Inquiry extends Component<unknown, InquiryState> {
             <td style={{ border: 'none', padding: '8px' }}>{' '}</td>
             <td style={{ border: 'none', padding: 0 }}>{this.forms.makeInput('text', 'Last Name', true, this.onInputChange, lastname)}</td>
           </tr>
-          <tr>
+          <p style={{ margin:0 }}>&nbsp;</p>
+          <tr className="white-background">
             <td style={{ border: 'none', padding: 0 }}>
               {this.forms.makeInput('email', 'Email Address', true, this.onInputChange, emailaddress)}
             </td>
@@ -170,9 +171,10 @@ export default class Inquiry extends Component<unknown, InquiryState> {
 
   commentsSection(comments: string): JSX.Element {
     return (
-      <Textarea
+      <TextareaAutosize
+      style={{ marginTop:'20px', height:'80px', width:'100%' }}
+      placeholder="Comments"
         className="comments"
-        label="* Comments"
         value={comments}
         onChange={(evt) => { this.setState({ comments: evt.target.value }); this.validateForm(); }}
       />
@@ -186,18 +188,18 @@ export default class Inquiry extends Component<unknown, InquiryState> {
     return (
       <form id="new-contact" className="col">
         {this.tableSection()}
-        {this.forms.makeDropdown('country', country, this.handleCountryChange, this.countryValues)}
+        {this.forms.makeDropdown('country', country, this.handleCountryChange, this.countryValues, { width:'100%' })}
         {country === 'United States'
           ? this.forms.makeDropdown('state', uSAstate, this.onChange, this.stateValues)
           : null}
-        {this.forms.makeInput('text', 'Zipcode', true, this.onInputChange, zipcode)}
+          <p style={{ margin:0 }}>&nbsp;</p>
+        {this.forms.makeInput('text', 'Zipcode', true, this.onInputChange, zipcode, { width:'100%' })}
+        <p style={{ margin:0 }}>&nbsp;</p>
         {this.commentsSection(comments)}
         <p className="form-errors" style={{ color: 'red', marginBottom: '-15px' }}>{formError}</p>
         <div className="inquiryValidation input-field col" style={{ marginBottom: '12px' }}>
           <span className="inquiryValidation">* Required</span>
           <Button
-            node="button"
-            waves="light"
             disabled={this.isFormValid()}
             onClick={(evt) => this.createEmail(evt)}
           >
