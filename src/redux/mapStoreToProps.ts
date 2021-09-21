@@ -40,11 +40,12 @@ export interface Store {
   auth: Auth;
   tour: { tour: Tour[]; tourUpdated: boolean; editTour: Tour; editSong: ISong };
   showTable: { showTable: boolean };
+  image: { editPic: Iimage };
 }
 
 interface MapProps {
   images:Iimage[];userCount:number;auth:Auth;tour:Tour[];
-  scc:AGClientSocket;tourUpdated:boolean;editTour:Tour;editSong:ISong
+  scc:AGClientSocket;tourUpdated:boolean;editTour:Tour;editSong:ISong;editPic:Iimage;
   showTable: boolean;
 }
 
@@ -60,6 +61,7 @@ const mapStoreToProps = (store: Store): MapProps => {
     tourUpdated: store.tour.tourUpdated,
     editTour: store.tour.editTour,
     editSong: store.tour.editSong,
+    editPic: store.image.editPic,
     showTable: store.showTable.showTable,
   });
 };

@@ -2,6 +2,7 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import { Redirect } from 'react-router-dom';
+import { any } from 'prop-types';
 import { MusicDashboard } from '../../../src/containers/MusicDashboard';
 
 describe('Dashboard Container', () => {
@@ -263,8 +264,8 @@ describe('Dashboard Container', () => {
   });
   it('handles radio change', () => {
     wrapper.instance().handleRadioChange({ target: { value: 'showCaption' } });
-    expect(wrapper.instance().state.picTitle).toBeDefined();
-    expect(wrapper.instance().state.picUrl).toBeDefined();
+    expect(wrapper.instance().state.title).toBeDefined();
+    expect(wrapper.instance().state.url).toBeDefined();
     expect(wrapper.instance().state.showCaption).toBe('showCaption');
   });
 });

@@ -1,5 +1,4 @@
 import superagent from 'superagent';
-// import jwt from 'jwt-simple';
 import jwt from 'jsonwebtoken';
 import type { Dispatch } from 'react';
 import type { GoogleLoginResponseOffline, GoogleLoginResponse } from 'react-google-login';
@@ -15,20 +14,17 @@ export interface IauthUtils {
 }
 const setUser = async (view: AppTemplate): Promise<string> => {
   const { auth, dispatch } = view.props;
-  let decoded: any, user;
+  let decoded, user:{ body?:Record<string, unknown> };
   try {
-    decoded = jwt.verify(auth.token, process.env.HashString || /* istanbul ignore next */'');
-  } catch (e) { return `${e.message}`; }
+    decoded = (jwt.verify(auth.token, process.env.HashString || /* istanbul ignore next */'') as { user?:Record<string, unknown>, sub?:string });
+  } catch (e) { const eMessage = (e as Error).message; return eMessage; }
   if (decoded.user) dispatch({ type: 'SET_USER', data: decoded.user });
   else {
     try {
       user = await superagent.get(`${process.env.BackendUrl}/user/${decoded.sub}`)
         .set('Accept', 'application/json').set('Authorization', `Bearer ${auth.token}`);
-    } catch (e) { return `${e.message}`; }
+    } catch (e) { const eMessage = (e as Error).message; return eMessage; }
     dispatch({ type: 'SET_USER', data: user.body });
-    // decoded.user = user.body;
-    // const newToken = jwt.encode(decoded, process.env.HashString || /* istanbul ignore next */'');
-    // dispatch({ type: 'GOT_TOKEN', data: { token: newToken, email: auth.email } });
   }
   window.location.reload();
   return 'set user';
@@ -48,7 +44,8 @@ const responseGoogleLogin = async (response: GoogleLoginResponseOffline | Google
     },
   };
   try { await view.authenticate(body, view.props); } catch (e) {
-    return `${e.message}`;
+    const eMessage = (e as Error).message;
+    return eMessage;
   }
   return setUser(view);
 };

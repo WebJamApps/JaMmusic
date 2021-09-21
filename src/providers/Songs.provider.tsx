@@ -1,9 +1,9 @@
-/* eslint-disable no-console */
 import React, {
   createContext, useState, ReactChild, useEffect,
 } from 'react';
-import superagent from 'superagent';
-
+import createPersistedState from 'use-persisted-state';
+import fetchSongs, { defaultSong } from './fetchSongs';
+const useSongsState = createPersistedState('songs', sessionStorage);
 export interface ISong {
   artist?: string;
   composer?: string;
@@ -17,40 +17,20 @@ export interface ISong {
   modify?:JSX.Element
 }
 
-export const defaultSong = {
-  category: '', title: '', url: '', _id: '', year: 2000,
-};
-
-export const fetchSongs = async ():Promise<ISong[]> => {
-  let res:{ body:ISong[] };
-  try {
-    res = await superagent.get(`${process.env.BackendUrl}/song`).set('Accept', 'application/json');
-  } catch (e) { console.log(e.message); return [defaultSong]; }
-  const newSongs = res.body;
-  try {
-    newSongs.sort((a, b) => b.year - a.year);
-    console.log(res.body);
-  } catch (error) {
-    console.log(error);
-  }
-  return newSongs;
-};
-
 export const SongsContext = createContext({
   test: '',
   songs: [defaultSong],
 });
 type Props = { children: ReactChild };
 
-const SongsProvider = ({ children }: Props): JSX.Element => {
+export const SongsProvider = ({ children }: Props): JSX.Element => {
   const { Provider } = SongsContext;
   const [test] = useState('the songs provider has been successfully connected :)');
-  const [songs, setSongs] = useState<ISong[]>([defaultSong]);
+  const [songs, setSongs] = useSongsState<ISong[]>([defaultSong]);
   useEffect(() => {
-    fetchSongs().then((res) => {
-      setSongs(res);
-    });
-  }, []);
+    fetchSongs.getSongs(setSongs);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);// if we don't include this as empty array, it keeps repeatedly fetching the songs
   return (<Provider value={{ test, songs }}>{children}</Provider>
   );
 };

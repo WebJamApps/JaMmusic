@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
 import { shallow } from 'enzyme';
-import { Button, Select } from 'react-materialize';
+import { Button, Select } from '@material-ui/core';
 import Inquiry from '../../../src/components/Inquiry';
 
 describe('Inquiry Form', () => {
@@ -155,6 +155,7 @@ describe('Inquiry Form', () => {
   });
   it('handles change to set the comments', () => {
     wrapper.instance().setState = jest.fn();
+    wrapper.instance().validatForm = jest.fn();
     const commentsSec = wrapper.instance().commentsSection('');
     const cs = shallow(commentsSec);
     cs.find('textarea').at(0).simulate('change', { target: { name: 'comments', value: 'howdy' } });

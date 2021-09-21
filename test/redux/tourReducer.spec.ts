@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import reducer from '../../src/redux/reducers/tourReducer';
 
 describe('tour reducer', () => {
@@ -12,7 +13,8 @@ describe('tour reducer', () => {
     );
   });
   it('handles RESET_TOUR', () => {
-    expect(reducer(undefined, { type: 'RESET_TOUR' })).toEqual(
+    const action:any = { type: 'RESET_TOUR' };
+    expect(reducer(undefined, action)).toEqual(
       {
         tour: [],
         tourUpdated: false,
@@ -21,10 +23,12 @@ describe('tour reducer', () => {
       },
     );
   });
+  it('handles ALL_TOUR', () => {
+    const data:any = [{ _id: 'tourid' }];
+    expect(reducer(undefined, { type: 'ALL_TOUR', data }).tour.length).toBe(1);
+  });
   it('handles NEW_TOUR', () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const t1:any = { datetime: `${new Date().toISOString}`, _id: '' };
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const t2:any = { datetime: `${new Date().toISOString}`, _id: '' };
     expect(reducer({
       tour: [t1], tourUpdated: true, editTour: {}, editSong: { _id: '' },
@@ -38,14 +42,14 @@ describe('tour reducer', () => {
     );
   });
   it('handles NEW_TOUR with missing data', () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const action:any = { type: 'NEW_TOUR', data: undefined };
     const t1:any = { datetime: `${new Date().toISOString}`, _id: '' };
     expect(reducer({
       tour: [t1], tourUpdated: true, editTour: {}, editSong: { _id: '' },
-    }, { type: 'NEW_TOUR', data: undefined })).toEqual(
+    }, action)).toEqual(
       {
         tour: [t1],
-        tourUpdated: true,
+        tourUpdated: false,
         editTour: {},
         editSong: { _id: '' },
       },
@@ -77,12 +81,13 @@ describe('tour reducer', () => {
     );
   });
   it('handles EDIT_SONG', () => {
+    const action:any = { type: 'EDIT_SONG', songData: { _id: '789' } };
     expect(reducer({
       tour: [{ _id: '456', datetime: '' }, { _id: '123', datetime: '' }],
       tourUpdated: false,
       editTour: {},
       editSong: { _id: '' },
-    }, { type: 'EDIT_SONG', songData: { _id: '789' } })).toEqual(
+    }, action)).toEqual(
       {
         tour: [{ _id: '456', datetime: '' }, { _id: '123', datetime: '' }],
         tourUpdated: false,
