@@ -4,20 +4,20 @@ import { render } from 'react-dom';
 import { PersistGate } from 'redux-persist/integration/react';
 import ConnectedApp from './App/index';
 import store from './redux/store/index';
-import TourTableProvider from './providers/TourTable.provider';
+// import TourTableProvider from './providers/TourTable.provider';
 import SongsProvider from './providers/Songs.provider';
 import '../static/styles.scss';
 
 export const renderMain = ():void => {
   render(
     <SongsProvider>
-      <TourTableProvider>
+      {/* <TourTableProvider> */}
         <Provider store={store.store}>
           <PersistGate loading={null} persistor={store.persistor}>
             <ConnectedApp />
           </PersistGate>
         </Provider>
-      </TourTableProvider>
+      {/* </TourTableProvider> */}
     </SongsProvider>, document.getElementById('root'),
   );
 
