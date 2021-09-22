@@ -57,6 +57,7 @@ export class PhotoTable extends React.Component<Pprops, Pstate> {
   editPic(data: Iimage): boolean {
     const { dispatch } = this.props;
     delete data.modify;
+    // sessionStorage.setItem('editPic', JSON.stringify(data));
     dispatch({ type: 'EDIT_PIC', data });
     return true;
   }
