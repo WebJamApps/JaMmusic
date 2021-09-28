@@ -30,6 +30,12 @@ describe('PhotoTable', () => {
       + ' rel="noopener noreferrer" target="_blank">College Lutheran Church</a>');
     expect(custom.type).toBe('div');
   });
+  it('sets the columns with customBodyRender and no data', () => {
+    expect(typeof wrapper.instance().setColumns).toBe('function');
+    wrapper.instance().setColumns();
+    const custom = wrapper.instance().state.columns[0].options.customBodyRender(null);
+    expect(custom.type).toBe('div');
+  });
   it('sets the columns with customBodyRender for Modify column', () => {
     const buttonjsx = (<button type="button" style={{ display: 'block' }}>howdy</button>);
     expect(typeof wrapper.instance().setColumns).toBe('function');

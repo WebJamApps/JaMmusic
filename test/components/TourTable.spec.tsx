@@ -7,7 +7,7 @@ import DTable from '../../src/components/TourTable/DataTable';
 
 function setup() {
   const props = {};
-  const tour: any[] = [];
+  const tour: any[] = [{}];
   const scc: any = { transmit: () => { } };
   const wrapper = shallow<TourTable>(<TourTable
     tour={tour}
@@ -49,6 +49,20 @@ describe('tour-table component test', () => {
     if (myOptions) {
       const customBody = myOptions.customBodyRender('<a href="http://collegelutheran.org/"'
         + ' rel="noopener noreferrer" target="_blank">College Lutheran Church</a>', meta, jest.fn());
+      const customHead = myOptions.customHeadRender({ index: 1, label: 'Time' });
+      expect(customBody).toBeDefined();
+      expect(customHead).toBeDefined();
+    }
+  });
+  it('sets the columns with customBodyRender and no data', () => {
+    const { wrapper } = setup();
+    expect(typeof wrapper.instance().setColumns).toBe('function');
+    wrapper.instance().setColumns();
+    const meta: any = {};
+    const myOptions: any = wrapper.instance().state.columns[1].options;
+    const fa:any = null;
+    if (myOptions) {
+      const customBody = myOptions.customBodyRender(fa, meta, jest.fn());
       const customHead = myOptions.customHeadRender({ index: 1, label: 'Time' });
       expect(customBody).toBeDefined();
       expect(customHead).toBeDefined();
