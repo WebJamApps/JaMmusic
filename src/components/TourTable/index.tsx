@@ -35,11 +35,8 @@ export class TourTable extends Component<TourTableProps, TourTableState> {
     return this.checkTourTable(prevProps.tourUpdated || false, tourUpdated || false);
   }
 
-  setColumns(): void {
-    const { deleteButton } = this.props;
+  makeColumns(titles:string[]): MUIDataTableColumn[]{
     const columns: MUIDataTableColumn[] = [];
-    const titles = ['Date', 'Time', 'Location', 'Venue', 'Tickets'];
-    if (deleteButton) titles.push('Modify');
     for (let i = 0; i < titles.length; i += 1) {
       const label = titles[i];// eslint-disable-line security/detect-object-injection
       columns.push({
@@ -64,6 +61,14 @@ export class TourTable extends Component<TourTableProps, TourTableState> {
         },
       });
     }
+    return columns;
+  }
+
+  setColumns(): void {
+    const { deleteButton } = this.props;
+    const titles = ['Date', 'Time', 'Location', 'Venue', 'Tickets'];
+    if (deleteButton) titles.push('Modify');
+    const columns = this.makeColumns(titles);
     this.setState({ columns });
   }
 

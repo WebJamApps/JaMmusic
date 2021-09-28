@@ -213,24 +213,13 @@ describe('tour-table component test', () => {
     globalAny.confirm = jest.fn(() => true);
     expect(wrapper3.instance().deleteTour('1')).toBe(false);
   });
-  it('test tour sort array', () => {
+  it('correctly makes the rows', () => {
     const data = [
       {
         date: '5-5-2020', time: '5:00 pm', tickets: 'no', more: 'no', venue: 'a venue', location: 'Salem', _id: '1',
       },
       {
         date: '5-5-2025', time: '5:00 pm', tickets: 'no', more: 'no', venue: 'a venue', location: 'Salem', _id: '1',
-      },
-    ];
-    const sorteddata = [
-      {
-        date: '5-5-2025', time: '5:00 pm', tickets: 'no', more: 'no', venue: 'a venue', location: 'Salem', _id: '1',
-      },
-      {
-        date: '', time: '', tickets: '', more: '', venue: '', location: '', _id: '',
-      },
-      {
-        date: '5-5-2020', time: '5:00 pm', tickets: 'no', more: 'no', venue: 'a venue', location: 'Salem', _id: '1',
       },
     ];
     const { wrapper } = setup();
