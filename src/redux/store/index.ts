@@ -8,7 +8,7 @@ import allReducers from '../allReducers';
 const persistConfig = {
   key: 'root',
   storage: storageSession,
-  blacklist: ['sc', 'tour'],
+  blacklist: ['sc', 'tour', 'image'],
 };
 let mWares = applyMiddleware(thunk);
 /* istanbul ignore if */
