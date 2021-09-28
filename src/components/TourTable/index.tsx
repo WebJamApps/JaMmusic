@@ -53,7 +53,7 @@ export class TourTable extends Component<TourTableProps, TourTableState> {
               {column.label}
             </TableCell>
           ),
-          customBodyRender: (value: string) => (
+          customBodyRender: (value = '') => (
             <div style={{ minWidth: '.65in', margin: 0, fontSize: '12pt' }}>
               {label !== 'Modify' ? HtmlReactParser(value) : value}
             </div>
