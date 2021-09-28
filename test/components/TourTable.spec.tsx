@@ -7,7 +7,7 @@ import DTable from '../../src/components/TourTable/DataTable';
 
 function setup() {
   const props = {};
-  const tour: any[] = [];
+  const tour: any[] = [{}];
   const scc: any = { transmit: () => { } };
   const wrapper = shallow<TourTable>(<TourTable
     tour={tour}
@@ -49,6 +49,20 @@ describe('tour-table component test', () => {
     if (myOptions) {
       const customBody = myOptions.customBodyRender('<a href="http://collegelutheran.org/"'
         + ' rel="noopener noreferrer" target="_blank">College Lutheran Church</a>', meta, jest.fn());
+      const customHead = myOptions.customHeadRender({ index: 1, label: 'Time' });
+      expect(customBody).toBeDefined();
+      expect(customHead).toBeDefined();
+    }
+  });
+  it('sets the columns with customBodyRender and no data', () => {
+    const { wrapper } = setup();
+    expect(typeof wrapper.instance().setColumns).toBe('function');
+    wrapper.instance().setColumns();
+    const meta: any = {};
+    const myOptions: any = wrapper.instance().state.columns[1].options;
+    const fa:any = null;
+    if (myOptions) {
+      const customBody = myOptions.customBodyRender(fa, meta, jest.fn());
       const customHead = myOptions.customHeadRender({ index: 1, label: 'Time' });
       expect(customBody).toBeDefined();
       expect(customHead).toBeDefined();
@@ -199,24 +213,13 @@ describe('tour-table component test', () => {
     globalAny.confirm = jest.fn(() => true);
     expect(wrapper3.instance().deleteTour('1')).toBe(false);
   });
-  it('test tour sort array', () => {
+  it('correctly makes the rows', () => {
     const data = [
       {
         date: '5-5-2020', time: '5:00 pm', tickets: 'no', more: 'no', venue: 'a venue', location: 'Salem', _id: '1',
       },
       {
         date: '5-5-2025', time: '5:00 pm', tickets: 'no', more: 'no', venue: 'a venue', location: 'Salem', _id: '1',
-      },
-    ];
-    const sorteddata = [
-      {
-        date: '5-5-2025', time: '5:00 pm', tickets: 'no', more: 'no', venue: 'a venue', location: 'Salem', _id: '1',
-      },
-      {
-        date: '', time: '', tickets: '', more: '', venue: '', location: '', _id: '',
-      },
-      {
-        date: '5-5-2020', time: '5:00 pm', tickets: 'no', more: 'no', venue: 'a venue', location: 'Salem', _id: '1',
       },
     ];
     const { wrapper } = setup();

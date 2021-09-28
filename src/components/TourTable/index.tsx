@@ -35,11 +35,8 @@ export class TourTable extends Component<TourTableProps, TourTableState> {
     return this.checkTourTable(prevProps.tourUpdated || false, tourUpdated || false);
   }
 
-  setColumns(): void {
-    const { deleteButton } = this.props;
+  makeColumns(titles:string[]): MUIDataTableColumn[]{
     const columns: MUIDataTableColumn[] = [];
-    const titles = ['Date', 'Time', 'Location', 'Venue', 'Tickets'];
-    if (deleteButton) titles.push('Modify');
     for (let i = 0; i < titles.length; i += 1) {
       const label = titles[i];// eslint-disable-line security/detect-object-injection
       columns.push({
@@ -53,14 +50,25 @@ export class TourTable extends Component<TourTableProps, TourTableState> {
               {column.label}
             </TableCell>
           ),
-          customBodyRender: (value: string) => (
+          customBodyRender: (value:string) => {
+            if (typeof value !== 'string')value = '';
+            return (
             <div style={{ minWidth: '.65in', margin: 0, fontSize: '12pt' }}>
               {label !== 'Modify' ? HtmlReactParser(value) : value}
             </div>
-          ),
+            );
+          },
         },
       });
     }
+    return columns;
+  }
+
+  setColumns(): void {
+    const { deleteButton } = this.props;
+    const titles = ['Date', 'Time', 'Location', 'Venue', 'Tickets'];
+    if (deleteButton) titles.push('Modify');
+    const columns = this.makeColumns(titles);
     this.setState({ columns });
   }
 
@@ -119,14 +127,16 @@ export class TourTable extends Component<TourTableProps, TourTableState> {
     const { tour, deleteButton } = this.props;
     let tableData = tour || [];
     if (deleteButton) tableData = this.addDeleteButton(tableData);
-    return (
+    if (tableData.length > 0 ){ 
+      return (
       <div className="tourTable">
         <div style={{ maxWidth: '100%' }}>
           <h4 style={{ textAlign: 'center', marginBottom: 0 }}>Tour Schedule</h4>
           <DTable columns={columns} data={tableData} />
         </div>
       </div>
-    );
+      );
+    } return (<div className="noTourData"></div>);
   }
 }
 export default connect(mapStoreToProps)(TourTable);
