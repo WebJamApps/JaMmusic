@@ -3,18 +3,22 @@ import type { MusicDashboardController } from '../../containers/MusicDashboard/M
 import type { MusicDashboard } from '../../containers/MusicDashboard';
 import type { ISong } from '../../providers/Songs.provider';
 import songEditorUtils from './songEditorUtils';
+import { EditorContext } from '../../providers/Editor.provider';
 
 type PageProps = { editSong:ISong, songState:ISong, comp:MusicDashboard, controller:MusicDashboardController };
 
 const SongEditor = ({
   editSong, songState, comp, controller,
-}:PageProps): JSX.Element => (
+}:PageProps): JSX.Element => {
+  const { editor, setNewEditor } = React.useContext(EditorContext);
+  return (
   <div
     className="material-content elevation3"
     style={{ maxWidth: '320px', margin: '30px auto' }}
   >
     <h5 style={{ marginBottom: 0 }}>
-      {editSong && editSong._id && editSong._id !== '' ? 'Edit ' : 'Add '}
+    {editor.song && editor.song._id && editor.song._id !== '' ? 'Edit ' : 'Add '}
+      {/* {editSong && editSong._id && editSong._id !== '' ? 'Edit ' : 'Add '} */}
       Song
     </h5>
     <form id="picsForm">
@@ -24,6 +28,6 @@ const SongEditor = ({
       {songEditorUtils.songButtons(songState, comp, editSong)}
     </form>
   </div>
-);
-
+  );
+};
 export default SongEditor;

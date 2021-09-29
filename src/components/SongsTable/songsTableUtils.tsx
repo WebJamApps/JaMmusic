@@ -3,11 +3,11 @@ import type { Dispatch, AnyAction } from 'redux';
 import superagent from 'superagent';
 import type { ISong } from '../../providers/Songs.provider';
 
-const editSong = (data: ISong, dispatch:Dispatch<AnyAction>, picsForm:HTMLElement | null): boolean => {
+const editSong = (data: ISong, makeNewEditor:any, editor:any, picsForm:HTMLElement | null): boolean => {
   const songData = { ...data, modify: undefined };
   // eslint-disable-next-line no-console
   console.log('display the create new song form with the edit song content prepopulated');
-  dispatch({ type: 'EDIT_SONG', songData });
+  makeNewEditor({ ...editor, song:songData }); // this is storing the song globally in redux
   if (picsForm && picsForm.scrollIntoView) picsForm.scrollIntoView({ behavior: 'smooth' });
   return true;
 };
@@ -27,7 +27,7 @@ const deleteSong = async (id: string, token:string): Promise<string> => { // esl
 };
 
 const makeSongButtons = (deleteSongId: string,
-  editSongId: string, token: string, dispatch: Dispatch<AnyAction>, song: ISong):JSX.Element => {
+  editSongId: string, token: string, makeNewEditor:any, editor:any, song: ISong):JSX.Element => {
   const picsForm = document.getElementById('picsForm');
   return (
     <div>
@@ -37,7 +37,7 @@ const makeSongButtons = (deleteSongId: string,
         type="button"
         id={editSongId}
         onClick={() => {
-          editSong(song, dispatch, picsForm);
+          editSong(song, makeNewEditor, editor, picsForm); //Here is what we need to change!
         }}
       >
         Edit
@@ -46,12 +46,12 @@ const makeSongButtons = (deleteSongId: string,
   );
 };
 
-const addButtons = (arr: ISong[], token:string, dispatch:Dispatch<AnyAction>): ISong[] => {
+const addButtons = (arr: ISong[], token:string, setNewEditor:any, editor:any): ISong[] => {
   const newArr = arr;/* eslint-disable security/detect-object-injection */
   for (let i = 0; i < arr.length; i += 1) {
     const deleteSongId = `deleteSong${newArr[i]._id}`;
     const editSongId = `editSong${newArr[i]._id}`;
-    newArr[i].modify = makeSongButtons(deleteSongId, editSongId, token, dispatch, newArr[i]);
+    newArr[i].modify = makeSongButtons(deleteSongId, editSongId, token, setNewEditor, editor, newArr[i]);
   }
   return newArr;
 };
