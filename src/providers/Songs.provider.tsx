@@ -13,7 +13,7 @@ export interface ISong {
   image?: string;
   title: string;
   url: string;
-  _id: string;
+  _id?: string;
   modify?:JSX.Element
 }
 

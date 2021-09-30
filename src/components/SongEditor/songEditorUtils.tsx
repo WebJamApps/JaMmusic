@@ -36,10 +36,10 @@ function resetSongForm(comp:MusicDashboard):void {
   window.location.reload();
 }
 
-function editSongButtons(comp:MusicDashboard, editSong?: ISong):JSX.Element | null {
+function editSongButtons(comp:MusicDashboard, setNewEditor:any, editSong?: ISong):JSX.Element | null {
   return (editSong && editSong._id !== '' ? (
     <span>
-      <button className="floatRight" type="button" id="cancel-edit-song" onClick={() => resetSongForm(comp)}>
+      <button className="floatRight" type="button" id="cancel-edit-song" onClick={() => setNewEditor({ song:{}, tour:{}, image:{} })}>
         Cancel
       </button>
       <button
@@ -47,7 +47,7 @@ function editSongButtons(comp:MusicDashboard, editSong?: ISong):JSX.Element | nu
         type="button"
         onClick={() => updateSongAPI(comp)}
       >
-        Edit
+        Update
         {' '}
         Song
       </button>
@@ -55,50 +55,75 @@ function editSongButtons(comp:MusicDashboard, editSong?: ISong):JSX.Element | nu
   ) : null);
 }
 
-function songForm(controller:MusicDashboardController, songState: ISong, onChangeSong: React.ChangeEventHandler<HTMLInputElement>,
-  handleCategoryChange: (event: React.ChangeEvent<HTMLSelectElement>, isSelected: boolean) => void):JSX.Element {
-  return (
-    <>
-      <label htmlFor="title">
-        * Title
-        <input id="title" value={songState.title} onChange={onChangeSong} />
-      </label>
-      <label htmlFor="url">
-        * Url
-        <input id="url" value={songState.url} onChange={onChangeSong} />
-      </label>
-      <label htmlFor="artist">
-        * Artist
-        <input id="artist" value={songState.artist} onChange={onChangeSong} />
-      </label>
-      <p>* Category</p>
-      {controller.forms.makeDropdown('category', songState.category, handleCategoryChange, ['original', 'mission', 'pub'])}
-    </>
-  );
-}
+// function songForm(controller:MusicDashboardController, songState: ISong, onChangeSong: React.ChangeEventHandler<HTMLInputElement>,
+//   handleCategoryChange: (event: React.ChangeEvent<HTMLSelectElement>, isSelected: boolean) => void):JSX.Element {
+//   return (
+//     <>
+//       <label htmlFor="title">
+//         * Title
+//         <input id="title" value={songState.title} onChange={onChangeSong} />
+//       </label>
+//       <label htmlFor="url">
+//         * Url
+//         <input id="url" value={songState.url} onChange={onChangeSong} />
+//       </label>
+//       <label htmlFor="artist">
+//         * Artist
+//         <input id="artist" value={songState.artist} onChange={onChangeSong} />
+//       </label>
+//       <p>* Category</p>
+//       {controller.forms.makeDropdown('category', songState.category, handleCategoryChange, ['original', 'mission', 'pub'])}
+//     </>
+//   );
+// }
 
-function moreSongForm(songState: ISong, onChangeSong: React.ChangeEventHandler<HTMLInputElement>):JSX.Element {
+export const MoreSongForm = (props:{ songState: ISong, onChangeSong: React.ChangeEventHandler<HTMLInputElement> }):JSX.Element => {
   return (
     <>
       <label htmlFor="artist">
         Album
-        <input id="album" value={songState.album} onChange={onChangeSong} />
+        <input id="album" value={props.songState.album || ''} onChange={props.onChangeSong} />
       </label>
       <label htmlFor="image">
         Image
-        <input id="image" value={songState.image} onChange={onChangeSong} />
+        <input id="image" value={props.songState.image || ''} onChange={props.onChangeSong} />
       </label>
       <label htmlFor="composer">
         Composer
-        <input id="composer" value={songState.composer} onChange={onChangeSong} />
+        <input id="composer" value={props.songState.composer || ''} onChange={props.onChangeSong} />
       </label>
       <label htmlFor="year">
         * Year
-        <input type="number" id="year" value={songState.year} onChange={onChangeSong} />
+        <input type="number" id="year" value={props.songState.year || 2021} onChange={props.onChangeSong} />
       </label>
     </>
   );
-}
+};
+
+export const SongForm = (props:{ controller:MusicDashboardController, songState: ISong, onChangeSong: React.ChangeEventHandler<HTMLInputElement>,
+  handleCategoryChange: (event: React.ChangeEvent<HTMLSelectElement>, isSelected: boolean) => void }):JSX.Element => {
+  console.log(props.songState);
+  return (
+    <>
+      <label htmlFor="title">
+        * Title
+        <input id="title" value={props.songState.title || ''} onChange={props.onChangeSong} />
+      </label>
+      <label htmlFor="url">
+        * Url
+        <input id="url" value={props.songState.url || ''} onChange={props.onChangeSong} />
+      </label>
+      <label htmlFor="artist">
+        * Artist
+        <input id="artist" value={props.songState.artist || ''} onChange={props.onChangeSong} />
+      </label>
+      <p>* Category</p>
+      {props.controller.forms.makeDropdown('category', props.songState.category || 'original', 
+        props.handleCategoryChange, ['original', 'mission', 'pub'])}
+        <MoreSongForm songState={props.songState} onChangeSong={props.onChangeSong}/>
+    </>
+  );
+};
 
 const addSongAPI = async (songState: ISong, auth: { token: string; }, controller: MusicDashboardController): Promise<string> => {
   const newSong = { ...songState, _id: undefined };
@@ -113,7 +138,7 @@ const addSongAPI = async (songState: ISong, auth: { token: string; }, controller
   return `${r.status} song was not created`;
 };
 
-const songButtons = (songState: ISong, comp:MusicDashboard, editSong?: ISong): JSX.Element => (
+const songButtons = (songState: ISong, comp:MusicDashboard, setNewEditor:any, editSong?: ISong): JSX.Element => (
   <div style={{ textAlign: 'left', marginTop: '10px' }}>
     <span style={{
       fontSize: '16px', marginRight: '20px', position: 'relative', display: 'inline-block',
@@ -121,7 +146,7 @@ const songButtons = (songState: ISong, comp:MusicDashboard, editSong?: ISong): J
     >
       <i>* Required</i>
     </span>
-    {editSongButtons(comp, editSong)}
+    {editSongButtons(comp, setNewEditor, editSong)}
     {!editSong || editSong._id === '' ? (
       <button
         id="add-song-button"
@@ -136,5 +161,5 @@ const songButtons = (songState: ISong, comp:MusicDashboard, editSong?: ISong): J
 );
 
 export default {
-  updateSongAPI, addSongAPI, resetSongForm, editSongButtons, songForm, moreSongForm, songButtons,
+  updateSongAPI, addSongAPI, resetSongForm, editSongButtons, songButtons,
 };

@@ -21,8 +21,6 @@ describe('SongEditor', () => {
   it('renders in Edit mode', () => {
     editSong = { _id: '123' };
     const wrapper = shallow(<SongEditor
-      editSong={editSong}
-      songState={songState}
       comp={comp}
       controller={controller}
     />);

@@ -31,7 +31,7 @@ const makeSongButtons = (deleteSongId: string,
   const picsForm = document.getElementById('picsForm');
   return (
     <div>
-      <button type="button" id={deleteSongId} onClick={() => deleteSong(song._id, token)}>Delete</button>
+      <button type="button" id={deleteSongId} onClick={() => deleteSong(song._id as string, token)}>Delete</button>
       <p>{' '}</p>
       <button
         type="button"

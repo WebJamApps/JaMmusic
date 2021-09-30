@@ -1,16 +1,27 @@
 import React from 'react';
 import type { MusicDashboardController } from '../../containers/MusicDashboard/MusicDashboardController';
 import type { MusicDashboard } from '../../containers/MusicDashboard';
-import type { ISong } from '../../providers/Songs.provider';
-import songEditorUtils from './songEditorUtils';
+// import type { ISong } from '../../providers/Songs.provider';
+import songEditorUtils, { SongForm } from './songEditorUtils';
 import { EditorContext } from '../../providers/Editor.provider';
 
-type PageProps = { editSong:ISong, songState:ISong, comp:MusicDashboard, controller:MusicDashboardController };
+type PageProps = { comp:MusicDashboard, controller:MusicDashboardController };
 
 const SongEditor = ({
-  editSong, songState, comp, controller,
+  comp, controller,
 }:PageProps): JSX.Element => {
   const { editor, setNewEditor } = React.useContext(EditorContext);
+  let song = { ...editor.song };
+  if (!song._id) song = {
+    artist:'',
+    composer:'',
+    category:'original',
+    album:'',
+    year: 2021,
+    image:'',
+    title:'',
+    url:'',
+  };
   return (
   <div
     className="material-content elevation3"
@@ -22,10 +33,11 @@ const SongEditor = ({
       Song
     </h5>
     <form id="picsForm">
-      {songEditorUtils.songForm(controller, songState, comp.onChangeSong, comp.handleCategoryChange)}
-      {songEditorUtils.moreSongForm(songState, comp.onChangeSong)}
+      <SongForm controller={controller} songState={song} onChangeSong={comp.onChangeSong} handleCategoryChange={comp.handleCategoryChange}/>
+      {/* {songEditorUtils.songForm(controller, editor.song, comp.onChangeSong, comp.handleCategoryChange)} */}
+      {/* {songEditorUtils.moreSongForm(song, comp.onChangeSong)} */}
       <p>{' '}</p>
-      {songEditorUtils.songButtons(songState, comp, editSong)}
+      {songEditorUtils.songButtons(song, comp, setNewEditor, song)}
     </form>
   </div>
   );
