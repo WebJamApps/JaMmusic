@@ -77,50 +77,51 @@ function editSongButtons(comp:MusicDashboard, setNewEditor:any, editSong?: ISong
 //   );
 // }
 
-export const MoreSongForm = (props:{ songState: ISong, onChangeSong: React.ChangeEventHandler<HTMLInputElement> }):JSX.Element => {
+export const MoreSongForm = (props:{ setNewEditor: any, editor:any, onChangeSong: any }):JSX.Element => {
   return (
     <>
       <label htmlFor="artist">
         Album
-        <input id="album" value={props.songState.album || ''} onChange={props.onChangeSong} />
+        <input id="album" value={props.editor.song.album || ''} onChange={(evt)=>props.onChangeSong(evt, props.editor, props.setNewEditor)} />
       </label>
       <label htmlFor="image">
         Image
-        <input id="image" value={props.songState.image || ''} onChange={props.onChangeSong} />
+        <input id="image" value={props.editor.song.image || ''} onChange={(evt)=>props.onChangeSong(evt, props.editor, props.setNewEditor)} />
       </label>
       <label htmlFor="composer">
         Composer
-        <input id="composer" value={props.songState.composer || ''} onChange={props.onChangeSong} />
+        <input id="composer" value={props.editor.song.composer || ''} onChange={(evt)=>props.onChangeSong(evt, props.editor, props.setNewEditor)} />
       </label>
       <label htmlFor="year">
         * Year
-        <input type="number" id="year" value={props.songState.year || 2021} onChange={props.onChangeSong} />
+        <input type="number" id="year" value={props.editor.song.year || 2021} 
+        onChange={(evt)=>props.onChangeSong(evt, props.editor, props.setNewEditor)} />
       </label>
     </>
   );
 };
 
-export const SongForm = (props:{ controller:MusicDashboardController, songState: ISong, onChangeSong: React.ChangeEventHandler<HTMLInputElement>,
+export const SongForm = (props:{ controller:MusicDashboardController, editor:any, setNewEditor:any, onChangeSong:any,
   handleCategoryChange: (event: React.ChangeEvent<HTMLSelectElement>, isSelected: boolean) => void }):JSX.Element => {
-  console.log(props.songState);
+  // console.log(props.songState);
   return (
     <>
       <label htmlFor="title">
         * Title
-        <input id="title" value={props.songState.title || ''} onChange={props.onChangeSong} />
+        <input id="title" value={props.editor.song.title || ''} onChange={(evt)=>props.onChangeSong(evt, props.editor, props.setNewEditor)} />
       </label>
       <label htmlFor="url">
         * Url
-        <input id="url" value={props.songState.url || ''} onChange={props.onChangeSong} />
+        <input id="url" value={props.editor.song.url || ''} onChange={(evt)=>props.onChangeSong(evt, props.editor, props.setNewEditor)} />
       </label>
       <label htmlFor="artist">
         * Artist
-        <input id="artist" value={props.songState.artist || ''} onChange={props.onChangeSong} />
+        <input id="artist" value={props.editor.song.artist || ''} onChange={(evt)=>props.onChangeSong(evt, props.editor, props.setNewEditor)} />
       </label>
       <p>* Category</p>
-      {props.controller.forms.makeDropdown('category', props.songState.category || 'original', 
+      {props.controller.forms.makeDropdown('category', props.editor.song.category || 'original', 
         props.handleCategoryChange, ['original', 'mission', 'pub'])}
-        <MoreSongForm songState={props.songState} onChangeSong={props.onChangeSong}/>
+        <MoreSongForm setNewEditor={props.setNewEditor} editor={props.editor} onChangeSong={props.onChangeSong}/>
     </>
   );
 };

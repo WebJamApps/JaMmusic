@@ -7,6 +7,12 @@ import { EditorContext } from '../../providers/Editor.provider';
 
 type PageProps = { comp:MusicDashboard, controller:MusicDashboardController };
 
+const onChangeSong = (evt: React.ChangeEvent<HTMLInputElement>, editor:any, setNewEditor:any): void => {
+  evt.persist();
+  const newEditor = { image:{}, tour:{}, song:{ ...editor.song, [evt.target.id]: evt.target.value } };
+  setNewEditor(newEditor);
+};
+
 const SongEditor = ({
   comp, controller,
 }:PageProps): JSX.Element => {
@@ -33,9 +39,9 @@ const SongEditor = ({
       Song
     </h5>
     <form id="picsForm">
-      <SongForm controller={controller} songState={song} onChangeSong={comp.onChangeSong} handleCategoryChange={comp.handleCategoryChange}/>
-      {/* {songEditorUtils.songForm(controller, editor.song, comp.onChangeSong, comp.handleCategoryChange)} */}
-      {/* {songEditorUtils.moreSongForm(song, comp.onChangeSong)} */}
+      <SongForm controller={controller} editor={editor} setNewEditor={setNewEditor} 
+      onChangeSong={onChangeSong} handleCategoryChange={comp.handleCategoryChange}
+      />
       <p>{' '}</p>
       {songEditorUtils.songButtons(song, comp, setNewEditor, song)}
     </form>
