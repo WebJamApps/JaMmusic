@@ -33,4 +33,12 @@ describe('App component', () => {
     const wrapper2 = shallow(<App />);
     expect(wrapper2).toBeDefined();
   });
+  it('renders Google Map API when localhost', () => {
+    process.env.BackendUrl = 'http://localhost:7000';
+    expect('/map').toBeDefined();
+  });
+  it('doesn\'t render Google Map API when localhost null', () => {
+    delete process.env.BackendUrl;
+    expect(wrapper.instance().loadMap()).toBe(null);
+  });
 });
