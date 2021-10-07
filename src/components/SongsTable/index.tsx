@@ -8,7 +8,7 @@ import { EditorContext } from '../../providers/Editor.provider';
 type Props = {
   sData?:ISong[], token:string, dispatch: Dispatch<AnyAction>
 };
-const SongsTable:React.FC<Props> = ({ sData, token, dispatch }): JSX.Element => {
+const SongsTable:React.FC<Props> = ({ sData, token }): JSX.Element => {
   const { test, songs } = React.useContext(SongsContext);
   const { editor, setNewEditor } = React.useContext(EditorContext);
   let tableData = sData !== undefined ? sData : songs;

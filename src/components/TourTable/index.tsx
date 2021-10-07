@@ -98,8 +98,6 @@ export class TourTable extends Component<TourTableProps, TourTableState> {
 
   editTour(data: Tour): boolean {
     const { dispatch } = this.props;
-    // eslint-disable-next-line no-console
-    console.log(data);
     // eslint-disable-next-line no-param-reassign
     delete data.modify;
     dispatch({ type: 'EDIT_TOUR', data });

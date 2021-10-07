@@ -1,12 +1,10 @@
 import React from 'react';
-import type { Dispatch, AnyAction } from 'redux';
+// import type { Dispatch, AnyAction } from 'redux';
 import superagent from 'superagent';
 import type { ISong } from '../../providers/Songs.provider';
 
 const editSong = (data: ISong, makeNewEditor:any, editor:any, picsForm:HTMLElement | null): boolean => {
   const songData = { ...data, modify: undefined };
-  // eslint-disable-next-line no-console
-  console.log('display the create new song form with the edit song content prepopulated');
   makeNewEditor({ ...editor, song:songData }); // this is storing the song globally in redux
   if (picsForm && picsForm.scrollIntoView) picsForm.scrollIntoView({ behavior: 'smooth' });
   return true;
