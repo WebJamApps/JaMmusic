@@ -18,11 +18,13 @@ const title = 'Web Jam LLC';
 const outDir = path.resolve(__dirname, 'dist');
 const srcDir = path.resolve(__dirname, 'src');
 const baseUrl = '/';
-const googleMapKey = `https://maps.googleapis.com/maps/api/js?key=${process.env.GOOGLE_MAPS_API_KEY}`;
 const envVars = ['APP_NAME', 'SCS_PORT', 'SCS_HOST', 'SOCKETCLUSTER_SECURE', 'NODE_ENV',
   'BackendUrl', 'GoogleClientId', 'userRoles', 'HashString', 'TINY_KEY'];
+let googleMapKey = '';
 if (nodeEnv === 'development')envVars.push('PORT');
-
+if (process.env.BackendUrl === 'http://localhost:7000') {
+  googleMapKey = `https://maps.googleapis.com/maps/api/js?key=${process.env.GOOGLE_MAPS_API_KEY}`;
+}
 module.exports = (env) => ({
   resolve: {
     extensions: ['.js', '.jsx', '.ts', '.tsx'],

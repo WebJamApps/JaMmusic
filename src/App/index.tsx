@@ -18,6 +18,7 @@ export interface AppProps {
   dispatch: Dispatch<unknown>;
   images: Iimage[];
   auth: Auth;
+  showMap: boolean;
 }
 
 export class App extends Component<AppProps> {
@@ -32,6 +33,7 @@ export class App extends Component<AppProps> {
     auth: {
       isAuthenticated: false, token: '', error: '', email: '', user: { userType: '' },
     },
+    showMap: false,
   };
 
   constructor(props: AppProps) {
@@ -43,8 +45,18 @@ export class App extends Component<AppProps> {
     const { dispatch } = this.props;
     this.connectToSC.connectToSCC(dispatch);
   }
+  
+  loadMap(): any {
+    const loadMap = false;
+    if (process.env.BackendUrl === 'http://localhost:7000'){
+      return <PrivateRoute Container={GoogleMap} path="/map" />;
+    } else {
+      return null;
+    }
+  }
 
   render(): JSX.Element {
+    
     return (
       <React.StrictMode>
         <div id="App" className="App">
@@ -58,7 +70,7 @@ export class App extends Component<AppProps> {
               this.appName === 'web-jam.com' ? HomePage : DefaultMusic
               }
                 />
-                <PrivateRoute Container={GoogleMap} path="/map" />
+                {this.loadMap()}
                 <PrivateRoute path="/sort" Container={DefaultSort} />
                 <Route exact path="/music" component={DefaultMusic} />
                 <Route exact path="/music/buymusic" component={BuyMusic} />
