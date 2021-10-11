@@ -20,7 +20,7 @@ export interface ISong {
 export const SongsContext = createContext({
   test: '',
   songs: [defaultSong],
-  resetSongs:()=>{},
+  resetSongs:/*istanbul ignore next */(...args:any)=>{},
 });
 type Props = { children: ReactChild };
 
@@ -28,7 +28,7 @@ export const SongsProvider = ({ children }: Props): JSX.Element => {
   const { Provider } = SongsContext;
   const [test] = useState('the songs provider has been successfully connected :)');
   const [songs, setSongs] = useSongsState<ISong[]>([defaultSong]);
-  const resetSongs:any = setSongs;
+  const resetSongs = setSongs;
   useEffect(() => {
     fetchSongs.getSongs(setSongs);
   // eslint-disable-next-line react-hooks/exhaustive-deps

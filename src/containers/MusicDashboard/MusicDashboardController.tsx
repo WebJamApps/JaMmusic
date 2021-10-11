@@ -4,7 +4,7 @@ import type { MusicDashboard } from './index';
 import Forms from '../../lib/forms';
 import SongsTable from '../../components/SongsTable';
 import SongEditorUtils from '../../components/SongEditor/songEditorUtils';
-import SongEditor from '../../components/SongEditor';
+import { SongEditor } from '../../components/SongEditor';
 import PTable from '../../components/PhotoTable/PhotoTable';
 import { PicEditor } from '../../components/PicEditor';
 

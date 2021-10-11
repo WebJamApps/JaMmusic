@@ -7,13 +7,13 @@ import { EditorContext } from '../../providers/Editor.provider';
 
 type PageProps = { comp:MusicDashboard, controller:MusicDashboardController };
 
-const onChangeSong = (evt: React.ChangeEvent<HTMLInputElement>, editor:any, setNewEditor:any): void => {
+export const onChangeSong = (evt: React.ChangeEvent<HTMLInputElement>, editor:any, setNewEditor:any): void => {
   evt.persist();
   const newEditor = { image:{}, tour:{}, song:{ ...editor.song, [evt.target.id]: evt.target.value } };
   setNewEditor(newEditor);
 };
 
-const SongEditor = ({
+export const SongEditor = ({
   comp, controller,
 }:PageProps): JSX.Element => {
   const { editor, setNewEditor } = React.useContext(EditorContext);
@@ -48,4 +48,3 @@ const SongEditor = ({
   </div>
   );
 };
-export default SongEditor;

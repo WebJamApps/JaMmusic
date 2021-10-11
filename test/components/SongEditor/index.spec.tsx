@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { shallow } from 'enzyme';
 import React from 'react';
-import SongEditor from '../../../src/components/SongEditor';
+import { SongEditor, onChangeSong } from '../../../src/components/SongEditor';
 
 describe('SongEditor', () => {
   let editSong:any = {},
@@ -15,6 +15,12 @@ describe('SongEditor', () => {
     />);
     expect(wrapper).toMatchSnapshot();
     expect(wrapper.find('h5').text()).toBe('Add Song');
+  });
+  it('onChangeSongs runs setNewEditor', ()=>{
+    const setNewEditor = jest.fn();
+    const evt:any = { persist:jest.fn(), target:{ id:'composer', value:'me' } };
+    onChangeSong(evt, { image:{}, tour:{}, song:{} }, setNewEditor);
+    expect(setNewEditor).toHaveBeenCalled();
   });
   // it('renders in Edit mode', () => {
   //   editSong = { _id: '123' };
