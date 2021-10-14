@@ -87,7 +87,7 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
 
   componentDidUpdate(prevProps:MusicDashboardProps): void {
     const { editSong } = this.props;
-    if (editSong._id !== prevProps.editSong._id) { this.setSongState(editSong); }
+    if (editSong && editSong._id !== prevProps.editSong._id) { this.setSongState(editSong); }
   }
 
   onChange(evt: React.ChangeEvent<HTMLInputElement>): void {
