@@ -50,8 +50,8 @@ export class TourTable extends Component<TourTableProps, TourTableState> {
               {column.label}
             </TableCell>
           ),
-          customBodyRender: (value:string) => {
-            if (typeof value !== 'string')value = '';
+          customBodyRender: (value:any) => {
+            if (typeof value !== 'string' && label !== 'Modify') value = '';
             return (
             <div style={{ minWidth: '.65in', margin: 0, fontSize: '12pt' }}>
               {label !== 'Modify' ? HtmlReactParser(value) : value}
