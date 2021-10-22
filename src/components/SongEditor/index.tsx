@@ -1,7 +1,6 @@
 import React from 'react';
 import type { MusicDashboardController } from '../../containers/MusicDashboard/MusicDashboardController';
 import type { MusicDashboard } from '../../containers/MusicDashboard';
-// import type { ISong } from '../../providers/Songs.provider';
 import songEditorUtils, { SongForm } from './songEditorUtils';
 import { EditorContext } from '../../providers/Editor.provider';
 
@@ -35,7 +34,6 @@ export const SongEditor = ({
   >
     <h5 style={{ marginBottom: 0 }}>
     {editor.song && editor.song._id && editor.song._id !== '' ? 'Edit ' : 'Add '}
-      {/* {editSong && editSong._id && editSong._id !== '' ? 'Edit ' : 'Add '} */}
       Song
     </h5>
     <form id="picsForm">
