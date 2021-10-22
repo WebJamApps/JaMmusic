@@ -40,8 +40,8 @@ export class PhotoTable extends React.Component<Pprops, Pstate> {
         options: {
           filter: false,
           sort: true,
-          customBodyRender: (value:string) => {
-            if (typeof value !== 'string')value = '';
+          customBodyRender: (value:any) => {
+            if (typeof value !== 'string' && label !== 'Modify') value = '';
             return (
             <div style={{
               margin: 0, fontSize: '12pt', maxWidth: '200px',
