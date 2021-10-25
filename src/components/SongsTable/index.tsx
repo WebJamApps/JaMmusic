@@ -14,7 +14,7 @@ const SongsTable:React.FC<Props> = ({ sData, token }): JSX.Element => {
   let tableData = sData !== undefined ? sData : songs;
   tableData = tableData.length > 0 ? songsTableUtils.addButtons(tableData, token, setNewEditor, editor) : [];
   // eslint-disable-next-line no-console
-  console.log(test);
+  // console.log(test);
   return (
     <div style={{ padding: '10px', marginBottom: '-20px' }}>
       {tableData.length > 0 ? (

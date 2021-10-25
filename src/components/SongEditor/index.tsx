@@ -1,7 +1,7 @@
 import React from 'react';
 import forms from '../../lib/forms';
 import superagent from 'superagent';
-import type { MusicDashboard } from '../../containers/MusicDashboard';
+// import type { MusicDashboard } from '../../containers/MusicDashboard';
 import songEditorUtils from './songEditorUtils';
 import { EditorContext } from '../../providers/Editor.provider';
 import type { ISong } from '../../providers/Songs.provider';
@@ -9,11 +9,11 @@ import type { ISong } from '../../providers/Songs.provider';
 export const onChangeSong = (evt: React.ChangeEvent<HTMLInputElement>, editor:any, setNewEditor:any): void => {
   evt.persist();
   const newEditor = { image:{}, tour:{}, song:{ ...editor.song, [evt.target.id]: evt.target.value } };
-  console.log(newEditor.song);
+  // console.log(newEditor.song);
   setNewEditor(newEditor);
 };
 
-const makeInput = (required:boolean, id:string, props:any)=>{
+export const makeInput = (required:boolean, id:string, props:any):JSX.Element=>{
   return (<label htmlFor={id}>
   {required ? '* ' : ''}{id}
   <input id={id} value={props.editor.song[id] || ''} onChange={(evt)=>props.onChangeSong(evt, props.editor, props.setNewEditor)} />
@@ -51,7 +51,7 @@ export const MoreSongForm = (props:{ setNewEditor: any, editor:any, onChangeSong
 
 // eslint-disable-next-line react/sort-comp
 const handleCategoryChange = (event: React.ChangeEvent<HTMLSelectElement>, editor:any, setNewEditor:any):void => {
-  console.log(editor.song);
+  // console.log(editor.song);
   setNewEditor({ image:{}, tour:{}, song:{ ...editor.song, category: event.target.value } });
   // this.setState({ songState: { ...songState, category: event.target.value } });
 };
@@ -87,7 +87,8 @@ export const SongForm = (props:{ forms:any, editor:any, setNewEditor:any, onChan
   );
 };
 
-export const EditSongButtons = ({ setNewEditor, editor, auth }:{ setNewEditor:any, editor:any, auth:any }): JSX.Element => {
+export const EditSongButtons = ({ setNewEditor, editor, auth, updateSongAPI }:
+{ setNewEditor:any, editor:any, auth:any, updateSongAPI:any }): JSX.Element => {
   return (
     <span>
       <button className="floatRight" type="button" id="cancel-edit-song" onClick={() => setNewEditor({ song:{}, tour:{}, image:{} })}>
@@ -95,8 +96,9 @@ export const EditSongButtons = ({ setNewEditor, editor, auth }:{ setNewEditor:an
       </button>
       <button
         className=""
+        id="update-song-button"
         type="button"
-        onClick={() => songEditorUtils.updateSongAPI(superagent, editor.song, auth, setNewEditor)}
+        onClick={() => updateSongAPI(superagent, editor.song, auth, setNewEditor)}
       >
         Update
         {' '}
@@ -106,9 +108,8 @@ export const EditSongButtons = ({ setNewEditor, editor, auth }:{ setNewEditor:an
   );
 };
 
-export const SongButtons = ({ editor, setNewEditor, auth  }:
-{ setNewEditor:any, editor:{ song:ISong, tour:any, image:any }, auth:any }): JSX.Element => {
-  console.log(editor.song);
+export const SongButtons = ({ editor, setNewEditor, auth, addSongAPI, updateSongAPI  }:
+{ setNewEditor:any, editor:{ song:ISong, tour:any, image:any }, auth:any, addSongAPI:any, updateSongAPI:any }): JSX.Element => {
   return (
   <div style={{ textAlign: 'left', marginTop: '10px' }}>
     <span style={{
@@ -117,12 +118,12 @@ export const SongButtons = ({ editor, setNewEditor, auth  }:
     >
       <i>* Required</i>
     </span>
-    {editor.song._id ? <EditSongButtons editor={editor} setNewEditor={setNewEditor} auth={auth}/> : 
+    {editor.song._id ? <EditSongButtons editor={editor} setNewEditor={setNewEditor} auth={auth} updateSongAPI={updateSongAPI}/> : 
       <button
         id="add-song-button"
         disabled={!(editor.song.year && editor.song.title && editor.song.url && editor.song.artist && editor.song.category)}
         type="button"
-        onClick={() => songEditorUtils.addSongAPI(superagent, editor.song, auth, setNewEditor)}
+        onClick={() => addSongAPI(superagent, editor.song, auth, setNewEditor)}
       >
         Add Song
       </button>
@@ -131,36 +132,32 @@ export const SongButtons = ({ editor, setNewEditor, auth  }:
   );
 };
 
+export const SongFormTitle = ({ editor }:{ editor:any }):JSX.Element=>{
+  return (
+    <h5 style={{ marginBottom: 0 }}>
+    {editor.song && editor.song._id && editor.song._id !== '' ? 'Edit ' : 'Add '}
+      Song
+    </h5>
+  );
+};
+
 export const SongEditor = ({
   auth,
 }:{ auth:any }): JSX.Element => {
   const { editor, setNewEditor } = React.useContext(EditorContext);
-  let song = { ...editor.song };
-  if (!song._id) song = {
-    artist:'',
-    composer:'',
-    category:'original',
-    album:'',
-    year: 2021,
-    image:'',
-    title:'',
-    url:'',
-  };
   return (
   <div
     className="material-content elevation3"
     style={{ maxWidth: '320px', margin: '30px auto' }}
   >
-    <h5 style={{ marginBottom: 0 }}>
-    {editor.song && editor.song._id && editor.song._id !== '' ? 'Edit ' : 'Add '}
-      Song
-    </h5>
+    <SongFormTitle editor={editor}/>
     <form id="picsForm">
       <SongForm forms={forms} editor={editor} setNewEditor={setNewEditor} 
       onChangeSong={onChangeSong}
       />
       <p>{' '}</p>
-      <SongButtons editor={editor} setNewEditor={setNewEditor} auth={auth}/>
+      <SongButtons editor={editor} setNewEditor={setNewEditor} auth={auth} addSongAPI={songEditorUtils.addSongAPI} 
+      updateSongAPI={songEditorUtils.updateSongAPI}/>
     </form>
   </div>
   );

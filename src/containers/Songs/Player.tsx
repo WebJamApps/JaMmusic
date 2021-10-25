@@ -10,7 +10,7 @@ export const Player = ({ songArr }:Props):JSX.Element => {
   const { test, songs } = React.useContext(SongsContext);
   const sArr = songArr || songs;
   // eslint-disable-next-line no-console
-  console.log(test);
+  // console.log(test);
   return (
     <div className="playerDiv" style={{ maxWidth: '5in', margin: 'auto', textAlign: 'center' }}>
       <div id="playerAndButtons">
