@@ -235,12 +235,12 @@ describe('Dashboard Container', () => {
     wrapper.instance().onChangeSong({ persist: jest.fn(), target: { id: 'title', value: 'Happy Song' } });
     expect(wrapper.instance().setState).toHaveBeenCalled();
   });
-  it('handles song catagory change', () => {
-    wrapper.instance().setState = jest.fn();
-    wrapper.update();
-    wrapper.instance().handleCategoryChange({ persist: jest.fn(), target: { id: 'title', value: 'Happy Song' } });
-    expect(wrapper.instance().setState).toHaveBeenCalled();
-  });
+  // it('handles song catagory change', () => {
+  //   wrapper.instance().setState = jest.fn();
+  //   wrapper.update();
+  //   wrapper.instance().handleCategoryChange({ persist: jest.fn(), target: { id: 'title', value: 'Happy Song' } });
+  //   expect(wrapper.instance().setState).toHaveBeenCalled();
+  // });
   it('handles editSong change', () => {
     wrapper.instance().setState = jest.fn();
     wrapper.update();

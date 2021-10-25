@@ -13,26 +13,38 @@ export const onChangeSong = (evt: React.ChangeEvent<HTMLInputElement>, editor:an
   setNewEditor(newEditor);
 };
 
+const makeInput = (required:boolean, id:string, props:any)=>{
+  return (<label htmlFor={id}>
+  {required ? '* ' : ''}{id}
+  <input id={id} value={props.editor.song[id] || ''} onChange={(evt)=>props.onChangeSong(evt, props.editor, props.setNewEditor)} />
+</label>
+  );
+};
+
 export const MoreSongForm = (props:{ setNewEditor: any, editor:any, onChangeSong: any }):JSX.Element => {
   return (
     <>
-      <label htmlFor="artist">
+    {makeInput(false, 'album', props)}
+      {/* <label htmlFor="artist">
         Album
         <input id="album" value={props.editor.song.album || ''} onChange={(evt)=>props.onChangeSong(evt, props.editor, props.setNewEditor)} />
-      </label>
-      <label htmlFor="image">
+      </label> */}
+      {/* <label htmlFor="image">
         Image
         <input id="image" value={props.editor.song.image || ''} onChange={(evt)=>props.onChangeSong(evt, props.editor, props.setNewEditor)} />
-      </label>
-      <label htmlFor="composer">
+      </label> */}
+       {makeInput(false, 'image', props)}
+       {makeInput(false, 'composer', props)}
+      {/* <label htmlFor="composer">
         Composer
         <input id="composer" value={props.editor.song.composer || ''} onChange={(evt)=>props.onChangeSong(evt, props.editor, props.setNewEditor)} />
-      </label>
-      <label htmlFor="year">
+      </label> */}
+      {/* <label htmlFor="year">
         * Year
         <input type="number" id="year" value={props.editor.song.year} 
         onChange={(evt)=>props.onChangeSong(evt, props.editor, props.setNewEditor)} />
-      </label>
+      </label> */}
+       {makeInput(true, 'year', props)}
     </>
   );
 };
@@ -49,18 +61,24 @@ export const SongForm = (props:{ forms:any, editor:any, setNewEditor:any, onChan
   // console.log(props.songState);
   return (
     <>
-      <label htmlFor="title">
+      {/* <label htmlFor="title">
         * Title
         <input id="title" value={props.editor.song.title || ''} onChange={(evt)=>props.onChangeSong(evt, props.editor, props.setNewEditor)} />
-      </label>
+      </label> */}
+          {makeInput(true, 'title', props)}
+{/* 
       <label htmlFor="url">
         * Url
         <input id="url" value={props.editor.song.url || ''} onChange={(evt)=>props.onChangeSong(evt, props.editor, props.setNewEditor)} />
-      </label>
-      <label htmlFor="artist">
+      </label> */}
+          {makeInput(true, 'url', props)}
+
+      {/* <label htmlFor="artist">
         * Artist
         <input id="artist" value={props.editor.song.artist || ''} onChange={(evt)=>props.onChangeSong(evt, props.editor, props.setNewEditor)} />
-      </label>
+      </label> */}
+          {makeInput(true, 'artist', props)}
+
       <p>* Category</p>
       {props.forms.makeDropdown('category', props.editor.song.category || 'original', 
         (evt: React.ChangeEvent<HTMLSelectElement>) => handleCategoryChange(evt, props.editor, props.setNewEditor), ['original', 'mission', 'pub'])}
@@ -78,7 +96,7 @@ export const EditSongButtons = ({ setNewEditor, editor, auth }:{ setNewEditor:an
       <button
         className=""
         type="button"
-        onClick={() => songEditorUtils.updateSongAPI(superagent, editor.song, auth)}
+        onClick={() => songEditorUtils.updateSongAPI(superagent, editor.song, auth, setNewEditor)}
       >
         Update
         {' '}
@@ -104,7 +122,7 @@ export const SongButtons = ({ editor, setNewEditor, auth  }:
         id="add-song-button"
         disabled={!(editor.song.year && editor.song.title && editor.song.url && editor.song.artist && editor.song.category)}
         type="button"
-        onClick={() => songEditorUtils.addSongAPI(superagent, editor.song, auth)}
+        onClick={() => songEditorUtils.addSongAPI(superagent, editor.song, auth, setNewEditor)}
       >
         Add Song
       </button>
@@ -114,8 +132,8 @@ export const SongButtons = ({ editor, setNewEditor, auth  }:
 };
 
 export const SongEditor = ({
-  comp,
-}:{ comp:MusicDashboard }): JSX.Element => {
+  auth,
+}:{ auth:any }): JSX.Element => {
   const { editor, setNewEditor } = React.useContext(EditorContext);
   let song = { ...editor.song };
   if (!song._id) song = {
@@ -142,7 +160,7 @@ export const SongEditor = ({
       onChangeSong={onChangeSong}
       />
       <p>{' '}</p>
-      <SongButtons editor={editor} setNewEditor={setNewEditor} auth={comp.props.auth}/>
+      <SongButtons editor={editor} setNewEditor={setNewEditor} auth={auth}/>
     </form>
   </div>
   );

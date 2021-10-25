@@ -6,12 +6,11 @@ import { SongEditor, onChangeSong } from '../../../src/components/SongEditor';
 
 describe('SongEditor', () => {
   let editSong:any = {},
-    comp:any = {}, controller:any = { forms: { makeDropdown: jest.fn() } };
+    auth:any = { token:'' };
 
   it('renders correctly in Create mode', () => {
     const wrapper = shallow(<SongEditor
-      comp={comp}
-      controller={controller}
+      auth={auth}
     />);
     expect(wrapper).toMatchSnapshot();
     expect(wrapper.find('h5').text()).toBe('Add Song');
