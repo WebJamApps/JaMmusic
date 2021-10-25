@@ -155,7 +155,7 @@ export class MusicDashboardController {
     return (
       <div className="Song-Block">
         <p>&nbsp;</p>
-        <SongEditor controller={this} comp={this.view} />
+        <SongEditor comp={this.view} />
         <p>&nbsp;</p>
         {this.modifySongsSection()}
         <p>&nbsp;</p>
