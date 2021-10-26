@@ -77,7 +77,6 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
     this.editTourAPI = this.editTourAPI.bind(this);
     this.resetEditForm = this.resetEditForm.bind(this);
     this.onChangeSong = this.onChangeSong.bind(this);
-    this.handleCategoryChange = this.handleCategoryChange.bind(this);
     this.setSongState = this.setSongState.bind(this);
     this.handleNavClick = this.handleNavClick.bind(this);
     this.handleRadioChange = this.handleRadioChange.bind(this);
@@ -87,7 +86,7 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
 
   componentDidUpdate(prevProps:MusicDashboardProps): void {
     const { editSong } = this.props;
-    if (editSong._id !== prevProps.editSong._id) { this.setSongState(editSong); }
+    if (editSong && editSong._id !== prevProps.editSong._id) { this.setSongState(editSong); }
   }
 
   onChange(evt: React.ChangeEvent<HTMLInputElement>): void {
@@ -111,12 +110,6 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
   }
 
   setFormTime(time: string): void { this.setState({ time }); }
-
-  // eslint-disable-next-line react/sort-comp
-  handleCategoryChange(event: React.ChangeEvent<HTMLSelectElement>): void {
-    const { songState } = this.state;
-    this.setState({ songState: { ...songState, category: event.target.value } });
-  }
 
   handleEditorChange(venue: string): void { this.setState({ venue }); this.checkEdit(); }
 

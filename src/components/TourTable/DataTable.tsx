@@ -1,7 +1,6 @@
 import React from 'react';
 import MUIDataTable, { MUIDataTableColumn } from 'mui-datatables';
 import type { Tour } from '../../redux/mapStoreToProps';
-//import { TourTableContext } from '../../providers/TourTable.provider';
 
 type Props = {
   columns: MUIDataTableColumn[];
@@ -18,7 +17,6 @@ function sortTours(data: Tour[]): Tour[] {
 }
 
 export const DataTable = ({ columns, data }: Props):JSX.Element => {
-  //const { test } = useContext(TourTableContext);
   return (
     <MUIDataTable
       options={{

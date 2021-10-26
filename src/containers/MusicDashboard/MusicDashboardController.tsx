@@ -4,7 +4,7 @@ import type { MusicDashboard } from './index';
 import Forms from '../../lib/forms';
 import SongsTable from '../../components/SongsTable';
 import SongEditorUtils from '../../components/SongEditor/songEditorUtils';
-import SongEditor from '../../components/SongEditor';
+import { SongEditor } from '../../components/SongEditor';
 import PTable from '../../components/PhotoTable/PhotoTable';
 import { PicEditor } from '../../components/PicEditor';
 
@@ -155,8 +155,7 @@ export class MusicDashboardController {
     return (
       <div className="Song-Block">
         <p>&nbsp;</p>
-        {/* {this.changeSongDiv()} */}
-        <SongEditor controller={this} editSong={this.view.props.editSong} songState={this.view.state.songState} comp={this.view} />
+        <SongEditor auth={this.view.props.auth} />
         <p>&nbsp;</p>
         {this.modifySongsSection()}
         <p>&nbsp;</p>

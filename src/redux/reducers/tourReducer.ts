@@ -5,14 +5,12 @@ export interface ITourState{
   tour:ITour[],
   tourUpdated: boolean,
   editTour: ITour
-  editSong: Record<string, unknown>,
 }
 
 const initialState:ITourState = {
   tour: [],
   tourUpdated: false,
   editTour: {},
-  editSong: { _id: '' },
 };
 
 const modifyTour = (state: ITourState, action: { data?: ITour }):ITourState => {
@@ -42,7 +40,6 @@ const reducer = (state = initialState, action:
     case 'ALL_TOUR': return { ...state, tour: action.data, tourUpdated: false };
     case 'RESET_TOUR': return { ...state, tourUpdated: false };
     case 'EDIT_TOUR': return { ...state, editTour: action.data };
-    case 'EDIT_SONG': return { ...state, editSong: action.songData };
     default: return state;
   }
 };

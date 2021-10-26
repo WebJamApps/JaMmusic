@@ -1,7 +1,7 @@
 import superagent from 'superagent';
 import type { ISong } from './Songs.provider';
 
-export const defaultSong = {
+export const defaultSong:ISong = {
   category: '', title: '', url: '', _id: '', year: 2000,
 };
 
