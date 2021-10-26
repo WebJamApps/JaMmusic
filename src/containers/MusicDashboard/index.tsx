@@ -16,7 +16,7 @@ interface MusicDashboardProps extends RouteComponentProps<Record<string, string 
   dispatch: Dispatch<AnyAction>;
   scc: AGClientSocket;
   auth: { token: string };
-  editPic: Iimage | { _id: string, title: string, url: string, thumbnail: string };
+  editPic: Iimage;
   editSong: ISong | { _id: string, category: string, year: number, title: string, url: string },
   editTour: { date?: string; time?: string; tickets?: string; more?: string; venue?: string; location?: string; _id?: string; datetime?: string };
   showTable: boolean;
@@ -128,6 +128,8 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
 
   handleRadioChange(evt: { target: { value: string } }): void {
     this.setState({ showCaption: evt.target.value });
+    const { dispatch } = this.props;
+    dispatch({ type: 'EDIT_PIC', data: { ...this.props.editPic, comments:evt.target.value } });
   }
 
   // eslint-disable-next-line class-methods-use-this
