@@ -79,7 +79,7 @@ export class PhotoTable extends React.Component<Pprops, Pstate> {
             type="button"
             id={deletePicId}
             onClick={() => {
-              controller.deleteData(newArr[i]._id, 'deleteImage');
+              controller.deleteData('deleteImage', newArr[i]._id);
             }}
           >
             Delete Pic

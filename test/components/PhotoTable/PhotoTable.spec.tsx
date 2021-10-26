@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
 import { shallow, ShallowWrapper, HTMLAttributes } from 'enzyme';
@@ -45,10 +44,11 @@ describe('PhotoTable', () => {
   });
   it('handles click on delete pic button', () => {
     wrapper.update();
-    const newArr = wrapper.instance().addThumbs([{ url: 'url', _id: '456' }]);
+    const newArr = wrapper.instance().addThumbs([{ url: 'url', _id: '456' }, { url: 'url', _id: null }]);
     const button = shallow(newArr[0].modify);
     button.find('button#deletePic456').simulate('click');
     expect(controller.deleteData).toHaveBeenCalled();
+    expect(shallow(newArr[1].modify).exists()).toBe(true);
   });
   it('handles click on edit pic button', () => {
     wrapper.instance().editPic = jest.fn();
