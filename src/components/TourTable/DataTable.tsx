@@ -17,7 +17,6 @@ function sortTours(data: Tour[]): Tour[] {
 }
 
 export const DataTable = ({ columns, data }: Props):JSX.Element => {
-  // console.log(data);
   return (
     <MUIDataTable
       options={{
