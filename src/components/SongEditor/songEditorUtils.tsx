@@ -20,21 +20,21 @@ async function updateSongAPI(sa:typeof superagent, songChanges:ISong, auth:any, 
   return `${r.status} song was not updated`;
 }
 
-function resetSongForm(comp:MusicDashboard):void {
-  const { dispatch } = comp.props;
-  dispatch({
-    type: 'EDIT_SONG',
-    songData: {
-      _id: '', category: '', year: 2021, title: '', url: '',
-    },
-  });
-  comp.setState({
-    songState: {
-      _id: '', category: '', year: 2021, title: '', url: '',
-    },
-  });
-  window.location.reload();
-}
+// function resetSongForm(comp:MusicDashboard):void {
+//   const { dispatch } = comp.props;
+//   dispatch({
+//     type: 'EDIT_SONG',
+//     songData: {
+//       _id: '', category: '', year: 2021, title: '', url: '',
+//     },
+//   });
+//   comp.setState({
+//     songState: {
+//       _id: '', category: '', year: 2021, title: '', url: '',
+//     },
+//   });
+//   window.location.reload();
+// }
 
 const addSongAPI = async (sa: typeof superagent, songBody:ISong, auth: { token: string; }, setNewEditor:any): Promise<string> => {
   const newSong = { ...songBody };
@@ -54,5 +54,5 @@ const addSongAPI = async (sa: typeof superagent, songBody:ISong, auth: { token: 
 };
 
 export default {
-  updateSongAPI, addSongAPI, resetSongForm,
+  updateSongAPI, addSongAPI,
 };

@@ -1,7 +1,6 @@
 import React from 'react';
 import forms from '../../lib/forms';
 import superagent from 'superagent';
-// import type { MusicDashboard } from '../../containers/MusicDashboard';
 import songEditorUtils from './songEditorUtils';
 import { EditorContext } from '../../providers/Editor.provider';
 import type { ISong } from '../../providers/Songs.provider';
@@ -9,7 +8,6 @@ import type { ISong } from '../../providers/Songs.provider';
 export const onChangeSong = (evt: React.ChangeEvent<HTMLInputElement>, editor:any, setNewEditor:any): void => {
   evt.persist();
   const newEditor = { image:{}, tour:{}, song:{ ...editor.song, [evt.target.id]: evt.target.value } };
-  // console.log(newEditor.song);
   setNewEditor(newEditor);
 };
 
@@ -24,64 +22,25 @@ export const makeInput = (required:boolean, id:string, props:any):JSX.Element=>{
 export const MoreSongForm = (props:{ setNewEditor: any, editor:any, onChangeSong: any }):JSX.Element => {
   return (
     <>
-    {makeInput(false, 'album', props)}
-      {/* <label htmlFor="artist">
-        Album
-        <input id="album" value={props.editor.song.album || ''} onChange={(evt)=>props.onChangeSong(evt, props.editor, props.setNewEditor)} />
-      </label> */}
-      {/* <label htmlFor="image">
-        Image
-        <input id="image" value={props.editor.song.image || ''} onChange={(evt)=>props.onChangeSong(evt, props.editor, props.setNewEditor)} />
-      </label> */}
-       {makeInput(false, 'image', props)}
-       {makeInput(false, 'composer', props)}
-      {/* <label htmlFor="composer">
-        Composer
-        <input id="composer" value={props.editor.song.composer || ''} onChange={(evt)=>props.onChangeSong(evt, props.editor, props.setNewEditor)} />
-      </label> */}
-      {/* <label htmlFor="year">
-        * Year
-        <input type="number" id="year" value={props.editor.song.year} 
-        onChange={(evt)=>props.onChangeSong(evt, props.editor, props.setNewEditor)} />
-      </label> */}
-       {makeInput(true, 'year', props)}
+      {makeInput(false, 'album', props)}
+      {makeInput(false, 'image', props)}
+      {makeInput(false, 'composer', props)}
+      {makeInput(true, 'year', props)}
     </>
   );
 };
 
-// eslint-disable-next-line react/sort-comp
-const handleCategoryChange = (event: React.ChangeEvent<HTMLSelectElement>, editor:any, setNewEditor:any):void => {
-  // console.log(editor.song);
-  setNewEditor({ image:{}, tour:{}, song:{ ...editor.song, category: event.target.value } });
-  // this.setState({ songState: { ...songState, category: event.target.value } });
-};
-
-export const SongForm = (props:{ forms:any, editor:any, setNewEditor:any, onChangeSong:any,
+export const SongForm = (props:{ forms:any, editor:any, setNewEditor:any, onChangeSong:any, handleCategoryChange:any
 }):JSX.Element => {
-  // console.log(props.songState);
   return (
     <>
-      {/* <label htmlFor="title">
-        * Title
-        <input id="title" value={props.editor.song.title || ''} onChange={(evt)=>props.onChangeSong(evt, props.editor, props.setNewEditor)} />
-      </label> */}
           {makeInput(true, 'title', props)}
-{/* 
-      <label htmlFor="url">
-        * Url
-        <input id="url" value={props.editor.song.url || ''} onChange={(evt)=>props.onChangeSong(evt, props.editor, props.setNewEditor)} />
-      </label> */}
           {makeInput(true, 'url', props)}
-
-      {/* <label htmlFor="artist">
-        * Artist
-        <input id="artist" value={props.editor.song.artist || ''} onChange={(evt)=>props.onChangeSong(evt, props.editor, props.setNewEditor)} />
-      </label> */}
           {makeInput(true, 'artist', props)}
-
       <p>* Category</p>
       {props.forms.makeDropdown('category', props.editor.song.category || 'original', 
-        (evt: React.ChangeEvent<HTMLSelectElement>) => handleCategoryChange(evt, props.editor, props.setNewEditor), ['original', 'mission', 'pub'])}
+        (evt: React.ChangeEvent<HTMLSelectElement>) => props.handleCategoryChange(evt, 
+          props.editor, props.setNewEditor), ['original', 'mission', 'pub'])}
         <MoreSongForm setNewEditor={props.setNewEditor} editor={props.editor} onChangeSong={props.onChangeSong}/>
     </>
   );
@@ -141,6 +100,10 @@ export const SongFormTitle = ({ editor }:{ editor:any }):JSX.Element=>{
   );
 };
 
+export const handleCategoryChange = (event: React.ChangeEvent<HTMLSelectElement>, editor:any, setNewEditor:any):void => {
+  setNewEditor({ image:{}, tour:{}, song:{ ...editor.song, category: event.target.value } });
+};
+
 export const SongEditor = ({
   auth,
 }:{ auth:any }): JSX.Element => {
@@ -152,7 +115,7 @@ export const SongEditor = ({
   >
     <SongFormTitle editor={editor}/>
     <form id="picsForm">
-      <SongForm forms={forms} editor={editor} setNewEditor={setNewEditor} 
+      <SongForm forms={forms} editor={editor} setNewEditor={setNewEditor} handleCategoryChange={handleCategoryChange}
       onChangeSong={onChangeSong}
       />
       <p>{' '}</p>
