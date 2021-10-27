@@ -20,5 +20,7 @@ describe('PhotoTable', () => {
       controller={controller}
     />);
   });
-  it('renders correctly', () => { expect(photoTable.toJSON()).toMatchSnapshot(); });
+  it('renders correctly', () => {
+    expect(photoTable.toJSON().props.className).toBe('photoTable');
+  });
 });
