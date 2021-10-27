@@ -1,0 +1,674 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`PhotoTable renders correctly 1`] = `
+<div
+  className="photoTable"
+>
+  <div
+    style={
+      Object {
+        "margin": "auto",
+        "maxWidth": "9in",
+      }
+    }
+  >
+    <div
+      className="MuiPaper-root MUIDataTable-paper-2 undefined MuiPaper-elevation4 MuiPaper-rounded"
+    >
+      <div
+        className="MUIDataTableFilterList-root-13"
+      />
+      <div
+        className="MUIDataTable-responsiveBase-5"
+        style={
+          Object {
+            "height": "auto",
+            "position": "relative",
+          }
+        }
+      >
+        <table
+          className="MuiTable-root MUIDataTable-tableRoot-4"
+          role="grid"
+          tabIndex="0"
+        >
+          <caption
+            className="MUIDataTable-caption-11"
+          >
+            
+          </caption>
+          <thead
+            className="MuiTableHead-root MUIDataTableHead-main-15"
+            role={null}
+          >
+            <tr
+              className="MuiTableRow-root MUIDataTableHeadRow-root-19 MuiTableRow-head"
+              role={null}
+            >
+              <th
+                aria-sort={null}
+                className="MuiTableCell-root MuiTableCell-head MUIDataTableHeadCell-root-31"
+                data-colindex={0}
+                data-tableid="03084344512877164"
+                onMouseDown={[Function]}
+                scope="col"
+              >
+                <span
+                  className="MUIDataTableHeadCell-contentWrapper-41"
+                >
+                  <button
+                    aria-describedby={null}
+                    className="MuiButtonBase-root MuiButton-root MuiButton-text MUIDataTableHeadCell-toolButton-40"
+                    data-testid="headcol-0"
+                    disabled={false}
+                    onBlur={[Function]}
+                    onClick={[Function]}
+                    onDragLeave={[Function]}
+                    onFocus={[Function]}
+                    onKeyDown={[Function]}
+                    onKeyUp={[Function]}
+                    onMouseDown={[Function]}
+                    onMouseLeave={[Function]}
+                    onMouseOver={[Function]}
+                    onMouseUp={[Function]}
+                    onTouchEnd={[Function]}
+                    onTouchMove={[Function]}
+                    onTouchStart={[Function]}
+                    tabIndex={0}
+                    title="Sort"
+                    type="button"
+                  >
+                    <span
+                      className="MuiButton-label"
+                    >
+                      <div
+                        className="MUIDataTableHeadCell-sortAction-36"
+                      >
+                        <div
+                          className="MUIDataTableHeadCell-data-35"
+                        >
+                          Thumbnail
+                        </div>
+                        <div
+                          className="MUIDataTableHeadCell-sortAction-36"
+                        >
+                          <span
+                            aria-disabled={false}
+                            className="MuiButtonBase-root MuiTableSortLabel-root MUIDataTableHeadCell-sortLabelRoot-38"
+                            onBlur={[Function]}
+                            onDragLeave={[Function]}
+                            onFocus={[Function]}
+                            onKeyDown={[Function]}
+                            onKeyUp={[Function]}
+                            onMouseDown={[Function]}
+                            onMouseLeave={[Function]}
+                            onMouseUp={[Function]}
+                            onTouchEnd={[Function]}
+                            onTouchMove={[Function]}
+                            onTouchStart={[Function]}
+                            role="button"
+                            tabIndex={-1}
+                          />
+                        </div>
+                      </div>
+                    </span>
+                    <span
+                      className="MuiTouchRipple-root"
+                    />
+                  </button>
+                </span>
+              </th>
+              <th
+                aria-sort={null}
+                className="MuiTableCell-root MuiTableCell-head MUIDataTableHeadCell-root-31"
+                data-colindex={1}
+                data-tableid="03084344512877164"
+                onMouseDown={[Function]}
+                scope="col"
+              >
+                <span
+                  className="MUIDataTableHeadCell-contentWrapper-41"
+                >
+                  <button
+                    aria-describedby={null}
+                    className="MuiButtonBase-root MuiButton-root MuiButton-text MUIDataTableHeadCell-toolButton-40"
+                    data-testid="headcol-1"
+                    disabled={false}
+                    onBlur={[Function]}
+                    onClick={[Function]}
+                    onDragLeave={[Function]}
+                    onFocus={[Function]}
+                    onKeyDown={[Function]}
+                    onKeyUp={[Function]}
+                    onMouseDown={[Function]}
+                    onMouseLeave={[Function]}
+                    onMouseOver={[Function]}
+                    onMouseUp={[Function]}
+                    onTouchEnd={[Function]}
+                    onTouchMove={[Function]}
+                    onTouchStart={[Function]}
+                    tabIndex={0}
+                    title="Sort"
+                    type="button"
+                  >
+                    <span
+                      className="MuiButton-label"
+                    >
+                      <div
+                        className="MUIDataTableHeadCell-sortAction-36"
+                      >
+                        <div
+                          className="MUIDataTableHeadCell-data-35"
+                        >
+                          Title
+                        </div>
+                        <div
+                          className="MUIDataTableHeadCell-sortAction-36"
+                        >
+                          <span
+                            aria-disabled={false}
+                            className="MuiButtonBase-root MuiTableSortLabel-root MUIDataTableHeadCell-sortLabelRoot-38"
+                            onBlur={[Function]}
+                            onDragLeave={[Function]}
+                            onFocus={[Function]}
+                            onKeyDown={[Function]}
+                            onKeyUp={[Function]}
+                            onMouseDown={[Function]}
+                            onMouseLeave={[Function]}
+                            onMouseUp={[Function]}
+                            onTouchEnd={[Function]}
+                            onTouchMove={[Function]}
+                            onTouchStart={[Function]}
+                            role="button"
+                            tabIndex={-1}
+                          />
+                        </div>
+                      </div>
+                    </span>
+                    <span
+                      className="MuiTouchRipple-root"
+                    />
+                  </button>
+                </span>
+              </th>
+              <th
+                aria-sort={null}
+                className="MuiTableCell-root MuiTableCell-head MUIDataTableHeadCell-root-31"
+                data-colindex={2}
+                data-tableid="03084344512877164"
+                onMouseDown={[Function]}
+                scope="col"
+              >
+                <span
+                  className="MUIDataTableHeadCell-contentWrapper-41"
+                >
+                  <button
+                    aria-describedby={null}
+                    className="MuiButtonBase-root MuiButton-root MuiButton-text MUIDataTableHeadCell-toolButton-40"
+                    data-testid="headcol-2"
+                    disabled={false}
+                    onBlur={[Function]}
+                    onClick={[Function]}
+                    onDragLeave={[Function]}
+                    onFocus={[Function]}
+                    onKeyDown={[Function]}
+                    onKeyUp={[Function]}
+                    onMouseDown={[Function]}
+                    onMouseLeave={[Function]}
+                    onMouseOver={[Function]}
+                    onMouseUp={[Function]}
+                    onTouchEnd={[Function]}
+                    onTouchMove={[Function]}
+                    onTouchStart={[Function]}
+                    tabIndex={0}
+                    title="Sort"
+                    type="button"
+                  >
+                    <span
+                      className="MuiButton-label"
+                    >
+                      <div
+                        className="MUIDataTableHeadCell-sortAction-36"
+                      >
+                        <div
+                          className="MUIDataTableHeadCell-data-35"
+                        >
+                          Caption
+                        </div>
+                        <div
+                          className="MUIDataTableHeadCell-sortAction-36"
+                        >
+                          <span
+                            aria-disabled={false}
+                            className="MuiButtonBase-root MuiTableSortLabel-root MUIDataTableHeadCell-sortLabelRoot-38"
+                            onBlur={[Function]}
+                            onDragLeave={[Function]}
+                            onFocus={[Function]}
+                            onKeyDown={[Function]}
+                            onKeyUp={[Function]}
+                            onMouseDown={[Function]}
+                            onMouseLeave={[Function]}
+                            onMouseUp={[Function]}
+                            onTouchEnd={[Function]}
+                            onTouchMove={[Function]}
+                            onTouchStart={[Function]}
+                            role="button"
+                            tabIndex={-1}
+                          />
+                        </div>
+                      </div>
+                    </span>
+                    <span
+                      className="MuiTouchRipple-root"
+                    />
+                  </button>
+                </span>
+              </th>
+              <th
+                aria-sort={null}
+                className="MuiTableCell-root MuiTableCell-head MUIDataTableHeadCell-root-31"
+                data-colindex={3}
+                data-tableid="03084344512877164"
+                onMouseDown={[Function]}
+                scope="col"
+              >
+                <span
+                  className="MUIDataTableHeadCell-contentWrapper-41"
+                >
+                  <button
+                    aria-describedby={null}
+                    className="MuiButtonBase-root MuiButton-root MuiButton-text MUIDataTableHeadCell-toolButton-40"
+                    data-testid="headcol-3"
+                    disabled={false}
+                    onBlur={[Function]}
+                    onClick={[Function]}
+                    onDragLeave={[Function]}
+                    onFocus={[Function]}
+                    onKeyDown={[Function]}
+                    onKeyUp={[Function]}
+                    onMouseDown={[Function]}
+                    onMouseLeave={[Function]}
+                    onMouseOver={[Function]}
+                    onMouseUp={[Function]}
+                    onTouchEnd={[Function]}
+                    onTouchMove={[Function]}
+                    onTouchStart={[Function]}
+                    tabIndex={0}
+                    title="Sort"
+                    type="button"
+                  >
+                    <span
+                      className="MuiButton-label"
+                    >
+                      <div
+                        className="MUIDataTableHeadCell-sortAction-36"
+                      >
+                        <div
+                          className="MUIDataTableHeadCell-data-35"
+                        >
+                          Link
+                        </div>
+                        <div
+                          className="MUIDataTableHeadCell-sortAction-36"
+                        >
+                          <span
+                            aria-disabled={false}
+                            className="MuiButtonBase-root MuiTableSortLabel-root MUIDataTableHeadCell-sortLabelRoot-38"
+                            onBlur={[Function]}
+                            onDragLeave={[Function]}
+                            onFocus={[Function]}
+                            onKeyDown={[Function]}
+                            onKeyUp={[Function]}
+                            onMouseDown={[Function]}
+                            onMouseLeave={[Function]}
+                            onMouseUp={[Function]}
+                            onTouchEnd={[Function]}
+                            onTouchMove={[Function]}
+                            onTouchStart={[Function]}
+                            role="button"
+                            tabIndex={-1}
+                          />
+                        </div>
+                      </div>
+                    </span>
+                    <span
+                      className="MuiTouchRipple-root"
+                    />
+                  </button>
+                </span>
+              </th>
+              <th
+                aria-sort={null}
+                className="MuiTableCell-root MuiTableCell-head MUIDataTableHeadCell-root-31"
+                data-colindex={4}
+                data-tableid="03084344512877164"
+                onMouseDown={[Function]}
+                scope="col"
+              >
+                <span
+                  className="MUIDataTableHeadCell-contentWrapper-41"
+                >
+                  <button
+                    aria-describedby={null}
+                    className="MuiButtonBase-root MuiButton-root MuiButton-text MUIDataTableHeadCell-toolButton-40"
+                    data-testid="headcol-4"
+                    disabled={false}
+                    onBlur={[Function]}
+                    onClick={[Function]}
+                    onDragLeave={[Function]}
+                    onFocus={[Function]}
+                    onKeyDown={[Function]}
+                    onKeyUp={[Function]}
+                    onMouseDown={[Function]}
+                    onMouseLeave={[Function]}
+                    onMouseOver={[Function]}
+                    onMouseUp={[Function]}
+                    onTouchEnd={[Function]}
+                    onTouchMove={[Function]}
+                    onTouchStart={[Function]}
+                    tabIndex={0}
+                    title="Sort"
+                    type="button"
+                  >
+                    <span
+                      className="MuiButton-label"
+                    >
+                      <div
+                        className="MUIDataTableHeadCell-sortAction-36"
+                      >
+                        <div
+                          className="MUIDataTableHeadCell-data-35"
+                        >
+                          Type
+                        </div>
+                        <div
+                          className="MUIDataTableHeadCell-sortAction-36"
+                        >
+                          <span
+                            aria-disabled={false}
+                            className="MuiButtonBase-root MuiTableSortLabel-root MUIDataTableHeadCell-sortLabelRoot-38"
+                            onBlur={[Function]}
+                            onDragLeave={[Function]}
+                            onFocus={[Function]}
+                            onKeyDown={[Function]}
+                            onKeyUp={[Function]}
+                            onMouseDown={[Function]}
+                            onMouseLeave={[Function]}
+                            onMouseUp={[Function]}
+                            onTouchEnd={[Function]}
+                            onTouchMove={[Function]}
+                            onTouchStart={[Function]}
+                            role="button"
+                            tabIndex={-1}
+                          />
+                        </div>
+                      </div>
+                    </span>
+                    <span
+                      className="MuiTouchRipple-root"
+                    />
+                  </button>
+                </span>
+              </th>
+              <th
+                aria-sort={null}
+                className="MuiTableCell-root MuiTableCell-head MUIDataTableHeadCell-root-31"
+                data-colindex={5}
+                data-tableid="03084344512877164"
+                onMouseDown={[Function]}
+                scope="col"
+              >
+                <span
+                  className="MUIDataTableHeadCell-contentWrapper-41"
+                >
+                  <button
+                    aria-describedby={null}
+                    className="MuiButtonBase-root MuiButton-root MuiButton-text MUIDataTableHeadCell-toolButton-40"
+                    data-testid="headcol-5"
+                    disabled={false}
+                    onBlur={[Function]}
+                    onClick={[Function]}
+                    onDragLeave={[Function]}
+                    onFocus={[Function]}
+                    onKeyDown={[Function]}
+                    onKeyUp={[Function]}
+                    onMouseDown={[Function]}
+                    onMouseLeave={[Function]}
+                    onMouseOver={[Function]}
+                    onMouseUp={[Function]}
+                    onTouchEnd={[Function]}
+                    onTouchMove={[Function]}
+                    onTouchStart={[Function]}
+                    tabIndex={0}
+                    title="Sort"
+                    type="button"
+                  >
+                    <span
+                      className="MuiButton-label"
+                    >
+                      <div
+                        className="MUIDataTableHeadCell-sortAction-36"
+                      >
+                        <div
+                          className="MUIDataTableHeadCell-data-35"
+                        >
+                          Modify
+                        </div>
+                        <div
+                          className="MUIDataTableHeadCell-sortAction-36"
+                        >
+                          <span
+                            aria-disabled={false}
+                            className="MuiButtonBase-root MuiTableSortLabel-root MUIDataTableHeadCell-sortLabelRoot-38"
+                            onBlur={[Function]}
+                            onDragLeave={[Function]}
+                            onFocus={[Function]}
+                            onKeyDown={[Function]}
+                            onKeyUp={[Function]}
+                            onMouseDown={[Function]}
+                            onMouseLeave={[Function]}
+                            onMouseUp={[Function]}
+                            onTouchEnd={[Function]}
+                            onTouchMove={[Function]}
+                            onTouchStart={[Function]}
+                            role="button"
+                            tabIndex={-1}
+                          />
+                        </div>
+                      </div>
+                    </span>
+                    <span
+                      className="MuiTouchRipple-root"
+                    />
+                  </button>
+                </span>
+              </th>
+            </tr>
+          </thead>
+          <tbody
+            className="MuiTableBody-root"
+            role={null}
+          >
+            <tr
+              className="MuiTableRow-root MUIDataTableBodyRow-root-48 undefined MuiTableRow-hover"
+              data-testid="MUIDataTableBodyRow-0"
+              id="MUIDataTableBodyRow-03084344512877164-0"
+              onClick={[Function]}
+              role={null}
+            >
+              <td
+                aria-sort={null}
+                className="MuiTableCell-root MuiTableCell-body MUIDataTableBodyCell-root-52"
+                data-colindex={0}
+                data-tableid="03084344512877164"
+                data-testid="MuiDataTableBodyCell-0-0"
+              >
+                <div
+                  className="MUIDataTableBodyCell-root-52"
+                >
+                  <div
+                    style={
+                      Object {
+                        "fontSize": "12pt",
+                        "margin": 0,
+                        "maxWidth": "200px",
+                      }
+                    }
+                  >
+                    <img
+                      src="url"
+                      width="200px"
+                    />
+                  </div>
+                </div>
+              </td>
+              <td
+                aria-sort={null}
+                className="MuiTableCell-root MuiTableCell-body MUIDataTableBodyCell-root-52"
+                data-colindex={1}
+                data-tableid="03084344512877164"
+                data-testid="MuiDataTableBodyCell-1-0"
+              >
+                <div
+                  className="MUIDataTableBodyCell-root-52"
+                >
+                  <div
+                    style={
+                      Object {
+                        "fontSize": "12pt",
+                        "margin": 0,
+                        "maxWidth": "200px",
+                      }
+                    }
+                  >
+                    title
+                  </div>
+                </div>
+              </td>
+              <td
+                aria-sort={null}
+                className="MuiTableCell-root MuiTableCell-body MUIDataTableBodyCell-root-52"
+                data-colindex={2}
+                data-tableid="03084344512877164"
+                data-testid="MuiDataTableBodyCell-2-0"
+              >
+                <div
+                  className="MUIDataTableBodyCell-root-52"
+                >
+                  <div
+                    style={
+                      Object {
+                        "fontSize": "12pt",
+                        "margin": 0,
+                        "maxWidth": "200px",
+                      }
+                    }
+                  >
+                    display
+                  </div>
+                </div>
+              </td>
+              <td
+                aria-sort={null}
+                className="MuiTableCell-root MuiTableCell-body MUIDataTableBodyCell-root-52"
+                data-colindex={3}
+                data-tableid="03084344512877164"
+                data-testid="MuiDataTableBodyCell-3-0"
+              >
+                <div
+                  className="MUIDataTableBodyCell-root-52"
+                >
+                  <div
+                    style={
+                      Object {
+                        "fontSize": "12pt",
+                        "margin": 0,
+                        "maxWidth": "200px",
+                      }
+                    }
+                  >
+                    <a
+                      href="url"
+                      target="_blank"
+                    >
+                      click to view
+                    </a>
+                  </div>
+                </div>
+              </td>
+              <td
+                aria-sort={null}
+                className="MuiTableCell-root MuiTableCell-body MUIDataTableBodyCell-root-52"
+                data-colindex={4}
+                data-tableid="03084344512877164"
+                data-testid="MuiDataTableBodyCell-4-0"
+              >
+                <div
+                  className="MUIDataTableBodyCell-root-52"
+                >
+                  <div
+                    style={
+                      Object {
+                        "fontSize": "12pt",
+                        "margin": 0,
+                        "maxWidth": "200px",
+                      }
+                    }
+                  >
+                    youthPics
+                  </div>
+                </div>
+              </td>
+              <td
+                aria-sort={null}
+                className="MuiTableCell-root MuiTableCell-body MUIDataTableBodyCell-root-52"
+                data-colindex={5}
+                data-tableid="03084344512877164"
+                data-testid="MuiDataTableBodyCell-5-0"
+              >
+                <div
+                  className="MUIDataTableBodyCell-root-52"
+                >
+                  <div
+                    style={
+                      Object {
+                        "fontSize": "12pt",
+                        "margin": 0,
+                        "maxWidth": "200px",
+                      }
+                    }
+                  >
+                    <div>
+                      <button
+                        id="deletePic456"
+                        onClick={[Function]}
+                        type="button"
+                      >
+                        Delete Pic
+                      </button>
+                      <p>
+                         
+                      </p>
+                      <button
+                        id="editPic456"
+                        onClick={[Function]}
+                        type="button"
+                      >
+                        Edit Pic
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div
+        aria-live="polite"
+        className="MUIDataTable-liveAnnounce-12"
+      />
+    </div>
+  </div>
+</div>
+`;
