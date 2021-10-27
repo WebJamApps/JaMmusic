@@ -10,7 +10,7 @@ describe('songsTableUtils', () => {
   });
   it('adds buttons to the modify column', () => {
     const song:any = { _id: '123' };
-    const result = songsTableUtils.addButtons([song], 'token', jest.fn());
+    const result = songsTableUtils.addButtons([song], 'token', jest.fn(), {});
     expect(result[0].modify).toBeDefined();
     window.confirm = jest.fn(() => false);
     const buttonDiv = shallow(result[0].modify || <div />);
@@ -44,22 +44,22 @@ describe('songsTableUtils', () => {
   });
   it('scrolls to top of form after edit button click', () => {
     const song:any = { _id: '123' };
-    const dispatch = jest.fn();
-    const result = songsTableUtils.addButtons([song], 'token', dispatch);
+    const editSong = jest.fn();
+    const result = songsTableUtils.addButtons([song], 'token', editSong, {});
     expect(result[0].modify).toBeDefined();
     window.confirm = jest.fn(() => false);
     const wrapper = shallow(result[0].modify || <div />);
     wrapper.find('button#editSong123').simulate('click');
-    expect(dispatch).toHaveBeenCalled();
+    expect(editSong).toHaveBeenCalled();
   });
   it('does notscrollIntoView', () => {
     const anyData:any = {};
-    expect(songsTableUtils.editSong(anyData, jest.fn(), null)).toBe(true);
+    expect(songsTableUtils.editSong(anyData, jest.fn(), {}, null)).toBe(true);
   });
   it('scrollIntoView', () => {
     const anyData:any = {};
     const anyElement:any = { scrollIntoView: jest.fn() };
-    expect(songsTableUtils.editSong(anyData, jest.fn(), anyElement)).toBe(true);
+    expect(songsTableUtils.editSong(anyData, jest.fn(), {}, anyElement)).toBe(true);
     expect(anyElement.scrollIntoView).toHaveBeenCalled();
   });
 });

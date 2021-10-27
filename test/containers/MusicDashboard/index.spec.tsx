@@ -2,7 +2,6 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import { Redirect } from 'react-router-dom';
-import { any } from 'prop-types';
 import { MusicDashboard } from '../../../src/containers/MusicDashboard';
 
 describe('Dashboard Container', () => {
@@ -233,12 +232,6 @@ describe('Dashboard Container', () => {
     wrapper.instance().setState = jest.fn((cb) => cb({}));
     wrapper.update();
     wrapper.instance().onChangeSong({ persist: jest.fn(), target: { id: 'title', value: 'Happy Song' } });
-    expect(wrapper.instance().setState).toHaveBeenCalled();
-  });
-  it('handles song catagory change', () => {
-    wrapper.instance().setState = jest.fn();
-    wrapper.update();
-    wrapper.instance().handleCategoryChange({ persist: jest.fn(), target: { id: 'title', value: 'Happy Song' } });
     expect(wrapper.instance().setState).toHaveBeenCalled();
   });
   it('handles editSong change', () => {

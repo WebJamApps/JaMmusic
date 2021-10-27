@@ -8,7 +8,6 @@ describe('tour reducer', () => {
         tour: [],
         tourUpdated: false,
         editTour: {},
-        editSong: { _id: '' },
       },
     );
   });
@@ -19,7 +18,6 @@ describe('tour reducer', () => {
         tour: [],
         tourUpdated: false,
         editTour: {},
-        editSong: { _id: '' },
       },
     );
   });
@@ -31,13 +29,12 @@ describe('tour reducer', () => {
     const t1:any = { datetime: `${new Date().toISOString}`, _id: '' };
     const t2:any = { datetime: `${new Date().toISOString}`, _id: '' };
     expect(reducer({
-      tour: [t1], tourUpdated: true, editTour: {}, editSong: { _id: '' },
+      tour: [t1], tourUpdated: true, editTour: {},
     }, { type: 'NEW_TOUR', data: t2 })).toEqual(
       {
         tour: [t2, t1],
         tourUpdated: true,
         editTour: {},
-        editSong: { _id: '' },
       },
     );
   });
@@ -45,13 +42,12 @@ describe('tour reducer', () => {
     const action:any = { type: 'NEW_TOUR', data: undefined };
     const t1:any = { datetime: `${new Date().toISOString}`, _id: '' };
     expect(reducer({
-      tour: [t1], tourUpdated: true, editTour: {}, editSong: { _id: '' },
+      tour: [t1], tourUpdated: true, editTour: {},
     }, action)).toEqual(
       {
         tour: [t1],
         tourUpdated: false,
         editTour: {},
-        editSong: { _id: '' },
       },
     );
   });
@@ -61,7 +57,6 @@ describe('tour reducer', () => {
         tour: [],
         tourUpdated: false,
         editTour: { _id: '123', datetime: 'string' },
-        editSong: { _id: '' },
       },
     );
   });
@@ -70,29 +65,11 @@ describe('tour reducer', () => {
       tour: [{ _id: '456', datetime: '' }, { _id: '123', datetime: '' }],
       tourUpdated: false,
       editTour: {},
-      editSong: { _id: '' },
     }, { type: 'UPDATED_TOUR', data: { _id: '123', datetime: 'string' } })).toEqual(
       {
         tour: [{ _id: '456', datetime: '' }, { _id: '123', datetime: 'string' }],
         tourUpdated: true,
         editTour: {},
-        editSong: { _id: '' },
-      },
-    );
-  });
-  it('handles EDIT_SONG', () => {
-    const action:any = { type: 'EDIT_SONG', songData: { _id: '789' } };
-    expect(reducer({
-      tour: [{ _id: '456', datetime: '' }, { _id: '123', datetime: '' }],
-      tourUpdated: false,
-      editTour: {},
-      editSong: { _id: '' },
-    }, action)).toEqual(
-      {
-        tour: [{ _id: '456', datetime: '' }, { _id: '123', datetime: '' }],
-        tourUpdated: false,
-        editTour: {},
-        editSong: { _id: '789' },
       },
     );
   });

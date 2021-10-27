@@ -75,7 +75,6 @@ describe('MusicDashboardController', () => {
         dispatch: jest.fn(),
         auth: { token: 'token' },
         editPic: {
-          _id: '123',
           title: 'picTitle',
           url: 'picUrl',
           thumbnail: 'string',

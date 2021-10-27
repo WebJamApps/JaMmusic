@@ -4,7 +4,7 @@ import type { MusicDashboard } from './index';
 import Forms from '../../lib/forms';
 import SongsTable from '../../components/SongsTable';
 import SongEditorUtils from '../../components/SongEditor/songEditorUtils';
-import SongEditor from '../../components/SongEditor';
+import { SongEditor } from '../../components/SongEditor';
 import PTable from '../../components/PhotoTable/PhotoTable';
 import { PicEditor } from '../../components/PicEditor';
 
@@ -88,14 +88,14 @@ export class MusicDashboardController {
     window.location.assign('/music');
   }
 
-  deleteData(id: string, message: string): boolean { // eslint-disable-next-line no-restricted-globals
+  deleteData(message: string, id?: string): boolean { // eslint-disable-next-line no-restricted-globals
     const result = confirm('Delete, are you sure?'); // eslint-disable-line no-alert
     if (result) {
       const { scc, auth } = this.view.props;
       const data = { id };
       if (scc && auth && id) {
         scc.transmit(message, { data: data.id, token: auth.token });
-        window.location.assign('/music');
+        window.location.reload();
         return true;
       } return false;
     } return false;
@@ -105,14 +105,14 @@ export class MusicDashboardController {
     const { title, url, showCaption } = this.view.state;
     const { editPic, scc, auth } = this.view.props;
     const image = {
-      title,
-      url,
-      comments: showCaption,
+      title: title || editPic.title, 
+      url: url || editPic.url,
+      comments: showCaption || editPic.comments,
       type: 'JaMmusic-music',
     };
-    if (title && url && editPic._id) {
+    if (editPic._id) {
       scc.transmit('editImage', { image, token: auth.token, id: editPic._id });
-      window.location.assign('/music');
+      window.location.reload();
       return true;
     } return false;
   }
@@ -155,8 +155,7 @@ export class MusicDashboardController {
     return (
       <div className="Song-Block">
         <p>&nbsp;</p>
-        {/* {this.changeSongDiv()} */}
-        <SongEditor controller={this} editSong={this.view.props.editSong} songState={this.view.state.songState} comp={this.view} />
+        <SongEditor auth={this.view.props.auth} />
         <p>&nbsp;</p>
         {this.modifySongsSection()}
         <p>&nbsp;</p>

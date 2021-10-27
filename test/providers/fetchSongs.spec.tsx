@@ -32,4 +32,9 @@ describe('fetchSongs', () => {
     const newSongs = await FetchSongs.getSongs(jest.fn());
     expect(newSongs.length).toBe(0);
   });
+  it('getSongs does not fetch', async () => {
+    window.location.href = 'http://localhost:8888/songs';
+    const newSongs = await FetchSongs.getSongs(jest.fn());
+    expect(newSongs.length).toBe(0);
+  });
 });

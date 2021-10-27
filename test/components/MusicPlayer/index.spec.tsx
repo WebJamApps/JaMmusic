@@ -5,12 +5,10 @@ import TSongs from '../../testSongs';
 
 describe('Music player component init', () => {
   it('renders the Music Player component', () => {
-    // const { wrapper } = setup();
     const wrapper = shallow<MusicPlayer>(<MusicPlayer songs={TSongs} filterBy="originals" />);
     expect(wrapper.find('div#player').exists()).toBe(true);
   });
   it('should find and simulate play/pause', () => {
-    // const { wrapper } = setup();
     const wrapper = shallow<MusicPlayer>(<MusicPlayer songs={TSongs} filterBy="originals" />);
     wrapper.setState({
       player: {
@@ -165,7 +163,7 @@ describe('Music player component init', () => {
     renderButtons.find('button#share-button').simulate('click');
     expect(wrapper.instance().musicPlayerUtils.share).toHaveBeenCalled();
   });
-  it('should reset songs if missionState on', async () => {
+  it('sets the index when missionState is off', async () => {
     const wrapper = shallow<MusicPlayer>(<MusicPlayer songs={TSongs} filterBy="originals" />);
     wrapper.instance().setState({
       player: {
@@ -176,16 +174,14 @@ describe('Music player component init', () => {
     wrapper.find('button.missionoff').simulate('click');
     wrapper.find('button#shuffle').simulate('click');
     const songsState = [{
+      _id: '1234', url: 'test.com', category: 'original', title: 'A Test', year: 2009,
+    }, {
       _id: '123', url: 'yes.com', category: 'mission', title: 'A Song', year: 2000,
     }];
-    const missionState = 'on';
-    if (missionState === 'on') {
-      let reset = songsState;
-      reset = wrapper.instance().musicUtils.setIndex(reset, 'mission');
-      expect(reset).toBeTruthy();
-    }
+    const reset = wrapper.instance().musicUtils.setIndex(songsState, 'mission');
+    expect(reset[0].category).toBe('mission');
   });
-  it('should reset songs if pubState on', async () => {
+  it('sets the index to be mission when pubState is off', async () => {
     const wrapper = shallow<MusicPlayer>(<MusicPlayer songs={TSongs} filterBy="originals" />);
     wrapper.instance().setState({
       player: {
@@ -196,14 +192,12 @@ describe('Music player component init', () => {
     wrapper.find('button.puboff').simulate('click');
     wrapper.find('button#shuffle').simulate('click');
     const songsState = [{
+      _id: '1234', url: 'test.com', category: 'original', title: 'A Test', year: 2009,
+    }, {
       _id: '123', url: 'yes.com', category: 'mission', title: 'A Song', year: 2000,
     }];
-    const pubState = 'on';
-    if (pubState === 'on') {
-      let reset = songsState;
-      reset = wrapper.instance().musicUtils.setIndex(reset, 'mission');
-      expect(reset).toBeTruthy();
-    }
+    const reset = wrapper.instance().musicUtils.setIndex(songsState, 'mission');
+    expect(reset[0].category).toBe('mission');
   });
   it('checks if youtube is about to be played', () => {
     const song = {
