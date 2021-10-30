@@ -5,7 +5,7 @@ import Forms from '../../lib/forms';
 import SongsTable from '../../components/SongsTable';
 import SongEditorUtils from '../../components/SongEditor/songEditorUtils';
 import { SongEditor } from '../../components/SongEditor';
-import PTable from '../../components/PhotoTable/PhotoTable';
+import { PhotoTable } from '../../components/PhotoTable';
 import { PicEditor } from '../../components/PicEditor';
 
 export class MusicDashboardController {
@@ -144,7 +144,7 @@ export class MusicDashboardController {
         {showTable ? (
           <h4 style={{ textAlign: 'center' }}>
             All Images
-            <PTable auth={auth} dispatch={dispatch} images={images} controller={this} />
+            <PhotoTable auth={auth} dispatch={dispatch} images={images} controller={this} />
           </h4>
         ) : null}
       </div>
