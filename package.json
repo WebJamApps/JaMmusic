@@ -1,6 +1,6 @@
 {
   "name": "jammusic",
-  "version": "1.4.5",
+  "version": "1.5.0",
   "description": "joshandmariamusic.com",
   "main": "dist/index.html",
   "repository": {
@@ -9,7 +9,8 @@
   },
   "author": "https://github.com/orgs/WebJamApps/teams/handlersandkickers",
   "engines": {
-    "node": ">=16.12.0 <17"
+    "node": ">=16.13.0 <17",
+    "npm": ">=8.1.0 <9"
   },
   "files": [
     "webpack.config.js",
@@ -40,8 +41,10 @@
     "test:stylelint": "stylelint \"static/**/*.scss\""
   },
   "dependencies": {
+    "@emotion/react": "^11.5.0",
+    "@emotion/styled": "^11.3.0",
     "@material-ui/core": "latest",
-    "@material-ui/icons": "latest",
+    "@mui/material": "^5.1.0",
     "@popperjs/core": "^2.9.2",
     "@tinymce/tinymce-react": "^3.12.6",
     "@types/copy-webpack-plugin": "latest",

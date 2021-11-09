@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
 import { shallow } from 'enzyme';
-import { Button, Select } from '@material-ui/core';
+import { Button } from '@mui/material';
 import Inquiry from '../../../src/components/Inquiry';
 
 describe('Inquiry Form', () => {
