@@ -41,6 +41,9 @@ export default class BuyMusic extends Component {
         <div style={{ margin: 'auto', textAlign: 'center' }}>
           <Jssp />
         </div>
+        <p className="YoutubeLink" style={{ textAlign:'center' }}>
+          <a href="https://www.Youtube.com/" className='fab fa-youtube fa-3x' style={{ color:'#333333' }}/>
+        </p>
       </div>
     );
   }
