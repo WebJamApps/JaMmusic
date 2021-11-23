@@ -14,16 +14,16 @@ type PageProps = {
   editPic: IeditPic,
 };
 
-const radioButtons = (comp:MusicDashboard): JSX.Element => (
-  <div id="radio-buttons">
-    <label htmlFor="showCaption" style={{ display: 'inline', padding: '10px' }}>
+const radioButtons = (comp:MusicDashboard, editPic:any): JSX.Element => (
+  <div id="radio-buttons" style={{ marginBottom:'10px' }}>
+    <label htmlFor="showCaption" style={{ display: 'inline', padding: '10px', paddingLeft:'0px' }}>
       Show Caption
       <input
         type="radio"
         name="show-caption"
         id="showCaption"
         value="showCaption"
-        checked={comp.state.showCaption === 'showCaption'}
+        checked={(!editPic._id && comp.state.showCaption === 'showCaption') || (editPic._id && editPic.comments === 'showCaption')}
         onChange={comp.handleRadioChange}
         style={{ opacity: 1 }}
       />
@@ -34,7 +34,7 @@ const radioButtons = (comp:MusicDashboard): JSX.Element => (
         type="radio"
         id="hideCaption"
         value="hideCaption"
-        checked={comp.state.showCaption !== 'showCaption'}
+        checked={(!editPic._id && comp.state.showCaption !== 'showCaption') || (editPic._id && editPic.comments !== 'showCaption')}
         onChange={comp.handleRadioChange}
         style={{ opacity: 1 }}
       />
@@ -57,7 +57,7 @@ export const PicEditor = ({ comp, controller, editPic }:PageProps): JSX.Element 
         <input id="url" placeholder={url} value={url} onChange={controller.onChangePic} />
       </label>
       <p>{' '}</p>
-      {radioButtons(comp)}
+      {radioButtons(comp, editPic)}
       {editPic._id ? (
         <button className="floatRight" type="button" id="cancel-edit-pic" onClick={controller.resetEditPic}>
           Cancel

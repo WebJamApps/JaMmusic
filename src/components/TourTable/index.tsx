@@ -35,6 +35,15 @@ export class TourTable extends Component<TourTableProps, TourTableState> {
     return this.checkTourTable(prevProps.tourUpdated || false, tourUpdated || false);
   }
 
+  makeCustomBody(value:any, label:string):JSX.Element {
+    if (typeof value !== 'string' && label !== 'Modify') value = '';
+    return (
+    <div style={{ minWidth: '.65in', margin: 0, fontSize: '12pt' }}>
+      {label !== 'Modify' ? HtmlReactParser(value) : value}
+    </div>
+    );
+  }
+
   makeColumns(titles:string[]): MUIDataTableColumn[]{
     const columns: MUIDataTableColumn[] = [];
     for (let i = 0; i < titles.length; i += 1) {
@@ -50,14 +59,7 @@ export class TourTable extends Component<TourTableProps, TourTableState> {
               {column.label}
             </TableCell>
           ),
-          customBodyRender: (value:string) => {
-            if (typeof value !== 'string')value = '';
-            return (
-            <div style={{ minWidth: '.65in', margin: 0, fontSize: '12pt' }}>
-              {label !== 'Modify' ? HtmlReactParser(value) : value}
-            </div>
-            );
-          },
+          customBodyRender: (value) => this.makeCustomBody(value, label),
         },
       });
     }
@@ -98,8 +100,6 @@ export class TourTable extends Component<TourTableProps, TourTableState> {
 
   editTour(data: Tour): boolean {
     const { dispatch } = this.props;
-    // eslint-disable-next-line no-console
-    console.log(data);
     // eslint-disable-next-line no-param-reassign
     delete data.modify;
     dispatch({ type: 'EDIT_TOUR', data });

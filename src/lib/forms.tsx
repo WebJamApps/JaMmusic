@@ -1,20 +1,20 @@
 import React from 'react';
-import { Select, TextField } from '@material-ui/core';
+import { TextField } from '@mui/material';
 
 const makeDropdown = (htmlFor: string | undefined,
   value: string | undefined,
-  onChange: (event: any, isSelected: boolean) => void, options: string[], style?:any): JSX.Element => (
-    <Select
+  onChange: (event: any) => void, options: string[], style?:any): JSX.Element => (
+    <select
       style={style}
       id={htmlFor}
       multiple={false}
-      onChange={(event) => onChange(event, true)}
+      onChange={(event) => onChange(event)}
       value={value}
     >
       {
           options.map((cv) => <option id={cv} key={cv} value={cv}>{cv}</option>)
         }
-    </Select>
+    </select>
 );
 const makeInput = (type: string | undefined,
   label: string, isRequired: boolean | undefined,

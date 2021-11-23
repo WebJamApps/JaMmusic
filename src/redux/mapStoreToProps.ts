@@ -22,7 +22,7 @@ export interface Tour {
   _id?: string;
 }
 export interface Iimage {
-  '_id': string;
+  '_id'?: string;
   'url': string;
   'title': string;
   'type': string;
