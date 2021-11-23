@@ -16,8 +16,7 @@ export default class BuyMusic extends Component {
 
   render(): JSX.Element {
     return (
-      <div
-        className="page-content"
+      <div className="page-content"
         style={{
           paddingRight: '15px', maxWidth: '800px', margin: 'auto', borderRight: 'none',
         }}
