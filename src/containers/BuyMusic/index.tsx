@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Jsb from './joshShermanBand';
 import Jss from './joshShermanSolo';
 import Jssp from './joshShermanSpotify';
+import Jsyt from './joshShermanYoutube';
 import commonUtils from '../../lib/commonUtils';
 
 export default class BuyMusic extends Component {
@@ -40,9 +41,9 @@ export default class BuyMusic extends Component {
         <div style={{ margin: 'auto', textAlign: 'center' }}>
           <Jssp />
         </div>
-        <p className="YoutubeLink" style={{ textAlign:'center' }}>
-          <a href="https://www.Youtube.com/" className='fab fa-youtube fa-3x' style={{ color:'#333333' }}/>
-        </p>
+        <div style={{ textAlign:'center' }}>
+          <Jsyt />
+        </div> 
       </div>
     );
   }
