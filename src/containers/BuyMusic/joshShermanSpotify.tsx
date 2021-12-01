@@ -2,6 +2,7 @@ import React from 'react';
 
 const JoshShermanSpotify = (): JSX.Element => (
   <div className="spotify">
+    <hr/>
     <h5>Also On Spotify</h5>
     <div className="row">
       <div className="col" style={{ paddingRight: '0px' }}>
