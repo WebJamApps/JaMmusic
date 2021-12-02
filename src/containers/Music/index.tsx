@@ -2,7 +2,7 @@ import React, { Component, Dispatch } from 'react';
 import { connect } from 'react-redux';
 import type { AnyAction } from 'redux';
 import PicSlider from '../../components/PicSlider';
-import DefaultTable from '../../components/TourTable';
+import DefaultTable from '../../components/TourTable/TourTable_old';
 import JoshBio from './joshBio';
 import MariaBio from './mariaBio';
 import Intro from './intro';

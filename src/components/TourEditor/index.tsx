@@ -1,7 +1,7 @@
 import React from 'react';
 import AddTime from '../../containers/MusicDashboard/AddTime';
 import type { MusicDashboard } from '../../containers/MusicDashboard';
-import Ttable from '../TourTable';
+import Ttable from '../TourTable/TourTable_old';
 import Utils from './tourEditorUtils';
 
 export interface IeditTour {

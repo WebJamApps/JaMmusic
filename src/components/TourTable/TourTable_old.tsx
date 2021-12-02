@@ -16,75 +16,74 @@ type TourTableProps = {
   deleteButton?: boolean;
   scc?: AGClientSocket
 };
-// type TourTableState = {
-//   columns: MUIDataTableColumn[];
-// };
-
-const makeCustomBody = (value:any, label:string):JSX.Element => {
-  if (typeof value !== 'string' && label !== 'Modify') value = '';
-  return (
-  <div style={{ minWidth: '.65in', margin: 0, fontSize: '12pt' }}>
-    {label !== 'Modify' ? HtmlReactParser(value) : value}
-  </div>
-  );
+type TourTableState = {
+  columns: MUIDataTableColumn[];
 };
-
-const makeColumns = (titles:string[]): MUIDataTableColumn[] =>{
-  const columns: MUIDataTableColumn[] = [];
-  for (let i = 0; i < titles.length; i += 1) {
-    const label = titles[i];// eslint-disable-line security/detect-object-injection
-    columns.push({
-      name: label.toLowerCase(),
-      label,
-      options: {
-        filter: false,
-        sort: false,
-        customHeadRender: ({ index, ...column }) => (
-          <TableCell key={index} style={{ fontWeight: 'bold', width: column.label === 'Time' ? '20px' : 'auto' }}>
-            {column.label}
-          </TableCell>
-        ),
-        customBodyRender: (value) => makeCustomBody(value, label),
-      },
-    });
-  }
-  return columns;
-};
-
-const populateColumns = (setColumns: { (value: React.SetStateAction<never[]>): void; (arg0: any): void; }, 
-hasDeleteButton: boolean): void => {
-  const titles = ['Date', 'Time', 'Location', 'Venue', 'Tickets'];
-  if (hasDeleteButton) titles.push('Modify');
-  const columns = makeColumns(titles);
-  setColumns(columns)
-}
-interface ItourTableProps {
-  hasDeleteButton:boolean
-  // tourUpdated?: boolean;
-}
-
-export const TourTable = ({hasDeleteButton}:ItourTableProps) => {
-  const [columns, setColumns] = React.useState([]);
-    populateColumns(setColumns, hasDeleteButton);
+export class TourTable extends Component<TourTableProps, TourTableState> {
+  constructor(props: TourTableProps) {
+    super(props);
+    this.setColumns = this.setColumns.bind(this);
+    this.checkTourTable = this.checkTourTable.bind(this);
+    this.state = { columns: [] };
+    this.addDeleteButton = this.addDeleteButton.bind(this);
   }
 
-  // componentDidMount(): void { this.setColumns(); }
+  componentDidMount(): void { this.setColumns(); }
 
-  // componentDidUpdate(prevProps: TourTableProps): boolean {
-  //   const { tourUpdated } = this.props;
-  //   return this.checkTourTable(prevProps.tourUpdated || false, tourUpdated || false);
-  // }
+  componentDidUpdate(prevProps: TourTableProps): boolean {
+    const { tourUpdated } = this.props;
+    return this.checkTourTable(prevProps.tourUpdated || false, tourUpdated || false);
+  }
 
-  // checkTourTable(pTupdated: boolean, nTupdated: boolean): boolean {
-  //   if (!pTupdated && nTupdated) {
-  //     const { dispatch } = this.props;
-  //     this.setState({ columns: [] });
-  //     this.setColumns();
-  //     dispatch({ type: 'RESET_TOUR' });
-  //     return true;
-  //   }
-  //   return false;
-  // }
+  makeCustomBody(value:any, label:string):JSX.Element {
+    if (typeof value !== 'string' && label !== 'Modify') value = '';
+    return (
+    <div style={{ minWidth: '.65in', margin: 0, fontSize: '12pt' }}>
+      {label !== 'Modify' ? HtmlReactParser(value) : value}
+    </div>
+    );
+  }
+
+  makeColumns(titles:string[]): MUIDataTableColumn[]{
+    const columns: MUIDataTableColumn[] = [];
+    for (let i = 0; i < titles.length; i += 1) {
+      const label = titles[i];// eslint-disable-line security/detect-object-injection
+      columns.push({
+        name: label.toLowerCase(),
+        label,
+        options: {
+          filter: false,
+          sort: false,
+          customHeadRender: ({ index, ...column }) => (
+            <TableCell key={index} style={{ fontWeight: 'bold', width: column.label === 'Time' ? '20px' : 'auto' }}>
+              {column.label}
+            </TableCell>
+          ),
+          customBodyRender: (value) => this.makeCustomBody(value, label),
+        },
+      });
+    }
+    return columns;
+  }
+
+  setColumns(): void {
+    const { deleteButton } = this.props;
+    const titles = ['Date', 'Time', 'Location', 'Venue', 'Tickets'];
+    if (deleteButton) titles.push('Modify');
+    const columns = this.makeColumns(titles);
+    this.setState({ columns });
+  }
+
+  checkTourTable(pTupdated: boolean, nTupdated: boolean): boolean {
+    if (!pTupdated && nTupdated) {
+      const { dispatch } = this.props;
+      this.setState({ columns: [] });
+      this.setColumns();
+      dispatch({ type: 'RESET_TOUR' });
+      return true;
+    }
+    return false;
+  }
 
   deleteTour(tourId: string | undefined): boolean { // eslint-disable-next-line no-restricted-globals
     const result = confirm('Deleting Event, are you sure?');// eslint-disable-line no-alert
