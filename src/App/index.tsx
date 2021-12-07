@@ -7,6 +7,7 @@ import DefaultMusicDashboard from '../containers/MusicDashboard';
 import BuyMusic from '../containers/BuyMusic';
 import AppFourOhFour from './404';
 import GoogleMap from '../containers/GoogleMap';
+import { Gigs }  from '../containers/Gigs';
 import ATemplate from './AppTemplate';
 import DefaultSongs from '../containers/Songs';
 import HomePage from '../containers/Homepage';
@@ -73,6 +74,7 @@ export class App extends Component<AppProps> {
                 {this.loadMap()}
                 <PrivateRoute path="/sort" Container={DefaultSort} />
                 <Route exact path="/music" component={DefaultMusic} />
+                <Route exact path="/gigs" component={Gigs} />
                 <Route exact path="/music/buymusic" component={BuyMusic} />
                 <Route exact path="/music/originals" component={DefaultSongs} />
                 <Route exact path="/music/songs" component={DefaultSongs} />
