@@ -10,14 +10,13 @@ export const defaultGig:IGig = {
   location: '',
 };
 
-const listenForMessages = (socket: scc.AGClientSocket,
-  method: string, name: string, setFunc:any): void => {
+const listenForGigs = (socket: scc.AGClientSocket, name: string, 
+  setFunc:(args0:React.SetStateAction<IGig[]>)=>void): void => {
   (async () => {
-    let receiver;
-    const consumer = method === 'subscribe' ? socket.subscribe(name).createConsumer() : socket.receiver(name).createConsumer();
+    const consumer = socket.receiver(name).createConsumer();
     while (true) { // eslint-disable-line no-constant-condition
-      receiver = await consumer.next();// eslint-disable-line no-await-in-loop
-      if (receiver.value){setFunc(receiver.value); socket.disconnect();}
+      const receiver = await consumer.next();// eslint-disable-line no-await-in-loop
+      setFunc(receiver.value); socket.disconnect();
       /* istanbul ignore else */if (receiver.done) break;
     }
   })();
@@ -32,19 +31,7 @@ export const getGigs = async (setGigs: (value: React.SetStateAction<IGig[]>) => 
   });
   socket.transmit('initial message', 123);
   console.log('getGigs');
-  listenForMessages(socket, 'receiver', 'allTours', setGigs);
-  // let res:{ body:ISong[] }, newSongs:ISong[] = [];
-  // if (!window.location.href.includes('8888') && !window.location.href.includes('joshandmariamusic')){
-  //   try {
-  //     res = await superagent.get(`${process.env.BackendUrl}/song`).set('Accept', 'application/json');
-  //   } catch (e) { console.log((e as Error).message); return [defaultSong]; }
-  //   newSongs = res.body;
-  //   try {
-  //     newSongs.sort((a, b) => b.year - a.year);
-  //   } catch (error) { console.log(error); newSongs = []; }
-  //   setSongs(newSongs);
-  // }
-  // return newSongs;
+  listenForGigs(socket, 'allTours', setGigs);
 };
 
 export default { getGigs };
