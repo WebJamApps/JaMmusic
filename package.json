@@ -42,6 +42,7 @@
     "@emotion/styled": "^11.3.0",
     "@material-ui/core": "latest",
     "@mui/material": "^5.1.0",
+    "@mui/x-data-grid": "^5.1.0",
     "@popperjs/core": "^2.9.2",
     "@tinymce/tinymce-react": "^3.12.6",
     "@types/copy-webpack-plugin": "latest",

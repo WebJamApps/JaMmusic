@@ -13,6 +13,7 @@ export interface IGig {
   venue: string;
   location: string;
   _id?: string;
+  id?:number;
 }
 
 export const GigsContext = createContext({
