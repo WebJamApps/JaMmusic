@@ -1,7 +1,19 @@
 import React, { useContext } from 'react';
-import { DataGrid, GridColumns, GridRenderCellParams } from '@mui/x-data-grid';
+import { DataGrid, GridColumns, GridEnrichedColDef, GridRenderCellParams } from '@mui/x-data-grid';
 import { GigsContext } from '../providers/Gigs.provider';
 import HtmlReactParser from 'html-react-parser';
+
+export const makeVenue = ():GridEnrichedColDef => {
+  return (
+    {
+      field: 'venue',
+      headerName: 'Venue',
+      width: 800,
+      editable: false,
+      renderCell:(params:GridRenderCellParams) => HtmlReactParser(params.value),
+    }
+  );
+};
 
 const columns:GridColumns = [
   {
@@ -22,13 +34,7 @@ const columns:GridColumns = [
     width: 150,
     editable: false,
   },
-  {
-    field: 'venue',
-    headerName: 'Venue',
-    width: 800,
-    editable: false,
-    renderCell:(params:GridRenderCellParams) => HtmlReactParser(params.value),
-  },
+  makeVenue(),
   {
     field: 'tickets',
     headerName: 'Tickets',
