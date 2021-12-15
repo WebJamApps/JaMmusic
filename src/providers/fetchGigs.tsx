@@ -1,4 +1,3 @@
-// import superagent from 'superagent';
 import type { IGig } from './Gigs.provider';
 import scc from 'socketcluster-client';
 
@@ -8,6 +7,14 @@ export const defaultGig:IGig = {
   tickets: '',
   venue: '',
   location: '',
+  id:0,
+};
+
+const validateGigsArr = (receiver:IteratorResult<any, any>, 
+  setFunc: (args0:React.SetStateAction<IGig[]>)=>void) => {
+  let gigsArr = [defaultGig];
+  if (Array.isArray(receiver.value)) gigsArr = receiver.value.map((g: IGig, i: number) => ({ ...g, id:i }));
+  setFunc(gigsArr);
 };
 
 const listenForGigs = (socket: scc.AGClientSocket, name: string, 
@@ -16,13 +23,14 @@ const listenForGigs = (socket: scc.AGClientSocket, name: string,
     const consumer = socket.receiver(name).createConsumer();
     while (true) { // eslint-disable-line no-constant-condition
       const receiver = await consumer.next();// eslint-disable-line no-await-in-loop
-      setFunc(receiver.value); socket.disconnect();
+      validateGigsArr(receiver, setFunc);
+      socket.disconnect();
       /* istanbul ignore else */if (receiver.done) break;
     }
   })();
 };
 
-export const getGigs = async (setGigs: (value: React.SetStateAction<IGig[]>) => void):Promise<void> => {
+const getGigs = async (setGigs: (value: React.SetStateAction<IGig[]>) => void):Promise<void> => {
   const socket = scc.create({
     hostname: process.env.SCS_HOST,
     port: Number(process.env.SCS_PORT),
@@ -34,4 +42,4 @@ export const getGigs = async (setGigs: (value: React.SetStateAction<IGig[]>) => 
   listenForGigs(socket, 'allTours', setGigs);
 };
 
-export default { getGigs };
+export default { getGigs, listenForGigs, validateGigsArr };
