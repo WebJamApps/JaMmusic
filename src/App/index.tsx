@@ -8,6 +8,7 @@ import BuyMusic from '../containers/BuyMusic';
 import AppFourOhFour from './404';
 import GoogleMap from '../containers/GoogleMap';
 import { Gigs }  from '../containers/Gigs';
+import { MusicNew } from '../containers/Music/MusicNew';
 import ATemplate from './AppTemplate';
 import DefaultSongs from '../containers/Songs';
 import HomePage from '../containers/Homepage';
@@ -47,13 +48,11 @@ export class App extends Component<AppProps> {
     this.connectToSC.connectToSCC(dispatch);
   }
   
-  loadMap(): any {
-    const loadMap = false;
+  loadMap(): JSX.Element | null {
     if (process.env.BackendUrl === 'http://localhost:7000'){
       return <PrivateRoute Container={GoogleMap} path="/map" />;
-    } else {
-      return null;
-    }
+    } 
+    return null;
   }
 
   render(): JSX.Element {
@@ -75,6 +74,7 @@ export class App extends Component<AppProps> {
                 <PrivateRoute path="/sort" Container={DefaultSort} />
                 <Route exact path="/music" component={DefaultMusic} />
                 <Route exact path="/gigs" component={Gigs} />
+                <Route exact path="/music-new"><MusicNew images={this.props.images}/></Route>
                 <Route exact path="/music/buymusic" component={BuyMusic} />
                 <Route exact path="/music/originals" component={DefaultSongs} />
                 <Route exact path="/music/songs" component={DefaultSongs} />
