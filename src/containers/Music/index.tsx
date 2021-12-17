@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import PicSlider from '../../components/PicSlider';
 import DefaultTable from '../../components/TourTable';
 import type { Iimage } from '../../redux/mapStoreToProps';
@@ -6,6 +6,7 @@ import Intro from './intro';
 import JoshBio from './joshBio';
 import MariaBio from './mariaBio';
 import WjBand from './wjBand';
+import commonUtils from '../../lib/commonUtils';
 
 export const Musicians = (): JSX.Element => { // eslint-disable-line class-methods-use-this
   return (
@@ -27,6 +28,7 @@ interface ImusicNewProps {
   images?:Iimage[]
 }
 export const Music = ({ images }: ImusicNewProps):JSX.Element =>{
+  useEffect(()=>commonUtils.setTitleAndScroll('Music', window.screen.width), []);
   const data = Array.isArray(images) ? images : [];
   return (
     <div className="page-content">
