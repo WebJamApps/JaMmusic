@@ -2,13 +2,12 @@ import React, { Component, Dispatch } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { connect } from 'react-redux';
 import DefaultSort from '../containers/SortContainer';
-import DefaultMusic from '../containers/Music';
 import DefaultMusicDashboard from '../containers/MusicDashboard';
 import BuyMusic from '../containers/BuyMusic';
 import AppFourOhFour from './404';
 import GoogleMap from '../containers/GoogleMap';
 import { Gigs }  from '../containers/Gigs';
-import { MusicNew } from '../containers/Music/MusicNew';
+import { Music } from '../containers/Music';
 import ATemplate from './AppTemplate';
 import DefaultSongs from '../containers/Songs';
 import HomePage from '../containers/Homepage';
@@ -63,18 +62,13 @@ export class App extends Component<AppProps> {
           <Router>
             <ATemplate>
               <Switch>
-                <Route
-                  exact
-                  path="/"
-                  component={
-              this.appName === 'web-jam.com' ? HomePage : DefaultMusic
-              }
-                />
+                <Route exact path="/">
+                  { this.appName === 'web-jam.com' ? <HomePage/> : <Music images={this.props.images}/> }
+                </Route>
                 {this.loadMap()}
                 <PrivateRoute path="/sort" Container={DefaultSort} />
-                <Route exact path="/music" component={DefaultMusic} />
                 <Route exact path="/gigs" component={Gigs} />
-                <Route exact path="/music-new"><MusicNew images={this.props.images}/></Route>
+                <Route exact path="/music"><Music images={this.props.images}/></Route>
                 <Route exact path="/music/buymusic" component={BuyMusic} />
                 <Route exact path="/music/originals" component={DefaultSongs} />
                 <Route exact path="/music/songs" component={DefaultSongs} />
