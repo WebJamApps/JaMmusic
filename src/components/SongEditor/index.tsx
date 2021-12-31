@@ -2,7 +2,7 @@ import React from 'react';
 import forms from '../../lib/forms';
 import superagent from 'superagent';
 import songEditorUtils from './songEditorUtils';
-import { EditorContext } from '../../providers/Editor.provider';
+import { EditorContext } from 'providers/Editor.provider';
 import type { ISong } from '../../providers/Songs.provider';
 
 export const onChangeSong = (evt: React.ChangeEvent<HTMLInputElement>, editor:any, setNewEditor:any): void => {
