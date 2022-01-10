@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import PicSlider from '../../components/PicSlider';
+import PicSlider from 'src/components/PicSlider';
 import DefaultTable from '../../components/TourTable';
 import type { Iimage } from '../../redux/mapStoreToProps';
 import Intro from './intro';

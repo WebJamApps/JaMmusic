@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "paths": {
-      "*": ["types/*"]
+      "*": ["types/*"],"src/*":["src/*"],"test/*":["test/*"]
     },
     "baseUrl": ".",
     "target": "ES2015",
@@ -87,5 +87,6 @@
     "forceConsistentCasingInFileNames": true, /* Disallow inconsistently-cased references to the same file. */
     "importsNotUsedAsValues": "error"
   },
-  "exclude": ["dist", "node_modules", "test"]
+  "include":["src","test"],
+  "exclude": ["dist", "node_modules"]
 }
