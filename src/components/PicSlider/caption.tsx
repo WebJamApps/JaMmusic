@@ -1,4 +1,3 @@
-import React from 'react';
 
 const Caption = (props: { caption?: string }): JSX.Element => {
   const { caption } = props;

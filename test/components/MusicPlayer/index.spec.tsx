@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { shallow } from 'enzyme';
 import { MusicPlayer, MusicPlayerState } from '../../../src/components/MusicPlayer';
 import TSongs from '../../testSongs';

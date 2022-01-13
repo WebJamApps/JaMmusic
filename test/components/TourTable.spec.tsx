@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React from 'react';
+
 import { shallow } from 'enzyme';
 import MUIDataTable from 'mui-datatables';
 import { TourTable } from '../../src/components/TourTable';

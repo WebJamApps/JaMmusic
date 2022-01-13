@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React from 'react';
+
 import { Route } from 'react-router-dom';
 import { shallow } from 'enzyme';
 import { PrivateRoute } from '../../src/App/PrivateRoute';

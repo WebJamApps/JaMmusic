@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import utils from '../../../src/components/PhotoTable/photoTable.utils';
-// import React from 'react';
+// ;
 import renderer from 'react-test-renderer';
 
 describe('photoTable.utils', ()=>{

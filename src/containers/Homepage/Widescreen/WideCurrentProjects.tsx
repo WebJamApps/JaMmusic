@@ -1,4 +1,4 @@
-import React from 'react';
+
 import CollegeLutheran from '../CollegeLutheran';
 import AppersonAutomotive from '../AppersonAutomotive';
 import WideFacebookFeed from './WideFacebookFeed';

@@ -1,4 +1,4 @@
-import React from 'react';
+
 import type { ISong } from '../../providers/Songs.provider';
 
 const pageH4 = (pageTitle: string): JSX.Element => (

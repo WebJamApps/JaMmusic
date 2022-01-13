@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React from 'react';
+
 import renderer from 'react-test-renderer';
 import { Gigs, makeVenue } from '../../src/containers/Gigs';
 

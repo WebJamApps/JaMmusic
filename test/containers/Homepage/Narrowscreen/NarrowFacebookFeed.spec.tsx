@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { shallow } from 'enzyme';
 import NarrowFacebookFeed from '../../../../src/containers/Homepage/Narrowscreen/NarrowFacebookFeed';
 

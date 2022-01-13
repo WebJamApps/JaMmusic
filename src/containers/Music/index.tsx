@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import PicSlider from 'src/components/PicSlider';
 import DefaultTable from '../../components/TourTable';
+// import { Gigs } from '../Gigs';
 import type { Iimage } from '../../redux/mapStoreToProps';
 import Intro from './intro';
 import JoshBio from './joshBio';
@@ -44,7 +45,8 @@ export const Music = ({ images }: ImusicNewProps):JSX.Element =>{
           position: 'relative', overflowX: 'auto', maxWidth: '96%', margin: 'auto', zIndex: 0,
         }}
       >
-        <DefaultTable />
+        {/* <Gigs/> */}
+        {process.env.NODE_ENV !== 'test' ? /*istanbul ignore next*/<DefaultTable /> : null}
       </div>
       <div style={{ height: '10px' }}>
         <p>{' '}</p>

@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { shallow } from 'enzyme';
 import BuyMusic from '../../src/containers/BuyMusic';
 

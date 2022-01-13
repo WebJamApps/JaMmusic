@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { shallow } from 'enzyme';
-import React from 'react';
+
 import superagent from 'superagent';
 import songsTableUtils from '../../../src/components/SongsTable/songsTableUtils';
 

@@ -1,4 +1,3 @@
-import React from 'react';
 
 const FacebookFeed = (): JSX.Element => (
   <div className="notWidescreen" style={{ maxWidth: '300px', margin: 'auto' }}>

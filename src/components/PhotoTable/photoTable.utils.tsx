@@ -1,6 +1,6 @@
 import type { MUIDataTableColumnDef } from 'mui-datatables';
 import HtmlReactParser from 'html-react-parser';
-import React from 'react';
+
 import type { Iimage } from '../../redux/mapStoreToProps';
 
 const editPic = (data: Iimage, dispatch: (arg0: { type: string; data: Iimage; }) => void): boolean => {

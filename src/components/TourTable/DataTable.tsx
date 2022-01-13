@@ -1,4 +1,4 @@
-import React from 'react';
+
 import MUIDataTable, { MUIDataTableColumn } from 'mui-datatables';
 import type { Tour } from '../../redux/mapStoreToProps';
 

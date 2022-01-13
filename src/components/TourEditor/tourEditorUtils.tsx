@@ -1,5 +1,5 @@
 import { Editor } from '@tinymce/tinymce-react';
-import React from 'react';
+
 import type { MusicDashboard } from '../../containers/MusicDashboard';
 
 const editor = (venue: string, comp:MusicDashboard): JSX.Element => (

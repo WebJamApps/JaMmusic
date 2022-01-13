@@ -11,7 +11,6 @@
       "extensions": ["tsx"]
     }],
     "react/static-property-placement": 0,
-    "react/prop-types": 0,
     "node/no-unsupported-features/es-syntax": 0,
     "node/no-missing-import": 0,
     "no-multiple-empty-lines": [
@@ -42,7 +41,6 @@
     "page": true,
     "browser": true,
     "context": true,
-    "jestPuppeteer": true,
     "google": true
   },
   "parser": "@typescript-eslint/parser",

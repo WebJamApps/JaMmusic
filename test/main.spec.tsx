@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React from 'react';
 import { act } from 'react-dom/test-utils';
 import { renderMain } from '../src/main';
 

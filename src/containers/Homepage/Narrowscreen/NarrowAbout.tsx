@@ -1,4 +1,4 @@
-import React from 'react';
+
 import Faqs from '../HomepageData';
 
 const NarrowAboutUs = (): JSX.Element => (

@@ -1,4 +1,3 @@
-import React from 'react';
 
 const activeUsers = (heartBeat: string, userCount: number): JSX.Element => (
   <div className="active-users">

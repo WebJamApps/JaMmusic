@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { shallow } from 'enzyme';
 import DPlayer from '../../../src/containers/Songs/Player';
 import DefaultMusicPlayer from '../../../src/components/MusicPlayer';

@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { shallow } from 'enzyme';
 import AppersonAutomotive from '../../../src/containers/Homepage/AppersonAutomotive';
 
