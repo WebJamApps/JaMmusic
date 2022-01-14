@@ -2,15 +2,16 @@ import React, { useContext } from 'react';
 import { DataGrid, GridColumns, GridEnrichedColDef, GridRenderCellParams } from '@mui/x-data-grid';
 import { GigsContext } from '../providers/Gigs.provider';
 import HtmlReactParser from 'html-react-parser';
+import './Gigs.scss';
 
 export const makeVenue = ():GridEnrichedColDef => {
   return (
     {
       field: 'venue',
       headerName: 'Venue',
-      width: 800,
+      width: 600,
       editable: false,
-      renderCell:(params:GridRenderCellParams) => HtmlReactParser(params.value),
+      renderCell:(params:GridRenderCellParams) => <span>{HtmlReactParser(params.value)}</span>,
     }
   );
 };
@@ -48,12 +49,12 @@ export const Gigs = (): JSX.Element => {
   return (
     <div style={{ margin: 'auto', padding:'10px', width:'100%' }}>
       <h4 style={{ textAlign:'center' }}>Gigs</h4>
-      <div style={{ height: 674, width: '100%' }}>
+      <div style={{ height: 400, width: '100%' }}>
       <DataGrid
         rows={gigs}
         columns={columns}
-        pageSize={10}
-        rowsPerPageOptions={[10]}
+        pageSize={5}
+        rowsPerPageOptions={[5]}
         disableSelectionOnClick
       />
       </div>

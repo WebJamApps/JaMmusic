@@ -36,8 +36,8 @@ describe('/music', () => {
     act(()=>{
       ReactDom.render(<Music images={data}/>, container);
     });
-    const musicSlider = document.getElementById('musicSlide1');
-    console.log(musicSlider);
+    const musicSlider:any = document.getElementById('musicSlide1');
+    expect(musicSlider).toBeDefined();
     document.body.removeChild(container);
   });
 });
