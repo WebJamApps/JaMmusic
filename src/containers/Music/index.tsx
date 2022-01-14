@@ -1,7 +1,6 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import PicSlider from 'src/components/PicSlider';
-import DefaultTable from '../../components/TourTable';
-// import { Gigs } from '../Gigs';
+import { Gigs } from '../../components/Gigs';
 import type { Iimage } from '../../redux/mapStoreToProps';
 import Intro from './intro';
 import JoshBio from './joshBio';
@@ -9,7 +8,7 @@ import MariaBio from './mariaBio';
 import WjBand from './wjBand';
 import commonUtils from '../../lib/commonUtils';
 
-export const Musicians = (): JSX.Element => { // eslint-disable-line class-methods-use-this
+export const Musicians = (): JSX.Element => { 
   return (
     <div className="elevation3" style={{ maxWidth: '1000px', margin: 'auto' }}>
       <section>
@@ -45,8 +44,7 @@ export const Music = ({ images }: ImusicNewProps):JSX.Element =>{
           position: 'relative', overflowX: 'auto', maxWidth: '96%', margin: 'auto', zIndex: 0,
         }}
       >
-        {/* <Gigs/> */}
-        {process.env.NODE_ENV !== 'test' ? /*istanbul ignore next*/<DefaultTable /> : null}
+        <Gigs/>
       </div>
       <div style={{ height: '10px' }}>
         <p>{' '}</p>
