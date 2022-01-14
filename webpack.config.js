@@ -27,6 +27,7 @@ if (process.env.BackendUrl === 'http://localhost:7000') {
 }
 module.exports = (env) => ({
   resolve: {
+    alias:{ src:srcDir },
     extensions: ['.js', '.jsx', '.ts', '.tsx'],
     fallback: { // needed for jsonwebtoken
       crypto: require.resolve('crypto-browserify'),

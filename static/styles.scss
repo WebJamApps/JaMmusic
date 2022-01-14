@@ -1,5 +1,13 @@
 @import 'config';
 @import 'menu';
+@import 'footer';
+@import 'home';
+@import 'materialui';
+@import 'music';
+@import 'mobile';
+@import 'musicplayer';
+@import 'slideshow';
+@import 'unsure';
 
 * {
   box-sizing: border-box;
@@ -400,12 +408,3 @@ div.fof {
 .comments {
   margin-top:0 !important;
 }
-
-@import 'footer';
-@import 'home';
-@import 'materialui';
-@import 'music';
-@import 'mobile';
-@import 'musicplayer';
-@import 'slideshow';
-@import 'unsure';

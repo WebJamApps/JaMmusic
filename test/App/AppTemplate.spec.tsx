@@ -1,6 +1,6 @@
 /* eslint-disable security/detect-non-literal-fs-filename */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React from 'react';
+
 import { shallow } from 'enzyme';
 import { GoogleLogin } from 'react-google-login';
 import { AppTemplate } from '../../src/App/AppTemplate';

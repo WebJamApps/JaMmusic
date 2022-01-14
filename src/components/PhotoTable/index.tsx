@@ -1,4 +1,4 @@
-import React, { Dispatch } from 'react';
+import type { Dispatch } from 'react';
 import MUIDataTable from 'mui-datatables';
 import type { AnyAction } from 'redux';
 import type { Iimage } from '../../redux/mapStoreToProps';

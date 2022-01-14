@@ -1,4 +1,3 @@
-import React from 'react';
 
 const JoshShermanBand = (): JSX.Element => (
   <div className="material-content elevation2" style={{ maxWidth: '3in', margin: 'auto', height: '3in' }}>

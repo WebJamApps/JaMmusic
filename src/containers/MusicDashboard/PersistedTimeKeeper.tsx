@@ -1,4 +1,4 @@
-import React from 'react';
+
 import TimeKeeper from 'react-timekeeper';
 
 export interface IPkProps {

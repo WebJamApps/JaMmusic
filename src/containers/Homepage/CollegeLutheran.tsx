@@ -1,4 +1,3 @@
-import React from 'react';
 
 const CollegeLutheran = (): JSX.Element => (
   <div className="elevation2 project" style={{ minWidth: '313px' }}>

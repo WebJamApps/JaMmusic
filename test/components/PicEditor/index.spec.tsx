@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { shallow } from 'enzyme';
 import { PicEditor } from '../../../src/components/PicEditor';
 
