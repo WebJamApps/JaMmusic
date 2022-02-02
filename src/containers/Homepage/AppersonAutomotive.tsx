@@ -1,4 +1,3 @@
-import React from 'react';
 
 const AppersonAutomotive = (): JSX.Element => (
   <div className="elevation2 project apperson">

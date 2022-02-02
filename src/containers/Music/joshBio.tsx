@@ -1,4 +1,4 @@
-import React from 'react';
+
 import Instruments from './instruments';
 
 const JoshBio = (): JSX.Element => (

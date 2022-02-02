@@ -1,4 +1,3 @@
-import React from 'react';
 
 const Instruments = (props: { type: string }): JSX.Element => {
   const { type } = props;

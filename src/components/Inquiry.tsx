@@ -1,7 +1,7 @@
 /* eslint-disable react/sort-comp */
 import React, { Component } from 'react';
 import superagent from 'superagent';
-import { TextareaAutosize, Button } from '@material-ui/core';
+import { TextareaAutosize, Button } from '@mui/material';
 import forms from '../lib/forms';
 import stateData from '../lib/StateData.json';
 import countryData from '../lib/CountryData.json';

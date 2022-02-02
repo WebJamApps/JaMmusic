@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Jsb from './joshShermanBand';
 import Jss from './joshShermanSolo';
 import Jssp from './joshShermanSpotify';
+import Jsyt from './joshShermanYoutube';
 import commonUtils from '../../lib/commonUtils';
 
 export default class BuyMusic extends Component {
@@ -16,8 +17,7 @@ export default class BuyMusic extends Component {
 
   render(): JSX.Element {
     return (
-      <div
-        className="page-content"
+      <div className="page-content"
         style={{
           paddingRight: '15px', maxWidth: '800px', margin: 'auto', borderRight: 'none',
         }}
@@ -41,6 +41,9 @@ export default class BuyMusic extends Component {
         <div style={{ margin: 'auto', textAlign: 'center' }}>
           <Jssp />
         </div>
+        <div style={{ textAlign:'center' }}>
+          <Jsyt />
+        </div> 
       </div>
     );
   }

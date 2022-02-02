@@ -1,4 +1,3 @@
-import React from 'react';
 
 export const ShowTimeButton = (props:{ setShowTime:(...args:any)=>any, time:string }):JSX.Element=>{
   return (

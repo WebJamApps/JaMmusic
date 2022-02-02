@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { act } from 'react-dom/test-utils';
 import ReactDOM from 'react-dom';
 import { EditorProvider } from '../../src/providers/Editor.provider';

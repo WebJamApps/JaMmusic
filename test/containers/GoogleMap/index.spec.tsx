@@ -1,7 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable class-methods-use-this, max-classes-per-file,  */
-
-import * as React from 'react';
 import { shallow, ShallowWrapper } from 'enzyme';
 import GoogleMap from '../../../src/containers/GoogleMap';
 

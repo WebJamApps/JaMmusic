@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React from 'react';
+
 import { shallow } from 'enzyme';
 import { TourEditor, newTourForm } from '../../../src/components/TourEditor';
 import { MusicDashboard } from '../../../src/containers/MusicDashboard';

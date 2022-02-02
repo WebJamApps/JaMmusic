@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { shallow } from 'enzyme';
 import BuyMusic from '../../src/containers/BuyMusic';
 
@@ -15,5 +15,6 @@ describe('/music/buymusic', () => {
     expect(wrapper.find('JoshShermanBand').dive().find('.elevation2').exists()).toBe(true);
     expect(wrapper.find('JoshShermanSolo').dive().find('.elevation2').exists()).toBe(true);
     expect(wrapper.find('JoshShermanSpotify').dive().find('.spotify').exists()).toBe(true);
+    expect(wrapper.find('JoshShermanYoutube').dive().find('.youtube').exists()).toBe(true);
   });
 });

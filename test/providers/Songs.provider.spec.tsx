@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { act } from 'react-dom/test-utils';
 import ReactDOM from 'react-dom';
 import { SongsProvider } from '../../src/providers/Songs.provider';
