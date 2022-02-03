@@ -6,7 +6,7 @@ const initialState = {
   isError: false,
   error: '',
 };
-
+// eslint-disable-next-line @typescript-eslint/default-param-last
 const imagesReducer = (state = initialState, action: { type: string, data?: Iimage[], error?: { message: string } }): Record<string, unknown> => {
   switch (action.type) {
     case 'FETCH_IMAGES':

@@ -4,7 +4,7 @@ jobs:
     environment:
       CC_TEST_REPORTER_ID: 21ed23663dd9d79502dbdcc044e9df8e417dc17e816d80eced94cd17ca402586
     docker:
-      - image: cimg/node:16.13.0-browsers
+      - image: cimg/node:16.13.2-browsers
     working_directory: ~/repo
     steps:
       - checkout
@@ -24,15 +24,3 @@ jobs:
             ./cc-test-reporter after-build --coverage-input-type lcov --exit-code $?
       - store_artifacts:
           path: coverage
-          # prefix: coverage
-# workflows:
-#   version: 2
-#   build_and_test:
-#     jobs:
-#       # - build
-#       - test
-#     requires:
-#       - build
-# - upload-coverage:
-#     requires:
-#        - test

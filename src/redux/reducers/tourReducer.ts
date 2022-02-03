@@ -30,7 +30,7 @@ const addTour = (state: ITourState, action: { data: { datetime:string, _id:strin
   }
   return { ...state, tourUpdated: false };
 };
-
+// eslint-disable-next-line @typescript-eslint/default-param-last
 const reducer = (state = initialState, action:
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 { songData?: any, type: string; data: any }): ITourState => {

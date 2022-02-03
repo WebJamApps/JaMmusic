@@ -7,7 +7,7 @@ const initialState = {
   heartBeat: 'white',
   scc: {},
 };
-
+// eslint-disable-next-line @typescript-eslint/default-param-last
 const reducer = (state = initialState,
   action: { type: string; scc: Record<string, unknown>;
     data: string }): ISocketReducer => {
