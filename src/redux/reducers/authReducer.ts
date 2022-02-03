@@ -5,6 +5,7 @@ const initialState = {
   token: '',
   user: {},
 };
+// eslint-disable-next-line @typescript-eslint/default-param-last
 const reducer = (state = initialState,
   action: { type: string; data?: { name?: string, email?: string; token?: string; }; error?: { message?: string; }; }): Record<string, unknown> => {
   const data = action.data || { email: '', token: '' };

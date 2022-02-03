@@ -2,8 +2,7 @@ import React, { Component, RefObject } from 'react';
 import commonUtils from '../../lib/commonUtils';
 import DefaultPlayer from './Player';
 
-type SProps = {
-};
+type SProps = any;
 export class Songs extends Component<SProps> {
   o: RefObject<unknown>;
 
