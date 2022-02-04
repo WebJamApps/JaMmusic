@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React from 'react';
+import { Component } from 'react';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
@@ -10,7 +10,7 @@ export interface PicSliderProps {
   data?: Iimage[];
 }
 
-class PicSlider extends React.Component<PicSliderProps> {
+class PicSlider extends Component<PicSliderProps> {
   static defaultProps: { data: [{ url: ''; title: ''; _id: 0 }]; };
 
   settings: {

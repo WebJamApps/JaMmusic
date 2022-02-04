@@ -1,6 +1,6 @@
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 import { DataGrid, GridColumns, GridEnrichedColDef, GridRenderCellParams } from '@mui/x-data-grid';
-import { GigsContext } from '../providers/Gigs.provider';
+import { GigsContext } from '../../providers/Gigs.provider';
 import HtmlReactParser from 'html-react-parser';
 import './Gigs.scss';
 
@@ -16,7 +16,7 @@ export const makeVenue = ():GridEnrichedColDef => {
   );
 };
 
-const columns:GridColumns = [
+export const columns:GridColumns = [
   {
     field: 'date',
     headerName: 'Date',
@@ -41,6 +41,7 @@ const columns:GridColumns = [
     headerName: 'Tickets',
     width: 140,
     editable: false,
+    renderCell:(params:GridRenderCellParams) => <span>{HtmlReactParser(params.value || 'Free')}</span>,
   },
 ];
 

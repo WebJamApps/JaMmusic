@@ -1,11 +1,11 @@
 
-import React from 'react';
+import { Component } from 'react';
 import UMap from './UserMap';
 import CMap from './CompanyMap';
 import type { Loc } from './gMapTypes';
 import gMapUtils from './gMapUtils';
 
-class GoogleMap extends React.Component {
+class GoogleMap extends Component {
   gMap: google.maps.Map | null;
 
   companyMap: CMap | null;
