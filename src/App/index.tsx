@@ -1,4 +1,4 @@
-import React, { Component, Dispatch } from 'react';
+import { Component, Dispatch, StrictMode } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { connect } from 'react-redux';
 import DefaultSort from '../containers/SortContainer';
@@ -56,7 +56,7 @@ export class App extends Component<AppProps> {
   render(): JSX.Element {
     
     return (
-      <React.StrictMode>
+      <StrictMode>
         <div id="App" className="App">
           <Router>
             <ATemplate>
@@ -76,7 +76,7 @@ export class App extends Component<AppProps> {
             </ATemplate>
           </Router>
         </div>
-      </React.StrictMode>
+      </StrictMode>
     );
   }
 }

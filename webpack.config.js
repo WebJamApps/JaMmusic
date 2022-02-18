@@ -4,8 +4,12 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
-const { ProvidePlugin } = require('webpack');
+const {
+  BundleAnalyzerPlugin
+} = require('webpack-bundle-analyzer');
+const {
+  ProvidePlugin
+} = require('webpack');
 const webpack = require('webpack');
 
 // config helpers:
@@ -19,21 +23,27 @@ const outDir = path.resolve(__dirname, 'dist');
 const srcDir = path.resolve(__dirname, 'src');
 const baseUrl = '/';
 const envVars = ['APP_NAME', 'SCS_PORT', 'SCS_HOST', 'SOCKETCLUSTER_SECURE', 'NODE_ENV',
-  'BackendUrl', 'GoogleClientId', 'userRoles', 'HashString', 'TINY_KEY'];
+  'BackendUrl', 'GoogleClientId', 'userRoles', 'HashString', 'TINY_KEY'
+];
 let googleMapKey = '';
-if (nodeEnv === 'development')envVars.push('PORT');
+if (nodeEnv === 'development') envVars.push('PORT');
 if (process.env.BackendUrl === 'http://localhost:7000') {
   googleMapKey = `https://maps.googleapis.com/maps/api/js?key=${process.env.GOOGLE_MAPS_API_KEY}`;
 }
 module.exports = (env) => ({
   resolve: {
-    alias:{ src:srcDir },
+    alias: {
+      src: srcDir
+    },
     extensions: ['.js', '.jsx', '.ts', '.tsx'],
     fallback: { // needed for jsonwebtoken
       crypto: require.resolve('crypto-browserify'),
       stream: require.resolve('stream-browserify'),
       util: require.resolve('util/'),
     },
+  },
+  optimization: {
+    runtimeChunk: 'single'
   },
 
   entry: {
@@ -50,16 +60,27 @@ module.exports = (env) => ({
     chunkFilename: env.production ? '[name].[chunkhash].chunk.js' : '[name].[fullhash].chunk.js',
   },
 
-  performance: { hints: false },
+  performance: {
+    hints: false
+  },
 
   devServer: {
+    devMiddleware: {writeToDisk : true},
     static: outDir,
     hot: true,
     historyApiFallback: { // serve index.html for all 404 (required for push-state)
-      rewrites: [
-        { from: /^\/$/, to: '/' },
-        { from: /^\//, to: '/' },
-        { from: /./, to: '/' },
+      rewrites: [{
+          from: /^\/$/,
+          to: '/'
+        },
+        {
+          from: /^\//,
+          to: '/'
+        },
+        {
+          from: /./,
+          to: '/'
+        },
       ],
     },
     port: parseInt(process.env.PORT, 10),
@@ -71,18 +92,27 @@ module.exports = (env) => ({
     splitChunks: {
       cacheGroups: {
         styles: {
-          name: 'styles', test: /\.css$/i, chunks: 'all', enforce: true,
+          name: 'styles',
+          test: /\.css$/i,
+          chunks: 'all',
+          enforce: true,
         },
       },
     },
   },
 
   module: {
-    rules: [
+    rules: [{
+        test: /\.js$/,
+        exclude: /node_modules/,
+        use: {
+          loader: "babel-loader"
+        }
+      },
       {
-        test: /\.(t|j)sx?$/,
-        use: { loader: 'ts-loader' },
-        exclude: [/node_modules/],
+        test: /\.(ts|tsx)?$/,
+        loader: "ts-loader",
+        exclude: /node_modules/
       },
       {
         enforce: 'pre',
@@ -104,13 +134,39 @@ module.exports = (env) => ({
         test: /\.css$/i,
         use: [MiniCssExtractPlugin.loader, 'css-loader'],
       },
-      { test: /\.html$/i, loader: 'html-loader' }, // eslint-disable-next-line no-useless-escape
+      {
+        test: /\.html$/i,
+        loader: 'html-loader'
+      }, // eslint-disable-next-line no-useless-escape
       // embed small images and fonts as Data Urls and larger ones as files:
-      { test: /\.(png|gif|jpg|cur)$/i, loader: 'url-loader', options: { limit: 8192 } },
-      { test: /\.woff2(\?v=[0-9]\.[0-9]\.[0-9])?$/i, loader: 'url-loader', options: { limit: 10000, mimetype: 'application/font-woff2' } },
-      { test: /\.woff(\?v=[0-9]\.[0-9]\.[0-9])?$/i, loader: 'url-loader', options: { limit: 10000, mimetype: 'application/font-woff' } },
+      {
+        test: /\.(png|gif|jpg|cur)$/i,
+        loader: 'url-loader',
+        options: {
+          limit: 8192
+        }
+      },
+      {
+        test: /\.woff2(\?v=[0-9]\.[0-9]\.[0-9])?$/i,
+        loader: 'url-loader',
+        options: {
+          limit: 10000,
+          mimetype: 'application/font-woff2'
+        }
+      },
+      {
+        test: /\.woff(\?v=[0-9]\.[0-9]\.[0-9])?$/i,
+        loader: 'url-loader',
+        options: {
+          limit: 10000,
+          mimetype: 'application/font-woff'
+        }
+      },
       // load these fonts normally, as files:
-      { test: /\.(ttf|eot|svg|otf)(\?v=[0-9]\.[0-9]\.[0-9])?$/i, loader: 'file-loader' },
+      {
+        test: /\.(ttf|eot|svg|otf)(\?v=[0-9]\.[0-9]\.[0-9])?$/i,
+        loader: 'file-loader'
+      },
     ],
   },
 
@@ -124,16 +180,28 @@ module.exports = (env) => ({
     }),
     new HtmlWebpackPlugin({
       template: `${srcDir}/index.ejs`,
-      minify: env.production ? { removeComments: true, collapseWhitespace: true } : undefined,
-      metadata: { title, baseUrl, googleMapKey },
+      minify: env.production ? {
+        removeComments: true,
+        collapseWhitespace: true
+      } : undefined,
+      metadata: {
+        title,
+        baseUrl,
+        googleMapKey
+      },
     }),
     new MiniCssExtractPlugin({
       filename: '[name].[contenthash].css',
     }),
     new CopyPlugin({
-      patterns: [
-        { from: 'static/favicon.ico', to: 'favicon.ico' },
-        { from: 'static/imgs', to: 'static/imgs' },
+      patterns: [{
+          from: 'static/favicon.ico',
+          to: 'favicon.ico'
+        },
+        {
+          from: 'static/imgs',
+          to: 'static/imgs'
+        },
       ],
     }),
     new webpack.EnvironmentPlugin(envVars),
