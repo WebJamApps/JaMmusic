@@ -18,5 +18,14 @@ if (process.env.NODE_ENV === 'development') {
 }
 const persistedReducer = persistReducer(persistConfig, allReducers);
 const store = createStore(persistedReducer, mWares);
+if (process.env.NODE_ENV !== 'production' && module.hot) {
+  module.hot.accept('../allReducers', () => {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires, node/no-missing-require
+    const nextRootReducer = require('../allReducers').default;
+    store.replaceReducer(
+      persistReducer(persistConfig, nextRootReducer),
+    );
+  });
+}
 const persistor = persistStore(store);
 export default { store, persistor };
