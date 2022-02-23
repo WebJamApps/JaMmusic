@@ -6,30 +6,42 @@ import songEditorUtils from './songEditorUtils';
 import { EditorContext } from '../../providers/Editor.provider';
 import type { ISong } from '../../providers/Songs.provider';
 
-export const onChangeSong = (evt: React.ChangeEvent<HTMLInputElement>, editor: any, setNewEditor: any): void => {
+interface Ieditor { song: ISong; tour: Record<string, unknown>; image: Record<string, unknown>; }
+
+export const onChangeSong = (evt: React.ChangeEvent<HTMLInputElement>, editor: any,
+  setNewEditor: (arg0: Ieditor) => void): void => {
   evt.persist();
   const newEditor = { image: {}, tour: {}, song: { ...editor.song, [evt.target.id]: evt.target.value } };
   setNewEditor(newEditor);
 };
 
-export const handleCategoryChange = (event: React.ChangeEvent<HTMLSelectElement>, editor: any, setNewEditor: any): void => {
+export const handleCategoryChange = (event: React.ChangeEvent<HTMLSelectElement>, editor: any,
+  setNewEditor: (arg0: Ieditor) => void): void => {
   setNewEditor({ image: {}, tour: {}, song: { ...editor.song, category: event.target.value } });
 };
 
 export const makeInput = (required: boolean, id: string,
-  editorContext: { editor: { song: any; tour: Record<string, unknown>; image: Record<string, unknown>; }, 
-    setNewEditor: (arg0: Record<string, unknown>) => void }): JSX.Element => {
+  editorContext: {
+    editor: Ieditor,
+    setNewEditor: (arg0: Record<string, unknown>) => void
+  }): JSX.Element => {
   const { editor, setNewEditor } = editorContext;
+  const { song } = editor;
+  const songValue: any = song;
+  // eslint-disable-next-line security/detect-object-injection
+  const inputValue = songValue[id] || '';
   return (<label htmlFor={id}>
     {required ? '* ' : ''}{id}
-    <input id={id} value={editor.song[id] || ''} onChange={(evt) => onChangeSong(evt, editor, setNewEditor)} />
+    <input id={id} value={inputValue} onChange={(evt) => onChangeSong(evt, editor, setNewEditor)} />
   </label>
   );
 };
 
-export const MoreSongForm = (props: { setNewEditor: any, 
-  editor: { song: ISong; tour: Record<string, unknown>; image: Record<string, unknown>; }, 
-  onChangeSong: any }): JSX.Element => {
+export const MoreSongForm = (props: {
+  setNewEditor: (arg0: Ieditor) => void,
+  editor: Ieditor,
+  onChangeSong: any
+}): JSX.Element => {
   return (
     <>
       {makeInput(false, 'album', props)}
@@ -41,8 +53,8 @@ export const MoreSongForm = (props: { setNewEditor: any,
 };
 
 interface IsongFormProps {
-  editor: { song: ISong; tour: Record<string, unknown>; image: Record<string, unknown>; },
-  setNewEditor: any 
+  editor: Ieditor,
+  setNewEditor: (arg0: Ieditor) => void
 }
 export const SongForm = (props: IsongFormProps): JSX.Element => {
   const { editor, setNewEditor } = props;
@@ -61,9 +73,11 @@ export const SongForm = (props: IsongFormProps): JSX.Element => {
 };
 
 export const EditSongButtons = ({ setNewEditor, editor, auth, updateSongAPI }:
-{ setNewEditor: any, 
-  editor: { song: ISong; tour: Record<string, unknown>; image: Record<string, unknown>; },
-  auth: any, updateSongAPI: any }): JSX.Element => {
+  {
+    setNewEditor: (arg0: Ieditor) => void,
+    editor: Ieditor,
+    auth: any, updateSongAPI: any
+  }): JSX.Element => {
   return (
     <span>
       <button className="floatRight" type="button" id="cancel-edit-song" onClick={() => setNewEditor({ song: {}, tour: {}, image: {} })}>
@@ -83,9 +97,12 @@ export const EditSongButtons = ({ setNewEditor, editor, auth, updateSongAPI }:
   );
 };
 
+interface IsongButtonsProps {
+  setNewEditor: (arg0: Ieditor) => void, editor: Ieditor,
+  auth: any, addSongAPI: any, updateSongAPI: any
+}
 export const SongButtons = ({ editor, setNewEditor, auth, addSongAPI, updateSongAPI }:
-{ setNewEditor: any, editor: { song: ISong, tour: any, image: any }, 
-  auth: any, addSongAPI: any, updateSongAPI: any }): JSX.Element => {
+  IsongButtonsProps): JSX.Element => {
   return (
     <div style={{ textAlign: 'left', marginTop: '10px' }}>
       <span style={{
@@ -108,8 +125,7 @@ export const SongButtons = ({ editor, setNewEditor, auth, addSongAPI, updateSong
   );
 };
 
-export const SongFormTitle = ({ editor }: { editor: 
-{ song: ISong; tour: Record<string, unknown>; image: Record<string, unknown>; } }): JSX.Element => {
+export const SongFormTitle = ({ editor }: { editor: Ieditor }): JSX.Element => {
   return (
     <h5 style={{ marginBottom: 0 }}>
       {editor.song && editor.song._id && editor.song._id !== '' ? 'Edit ' : 'Add '}
@@ -119,8 +135,8 @@ export const SongFormTitle = ({ editor }: { editor:
 };
 
 interface IsongEditorDiv {
-  editor: { song: ISong; tour: Record<string, unknown>; image: Record<string, unknown>; },
-  setNewEditor: (arg0: any) => void, auth: any
+  editor: Ieditor,
+  setNewEditor: (arg0: Ieditor) => void, auth: any
 }
 export const SongEditorDiv = ({ editor, setNewEditor, auth }: IsongEditorDiv) => {
   if (!editor.song.category) editor.song.category = 'original';
