@@ -12,10 +12,16 @@ export const onChangeSong = (evt: React.ChangeEvent<HTMLInputElement>, editor:an
   setNewEditor(newEditor);
 };
 
-export const makeInput = (required:boolean, id:string, props:any):JSX.Element=>{
+export const handleCategoryChange = (event: React.ChangeEvent<HTMLSelectElement>, editor:any, setNewEditor:any):void => {
+  setNewEditor({ image:{}, tour:{}, song:{ ...editor.song, category: event.target.value } });
+};
+
+export const makeInput = (required:boolean, id:string, 
+  editorContext:{ editor:{ song:any }, setNewEditor:(arg0:Record<string, unknown>)=>void }):JSX.Element=>{
+  const { editor, setNewEditor } = editorContext;
   return (<label htmlFor={id}>
   {required ? '* ' : ''}{id}
-  <input id={id} value={props.editor.song[id] || ''} onChange={(evt)=>props.onChangeSong(evt, props.editor, props.setNewEditor)} />
+  <input id={id} value={editor.song[id] || ''} onChange={(evt)=>onChangeSong(evt, editor, setNewEditor)} />
 </label>
   );
 };
@@ -31,18 +37,19 @@ export const MoreSongForm = (props:{ setNewEditor: any, editor:any, onChangeSong
   );
 };
 
-export const SongForm = (props:{ forms:any, editor:any, setNewEditor:any, onChangeSong:any, handleCategoryChange:any
-}):JSX.Element => {
+interface IsongFormProps { editor:any, setNewEditor:any }
+export const SongForm = (props:IsongFormProps):JSX.Element => {
+  const { editor, setNewEditor } = props;
   return (
     <>
           {makeInput(true, 'title', props)}
           {makeInput(true, 'url', props)}
           {makeInput(true, 'artist', props)}
       <p>* Category</p>
-      {props.forms.makeDropdown('category', props.editor.song.category || 'original', 
-        (evt: React.ChangeEvent<HTMLSelectElement>) => props.handleCategoryChange(evt, 
-          props.editor, props.setNewEditor), ['original', 'mission', 'pub'])}
-        <MoreSongForm setNewEditor={props.setNewEditor} editor={props.editor} onChangeSong={props.onChangeSong}/>
+      {forms.makeDropdown('category', editor.song.category || 'original', 
+        (evt: React.ChangeEvent<HTMLSelectElement>) => handleCategoryChange(evt, 
+          editor, setNewEditor), ['original', 'mission', 'pub'])}
+        <MoreSongForm setNewEditor={setNewEditor} editor={editor} onChangeSong={onChangeSong}/>
     </>
   );
 };
@@ -81,7 +88,7 @@ export const SongButtons = ({ editor, setNewEditor, auth, addSongAPI, updateSong
     {editor.song._id ? <EditSongButtons editor={editor} setNewEditor={setNewEditor} auth={auth} updateSongAPI={updateSongAPI}/> : 
       <button
         id="add-song-button"
-        disabled={!(editor.song.year && editor.song.title && editor.song.url && editor.song.artist && editor.song.category)}
+        disabled={!(editor.song.year && editor.song.title && editor.song.url && editor.song.artist)}
         type="button"
         onClick={() => addSongAPI(superagent, editor.song, auth, setNewEditor)}
       >
@@ -101,14 +108,11 @@ export const SongFormTitle = ({ editor }:{ editor:any }):JSX.Element=>{
   );
 };
 
-export const handleCategoryChange = (event: React.ChangeEvent<HTMLSelectElement>, editor:any, setNewEditor:any):void => {
-  setNewEditor({ image:{}, tour:{}, song:{ ...editor.song, category: event.target.value } });
-};
-
 export const SongEditor = ({
   auth,
 }:{ auth:any }): JSX.Element => {
   const { editor, setNewEditor } = React.useContext(EditorContext);
+  if (!editor.song.category)editor.song.category = 'original';
   return (
   <div
     className="material-content elevation3"
@@ -116,8 +120,7 @@ export const SongEditor = ({
   >
     <SongFormTitle editor={editor}/>
     <form id="picsForm">
-      <SongForm forms={forms} editor={editor} setNewEditor={setNewEditor} handleCategoryChange={handleCategoryChange}
-      onChangeSong={onChangeSong}
+      <SongForm editor={editor} setNewEditor={setNewEditor} 
       />
       <p>{' '}</p>
       <SongButtons editor={editor} setNewEditor={setNewEditor} auth={auth} addSongAPI={songEditorUtils.addSongAPI} 

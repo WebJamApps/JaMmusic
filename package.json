@@ -34,7 +34,7 @@
     "test:lint": "npm run test:stylelint && eslint . --ext .js,.ts,.tsx",
     "test": "npm run test:lint && npm run test:jest",
     "test:local": "npm run test:lint-fix && npm run test:jest && npm run cc",
-    "test:jest": "jest --config jest.config.json --no-cache --runInBand",
+    "test:jest": "rm -rf coverage && jest --config jest.config.json --no-cache --runInBand",
     "cleanup": "rm -rf yarn.lock && rm -rf package-lock.json && rm -rf node_modules && npm cache clean --force",
     "cleaninstall": "npm run cleanup && npm install",
     "postinstall": "npm run build:prod"
