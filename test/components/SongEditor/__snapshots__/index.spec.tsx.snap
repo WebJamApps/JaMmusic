@@ -1,3 +1,167 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`SongEditor renders correctly 1`] = `ShallowWrapper {}`;
+exports[`SongEditor renders correctly 1`] = `
+<div
+  className="material-content elevation3"
+  style={
+    Object {
+      "margin": "30px auto",
+      "maxWidth": "320px",
+    }
+  }
+>
+  <h5
+    style={
+      Object {
+        "marginBottom": 0,
+      }
+    }
+  >
+    Add 
+    Song
+  </h5>
+  <form
+    id="picsForm"
+  >
+    <label
+      htmlFor="title"
+    >
+      * 
+      title
+      <input
+        id="title"
+        onChange={[Function]}
+        value=""
+      />
+    </label>
+    <label
+      htmlFor="url"
+    >
+      * 
+      url
+      <input
+        id="url"
+        onChange={[Function]}
+        value=""
+      />
+    </label>
+    <label
+      htmlFor="artist"
+    >
+      * 
+      artist
+      <input
+        id="artist"
+        onChange={[Function]}
+        value=""
+      />
+    </label>
+    <p>
+      * Category
+    </p>
+    <select
+      id="category"
+      multiple={false}
+      onChange={[Function]}
+      value="original"
+    >
+      <option
+        id="original"
+        value="original"
+      >
+        original
+      </option>
+      <option
+        id="mission"
+        value="mission"
+      >
+        mission
+      </option>
+      <option
+        id="pub"
+        value="pub"
+      >
+        pub
+      </option>
+    </select>
+    <label
+      htmlFor="album"
+    >
+      
+      album
+      <input
+        id="album"
+        onChange={[Function]}
+        value=""
+      />
+    </label>
+    <label
+      htmlFor="image"
+    >
+      
+      image
+      <input
+        id="image"
+        onChange={[Function]}
+        value=""
+      />
+    </label>
+    <label
+      htmlFor="composer"
+    >
+      
+      composer
+      <input
+        id="composer"
+        onChange={[Function]}
+        value=""
+      />
+    </label>
+    <label
+      htmlFor="year"
+    >
+      * 
+      year
+      <input
+        id="year"
+        onChange={[Function]}
+        value={2021}
+      />
+    </label>
+    <p>
+       
+    </p>
+    <div
+      style={
+        Object {
+          "marginTop": "10px",
+          "textAlign": "left",
+        }
+      }
+    >
+      <span
+        style={
+          Object {
+            "display": "inline-block",
+            "fontSize": "16px",
+            "marginRight": "20px",
+            "position": "relative",
+          }
+        }
+      >
+        <i>
+          * Required
+        </i>
+      </span>
+      <button
+        disabled={true}
+        id="add-song-button"
+        onClick={[Function]}
+        type="button"
+      >
+        Add Song
+      </button>
+    </div>
+  </form>
+</div>
+`;

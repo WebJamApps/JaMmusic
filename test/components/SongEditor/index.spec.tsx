@@ -1,19 +1,22 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { shallow } from 'enzyme';
+// import { shallow } from 'enzyme';
 
 import renderer from 'react-test-renderer';
+import { EditorProvider } from 'src/providers/Editor.provider';
 import { SongEditor, onChangeSong, makeInput, SongFormTitle, SongButtons, EditSongButtons, SongForm, 
   handleCategoryChange } from '../../../src/components/SongEditor';
 // import forms from '../../../src/lib/forms';
 
 describe('SongEditor', () => {
-  const auth:any = { token:'' };
   it('renders correctly', () => {
-    const wrapper = shallow(<SongEditor
-      auth={auth}
-    />);
-    expect(wrapper).toMatchSnapshot();
-    expect(wrapper.find('div.material-content.elevation3').exists()).toBe(true);
+    const auth:any = { token:'' };
+    const songEditor = renderer.create(<EditorProvider><SongEditor auth={auth}/></EditorProvider>).toJSON();
+    expect(songEditor).toMatchSnapshot();
+  });
+  it('renders correctly when song category is missing', () => {
+    const auth:any = { token:'' };
+    const songEditor:any = renderer.create(<EditorProvider><SongEditor auth={auth}/></EditorProvider>).toJSON();
+    expect(songEditor.props.className.includes('material-content')).toBe(true);
   });
   it('onChangeSongs runs setNewEditor', ()=>{
     const setNewEditor = jest.fn();
@@ -21,20 +24,20 @@ describe('SongEditor', () => {
     onChangeSong(evt, { image:{}, tour:{}, song:{} }, setNewEditor);
     expect(setNewEditor).toHaveBeenCalled();
   });
-  // it('makeInput', ()=>{
-  //   const onChangeMock = jest.fn();
-  //   const props = { setNewEditor:onChangeMock, editor:{ song:{ title:'' } } };
-  //   const input = renderer.create(makeInput(true, 'title', props)).root;
-  //   input.findByType('input').props.onChange();
-  //   expect(onChangeMock).toHaveBeenCalled();
-  // });
+  it('makeInput', ()=>{
+    const onChangeMock = jest.fn();
+    const editorContext = { setNewEditor:onChangeMock, editor:{ song:{ title:'' }, tour:{}, image:{} } };
+    const input = renderer.create(makeInput(true, 'title', editorContext)).root;
+    input.findByType('input').props.onChange({ persist:jest.fn(), target:{ id:'', value:'' } });
+    expect(onChangeMock).toHaveBeenCalled();
+  });
   it('SongFormTitle Edit', ()=>{
-    const editor = { song:{ _id:'id' } };
+    const editor = { song:{ _id:'id', category:'original', year:2020, title:'', url:'' }, tour:{}, image:{} };
     const songFormTitle = renderer.create(<SongFormTitle editor={editor}/>).root;
     expect(songFormTitle.findByType('h5').children[0]).toBe('Edit ');
   });
   it('SongFormTitle Create', ()=>{
-    const editor = { song:{ } };
+    const editor = { song:{ category:'original', year:2020, title:'', url:'' }, tour:{}, image:{} };
     const songFormTitle = renderer.create(<SongFormTitle editor={editor}/>).root;
     expect(songFormTitle.findByType('h5').children[0]).toBe('Add ');
   });
@@ -69,16 +72,15 @@ describe('SongEditor', () => {
     editSongButtons.findByProps({ id:'cancel-edit-song' }).props.onClick();
     expect(setNewEditor).toHaveBeenCalled();
   });
-  // it('SongForm handleCategoryChange', ()=>{
-  //   const editor = { song:{} };
-  //   const setNewEditor = jest.fn();
-  //   const handleCatChange = jest.fn();
-  //   const evt:any = { target:{ value:'test' } };
-  //   const songForm = renderer.create(<SongForm editor={editor} setNewEditor={setNewEditor} 
-  //   />).root; 
-  //   songForm.findByProps({ id:'category' }).props.onChange(evt);
-  //   expect(handleCatChange).toHaveBeenCalled();
-  // });
+  it('SongForm handleCategoryChange', ()=>{
+    const editor = { song:{ category:'original', year:2020, title:'', url:'' }, tour:{}, image:{}  };
+    const setNewEditor = jest.fn();
+    const evt:any = { target:{ value:'test' } };
+    const songForm = renderer.create(<SongForm editor={editor} setNewEditor={setNewEditor} 
+    />).root; 
+    songForm.findByProps({ id:'category' }).props.onChange(evt);
+    expect(setNewEditor).toHaveBeenCalled();
+  });
   it('handleCategoryChange', ()=>{
     const setNewEditor = jest.fn();
     const evt:any = { target:{ value:'test' } };
