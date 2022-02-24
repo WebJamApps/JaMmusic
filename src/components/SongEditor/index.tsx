@@ -8,14 +8,14 @@ import type { ISong } from '../../providers/Songs.provider';
 
 interface Ieditor { song: ISong; tour: Record<string, unknown>; image: Record<string, unknown>; }
 
-export const onChangeSong = (evt: React.ChangeEvent<HTMLInputElement>, editor: any,
+export const onChangeSong = (evt: React.ChangeEvent<HTMLInputElement>, editor: Ieditor,
   setNewEditor: (arg0: Ieditor) => void): void => {
   evt.persist();
   const newEditor = { image: {}, tour: {}, song: { ...editor.song, [evt.target.id]: evt.target.value } };
   setNewEditor(newEditor);
 };
 
-export const handleCategoryChange = (event: React.ChangeEvent<HTMLSelectElement>, editor: any,
+export const handleCategoryChange = (event: React.ChangeEvent<HTMLSelectElement>, editor: Ieditor,
   setNewEditor: (arg0: Ieditor) => void): void => {
   setNewEditor({ image: {}, tour: {}, song: { ...editor.song, category: event.target.value } });
 };
@@ -23,7 +23,7 @@ export const handleCategoryChange = (event: React.ChangeEvent<HTMLSelectElement>
 export const makeInput = (required: boolean, id: string,
   editorContext: {
     editor: Ieditor,
-    setNewEditor: (arg0: Record<string, unknown>) => void
+    setNewEditor: (arg0: Ieditor) => void
   }): JSX.Element => {
   const { editor, setNewEditor } = editorContext;
   const { song } = editor;
@@ -73,14 +73,15 @@ export const SongForm = (props: IsongFormProps): JSX.Element => {
 };
 
 export const EditSongButtons = ({ setNewEditor, editor, auth, updateSongAPI }:
-  {
-    setNewEditor: (arg0: Ieditor) => void,
-    editor: Ieditor,
-    auth: any, updateSongAPI: any
-  }): JSX.Element => {
+{
+  setNewEditor: (arg0: Ieditor) => void,
+  editor: Ieditor,
+  auth: any, updateSongAPI: any
+}): JSX.Element => {
   return (
     <span>
-      <button className="floatRight" type="button" id="cancel-edit-song" onClick={() => setNewEditor({ song: {}, tour: {}, image: {} })}>
+      <button className="floatRight" type="button" id="cancel-edit-song"
+        onClick={() => setNewEditor({ song: { category: 'original', year: 2022, title: '', url: '' }, tour: {}, image: {} })}>
         Cancel
       </button>
       <button
@@ -102,7 +103,7 @@ interface IsongButtonsProps {
   auth: any, addSongAPI: any, updateSongAPI: any
 }
 export const SongButtons = ({ editor, setNewEditor, auth, addSongAPI, updateSongAPI }:
-  IsongButtonsProps): JSX.Element => {
+IsongButtonsProps): JSX.Element => {
   return (
     <div style={{ textAlign: 'left', marginTop: '10px' }}>
       <span style={{
