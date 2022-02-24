@@ -1,6 +1,7 @@
 
 import { Provider } from 'react-redux';
 import { render } from 'react-dom';
+import { hot } from 'react-hot-loader';
 import { PersistGate } from 'redux-persist/integration/react';
 import ConnectedApp from './App/index';
 import store from './redux/store/index';
@@ -9,8 +10,8 @@ import GigsProvider from './providers/Gigs.provider';
 import '../static/styles.scss';
 import { EditorProvider } from './providers/Editor.provider';
 
-export const renderMain = ():void => {
-  render(
+const Main = () => {
+  return (
     <SongsProvider>
       <EditorProvider>
         <GigsProvider>
@@ -21,9 +22,11 @@ export const renderMain = ():void => {
           </Provider>
         </GigsProvider>
       </EditorProvider>
-    </SongsProvider>, document.getElementById('root'),
-  );
+    </SongsProvider>);
+};
 
-  /* istanbul ignore next */
-  if (process.env.NODE_ENV === 'development' && module.hot) module.hot.accept();
+const HotMain = hot(module)(Main);
+
+export const renderMain = (): void => {
+  render(<HotMain />, document.getElementById('root'));
 };

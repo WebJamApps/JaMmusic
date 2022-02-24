@@ -1,4 +1,4 @@
 /* istanbul ignore file */
-import { renderMain } from './main';
+import { renderMain } from './Main';
 
 renderMain();
