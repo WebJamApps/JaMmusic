@@ -1,10 +1,13 @@
-import React, { createContext, ReactChild } from 'react';
+import { createContext, ReactChild } from 'react';
 import createPersistedState from 'use-persisted-state';
 import type { ISong } from './Songs.provider';
 
 type Props = { children: ReactChild };
-const useEditorState = createPersistedState('editor', sessionStorage);
+const useEditorState:any = createPersistedState('editor', sessionStorage);
+
+//TODO determine best way to type this useSongsState here (without an any)
 const song:ISong = { category:'', year:2021, title:'', url:'', _id:'' };
+
 const initEditor = { song, tour:{}, image:{} };
 
 export const EditorContext = createContext({

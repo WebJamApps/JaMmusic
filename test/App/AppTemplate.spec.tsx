@@ -34,7 +34,7 @@ describe('app-main component test setup', () => {
     expect(wrapper.find('div.open').length).toBe(1);
   });
   it('handles response from google login', async () => {
-    authUtils.responseGoogleLogin = jest.fn(() => Promise.resolve('true'));
+    authUtils.responseGoogleLogin = jest.fn(() => Promise.resolve());
     const wrapper2 = shallow<AppTemplate>(
       <AppTemplate
         dispatch={dFunc}

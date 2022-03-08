@@ -1,7 +1,9 @@
-import React, { createContext, ReactChild, useEffect } from 'react';
+import { createContext, ReactChild, useEffect } from 'react';
 import createPersistedState from 'use-persisted-state';
 import fetchGigs, { defaultGig } from './fetchGigs';
-const useGigsState = createPersistedState('gigs', sessionStorage);
+
+//TODO determine best way to type this useSongsState here (without an any)
+const useGigsState:any = createPersistedState('gigs', sessionStorage);
 
 export interface IGig {
   modify?:JSX.Element,
@@ -24,7 +26,7 @@ type Props = { children: ReactChild };
 
 export const GigsProvider = ({ children }: Props): JSX.Element => {
   const { Provider } = GigsContext;
-  const [gigs, setGigs] = useGigsState<IGig[]>([defaultGig]);
+  const [gigs, setGigs] = useGigsState([defaultGig]);
   const resetGigs = setGigs;
   useEffect(() => {
     fetchGigs.getGigs(setGigs);
