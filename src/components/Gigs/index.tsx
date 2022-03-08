@@ -1,6 +1,6 @@
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { DataGrid, GridColumns, GridEnrichedColDef, GridRenderCellParams } from '@mui/x-data-grid';
-import { GigsContext } from '../../providers/Gigs.provider';
+import { GigsContext, IGig } from '../../providers/Gigs.provider';
 import HtmlReactParser from 'html-react-parser';
 import './Gigs.scss';
 
@@ -45,14 +45,22 @@ export const columns:GridColumns = [
   },
 ];
 
+const orderGigs = (gigs: IGig[], setGigsInOrder: { (arg0: IGig[]): void; }) => {
+  const futureGigs = gigs.filter((g)=> g.datetime && g.datetime >= new Date().toISOString());
+  console.log(futureGigs);
+  setGigsInOrder(gigs);
+};
+
 export const Gigs = (): JSX.Element => {
   const { gigs } = useContext(GigsContext);
+  const [gigsInOrder, setGigsInOrder] = useState(gigs);
+  useEffect(() => orderGigs(gigs, setGigsInOrder), [gigs]);
   return (
     <div style={{ margin: 'auto', padding:'10px', width:'100%' }}>
       <h4 style={{ textAlign:'center' }}>Gigs</h4>
       <div style={{ height: 400, width: '100%' }}>
       <DataGrid
-        rows={gigs}
+        rows={gigsInOrder}
         columns={columns}
         pageSize={5}
         rowsPerPageOptions={[5]}
@@ -62,3 +70,4 @@ export const Gigs = (): JSX.Element => {
     </div>
   );
 };
+

@@ -13,16 +13,21 @@ export interface IauthUtils {
 
 }
 const setUser = async (view: AppTemplate): Promise<string> => {
+  console.log('setUser');
   const { auth, dispatch } = view.props;
   let decoded, user:{ body?:Record<string, unknown> };
   try {
+    console.log('line20');
+    console.log(auth.token);
     decoded = (jwt.verify(auth.token, process.env.HashString || /* istanbul ignore next */'') as { user?:Record<string, unknown>, sub?:string });
+    console.log(decoded);
   } catch (e) { const eMessage = (e as Error).message; return eMessage; }
   if (decoded.user) dispatch({ type: 'SET_USER', data: decoded.user });
   else {
     try {
       user = await superagent.get(`${process.env.BackendUrl}/user/${decoded.sub}`)
         .set('Accept', 'application/json').set('Authorization', `Bearer ${auth.token}`);
+      console.log(user);
     } catch (e) { const eMessage = (e as Error).message; return eMessage; }
     dispatch({ type: 'SET_USER', data: user.body });
   }
