@@ -9,9 +9,9 @@ import { EditorContext } from '../../providers/Editor.provider';
 type SongsTableProps = { sData?:ISong[], token:string, dispatch: Dispatch<AnyAction> };
 const SongsTable:FC<SongsTableProps> = ({ sData, token }): JSX.Element => {
   const { songs } = useContext(SongsContext);
-  const { editor, setNewEditor } = useContext(EditorContext);
+  const { editor, setEditor } = useContext(EditorContext);
   let tableData = sData !== undefined ? sData : songs;
-  tableData = tableData.length > 0 ? songsTableUtils.addButtons(tableData, token, setNewEditor, editor) : [];
+  tableData = tableData.length > 0 ? songsTableUtils.addButtons(tableData, token, setEditor, editor) : [];
   return (
     <div style={{ padding: '10px', marginBottom: '-20px' }}>
       {tableData.length > 0 ? (

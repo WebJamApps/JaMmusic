@@ -5,7 +5,7 @@ import { hot } from 'react-hot-loader';
 import { PersistGate } from 'redux-persist/integration/react';
 import ConnectedApp from './App/index';
 import store from './redux/store/index';
-import SongsProvider from './providers/Songs.provider';
+import { SongsProvider } from './providers/Songs.provider';
 import GigsProvider from './providers/Gigs.provider';
 import '../static/styles.scss';
 import { EditorProvider } from './providers/Editor.provider';

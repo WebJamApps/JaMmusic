@@ -1,9 +1,8 @@
-import { createContext, useState, ReactChild, useEffect } from 'react';
+import { createContext, ReactChild, useEffect } from 'react';
 import createPersistedState from 'use-persisted-state';
 import fetchSongs, { defaultSong } from './fetchSongs';
+import { MakeProvider } from './MakeProvider';
 
-//TODO determine best way to type this useSongsState here (without an any)
-const useSongsState: any = createPersistedState('songs', sessionStorage);
 export interface ISong {
   artist?: string;
   composer?: string;
@@ -17,24 +16,40 @@ export interface ISong {
   modify?: JSX.Element
 }
 
+const useSongsState: (arg0: ISong[]) =>
+[ISong[], (arg0: ISong[]) => void] = 
+createPersistedState('songs', sessionStorage);
+
 export const SongsContext = createContext({
-  test: '',
   songs: [defaultSong],
-  resetSongs:/*istanbul ignore next */(...args: any) => { },
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  setSongs:/*istanbul ignore next */(_arg0:ISong[]) => { },
 });
+
 type Props = { children: ReactChild };
 
 export const SongsProvider = ({ children }: Props): JSX.Element => {
-  const { Provider } = SongsContext;
-  const [test] = useState('the songs provider has been successfully connected :)');
   const [songs, setSongs] = useSongsState([defaultSong]);
-  const resetSongs = setSongs;
-  useEffect(() => {
-    fetchSongs.getSongs(setSongs);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);// if we don't include this as empty array, it keeps repeatedly fetching the songs
-  return (<Provider value={{ test, songs, resetSongs }}>{children}</Provider>
+  const Provider = MakeProvider({ Context:SongsContext, fetchFunc:fetchSongs.getSongs, setFunc:setSongs });
+  // useEffect(() => {
+  //   fetchSongs.getSongs(setSongs);
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);// empty array here to stop it from repeatedly fetching the songs
+
+  return (<Provider value={{ songs, setSongs }}>{children}</Provider>
   );
 };
 
-export default SongsProvider;
+// export const SongsProvider = ({ children }: Props): JSX.Element => {
+//   const { Provider } = SongsContext;
+//   const [songs, setSongs] = useSongsState([defaultSong]);
+
+//   useEffect(() => {
+//     fetchSongs.getSongs(setSongs);
+//     // eslint-disable-next-line react-hooks/exhaustive-deps
+//   }, []);// empty array here to stop it from repeatedly fetching the songs
+
+//   return (<Provider value={{ songs, setSongs }}>{children}</Provider>
+//   );
+// };
+
