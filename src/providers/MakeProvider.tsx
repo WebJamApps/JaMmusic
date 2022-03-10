@@ -1,13 +1,14 @@
 import { useEffect } from 'react';
 
-interface ImakeProviderProps { Context: any; fetchFunc: any; setFunc: any; }
+interface ImakeProviderProps { Context: any; fetches: any[]; setters: any[]; }
 
 export const MakeProvider = (props: ImakeProviderProps) => {
-  const { Context, fetchFunc, setFunc } = props;
+  const { Context, fetches, setters } = props;
   const { Provider } = Context;
 
   useEffect(() => {
-    fetchFunc(setFunc);
+    fetches[0](setters[0]);
+    fetches[1](setters[1]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);// empty array here to stop it from repeatedly fetching
 

@@ -4,7 +4,7 @@ import forms from '../../lib/forms';
 import superagent from 'superagent';
 import songEditorUtils from './songEditorUtils';
 import { EditorContext } from '../../providers/Editor.provider';
-import type { ISong } from '../../providers/Songs.provider';
+import type { ISong } from 'src/providers/Data.provider';
 
 interface Ieditor { song: ISong; tour: Record<string, unknown>; image: Record<string, unknown>; }
 

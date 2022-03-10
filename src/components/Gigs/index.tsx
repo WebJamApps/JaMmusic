@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from 'react';
 import { DataGrid, GridColumns, GridEnrichedColDef, GridRenderCellParams } from '@mui/x-data-grid';
-import { GigsContext, IGig } from '../../providers/Gigs.provider';
+import { DataContext, IGig } from '../../providers/Data.provider';
 import HtmlReactParser from 'html-react-parser';
 import './Gigs.scss';
 
@@ -52,7 +52,7 @@ const orderGigs = (gigs: IGig[], setGigsInOrder: { (arg0: IGig[]): void; }) => {
 };
 
 export const Gigs = (): JSX.Element => {
-  const { gigs } = useContext(GigsContext);
+  const { gigs } = useContext(DataContext);
   const [gigsInOrder, setGigsInOrder] = useState(gigs);
   useEffect(() => orderGigs(gigs, setGigsInOrder), [gigs]);
   return (

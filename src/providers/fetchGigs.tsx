@@ -1,4 +1,4 @@
-import type { IGig } from './Gigs.provider';
+import type { IGig } from './Data.provider';
 import scc from 'socketcluster-client';
 
 export const defaultGig: IGig = {

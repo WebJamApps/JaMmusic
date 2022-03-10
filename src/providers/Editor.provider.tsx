@@ -1,6 +1,6 @@
 import { createContext, ReactChild } from 'react';
 import createPersistedState from 'use-persisted-state';
-import type { ISong } from './Songs.provider';
+import type { ISong } from './Data.provider';
 
 type InitEditor = { song: ISong; tour: Record<string, unknown>; image: Record<string, unknown>; };
 
