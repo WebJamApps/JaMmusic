@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import forms from '../../lib/forms';
 import superagent from 'superagent';
 import songEditorUtils from './songEditorUtils';
@@ -7,7 +7,7 @@ import { EditorContext } from '../../providers/Editor.provider';
 import type { ISong } from 'src/providers/Data.provider';
 
 interface Ieditor { song: ISong; tour: Record<string, unknown>; image: Record<string, unknown>; }
-
+  
 export const onChangeSong = (evt: React.ChangeEvent<HTMLInputElement>, editor: Ieditor,
   setNewEditor: (arg0: Ieditor) => void): void => {
   evt.persist();
@@ -78,6 +78,13 @@ export const EditSongButtons = ({ setEditor, editor, auth, updateSongAPI }:
   editor: Ieditor,
   auth: any, updateSongAPI: any
 }): JSX.Element => {
+  const [songData] = useState(editor.song);
+  const [btnDisabled, setBtnDisabled] = useState(true);
+  useEffect(() => {
+    if (songData !== editor.song) {
+      setBtnDisabled(false);
+    }
+  }, [editor.song, songData]);
   return (
     <span>
       <button className="floatRight" type="button" id="cancel-edit-song"

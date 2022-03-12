@@ -13,7 +13,7 @@ async function updateSongAPI(sa:typeof superagent, songChanges:ISong, auth:any, 
   } catch (e) { return (e as Error).message; }
   if (r.status === 200) { 
     setNewEditor({ song:{}, image:{}, tour:{} }); 
-    window.location.reload(); return 'song updated'; 
+    return 'song updated'; 
   } // do not reload but instead fetch songs and refresh storage
   return `${r.status} song was not updated`;
 }
