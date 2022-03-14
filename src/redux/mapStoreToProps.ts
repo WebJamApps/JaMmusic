@@ -1,5 +1,5 @@
 import type { AGClientSocket } from 'socketcluster-client';
-import type { ISong } from '../providers/Songs.provider';
+import type { ISong } from '../providers/Data.provider';
 
 export interface Auth {
   isAuthenticated: boolean,

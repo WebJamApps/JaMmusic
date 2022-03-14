@@ -4,7 +4,7 @@ import { withRouter, Redirect, RouteComponentProps } from 'react-router-dom';
 import { connect } from 'react-redux';
 import type { AGClientSocket } from 'socketcluster-client';
 import type { Dispatch, AnyAction } from 'redux';
-import type { ISong } from '../../providers/Songs.provider';
+import type { ISong } from 'src/providers/Data.provider';
 import mapStoreToProps, { Tour, Iimage } from '../../redux/mapStoreToProps';
 import Forms from '../../lib/forms';
 import commonUtils from '../../lib/commonUtils';
