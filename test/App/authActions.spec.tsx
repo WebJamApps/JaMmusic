@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import superagent from 'superagent';
-import authenticate from '../../src/App/authActions';
+import { authenticate } from '../../src/App/authenticate';
 
 describe('authActions', () => {
   it('authenticates', async () => {

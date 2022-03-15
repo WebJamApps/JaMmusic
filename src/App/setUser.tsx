@@ -26,42 +26,11 @@ export interface IauthUtils {
   responseGoogleFailLogin: (response: unknown) => string;
   responseGoogleLogout: (dispatch: Dispatch<unknown>) => boolean;
 }
-const setUser = async (view: AppTemplate): Promise<void> => {
-  const { auth, dispatch } = view.props;
+export const setUser = async (props: { auth: any; dispatch: any; }): Promise<void> => {
+  const { auth, dispatch } = props;
   try {
     const decoded = jwt.verify(auth.token, process.env.HashString || /* istanbul ignore next */'');
     await setUserRedux(dispatch, decoded, auth);
   } catch (e) { console.log(e); }
 };
 
-const responseGoogleLogin = async (response: GoogleLoginResponseOffline | GoogleLoginResponse,
-  view: AppTemplate): Promise<void> => {
-  const uri = window.location.href;
-  const baseUri = uri.split('/')[2];
-  const body = {
-    clientId: process.env.GoogleClientId,
-    redirectUri: /* istanbul ignore next */!baseUri.includes('localhost')
-      && process.env.NODE_ENV === 'production' ? `https://${baseUri}` : `http://${baseUri}`,
-    code: `${response.code}`,
-    /* istanbul ignore next */state() {
-      const rand = Math.random().toString(36).substr(2);
-      return encodeURIComponent(rand);
-    },
-  };
-  try {
-    await view.authenticate(body, view.props);
-    await setUser(view);
-  } catch (e) { console.log(e); }
-};
-
-const responseGoogleFailLogin = (response: unknown): string => `${response}`;
-
-const responseGoogleLogout = (dispatch: Dispatch<unknown>): boolean => {
-  dispatch({ type: 'LOGOUT' });
-  window.location.reload();
-  return true;
-};
-
-export default {
-  responseGoogleLogin, responseGoogleLogout, responseGoogleFailLogin, setUser, setUserRedux,
-};

@@ -1,18 +1,14 @@
 /* eslint-disable react/sort-comp */
 import React, { Dispatch } from 'react';
 import { Link, withRouter, RouteComponentProps } from 'react-router-dom';
-import {
-  GoogleLogin, GoogleLogout, GoogleLoginResponse, GoogleLoginResponseOffline,
-} from 'react-google-login';
 import { connect } from 'react-redux';
 import type { Auth } from '../redux/mapStoreToProps';
 import mapStoreToATemplateProps from '../redux/mapStoreToAppTemplateProps';
-import AuthUtils from './authUtils';
 import AppTemplateUtils from './appTemplateUtils';
 import Footer from './Footer';
 import MenuUtils from './menuUtils';
 import MenuItems, { ImenuItem } from './menuItems';
-import authActions from './authActions';
+// import authActions from './authActions';
 
 export interface AppTemplateProps extends RouteComponentProps {
   heartBeat: string;
@@ -44,13 +40,9 @@ export class AppTemplate extends React.Component<AppTemplateProps, AppMainState>
 
   menuUtils = MenuUtils;
 
-  authUtils = AuthUtils;
-
   appTemplateUtils = AppTemplateUtils;
 
   menuItems = MenuItems;
-
-  authenticate: typeof authActions;
 
   constructor(props: AppTemplateProps) {
     super(props);
@@ -60,10 +52,6 @@ export class AppTemplate extends React.Component<AppTemplateProps, AppMainState>
     this.handleKeyMenu = this.handleKeyMenu.bind(this);
     this.toggleMobileMenu = this.toggleMobileMenu.bind(this);
     this.navLinks = this.navLinks.bind(this);
-    this.responseGoogleLogin = this.responseGoogleLogin.bind(this);
-    this.responseGoogleLogout = this.responseGoogleLogout.bind(this);
-    this.googleButtons = this.googleButtons.bind(this);
-    this.authenticate = authActions;
   }
 
   handleKeyPress(e: { key: string; }): (void | null) {
@@ -95,43 +83,12 @@ export class AppTemplate extends React.Component<AppTemplateProps, AppMainState>
     this.setState({ menuOpen: mO });
   }
 
-  async responseGoogleLogin(response: GoogleLoginResponseOffline | GoogleLoginResponse): Promise<void> {
-    await this.authUtils.responseGoogleLogin(response, this);
-  }
-
-  responseGoogleLogout(): boolean { return this.authUtils.responseGoogleLogout(this.props.dispatch); }
-
   close(): boolean {
     this.setState({ menuOpen: false });
     return true;
   }
 
-  googleButtons(type: string, index: number): JSX.Element {
-    const cId = process.env.GoogleClientId || /* istanbul ignore next */'';
-    if (type === 'login') {
-      return (
-        <div key={index} className="menu-item googleLogin">
-          <GoogleLogin
-            // eslint-disable-next-line no-console
-            onAutoLoadFinished={(good) => { console.log(good); return good; }}
-            responseType="code"
-            clientId={cId}
-            buttonText="Login"
-            accessType="offline"
-            onSuccess={this.responseGoogleLogin}
-            onFailure={this.authUtils.responseGoogleFailLogin}
-            cookiePolicy="single_host_origin"
-          />
-        </div>
-      );
-    } return (
-      <div key={index} className="menu-item googleLogout">
-        <GoogleLogout clientId={cId} buttonText="Logout" onLogoutSuccess={this.responseGoogleLogout} />
-      </div>
-    );
-  }
-
-  makeLink(menu: ImenuItem, index: number, type:string) :JSX.Element {
+  makeLink(menu: ImenuItem, index: number, type: string): JSX.Element {
     return (
       <div key={index} className="menu-item">
         {type === 'Link' ? (
@@ -160,12 +117,13 @@ export class AppTemplate extends React.Component<AppTemplateProps, AppMainState>
     const { userCount, heartBeat } = this.props;
     return (
       <div className="nav-list" style={{ width: '180px' }}>
-        { process.env.APP_NAME !== 'joshandmariamusic.com'
+        {process.env.APP_NAME !== 'joshandmariamusic.com'
           ? (
             <div
               id="musTT"
               style={{
-                display: 'none', position: 'absolute', top: '305px', right: '68px', backgroundColor: 'white', padding: '3px',
+                display: 'none', position: 'absolute', top: '305px', right: '68px', backgroundColor: 'white', 
+                padding: '3px',
               }}
             >
               Music
@@ -194,7 +152,9 @@ export class AppTemplate extends React.Component<AppTemplateProps, AppMainState>
 
   drawerContainer(style: string): JSX.Element {
     return (
-      <div tabIndex={0} role="button" id="sidebar" onClick={this.close} onKeyPress={this.handleKeyPress} className={`${style} drawer-container`}>
+      <div tabIndex={0} role="button" id="sidebar" onClick={this.close} onKeyPress={this.handleKeyPress}
+        className={`${style} drawer-container`}
+      >
         <div
           className="drawer"
           style={{

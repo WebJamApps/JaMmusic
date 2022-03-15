@@ -2,14 +2,19 @@
 import type { Auth } from '../redux/mapStoreToProps';
 import commonUtils from '../lib/commonUtils';
 import type { ImenuItem } from './menuItems';
-import type { AppTemplate } from './AppTemplate';
+import type { AppTemplate, AppTemplateProps } from './AppTemplate';
+import { GoogleButtons } from './GoogleButtons';
 
 const continueMenuItem = (menu: ImenuItem,
   index: number,
   auth: Auth,
-  view: AppTemplate): JSX.Element | null => {
-  if (menu.type === 'googleLogin' && !auth.isAuthenticated) return view.googleButtons('login', index);
-  if (menu.type === 'googleLogout' && auth.isAuthenticated) return view.googleButtons('logout', index);
+  appTemplateProps: AppTemplateProps): JSX.Element | null => {
+  if (menu.type === 'googleLogin' && !auth.isAuthenticated) {
+    return <GoogleButtons type="login" index={index} appTemplateProps={appTemplateProps}/>;
+  }
+  if (menu.type === 'googleLogout' && auth.isAuthenticated) {
+    return <GoogleButtons type="logout" index={index} appTemplateProps={appTemplateProps}/>;
+  }
   return null;
 };
 
@@ -23,7 +28,7 @@ const menuItem = (menu: ImenuItem,
     return view.makeMenuLink(menu, index);
   }
   if (menu.type === 'link' && !menu.link.includes('/music/') && !location.pathname.includes('/music')) return view.makeMenuLink(menu, index);
-  return continueMenuItem(menu, index, auth, view);
+  return continueMenuItem(menu, index, auth, view.props);
 };
 
 const makeIconAndText = (menu:ImenuItem): JSX.Element => (
