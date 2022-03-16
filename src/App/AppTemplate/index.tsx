@@ -2,13 +2,12 @@
 import React, { Dispatch } from 'react';
 import { Link, withRouter, RouteComponentProps } from 'react-router-dom';
 import { connect } from 'react-redux';
-import type { Auth } from '../redux/mapStoreToProps';
-import mapStoreToATemplateProps from '../redux/mapStoreToAppTemplateProps';
-import AppTemplateUtils from './appTemplateUtils';
-import Footer from './Footer';
-import MenuUtils from './menuUtils';
-import MenuItems, { ImenuItem } from './menuItems';
-// import authActions from './authActions';
+import type { Auth } from '../../redux/mapStoreToProps';
+import mapStoreToATemplateProps from '../../redux/mapStoreToAppTemplateProps';
+import appTemplateUtils from './appTemplateUtils';
+import Footer from '../Footer';
+import MenuUtils from '../menuUtils';
+import MenuItems, { ImenuItem } from '../menuItems';
 
 export interface AppTemplateProps extends RouteComponentProps {
   heartBeat: string;
@@ -40,9 +39,9 @@ export class AppTemplate extends React.Component<AppTemplateProps, AppMainState>
 
   menuUtils = MenuUtils;
 
-  appTemplateUtils = AppTemplateUtils;
-
   menuItems = MenuItems;
+
+  utils = appTemplateUtils;
 
   constructor(props: AppTemplateProps) {
     super(props);
@@ -132,7 +131,7 @@ export class AppTemplate extends React.Component<AppTemplateProps, AppMainState>
         {process.env.APP_NAME !== 'joshandmariamusic.com' ? this.menuItems.wjNav.map((menu, index) => (this.menuUtils.menuItem(menu, index, this)))
           : this.menuItems.jamNav.map((menu, index) => (this.makeExternalLink(menu, index)))}
         <p style={{ margin: 0, padding: 0, fontSize: '6pt' }}>&nbsp;</p>
-        {process.env.APP_NAME !== 'joshandmariamusic.com' ? this.appTemplateUtils.activeUsers(heartBeat, userCount) : null}
+        {process.env.APP_NAME !== 'joshandmariamusic.com' ? this.utils.activeUsers(heartBeat, userCount) : null}
       </div>
     );
   }

@@ -5,15 +5,20 @@ import type { ImenuItem } from './menuItems';
 import type { AppTemplate, AppTemplateProps } from './AppTemplate';
 import { GoogleButtons } from './GoogleButtons';
 
-const continueMenuItem = (menu: ImenuItem,
+const continueMenuItem = (
+  menu: ImenuItem,
   index: number,
   auth: Auth,
-  appTemplateProps: AppTemplateProps): JSX.Element | null => {
+  appTemplateProps: AppTemplateProps,
+): JSX.Element | null => {
+  // console.log(auth);
+  // console.log(menu.type);
   if (menu.type === 'googleLogin' && !auth.isAuthenticated) {
-    return <GoogleButtons type="login" index={index} appTemplateProps={appTemplateProps}/>;
+    return <GoogleButtons key="googleLogin" type="login" index={index} appTemplateProps={appTemplateProps}/>;
   }
   if (menu.type === 'googleLogout' && auth.isAuthenticated) {
-    return <GoogleButtons type="logout" index={index} appTemplateProps={appTemplateProps}/>;
+    // console.log(auth);
+    return <GoogleButtons key="googleLogout" type="logout" index={index} appTemplateProps={appTemplateProps}/>;
   }
   return null;
 };
