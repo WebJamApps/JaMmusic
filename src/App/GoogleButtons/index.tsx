@@ -1,6 +1,6 @@
-import type { Dispatch } from 'react';
 import { GoogleLogout, GoogleLogin, GoogleLoginResponseOffline, GoogleLoginResponse } from 'react-google-login';
-import type { AppTemplateProps } from './AppTemplate';
+import type { AppTemplateProps } from '../AppTemplate';
+import type { Dispatch } from 'react';
 import { authenticate } from './authenticate';
 import { setUser } from './setUser';
 

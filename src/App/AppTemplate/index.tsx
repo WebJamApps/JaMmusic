@@ -2,12 +2,12 @@
 import React, { Dispatch } from 'react';
 import { Link, withRouter, RouteComponentProps } from 'react-router-dom';
 import { connect } from 'react-redux';
-import type { Auth } from '../../redux/mapStoreToProps';
-import mapStoreToATemplateProps from '../../redux/mapStoreToAppTemplateProps';
+import type { Auth } from 'src/redux/mapStoreToProps';
+import mapStoreToATemplateProps from 'src/redux/mapStoreToAppTemplateProps';
 import appTemplateUtils from './appTemplateUtils';
-import Footer from '../Footer';
-import MenuUtils from '../menuUtils';
-import MenuItems, { ImenuItem } from '../menuItems';
+import { Footer } from './Footer';
+import { IconAndText, MenuItem } from './MenuItem';
+import MenuConfig, { ImenuItem } from './menuConfig';
 
 export interface AppTemplateProps extends RouteComponentProps {
   heartBeat: string;
@@ -37,9 +37,7 @@ export class AppTemplate extends React.Component<AppTemplateProps, AppMainState>
     heartBeat: 'white',
   };
 
-  menuUtils = MenuUtils;
-
-  menuItems = MenuItems;
+  menuConfig = MenuConfig;
 
   utils = appTemplateUtils;
 
@@ -92,12 +90,12 @@ export class AppTemplate extends React.Component<AppTemplateProps, AppMainState>
       <div key={index} className="menu-item">
         {type === 'Link' ? (
           <Link to={menu.link} className="nav-link" onClick={this.close}>
-            {this.menuUtils.makeIconAndText(menu)}
+            <IconAndText menu={menu}/>
           </Link>
         )
           : (
             <a href={menu.link} className="nav-link" onClick={this.close}>
-              {this.menuUtils.makeIconAndText(menu)}
+              <IconAndText menu={menu}/>
             </a>
           )}
       </div>
@@ -121,15 +119,17 @@ export class AppTemplate extends React.Component<AppTemplateProps, AppMainState>
             <div
               id="musTT"
               style={{
-                display: 'none', position: 'absolute', top: '305px', right: '68px', backgroundColor: 'white', 
+                display: 'none', position: 'absolute', top: '305px', right: '68px', backgroundColor: 'white',
                 padding: '3px',
               }}
             >
               Music
             </div>
           ) : null}
-        {process.env.APP_NAME !== 'joshandmariamusic.com' ? this.menuItems.wjNav.map((menu, index) => (this.menuUtils.menuItem(menu, index, this)))
-          : this.menuItems.jamNav.map((menu, index) => (this.makeExternalLink(menu, index)))}
+        {process.env.APP_NAME !== 'joshandmariamusic.com' ? this.menuConfig.wjNav.map(
+          (menu, index) => <MenuItem menu={menu} index={index} view={this}/>,
+        )
+          : this.menuConfig.jamNav.map((menu, index) => (this.makeExternalLink(menu, index)))}
         <p style={{ margin: 0, padding: 0, fontSize: '6pt' }}>&nbsp;</p>
         {process.env.APP_NAME !== 'joshandmariamusic.com' ? this.utils.activeUsers(heartBeat, userCount) : null}
       </div>

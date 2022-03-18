@@ -1,9 +1,9 @@
 
-import type { Auth } from '../redux/mapStoreToProps';
-import commonUtils from '../lib/commonUtils';
-import type { ImenuItem } from './menuItems';
-import type { AppTemplate, AppTemplateProps } from './AppTemplate';
-import { GoogleButtons } from './GoogleButtons';
+import type { Auth } from '../../redux/mapStoreToProps';
+import commonUtils from '../../lib/commonUtils';
+import type { ImenuItem } from './menuConfig';
+import type { AppTemplate, AppTemplateProps } from '.';
+import { GoogleButtons } from '../GoogleButtons';
 
 const continueMenuItem = (
   menu: ImenuItem,
@@ -11,21 +11,17 @@ const continueMenuItem = (
   auth: Auth,
   appTemplateProps: AppTemplateProps,
 ): JSX.Element | null => {
-  // console.log(auth);
-  // console.log(menu.type);
   if (menu.type === 'googleLogin' && !auth.isAuthenticated) {
     return <GoogleButtons key="googleLogin" type="login" index={index} appTemplateProps={appTemplateProps}/>;
   }
   if (menu.type === 'googleLogout' && auth.isAuthenticated) {
-    // console.log(auth);
     return <GoogleButtons key="googleLogout" type="logout" index={index} appTemplateProps={appTemplateProps}/>;
   }
   return null;
 };
 
-const menuItem = (menu: ImenuItem,
-  index: number,
-  view: AppTemplate): JSX.Element | null => {
+interface ImenuItemProps {menu:ImenuItem, index:number, view:AppTemplate}
+export const MenuItem = ({ menu, index, view }:ImenuItemProps): JSX.Element | null => {
   const userRoles: string[] = commonUtils.getUserRoles();
   const { location, auth } = view.props;
   if (menu.auth && (!auth.isAuthenticated || userRoles.indexOf(auth.user.userType) === -1)) return null;
@@ -36,7 +32,7 @@ const menuItem = (menu: ImenuItem,
   return continueMenuItem(menu, index, auth, view.props);
 };
 
-const makeIconAndText = (menu:ImenuItem): JSX.Element => (
+export const IconAndText = ({ menu }:{ menu:ImenuItem }): JSX.Element => (
   <div style={{ display: 'inline' }}>
     <i className={`${menu.iconClass}`} />
     &nbsp;
@@ -44,4 +40,3 @@ const makeIconAndText = (menu:ImenuItem): JSX.Element => (
   </div>
 );
 
-export default { continueMenuItem, menuItem, makeIconAndText };

@@ -1,6 +1,6 @@
 import superagent from 'superagent';
 import jwt from 'jsonwebtoken';
-import type { AppTemplateProps } from './AppTemplate';
+import type { AppTemplateProps } from '../AppTemplate';
 import type { Auth } from 'src/redux/mapStoreToProps';
 
 const setUserRedux = async (dispatch: (...args: any) => void, decoded: jwt.JwtPayload, token: string) => {
