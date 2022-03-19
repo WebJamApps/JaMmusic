@@ -93,6 +93,15 @@ button.on {
   height: 125px;
 }
 
+.top-row-style { 
+  border-style: inset;
+  border-bottom-color: darkgrey;
+  border-right-color: darkgray; 
+  border-left-color: black;
+  border-top-color: black;
+  background-color: whitesmoke;
+}
+
 .soundcloudOverlay {
   position: absolute;
   margin-top: 13px;
