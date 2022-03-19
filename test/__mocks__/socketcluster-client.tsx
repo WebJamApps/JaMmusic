@@ -6,6 +6,7 @@ export const create = (options: any): any => {
     subscribe: () => ({ createConsumer: () => ({ next: () => Promise.resolve({ value: 1, done: true }) }) }),
     receiver: () => ({ createConsumer: () => ({ next: () => Promise.resolve({ value: 'connected', done: true }) }) }),
     transmit: () => { },
+    disconnect:()=>{},
   };
 };
 export default { create };

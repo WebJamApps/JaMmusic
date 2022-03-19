@@ -1,4 +1,4 @@
-import React from 'react';
+
 import createPersistedState from 'use-persisted-state';
 import { PersistedTimeKeeper } from './PersistedTimeKeeper';
 import { ShowTimeButton } from './ShowTimeButton';

@@ -1,16 +1,17 @@
-import React from 'react';
+
 import { Provider } from 'react-redux';
 import { render } from 'react-dom';
+import { hot } from 'react-hot-loader';
 import { PersistGate } from 'redux-persist/integration/react';
 import ConnectedApp from './App/index';
 import store from './redux/store/index';
-import SongsProvider from './providers/Songs.provider';
+import { DataProvider } from './providers/Data.provider';
 import '../static/styles.scss';
 import { EditorProvider } from './providers/Editor.provider';
 
-export const renderMain = ():void => {
-  render(
-    <SongsProvider>
+const Main = () => {
+  return (
+    <DataProvider>
       <EditorProvider>
         <Provider store={store.store}>
           <PersistGate loading={null} persistor={store.persistor}>
@@ -18,9 +19,12 @@ export const renderMain = ():void => {
           </PersistGate>
         </Provider>
       </EditorProvider>
-    </SongsProvider>, document.getElementById('root'),
+    </DataProvider>
   );
+};
 
-  /* istanbul ignore next */
-  if (process.env.NODE_ENV === 'development' && module.hot) module.hot.accept();
+const HotMain = hot(module)(Main);
+
+export const renderMain = (): void => {
+  render(<HotMain />, document.getElementById('root'));
 };

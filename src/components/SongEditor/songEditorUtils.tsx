@@ -1,5 +1,5 @@
 import type superagent from 'superagent';
-import type { ISong } from '../../providers/Songs.provider';
+import type { ISong } from 'src/providers/Data.provider';
 
 async function updateSongAPI(sa:typeof superagent, songChanges:ISong, auth:any, setNewEditor:any): Promise<string> {
   const id = songChanges._id;

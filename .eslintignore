@@ -2,3 +2,4 @@ node_modules
 coverage
 dist
 codeclimate.html
+webpack.config.js

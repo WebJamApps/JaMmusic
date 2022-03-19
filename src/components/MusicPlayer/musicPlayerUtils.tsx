@@ -1,5 +1,5 @@
-import React from 'react';
-import type { ISong } from '../../providers/Songs.provider';
+
+import type { ISong } from 'src/providers/Data.provider';
 import type { Iplayer } from './musicPlayerTypes';
 import type { MusicPlayer } from '.';
 

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import ReactPlayer from 'react-player';
 import { FacebookShareButton, FacebookIcon } from 'react-share';
 import musicPlayerUtils from './musicPlayerUtils';
-import type { ISong } from '../../providers/Songs.provider';
+import type { ISong } from 'src/providers/Data.provider';
 import musicUtils from './musicUtils';
 import commonUtils from '../../lib/commonUtils';
 import type { Iplayer } from './musicPlayerTypes';

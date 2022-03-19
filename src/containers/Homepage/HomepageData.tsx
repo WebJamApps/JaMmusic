@@ -1,4 +1,3 @@
-import React from 'react';
 
 const Faqs = (): JSX.Element => (
   <div className="faqs">

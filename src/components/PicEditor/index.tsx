@@ -1,4 +1,4 @@
-import React from 'react';
+
 import type { MusicDashboard } from '../../containers/MusicDashboard';
 import type { MusicDashboardController } from '../../containers/MusicDashboard/MusicDashboardController';
 

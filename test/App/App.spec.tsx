@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React from 'react';
+
 import { shallow } from 'enzyme';
 import env from 'dotenv';
-import { App } from '../../src/App';
+import { App } from 'src/App';
 
 env.config();
 describe('App component', () => {

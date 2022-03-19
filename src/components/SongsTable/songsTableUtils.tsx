@@ -1,6 +1,6 @@
-import React from 'react';
+
 import superagent from 'superagent';
-import type { ISong } from '../../providers/Songs.provider';
+import type { ISong } from 'src/providers/Data.provider';
 
 const editSong = (data: ISong, makeNewEditor:any, editor:any, picsForm:HTMLElement | null): boolean => {
   const songData = { ...data, modify: undefined };

@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { shallow } from 'enzyme';
 import { DashNavigationButtons } from '../../../src/components/DashNavigationButtons';
 

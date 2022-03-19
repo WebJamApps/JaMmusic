@@ -1,4 +1,3 @@
-import React from 'react';
 
 const WjBand = (): JSX.Element => (
   <div className="wjBand" style={{ textAlign: 'left' }}>

@@ -1,4 +1,3 @@
-import React from 'react';
 
 const WideFacebookFeed = (): JSX.Element => (
   <div style={{ maxWidth: '500px', margin: 'auto' }}>

@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React from 'react';
 import { shallow } from 'enzyme';
 import { Redirect } from 'react-router-dom';
 import { MusicDashboard } from '../../../src/containers/MusicDashboard';

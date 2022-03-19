@@ -1,6 +1,5 @@
-import React from 'react';
+
 import { shallow } from 'enzyme';
-import { ProgressPlugin } from 'webpack';
 import PicSlider from '../../src/components/PicSlider';
 
 function setup() {

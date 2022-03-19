@@ -1,18 +1,17 @@
-import React from 'react';
+
+import { useContext, FC } from 'react';
 import MUIDataTable from 'mui-datatables';
 import type { Dispatch, AnyAction } from 'redux';
-import { ISong, SongsContext } from '../../providers/Songs.provider';
+import { ISong, DataContext } from 'src/providers/Data.provider';
 import songsTableUtils from './songsTableUtils';
 import { EditorContext } from '../../providers/Editor.provider';
 
-type Props = {
-  sData?:ISong[], token:string, dispatch: Dispatch<AnyAction>
-};
-const SongsTable:React.FC<Props> = ({ sData, token }): JSX.Element => {
-  const { songs } = React.useContext(SongsContext);
-  const { editor, setNewEditor } = React.useContext(EditorContext);
+type SongsTableProps = { sData?:ISong[], token:string, dispatch: Dispatch<AnyAction> };
+const SongsTable:FC<SongsTableProps> = ({ sData, token }): JSX.Element => {
+  const { songs } = useContext(DataContext);
+  const { editor, setEditor } = useContext(EditorContext);
   let tableData = sData !== undefined ? sData : songs;
-  tableData = tableData.length > 0 ? songsTableUtils.addButtons(tableData, token, setNewEditor, editor) : [];
+  tableData = tableData.length > 0 ? songsTableUtils.addButtons(tableData, token, setEditor, editor) : [];
   return (
     <div style={{ padding: '10px', marginBottom: '-20px' }}>
       {tableData.length > 0 ? (

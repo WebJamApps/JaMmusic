@@ -95,12 +95,10 @@ export class AppTemplate extends React.Component<AppTemplateProps, AppMainState>
     this.setState({ menuOpen: mO });
   }
 
-  // eslint-disable-next-line react/destructuring-assignment
-  responseGoogleLogin(response: GoogleLoginResponseOffline | GoogleLoginResponse): Promise<string> {
-    return this.authUtils.responseGoogleLogin(response, this);
+  async responseGoogleLogin(response: GoogleLoginResponseOffline | GoogleLoginResponse): Promise<void> {
+    await this.authUtils.responseGoogleLogin(response, this);
   }
 
-  // eslint-disable-next-line react/destructuring-assignment
   responseGoogleLogout(): boolean { return this.authUtils.responseGoogleLogout(this.props.dispatch); }
 
   close(): boolean {
