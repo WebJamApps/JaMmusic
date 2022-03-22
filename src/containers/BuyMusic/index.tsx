@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import Jsb from './joshShermanBand';
-import Jss from './joshShermanSolo';
-import Jssp from './joshShermanSpotify';
-import Jsyt from './joshShermanYoutube';
+import Jsb from './BuyLinks/joshShermanBand';
+import Jss from './BuyLinks/joshShermanSolo';
+import Jsyt from './MediaLinks/joshShermanYoutube';
+import Jssp from './MediaLinks/joshShermanSpotify';
 import commonUtils from '../../lib/commonUtils';
 
 export default class BuyMusic extends Component {
@@ -26,9 +26,9 @@ export default class BuyMusic extends Component {
           textAlign: 'center', margin: '20px', fontWeight: 'bold', fontSize: '16pt', marginBottom: '10px',
         }}
         >
-          Buy Music
+          Buy from CD Baby
         </h3>
-        <div className="row">
+        <div className="row top-row-style">
           <div className="col">
             <Jsb />
           </div>
@@ -38,12 +38,12 @@ export default class BuyMusic extends Component {
           </div>
         </div>
         <p style={{ fontSize: '24pt' }}>{' '}</p>
+        <div style={{ textAlign:'center' }}>
+          <Jsyt />
+        </div>
         <div style={{ margin: 'auto', textAlign: 'center' }}>
           <Jssp />
         </div>
-        <div style={{ textAlign:'center' }}>
-          <Jsyt />
-        </div> 
       </div>
     );
   }
