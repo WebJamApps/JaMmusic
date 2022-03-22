@@ -25,7 +25,8 @@
     "/puppeteer/"
   ],
   "collectCoverageFrom": [
-    "src/**/*.{js,jsx,ts,tsx}"
+    "src/**/*.{js,jsx,ts,tsx}",
+    "!src/index.tsx"
   ],
   "collectCoverage": true,
   "testURL": "http://localhost/",
