@@ -22,12 +22,12 @@ export default class BuyMusic extends Component {
           paddingRight: '15px', maxWidth: '800px', margin: 'auto', borderRight: 'none',
         }}
       >
-        <h3 style={{
-          textAlign: 'center', margin: '20px', fontWeight: 'bold', fontSize: '16pt', marginBottom: '10px',
+        <h2 style={{
+          textAlign: 'center', margin: '20px', fontWeight: 'bold', marginBottom: '10px',
         }}
         >
           Buy from CD Baby
-        </h3>
+        </h2>
         <div className="row top-row-style">
           <div className="col">
             <Jsb />
@@ -37,12 +37,11 @@ export default class BuyMusic extends Component {
             <Jss />
           </div>
         </div>
-        <p style={{ fontSize: '24pt' }}>{' '}</p>
+        <div style={{ margin: 'auto', textAlign: 'center', marginTop:'50px' }}>
+          <Jssp />
+        </div>
         <div style={{ textAlign:'center' }}>
           <Jsyt />
-        </div>
-        <div style={{ margin: 'auto', textAlign: 'center' }}>
-          <Jssp />
         </div>
       </div>
     );
