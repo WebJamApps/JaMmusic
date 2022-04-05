@@ -5,7 +5,7 @@ import HtmlReactParser from 'html-react-parser';
 import { defaultGig } from 'src/providers/fetchGigs';
 import './Gigs.scss';
 
-const makeVenueValue = (value:string) =>{
+export const makeVenueValue = (value:string) =>{
   const parsed = HtmlReactParser(value);
   if (value === 'Our Past Performances') return <span className="ourPastPerformances">{parsed}</span>;
   return <span>{parsed}</span>;
@@ -54,10 +54,9 @@ export const columns: GridColumns = [
 
 export const orderGigs = (gigs: IGig[], setGigsInOrder: { (arg0: IGig[]): void; }) => {
   const now = new Date().toISOString();
-  const futureGigs = gigs.filter((g) => g.datetime && g.datetime >= now);
-  const pastGigs = gigs.filter((g) => g.datetime && g.datetime < now);
+  const futureGigs = gigs.filter((g) => typeof g.datetime === 'string' && g.datetime >= now);
+  const pastGigs = gigs.filter((g) => typeof g.datetime === 'string' && g.datetime < now);
   const sortedFuture = futureGigs.sort((a, b) => {
-    if (!a.datetime || !b.datetime) return 0;
     if (a.datetime > b.datetime) return 1;
     if (a.datetime < b.datetime) return -1;
     return 0;

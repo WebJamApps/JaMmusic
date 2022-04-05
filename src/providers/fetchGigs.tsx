@@ -8,6 +8,7 @@ export const defaultGig: IGig = {
   venue: '',
   location: '',
   id: 0,
+  datetime: '',
 };
 
 const validateGigsArr = (receiver: IteratorResult<any, any>,
