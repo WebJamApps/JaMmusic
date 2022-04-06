@@ -20,7 +20,6 @@ const setUserRedux = async (dispatch: (...args: any) => void, decoded: jwt.JwtPa
 export const setUser = async (dispatch: AppTemplateProps['dispatch'], token: string, auth: Auth): Promise<void> => {
   try {
     const decoded = jwt.verify(token, process.env.HashString || /* istanbul ignore next */'') as jwt.JwtPayload;
-    console.log(decoded);
     await setUserRedux(dispatch, decoded, token);
   } catch (e) { console.log(e); }
 };

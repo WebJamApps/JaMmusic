@@ -62,7 +62,6 @@ export const orderGigs = (gigs: IGig[], setGigsInOrder: { (arg0: IGig[]): void; 
     return 0;
   });
   sortedFuture.push({ ...defaultGig, venue: 'Our Past Performances', id:999, tickets:' ' });
-  console.log(futureGigs);
   setGigsInOrder(sortedFuture.concat(pastGigs));
 };
 

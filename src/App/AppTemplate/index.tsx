@@ -1,12 +1,12 @@
 /* eslint-disable react/sort-comp */
 import React, { Dispatch } from 'react';
-import { Link, withRouter, RouteComponentProps } from 'react-router-dom';
+import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { connect } from 'react-redux';
 import type { Auth } from 'src/redux/mapStoreToProps';
 import mapStoreToATemplateProps from 'src/redux/mapStoreToAppTemplateProps';
 import appTemplateUtils from './appTemplateUtils';
 import { Footer } from './Footer';
-import { IconAndText, MenuItem } from './MenuItem';
+import { MenuItem } from './MenuItem';
 import MenuConfig, { ImenuItem } from './menuConfig';
 
 export interface AppTemplateProps extends RouteComponentProps {
@@ -85,29 +85,8 @@ export class AppTemplate extends React.Component<AppTemplateProps, AppMainState>
     return true;
   }
 
-  makeLink(menu: ImenuItem, index: number, type: string): JSX.Element {
-    return (
-      <div key={index} className="menu-item">
-        {type === 'Link' ? (
-          <Link to={menu.link} className="nav-link" onClick={this.close}>
-            <IconAndText menu={menu}/>
-          </Link>
-        )
-          : (
-            <a href={menu.link} className="nav-link" onClick={this.close}>
-              <IconAndText menu={menu}/>
-            </a>
-          )}
-      </div>
-    );
-  }
-
-  makeMenuLink(menu: ImenuItem, index: number): JSX.Element {
-    return this.makeLink(menu, index, 'Link');
-  }
-
   makeExternalLink(menu: ImenuItem, index: number): JSX.Element {
-    return this.makeLink(menu, index, 'a');
+    return this.utils.makeLink(menu, index, 'a', this);
   }
 
   navLinks(): JSX.Element {

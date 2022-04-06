@@ -22,7 +22,6 @@ const responseGoogleLogin = async (
   };
   try {
     const token = await authenticate(body, appTemplateProps);
-    console.log(token);
     await setUser(appTemplateProps.dispatch, token, appTemplateProps.auth);
   } catch (e) { console.log(e); }
 };
