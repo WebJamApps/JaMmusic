@@ -4,7 +4,7 @@ import type { Dispatch } from 'react';
 import { authenticate } from './authenticate';
 import { setUser } from './setUser';
 
-const responseGoogleLogin = async (
+export const responseGoogleLogin = async (
   response: GoogleLoginResponseOffline | GoogleLoginResponse,
   appTemplateProps: AppTemplateProps,
 ): Promise<void> => {
@@ -13,7 +13,7 @@ const responseGoogleLogin = async (
   const body = {
     clientId: process.env.GoogleClientId,
     redirectUri: /* istanbul ignore next */!baseUri.includes('localhost')
-        && process.env.NODE_ENV === 'production' ? `https://${baseUri}` : `http://${baseUri}`,
+      && process.env.NODE_ENV === 'production' ? `https://${baseUri}` : `http://${baseUri}`,
     code: `${response.code}`,
     /* istanbul ignore next */state() {
       const rand = Math.random().toString(36).substr(2);
@@ -26,7 +26,7 @@ const responseGoogleLogin = async (
   } catch (e) { console.log(e); }
 };
 
-const responseGoogleFailLogin = (response: unknown): string => `${response}`;
+export const responseGoogleFailLogin = (response: unknown): string => `${response}`;
 
 const responseGoogleLogout = (dispatch: Dispatch<unknown>): boolean => {
   dispatch({ type: 'LOGOUT' });
@@ -35,29 +35,29 @@ const responseGoogleLogout = (dispatch: Dispatch<unknown>): boolean => {
 };
 
 export const GoogleButtons = (
-  { type, index, appTemplateProps }:{ type:string, index:number, appTemplateProps: AppTemplateProps },
+  { type, index, appTemplateProps }: { type: string, index: number, appTemplateProps: AppTemplateProps },
 ): JSX.Element => {
   const cId = process.env.GoogleClientId || /* istanbul ignore next */'';
   const { dispatch } = appTemplateProps;
   if (type === 'login') {
     return (
-        <div key={index} className="menu-item googleLogin">
-          <GoogleLogin
-            // eslint-disable-next-line no-console
-            onAutoLoadFinished={(good) => { console.log(good); return good; }}
-            responseType="code"
-            clientId={cId}
-            buttonText="Login"
-            accessType="offline"
-            onSuccess={(response)=>responseGoogleLogin(response, appTemplateProps)}
-            onFailure={responseGoogleFailLogin}
-            cookiePolicy="single_host_origin"
-          />
-        </div>
+      <div key={index} className="menu-item googleLogin">
+        <GoogleLogin
+          // eslint-disable-next-line no-console
+          onAutoLoadFinished={(good) => { console.log(good); return good; }}
+          responseType="code"
+          clientId={cId}
+          buttonText="Login"
+          accessType="offline"
+          onSuccess={(response) => { responseGoogleLogin(response, appTemplateProps); return response; }}
+          onFailure={responseGoogleFailLogin}
+          cookiePolicy="single_host_origin"
+        />
+      </div>
     );
   } return (
-      <div key={index} className="menu-item googleLogout">
-        <GoogleLogout clientId={cId} buttonText="Logout" onLogoutSuccess={()=>responseGoogleLogout(dispatch)} />
-      </div>
+    <div key={index} className="menu-item googleLogout">
+      <GoogleLogout clientId={cId} buttonText="Logout" onLogoutSuccess={() => responseGoogleLogout(dispatch)} />
+    </div>
   );
 };
