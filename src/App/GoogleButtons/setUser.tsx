@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import type { AppTemplateProps } from '../AppTemplate';
 import type { Auth } from 'src/redux/mapStoreToProps';
 
-const setUserRedux = async (dispatch: (...args: any) => void, decoded: jwt.JwtPayload, token: string) => {
+export const setUserRedux = async (dispatch: (...args: any) => void, decoded: jwt.JwtPayload, token: string) => {
   if (typeof decoded !== 'string' && decoded.user) {
     dispatch({ type: 'SET_USER', data: decoded.user });
     window.location.reload();
