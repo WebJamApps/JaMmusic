@@ -78,13 +78,13 @@ export const EditSongButtons = ({ setEditor, editor, auth, updateSongAPI }:
   editor: Ieditor,
   auth: any, updateSongAPI: any
 }): JSX.Element => {
-  const [songData] = useState(editor.song);
-  const [btnDisabled, setBtnDisabled] = useState(true);
-  useEffect(() => {
-    if (songData !== editor.song) {
-      setBtnDisabled(false);
-    }
-  }, [editor.song, songData]);
+  // const [songData] = useState(editor.song);
+  // const [btnDisabled, setBtnDisabled] = useState(true);
+  // useEffect(() => {
+  //   if (songData !== editor.song) {
+  //     setBtnDisabled(false);
+  //   }
+  // }, [editor.song, songData]);
   return (
     <span>
       <button className="floatRight" type="button" id="cancel-edit-song"

@@ -31,9 +31,10 @@ const addSongAPI = async (sa: typeof superagent, songBody:ISong, auth: { token: 
   } catch (e) { return (e as Error).message; }
   if (r.status === 201) {
     setNewEditor({ song:{}, image:{}, tour:{} });
-    fetchSongs.getSongs(newSong);
+    //fetchSongs.getSongs(newSong);
+    window.location.reload();// do not reload but instead fetch songs and refresh storage
     return 'song created'; 
-  } // do not reload but instead fetch songs and refresh storage
+  } 
   return `${r.status} song was not created`;
 };
 
