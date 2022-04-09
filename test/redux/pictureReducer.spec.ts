@@ -8,4 +8,11 @@ describe('picture reducer', () => {
       },
     );
   });
+  it('handles default', () => {
+    expect(reducer(undefined, { type: 'test', data: { url: 'string', title: '123', _id: '1' } })).toEqual(
+      {
+        editPic: {},
+      },
+    );
+  });
 });

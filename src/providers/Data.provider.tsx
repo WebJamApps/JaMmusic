@@ -6,7 +6,7 @@ import { MakeProvider } from './MakeProvider';
 
 export interface IGig {
   modify?:JSX.Element,
-  datetime?: string;
+  datetime: string;
   more?: string;
   date: string;
   time: string;

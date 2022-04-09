@@ -8,6 +8,7 @@ export const defaultGig: IGig = {
   venue: '',
   location: '',
   id: 0,
+  datetime: '',
 };
 
 const validateGigsArr = (receiver: IteratorResult<any, any>,
@@ -38,7 +39,6 @@ const getGigs = async (setGigs: (_arg0: IGig[]) => void): Promise<void> => {
     secure: process.env.SOCKETCLUSTER_SECURE !== 'false',
   });
   socket.transmit('initial message', 123);
-  console.log('getGigs');
   listenForGigs(socket, 'allTours', setGigs);
 };
 

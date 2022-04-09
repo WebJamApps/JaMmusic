@@ -1,7 +1,7 @@
 
 const JoshShermanSpotify = (): JSX.Element => (
   <div className="spotify">
-    <h5>Also On Spotify</h5>
+    <h4 style={{ marginBottom:'0px' }}>Also On Spotify</h4>
     <div className="row">
       <div className="col" style={{ paddingRight: '0px' }}>
         <iframe

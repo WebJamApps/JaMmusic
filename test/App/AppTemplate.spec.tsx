@@ -2,9 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { shallow } from 'enzyme';
-import { GoogleLogin } from 'react-google-login';
 import { AppTemplate } from '../../src/App/AppTemplate';
-import authUtils from '../../src/App/authUtils';
 
 const anyProp: any = {};
 const location: any = { pathname: '/' };
@@ -47,23 +45,23 @@ describe('AppTemplate', () => {
   //   const result = await wrapper2.instance().responseGoogleLogin(gRes);
   //   expect(result).toBe('true');
   // });
-  it('handles response from google logout', async () => {
-    authUtils.responseGoogleLogout = jest.fn(() => true);
-    const wrapper2 = shallow<AppTemplate>(<AppTemplate
-      dispatch={dFunc}
-      location={location}
-      history={anyProp}
-      match={anyProp}
-    />);
-    const result = await wrapper2.instance().responseGoogleLogout();
-    expect(result).toBe(true);
-  });
-  it('renders the logout button', () => {
-    const { wrapper } = setup();
-    const logoutButton = wrapper.instance().googleButtons('logout', 5);
-    const rLogout = shallow(logoutButton);
-    expect(rLogout.find('div.googleLogout').length).toBe(1);
-  });
+  // it('handles response from google logout', async () => {
+  //   authUtils.responseGoogleLogout = jest.fn(() => true);
+  //   const wrapper2 = shallow<AppTemplate>(<AppTemplate
+  //     dispatch={dFunc}
+  //     location={location}
+  //     history={anyProp}
+  //     match={anyProp}
+  //   />);
+  //   const result = await wrapper2.instance().responseGoogleLogout();
+  //   expect(result).toBe(true);
+  // });
+  // it('renders the logout button', () => {
+  //   const { wrapper } = setup();
+  //   const logoutButton = wrapper.instance().googleButtons('logout', 5);
+  //   const rLogout = shallow(logoutButton);
+  //   expect(rLogout.find('div.googleLogout').length).toBe(1);
+  // });
   it('closes the menu without navigating away from the react app', () => {
     document.body.innerHTML = '<button class="googleLogin"/><button class="googleLogout"/>';
     const aProps: any = { dispatch: () => Promise.resolve(true) };
@@ -105,18 +103,18 @@ describe('AppTemplate', () => {
     wrapper.instance().toggleMobileMenu();
     expect(wrapper.instance().setState).toHaveBeenCalledWith({ menuOpen: true });
   });
-  it('runs onAutoLoadFinished props from GoogleLogin component', () => {
-    const wrapper2 = shallow<AppTemplate>(<AppTemplate
-      dispatch={dFunc}
-      location={location}
-      history={anyProp}
-      match={anyProp}
-    />);
-    const bu = wrapper2.instance().googleButtons('login', 1);
-    const gb = shallow(bu);
-    const auto = gb.find(GoogleLogin).get(0).props.onAutoLoadFinished(false);
-    expect(auto).toBe(false);
-  });
+  // it('runs onAutoLoadFinished props from GoogleLogin component', () => {
+  //   const wrapper2 = shallow<AppTemplate>(<AppTemplate
+  //     dispatch={dFunc}
+  //     location={location}
+  //     history={anyProp}
+  //     match={anyProp}
+  //   />);
+  //   const bu = wrapper2.instance().googleButtons('login', 1);
+  //   const gb = shallow(bu);
+  //   const auto = gb.find(GoogleLogin).get(0).props.onAutoLoadFinished(false);
+  //   expect(auto).toBe(false);
+  // });
   it('runs make external link when joshandmariamusic.com', () => {
     process.env.APP_NAME = 'joshandmariamusic.com';
     const { wrapper } = setup();

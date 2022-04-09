@@ -51,7 +51,6 @@ interface MapProps {
 
 // eslint-disable-next-line arrow-body-style
 const mapStoreToProps = (store: Store): MapProps => {
-  // console.log(store);
   return ({
     images: store.images.images,
     userCount: store.sc.userCount,
