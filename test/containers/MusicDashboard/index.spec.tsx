@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { shallow } from 'enzyme';
 import { Redirect } from 'react-router-dom';
+import type { Auth } from 'src/redux/mapStoreToProps';
 import { MusicDashboard } from '../../../src/containers/MusicDashboard';
 
 describe('Dashboard Container', () => {
@@ -10,7 +11,7 @@ describe('Dashboard Container', () => {
   const scc:any = { transmit: () => { } };
   beforeEach(() => {
     wrapper = shallow<MusicDashboard>(<MusicDashboard
-      auth={auth}
+      auth={auth as Auth}
       scc={scc}
       dispatch={jest.fn()}
       editTour={anyProp}
@@ -39,7 +40,7 @@ describe('Dashboard Container', () => {
   it('handles onChange with editTour', () => {
     const wrapper2 = shallow<MusicDashboard>(
       <MusicDashboard
-        auth={auth}
+        auth={auth as Auth}
         scc={scc}
         dispatch={jest.fn()}
         editTour={{ venue: 'wjllc' }}
@@ -112,7 +113,7 @@ describe('Dashboard Container', () => {
   });
   it('checks edit when editTour', () => {
     const wrapper2 = shallow<MusicDashboard>(<MusicDashboard
-      auth={auth}
+      auth={auth as Auth}
       scc={scc}
       dispatch={jest.fn()}
       editTour={{
@@ -142,7 +143,7 @@ describe('Dashboard Container', () => {
   });
   it('checks edit when not editTour', () => {
     const wrapper2 = shallow<MusicDashboard>(<MusicDashboard
-      auth={auth}
+      auth={auth as Auth}
       scc={scc}
       dispatch={jest.fn()}
       editTour={{}}
@@ -163,7 +164,7 @@ describe('Dashboard Container', () => {
   });
   it('resets edit form when editTour', () => {
     const wrapper2 = shallow<MusicDashboard>(<MusicDashboard
-      auth={auth}
+      auth={auth as Auth}
       scc={scc}
       dispatch={jest.fn()}
       editSong={anyProp}
@@ -195,7 +196,7 @@ describe('Dashboard Container', () => {
   });
   it('calls edit tour api', async () => {
     const wrapper2 = shallow<MusicDashboard>(<MusicDashboard
-      auth={auth}
+      auth={auth as Auth}
       scc={scc}
       dispatch={jest.fn()}
       editSong={anyProp}

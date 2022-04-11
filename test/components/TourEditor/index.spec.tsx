@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { shallow } from 'enzyme';
+import type { Auth } from 'src/redux/mapStoreToProps';
 import { TourEditor, newTourForm } from '../../../src/components/TourEditor';
 import { MusicDashboard } from '../../../src/containers/MusicDashboard';
 
@@ -9,12 +10,12 @@ describe('TourEditor', () => {
     expect(TourEditor).toBeDefined();
   });
   let wrapper: any;
-  const auth = { token: '' };
+  const auth = { token: '' } as Auth;
   const anyProp: any = {};
   const scc:any = { transmit: () => { } };
   beforeEach(() => {
     wrapper = shallow<MusicDashboard>(<MusicDashboard
-      auth={auth}
+      auth={auth as Auth}
       scc={scc}
       dispatch={jest.fn()}
       editTour={anyProp}
@@ -37,7 +38,7 @@ describe('TourEditor', () => {
   it('handles onChange with editTour', () => {
     const wrapper2 = shallow<MusicDashboard>(
       <MusicDashboard
-        auth={auth}
+        auth={auth as Auth}
         scc={scc}
         dispatch={jest.fn()}
         editTour={{ venue: 'wjllc' }}

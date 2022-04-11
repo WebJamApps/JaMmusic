@@ -1,10 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import renderer from 'react-test-renderer';
 import { EditorProvider } from 'src/providers/Editor.provider';
+import type { Auth } from 'src/redux/mapStoreToProps';
 import {
   SongEditor, onChangeSong, makeInput, SongFormTitle, SongButtons, EditSongButtons, SongForm,
   handleCategoryChange,
-} from '../../../src/components/SongEditor';
+} from 'src/components/SongEditor';
+import utils from 'src/components/SongEditor/songEditorUtils';
 
 describe('SongEditor', () => {
   it('renders correctly', () => {
@@ -42,32 +44,31 @@ describe('SongEditor', () => {
   });
   it('SongButtons runs addSongAPI', () => {
     const song = { year: 2021, category: 'original', title: 'title', url: 'url', artist: 'JaM' };
-    const addSongAPI = jest.fn();
+    utils.addSongAPI = jest.fn();
     const songButtons = renderer.create(<SongButtons editor={{ song, tour: {}, image: {} }}
-      setEditor={jest.fn()} auth={{}} addSongAPI={addSongAPI} updateSongAPI={jest.fn()} />).root;
+      setEditor={jest.fn()} auth={{} as Auth} />).root;
     songButtons.findByProps({ id: 'add-song-button' }).props.onClick();
-    expect(addSongAPI).toHaveBeenCalled();
+    expect(utils.addSongAPI).toHaveBeenCalled();
   });
   it('SongButtons disables Add Song button', () => {
     const song = { year: 2021, category: '', title: 'title', url: 'url' };
-    const addSongAPI = jest.fn();
     const songButtons = renderer.create(<SongButtons editor={{ song, tour: {}, image: {} }}
-      setEditor={jest.fn()} auth={{}} addSongAPI={addSongAPI} updateSongAPI={jest.fn()} />).root;
+      setEditor={jest.fn()} auth={{} as Auth} />).root;
     expect(songButtons.findByProps({ id: 'add-song-button' }).props.disabled).toBe(true);
   });
   it('SongButtons runs updateSongAPI', () => {
     const song = { year: 2021, category: 'original', title: 'title', url: 'url', _id: '123' };
-    const updateSongAPI = jest.fn();
+    utils.updateSongAPI = jest.fn();
     const songButtons = renderer.create(<SongButtons editor={{ song, tour: {}, image: {} }}
-      setEditor={jest.fn()} auth={{}} addSongAPI={jest.fn()} updateSongAPI={updateSongAPI} />).root;
+      setEditor={jest.fn()} auth={{} as Auth} />).root;
     songButtons.findByProps({ id: 'update-song-button' }).props.onClick();
-    expect(updateSongAPI).toHaveBeenCalled();
+    expect(utils.updateSongAPI).toHaveBeenCalled();
   });
   it('EditSongButtons click Cancel button', () => {
     const setNewEditor = jest.fn();
     const song = { year: 2021, category: 'original', title: 'title', url: 'url', _id: '123' };
     const editSongButtons = renderer.create(<EditSongButtons setEditor={setNewEditor}
-      updateSongAPI={jest.fn()} auth={{}} editor={{ song, tour: {}, image: {} }} />).root;
+      auth={{} as Auth} editor={{ song, tour: {}, image: {} }} />).root;
     editSongButtons.findByProps({ id: 'cancel-edit-song' }).props.onClick();
     expect(setNewEditor).toHaveBeenCalled();
   });

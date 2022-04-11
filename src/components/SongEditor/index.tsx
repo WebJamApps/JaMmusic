@@ -2,11 +2,12 @@
 import React, { useEffect, useState } from 'react';
 import forms from '../../lib/forms';
 import superagent from 'superagent';
-import songEditorUtils from './songEditorUtils';
 import { EditorContext } from '../../providers/Editor.provider';
 import type { ISong } from 'src/providers/Data.provider';
+import type { Auth } from 'src/redux/mapStoreToProps';
+import songEditorUtils from './songEditorUtils';
 
-interface Ieditor { song: ISong; tour: Record<string, unknown>; image: Record<string, unknown>; }
+export interface Ieditor { song: ISong; tour: Record<string, unknown>; image: Record<string, unknown>; }
   
 export const onChangeSong = (evt: React.ChangeEvent<HTMLInputElement>, editor: Ieditor,
   setNewEditor: (arg0: Ieditor) => void): void => {
@@ -72,19 +73,12 @@ export const SongForm = (props: IsongFormProps): JSX.Element => {
   );
 };
 
-export const EditSongButtons = ({ setEditor, editor, auth, updateSongAPI }:
+export const EditSongButtons = ({ setEditor, editor, auth }:
 {
   setEditor: (arg0: Ieditor) => void,
   editor: Ieditor,
-  auth: any, updateSongAPI: any
+  auth: Auth,
 }): JSX.Element => {
-  // const [songData] = useState(editor.song);
-  // const [btnDisabled, setBtnDisabled] = useState(true);
-  // useEffect(() => {
-  //   if (songData !== editor.song) {
-  //     setBtnDisabled(false);
-  //   }
-  // }, [editor.song, songData]);
   return (
     <span>
       <button className="floatRight" type="button" id="cancel-edit-song"
@@ -95,7 +89,7 @@ export const EditSongButtons = ({ setEditor, editor, auth, updateSongAPI }:
         className=""
         id="update-song-button"
         type="button"
-        onClick={() => updateSongAPI(superagent, editor.song, auth, setEditor)}
+        onClick={() => songEditorUtils.updateSongAPI(superagent, editor.song, auth, setEditor)}
       >
         Update
         {' '}
@@ -106,11 +100,9 @@ export const EditSongButtons = ({ setEditor, editor, auth, updateSongAPI }:
 };
 
 interface IsongButtonsProps {
-  setEditor: (arg0: Ieditor) => void, editor: Ieditor,
-  auth: any, addSongAPI: any, updateSongAPI: any
+  setEditor: (arg0: Ieditor) => void; editor: Ieditor; auth: Auth; 
 }
-export const SongButtons = ({ editor, setEditor, auth, addSongAPI, updateSongAPI }:
-IsongButtonsProps): JSX.Element => {
+export const SongButtons = ({ editor, setEditor, auth }: IsongButtonsProps): JSX.Element => {
   return (
     <div style={{ textAlign: 'left', marginTop: '10px' }}>
       <span style={{
@@ -119,12 +111,12 @@ IsongButtonsProps): JSX.Element => {
       >
         <i>* Required</i>
       </span>
-      {editor.song._id ? <EditSongButtons editor={editor} setEditor={setEditor} auth={auth} updateSongAPI={updateSongAPI} /> :
+      {editor.song._id ? <EditSongButtons editor={editor} setEditor={setEditor} auth={auth} /> :
         <button
           id="add-song-button"
           disabled={!(editor.song.year && editor.song.title && editor.song.url && editor.song.artist)}
           type="button"
-          onClick={() => addSongAPI(superagent, editor.song, auth, setEditor)}
+          onClick={() => songEditorUtils.addSongAPI(superagent, editor.song, auth, setEditor)}
         >
           Add Song
         </button>
@@ -144,7 +136,7 @@ export const SongFormTitle = ({ editor }: { editor: Ieditor }): JSX.Element => {
 
 interface IsongEditorDiv {
   editor: Ieditor,
-  setEditor: (arg0: Ieditor) => void, auth: any
+  setEditor: (arg0: Ieditor) => void, auth: Auth
 }
 export const SongEditorDiv = ({ editor, setEditor, auth }: IsongEditorDiv) => {
   if (!editor.song.category) editor.song.category = 'original';
@@ -158,8 +150,7 @@ export const SongEditorDiv = ({ editor, setEditor, auth }: IsongEditorDiv) => {
         <SongForm editor={editor} setEditor={setEditor}
         />
         <p>{' '}</p>
-        <SongButtons editor={editor} setEditor={setEditor} auth={auth} addSongAPI={songEditorUtils.addSongAPI}
-          updateSongAPI={songEditorUtils.updateSongAPI} />
+        <SongButtons editor={editor} setEditor={setEditor} auth={auth}/>
       </form>
     </div>
   );
@@ -167,7 +158,7 @@ export const SongEditorDiv = ({ editor, setEditor, auth }: IsongEditorDiv) => {
 
 export const SongEditor = ({
   auth,
-}: { auth: any }): JSX.Element => {
+}: { auth: Auth }): JSX.Element => {
   const { editor, setEditor } = React.useContext(EditorContext);
   return <SongEditorDiv editor={editor} setEditor={setEditor} auth={auth} />;
 };
