@@ -32,11 +32,11 @@ describe('SongEditor', () => {
   //   input.findByType('input').props.onChange({ persist: jest.fn(), target: { id: '', value: '' } });
   //   expect(onChangeMock).toHaveBeenCalled();
   // });
-  it('SongFormTitle Edit', () => {
-    const editor = { hasChanged:false, isValid:true, song: defaultSong, tour: {}, image: {} };
-    const songFormTitle = renderer.create(<SongFormTitle editor={editor} />).root;
-    expect(songFormTitle.findByType('h5').children[0]).toBe('Edit ');
-  });
+  // it('SongFormTitle Edit', () => {
+  //   const editor = { hasChanged:false, isValid:true, song: defaultSong, tour: {}, image: {} };
+  //   const songFormTitle = renderer.create(<SongFormTitle editor={editor} />).root;
+  //   expect(songFormTitle.findByType('h5').children[0]).toBe('Edit ');
+  // });
   it('SongFormTitle Create', () => {
     const editor = { song: defaultSong, tour: {}, image: {}, hasChanged:false, isValid:true };
     const songFormTitle = renderer.create(<SongFormTitle editor={editor} />).root;
