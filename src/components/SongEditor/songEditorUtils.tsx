@@ -1,7 +1,7 @@
 import type superagent from 'superagent';
 import type { ISong } from 'src/providers/Data.provider';
 import type { Auth } from 'src/redux/mapStoreToProps';
-import type { Ieditor } from '.';
+import type { Ieditor } from 'src/providers/Editor.provider';
 
 const updateSongAPI = async (
   sa: typeof superagent, songChanges: ISong, auth: Auth, 
