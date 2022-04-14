@@ -7,21 +7,34 @@ import type { Auth } from 'src/redux/mapStoreToProps';
 import songEditorUtils from './songEditorUtils';
 import { TextField } from '@mui/material';
 
+export const validateSongInput = (id: string, value: string) => {
+  let valid = true;
+  if (id === 'title' || id === 'artist') {
+    if (value.length < 1) valid = false;
+  }
+  if (id === 'url' && !value.includes('http')) valid = false;
+  if (id === 'year' && Number(value) < 1990) valid = false;
+  return valid;
+};
+
 export const onChangeSong = (
   evt: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>, editor: Ieditor,
   setNewEditor: (arg0: Ieditor) => void,
 ): void => {
   evt.persist();
-  //TODO validate the field then set isValid
+  const { target: { id, value } } = evt;
+  const isValid = validateSongInput(id, value);
   const newEditor = {
-    hasChanged: true, isValid: true, image: {}, tour: {},
-    song: { ...editor.song, [evt.target.id]: evt.target.value },
+    hasChanged: true, isValid, image: {}, tour: {},
+    song: { ...editor.song, [id]: value },
   };
   setNewEditor(newEditor);
 };
 
-export const handleCategoryChange = (event: React.ChangeEvent<HTMLSelectElement>, editor: Ieditor,
-  setNewEditor: (arg0: Ieditor) => void): void => {
+export const handleCategoryChange = (
+  event: React.ChangeEvent<HTMLSelectElement>, editor: Ieditor,
+  setNewEditor: (arg0: Ieditor
+  ) => void): void => {
   setNewEditor(
     {
       hasChanged: true, isValid: true, image: {}, tour: {},
@@ -48,10 +61,12 @@ export const SongInput = (props: IsongInputProps): JSX.Element => {
   );
 };
 
-export const MoreSongForm = (props: {
-  setEditor: (arg0: Ieditor) => void,
-  editor: Ieditor,
-}): JSX.Element => {
+export const MoreSongForm = (
+  props: {
+    setEditor: (arg0: Ieditor) => void,
+    editor: Ieditor,
+  },
+): JSX.Element => {
   const { editor, setEditor } = props;
   return (
     <>
@@ -83,21 +98,24 @@ export const SongForm = (props: IsongFormProps): JSX.Element => {
   );
 };
 
-export const EditSongButtons = ({ setEditor, editor, auth }:
-{
-  setEditor: (arg0: Ieditor) => void,
-  editor: Ieditor,
-  auth: Auth,
-}): JSX.Element => {
+export const EditSongButtons = (
+  { setEditor, editor, auth }:
+  {
+    setEditor: (arg0: Ieditor) => void,
+    editor: Ieditor,
+    auth: Auth,
+  },
+): JSX.Element => {
   return (
     <span>
       <button className="floatRight" type="button" id="cancel-edit-song"
         onClick={() => setEditor(
-          { isValid:true, hasChanged:false, song: defaultSong, tour: {}, image: {} },
+          { isValid: false, hasChanged: false, song: defaultSong, tour: {}, image: {} },
         )}>
         Cancel
       </button>
       <button
+        disabled={!editor.isValid}
         className=""
         id="update-song-button"
         type="button"
