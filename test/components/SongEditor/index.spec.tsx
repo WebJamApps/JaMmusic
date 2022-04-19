@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import renderer from 'react-test-renderer';
-import { defaultSong, EditorProvider } from 'src/providers/Editor.provider';
+import { defaultSong, EditorProvider, Ieditor } from 'src/providers/Editor.provider';
 import type { Auth } from 'src/redux/mapStoreToProps';
 import {
   SongEditor, onChangeSong, SongFormTitle, SongButtons, EditSongButtons, SongForm,
-  handleCategoryChange,
+  handleCategoryChange, SongInput,
 } from 'src/components/SongEditor';
 import utils from 'src/components/SongEditor/songEditorUtils';
 
@@ -22,21 +22,14 @@ describe('SongEditor', () => {
   it('onChangeSongs runs setNewEditor', () => {
     const setNewEditor = jest.fn();
     const evt: any = { persist: jest.fn(), target: { id: 'composer', value: 'me' } };
-    onChangeSong(evt, { image: {}, tour: {}, song: defaultSong, isValid:true, hasChanged:true }, setNewEditor);
+    onChangeSong(evt, { image: {}, tour: {}, song: { ...defaultSong, _id:'adls;kjf' }, isValid:true, hasChanged:true }, setNewEditor);
     expect(setNewEditor).toHaveBeenCalled();
   });
-  // it('makeInput', () => {
-  //   const onChangeMock = jest.fn();
-  //   const editorContext = { setEditor: onChangeMock, editor: { song: { category: '', year: 0, title: '', url: '' }, tour: {}, image: {} } };
-  //   const input = renderer.create(makeInput(true, 'title', editorContext)).root;
-  //   input.findByType('input').props.onChange({ persist: jest.fn(), target: { id: '', value: '' } });
-  //   expect(onChangeMock).toHaveBeenCalled();
-  // });
-  // it('SongFormTitle Edit', () => {
-  //   const editor = { hasChanged:false, isValid:true, song: defaultSong, tour: {}, image: {} };
-  //   const songFormTitle = renderer.create(<SongFormTitle editor={editor} />).root;
-  //   expect(songFormTitle.findByType('h5').children[0]).toBe('Edit ');
-  // });
+  it('SongFormTitle Edit', () => {
+    const editor = { hasChanged:false, isValid:true, song: { ...defaultSong, _id:'adls;kjf' }, tour: {}, image: {} };
+    const songFormTitle = renderer.create(<SongFormTitle editor={editor} />).root;
+    expect(songFormTitle.findByType('h5').children[0]).toBe('Edit ');
+  });
   it('SongFormTitle Create', () => {
     const editor = { song: defaultSong, tour: {}, image: {}, hasChanged:false, isValid:true };
     const songFormTitle = renderer.create(<SongFormTitle editor={editor} />).root;
@@ -87,5 +80,13 @@ describe('SongEditor', () => {
     handleCategoryChange(evt, { isValid:true, hasChanged:true, 
       song: { category: '', year: 0, title: '', url: '' }, tour: {}, image: {} }, setNewEditor);
     expect(setNewEditor).toHaveBeenCalled();
+  });
+  it('renders SongInput and handles onChange', ()=>{
+    const props = {
+      required:true, id:'id', editor:{ song:{ id:'id' } } as any, setEditor:jest.fn(),
+    };
+    const songInput = renderer.create(<SongInput {...props}/>).root;
+    songInput.findByType('input').props.onChange({ persist:jest.fn(), target:{ id:'id', value:'value' } });
+    expect(props.setEditor).toHaveBeenCalled();
   });
 });

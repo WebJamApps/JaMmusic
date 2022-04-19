@@ -28,129 +28,33 @@ exports[`SongEditor renders correctly 1`] = `
     >
       * 
       title
-      <div
-        className="MuiFormControl-root MuiTextField-root css-1u3bzj6-MuiFormControl-root-MuiTextField-root"
-      >
-        <div
-          className="MuiOutlinedInput-root MuiInputBase-root MuiInputBase-colorPrimary MuiInputBase-formControl css-9ddj71-MuiInputBase-root-MuiOutlinedInput-root"
-          onClick={[Function]}
-        >
-          <input
-            aria-invalid={false}
-            autoFocus={false}
-            className="MuiOutlinedInput-input MuiInputBase-input css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input"
-            disabled={false}
-            id="title"
-            onAnimationStart={[Function]}
-            onBlur={[Function]}
-            onChange={[Function]}
-            onFocus={[Function]}
-            required={false}
-            type="text"
-            value=""
-          />
-          <fieldset
-            aria-hidden={true}
-            className="MuiOutlinedInput-notchedOutline css-1d3z3hw-MuiOutlinedInput-notchedOutline"
-          >
-            <legend
-              className="css-hdw1oc"
-            >
-              <span
-                className="notranslate"
-              >
-                ​
-              </span>
-            </legend>
-          </fieldset>
-        </div>
-      </div>
+      <input
+        id="title"
+        onChange={[Function]}
+        value=""
+      />
     </label>
     <label
       htmlFor="url"
     >
       * 
       url
-      <div
-        className="MuiFormControl-root MuiTextField-root css-1u3bzj6-MuiFormControl-root-MuiTextField-root"
-      >
-        <div
-          className="MuiOutlinedInput-root MuiInputBase-root MuiInputBase-colorPrimary MuiInputBase-formControl css-9ddj71-MuiInputBase-root-MuiOutlinedInput-root"
-          onClick={[Function]}
-        >
-          <input
-            aria-invalid={false}
-            autoFocus={false}
-            className="MuiOutlinedInput-input MuiInputBase-input css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input"
-            disabled={false}
-            id="url"
-            onAnimationStart={[Function]}
-            onBlur={[Function]}
-            onChange={[Function]}
-            onFocus={[Function]}
-            required={false}
-            type="text"
-            value=""
-          />
-          <fieldset
-            aria-hidden={true}
-            className="MuiOutlinedInput-notchedOutline css-1d3z3hw-MuiOutlinedInput-notchedOutline"
-          >
-            <legend
-              className="css-hdw1oc"
-            >
-              <span
-                className="notranslate"
-              >
-                ​
-              </span>
-            </legend>
-          </fieldset>
-        </div>
-      </div>
+      <input
+        id="url"
+        onChange={[Function]}
+        value=""
+      />
     </label>
     <label
       htmlFor="artist"
     >
       * 
       artist
-      <div
-        className="MuiFormControl-root MuiTextField-root css-1u3bzj6-MuiFormControl-root-MuiTextField-root"
-      >
-        <div
-          className="MuiOutlinedInput-root MuiInputBase-root MuiInputBase-colorPrimary MuiInputBase-formControl css-9ddj71-MuiInputBase-root-MuiOutlinedInput-root"
-          onClick={[Function]}
-        >
-          <input
-            aria-invalid={false}
-            autoFocus={false}
-            className="MuiOutlinedInput-input MuiInputBase-input css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input"
-            disabled={false}
-            id="artist"
-            onAnimationStart={[Function]}
-            onBlur={[Function]}
-            onChange={[Function]}
-            onFocus={[Function]}
-            required={false}
-            type="text"
-            value=""
-          />
-          <fieldset
-            aria-hidden={true}
-            className="MuiOutlinedInput-notchedOutline css-1d3z3hw-MuiOutlinedInput-notchedOutline"
-          >
-            <legend
-              className="css-hdw1oc"
-            >
-              <span
-                className="notranslate"
-              >
-                ​
-              </span>
-            </legend>
-          </fieldset>
-        </div>
-      </div>
+      <input
+        id="artist"
+        onChange={[Function]}
+        value=""
+      />
     </label>
     <p>
       * Category
@@ -185,172 +89,44 @@ exports[`SongEditor renders correctly 1`] = `
     >
       * 
       year
-      <div
-        className="MuiFormControl-root MuiTextField-root css-1u3bzj6-MuiFormControl-root-MuiTextField-root"
-      >
-        <div
-          className="MuiOutlinedInput-root MuiInputBase-root MuiInputBase-colorPrimary MuiInputBase-formControl css-9ddj71-MuiInputBase-root-MuiOutlinedInput-root"
-          onClick={[Function]}
-        >
-          <input
-            aria-invalid={false}
-            autoFocus={false}
-            className="MuiOutlinedInput-input MuiInputBase-input css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input"
-            disabled={false}
-            id="year"
-            onAnimationStart={[Function]}
-            onBlur={[Function]}
-            onChange={[Function]}
-            onFocus={[Function]}
-            required={false}
-            type="text"
-            value={2021}
-          />
-          <fieldset
-            aria-hidden={true}
-            className="MuiOutlinedInput-notchedOutline css-1d3z3hw-MuiOutlinedInput-notchedOutline"
-          >
-            <legend
-              className="css-hdw1oc"
-            >
-              <span
-                className="notranslate"
-              >
-                ​
-              </span>
-            </legend>
-          </fieldset>
-        </div>
-      </div>
+      <input
+        id="year"
+        onChange={[Function]}
+        value={2021}
+      />
     </label>
     <label
       htmlFor="album"
     >
       
       album
-      <div
-        className="MuiFormControl-root MuiTextField-root css-1u3bzj6-MuiFormControl-root-MuiTextField-root"
-      >
-        <div
-          className="MuiOutlinedInput-root MuiInputBase-root MuiInputBase-colorPrimary MuiInputBase-formControl css-9ddj71-MuiInputBase-root-MuiOutlinedInput-root"
-          onClick={[Function]}
-        >
-          <input
-            aria-invalid={false}
-            autoFocus={false}
-            className="MuiOutlinedInput-input MuiInputBase-input css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input"
-            disabled={false}
-            id="album"
-            onAnimationStart={[Function]}
-            onBlur={[Function]}
-            onChange={[Function]}
-            onFocus={[Function]}
-            required={false}
-            type="text"
-            value=""
-          />
-          <fieldset
-            aria-hidden={true}
-            className="MuiOutlinedInput-notchedOutline css-1d3z3hw-MuiOutlinedInput-notchedOutline"
-          >
-            <legend
-              className="css-hdw1oc"
-            >
-              <span
-                className="notranslate"
-              >
-                ​
-              </span>
-            </legend>
-          </fieldset>
-        </div>
-      </div>
+      <input
+        id="album"
+        onChange={[Function]}
+        value=""
+      />
     </label>
     <label
       htmlFor="composer"
     >
       
       composer
-      <div
-        className="MuiFormControl-root MuiTextField-root css-1u3bzj6-MuiFormControl-root-MuiTextField-root"
-      >
-        <div
-          className="MuiOutlinedInput-root MuiInputBase-root MuiInputBase-colorPrimary MuiInputBase-formControl css-9ddj71-MuiInputBase-root-MuiOutlinedInput-root"
-          onClick={[Function]}
-        >
-          <input
-            aria-invalid={false}
-            autoFocus={false}
-            className="MuiOutlinedInput-input MuiInputBase-input css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input"
-            disabled={false}
-            id="composer"
-            onAnimationStart={[Function]}
-            onBlur={[Function]}
-            onChange={[Function]}
-            onFocus={[Function]}
-            required={false}
-            type="text"
-            value=""
-          />
-          <fieldset
-            aria-hidden={true}
-            className="MuiOutlinedInput-notchedOutline css-1d3z3hw-MuiOutlinedInput-notchedOutline"
-          >
-            <legend
-              className="css-hdw1oc"
-            >
-              <span
-                className="notranslate"
-              >
-                ​
-              </span>
-            </legend>
-          </fieldset>
-        </div>
-      </div>
+      <input
+        id="composer"
+        onChange={[Function]}
+        value=""
+      />
     </label>
     <label
       htmlFor="image"
     >
       
       image
-      <div
-        className="MuiFormControl-root MuiTextField-root css-1u3bzj6-MuiFormControl-root-MuiTextField-root"
-      >
-        <div
-          className="MuiOutlinedInput-root MuiInputBase-root MuiInputBase-colorPrimary MuiInputBase-formControl css-9ddj71-MuiInputBase-root-MuiOutlinedInput-root"
-          onClick={[Function]}
-        >
-          <input
-            aria-invalid={false}
-            autoFocus={false}
-            className="MuiOutlinedInput-input MuiInputBase-input css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input"
-            disabled={false}
-            id="image"
-            onAnimationStart={[Function]}
-            onBlur={[Function]}
-            onChange={[Function]}
-            onFocus={[Function]}
-            required={false}
-            type="text"
-            value=""
-          />
-          <fieldset
-            aria-hidden={true}
-            className="MuiOutlinedInput-notchedOutline css-1d3z3hw-MuiOutlinedInput-notchedOutline"
-          >
-            <legend
-              className="css-hdw1oc"
-            >
-              <span
-                className="notranslate"
-              >
-                ​
-              </span>
-            </legend>
-          </fieldset>
-        </div>
-      </div>
+      <input
+        id="image"
+        onChange={[Function]}
+        value=""
+      />
     </label>
     <p>
        
