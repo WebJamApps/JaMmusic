@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import renderer from 'react-test-renderer';
-import { defaultSong, EditorProvider, Ieditor } from 'src/providers/Editor.provider';
+import { defaultSong, EditorProvider } from 'src/providers/Editor.provider';
 import type { Auth } from 'src/redux/mapStoreToProps';
 import {
   SongEditor, onChangeSong, SongFormTitle, SongButtons, EditSongButtons, SongForm,
-  handleCategoryChange, SongInput,
+  handleCategoryChange, SongInput, validateSongInput,
 } from 'src/components/SongEditor';
 import utils from 'src/components/SongEditor/songEditorUtils';
 
@@ -88,5 +88,14 @@ describe('SongEditor', () => {
     const songInput = renderer.create(<SongInput {...props}/>).root;
     songInput.findByType('input').props.onChange({ persist:jest.fn(), target:{ id:'id', value:'value' } });
     expect(props.setEditor).toHaveBeenCalled();
+  });
+  it('validateSongInput for artist', () => {
+    expect(validateSongInput('artist', '')).toBe(false);
+  });
+  it('validateSongInput for url', () => {
+    expect(validateSongInput('artist', '')).toBe(false);
+  });
+  it('validateSongInput for year', () => {
+    expect(validateSongInput('year', '10')).toBe(false);
   });
 });
