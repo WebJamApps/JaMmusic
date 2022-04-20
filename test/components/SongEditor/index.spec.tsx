@@ -93,7 +93,7 @@ describe('SongEditor', () => {
     expect(validateSongInput('artist', '')).toBe(false);
   });
   it('validateSongInput for url', () => {
-    expect(validateSongInput('artist', '')).toBe(false);
+    expect(validateSongInput('url', '')).toBe(false);
   });
   it('validateSongInput for year', () => {
     expect(validateSongInput('year', '10')).toBe(false);
