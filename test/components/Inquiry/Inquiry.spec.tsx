@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
+import renderer from 'react-test-renderer';
 import { shallow } from 'enzyme';
-import { Button } from '@mui/material';
-import Inquiry from '../../../src/components/Inquiry';
+import Inquiry, { CommentsSection, InquiryState, FormActions } from 'src/components/Inquiry';
 
 describe('Inquiry Form', () => {
   let wrapper: any;
@@ -117,7 +116,7 @@ describe('Inquiry Form', () => {
     wrapper.instance().createEmailApi({ submitted: true });
   });
   it('creates an email', async () => {
-    const evt:any = { preventDefault: () => { } };
+    const evt: any = { preventDefault: () => { } };
     wrapper.instance().superagent.post = jest.fn(() => ({ set: () => ({ send: () => Promise.resolve({ status: 200 }) }) }));
     wrapper.update();
     wrapper.setState({
@@ -130,7 +129,7 @@ describe('Inquiry Form', () => {
     expect(result).toBe(200);
   });
   it('catches error when posting email to backend', async () => {
-    const evt:any = { preventDefault: () => { } };
+    const evt: any = { preventDefault: () => { } };
     wrapper.instance().superagent.post = jest.fn(() => ({ set: () => ({ send: () => Promise.reject(new Error('bad')) }) }));
     wrapper.update();
     wrapper.setState({
@@ -147,21 +146,18 @@ describe('Inquiry Form', () => {
     });
     expect(wrapper.find('div.contacted').exists()).toBe(true);
   });
-  // it('handles change to set the comments', () => {
-  //   wrapper.instance().setState = jest.fn();
-  //   wrapper.instance().validatForm = jest.fn();
-  //   const commentsSec = wrapper.instance().commentsSection('');
-  //   const cs = shallow(commentsSec);
-  //   cs.find('textarea').at(0).simulate('change', { target: { name: 'comments', value: 'howdy' } });
-  //   expect(wrapper.instance().setState).toHaveBeenCalled();
-  // });
-  // it('handles onClick for button', () => {
-  //   const evt:any = { preventDefault: () => { } };
-  //   wrapper.isFormValid = jest.fn(() => false);
-  //   wrapper.instance().createEmail = jest.fn();
-  //   wrapper.update();
-  //   const button = wrapper.find(Button).get(0);
-  //   button.props.onClick(evt);
-  //   expect(wrapper.instance().createEmail).toHaveBeenCalled();
-  // });
+  it('renders CommentsSection and handles onChange', () => {
+    const props = { currentState: {} as InquiryState, comments: '', setState: jest.fn(), validateForm: jest.fn() };
+    const commentsSection = renderer.create(<CommentsSection {...props} />).root;
+    commentsSection.findByProps({ className: 'comments' }).props.onChange({ target: { value: 'good' } });
+    expect(props.validateForm).toHaveBeenCalled();
+  });
+  it('renders FormActions and handles click', () => {
+    const props = {
+      isFormValid: () => false, createEmail: jest.fn(),
+    };
+    const formActions = renderer.create(<FormActions {...props} />).root;
+    formActions.findByProps({ id:'sendEmailButton' }).props.onClick();
+    expect(props.createEmail).toHaveBeenCalled();
+  });
 });

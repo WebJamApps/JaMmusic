@@ -6,7 +6,7 @@ import forms from '../lib/forms';
 import stateData from '../lib/StateData.json';
 import countryData from '../lib/CountryData.json';
 
-interface InquiryState {
+export interface InquiryState {
   country: string;
   uSAstate: string;
   firstname: string;
@@ -19,6 +19,39 @@ interface InquiryState {
   submitted: boolean;
   [x: number]: number;
 }
+
+export const CommentsSection = (
+  props: { currentState: InquiryState; comments: string; setState: (args0: InquiryState) => void; validateForm: () => void; },
+) => {
+  const { comments, setState, validateForm, currentState } = props;
+  return (
+    <TextareaAutosize
+      style={{ marginTop: '20px', height: '80px', width: '100%' }}
+      placeholder="Comments"
+      className="comments"
+      value={comments}
+      onChange={(evt) => { setState({ ...currentState, comments: evt.target.value }); validateForm(); }}
+    />
+  );
+};
+
+export const FormActions = (
+  props: { isFormValid: () => boolean; createEmail: (arg0: any) => void; },
+) => {
+  const { isFormValid, createEmail } = props;
+  return (
+    <div className="inquiryValidation input-field col" style={{ marginBottom: '12px' }}>
+      <span className="inquiryValidation">* Required</span>
+      <Button
+        id="sendEmailButton"
+        disabled={isFormValid()}
+        onClick={(evt) => createEmail(evt)}
+      >
+        Send
+      </Button>
+    </div>
+  );
+};
 
 export default class Inquiry extends Component<unknown, InquiryState> {
   stateValues: string[];
@@ -144,7 +177,7 @@ export default class Inquiry extends Component<unknown, InquiryState> {
     } = this.state;
     return (
       <table style={{
-        border: 'none', textAlign: 'left', margin: 0, padding: 0, marginBottom:'20px',
+        border: 'none', textAlign: 'left', margin: 0, padding: 0, marginBottom: '20px',
       }}
       >
         <tbody>
@@ -169,18 +202,6 @@ export default class Inquiry extends Component<unknown, InquiryState> {
     );
   }
 
-  commentsSection(comments: string): JSX.Element {
-    return (
-      <TextareaAutosize
-      style={{ marginTop:'20px', height:'80px', width:'100%' }}
-      placeholder="Comments"
-        className="comments"
-        value={comments}
-        onChange={(evt) => { this.setState({ comments: evt.target.value }); this.validateForm(); }}
-      />
-    );
-  }
-
   newContactForm(): JSX.Element {
     const {
       country, formError, uSAstate, zipcode, comments,
@@ -188,24 +209,16 @@ export default class Inquiry extends Component<unknown, InquiryState> {
     return (
       <form id="new-contact" className="col">
         {this.tableSection()}
-        {this.forms.makeDropdown('country', country, this.handleCountryChange, this.countryValues, { width:'100%' })}
+        {this.forms.makeDropdown('country', country, this.handleCountryChange, this.countryValues, { width: '100%' })}
         {country === 'United States'
           ? this.forms.makeDropdown('state', uSAstate, this.onChange, this.stateValues)
           : null}
-          <p style={{ margin:0 }}>&nbsp;</p>
-        {this.forms.makeInput('text', 'Zipcode', true, this.onInputChange, zipcode, { width:'100%' })}
-        <p style={{ margin:0 }}>&nbsp;</p>
-        {this.commentsSection(comments)}
+        <p style={{ margin: 0 }}>&nbsp;</p>
+        {this.forms.makeInput('text', 'Zipcode', true, this.onInputChange, zipcode, { width: '100%' })}
+        <p style={{ margin: 0 }}>&nbsp;</p>
+        <CommentsSection currentState={this.state} comments={comments} setState={this.setState} validateForm={this.validateForm} />
         <p className="form-errors" style={{ color: 'red', marginBottom: '-15px' }}>{formError}</p>
-        <div className="inquiryValidation input-field col" style={{ marginBottom: '12px' }}>
-          <span className="inquiryValidation">* Required</span>
-          <Button
-            disabled={this.isFormValid()}
-            onClick={(evt) => this.createEmail(evt)}
-          >
-            Send
-          </Button>
-        </div>
+        <FormActions isFormValid={this.isFormValid} createEmail={this.createEmail} />
       </form>
     );
   }
