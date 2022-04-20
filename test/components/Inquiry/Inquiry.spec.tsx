@@ -154,7 +154,7 @@ describe('Inquiry Form', () => {
   });
   it('renders FormActions and handles click', () => {
     const props = {
-      isFormValid: () => false, createEmail: jest.fn(),
+      currentState:{} as InquiryState, createEmail: jest.fn(),
     };
     const formActions = renderer.create(<FormActions {...props} />).root;
     formActions.findByProps({ id:'sendEmailButton' }).props.onClick();

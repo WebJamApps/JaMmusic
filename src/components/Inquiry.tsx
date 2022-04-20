@@ -20,6 +20,11 @@ export interface InquiryState {
   [x: number]: number;
 }
 
+export const isFormValid = (state: InquiryState) => {
+  const { formError } = state;
+  return formError !== '';
+};
+
 export const CommentsSection = (
   props: { currentState: InquiryState; comments: string; setState: (args0: InquiryState) => void; validateForm: () => void; },
 ) => {
@@ -36,15 +41,15 @@ export const CommentsSection = (
 };
 
 export const FormActions = (
-  props: { isFormValid: () => boolean; createEmail: (arg0: any) => void; },
+  props: { currentState:InquiryState; createEmail: (arg0: any) => void; },
 ) => {
-  const { isFormValid, createEmail } = props;
+  const { createEmail, currentState } = props;
   return (
     <div className="inquiryValidation input-field col" style={{ marginBottom: '12px' }}>
       <span className="inquiryValidation">* Required</span>
       <Button
         id="sendEmailButton"
-        disabled={isFormValid()}
+        disabled={isFormValid(currentState)}
         onClick={(evt) => createEmail(evt)}
       >
         Send
@@ -140,11 +145,6 @@ export default class Inquiry extends Component<unknown, InquiryState> {
     return this.continueValidating(validEmail);
   }
 
-  isFormValid(): boolean {
-    const { formError } = this.state;
-    return formError !== '';
-  }
-
   async createEmailApi(emailForm1: {
     firstname: string; lastname: string; emailaddress: string; uSAstate: string; country: string;
     phonenumber: string; zipcode: string; comments: string;
@@ -218,7 +218,7 @@ export default class Inquiry extends Component<unknown, InquiryState> {
         <p style={{ margin: 0 }}>&nbsp;</p>
         <CommentsSection currentState={this.state} comments={comments} setState={this.setState} validateForm={this.validateForm} />
         <p className="form-errors" style={{ color: 'red', marginBottom: '-15px' }}>{formError}</p>
-        <FormActions isFormValid={this.isFormValid} createEmail={this.createEmail} />
+        <FormActions currentState={this.state} createEmail={this.createEmail} />
       </form>
     );
   }
