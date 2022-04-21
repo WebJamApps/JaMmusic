@@ -2,20 +2,23 @@ import { createContext, ReactChild } from 'react';
 import createPersistedState from 'use-persisted-state';
 import type { ISong } from './Data.provider';
 
-type InitEditor = { song: ISong; tour: Record<string, unknown>; image: Record<string, unknown>; };
+export interface Ieditor {
+  isValid: boolean; hasChanged: boolean; song: ISong; tour:
+  Record<string, unknown>; image: Record<string, unknown>;
+}
 
-const useEditorState: (arg0: InitEditor) =>
-[InitEditor, (arg0: InitEditor) => void] =
+const useEditorState: (arg0: Ieditor) =>
+[Ieditor, (arg0: Ieditor) => void] =
   createPersistedState('editor', sessionStorage);
 
-const song: ISong = { category: '', year: 2021, title: '', url: '', _id: '' };
+export const defaultSong: ISong = { category: '', year: 2021, title: '', url: '', _id: '' };
 
-const initEditor:InitEditor = { song, tour: {}, image: {} };
+const initEditor: Ieditor = { isValid: false, hasChanged: false, song: defaultSong, tour: {}, image: {} };
 
 export const EditorContext = createContext({
   editor: initEditor,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  setEditor:/*istanbul ignore next*/(_arg0: InitEditor) => { },
+  setEditor:/*istanbul ignore next*/(_arg0: Ieditor) => { },
 });
 
 type Props = { children: ReactChild };

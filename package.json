@@ -1,6 +1,6 @@
 {
   "name": "jammusic",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "description": "joshandmariamusic.com",
   "main": "dist/index.html",
   "repository": {
@@ -163,13 +163,13 @@
     "eslint-plugin-react-hooks": "^4.3.0",
     "eslint-plugin-security": "latest",
     "identity-obj-proxy": "latest",
-    "jest": "latest",
+    "jest": "^27.5.1",
     "redux-mock-store": "latest",
     "stylelint": "^14.2.0",
     "stylelint-config-standard": "^24.0.0",
     "stylelint-scss": "^4.1.0",
-    "ts-jest": "latest",
-    "webpack-dev-server": "^4.7.2"
+    "ts-jest": "^27.1.4",
+    "webpack-dev-server": "^4.8.1"
   },
   "snyk": true
 }
