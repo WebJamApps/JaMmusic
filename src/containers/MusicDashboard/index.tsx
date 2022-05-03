@@ -4,8 +4,8 @@ import { withRouter, Redirect, RouteComponentProps } from 'react-router-dom';
 import { connect } from 'react-redux';
 import type { AGClientSocket } from 'socketcluster-client';
 import type { Dispatch, AnyAction } from 'redux';
-import type { ISong } from '../../providers/Songs.provider';
-import mapStoreToProps, { Tour, Iimage } from '../../redux/mapStoreToProps';
+import type { ISong } from 'src/providers/Data.provider';
+import mapStoreToProps, { Tour, Iimage, Auth } from '../../redux/mapStoreToProps';
 import Forms from '../../lib/forms';
 import commonUtils from '../../lib/commonUtils';
 import Controller, { MusicDashboardController } from './MusicDashboardController';
@@ -15,7 +15,7 @@ import { DashNavigationButtons } from '../../components/DashNavigationButtons';
 interface MusicDashboardProps extends RouteComponentProps<Record<string, string | undefined>> {
   dispatch: Dispatch<AnyAction>;
   scc: AGClientSocket;
-  auth: { token: string };
+  auth: Auth;
   editPic: Iimage;
   editSong: ISong | { _id: string, category: string, year: number, title: string, url: string },
   editTour: { date?: string; time?: string; tickets?: string; more?: string; venue?: string; location?: string; _id?: string; datetime?: string };

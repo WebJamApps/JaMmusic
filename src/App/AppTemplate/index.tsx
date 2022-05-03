@@ -1,18 +1,13 @@
 /* eslint-disable react/sort-comp */
 import React, { Dispatch } from 'react';
-import { Link, withRouter, RouteComponentProps } from 'react-router-dom';
-import {
-  GoogleLogin, GoogleLogout, GoogleLoginResponse, GoogleLoginResponseOffline,
-} from 'react-google-login';
+import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { connect } from 'react-redux';
-import type { Auth } from '../redux/mapStoreToProps';
-import mapStoreToATemplateProps from '../redux/mapStoreToAppTemplateProps';
-import AuthUtils from './authUtils';
-import AppTemplateUtils from './appTemplateUtils';
-import Footer from './Footer';
-import MenuUtils from './menuUtils';
-import MenuItems, { ImenuItem } from './menuItems';
-import authActions from './authActions';
+import type { Auth } from 'src/redux/mapStoreToProps';
+import mapStoreToATemplateProps from 'src/redux/mapStoreToAppTemplateProps';
+import appTemplateUtils from './appTemplateUtils';
+import { Footer } from './Footer';
+import { MenuItem } from './MenuItem';
+import MenuConfig, { ImenuItem } from './menuConfig';
 
 export interface AppTemplateProps extends RouteComponentProps {
   heartBeat: string;
@@ -42,15 +37,9 @@ export class AppTemplate extends React.Component<AppTemplateProps, AppMainState>
     heartBeat: 'white',
   };
 
-  menuUtils = MenuUtils;
+  menuConfig = MenuConfig;
 
-  authUtils = AuthUtils;
-
-  appTemplateUtils = AppTemplateUtils;
-
-  menuItems = MenuItems;
-
-  authenticate: typeof authActions;
+  utils = appTemplateUtils;
 
   constructor(props: AppTemplateProps) {
     super(props);
@@ -60,10 +49,6 @@ export class AppTemplate extends React.Component<AppTemplateProps, AppMainState>
     this.handleKeyMenu = this.handleKeyMenu.bind(this);
     this.toggleMobileMenu = this.toggleMobileMenu.bind(this);
     this.navLinks = this.navLinks.bind(this);
-    this.responseGoogleLogin = this.responseGoogleLogin.bind(this);
-    this.responseGoogleLogout = this.responseGoogleLogout.bind(this);
-    this.googleButtons = this.googleButtons.bind(this);
-    this.authenticate = authActions;
   }
 
   handleKeyPress(e: { key: string; }): (void | null) {
@@ -95,88 +80,37 @@ export class AppTemplate extends React.Component<AppTemplateProps, AppMainState>
     this.setState({ menuOpen: mO });
   }
 
-  // eslint-disable-next-line react/destructuring-assignment
-  responseGoogleLogin(response: GoogleLoginResponseOffline | GoogleLoginResponse): Promise<string> {
-    return this.authUtils.responseGoogleLogin(response, this);
-  }
-
-  // eslint-disable-next-line react/destructuring-assignment
-  responseGoogleLogout(): boolean { return this.authUtils.responseGoogleLogout(this.props.dispatch); }
-
   close(): boolean {
     this.setState({ menuOpen: false });
     return true;
   }
 
-  googleButtons(type: string, index: number): JSX.Element {
-    const cId = process.env.GoogleClientId || /* istanbul ignore next */'';
-    if (type === 'login') {
-      return (
-        <div key={index} className="menu-item googleLogin">
-          <GoogleLogin
-            // eslint-disable-next-line no-console
-            onAutoLoadFinished={(good) => { console.log(good); return good; }}
-            responseType="code"
-            clientId={cId}
-            buttonText="Login"
-            accessType="offline"
-            onSuccess={this.responseGoogleLogin}
-            onFailure={this.authUtils.responseGoogleFailLogin}
-            cookiePolicy="single_host_origin"
-          />
-        </div>
-      );
-    } return (
-      <div key={index} className="menu-item googleLogout">
-        <GoogleLogout clientId={cId} buttonText="Logout" onLogoutSuccess={this.responseGoogleLogout} />
-      </div>
-    );
-  }
-
-  makeLink(menu: ImenuItem, index: number, type:string) :JSX.Element {
-    return (
-      <div key={index} className="menu-item">
-        {type === 'Link' ? (
-          <Link to={menu.link} className="nav-link" onClick={this.close}>
-            {this.menuUtils.makeIconAndText(menu)}
-          </Link>
-        )
-          : (
-            <a href={menu.link} className="nav-link" onClick={this.close}>
-              {this.menuUtils.makeIconAndText(menu)}
-            </a>
-          )}
-      </div>
-    );
-  }
-
-  makeMenuLink(menu: ImenuItem, index: number): JSX.Element {
-    return this.makeLink(menu, index, 'Link');
-  }
-
   makeExternalLink(menu: ImenuItem, index: number): JSX.Element {
-    return this.makeLink(menu, index, 'a');
+    return this.utils.makeLink(menu, index, 'a', this);
   }
 
   navLinks(): JSX.Element {
     const { userCount, heartBeat } = this.props;
     return (
       <div className="nav-list" style={{ width: '180px' }}>
-        { process.env.APP_NAME !== 'joshandmariamusic.com'
+        {process.env.APP_NAME !== 'joshandmariamusic.com'
           ? (
             <div
               id="musTT"
               style={{
-                display: 'none', position: 'absolute', top: '305px', right: '68px', backgroundColor: 'white', padding: '3px',
+                display: 'none', position: 'absolute', top: '305px', right: '68px', backgroundColor: 'white',
+                padding: '3px',
               }}
             >
               Music
             </div>
           ) : null}
-        {process.env.APP_NAME !== 'joshandmariamusic.com' ? this.menuItems.wjNav.map((menu, index) => (this.menuUtils.menuItem(menu, index, this)))
-          : this.menuItems.jamNav.map((menu, index) => (this.makeExternalLink(menu, index)))}
+        {process.env.APP_NAME !== 'joshandmariamusic.com' ? this.menuConfig.wjNav.map(
+          (menu, index) => <MenuItem menu={menu} index={index} view={this}/>,
+        )
+          : this.menuConfig.jamNav.map((menu, index) => (this.makeExternalLink(menu, index)))}
         <p style={{ margin: 0, padding: 0, fontSize: '6pt' }}>&nbsp;</p>
-        {process.env.APP_NAME !== 'joshandmariamusic.com' ? this.appTemplateUtils.activeUsers(heartBeat, userCount) : null}
+        {process.env.APP_NAME !== 'joshandmariamusic.com' ? this.utils.activeUsers(heartBeat, userCount) : null}
       </div>
     );
   }
@@ -196,7 +130,9 @@ export class AppTemplate extends React.Component<AppTemplateProps, AppMainState>
 
   drawerContainer(style: string): JSX.Element {
     return (
-      <div tabIndex={0} role="button" id="sidebar" onClick={this.close} onKeyPress={this.handleKeyPress} className={`${style} drawer-container`}>
+      <div tabIndex={0} role="button" id="sidebar" onClick={this.close} onKeyPress={this.handleKeyPress}
+        className={`${style} drawer-container`}
+      >
         <div
           className="drawer"
           style={{

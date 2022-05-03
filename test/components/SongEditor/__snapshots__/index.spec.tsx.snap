@@ -85,23 +85,23 @@ exports[`SongEditor renders correctly 1`] = `
       </option>
     </select>
     <label
+      htmlFor="year"
+    >
+      * 
+      year
+      <input
+        id="year"
+        onChange={[Function]}
+        value={2021}
+      />
+    </label>
+    <label
       htmlFor="album"
     >
       
       album
       <input
         id="album"
-        onChange={[Function]}
-        value=""
-      />
-    </label>
-    <label
-      htmlFor="image"
-    >
-      
-      image
-      <input
-        id="image"
         onChange={[Function]}
         value=""
       />
@@ -118,14 +118,14 @@ exports[`SongEditor renders correctly 1`] = `
       />
     </label>
     <label
-      htmlFor="year"
+      htmlFor="image"
     >
-      * 
-      year
+      
+      image
       <input
-        id="year"
+        id="image"
         onChange={[Function]}
-        value={2021}
+        value=""
       />
     </label>
     <p>

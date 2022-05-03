@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import type { Auth } from 'src/redux/mapStoreToProps';
 import songEditorUtils from '../../../src/components/SongEditor/songEditorUtils';
 
 describe('songEditorUtils', () => {
@@ -18,19 +19,19 @@ describe('songEditorUtils', () => {
   });
   it('updateSongAPI', async () => {
     const songChanges:any = { _id:'id' };
-    const res = await songEditorUtils.updateSongAPI(sa, songChanges, {}, jest.fn());
+    const res = await songEditorUtils.updateSongAPI(sa, songChanges, {} as Auth, jest.fn());
     expect(res).toBe('song updated');
   });
   it('updateSongAPI catches error', async () => {
     const songChanges:any = { _id:'id' };
     sa.put = () => ({ set: () => ({ set: () => ({ send: () => Promise.reject(new Error('bad')) }) }) });
-    const res = await songEditorUtils.updateSongAPI(sa, songChanges, {}, jest.fn());
+    const res = await songEditorUtils.updateSongAPI(sa, songChanges, {} as Auth, jest.fn());
     expect(res).toBe('bad');
   });
   it('updateSongAPI return 400 not updated', async () => {
     const songChanges:any = { _id:'id' };
     sa.put = () => ({ set: () => ({ set: () => ({ send: () => Promise.resolve({ status: 400 }) }) }) });
-    const res = await songEditorUtils.updateSongAPI(sa, songChanges, {}, jest.fn());
+    const res = await songEditorUtils.updateSongAPI(sa, songChanges, {} as Auth, jest.fn());
     expect(res).toBe('400 song was not updated');
   });
   it('addSongAPI successfully', async () => {
