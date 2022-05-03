@@ -141,7 +141,7 @@
     "@babel/preset-env": "^7.16.11",
     "@babel/preset-react": "^7.16.7",
     "@testing-library/jest-dom": "latest",
-    "@testing-library/react": "latest",
+    "@testing-library/react": "^12.1.5",
     "@types/expect-puppeteer": "latest",
     "@types/jest-environment-puppeteer": "latest",
     "@types/puppeteer": "latest",
