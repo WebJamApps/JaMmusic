@@ -85,7 +85,7 @@ export class MusicPlayer extends Component<MProps, MusicPlayerState> {
 
   playUrl(): string {
     const { song } = this.state;
-    if (song && song._id) return `https://web-jam.com/music/songs?oneplayer=true&id=${song._id}`;
+    if (song && song._id) return `http://localhost:7878/music/songs?oneplayer=true&output=embed&id=${song._id}`;
     return 'https://web-jam.com/music/songs';
   }
 

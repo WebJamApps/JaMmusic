@@ -53,9 +53,11 @@ export const columns: GridColumns = [
 ];
 
 export const orderGigs = (gigs: IGig[], setGigsInOrder: { (arg0: IGig[]): void; }) => {
-  const now = new Date().toISOString();
-  const futureGigs = gigs.filter((g) => typeof g.datetime === 'string' && g.datetime >= now);
-  const pastGigs = gigs.filter((g) => typeof g.datetime === 'string' && g.datetime < now);
+  const now = new Date();
+  now.setDate(now.getDate() - 1);
+  const current = now.toISOString();
+  const futureGigs = gigs.filter((g) => typeof g.datetime === 'string' && g.datetime >= current);
+  const pastGigs = gigs.filter((g) => typeof g.datetime === 'string' && g.datetime < current);
   const sortedFuture = futureGigs.sort((a, b) => {
     if (a.datetime > b.datetime) return 1;
     if (a.datetime < b.datetime) return -1;
