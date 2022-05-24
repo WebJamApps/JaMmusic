@@ -1,10 +1,10 @@
 import { Button } from '@mui/material';
 import { useHistory } from 'react-router-dom';
 
-export const ClickToListen = () => {
+export const ClickToListen = ({ appName = '' }: { appName?: string }) => {
   const history = useHistory();
   const handleClick = () => {
-    if (process.env.APP_NAME === 'joshandmariamusic.com') return window.open('https://web-jam.com/music/songs');
+    if (appName === 'joshandmariamusic.com') return window.open('https://web-jam.com/music/songs');
     return history.push('/music/songs');
   };
   return (
@@ -21,7 +21,7 @@ export const Intro = (): JSX.Element => (
       margin: 'auto', maxWidth: '900px', padding: '6px', paddingBottom: 0,
     }}
   >
-    <ClickToListen />
+    <ClickToListen appName={process.env.APP_NAME} />
     <p style={{ marginTop: '10px', marginBottom: '6px' }}>
       Josh and Maria have been performing their music together for over 10 years now!
       Whether it is at church, charity events, public venues, or outdoor festivals, this couple will blow your socks off.
