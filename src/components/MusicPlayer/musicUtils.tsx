@@ -35,7 +35,7 @@ function copyRight(): JSX.Element { // eslint-disable-line class-methods-use-thi
 function textUnderPlayer(song: ISong): JSX.Element {
   return (
     <section
-      className="col-12 mt-1"
+      className="mt-1 textUnderPlayer"
       style={{
         fontSize: '0.8em', marginTop: 0, marginBottom: '0', paddingTop: 0, paddingBottom: 0,
       }}
