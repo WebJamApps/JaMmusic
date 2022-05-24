@@ -6,6 +6,7 @@ import type { ISong } from 'src/providers/Data.provider';
 import musicUtils from './musicUtils';
 import commonUtils from '../../lib/commonUtils';
 import type { Iplayer } from './musicPlayerTypes';
+import './musicPlayer.scss';
 
 export interface MusicPlayerState {
   missionState: string;
@@ -85,8 +86,9 @@ export class MusicPlayer extends Component<MProps, MusicPlayerState> {
 
   playUrl(): string {
     const { song } = this.state;
-    if (song && song._id) return `http://localhost:7878/music/songs?oneplayer=true&output=embed&id=${song._id}`;
-    return 'https://web-jam.com/music/songs';
+    const url = window.location.href.split('/music')[0];
+    if (song && song._id) return `${url}/music/songs?oneplayer=true&output=embed&id=${song._id}`;
+    return `${url}/music/songs`;
   }
 
   reactPlayer(song: ISong): JSX.Element {
@@ -159,7 +161,7 @@ export class MusicPlayer extends Component<MProps, MusicPlayerState> {
     const { player: { playing, isShuffleOn } } = this.state;
     const url = this.playUrl();
     return (
-      <section className="mt-0 col-12 col-md-10" style={{ marginTop: '4px', paddingTop: 0 }}>
+      <section className="mt-0 songPlayerButtonsSection" style={{ paddingTop: 0 }}>
         <div id="play-buttons">
           <button type="button" id="play-pause" role="menu" className={playing ? 'on' : 'off'} onClick={this.play}>Play/Pause</button>
           <button type="button" role="menu" id="next" onClick={this.next}>Next</button>
