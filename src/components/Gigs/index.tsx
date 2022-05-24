@@ -39,7 +39,8 @@ export const columns: GridColumns = [
   {
     field: 'location',
     headerName: 'Location',
-    width: 150,
+    minWidth: 150,
+    flex:1,
     editable: false,
   },
   makeVenue(),
