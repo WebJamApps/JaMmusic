@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import PicSlider from 'src/components/PicSlider';
 import { Gigs } from '../../components/Gigs';
 import type { Iimage } from '../../redux/mapStoreToProps';
-import Intro from './intro';
+import { Intro } from './intro';
 import JoshBio from './joshBio';
 import MariaBio from './mariaBio';
 import WjBand from './wjBand';
