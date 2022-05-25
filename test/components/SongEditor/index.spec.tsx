@@ -60,7 +60,7 @@ describe('SongEditor', () => {
   it('EditSongButtons click Cancel button', () => {
     const setNewEditor = jest.fn();
     const song = { year: 2021, category: 'original', title: 'title', url: 'url', _id: '123' };
-    const editSongButtons = renderer.create(<EditSongButtons setEditor={setNewEditor}
+    const editSongButtons = renderer.create(<EditSongButtons setEditor={setNewEditor} setSongs={jest.fn()}
       auth={{} as Auth} editor={{ song, tour: {}, image: {}, isValid:true, hasChanged:true }} />).root;
     editSongButtons.findByProps({ id: 'cancel-edit-song' }).props.onClick();
     expect(setNewEditor).toHaveBeenCalled();

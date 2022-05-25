@@ -1,11 +1,12 @@
 
-import React from 'react';
+import { ChangeEvent, useContext } from 'react';
 import forms from '../../lib/forms';
 import superagent from 'superagent';
+import { DataContext, ISong } from 'src/providers/Data.provider';
 import { defaultSong, EditorContext, Ieditor } from '../../providers/Editor.provider';
 import type { Auth } from 'src/redux/mapStoreToProps';
 import songEditorUtils from './songEditorUtils';
-import { TextField } from '@mui/material';
+import { Button, TextField } from '@mui/material';
 
 export const validateSongInput = (id: string, value: string) => {
   let valid = true;
@@ -18,7 +19,7 @@ export const validateSongInput = (id: string, value: string) => {
 };
 
 export const onChangeSong = (
-  evt: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>, editor: Ieditor,
+  evt: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>, editor: Ieditor,
   setNewEditor: (arg0: Ieditor) => void,
 ): void => {
   evt.persist();
@@ -32,7 +33,7 @@ export const onChangeSong = (
 };
 
 export const handleCategoryChange = (
-  event: React.ChangeEvent<HTMLSelectElement>, editor: Ieditor,
+  event: ChangeEvent<HTMLSelectElement>, editor: Ieditor,
   setNewEditor: (arg0: Ieditor
   ) => void): void => {
   setNewEditor(
@@ -91,7 +92,7 @@ export const SongForm = (props: IsongFormProps): JSX.Element => {
       <SongInput required={true} id="artist" editor={editor} setEditor={setEditor} />
       <p>* Category</p>
       {forms.makeDropdown('category', editor.song.category,
-        (evt: React.ChangeEvent<HTMLSelectElement>) => handleCategoryChange(evt,
+        (evt: ChangeEvent<HTMLSelectElement>) => handleCategoryChange(evt,
           editor, setEditor), ['original', 'mission', 'pub'])}
       <MoreSongForm setEditor={setEditor} editor={editor} />
     </>
@@ -99,32 +100,32 @@ export const SongForm = (props: IsongFormProps): JSX.Element => {
 };
 
 export const EditSongButtons = (
-  { setEditor, editor, auth }:
+  { setEditor, editor, setSongs, auth }:
   {
     setEditor: (arg0: Ieditor) => void,
+    setSongs: (arg0: ISong[]) => void,
     editor: Ieditor,
     auth: Auth,
   },
 ): JSX.Element => {
   return (
     <span>
-      <button className="floatRight" type="button" id="cancel-edit-song"
+      <Button className="floatRight" type="button" id="cancel-edit-song"
         onClick={() => setEditor(
           { isValid: false, hasChanged: false, song: defaultSong, tour: {}, image: {} },
         )}>
         Cancel
-      </button>
-      <button
+      </Button>
+      <Button
+        variant="contained"
         disabled={!editor.isValid}
         className=""
         id="update-song-button"
         type="button"
-        onClick={() => songEditorUtils.updateSongAPI(superagent, editor.song, auth, setEditor)}
+        onClick={() => songEditorUtils.updateSongAPI(superagent, editor.song, auth, setEditor, setSongs)}
       >
-        Update
-        {' '}
-        Song
-      </button>
+        Update Song
+      </Button>
     </span>
   );
 };
@@ -133,6 +134,7 @@ interface IsongButtonsProps {
   setEditor: (arg0: Ieditor) => void; editor: Ieditor; auth: Auth;
 }
 export const SongButtons = ({ editor, setEditor, auth }: IsongButtonsProps): JSX.Element => {
+  const { setSongs } = useContext(DataContext);
   return (
     <div style={{ textAlign: 'left', marginTop: '10px' }}>
       <span style={{
@@ -141,15 +143,16 @@ export const SongButtons = ({ editor, setEditor, auth }: IsongButtonsProps): JSX
       >
         <i>* Required</i>
       </span>
-      {editor.song._id ? <EditSongButtons editor={editor} setEditor={setEditor} auth={auth} /> :
-        <button
+      {editor.song._id ? <EditSongButtons editor={editor} setEditor={setEditor} setSongs={setSongs} auth={auth} /> :
+        <Button
+          variant="contained"
           id="add-song-button"
           disabled={!(editor.song.year && editor.song.title && editor.song.url && editor.song.artist)}
           type="button"
-          onClick={() => songEditorUtils.addSongAPI(superagent, editor.song, auth, setEditor)}
+          onClick={() => songEditorUtils.addSongAPI(superagent, editor.song, auth, setEditor, setSongs)}
         >
           Add Song
-        </button>
+        </Button>
       }
     </div>
   );
@@ -189,6 +192,6 @@ export const SongEditorDiv = ({ editor, setEditor, auth }: IsongEditorDiv) => {
 export const SongEditor = ({
   auth,
 }: { auth: Auth }): JSX.Element => {
-  const { editor, setEditor } = React.useContext(EditorContext);
+  const { editor, setEditor } = useContext(EditorContext);
   return <SongEditorDiv editor={editor} setEditor={setEditor} auth={auth} />;
 };
