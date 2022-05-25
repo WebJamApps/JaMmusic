@@ -106,7 +106,7 @@ export class AppTemplate extends React.Component<AppTemplateProps, AppMainState>
             </div>
           ) : null}
         {process.env.APP_NAME !== 'joshandmariamusic.com' ? this.menuConfig.wjNav.map(
-          (menu, index) => <MenuItem menu={menu} index={index} view={this}/>,
+          (menu, index) => <MenuItem key={index} menu={menu} index={index} view={this}/>,
         )
           : this.menuConfig.jamNav.map((menu, index) => (this.makeExternalLink(menu, index)))}
         <p style={{ margin: 0, padding: 0, fontSize: '6pt' }}>&nbsp;</p>

@@ -4,6 +4,7 @@ import 'react-notifications-component/dist/theme.css';
 import type { ISong } from 'src/providers/Data.provider';
 import type { Auth } from 'src/redux/mapStoreToProps';
 import type { Ieditor } from 'src/providers/Editor.provider';
+import fetchSongs from 'src/providers/fetchSongs';
 
 type NotificationType = 'success' | 'danger' | 'info' | 'default' | 'warning';
 
@@ -26,7 +27,7 @@ function notify(title: string, message: string, type: NotificationType) {
 
 const updateSongAPI = async (
   sa: typeof superagent, songChanges: ISong, auth: Auth,
-  setEditor: (arg0: Ieditor) => void,
+  setEditor: (arg0: Ieditor) => void, setSongs: (arg0: ISong[]) => void,
 ): Promise<void> => {
   const id = songChanges._id;
   delete songChanges._id;
@@ -39,7 +40,7 @@ const updateSongAPI = async (
     if (r.status !== 200) throw new Error(`${r.status} song was not updated`);
     setEditor({ song: {}, image: {}, tour: {} } as Ieditor);
     notify('The song has been updated', '', 'success');
-    window.location.reload(); //TODO do not reload but instead fetch songs and refresh storage
+    await fetchSongs.getSongs(setSongs);
   } catch (e) {
     const eMessage = (e as Error).message;
     notify('Failed to update the song', eMessage, 'danger');
@@ -48,7 +49,7 @@ const updateSongAPI = async (
 
 const addSongAPI = async (
   sa: typeof superagent, songBody: ISong, auth: { token: string; },
-  setNewEditor: (arg0: Ieditor) => void,
+  setNewEditor: (arg0: Ieditor) => void, setSongs: (arg0: ISong[]) => void,
 ): Promise<void> => {
   const newSong = { ...songBody };
   delete newSong._id;
@@ -60,7 +61,8 @@ const addSongAPI = async (
       .send(newSong);
     if (r.status !== 201) throw new Error(`${r.status} song was not created`);
     setNewEditor({ song: {}, image: {}, tour: {} } as Ieditor);
-    window.location.reload();//TODO do not reload but instead fetch songs and refresh storage
+    notify(`${newSong.title} song was created`, '', 'success');
+    await fetchSongs.getSongs(setSongs);
   } catch (e) {
     const eMessage = (e as Error).message;
     notify('Failed to create the song', eMessage, 'danger');
