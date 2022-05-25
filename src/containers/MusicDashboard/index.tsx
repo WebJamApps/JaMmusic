@@ -18,7 +18,7 @@ interface MusicDashboardProps extends RouteComponentProps<Record<string, string 
   auth: Auth;
   editPic: Iimage;
   editSong: ISong | { _id: string, category: string, year: number, title: string, url: string },
-  editTour: { date?: string; time?: string; tickets?: string; more?: string; venue?: string; location?: string; _id?: string; datetime?: string };
+  editTour: { date?: string; time?: Date | null; tickets?: string; more?: string; venue?: string; location?: string; _id?: string; datetime?: string };
   showTable: boolean;
   images: Iimage[];
 }
@@ -31,7 +31,7 @@ type MusicDashboardState = {
   venue: string;
   redirect: boolean;
   date: string;
-  time: string;
+  time: Date | null;
   tickets: string;
   more: string;
   [x: number]: number;
@@ -48,7 +48,7 @@ const InitialState = {
   showCaption: '',
   redirect: false,
   date: '',
-  time: '',
+  time: new Date(),
   tickets: '',
   more: '',
   venue: '',
@@ -109,7 +109,7 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
     this.setState({ songState: editSong });
   }
 
-  setFormTime(time: string): void { this.setState({ time }); }
+  setFormTime(time: Date | null): void { this.setState({ time }); }
 
   handleEditorChange(venue: string): void { this.setState({ venue }); this.checkEdit(); }
 
@@ -118,7 +118,7 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
     if (e.currentTarget.id === 'Songs-Button') {
       this.setState({ navState: { navSong: true, navPhoto: false, navTour: false } });
     }
-    if (e.currentTarget.id === 'Tours-Button') {
+    if (e.currentTarget.id === 'Gigs-Button') {
       this.setState({ navState: { navSong: false, navPhoto: false, navTour: true } });
     }
     if (e.currentTarget.id === 'Photos-Button') {
@@ -135,7 +135,7 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
   // eslint-disable-next-line class-methods-use-this
   fixDate(date: string,
     editTour: {
-      date?: string; time?: string; tickets?: string; more?: string;
+      date?: string; time?: Date | null; tickets?: string; more?: string;
       venue?: string; location?: string; _id?: string; datetime?: string;
     }): string {
     let newDate = date;
@@ -150,7 +150,7 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
     } = this.state;
     const { editTour, dispatch } = this.props;
     date = this.fixDate(date, editTour);
-    if (time === '' && editTour.time !== undefined) { time = editTour.time; }
+    if (time === null && editTour.time !== undefined) { time = editTour.time; }
     if (tickets === '' && editTour.tickets !== undefined) { tickets = editTour.tickets; }
     if (more === '' && editTour.more !== undefined) { more = editTour.more; }
     if (venue === '' && editTour.venue !== undefined) { venue = editTour.venue; }
@@ -168,7 +168,7 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
     const { dispatch } = this.props;
     dispatch({ type: 'EDIT_TOUR', data: {} });
     this.setState({
-      date: '', time: '', tickets: '', more: '', venue: '', location: '',
+      date: '', time: null, tickets: '', more: '', venue: '', location: '',
     });
   }
 
@@ -182,10 +182,13 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
 
   createTourApi(tour1: Tour): boolean {
     const { scc, auth } = this.props;
-    const tour = tour1;
+    const tour:any = {...tour1};
     tour.datetime = tour.date;
     const m = moment(tour.date, 'YYYY-MM-DD');
     tour.date = m.format('ll');
+    console.log(tour.time?.toLocaleTimeString());
+    tour.time = tour.time ? tour.time.toLocaleTimeString() : "";
+    console.log(auth.token);
     scc.transmit('newTour', { tour, token: auth.token });
     this.setState({ redirect: true });
     return true;

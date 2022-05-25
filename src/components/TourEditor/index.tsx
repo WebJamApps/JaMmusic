@@ -3,9 +3,13 @@ import AddTime from '../../containers/MusicDashboard/AddTime';
 import type { MusicDashboard } from '../../containers/MusicDashboard';
 import Ttable from '../TourTable';
 import Utils from './tourEditorUtils';
+import TextField from '@mui/material/TextField';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 
 export interface IeditTour {
-  date?:string; time?:string;
+  date?:string; time?:Date | null;
   tickets?:string; more?:string; venue?:string; location?:string; _id?:string; datetime?:string
 }
 type PageProps = { editTour:IeditTour, comp:MusicDashboard };
@@ -16,7 +20,7 @@ export const newTourForm = (comp:MusicDashboard, editTour:IeditTour): JSX.Elemen
   } = comp.state;
 
   date = comp.fixDate(date, editTour);
-  if (time === '' && editTour.time !== undefined) { time = editTour.time; }
+  if (time === null && editTour.time !== undefined) { time = editTour.time; }
   if (tickets === '' && editTour.tickets !== undefined) { tickets = editTour.tickets; }
   if (more === '' && editTour.more !== undefined) { more = editTour.more; }
   if (venue === '' && editTour.venue !== undefined) { venue = editTour.venue; }
@@ -31,7 +35,18 @@ export const newTourForm = (comp:MusicDashboard, editTour:IeditTour): JSX.Elemen
       <form id="new-tour" style={{ marginLeft: '4px', marginTop: '12px' }}>
         <p>* Date</p>
         {comp.forms.makeInput('date', 'Date', true, comp.onChange, date)}
-        <AddTime setFormTime={comp.setFormTime} initTime={time} show={true}/>
+        <p>* Time</p>
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
+      <TimePicker
+        label="Basic example"
+        value={time}
+        onChange={(newValue) => {
+          comp.setFormTime(newValue);
+        }}
+        renderInput={(params) => <TextField {...params} />}
+      />
+    </LocalizationProvider>
+        {/* <AddTime setFormTime={comp.setFormTime} initTime={time} show={true}/> */}
         {Utils.editor(venue, comp)}
         <p>{' '}</p>
         {comp.forms.makeInput('text', 'Location', true, comp.onChange, location)}

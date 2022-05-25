@@ -15,7 +15,7 @@ export interface Tour {
   datetime?: string;
   more?: string;
   date: string;
-  time: string;
+  time: Date | null;
   tickets: string;
   venue: string;
   location: string;

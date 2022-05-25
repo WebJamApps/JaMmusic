@@ -20,11 +20,11 @@ const DashButtons = ({ comp }:PageProps): JSX.Element => (
     <button
       className="floatRight2"
       type="button"
-      id="Tours-Button"
+      id="Gigs-Button"
       style={{ margin: '5px', fontSize: '55%' }}
       onClick={comp.handleNavClick}
     >
-      Tours
+      Gigs
     </button>
     <button
       className="floatRight3"

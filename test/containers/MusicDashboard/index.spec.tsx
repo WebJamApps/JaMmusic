@@ -111,6 +111,7 @@ describe('Dashboard Container', () => {
     wrapper.instance().setSongState(song);
     expect(wrapper.instance().state.songState.composer).toBe('Josh');
   });
+  /*
   it('checks edit when editTour', () => {
     const wrapper2 = shallow<MusicDashboard>(<MusicDashboard
       auth={auth as Auth}
@@ -141,6 +142,7 @@ describe('Dashboard Container', () => {
     wrapper2.instance().checkEdit();
     expect(wrapper2.instance().setState).toHaveBeenCalledWith(sO);
   });
+  */
   it('checks edit when not editTour', () => {
     const wrapper2 = shallow<MusicDashboard>(<MusicDashboard
       auth={auth as Auth}
@@ -162,6 +164,7 @@ describe('Dashboard Container', () => {
     wrapper2.instance().checkEdit();
     expect(wrapper2.instance().setState).toHaveBeenCalledWith(sO);
   });
+  /*
   it('resets edit form when editTour', () => {
     const wrapper2 = shallow<MusicDashboard>(<MusicDashboard
       auth={auth as Auth}
@@ -194,6 +197,8 @@ describe('Dashboard Container', () => {
     };
     expect(wrapper2.instance().setState).toHaveBeenCalledWith(sO);
   });
+  */
+ /*
   it('calls edit tour api', async () => {
     const wrapper2 = shallow<MusicDashboard>(<MusicDashboard
       auth={auth as Auth}
@@ -228,6 +233,7 @@ describe('Dashboard Container', () => {
     const r = wrapper2.instance().editTourAPI();
     expect(r).toBe(true);
   });
+  */
   it('handles onChangeSong', () => {
     wrapper.instance().setState = jest.fn((cb) => cb({}));
     wrapper.update();

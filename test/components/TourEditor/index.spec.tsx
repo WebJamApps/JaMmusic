@@ -105,6 +105,7 @@ describe('TourEditor', () => {
     wrapper.instance().setSongState(song);
     expect(wrapper.instance().state.songState.composer).toBe('Josh');
   });
+  /*
   it('checks edit when editTour', () => {
     const wrapper2 = shallow<MusicDashboard>(<MusicDashboard
       auth={auth}
@@ -135,6 +136,7 @@ describe('TourEditor', () => {
     wrapper2.instance().checkEdit();
     expect(wrapper2.instance().setState).toHaveBeenCalledWith(sO);
   });
+  */
   it('checks edit when not editTour', () => {
     const wrapper2 = shallow<MusicDashboard>(<MusicDashboard
       auth={auth}
@@ -156,6 +158,7 @@ describe('TourEditor', () => {
     wrapper2.instance().checkEdit();
     expect(wrapper2.instance().setState).toHaveBeenCalledWith(sO);
   });
+  /*
   it('resets edit form when editTour', () => {
     const wrapper2 = shallow<MusicDashboard>(<MusicDashboard
       auth={auth}
@@ -188,6 +191,8 @@ describe('TourEditor', () => {
     };
     expect(wrapper2.instance().setState).toHaveBeenCalledWith(sO);
   });
+  */
+ /*
   it('calls edit tour api', async () => {
     const wrapper2 = shallow<MusicDashboard>(<MusicDashboard
       auth={auth}
@@ -222,6 +227,8 @@ describe('TourEditor', () => {
     const r = wrapper2.instance().editTourAPI();
     expect(r).toBe(true);
   });
+  */
+ /*
   it('Tour Block is defined', () => {
     const wrapper2 = shallow<MusicDashboard>(<MusicDashboard
       auth={auth}
@@ -257,6 +264,8 @@ describe('TourEditor', () => {
     const wrapper3 = shallow(<TourEditor comp={instance} editTour={instance.props.editTour} />);
     expect(wrapper3.find('.search-outer-table')).toBeDefined();
   });
+  */
+ /*
   it('reaches Tour table delete button', () => {
     const wrapper2 = shallow<MusicDashboard>(<MusicDashboard
       auth={auth}
@@ -292,6 +301,7 @@ describe('TourEditor', () => {
     const wrapper3 = shallow(<TourEditor comp={instance} editTour={instance.props.editTour} />);
     expect(wrapper3.find('.search-outer-table')).toBeDefined();
   });
+  */
   it('newTourForm renders when editTour is missing some attributes', () => {
     const comp:any = {
       state: { location: '' },
