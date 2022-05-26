@@ -18,7 +18,8 @@ interface MusicDashboardProps extends RouteComponentProps<Record<string, string 
   auth: Auth;
   editPic: Iimage;
   editSong: ISong | { _id: string, category: string, year: number, title: string, url: string },
-  editTour: { date?: string; time?: Date | null; tickets?: string; more?: string; venue?: string; location?: string; _id?: string; datetime?: string };
+  editTour: { 
+    date?: string; time?: Date | null; tickets?: string; more?: string; venue?: string; location?: string; _id?: string; datetime?: string };
   showTable: boolean;
   images: Iimage[];
 }
@@ -182,12 +183,19 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
 
   createTourApi(tour1: Tour): boolean {
     const { scc, auth } = this.props;
-    const tour:any = {...tour1};
-    tour.datetime = tour.date;
+    const tour:any = { ...tour1 };
+    console.log(tour1.date);
+    const timestring = tour1.time ? tour1.time.toISOString() : '';
+    if (timestring){
+      const timepart = timestring.split('T')[1];
+      const correctedIso = `${tour1.date}T${timepart}`;
+      tour.datetime = correctedIso;
+    }
+    console.log(tour.datetime);
     const m = moment(tour.date, 'YYYY-MM-DD');
     tour.date = m.format('ll');
     console.log(tour.time?.toLocaleTimeString());
-    tour.time = tour.time ? tour.time.toLocaleTimeString() : "";
+    tour.time = tour.time ? tour.time.toLocaleTimeString() : '';
     console.log(auth.token);
     scc.transmit('newTour', { tour, token: auth.token });
     this.setState({ redirect: true });

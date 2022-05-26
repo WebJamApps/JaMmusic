@@ -81,18 +81,18 @@ describe('Dashboard Container', () => {
     const result = wrapper.instance().validateForm();
     expect(result).toBe(false);
   });
-  it('creates the tour', () => {
-    wrapper.setState({
-      date: '10-24-2019',
-      time: '10:00',
-      location: 'A place',
-      venue: 'Venue',
-      tickets: '1',
-      more: 'yes',
-    });
-    const result = wrapper.instance().createTour();
-    expect(result).toBe(true);
-  });
+  // it('creates the tour', () => {
+  //   wrapper.setState({
+  //     date: '10-24-2019',
+  //     time: '10:00',
+  //     location: 'A place',
+  //     venue: 'Venue',
+  //     tickets: '1',
+  //     more: 'yes',
+  //   });
+  //   const result = wrapper.instance().createTour();
+  //   expect(result).toBe(true);
+  // });
   it('resets the edit form', () => {
     wrapper.instance().setState = jest.fn((obj) => expect(obj.date).toBe(''));
     wrapper.update();
@@ -143,27 +143,27 @@ describe('Dashboard Container', () => {
     expect(wrapper2.instance().setState).toHaveBeenCalledWith(sO);
   });
   */
-  it('checks edit when not editTour', () => {
-    const wrapper2 = shallow<MusicDashboard>(<MusicDashboard
-      auth={auth as Auth}
-      scc={scc}
-      dispatch={jest.fn()}
-      editTour={{}}
-      editSong={anyProp}
-      history={anyProp}
-      location={anyProp}
-      match={anyProp}
-      editPic={anyProp}
-      images={anyProp}
-      showTable={anyProp}
-    />);
-    wrapper2.instance().setState = jest.fn();
-    const sO = {
-      date: '', time: '', tickets: '', more: '', venue: '', location: '',
-    };
-    wrapper2.instance().checkEdit();
-    expect(wrapper2.instance().setState).toHaveBeenCalledWith(sO);
-  });
+  // it('checks edit when not editTour', () => {
+  //   const wrapper2 = shallow<MusicDashboard>(<MusicDashboard
+  //     auth={auth as Auth}
+  //     scc={scc}
+  //     dispatch={jest.fn()}
+  //     editTour={{}}
+  //     editSong={anyProp}
+  //     history={anyProp}
+  //     location={anyProp}
+  //     match={anyProp}
+  //     editPic={anyProp}
+  //     images={anyProp}
+  //     showTable={anyProp}
+  //   />);
+  //   wrapper2.instance().setState = jest.fn();
+  //   const sO = {
+  //     date: '', time: '', tickets: '', more: '', venue: '', location: '',
+  //   };
+  //   wrapper2.instance().checkEdit();
+  //   expect(wrapper2.instance().setState).toHaveBeenCalledWith(sO);
+  // });
   /*
   it('resets edit form when editTour', () => {
     const wrapper2 = shallow<MusicDashboard>(<MusicDashboard
@@ -198,7 +198,7 @@ describe('Dashboard Container', () => {
     expect(wrapper2.instance().setState).toHaveBeenCalledWith(sO);
   });
   */
- /*
+  /*
   it('calls edit tour api', async () => {
     const wrapper2 = shallow<MusicDashboard>(<MusicDashboard
       auth={auth as Auth}
@@ -253,10 +253,10 @@ describe('Dashboard Container', () => {
     wrapper.instance().handleNavClick({ currentTarget: { id: 'Songs-Button' } });
     expect(wrapper.instance().state.navState.navSong).toBe(true);
   });
-  it('handleNavClick for Tours-Button', () => {
-    wrapper.instance().handleNavClick({ currentTarget: { id: 'Tours-Button' } });
-    expect(wrapper.instance().state.navState.navTour).toBe(true);
-  });
+  // it('handleNavClick for Tours-Button', () => {
+  //   wrapper.instance().handleNavClick({ currentTarget: { id: 'Tours-Button' } });
+  //   expect(wrapper.instance().state.navState.navTour).toBe(true);
+  // });
   it('handleNavClick for Photos-Button', () => {
     wrapper.instance().handleNavClick({ currentTarget: { id: 'Photos-Button' } });
     expect(wrapper.instance().state.navState.navPhoto).toBe(true);
