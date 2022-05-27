@@ -32,6 +32,7 @@ type MusicDashboardState = {
   venue: string;
   redirect: boolean;
   date: string;
+  datetime: string;
   time: Date | null;
   tickets: string;
   more: string;
@@ -44,6 +45,7 @@ const InitialState = {
   songState: {
     image: '', composer: '', year: new Date().getFullYear(), album: '', title: '', url: '', artist: '', category: 'original', _id: '',
   },
+  datetime: '',
   title: '',
   url: '',
   showCaption: '',
@@ -147,10 +149,11 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
 
   checkEdit(): void {
     let {
-      date, time, tickets, more, venue, location,
+      date, time, tickets, more, venue, location, datetime,
     } = this.state;
     const { editTour, dispatch } = this.props;
     date = this.fixDate(date, editTour);
+    if (datetime === '' && editTour.datetime !== undefined) { datetime = editTour.datetime; }
     if (time === null && editTour.time !== undefined) { time = editTour.time; }
     if (tickets === '' && editTour.tickets !== undefined) { tickets = editTour.tickets; }
     if (more === '' && editTour.more !== undefined) { more = editTour.more; }
@@ -222,6 +225,12 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
     };
     const m = moment(tour.date, 'YYYY-MM-DD');
     tour.date = m.format('ll');
+    if (tour.time instanceof Date){
+      const timestring = tour.time.toISOString();
+      const timepart = timestring.split('T')[1];
+      const correctedIso = `${tour.date}T${timepart}`;
+      tour.datetime = correctedIso;
+    }
     scc.transmit('editTour', { tour, token: auth.token, tourId: editTour._id });
     this.resetEditForm(null);
     this.setState({ redirect: true });

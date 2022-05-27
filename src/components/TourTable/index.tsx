@@ -131,7 +131,7 @@ export class TourTable extends Component<TourTableProps, TourTableState> {
       return (
       <div className="tourTable">
         <div style={{ maxWidth: '100%' }}>
-          <h4 style={{ textAlign: 'center', marginBottom: 0 }}>Tour Schedule</h4>
+          <h4 style={{ textAlign: 'center', marginBottom: 0 }}>Gigs</h4>
           <DTable columns={columns} data={tableData} />
         </div>
       </div>
