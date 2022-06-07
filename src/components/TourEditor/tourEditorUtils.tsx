@@ -1,8 +1,7 @@
 import { Editor } from '@tinymce/tinymce-react';
+import moment from 'moment';
 
-import type { MusicDashboard } from '../../containers/MusicDashboard';
-
-const editor = (venue: string, comp:MusicDashboard): JSX.Element => (
+const editor = (venue: string, comp:any): JSX.Element => (
   <div className="horiz-scroll">
     <div style={{ width: '850px', margin: 'auto' }}>
       <p style={{ marginBottom: 0 }}>* Venue</p>
@@ -29,7 +28,7 @@ const editor = (venue: string, comp:MusicDashboard): JSX.Element => (
   </div>
 );
 
-const tourButtons = (comp: MusicDashboard): JSX.Element => {
+const tourButtons = (comp:any): JSX.Element => {
   const { editTour } = comp.props;
   return (
     <div style={{ textAlign: 'left', marginTop: '10px', maxWidth: '85%' }}>
@@ -57,5 +56,58 @@ const tourButtons = (comp: MusicDashboard): JSX.Element => {
     </div>
   );
 };
+
+// function createTourApi(tour1:any): boolean {
+//   const { scc, auth } = this.props;
+//   const tour:any = { ...tour1 };
+//   console.log(tour1.date);
+//   const timestring = tour1.time ? tour1.time.toISOString() : '';
+//   if (timestring){
+//     const timepart = timestring.split('T')[1];
+//     const correctedIso = `${tour1.date}T${timepart}`;
+//     tour.datetime = correctedIso;
+//   }
+//   console.log(tour.datetime);
+//   const m = moment(tour.date, 'YYYY-MM-DD');
+//   tour.date = m.format('ll');
+//   console.log(tour.time?.toLocaleTimeString());
+//   tour.time = tour.time ? tour.time.toLocaleTimeString() : '';
+//   console.log(auth.token);
+//   scc.transmit('newTour', { tour, token: auth.token });
+//   this.setState({ redirect: true });
+//   return true;
+// }
+
+// function createTour(): boolean {
+//   const {
+//     date, time, location, venue, tickets, more,
+//   } = this.state;
+//   const tour = {
+//     date, time, location, venue, tickets, more,
+//   };
+//   return this.createTourApi(tour);
+// }
+
+// function editTourAPI(): boolean {
+//   const {
+//     date, time, location, venue, tickets, more,
+//   } = this.state;
+//   const { editTour, scc, auth } = this.props;
+//   const tour = {
+//     date, time, location, venue, tickets, more, datetime: date,
+//   };
+//   const m = moment(tour.date, 'YYYY-MM-DD');
+//   tour.date = m.format('ll');
+//   if (tour.time instanceof Date){
+//     const timestring = tour.time.toISOString();
+//     const timepart = timestring.split('T')[1];
+//     const correctedIso = `${tour.date}T${timepart}`;
+//     tour.datetime = correctedIso;
+//   }
+//   scc.transmit('editTour', { tour, token: auth.token, tourId: editTour._id });
+//   this.resetEditForm(null);
+//   this.setState({ redirect: true });
+//   return true;
+// }
 
 export default { editor, tourButtons };

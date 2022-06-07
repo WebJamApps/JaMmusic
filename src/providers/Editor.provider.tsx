@@ -3,7 +3,7 @@ import createPersistedState from 'use-persisted-state';
 import type { ISong } from './Data.provider';
 
 export interface Ieditor {
-  isValid: boolean; hasChanged: boolean; song: ISong; tour:
+  isValid: boolean; hasChanged: boolean; song: ISong; gig:
   Record<string, unknown>; image: Record<string, unknown>;
 }
 
@@ -13,7 +13,7 @@ const useEditorState: (arg0: Ieditor) =>
 
 export const defaultSong: ISong = { category: '', year: 2021, title: '', url: '', _id: '' };
 
-const initEditor: Ieditor = { isValid: false, hasChanged: false, song: defaultSong, tour: {}, image: {} };
+const initEditor: Ieditor = { isValid: false, hasChanged: false, song: defaultSong, gig: {}, image: {} };
 
 export const EditorContext = createContext({
   editor: initEditor,

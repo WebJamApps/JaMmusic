@@ -26,7 +26,7 @@ export const onChangeSong = (
   const { target: { id, value } } = evt;
   const isValid = validateSongInput(id, value);
   const newEditor = {
-    hasChanged: true, isValid, image: {}, tour: {},
+    hasChanged: true, isValid, image: {}, gig: {},
     song: { ...editor.song, [id]: value },
   };
   setNewEditor(newEditor);
@@ -38,7 +38,7 @@ export const handleCategoryChange = (
   ) => void): void => {
   setNewEditor(
     {
-      hasChanged: true, isValid: true, image: {}, tour: {},
+      hasChanged: true, isValid: true, image: {}, gig: {},
       song: { ...editor.song, category: event.target.value },
     },
   );
@@ -112,7 +112,7 @@ export const EditSongButtons = (
     <span>
       <Button className="floatRight" type="button" id="cancel-edit-song"
         onClick={() => setEditor(
-          { isValid: false, hasChanged: false, song: defaultSong, tour: {}, image: {} },
+          { isValid: false, hasChanged: false, song: defaultSong, gig: {}, image: {} },
         )}>
         Cancel
       </Button>

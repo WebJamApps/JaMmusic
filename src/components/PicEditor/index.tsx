@@ -1,20 +1,11 @@
 
-import type { MusicDashboard } from '../../containers/MusicDashboard';
-import type { MusicDashboardController } from '../../containers/MusicDashboard/MusicDashboardController';
-
 export interface IeditPic {
   _id?: string;
   title?: string;
   url?: string;
 }
 
-type PageProps = {
-  comp: MusicDashboard,
-  controller: MusicDashboardController,
-  editPic: IeditPic,
-};
-
-const radioButtons = (comp:MusicDashboard, editPic:any): JSX.Element => (
+const radioButtons = (comp:any, editPic:any): JSX.Element => (
   <div id="radio-buttons" style={{ marginBottom:'10px' }}>
     <label htmlFor="showCaption" style={{ display: 'inline', padding: '10px', paddingLeft:'0px' }}>
       Show Caption
@@ -42,7 +33,7 @@ const radioButtons = (comp:MusicDashboard, editPic:any): JSX.Element => (
   </div>
 );
 
-export const PicEditor = ({ comp, controller, editPic }:PageProps): JSX.Element => {
+export const PicEditor = ({ comp, controller, editPic }:any): JSX.Element => {
   let { title, url } = comp.state;
   if (title === '' && editPic.title !== undefined) { title = editPic.title; }
   if (url === '' && editPic.url !== undefined) { url = editPic.url; }

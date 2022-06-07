@@ -1,9 +1,5 @@
 
-import type { MusicDashboard } from '../../containers/MusicDashboard';
-
-type PageProps = { comp:MusicDashboard };
-
-const DashButtons = ({ comp }:PageProps): JSX.Element => (
+const DashButtons = ({ comp }:any): JSX.Element => (
   <div
     className="Nav-Buttons"
     id="Nav-Buttons"
@@ -38,7 +34,7 @@ const DashButtons = ({ comp }:PageProps): JSX.Element => (
   </div>
 );
 
-export const DashNavigationButtons = ({ comp }:PageProps): JSX.Element => (
+export const DashNavigationButtons = ({ comp }:any): JSX.Element => (
   <div
     className="center"
   >

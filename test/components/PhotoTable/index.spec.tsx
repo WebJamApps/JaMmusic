@@ -16,7 +16,7 @@ describe('PhotoTable', () => {
     photoTable = renderer.create(<PhotoTable
       auth={props.auth}
       images={props.images}
-      dispatch={(fun) => fun}
+      dispatch={(fun:any) => fun}
       controller={controller}
     />);
   });

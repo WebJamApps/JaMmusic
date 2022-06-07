@@ -3,7 +3,7 @@ import { ReactNotifications } from 'react-notifications-component';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { connect } from 'react-redux';
 import DefaultSort from '../containers/SortContainer';
-import DefaultMusicDashboard from '../containers/MusicDashboard';
+import { MusicDashboard } from '../containers/MusicDashboard';
 import BuyMusic from '../containers/BuyMusic';
 import AppFourOhFour from './404';
 import GoogleMap from '../containers/GoogleMap';
@@ -72,7 +72,7 @@ export class App extends Component<AppProps> {
                 <Route exact path="/music/buymusic" component={BuyMusic} />
                 <Route exact path="/music/originals" component={DefaultSongs} />
                 <Route exact path="/music/songs" component={DefaultSongs} />
-                <PrivateRoute path="/music/dashboard" Container={DefaultMusicDashboard} />
+                <PrivateRoute path="/music/dashboard" Container={MusicDashboard} />
                 <Route component={AppFourOhFour} />
               </Switch>
             </ATemplate>

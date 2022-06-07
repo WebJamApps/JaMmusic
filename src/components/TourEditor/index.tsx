@@ -1,6 +1,4 @@
 
-// import AddTime from '../../containers/MusicDashboard/AddTime';
-import type { MusicDashboard } from '../../containers/MusicDashboard';
 import Ttable from '../TourTable';
 import Utils from './tourEditorUtils';
 import TextField from '@mui/material/TextField';
@@ -12,9 +10,9 @@ export interface IeditTour {
   date?: string; time?: Date | null;
   tickets?: string; more?: string; venue?: string; location?: string; _id?: string; datetime?: string
 }
-type PageProps = { editTour: IeditTour, comp: MusicDashboard };
+type PageProps = { editTour: IeditTour, comp:any };
 
-export const newTourForm = (comp: MusicDashboard, editTour: IeditTour): JSX.Element => {
+export const newTourForm = (comp:any, editTour: IeditTour): JSX.Element => {
   let {
     location, tickets, more, date, venue, time,
   } = comp.state;

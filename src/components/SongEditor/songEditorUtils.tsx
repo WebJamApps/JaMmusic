@@ -38,7 +38,7 @@ const updateSongAPI = async (
       .set('Authorization', `Bearer ${auth.token}`)
       .send(songChanges);
     if (r.status !== 200) throw new Error(`${r.status} song was not updated`);
-    setEditor({ song: {}, image: {}, tour: {} } as Ieditor);
+    setEditor({ song: {}, image: {}, gig: {} } as Ieditor);
     notify('The song has been updated', '', 'success');
     await fetchSongs.getSongs(setSongs);
   } catch (e) {
@@ -60,7 +60,7 @@ const addSongAPI = async (
       .set('Authorization', `Bearer ${auth.token}`)
       .send(newSong);
     if (r.status !== 201) throw new Error(`${r.status} song was not created`);
-    setNewEditor({ song: {}, image: {}, tour: {} } as Ieditor);
+    setNewEditor({ song: {}, image: {}, gig: {} } as Ieditor);
     notify(`${newSong.title} song was created`, '', 'success');
     await fetchSongs.getSongs(setSongs);
   } catch (e) {
