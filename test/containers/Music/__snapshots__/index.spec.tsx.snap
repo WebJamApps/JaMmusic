@@ -105,8 +105,24 @@ exports[`/music renders the component without images 1`] = `
           Create New Gig
         </div>
         <div>
-          <div>
-            Enter all required fields to create a new gig.
+          <div
+            sx={
+              Object {
+                "marginBottom": "30px",
+              }
+            }
+          >
+            Enter all *required fields to create a new gig.
+          </div>
+          <div
+            dateAdapter={[Function]}
+          >
+            <input
+              label="* Date and Time"
+              onChange={[Function]}
+              renderInput={[Function]}
+              value={2022-06-10T19:12:34.519Z}
+            />
           </div>
           <input
             autoFocus={true}

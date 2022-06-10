@@ -1,7 +1,6 @@
 import { useContext, useEffect, useState } from 'react';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import { DateTimePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { DataGrid, GridColumns, GridEnrichedColDef, GridRenderCellParams } from '@mui/x-data-grid';
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, TextField, Tooltip } from '@mui/material';
 import { Add as AddIcon } from '@mui/icons-material';
@@ -112,8 +111,8 @@ export const Gigs = ({ isAdmin }: { isAdmin: boolean }): JSX.Element => {
             <DateTimePicker
               label="* Date and Time"
               value={dateTime}
-              onChange={(newValue: Date | null) => { setDateTime(newValue); }}
-              renderInput={(params) => <TextField {...params} />}
+              onChange={(newValue: Date | null) => { setDateTime(newValue); return newValue; }}
+              renderInput={(params) => <TextField className="dateTimeInput" {...params} />}
             />
           </LocalizationProvider>
           <TextField

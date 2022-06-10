@@ -15,6 +15,9 @@ describe('Gigs', ()=>{
     expect(gigs.findByProps({ className:'createNewGigDialog' }).props.onClose()).toBe(false);
     expect(gigs.findByProps({ className:'cancelButton' }).props.onClick()).toBe(false);
     expect(gigs.findByProps({ variant:'contained' }).props.onClick()).toBe('create');
+    const dtPicker = gigs.findByProps({ label:'* Date and Time' });
+    expect(dtPicker.props.onChange(null)).toBeNull();
+    expect(dtPicker.props.renderInput().props.className).toBe('dateTimeInput');
   });
   it('makeVenue', ()=>{
     const columnDef:any = makeVenue();
