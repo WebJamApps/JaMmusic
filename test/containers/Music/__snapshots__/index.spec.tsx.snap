@@ -121,7 +121,7 @@ exports[`/music renders the component without images 1`] = `
               label="* Date and Time"
               onChange={[Function]}
               renderInput={[Function]}
-              value={2022-06-10T19:12:34.519Z}
+              value={2022-06-10T19:13:26.966Z}
             />
           </div>
           <input
