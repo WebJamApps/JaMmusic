@@ -14,3 +14,7 @@ export const DialogContentText = (props:any) => <div {...props}>{props.children}
 export const DialogContent = (props:any) => <div {...props}>{props.children}</div>;
 
 export const DialogTitle = (props:any) => <div {...props}>{props.children}</div>;
+
+export const IconButton = (props:any) => <button {...props}>{props.children}</button>;
+
+export const Tooltip = (props:any) => <div {...props}>{props.children}</div>;

@@ -24,29 +24,26 @@ export const Musicians = (): JSX.Element => {
   );
 };
 
-function checkIsAdmin(auth:any, setIsAdmin:(arg0:boolean)=>void){
+export function checkIsAdmin(auth: Auth | null, setIsAdmin: (arg0: boolean) => void) {
   let isAdmin = false;
-  if (auth && auth.isAuthenticated){
-    console.log('line30');
-    const { user:{ userType } } = auth;
-    console.log(userType);
-    const rolesJSON = JSON.parse(process.env.userRoles || '');
+  if (auth && auth.isAuthenticated && process.env.userRoles) {
+    const { user: { userType } } = auth;
+    const rolesJSON = JSON.parse(process.env.userRoles);
     const { roles } = rolesJSON;
     if (userType && roles.includes(userType)) isAdmin = true;
   }
-  console.log(isAdmin);
   setIsAdmin(isAdmin);
 }
 
 interface ImusicNewProps {
-  images?:Iimage[]
-  auth:Auth | null;
+  images?: Iimage[]
+  auth: Auth | null;
 }
-export const Music = ({ images, auth }: ImusicNewProps):JSX.Element =>{
+export const Music = ({ images, auth }: ImusicNewProps): JSX.Element => {
   const [isAdmin, setIsAdmin] = useState(false);
-  useEffect(()=>commonUtils.setTitleAndScroll('Music', window.screen.width), []);
-  useEffect(()=>{
-    checkIsAdmin(auth, setIsAdmin); 
+  useEffect(() => commonUtils.setTitleAndScroll('Music', window.screen.width), []);
+  useEffect(() => {
+    checkIsAdmin(auth, setIsAdmin);
   }, [auth]);
   const data = Array.isArray(images) ? images : [];
   return (
@@ -63,13 +60,13 @@ export const Music = ({ images, auth }: ImusicNewProps):JSX.Element =>{
           position: 'relative', overflowX: 'auto', maxWidth: '96%', margin: 'auto', zIndex: 0,
         }}
       >
-        <Gigs isAdmin={isAdmin}/>
+        <Gigs isAdmin={isAdmin} />
       </div>
       <div style={{ height: '10px' }}>
         <p>{' '}</p>
       </div>
-      <Musicians/>
+      <Musicians />
     </div>
   );
-  
+
 };

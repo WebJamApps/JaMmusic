@@ -80,9 +80,9 @@ export const Gigs = ({ isAdmin }: { isAdmin: boolean }): JSX.Element => {
       <h4 style={{ textAlign: 'center' }}>
         Gigs
         {isAdmin ? <Tooltip title="Add New Gig" placement="right">
-          <IconButton sx={{ marginLeft: '10px', color: 'blue' }} onClick={() => {
-            console.log('show dialog');
+          <IconButton className="showCreateDialog" sx={{ marginLeft: '10px', color: 'blue' }} onClick={() => {
             setShowDialog(true);
+            return true;
           }}>
             <AddIcon />
           </IconButton></Tooltip> : ''}
@@ -96,7 +96,8 @@ export const Gigs = ({ isAdmin }: { isAdmin: boolean }): JSX.Element => {
           disableSelectionOnClick
         />
       </div>
-      <Dialog open={showDialog} onClose={() => setShowDialog(false)}>
+      <Dialog className="createNewGigDialog" open={showDialog}
+        onClose={() => { setShowDialog(false); return false; }}>
         <DialogTitle>Create New Gig</DialogTitle>
         <DialogContent>
           <DialogContentText>
@@ -113,8 +114,10 @@ export const Gigs = ({ isAdmin }: { isAdmin: boolean }): JSX.Element => {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={()=>setShowDialog(false)}>Cancel</Button>
-          <Button variant="contained" onClick={()=>console.log('run create call')}>Create</Button>
+          <Button className="cancelButton"
+            onClick={() => { setShowDialog(false); return false; }}>Cancel</Button>
+          <Button variant="contained"
+            onClick={() => { console.log('run create call'); return 'create'; }}>Create</Button>
         </DialogActions>
       </Dialog>
     </div>

@@ -8,6 +8,14 @@ describe('Gigs', ()=>{
     const gigs = renderer.create(<Gigs isAdmin={false}/>);
     expect(gigs.toJSON).toMatchSnapshot();
   });
+  it('renders when isAdmin and handles clicks', ()=>{
+    const gigs = renderer.create(<Gigs isAdmin={true}/>).root;
+    const result = gigs.findByProps({ className:'showCreateDialog' }).props.onClick();
+    expect(result).toBe(true);
+    expect(gigs.findByProps({ className:'createNewGigDialog' }).props.onClose()).toBe(false);
+    expect(gigs.findByProps({ className:'cancelButton' }).props.onClick()).toBe(false);
+    expect(gigs.findByProps({ variant:'contained' }).props.onClick()).toBe('create');
+  });
   it('makeVenue', ()=>{
     const columnDef:any = makeVenue();
     const params:any = { value:'<div></div>' };
