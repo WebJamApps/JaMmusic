@@ -68,6 +68,7 @@ exports[`/music renders the component without images 1`] = `
     }
   >
     <div
+      className="gigsDiv"
       style={
         Object {
           "margin": "auto",
@@ -121,7 +122,7 @@ exports[`/music renders the component without images 1`] = `
               label="* Date and Time"
               onChange={[Function]}
               renderInput={[Function]}
-              value={2022-06-10T19:13:26.966Z}
+              value={2022-06-10T19:33:41.965Z}
             />
           </div>
           <input

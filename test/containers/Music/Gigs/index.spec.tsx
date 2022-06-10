@@ -4,9 +4,9 @@ import type { IGig } from 'src/providers/Data.provider';
 import { Gigs, makeVenue, columns, makeVenueValue, orderGigs } from 'src/containers/Music/Gigs';
 
 describe('Gigs', ()=>{
-  it('renders correctly', ()=>{
+  it('renders correctly when not isAdmin', ()=>{
     const gigs = renderer.create(<Gigs isAdmin={false}/>);
-    expect(gigs.toJSON).toMatchSnapshot();
+    expect(JSON.stringify(gigs.toJSON()).includes('gigsDiv')).toBe(true);
   });
   it('renders when isAdmin and handles clicks', ()=>{
     const gigs = renderer.create(<Gigs isAdmin={true}/>).root;

@@ -80,7 +80,7 @@ export const Gigs = ({ isAdmin }: { isAdmin: boolean }): JSX.Element => {
   const [dateTime, setDateTime] = useState(now);
   useEffect(() => orderGigs(gigs, setGigsInOrder), [gigs]);
   return (
-    <div style={{ margin: 'auto', padding: '10px', width: '100%' }}>
+    <div className="gigsDiv" style={{ margin: 'auto', padding: '10px', width: '100%' }}>
       <h4 style={{ textAlign: 'center' }}>
         Gigs
         {isAdmin ? <Tooltip title="Add New Gig" placement="right">
