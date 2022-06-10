@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import renderer from 'react-test-renderer';
 import type { IGig } from 'src/providers/Data.provider';
-import { Gigs, makeVenue, columns, makeVenueValue, orderGigs } from 'src/components/Gigs';
+import { Gigs, makeVenue, columns, makeVenueValue, orderGigs } from 'src/containers/Music/Gigs';
 
 describe('Gigs', ()=>{
   it('renders correctly', ()=>{

@@ -1,8 +1,11 @@
 import { useContext, useEffect, useState } from 'react';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { DataGrid, GridColumns, GridEnrichedColDef, GridRenderCellParams } from '@mui/x-data-grid';
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, TextField, Tooltip } from '@mui/material';
 import { Add as AddIcon } from '@mui/icons-material';
-import { DataContext, IGig } from '../../providers/Data.provider';
+import { DataContext, IGig } from 'src/providers/Data.provider';
 import HtmlReactParser from 'html-react-parser';
 import { defaultGig } from 'src/providers/fetchGigs';
 import './Gigs.scss';
@@ -74,6 +77,8 @@ export const Gigs = ({ isAdmin }: { isAdmin: boolean }): JSX.Element => {
   const [showDialog, setShowDialog] = useState(false);
   const { gigs } = useContext(DataContext);
   const [gigsInOrder, setGigsInOrder] = useState(gigs);
+  const now = new Date() as Date | null;
+  const [dateTime, setDateTime] = useState(now);
   useEffect(() => orderGigs(gigs, setGigsInOrder), [gigs]);
   return (
     <div style={{ margin: 'auto', padding: '10px', width: '100%' }}>
@@ -100,9 +105,17 @@ export const Gigs = ({ isAdmin }: { isAdmin: boolean }): JSX.Element => {
         onClose={() => { setShowDialog(false); return false; }}>
         <DialogTitle>Create New Gig</DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            Enter all required fields to create a new gig.
+          <DialogContentText sx={{ marginBottom: '30px' }}>
+            Enter all *required fields to create a new gig.
           </DialogContentText>
+          <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <DateTimePicker
+              label="* Date and Time"
+              value={dateTime}
+              onChange={(newValue: Date | null) => { setDateTime(newValue); }}
+              renderInput={(params) => <TextField {...params} />}
+            />
+          </LocalizationProvider>
           <TextField
             autoFocus
             margin="dense"
