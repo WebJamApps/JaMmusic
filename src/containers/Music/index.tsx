@@ -1,14 +1,14 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import PicSlider from 'src/components/PicSlider';
 import { Gigs } from '../../components/Gigs';
-import type { Iimage } from '../../redux/mapStoreToProps';
+import type { Iimage, Auth } from '../../redux/mapStoreToProps';
 import { Intro } from './intro';
 import JoshBio from './joshBio';
 import MariaBio from './mariaBio';
 import WjBand from './wjBand';
 import commonUtils from '../../lib/commonUtils';
 
-export const Musicians = (): JSX.Element => { 
+export const Musicians = (): JSX.Element => {
   return (
     <div className="elevation3" style={{ maxWidth: '1000px', margin: 'auto' }}>
       <section>
@@ -24,11 +24,30 @@ export const Musicians = (): JSX.Element => {
   );
 };
 
+function checkIsAdmin(auth:any, setIsAdmin:(arg0:boolean)=>void){
+  let isAdmin = false;
+  if (auth && auth.isAuthenticated){
+    console.log('line30');
+    const { user:{ userType } } = auth;
+    console.log(userType);
+    const rolesJSON = JSON.parse(process.env.userRoles || '');
+    const { roles } = rolesJSON;
+    if (userType && roles.includes(userType)) isAdmin = true;
+  }
+  console.log(isAdmin);
+  setIsAdmin(isAdmin);
+}
+
 interface ImusicNewProps {
   images?:Iimage[]
+  auth:Auth | null;
 }
-export const Music = ({ images }: ImusicNewProps):JSX.Element =>{
+export const Music = ({ images, auth }: ImusicNewProps):JSX.Element =>{
+  const [isAdmin, setIsAdmin] = useState(false);
   useEffect(()=>commonUtils.setTitleAndScroll('Music', window.screen.width), []);
+  useEffect(()=>{
+    checkIsAdmin(auth, setIsAdmin); 
+  }, [auth]);
   const data = Array.isArray(images) ? images : [];
   return (
     <div className="page-content">
@@ -44,7 +63,7 @@ export const Music = ({ images }: ImusicNewProps):JSX.Element =>{
           position: 'relative', overflowX: 'auto', maxWidth: '96%', margin: 'auto', zIndex: 0,
         }}
       >
-        <Gigs/>
+        <Gigs isAdmin={isAdmin}/>
       </div>
       <div style={{ height: '10px' }}>
         <p>{' '}</p>

@@ -64,11 +64,11 @@ export class App extends Component<AppProps> {
             <ATemplate>
               <Switch>
                 <Route exact path="/">
-                  {this.appName === 'web-jam.com' ? <HomePage /> : <Music images={this.props.images} />}
+                  {this.appName === 'web-jam.com' ? <HomePage /> : <Music images={this.props.images} auth={null}/>}
                 </Route>
                 {this.loadMap()}
                 <PrivateRoute path="/sort" Container={DefaultSort} />
-                <Route exact path="/music"><Music images={this.props.images} /></Route>
+                <Route exact path="/music"><Music images={this.props.images} auth={this.props.auth}/></Route>
                 <Route exact path="/music/buymusic" component={BuyMusic} />
                 <Route exact path="/music/originals" component={DefaultSongs} />
                 <Route exact path="/music/songs" component={DefaultSongs} />

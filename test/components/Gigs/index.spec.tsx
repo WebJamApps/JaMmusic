@@ -1,4 +1,3 @@
-/* eslint-disable one-var */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import renderer from 'react-test-renderer';
 import type { IGig } from 'src/providers/Data.provider';
@@ -6,7 +5,7 @@ import { Gigs, makeVenue, columns, makeVenueValue, orderGigs } from 'src/compone
 
 describe('Gigs', ()=>{
   it('renders correctly', ()=>{
-    const gigs = renderer.create(<Gigs/>);
+    const gigs = renderer.create(<Gigs isAdmin={false}/>);
     expect(gigs.toJSON).toMatchSnapshot();
   });
   it('makeVenue', ()=>{
@@ -34,13 +33,14 @@ describe('Gigs', ()=>{
   it('properly sets the order for gigs', ()=>{
     const setGigsInOrder = jest.fn();
     const today = new Date().toISOString();
-    let yesterday:any = new Date(today);
+    let tomorrow:any, future:any, yesterday:any;
+    yesterday = new Date(today);
     yesterday.setDate(yesterday.getDate() - 1);
     yesterday = new Date(yesterday).toISOString();
-    let tomorrow:any = new Date(today);
+    tomorrow = new Date(today);
     tomorrow.setDate(tomorrow.getDate() + 1);
     tomorrow = new Date(tomorrow).toISOString();
-    let future:any = new Date(tomorrow);
+    future = new Date(tomorrow);
     future.setDate(future.getDate() + 2);
     future = new Date(future).toISOString();
     const gigs = [{ datetime:tomorrow }, { datetime:yesterday }, { datetime:future }, { datetime:today }, { datetime:tomorrow }] as IGig[];
