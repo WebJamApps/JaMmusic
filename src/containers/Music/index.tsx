@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import PicSlider from 'src/components/PicSlider';
-import { Gigs } from '../../components/Gigs';
+import { Gigs } from './Gigs';
 import type { Iimage, Auth } from '../../redux/mapStoreToProps';
 import { Intro } from './intro';
 import JoshBio from './joshBio';

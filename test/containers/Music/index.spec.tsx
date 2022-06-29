@@ -16,8 +16,8 @@ const data:any = [
 
 describe('/music', () => {
   it('renders the component without images', () => {
-    const music = renderer.create(<Music images={undefined} auth={null}/>);
-    expect(music.toJSON()).toMatchSnapshot();
+    const music = renderer.create(<Music images={undefined} auth={null}/>).toJSON();
+    expect(JSON.stringify(music).includes('page-content')).toBe(true);
   });
   it('renders with images', () => {
     const music = renderer.create(<Music images={data} auth={null}/>).toJSON();

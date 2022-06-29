@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import renderer from 'react-test-renderer';
 import type { IGig } from 'src/providers/Data.provider';
-import { Gigs, makeVenue, columns, makeVenueValue, orderGigs } from 'src/components/Gigs';
+import { Gigs, makeVenue, columns, makeVenueValue, orderGigs } from 'src/containers/Music/Gigs';
 
 describe('Gigs', ()=>{
-  it('renders correctly', ()=>{
+  it('renders correctly when not isAdmin', ()=>{
     const gigs = renderer.create(<Gigs isAdmin={false}/>);
-    expect(gigs.toJSON).toMatchSnapshot();
+    expect(JSON.stringify(gigs.toJSON()).includes('gigsDiv')).toBe(true);
   });
   it('renders when isAdmin and handles clicks', ()=>{
     const gigs = renderer.create(<Gigs isAdmin={true}/>).root;
@@ -15,6 +15,9 @@ describe('Gigs', ()=>{
     expect(gigs.findByProps({ className:'createNewGigDialog' }).props.onClose()).toBe(false);
     expect(gigs.findByProps({ className:'cancelButton' }).props.onClick()).toBe(false);
     expect(gigs.findByProps({ variant:'contained' }).props.onClick()).toBe('create');
+    const dtPicker = gigs.findByProps({ label:'* Date and Time' });
+    expect(dtPicker.props.onChange(null)).toBeNull();
+    expect(dtPicker.props.renderInput().props.className).toBe('dateTimeInput');
   });
   it('makeVenue', ()=>{
     const columnDef:any = makeVenue();
