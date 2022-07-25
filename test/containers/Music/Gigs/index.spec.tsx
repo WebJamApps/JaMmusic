@@ -8,17 +8,17 @@ describe('Gigs', ()=>{
     const gigs = renderer.create(<Gigs isAdmin={false}/>);
     expect(JSON.stringify(gigs.toJSON()).includes('gigsDiv')).toBe(true);
   });
-  // it('renders when isAdmin and handles clicks', ()=>{
-  //   const gigs = renderer.create(<Gigs isAdmin={true}/>).root;
-  //   const result = gigs.findByProps({ className:'showCreateDialog' }).props.onClick();
-  //   expect(result).toBe(true);
-  //   expect(gigs.findByProps({ className:'createNewGigDialog' }).props.onClose()).toBe(false);
-  //   expect(gigs.findByProps({ className:'cancelButton' }).props.onClick()).toBe(false);
-  //   expect(gigs.findByProps({ variant:'contained' }).props.onClick()).toBe('create');
-  //   const dtPicker = gigs.findByProps({ label:'* Date and Time' });
-  //   expect(dtPicker.props.onChange(null)).toBeNull();
-  //   expect(dtPicker.props.renderInput().props.className).toBe('dateTimeInput');
-  // });
+  it('renders when isAdmin and handles clicks', ()=>{
+    const gigs = renderer.create(<Gigs isAdmin={true}/>).root;
+    const result = gigs.findByProps({ className:'showCreateDialog' }).props.onClick();
+    expect(result).toBe(true);
+    expect(gigs.findByProps({ className:'createNewGigDialog' }).props.onClose()).toBe(false);
+    expect(gigs.findByProps({ className:'cancelButton' }).props.onClick()).toBe(false);
+    expect(gigs.findByProps({ variant:'contained' }).props.onClick()).toBe('create');
+    const dtPicker = gigs.findByProps({ label:'* Date and Time' });
+    expect(dtPicker.props.onChange(null)).toBeNull();
+    expect(dtPicker.props.renderInput().props.className).toBe('dateTimeInput');
+  });
   it('makeVenue', ()=>{
     const columnDef:any = makeVenue();
     const params:any = { value:'<div></div>' };
