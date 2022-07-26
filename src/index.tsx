@@ -2,6 +2,7 @@
 import { Provider } from 'react-redux';
 import { render } from 'react-dom';
 import { hot } from 'react-hot-loader';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 import { PersistGate } from 'redux-persist/integration/react';
 import ConnectedApp from './App/index';
 import store from './redux/store/index';
@@ -11,6 +12,7 @@ import '../static/styles.scss';
 
 const Main = () => {
   return (
+    <GoogleOAuthProvider clientId={process.env.GoogleClientId || '' }>
     <DataProvider>
       <EditorProvider>
         <Provider store={store.store}>
@@ -20,6 +22,7 @@ const Main = () => {
         </Provider>
       </EditorProvider>
     </DataProvider>
+    </GoogleOAuthProvider>
   );
 };
 
