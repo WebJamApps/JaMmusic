@@ -1,5 +1,4 @@
-//import { GoogleLogout, GoogleLogin, GoogleLoginResponseOffline, GoogleLoginResponse } from 'react-google-login';
-import { useGoogleLogin } from '@react-oauth/google';
+import { CodeResponse, useGoogleLogin, googleLogout } from '@react-oauth/google';
 import type { AppTemplateProps } from '../AppTemplate';
 import type { Dispatch } from 'react';
 import { authenticate } from './authenticate';
@@ -7,7 +6,7 @@ import { setUser } from './setUser';
 import { Button } from '@mui/material';
 
 export const responseGoogleLogin = async (
-  response: any,
+  response: Omit<CodeResponse, 'error' | 'error_description' | 'error_uri'>,
   appTemplateProps: AppTemplateProps,
 ): Promise<void> => {
   console.log(response);
@@ -32,6 +31,7 @@ export const responseGoogleLogin = async (
 export const responseGoogleFailLogin = (response: string): string => `${response}`;
 
 const responseGoogleLogout = (dispatch: Dispatch<unknown>): boolean => {
+  googleLogout();
   dispatch({ type: 'LOGOUT' });
   window.location.reload();
   return true;
@@ -40,7 +40,6 @@ const responseGoogleLogout = (dispatch: Dispatch<unknown>): boolean => {
 export const GoogleButtons = (
   { type, index, appTemplateProps }: { type: string, index: number, appTemplateProps: AppTemplateProps },
 ): JSX.Element => {
-  // const cId = process.env.GoogleClientId || /* istanbul ignore next */'';
   const { dispatch } = appTemplateProps;
   const login = useGoogleLogin({
     onSuccess: codeResponse => responseGoogleLogin(codeResponse, appTemplateProps),
@@ -49,25 +48,16 @@ export const GoogleButtons = (
   if (type === 'login') {
     return (
       <div key={index} className="menu-item googleLogin">
-        <Button
-          onClick={() => login()}
-        // eslint-disable-next-line no-console
-        // onAutoLoadFinished={(good) => { console.log(good); return good; }}
-        // responseType="code"
-        // clientId={cId}
-        // buttonText="Login"
-        // accessType="offline"
-        // onSuccess={(response) => { responseGoogleLogin(response, appTemplateProps); return response; }}
-        // onError={() => { const msg = 'login failed'; console.log(msg); return responseGoogleFailLogin(msg); }}
-        // // cookiePolicy="single_host_origin"
-        >
+        <Button variant="contained" size="small" onClick={() => login()}>
           Login
         </Button>
       </div>
     );
   } return (
     <div key={index} className="menu-item googleLogout">
-      <Button onClick={() => { responseGoogleLogout(dispatch); }}>Logout</Button>
+      <Button variant="contained" size="small" onClick={() => { responseGoogleLogout(dispatch); }}>
+        Logout
+      </Button>
     </div>
   );
 };
