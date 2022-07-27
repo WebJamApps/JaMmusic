@@ -9,7 +9,6 @@ export const responseGoogleLogin = async (
   response: Omit<CodeResponse, 'error' | 'error_description' | 'error_uri'>,
   appTemplateProps: AppTemplateProps,
 ): Promise<void> => {
-  console.log(response);
   const uri = window.location.href;
   const baseUri = uri.split('/')[2];
   const body = {
@@ -28,8 +27,6 @@ export const responseGoogleLogin = async (
   } catch (e) { console.log(e); }
 };
 
-export const responseGoogleFailLogin = (response: string): string => `${response}`;
-
 const responseGoogleLogout = (dispatch: Dispatch<unknown>): boolean => {
   googleLogout();
   dispatch({ type: 'LOGOUT' });
@@ -43,6 +40,7 @@ export const GoogleButtons = (
   const { dispatch } = appTemplateProps;
   const login = useGoogleLogin({
     onSuccess: codeResponse => responseGoogleLogin(codeResponse, appTemplateProps),
+    onError: () => console.log('Google login failed'),
     flow: 'auth-code',
   });
   if (type === 'login') {
