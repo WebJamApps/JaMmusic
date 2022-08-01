@@ -11,10 +11,6 @@ describe('authUtils', () => {
   //   authenticate: jest.fn(),
   //   props: { auth: { token: 'token' }, dispatch: () => Promise.resolve(true) },
   // };
-  // it('handles failed login', () => {
-  //   const result = authUtils.responseGoogleFailLogin('no way');
-  //   expect(result).toBe('no way');
-  // });
   // it('handles google login with bad token', async () => {
   //   const res = await authUtils.responseGoogleLogin({ code: '' }, vStub);
   //   expect(res).toBe('jwt malformed');

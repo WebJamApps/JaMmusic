@@ -46,14 +46,14 @@ export const GoogleButtons = (
   if (type === 'login') {
     return (
       <div key={index} className="menu-item googleLogin">
-        <Button variant="contained" size="small" onClick={() => login()}>
+        <Button variant="contained" className="loginButton" size="small" onClick={() => login()}>
           Login
         </Button>
       </div>
     );
   } return (
     <div key={index} className="menu-item googleLogout">
-      <Button variant="contained" size="small" onClick={() => { responseGoogleLogout(dispatch); }}>
+      <Button className="logoutButton" variant="contained" size="small" onClick={() => { responseGoogleLogout(dispatch); }}>
         Logout
       </Button>
     </div>

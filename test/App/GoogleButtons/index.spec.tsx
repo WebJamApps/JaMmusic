@@ -1,4 +1,5 @@
-import { GoogleButtons, responseGoogleFailLogin, responseGoogleLogin } from 'src/App/GoogleButtons';
+import { GoogleOAuthProvider } from '@react-oauth/google';
+import { GoogleButtons, responseGoogleLogin } from 'src/App/GoogleButtons';
 import renderer from 'react-test-renderer';
 
 describe('GoogleButtons', () => {
@@ -7,23 +8,17 @@ describe('GoogleButtons', () => {
       type: 'login', index: 1,
       appTemplateProps: { dispatch: jest.fn(), auth: { isAuthenticated: true, token: 'token' } } as any,
     };
-    const gb = renderer.create(<GoogleButtons {...props} />).root;
-    const login: any = gb.findByProps({ accessType: 'offline' });
-    expect(login.props.onAutoLoadFinished(true)).toBe(true);
-    expect(login.props.onSuccess(true)).toBe(true);
+    const gb = renderer.create(<GoogleOAuthProvider clientId=""><GoogleButtons {...props} /></GoogleOAuthProvider>).root;
+    const login: any = gb.findByProps({ className: 'loginButton' });
+    expect(login).toBeDefined();
   });
   it('renders GoogleLogout and runs events', () => {
     const props = {
       type: 'logout', index: 1, appTemplateProps: { dispatch: jest.fn() } as any,
     };
-    const gb = renderer.create(<GoogleButtons {...props} />).root;
-    const logout: any = gb.findByProps({ buttonText: 'Logout' });
-    window.location.reload = jest.fn();
-    logout.props.onLogoutSuccess();
-    expect(window.location.reload).toHaveBeenCalled();
-  });
-  it('responseGoogleFailLogin', () => {
-    expect(responseGoogleFailLogin('failed')).toBe('failed');
+    const gb = renderer.create(<GoogleOAuthProvider clientId=""><GoogleButtons {...props} /></GoogleOAuthProvider>).root;
+    const logout: any = gb.findByProps({ className: 'logoutButton' });
+    expect(logout).toBeDefined();
   });
   it('catches error on responseGoogleLogin', async ()=>{
     const appTemplateProps = { dispatch:jest.fn() } as any;
