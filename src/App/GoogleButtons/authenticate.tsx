@@ -1,6 +1,12 @@
 import superagent from 'superagent';
-import type { GoogleBody } from '../AppTypes';
 import type { AppTemplateProps } from '../AppTemplate';
+
+export interface GoogleBody {
+  clientId?: string,
+  redirectUri: string,
+  code: string,
+  state(): string,
+}
 
 export const gotToken = (doc: unknown): { type: string; data: unknown } => ({
   type: 'GOT_TOKEN',

@@ -2,8 +2,9 @@
 import { Component } from 'react';
 import UMap from './UserMap';
 import CMap from './CompanyMap';
-import type { Loc } from './gMapTypes';
 import gMapUtils from './gMapUtils';
+
+export interface Iloc { lat: number, lng: number }
 
 class GoogleMap extends Component {
   gMap: google.maps.Map | null;
@@ -44,7 +45,7 @@ class GoogleMap extends Component {
     });
   }
 
-  addMarker(obj: { loc: Loc }, icon?: google.maps.Icon | undefined): void {
+  addMarker(obj: { loc: Iloc }, icon?: google.maps.Icon | undefined): void {
     const infoWindow = new google.maps.InfoWindow({ content: this.content });
     if (this.gMap !== null) {
       const marker = new google.maps.Marker({

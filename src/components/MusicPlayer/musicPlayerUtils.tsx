@@ -1,6 +1,6 @@
 
 import type { ISong } from 'src/providers/Data.provider';
-import type { Iplayer } from './musicPlayerTypes';
+import type { Iplayer } from './';
 import type { MusicPlayer } from '.';
 
 const showHideButtons = (display: string): boolean => {

@@ -1,5 +1,5 @@
 import faker from 'faker';
-import type { Loc } from './gMapTypes';
+import type { Iloc } from './';
 import gMapUtils from './gMapUtils';
 
 export class CompanyMap {
@@ -7,7 +7,7 @@ export class CompanyMap {
 
   catchPhrase?: string;
 
-  loc: Loc;
+  loc: Iloc;
 
   constructor() {
     this.name = faker.company.companyName();

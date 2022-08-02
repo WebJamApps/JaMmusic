@@ -30,7 +30,7 @@
     "!src/index.tsx"
   ],
   "collectCoverage": true,
-  "testURL": "http://localhost/",
+  "testURL": "http://localhost/AppTypes",
   "transform": {
     "^.+\\.tsx?$": "ts-jest"
   },
