@@ -4,6 +4,7 @@ import type { Dispatch } from 'react';
 import { authenticate } from './authenticate';
 import { setUser } from './setUser';
 import { Button } from '@mui/material';
+import utils from 'src/lib/commonUtils';
 
 export const responseGoogleLogin = async (
   response: Omit<CodeResponse, 'error' | 'error_description' | 'error_uri'>,
@@ -27,10 +28,11 @@ export const responseGoogleLogin = async (
   } catch (e) { console.log(e); }
 };
 
-const responseGoogleLogout = (dispatch: Dispatch<unknown>): boolean => {
-  googleLogout();
+const responseGoogleLogout = async (dispatch: Dispatch<unknown>): Promise<boolean> => {
   dispatch({ type: 'LOGOUT' });
-  window.location.reload();
+  googleLogout();
+  await utils.delay(2);
+  window.location.assign('/');
   return true;
 };
 
