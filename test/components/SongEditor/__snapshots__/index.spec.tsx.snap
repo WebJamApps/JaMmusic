@@ -158,6 +158,7 @@ exports[`SongEditor renders correctly 1`] = `
         id="add-song-button"
         onClick={[Function]}
         type="button"
+        variant="contained"
       >
         Add Song
       </button>

@@ -1,4 +1,5 @@
 import { Component, Dispatch, StrictMode } from 'react';
+import { ReactNotifications } from 'react-notifications-component';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { connect } from 'react-redux';
 import DefaultSort from '../containers/SortContainer';
@@ -45,28 +46,29 @@ export class App extends Component<AppProps> {
     const { dispatch } = this.props;
     this.connectToSC.connectToSCC(dispatch);
   }
-  
+
   loadMap(): JSX.Element | null {
-    if (process.env.BackendUrl === 'http://localhost:7000'){
+    if (process.env.BackendUrl === 'http://localhost:7000') {
       return <PrivateRoute Container={GoogleMap} path="/map" />;
-    } 
+    }
     return null;
   }
 
   render(): JSX.Element {
-    
+
     return (
       <StrictMode>
         <div id="App" className="App">
+          <ReactNotifications />
           <Router>
             <ATemplate>
               <Switch>
                 <Route exact path="/">
-                  { this.appName === 'web-jam.com' ? <HomePage/> : <Music images={this.props.images}/> }
+                  {this.appName === 'web-jam.com' ? <HomePage /> : <Music images={this.props.images} auth={null}/>}
                 </Route>
                 {this.loadMap()}
                 <PrivateRoute path="/sort" Container={DefaultSort} />
-                <Route exact path="/music"><Music images={this.props.images}/></Route>
+                <Route exact path="/music"><Music images={this.props.images} auth={this.props.auth}/></Route>
                 <Route exact path="/music/buymusic" component={BuyMusic} />
                 <Route exact path="/music/originals" component={DefaultSongs} />
                 <Route exact path="/music/songs" component={DefaultSongs} />

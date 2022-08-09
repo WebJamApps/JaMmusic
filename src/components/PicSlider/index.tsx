@@ -41,7 +41,7 @@ class PicSlider extends Component<PicSliderProps> {
   render(): JSX.Element {
     const { data } = this.props;
     return (
-      <div>
+      <div className="picSlider">
         <Slider {...this.settings}>
           {
             Array.isArray(data) ? data.map((d) => (

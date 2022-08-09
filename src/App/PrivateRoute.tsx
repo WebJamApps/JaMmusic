@@ -27,4 +27,4 @@ export const PrivateRoute = ({ Container, path }:PProps): JSX.Element => {
     />
   );
 };
-// export default PrivateRoute;
+

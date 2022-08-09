@@ -1,6 +1,5 @@
-import type { GoogleBody } from 'src/App/AppTypes';
 import type { Auth } from 'src/redux/mapStoreToProps';
-import { authenticate } from 'src/App/GoogleButtons/authenticate';
+import { authenticate, GoogleBody } from 'src/App/GoogleButtons/authenticate';
 import superagent from 'superagent';
 
 describe('authenticate', () => {

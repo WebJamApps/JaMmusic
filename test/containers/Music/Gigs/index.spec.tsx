@@ -1,13 +1,23 @@
-/* eslint-disable one-var */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import renderer from 'react-test-renderer';
 import type { IGig } from 'src/providers/Data.provider';
-import { Gigs, makeVenue, columns, makeVenueValue, orderGigs } from 'src/components/Gigs';
+import { Gigs, makeVenue, columns, makeVenueValue, orderGigs } from 'src/containers/Music/Gigs';
 
 describe('Gigs', ()=>{
-  it('renders correctly', ()=>{
-    const gigs = renderer.create(<Gigs/>);
-    expect(gigs.toJSON).toMatchSnapshot();
+  it('renders correctly when not isAdmin', ()=>{
+    const gigs = renderer.create(<Gigs isAdmin={false}/>);
+    expect(JSON.stringify(gigs.toJSON()).includes('gigsDiv')).toBe(true);
+  });
+  it('renders when isAdmin and handles clicks', ()=>{
+    const gigs = renderer.create(<Gigs isAdmin={true}/>).root;
+    const result = gigs.findByProps({ className:'showCreateDialog' }).props.onClick();
+    expect(result).toBe(true);
+    expect(gigs.findByProps({ className:'createNewGigDialog' }).props.onClose()).toBe(false);
+    expect(gigs.findByProps({ className:'cancelButton' }).props.onClick()).toBe(false);
+    expect(gigs.findByProps({ variant:'contained' }).props.onClick()).toBe('create');
+    const dtPicker = gigs.findByProps({ label:'* Date and Time' });
+    expect(dtPicker.props.onChange(null)).toBeNull();
+    expect(dtPicker.props.renderInput().props.className).toBe('dateTimeInput');
   });
   it('makeVenue', ()=>{
     const columnDef:any = makeVenue();
@@ -34,13 +44,14 @@ describe('Gigs', ()=>{
   it('properly sets the order for gigs', ()=>{
     const setGigsInOrder = jest.fn();
     const today = new Date().toISOString();
-    let yesterday:any = new Date(today);
+    let tomorrow:any, future:any, yesterday:any;
+    yesterday = new Date(today);
     yesterday.setDate(yesterday.getDate() - 1);
     yesterday = new Date(yesterday).toISOString();
-    let tomorrow:any = new Date(today);
+    tomorrow = new Date(today);
     tomorrow.setDate(tomorrow.getDate() + 1);
     tomorrow = new Date(tomorrow).toISOString();
-    let future:any = new Date(tomorrow);
+    future = new Date(tomorrow);
     future.setDate(future.getDate() + 2);
     future = new Date(future).toISOString();
     const gigs = [{ datetime:tomorrow }, { datetime:yesterday }, { datetime:future }, { datetime:today }, { datetime:tomorrow }] as IGig[];
