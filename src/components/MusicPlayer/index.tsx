@@ -5,8 +5,12 @@ import musicPlayerUtils from './musicPlayerUtils';
 import type { ISong } from 'src/providers/Data.provider';
 import musicUtils from './musicUtils';
 import commonUtils from '../../lib/commonUtils';
-import type { Iplayer } from './musicPlayerTypes';
 import './musicPlayer.scss';
+
+export interface Iplayer {
+  playing: boolean;
+  shown: boolean; isShuffleOn: boolean; displayCopier: string; displayCopyMessage: boolean; onePlayerMode: boolean
+}
 
 export interface MusicPlayerState {
   missionState: string;

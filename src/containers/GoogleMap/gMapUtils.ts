@@ -1,8 +1,8 @@
-import type { Loc } from './gMapTypes';
+import type { Iloc } from './';
 import type UMap from './UserMap';
 import type CMap from './CompanyMap';
 
-function makeLoc(faker: { address: { latitude: () => string; longitude: () => string; }; }): Loc {
+function makeLoc(faker: { address: { latitude: () => string; longitude: () => string; }; }): Iloc {
   return {
     lat: parseFloat(faker.address.latitude()),
     lng: parseFloat(faker.address.longitude()),
