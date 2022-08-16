@@ -10,6 +10,7 @@ export const responseGoogleLogin = async (
   response: Omit<CodeResponse, 'error' | 'error_description' | 'error_uri'>,
   appTemplateProps: AppTemplateProps,
 ): Promise<void> => {
+  const { dispatch } = appTemplateProps;
   const uri = window.location.href;
   const baseUri = uri.split('/')[2];
   const body = {
@@ -23,8 +24,8 @@ export const responseGoogleLogin = async (
     },
   };
   try {
-    const token = await authenticate(body, appTemplateProps);
-    await setUser(appTemplateProps.dispatch, token, appTemplateProps.auth);
+    const { token } = await authenticate(body, appTemplateProps);
+    await setUser(dispatch, token);
   } catch (e) { console.log(e); }
 };
 

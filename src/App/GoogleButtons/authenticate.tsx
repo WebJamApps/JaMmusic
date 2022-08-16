@@ -20,9 +20,9 @@ export const authError = (e: unknown): { type: string; error: unknown } => ({
 
 export const authenticate = async (
   body: GoogleBody, props: AppTemplateProps,
-): Promise<string> => {
+): Promise<any> => {
   const { auth, dispatch } = props;
-  if (auth.isAuthenticated) return auth.token;
+  if (auth.isAuthenticated) return auth;
   let data;
   try {
     data = await superagent.post(`${process.env.BackendUrl}/user/auth/google`)
@@ -36,5 +36,5 @@ export const authenticate = async (
     return 'authentication failed';
   }
   dispatch(gotToken(data.body));
-  return data.body.token;
+  return data.body;
 };
