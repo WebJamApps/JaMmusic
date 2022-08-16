@@ -65,17 +65,17 @@ describe('MenuItem', () => {
     const menuItem:any = renderer.create(<BrowserRouter><MenuItem {...props} /></BrowserRouter>).toJSON();
     expect(menuItem).toBeNull();
   });
-  it('continueMenuItem returns googleLogin', ()=>{
-    const cMenuItem:any = continueMenuItem(
-      { type:'googleLogin' } as ImenuItem, 1, { isAuthenticated:false } as Auth, {} as AppTemplateProps);
-    const result:any = renderer.create(
-    <GoogleOAuthProvider clientId="">cMenuItem</GoogleOAuthProvider>).toJSON();
-    console.log(result);
-  });
-  it('continueMenuItem returns null', ()=>{
-    const cMenuItem:any = continueMenuItem(
-      { type:'' } as ImenuItem, 1, { isAuthenticated:false } as Auth, {} as AppTemplateProps);
-    const result:any = renderer.create(cMenuItem).toJSON();
-    expect(result).toBeNull();
-  });
+  // it('continueMenuItem returns googleLogin', ()=>{
+  //   const cMenuItem:any = continueMenuItem(
+  //     { type:'googleLogin' } as ImenuItem, 1, { isAuthenticated:false } as Auth, {} as AppTemplateProps);
+  //   const result:any = renderer.create(
+  //   <GoogleOAuthProvider clientId="">cMenuItem</GoogleOAuthProvider>).toJSON();
+  //   console.log(result);
+  // });
+  // it('continueMenuItem returns null', ()=>{
+  //   const cMenuItem:any = continueMenuItem(
+  //     { type:'' } as ImenuItem, 1, { isAuthenticated:false } as Auth, {} as AppTemplateProps);
+  //   const result:any = renderer.create(cMenuItem).toJSON();
+  //   expect(result).toBeNull();
+  // });
 });
