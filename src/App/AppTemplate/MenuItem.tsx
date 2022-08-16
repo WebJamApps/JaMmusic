@@ -11,8 +11,9 @@ export const continueMenuItem = (
   index: number,
   auth: Auth,
   appTemplateProps: AppTemplateProps,
+  pathname: string,
 ): JSX.Element | null => {
-  if (menu.type === 'googleLogin' && !auth.isAuthenticated) {
+  if (menu.type === 'googleLogin' && !auth.isAuthenticated && pathname === '/') {
     return <GoogleButtons key="googleLogin" type="login" index={index} appTemplateProps={appTemplateProps} />;
   }
   if (menu.type === 'googleLogout' && auth.isAuthenticated) {
@@ -32,7 +33,7 @@ export const MenuItem = ({ menu, index, view }: ImenuItemProps): JSX.Element | n
   if (menu.type === 'link' && !menu.link.includes('/music/') && !location.pathname.includes('/music')) {
     return utils.makeLink(menu, index, 'Link', view);
   }
-  return continueMenuItem(menu, index, auth, view.props);
+  return continueMenuItem(menu, index, auth, view.props, location.pathname);
 };
 
 export const IconAndText = ({ menu }: { menu: ImenuItem }): JSX.Element => (
