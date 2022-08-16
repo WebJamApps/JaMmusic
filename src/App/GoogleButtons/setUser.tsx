@@ -1,26 +1,22 @@
 import superagent from 'superagent';
 import jwt from 'jsonwebtoken';
 import type { AppTemplateProps } from '../AppTemplate';
-import type { Auth } from 'src/redux/mapStoreToProps';
 
-export const setUserRedux = async (dispatch: (...args: any) => void, decoded: jwt.JwtPayload, token: string) => {
-  if (typeof decoded !== 'string' && decoded.user) {
-    dispatch({ type: 'SET_USER', data: decoded.user });
+export const setUserRedux = async (dispatch: (...args: any) => void, token: string, userId: string) => {
+  try {
+    const user = await superagent.get(`${process.env.BackendUrl}/user/${userId}`)
+      .set('Accept', 'application/json').set('Authorization', `Bearer ${token}`);
+    dispatch({ type: 'SET_USER', data: user.body });
     window.location.reload();
-  } else {
-    try {
-      const user = await superagent.get(`${process.env.BackendUrl}/user/${decoded.sub}`)
-        .set('Accept', 'application/json').set('Authorization', `Bearer ${token}`);
-      dispatch({ type: 'SET_USER', data: user.body });
-      window.location.reload();
-    } catch (e) { console.log(e); }
-  }
+  } catch (e) { console.log(e); }
 };
 
-export const setUser = async (dispatch: AppTemplateProps['dispatch'], token: string, auth: Auth): Promise<void> => {
+export const setUser = async (dispatch: AppTemplateProps['dispatch'], token:string): Promise<void> => {
+  let userId;
   try {
-    const decoded = jwt.verify(token, process.env.HashString || /* istanbul ignore next */'') as jwt.JwtPayload;
-    await setUserRedux(dispatch, decoded, token);
+    const { sub } = jwt.verify(token, process.env.HashString || /* istanbul ignore next */'') as jwt.JwtPayload;
+    userId = sub;
   } catch (e) { console.log(e); }
+  await setUserRedux(dispatch, token, userId || '');
 };
 
