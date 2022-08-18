@@ -4,10 +4,11 @@ import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { connect } from 'react-redux';
 import type { Auth } from 'src/redux/mapStoreToProps';
 import mapStoreToATemplateProps from 'src/redux/mapStoreToAppTemplateProps';
-import appTemplateUtils from './appTemplateUtils';
+import Utils from './utils';
 import { Footer } from './Footer';
-import { MenuItem } from './MenuItem';
+//import { MenuItem } from './SideMenuItem';
 import MenuConfig, { ImenuItem } from './menuConfig';
+import { NavLinks } from './NavLinks';
 
 export interface AppTemplateProps extends RouteComponentProps {
   heartBeat: string;
@@ -27,9 +28,12 @@ interface CurrentStyles {
   menuToggleClass: string;
   sidebarImagePath: string;
 }
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const defaultDispatch = (_arg0: Record<string, unknown>): void => { };
 export class AppTemplate extends React.Component<AppTemplateProps, AppMainState> {
   static defaultProps = {
-    dispatch: /* istanbul ignore next */(): void => { },
+    dispatch: defaultDispatch,
     auth: {
       isAuthenticated: false, token: '', error: '', email: '', user: { userType: '' },
     },
@@ -37,27 +41,18 @@ export class AppTemplate extends React.Component<AppTemplateProps, AppMainState>
     heartBeat: 'white',
   };
 
-  menuConfig = MenuConfig;
+  // menuConfig = MenuConfig;
 
-  utils = appTemplateUtils;
+  utils = Utils;
 
   constructor(props: AppTemplateProps) {
     super(props);
     this.state = { menuOpen: false };
-    this.close = this.close.bind(this);
     this.handleKeyPress = this.handleKeyPress.bind(this);
-    this.handleKeyMenu = this.handleKeyMenu.bind(this);
-    this.toggleMobileMenu = this.toggleMobileMenu.bind(this);
-    this.navLinks = this.navLinks.bind(this);
   }
 
   handleKeyPress(e: { key: string; }): (void | null) {
     if (e.key === 'Escape') return this.setState({ menuOpen: false });
-    return null;
-  }
-
-  handleKeyMenu(e: { key: string; }): (void | null) {
-    if (e.key === 'Enter') return this.toggleMobileMenu();
     return null;
   }
 
@@ -74,47 +69,6 @@ export class AppTemplate extends React.Component<AppTemplateProps, AppMainState>
     return result;
   }
 
-  toggleMobileMenu(): void {
-    const { menuOpen } = this.state;
-    const mO = !menuOpen;
-    this.setState({ menuOpen: mO });
-  }
-
-  close(): boolean {
-    this.setState({ menuOpen: false });
-    return true;
-  }
-
-  makeExternalLink(menu: ImenuItem, index: number): JSX.Element {
-    return this.utils.makeLink(menu, index, 'a', this);
-  }
-
-  navLinks(): JSX.Element {
-    const { userCount, heartBeat } = this.props;
-    return (
-      <div className="nav-list" style={{ width: '180px' }}>
-        {process.env.APP_NAME !== 'joshandmariamusic.com'
-          ? (
-            <div
-              id="musTT"
-              style={{
-                display: 'none', position: 'absolute', top: '305px', right: '68px', backgroundColor: 'white',
-                padding: '3px',
-              }}
-            >
-              Music
-            </div>
-          ) : null}
-        {process.env.APP_NAME !== 'joshandmariamusic.com' ? this.menuConfig.wjNav.map(
-          (menu, index) => <MenuItem key={index} menu={menu} index={index} view={this}/>,
-        )
-          : this.menuConfig.jamNav.map((menu, index) => (this.makeExternalLink(menu, index)))}
-        <p style={{ margin: 0, padding: 0, fontSize: '6pt' }}>&nbsp;</p>
-        {process.env.APP_NAME !== 'joshandmariamusic.com' ? this.utils.activeUsers(heartBeat, userCount) : null}
-      </div>
-    );
-  }
-
   headerSection(): JSX.Element {
     return (
       <div id="header" className={`material-header ${this.currentStyles.headerClass}`}>
@@ -129,8 +83,9 @@ export class AppTemplate extends React.Component<AppTemplateProps, AppMainState>
   }
 
   drawerContainer(style: string): JSX.Element {
+    const { userCount, heartBeat, auth, location, dispatch } = this.props;
     return (
-      <div tabIndex={0} role="button" id="sidebar" onClick={this.close} onKeyPress={this.handleKeyPress}
+      <div tabIndex={0} role="button" id="sidebar" onClick={()=> this.setState({ menuOpen:false })} onKeyPress={this.handleKeyPress}
         className={`${style} drawer-container`}
       >
         <div
@@ -147,7 +102,7 @@ export class AppTemplate extends React.Component<AppTemplateProps, AppMainState>
               style={{ width: '182px', marginRight: 0, marginLeft: 0 }}
             />
           </div>
-          {this.navLinks()}
+          <NavLinks userCount={userCount} heartBeat={heartBeat} auth={auth} location={location} setState={this.setState} dispatch={dispatch}/>
         </div>
       </div>
     );
@@ -161,8 +116,11 @@ export class AppTemplate extends React.Component<AppTemplateProps, AppMainState>
       <div className="page-host">
         {this.drawerContainer(style)}
         <div className="main-panel">
-          <span onClick={this.toggleMobileMenu} onKeyPress={this.handleKeyMenu} id="mobilemenutoggle" tabIndex={0} role="button">
-            <i className="fas fa-bars" />
+          <span
+            onClick={() => this.utils.toggleMobileMenu(menuOpen, this.setState)}
+            onKeyPress={(evt) => this.utils.handleKeyMenu(evt, menuOpen, this.setState)}
+            id="mobilemenutoggle" tabIndex={0} role="button">
+              <i className="fas fa-bars" />
           </span>
           <div className="mainPanel">
             <div className="swipe-area" />
