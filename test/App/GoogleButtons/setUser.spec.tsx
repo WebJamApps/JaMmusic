@@ -1,4 +1,4 @@
-import { setUser, setUserRedux } from 'src/App/GoogleButtons/setUser';
+import { setUser, setUserRedux } from 'src/App/AppTemplate/GoogleButtons/setUser';
 import type { Auth } from 'src/redux/mapStoreToProps';
 import jwt from 'jsonwebtoken';
 import superagent from 'superagent';

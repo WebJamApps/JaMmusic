@@ -1,7 +1,7 @@
 import { CodeResponse, useGoogleLogin, googleLogout } from '@react-oauth/google';
-import type { AppTemplateProps } from '../AppTemplate';
+import type { AppTemplateProps } from '..';
 import type { Dispatch } from 'react';
-import { authenticate } from './authenticate';
+import { authenticate } from '../authenticate';
 import { setUser } from './setUser';
 import { Button } from '@mui/material';
 import utils from 'src/lib/commonUtils';

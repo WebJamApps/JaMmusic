@@ -1,6 +1,6 @@
 import superagent from 'superagent';
 import jwt from 'jsonwebtoken';
-import type { AppTemplateProps } from '../AppTemplate';
+import type { AppTemplateProps } from '..';
 
 export const setUserRedux = async (dispatch: (...args: any) => void, token: string, userId: string) => {
   try {

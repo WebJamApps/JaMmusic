@@ -4,7 +4,7 @@ import commonUtils from '../../lib/commonUtils';
 import type { ImenuItem } from './menuConfig';
 import type { AppTemplate, AppTemplateProps } from '.';
 import utils from './appTemplateUtils';
-import { GoogleButtons } from '../GoogleButtons';
+import { GoogleButtons } from './GoogleButtons';
 
 export const continueMenuItem = (
   menu: ImenuItem,

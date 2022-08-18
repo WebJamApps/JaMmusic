@@ -1,5 +1,5 @@
 import { GoogleOAuthProvider } from '@react-oauth/google';
-import { GoogleButtons, responseGoogleLogin } from 'src/App/GoogleButtons';
+import { GoogleButtons, responseGoogleLogin } from 'src/App/AppTemplate/GoogleButtons';
 import renderer from 'react-test-renderer';
 
 describe('GoogleButtons', () => {

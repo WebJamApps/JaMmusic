@@ -38,13 +38,17 @@ const useGigsState:(arg0: IGig[]) =>
 [IGig[], (arg0: IGig[]) => void] = 
 createPersistedState('gigs', sessionStorage);
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const setGigsDef = (_arg0:IGig[]) => {};
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const setSongsDef = (_arg0:ISong[]) => {};
+
 export const DataContext = createContext({
   gigs: [defaultGig],
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  setGigs:/*istanbul ignore next */(_arg0: IGig[])=>{},
+  setGigs: setGigsDef,
   songs: [defaultSong],
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  setSongs:/*istanbul ignore next */(_arg0:ISong[]) => { },
+  setSongs: setSongsDef,
 });
 
 export const DataProvider = ({ children }: { children: ReactChild }): JSX.Element => {
