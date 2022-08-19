@@ -26,10 +26,10 @@ export function ActiveUsers({ heartBeat, userCount }: { heartBeat: string, userC
 }
 
 interface InavLinksProps {
-  userCount:number, heartBeat:any, auth:any, location:any, setState:(arg0:any)=>void, dispatch:Dispatch<unknown>
+  handleClose:any, userCount:number, heartBeat:any, auth:any, location:any, dispatch:Dispatch<unknown>
 }
 export function NavLinks(props: InavLinksProps) {
-  const { userCount, heartBeat, auth, location, setState, dispatch } = props;
+  const { userCount, heartBeat, auth, location, dispatch, handleClose } = props;
   return (
         <div className="nav-list" style={{ width: '180px' }}>
             {process.env.APP_NAME !== 'joshandmariamusic.com'
@@ -47,11 +47,11 @@ export function NavLinks(props: InavLinksProps) {
             {process.env.APP_NAME !== 'joshandmariamusic.com' ? menuConfig.wjNav.map(
               (menu, index) => <SideMenuItem
                     key={index} menu={menu} index={index}
-                    auth={auth} location={location} setState={setState} dispatch={dispatch}
+                    auth={auth} location={location} dispatch={dispatch} handleClose={handleClose}
                 />,
             )
               : menuConfig.jamNav.map((menu, index) => {
-                return <MakeLink menu={menu} index={index} type="a" setState={setState}/>;
+                return <MakeLink menu={menu} index={index} type="a" handleClose={handleClose}/>;
               })
             }
             <p style={{ margin: 0, padding: 0, fontSize: '6pt' }}>&nbsp;</p>
