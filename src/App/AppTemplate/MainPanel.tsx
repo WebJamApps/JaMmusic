@@ -1,13 +1,5 @@
 import { Footer } from './Footer';
 
-// headerImagePath: '../static/imgs/webjamicon7.png',
-//     headerText1: 'Web Jam LLC',
-//     headerClass: 'home-header',
-//     headerImageClass: 'home-header-image',
-//     sidebarClass: 'home-sidebar',
-//     menuToggleClass: 'home-menu-toggle',
-//     sidebarImagePath: '../static/imgs/webjamlogo1.png',
-
 function HeaderSection(){
   return (
           <div id="header" className="material-header home-header">

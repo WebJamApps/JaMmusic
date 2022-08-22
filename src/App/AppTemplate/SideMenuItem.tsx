@@ -55,7 +55,6 @@ interface IsideMenuItemProps {
 export const SideMenuItem = (props: IsideMenuItemProps): JSX.Element | null => {
   const { menu, index, auth, location, dispatch, handleClose } = props;
   const userRoles: string[] = commonUtils.getUserRoles();
-  // const { location, auth } = view.props;
   if (menu.auth && (!auth.isAuthenticated || userRoles.indexOf(auth.user.userType) === -1)) return null;
   if (location.pathname.includes('/music') && (menu.link.includes('/music') || menu.name === 'Web Jam LLC')) {
     return <MakeLink menu={menu} index={index} type='Link' handleClose={handleClose}/>;
