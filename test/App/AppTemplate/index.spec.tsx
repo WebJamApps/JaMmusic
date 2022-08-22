@@ -68,13 +68,13 @@ describe('AppTemplate', () => {
   //   const result = aT.close();
   //   expect(result).toBe(true);
   // });
-  it('closes the mobile menu on clicking escape key', () => {
-    const aProps: any = { dispatch: () => Promise.resolve(true) };
-    const aT = new AppTemplate(aProps);
-    aT.setState = jest.fn(() => true);
-    const result = aT.handleKeyPress({ key: 'Escape' });
-    expect(result).toBe(true);
-  });
+  // it('closes the mobile menu on clicking escape key', () => {
+  //   const aProps: any = { dispatch: () => Promise.resolve(true) };
+  //   const aT = new AppTemplate(aProps);
+  //   aT.setState = jest.fn(() => true);
+  //   const result = aT.handleKeyPress({ key: 'Escape' });
+  //   expect(result).toBe(true);
+  // });
   // it('does not closes the mobile menu on clicking Enter key', () => {
   //   const aProps: any = { dispatch: () => Promise.resolve(true) };
   //   const aT = new AppTemplate(aProps);
