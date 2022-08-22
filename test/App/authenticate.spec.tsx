@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import superagent from 'superagent';
-import { authenticate } from 'src/App/GoogleButtons/authenticate';
+import { authenticate } from 'src/App/AppTemplate/authenticate';
 
 describe('authenticate', () => {
   it('returns failed when nothing is returned from Google', async () => {

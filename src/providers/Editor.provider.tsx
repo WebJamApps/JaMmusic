@@ -15,10 +15,12 @@ export const defaultSong: ISong = { category: '', year: 2021, title: '', url: ''
 
 const initEditor: Ieditor = { isValid: false, hasChanged: false, song: defaultSong, tour: {}, image: {} };
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const setEditorDef = (_arg0: Ieditor) => {};
+
 export const EditorContext = createContext({
   editor: initEditor,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  setEditor:/*istanbul ignore next*/(_arg0: Ieditor) => { },
+  setEditor: setEditorDef,
 });
 
 type Props = { children: ReactChild };

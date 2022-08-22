@@ -2,6 +2,7 @@
   "testEnvironment": "jsdom",
   "verbose": true,
   "timers": "fake",
+  "testTimout": 40000,
   "bail": true,
   "resetMocks": true,
   "notify": false,
@@ -27,7 +28,8 @@
   "coverageProvider": "v8",
   "collectCoverageFrom": [
     "src/**/*.{js,jsx,ts,tsx}",
-    "!src/index.tsx"
+    "!src/index.tsx",
+    "!src/redux/store/index.ts"
   ],
   "collectCoverage": true,
   "testURL": "http://localhost/",

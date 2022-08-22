@@ -1,5 +1,5 @@
 import superagent from 'superagent';
-import type { AppTemplateProps } from '../AppTemplate';
+import type { AppTemplateProps } from '.';
 
 export interface GoogleBody {
   clientId?: string,
