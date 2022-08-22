@@ -7,6 +7,7 @@ import mapStoreToATemplateProps from 'src/redux/mapStoreToAppTemplateProps';
 import { Footer } from './Footer';
 //import { MenuItem } from './SideMenuItem';
 import { NavLinks } from './NavLinks';
+import { DrawerContainer } from './DrawerContainer';
 
 export interface AppTemplateProps extends RouteComponentProps {
   heartBeat: string;
@@ -47,11 +48,6 @@ export class AppTemplate extends React.Component<AppTemplateProps, AppMainState>
     this.handleKeyMenu = this.handleKeyMenu.bind(this);
   }
 
-  handleKeyPress(e: { key: string; }): (void | null) {
-    if (e.key === 'Escape') return this.setState({ menuOpen: false });
-    return null;
-  }
-
   get currentStyles(): CurrentStyles { // eslint-disable-line class-methods-use-this
     const result = {
       headerImagePath: '../static/imgs/webjamicon7.png',
@@ -78,36 +74,6 @@ export class AppTemplate extends React.Component<AppTemplateProps, AppMainState>
     );
   }
 
-  drawerContainer(style: string): JSX.Element {
-    const { userCount, heartBeat, auth, location, dispatch } = this.props;
-    const handleClose = () => this.setState({ menuOpen: false });
-    return (
-      <div tabIndex={0} role="button" id="sidebar" onClick={()=> this.setState({ menuOpen:false })} onKeyPress={this.handleKeyPress}
-        className={`${style} drawer-container`}
-      >
-        <div
-          className="drawer"
-          style={{
-            backgroundColor: '#c0c0c0', zIndex: -1, position: 'relative',
-          }}
-        >
-          <div className="navImage">
-            <img
-              alt="wjsidelogo"
-              id="webjamwidelogo"
-              src={`${this.currentStyles.sidebarImagePath}`}
-              style={{ width: '182px', marginRight: 0, marginLeft: 0 }}
-            />
-          </div>
-          <NavLinks 
-          handleClose={handleClose} userCount={userCount} 
-          heartBeat={heartBeat} auth={auth} location={location} 
-          dispatch={dispatch}/>
-        </div>
-      </div>
-    );
-  }
-
   toggleMobileMenu(menuOpen: boolean): void {
     const mO = !menuOpen;
     console.log(mO);
@@ -118,13 +84,20 @@ export class AppTemplate extends React.Component<AppTemplateProps, AppMainState>
     if (e.key === 'Enter') this.toggleMobileMenu(menuOpen);
   }
 
+  handleKeyPress(e: { key: string; }): (void) {
+    if (e.key === 'Escape') return this.setState({ menuOpen: false });
+  }
+
   render(): JSX.Element {
     const { menuOpen } = this.state;
-    const { children } = this.props;
+    const { children, userCount, heartBeat, auth, location, dispatch } = this.props;
     const style = `${this.currentStyles.sidebarClass} ${menuOpen ? 'open' : 'close'}`;
+    const handleClose  = () => this.setState({ menuOpen: false });
     return (
       <div className="page-host">
-        {this.drawerContainer(style)}
+        <DrawerContainer handleKeyPress={this.handleKeyPress} className={`${style} drawer-container`}
+         userCount={userCount} heartBeat={heartBeat} auth={auth} location={location} 
+         dispatch={dispatch} handleClose={handleClose}/>
         <div className="main-panel">
           <span
             onClick={() => this.toggleMobileMenu(menuOpen)}
