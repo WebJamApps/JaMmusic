@@ -1,16 +1,13 @@
 import { CodeResponse, useGoogleLogin, googleLogout } from '@react-oauth/google';
-import type { AppTemplateProps } from '..';
 import type { Dispatch } from 'react';
-import { authenticate } from '../authenticate';
+import { authenticate } from './authenticate';
 import { setUser } from './setUser';
 import { Button } from '@mui/material';
 import utils from 'src/lib/commonUtils';
 
 export const responseGoogleLogin = async (
-  response: Omit<CodeResponse, 'error' | 'error_description' | 'error_uri'>,
-  appTemplateProps: AppTemplateProps,
+  response: Omit<CodeResponse, 'error' | 'error_description' | 'error_uri'>, dispatch:Dispatch<unknown>,
 ): Promise<void> => {
-  const { dispatch } = appTemplateProps;
   const uri = window.location.href;
   const baseUri = uri.split('/')[2];
   const body = {
@@ -24,7 +21,7 @@ export const responseGoogleLogin = async (
     },
   };
   try {
-    const { token } = await authenticate(body, appTemplateProps);
+    const { token } = await authenticate(body, dispatch);
     await setUser(dispatch, token);
   } catch (e) { console.log(e); }
 };
@@ -38,11 +35,11 @@ const responseGoogleLogout = async (dispatch: Dispatch<unknown>): Promise<boolea
 };
 
 export const GoogleButtons = (
-  { type, index, appTemplateProps }: { type: string, index: number, appTemplateProps: AppTemplateProps },
+  props: { type: string, index: number, dispatch:Dispatch<unknown> },
 ): JSX.Element => {
-  const { dispatch } = appTemplateProps;
+  const { type, index, dispatch } = props;
   const login = useGoogleLogin({
-    onSuccess: codeResponse => responseGoogleLogin(codeResponse, appTemplateProps),
+    onSuccess: codeResponse => responseGoogleLogin(codeResponse, dispatch),
     onError: () => console.log('Google login failed'),
     flow: 'auth-code',
   });
