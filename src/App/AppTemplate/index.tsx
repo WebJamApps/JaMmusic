@@ -15,7 +15,7 @@ export interface AppTemplateProps extends RouteComponentProps {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const defaultDispatch = (_arg0: Record<string, unknown>): void => { };
+export const defaultDispatch:Dispatch<Record<string, unknown>> = (_arg0: Record<string, unknown>): void => { };
 
 export class AppTemplate extends React.Component<AppTemplateProps> {
   static defaultProps = {
