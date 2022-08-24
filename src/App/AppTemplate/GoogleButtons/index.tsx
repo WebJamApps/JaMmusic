@@ -6,7 +6,7 @@ import { Button } from '@mui/material';
 import utils from 'src/lib/commonUtils';
 
 export const responseGoogleLogin = async (
-  response: Omit<CodeResponse, 'error' | 'error_description' | 'error_uri'>, dispatch:Dispatch<unknown>,
+  response: Omit<CodeResponse, 'error' | 'error_description' | 'error_uri'>, dispatch: Dispatch<unknown>,
 ): Promise<void> => {
   const uri = window.location.href;
   const baseUri = uri.split('/')[2];
@@ -35,7 +35,7 @@ const responseGoogleLogout = async (dispatch: Dispatch<unknown>): Promise<boolea
 };
 
 export const GoogleButtons = (
-  props: { type: string, index: number, dispatch:Dispatch<unknown> },
+  props: { type: string, index: number, dispatch: Dispatch<unknown> },
 ): JSX.Element => {
   const { type, index, dispatch } = props;
   const login = useGoogleLogin({
@@ -46,7 +46,9 @@ export const GoogleButtons = (
   if (type === 'login') {
     return (
       <div key={index} className="menu-item googleLogin">
-        <Button variant="contained" className="loginButton" size="small" onClick={() => login()}>
+        <Button variant="contained" className="loginButton" size="small"
+          onClick={() => { login(); return 'loginClicked'; }}
+        >
           Login
         </Button>
       </div>
