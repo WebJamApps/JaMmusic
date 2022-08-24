@@ -1,34 +1,40 @@
-import { Dispatch, useState } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 import type { RouteComponentProps } from 'react-router-dom';
 import type { Auth } from 'src/redux/mapStoreToProps';
 import { DrawerContainer } from './DrawerContainer';
 import { MainPanel } from './MainPanel';
-
-export function toggleMobileMenu(menuOpen: boolean, setMenuOpen:(arg0:boolean)=>void): void {
-  const mO = !menuOpen;
-  setMenuOpen(mO);
-}
-
-export function handleKeyMenu(e: { key: string; }, menuOpen: boolean, setMenuOpen:(arg0:boolean)=>void): void {
-  if (e.key === 'Enter') toggleMobileMenu(menuOpen, setMenuOpen);
-}
-
-export function handleEscapePress(e: { key: string; }, setMenuOpen:(arg0:boolean)=>void): (void) {
-  if (e.key === 'Escape') setMenuOpen(false);
-}
 
 export const makeDrawerClass = (menuOpen:boolean) => {
   const className = `home-sidebar ${menuOpen ? 'open' : 'close'} drawer-container`;
   return className;
 };
 
-export const makeHandleClose = (setMenuOpen:any) => () => setMenuOpen(false);
+export const makeHandleClose = (setMenuOpen: (value: SetStateAction<boolean>) => void) => () => setMenuOpen(false);
 
-export const makeOnClick = (menuOpen:boolean, setMenuOpen:any) => () => toggleMobileMenu(menuOpen, setMenuOpen);
+export function toggleMobileMenu(menuOpen: boolean, setMenuOpen:(arg0:boolean)=>void): void {
+  const mO = !menuOpen;
+  setMenuOpen(mO);
+}
 
-export const makeOnKeyPress = (menuOpen:boolean, setMenuOpen:any) => (evt:any) => handleKeyMenu(evt, menuOpen, setMenuOpen);
+export const makeOnClick = (
+  menuOpen:boolean, setMenuOpen: (value: SetStateAction<boolean>) => void,
+) => () => toggleMobileMenu(menuOpen, setMenuOpen);
 
-export const makeHandleKeyPress = (setMenuOpen:any) => (evt:any) => handleEscapePress(evt, setMenuOpen);
+export function handleKeyMenu(e: { key: string; }, menuOpen: boolean, setMenuOpen:(arg0:boolean)=>void): void {
+  if (e.key === 'Enter') toggleMobileMenu(menuOpen, setMenuOpen);
+}
+
+export const makeOnKeyPress = (
+  menuOpen:boolean, setMenuOpen: (value: SetStateAction<boolean>) => void,
+) => (evt: { key: string; }) => handleKeyMenu(evt, menuOpen, setMenuOpen);
+
+export function handleEscapePress(e: { key: string; }, setMenuOpen:(arg0:boolean)=>void): (void) {
+  if (e.key === 'Escape') setMenuOpen(false);
+}
+
+export const makeHandleKeyPress = (
+  setMenuOpen: (value: SetStateAction<boolean>)=> void,
+) => (evt: { key: string; }) => handleEscapePress(evt, setMenuOpen);
 
 interface IpageHostProps {
   userCount:number, heartBeat:string, auth:Auth, location: RouteComponentProps['location'], dispatch: Dispatch<unknown>,
