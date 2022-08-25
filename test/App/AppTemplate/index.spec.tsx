@@ -1,4 +1,3 @@
-import { GoogleOAuthProvider } from '@react-oauth/google';
 import { BrowserRouter } from 'react-router-dom';
 import renderer from 'react-test-renderer';
 import { AppTemplate, defaultDispatch } from 'src/App/AppTemplate';
@@ -18,9 +17,7 @@ describe('AppTemplate', () => {
       history: {} as any, location: { pathname: '/' } as any, match: {} as any,
     };
     const at = renderer.create(
-      <GoogleOAuthProvider clientId={process.env.GoogleClientId || ''}>
-        <BrowserRouter><AppTemplate {...props}><div id="test-page"></div></AppTemplate></BrowserRouter>
-      </GoogleOAuthProvider>,
+        <BrowserRouter><AppTemplate {...props}><div id="test-page"></div></AppTemplate></BrowserRouter>,
     ).toJSON();
     expect(at).toMatchSnapshot();
   });
