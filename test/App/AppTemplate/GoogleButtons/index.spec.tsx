@@ -7,7 +7,7 @@ describe('GoogleButtons', () => {
   it('is defined', () => {
     expect(GoogleButtons).toBeDefined();
   });
-  it('renders GoogleLogin and runs events', () => {
+  it('renders GoogleLogin button and runs events', () => {
     const props = {
       type: 'login', index: 1, dispatch: jest.fn(),
     };
@@ -23,17 +23,14 @@ describe('GoogleButtons', () => {
     expect(utils.responseGoogleLogin).toHaveBeenCalled();
     expect(config.onError()).toBe(false);
   });
-  // it('renders GoogleLogout and runs events', () => {
-  //   const props = {
-  //     type: 'logout', index: 1, appTemplateProps: { dispatch: jest.fn() } as any,
-  //   };
-  //   const gb = renderer.create(<GoogleOAuthProvider clientId=""><GoogleButtons {...props} /></GoogleOAuthProvider>).root;
-  //   const logout: any = gb.findByProps({ className: 'logoutButton' });
-  //   expect(logout).toBeDefined();
-  // });
-  // it('catches error on responseGoogleLogin', async () => {
-  //   const appTemplateProps = { dispatch: jest.fn() } as any;
-  //   await responseGoogleLogin({} as any, appTemplateProps);
-  //   expect(appTemplateProps.dispatch).not.toHaveBeenCalled();
-  // });
+  it('renders GoogleLogout button and handles click', () => {
+    utils.responseGoogleLogout = jest.fn();
+    const props = {
+      type: 'logout', index: 1, dispatch: jest.fn(),
+    };
+    const gb = renderer.create(<GoogleButtons {...props} />).root;
+    const logout: any = gb.findByProps({ className: 'logoutButton' });
+    logout.props.onClick();
+    expect(utils.responseGoogleLogout).toHaveBeenCalled();
+  });
 });

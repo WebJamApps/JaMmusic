@@ -1,16 +1,7 @@
-import { CodeResponse, useGoogleLogin, googleLogout } from '@react-oauth/google';
+import { CodeResponse, useGoogleLogin } from '@react-oauth/google';
 import type { Dispatch } from 'react';
 import { Button } from '@mui/material';
-import commonUtils from 'src/lib/commonUtils';
 import utils from './utils';
-
-const responseGoogleLogout = async (dispatch: Dispatch<unknown>): Promise<boolean> => {
-  dispatch({ type: 'LOGOUT' });
-  googleLogout();
-  await commonUtils.delay(2);
-  window.location.assign('/');
-  return true;
-};
 
 export const loginConfig = (dispatch: Dispatch<unknown>) => ({
   onSuccess: (codeResponse: Omit<CodeResponse, 'error' | 'error_description' | 'error_uri'>) => utils.responseGoogleLogin(codeResponse, dispatch),
@@ -35,7 +26,7 @@ export const GoogleButtons = (
     );
   } return (
     <div key={index} className="menu-item googleLogout">
-      <Button className="logoutButton" variant="contained" size="small" onClick={() => { responseGoogleLogout(dispatch); }}>
+      <Button className="logoutButton" variant="contained" size="small" onClick={() => { utils.responseGoogleLogout(dispatch); }}>
         Logout
       </Button>
     </div>
