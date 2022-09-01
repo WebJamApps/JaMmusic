@@ -44,7 +44,7 @@ export class TourTable extends Component<TourTableProps, TourTableState> {
     );
   }
 
-  makeColumns(titles:string[]): MUIDataTableColumn[]{
+  makeColumns(titles:string[]): MUIDataTableColumn[] {
     const columns: MUIDataTableColumn[] = [];
     for (let i = 0; i < titles.length; i += 1) {
       const label = titles[i];// eslint-disable-line security/detect-object-injection
@@ -127,7 +127,7 @@ export class TourTable extends Component<TourTableProps, TourTableState> {
     const { tour, deleteButton } = this.props;
     let tableData = tour || [];
     if (deleteButton) tableData = this.addDeleteButton(tableData);
-    if (tableData.length > 0 ){ 
+    if (tableData.length > 0 ) { 
       return (
       <div className="tourTable">
         <div style={{ maxWidth: '100%' }}>

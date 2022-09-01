@@ -1,6 +1,6 @@
 import { Footer } from './Footer';
 
-function HeaderSection(){
+function HeaderSection() {
   return (
           <div id="header" className="material-header home-header">
             <div id="ohaflogo" className="headercontent">
@@ -14,7 +14,7 @@ function HeaderSection(){
 
 }
 
-export function MainPanel({ children, onClick, onKeyPress }:any){
+export function MainPanel({ children, onClick, onKeyPress }:any) {
   return (
     <div className="main-panel">
     <span

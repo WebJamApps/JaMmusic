@@ -5,7 +5,7 @@ interface IdrawerContainerProps {
   handleKeyPress: (arg0:any)=>void, className:any, userCount:number, 
   heartBeat:any, auth:any, location:any, dispatch:Dispatch<unknown>, handleClose:()=>void
 }
-export function DrawerContainer(props:IdrawerContainerProps){
+export function DrawerContainer(props:IdrawerContainerProps) {
   const { userCount, heartBeat, auth, location, dispatch, className, handleClose, handleKeyPress } = props;
   return (
           <div tabIndex={0} role="button" id="sidebar" onClick={handleClose} onKeyPress={handleKeyPress}
