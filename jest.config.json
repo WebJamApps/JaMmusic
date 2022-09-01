@@ -28,7 +28,7 @@
   "coverageProvider": "v8",
   "collectCoverageFrom": [
     "src/**/*.{js,jsx,ts,tsx}",
-    "!src/index.tsx",
+    "!src/Main.tsx",
     "!src/redux/store/index.ts"
   ],
   "collectCoverage": true,

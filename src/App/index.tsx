@@ -15,6 +15,18 @@ import connectToSC from './connectToSC';
 import mapStoreToProps, { Iimage, Auth } from '../redux/mapStoreToProps';
 import { PrivateRoute } from './PrivateRoute';
 
+export const defaultDispatch:Dispatch<unknown> = (_arg0: any): void => { };
+
+const defaultProps = {
+  dispatch: defaultDispatch,
+  auth: {
+    isAuthenticated: false, token: '', error: '', email: '', user: { userType: '' },
+  },
+  userCount: 0,
+  heartBeat: 'white',
+  children: <div></div>,
+};
+
 export interface AppProps {
   dispatch: Dispatch<unknown>;
   images: Iimage[];
@@ -61,7 +73,7 @@ export class App extends Component<AppProps> {
         <div id="App" className="App">
           <ReactNotifications />
           <Router>
-            <ATemplate>
+            <ATemplate {...defaultProps}>
               <Switch>
                 <Route exact path="/">
                   {this.appName === 'web-jam.com' ? <HomePage /> : <Music images={this.props.images} auth={null}/>}

@@ -1,11 +1,8 @@
 import { BrowserRouter } from 'react-router-dom';
 import renderer from 'react-test-renderer';
-import { AppTemplate, defaultDispatch } from 'src/App/AppTemplate';
+import { AppTemplate } from 'src/App/AppTemplate';
 
 describe('AppTemplate', () => {
-  it('defaultDispatch', () => {
-    expect(defaultDispatch({})).toBeUndefined();
-  });
   it('renders the component', () => {
     const props = {
       dispatch: jest.fn(),
