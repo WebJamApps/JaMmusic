@@ -27,6 +27,22 @@ export function ActiveUsers({ heartBeat, userCount }: { heartBeat: string, userC
   );
 }
 
+const MusTT = () => (
+  <div
+    id="musTT"
+    style={{
+      display: 'none',
+      position: 'absolute',
+      top: '305px',
+      right: '68px',
+      backgroundColor: 'white',
+      padding: '3px',
+    }}
+  >
+    Music
+  </div>
+);
+
 interface InavLinksProps {
   handleClose: () => void, userCount: number, heartBeat: string, auth: Auth,
   location: RouteComponentProps['location'], dispatch: Dispatch<unknown>
@@ -38,21 +54,8 @@ export function NavLinks(props: InavLinksProps) {
   return (
     <div className="nav-list" style={{ width: '180px' }}>
       {process.env.APP_NAME !== 'joshandmariamusic.com'
-        ? (
-          <div
-            id="musTT"
-            style={{
-              display: 'none',
-              position: 'absolute',
-              top: '305px',
-              right: '68px',
-              backgroundColor: 'white',
-              padding: '3px',
-            }}
-          >
-            Music
-          </div>
-        ) : null}
+        ? <MusTT />
+        : null}
       {process.env.APP_NAME !== 'joshandmariamusic.com' ? menuConfig.wjNav.map(
         (menu, index) => (
           <SideMenuItem

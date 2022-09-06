@@ -5,7 +5,6 @@ import type { Iimage, Auth } from '../../redux/mapStoreToProps';
 import { Intro } from './intro';
 import JoshBio from './joshBio';
 import MariaBio from './mariaBio';
-import WjBand from './wjBand';
 import commonUtils from '../../lib/commonUtils';
 
 export function Musicians(): JSX.Element {
@@ -15,8 +14,6 @@ export function Musicians(): JSX.Element {
         <JoshBio />
         <hr />
         <MariaBio />
-        <hr />
-        <WjBand />
       </section>
       <p>{' '}</p>
       <p>{' '}</p>
