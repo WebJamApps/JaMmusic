@@ -11,10 +11,12 @@ describe('AppTemplate', () => {
       },
       userCount: 0,
       heartBeat: 'white',
-      history: {} as any, location: { pathname: '/' } as any, match: {} as any,
+      history: {} as any,
+      location: { pathname: '/' } as any,
+      match: {} as any,
     };
     const at = renderer.create(
-        <BrowserRouter><AppTemplate {...props}><div id="test-page"></div></AppTemplate></BrowserRouter>,
+      <BrowserRouter><AppTemplate {...props}><div id="test-page" /></AppTemplate></BrowserRouter>,
     ).toJSON();
     expect(at).toMatchSnapshot();
   });

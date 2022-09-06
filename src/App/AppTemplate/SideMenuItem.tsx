@@ -1,10 +1,10 @@
 
+import { Link, RouteComponentProps } from 'react-router-dom';
+import type { Dispatch } from 'react';
 import type { Auth } from '../../redux/mapStoreToProps';
 import commonUtils from '../../lib/commonUtils';
 import type { ImenuItem } from './menuConfig';
 import { GoogleButtons } from './GoogleButtons';
-import { Link, RouteComponentProps } from 'react-router-dom';
-import type { Dispatch } from 'react';
 
 export const continueMenuItem = (
   menu: ImenuItem,
@@ -22,17 +22,21 @@ export const continueMenuItem = (
   return null;
 };
 
-export const IconAndText = ({ menu }: { menu: ImenuItem }): JSX.Element => (
-  <div style={{ display: 'inline' }}>
-    <i className={`${menu.iconClass}`} />
+export function IconAndText({ menu }: { menu: ImenuItem }): JSX.Element {
+  return (
+    <div style={{ display: 'inline' }}>
+      <i className={`${menu.iconClass}`} />
     &nbsp;
-    <span className="nav-item">{menu.name}</span>
-  </div>
-);
+      <span className="nav-item">{menu.name}</span>
+    </div>
+  );
+}
 
 interface ImakeLinkProps { menu: ImenuItem, index: number, type: string, handleClose: () => void }
-export const MakeLink = (props: ImakeLinkProps): JSX.Element => {
-  const { menu, index, type, handleClose } = props;
+export function MakeLink(props: ImakeLinkProps): JSX.Element {
+  const {
+    menu, index, type, handleClose,
+  } = props;
   return (
     <div key={index} className="menu-item">
       {type === 'Link' ? (
@@ -47,22 +51,24 @@ export const MakeLink = (props: ImakeLinkProps): JSX.Element => {
         )}
     </div>
   );
-};
+}
 
 interface IsideMenuItemProps {
   menu: ImenuItem, index: number, auth: Auth, location: RouteComponentProps['location'],
   dispatch: Dispatch<unknown>, handleClose: () => void,
 }
-export const SideMenuItem = (props: IsideMenuItemProps): JSX.Element | null => {
-  const { menu, index, auth, location, dispatch, handleClose } = props;
+export function SideMenuItem(props: IsideMenuItemProps): JSX.Element | null {
+  const {
+    menu, index, auth, location, dispatch, handleClose,
+  } = props;
   const userRoles: string[] = commonUtils.getUserRoles();
   if (menu.auth && (!auth.isAuthenticated || userRoles.indexOf(auth.user.userType) === -1)) return null;
   if (location.pathname.includes('/music') && (menu.link.includes('/music') || menu.name === 'Web Jam LLC')) {
-    return <MakeLink menu={menu} index={index} type='Link' handleClose={handleClose} />;
+    return <MakeLink menu={menu} index={index} type="Link" handleClose={handleClose} />;
   }
   if (menu.type === 'link' && !menu.link.includes('/music/') && !location.pathname.includes('/music')) {
-    return <MakeLink menu={menu} index={index} type='Link' handleClose={handleClose} />;
+    return <MakeLink menu={menu} index={index} type="Link" handleClose={handleClose} />;
   }
   return continueMenuItem(menu, index, auth, location.pathname, dispatch);
-};
+}
 

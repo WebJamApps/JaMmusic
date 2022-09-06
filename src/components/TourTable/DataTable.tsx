@@ -16,7 +16,7 @@ function sortTours(data: Tour[]): Tour[] {
   return sortedtours;
 }
 
-export const DataTable = ({ columns, data }: Props):JSX.Element => {
+export function DataTable({ columns, data }: Props):JSX.Element {
   return (
     <MUIDataTable
       options={{
@@ -36,5 +36,5 @@ export const DataTable = ({ columns, data }: Props):JSX.Element => {
       title=""
     />
   );
-};
+}
 export default DataTable;

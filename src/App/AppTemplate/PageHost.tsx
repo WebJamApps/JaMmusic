@@ -17,7 +17,8 @@ export function toggleMobileMenu(menuOpen: boolean, setMenuOpen: (arg0: boolean)
 }
 
 export const makeOnClick = (
-  menuOpen: boolean, setMenuOpen: (value: SetStateAction<boolean>) => void,
+  menuOpen: boolean,
+  setMenuOpen: (value: SetStateAction<boolean>) => void,
 ) => () => toggleMobileMenu(menuOpen, setMenuOpen);
 
 export function handleKeyMenu(e: { key: string; }, menuOpen: boolean, setMenuOpen: (arg0: boolean) => void): void {
@@ -25,7 +26,8 @@ export function handleKeyMenu(e: { key: string; }, menuOpen: boolean, setMenuOpe
 }
 
 export const makeOnKeyPress = (
-  menuOpen: boolean, setMenuOpen: (value: SetStateAction<boolean>) => void,
+  menuOpen: boolean,
+  setMenuOpen: (value: SetStateAction<boolean>) => void,
 ) => (evt: { key: string; }) => handleKeyMenu(evt, menuOpen, setMenuOpen);
 
 export function handleEscapePress(e: { key: string; }, setMenuOpen: (arg0: boolean) => void): (void) {
@@ -41,7 +43,9 @@ interface IpageHostProps {
   children: React.ReactNode,
 }
 export function PageHost(props: IpageHostProps) {
-  const { userCount, heartBeat, auth, location, dispatch, children } = props;
+  const {
+    userCount, heartBeat, auth, location, dispatch, children,
+  } = props;
   const [menuOpen, setMenuOpen] = useState(false);
   const handleClose = makeHandleClose(setMenuOpen);
   const onClick = makeOnClick(menuOpen, setMenuOpen);
@@ -49,9 +53,15 @@ export function PageHost(props: IpageHostProps) {
   const handleKeyPress = makeHandleKeyPress(setMenuOpen);
   return (
     <div className="page-host">
-      <DrawerContainer handleKeyPress={handleKeyPress} className={makeDrawerClass(menuOpen)}
-        userCount={userCount} heartBeat={heartBeat} auth={auth} location={location}
-        dispatch={dispatch} handleClose={handleClose}
+      <DrawerContainer
+        handleKeyPress={handleKeyPress}
+        className={makeDrawerClass(menuOpen)}
+        userCount={userCount}
+        heartBeat={heartBeat}
+        auth={auth}
+        location={location}
+        dispatch={dispatch}
+        handleClose={handleClose}
       />
       <MainPanel children={children} onClick={onClick} onKeyPress={onKeyPress} />
     </div>

@@ -21,7 +21,7 @@ const store = createStore(persistedReducer, mWares);
 /* istanbul ignore if */
 if (process.env.NODE_ENV !== 'production' && module.hot) {
   module.hot.accept('../allReducers', () => {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires, node/no-missing-require
+    // eslint-disable-next-line @typescript-eslint/no-var-requires, node/no-missing-require, global-require
     const nextRootReducer = require('../allReducers').default;
     store.replaceReducer(
       persistReducer(persistConfig, nextRootReducer),

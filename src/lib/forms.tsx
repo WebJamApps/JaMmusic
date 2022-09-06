@@ -1,25 +1,33 @@
 
 import { TextField } from '@mui/material';
 
-const makeDropdown = (htmlFor: string | undefined,
+const makeDropdown = (
+  htmlFor: string | undefined,
   value: string | undefined,
-  onChange: (event: any) => void, options: string[], style?:any): JSX.Element => (
-    <select
-      style={style}
-      id={htmlFor}
-      multiple={false}
-      onChange={(event) => onChange(event)}
-      value={value}
-    >
-      {
+  onChange: (event: any) => void,
+  options: string[],
+  style?:any,
+): JSX.Element => (
+  <select
+    style={style}
+    id={htmlFor}
+    multiple={false}
+    onChange={(event) => onChange(event)}
+    value={value}
+  >
+    {
           options.map((cv) => <option id={cv} key={cv} value={cv}>{cv}</option>)
         }
-    </select>
+  </select>
 );
-const makeInput = (type: string | undefined,
-  label: string, isRequired: boolean | undefined,
+const makeInput = (
+  type: string | undefined,
+  label: string,
+  isRequired: boolean | undefined,
   onChange: ((event: React.ChangeEvent<HTMLInputElement>) => void) | undefined,
-  value: string, style?:any): JSX.Element => {
+  value: string,
+  style?:any,
+): JSX.Element => {
   let fId = label.toLowerCase();
   fId = fId.replace(/\s/g, '');
   const fIdArr = fId.split('(');

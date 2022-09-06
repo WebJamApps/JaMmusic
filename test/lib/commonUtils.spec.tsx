@@ -11,7 +11,7 @@ describe('commonUtils', () => {
   it('runs delay', async () => {
     jest.useRealTimers();
     jest.spyOn(global, 'setTimeout');
-    await commonUtils.delay(.0001);
+    await commonUtils.delay(0.0001);
     expect(setTimeout).toHaveBeenCalledTimes(1);
   }, 15000);
 });

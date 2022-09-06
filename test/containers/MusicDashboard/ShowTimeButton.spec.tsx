@@ -6,8 +6,8 @@ import { ShowTimeButton } from '../../../src/containers/MusicDashboard/ShowTimeB
 describe('ShowTimeButton function', () => {
   it('handles click to show the time widget', () => {
     const setShowTime = jest.fn();
-    const wrapper = shallow(<ShowTimeButton time='' setShowTime={setShowTime}/>);
-    expect(wrapper).toMatchSnapshot(); 
+    const wrapper = shallow(<ShowTimeButton time="" setShowTime={setShowTime} />);
+    expect(wrapper).toMatchSnapshot();
     wrapper.find('button.show-clock').simulate('click');
     expect(setShowTime).toHaveBeenCalled();
   });

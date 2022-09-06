@@ -34,9 +34,7 @@ const gotToken = (doc: unknown): { type: string; data: unknown } => ({
   data: doc,
 });
 
-const authenticate = async (
-  googleBody: GoogleBody, dispatch:Dispatch<unknown>,
-): Promise<{ token:string, email:string }> => {
+const authenticate = async (googleBody: GoogleBody, dispatch:Dispatch<unknown>): Promise<{ token:string, email:string }> => {
   const { body } = await superagent.post(`${process.env.BackendUrl}/user/auth/google`)
     .set({ Accept: 'application/json' }).send(googleBody);
   dispatch(gotToken(body));
@@ -49,14 +47,15 @@ const makeState = () => () => {
 };
 
 const responseGoogleLogin = async (
-  response: Omit<CodeResponse, 'error' | 'error_description' | 'error_uri'>, dispatch: Dispatch<unknown>,
+  response: Omit<CodeResponse, 'error' | 'error_description' | 'error_uri'>,
+  dispatch: Dispatch<unknown>,
 ): Promise<void> => {
   const uri = window.location.href;
   const baseUri = uri.split('/')[2];
   const body = {
     clientId: process.env.GoogleClientId,
-    redirectUri: !baseUri.includes('localhost') 
-    && process.env.NODE_ENV === 'production' /* istanbul ignore next */? `https://${baseUri}` 
+    redirectUri: !baseUri.includes('localhost')
+    && process.env.NODE_ENV === 'production' /* istanbul ignore next */? `https://${baseUri}`
       : `http://${baseUri}`,
     code: `${response.code}`,
     state: makeState(),
@@ -74,4 +73,6 @@ const responseGoogleLogout = async (dispatch: Dispatch<unknown>): Promise<void> 
   window.location.assign('/');
 };
 
-export default { responseGoogleLogin, responseGoogleLogout, authenticate, setUser, makeState };
+export default {
+  responseGoogleLogin, responseGoogleLogout, authenticate, setUser, makeState,
+};

@@ -15,18 +15,25 @@ export interface AppTemplateProps extends RouteComponentProps {
 }
 
 export class AppTemplate extends React.Component<AppTemplateProps, unknown> {
-
   // eslint-disable-next-line @typescript-eslint/no-useless-constructor
   constructor(props: AppTemplateProps) {
     super(props);
   }
 
   render(): JSX.Element {
-    const { children, userCount, heartBeat, auth, location, dispatch } = this.props;
-    return <PageHost
-      children={children} userCount={userCount} heartBeat={heartBeat} auth={auth}
-      location={location} dispatch={dispatch}
-    />;
+    const {
+      children, userCount, heartBeat, auth, location, dispatch,
+    } = this.props;
+    return (
+      <PageHost
+        children={children}
+        userCount={userCount}
+        heartBeat={heartBeat}
+        auth={auth}
+        location={location}
+        dispatch={dispatch}
+      />
+    );
   }
 }
 

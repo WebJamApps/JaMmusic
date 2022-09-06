@@ -6,9 +6,9 @@ describe('fetchGigs', () => {
     await fetchGigs.getGigs(setGigs);
     expect(setGigs).toHaveBeenCalled();
   });
-  it('validateGigsArr', ()=>{
+  it('validateGigsArr', () => {
     const setGigs = jest.fn();
-    fetchGigs.validateGigsArr({ value:[defaultGig, defaultGig] }, setGigs);
+    fetchGigs.validateGigsArr({ value: [defaultGig, defaultGig] }, setGigs);
     expect(setGigs).toHaveBeenCalled();
   });
 });

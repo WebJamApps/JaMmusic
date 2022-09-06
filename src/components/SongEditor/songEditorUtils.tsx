@@ -22,12 +22,14 @@ function notify(title: string, message: string, type: NotificationType) {
       onScreen: true,
     },
   });
-
 }
 
 const updateSongAPI = async (
-  sa: typeof superagent, songChanges: ISong, auth: Auth,
-  setEditor: (arg0: Ieditor) => void, setSongs: (arg0: ISong[]) => void,
+  sa: typeof superagent,
+  songChanges: ISong,
+  auth: Auth,
+  setEditor: (arg0: Ieditor) => void,
+  setSongs: (arg0: ISong[]) => void,
 ): Promise<void> => {
   const id = songChanges._id;
   delete songChanges._id;
@@ -48,8 +50,11 @@ const updateSongAPI = async (
 };
 
 const addSongAPI = async (
-  sa: typeof superagent, songBody: ISong, auth: { token: string; },
-  setNewEditor: (arg0: Ieditor) => void, setSongs: (arg0: ISong[]) => void,
+  sa: typeof superagent,
+  songBody: ISong,
+  auth: { token: string; },
+  setNewEditor: (arg0: Ieditor) => void,
+  setSongs: (arg0: ISong[]) => void,
 ): Promise<void> => {
   const newSong = { ...songBody };
   delete newSong._id;

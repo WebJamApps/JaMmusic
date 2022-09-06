@@ -24,7 +24,7 @@ const defaultProps = {
   },
   userCount: 0,
   heartBeat: 'white',
-  children: <div></div>,
+  children: <div />,
 };
 
 export interface AppProps {
@@ -67,7 +67,6 @@ export class App extends Component<AppProps> {
   }
 
   render(): JSX.Element {
-
     return (
       <StrictMode>
         <div id="App" className="App">
@@ -76,11 +75,11 @@ export class App extends Component<AppProps> {
             <ATemplate {...defaultProps}>
               <Switch>
                 <Route exact path="/">
-                  {this.appName === 'web-jam.com' ? <HomePage /> : <Music images={this.props.images} auth={null}/>}
+                  {this.appName === 'web-jam.com' ? <HomePage /> : <Music images={this.props.images} auth={null} />}
                 </Route>
                 {this.loadMap()}
                 <PrivateRoute path="/sort" Container={DefaultSort} />
-                <Route exact path="/music"><Music images={this.props.images} auth={this.props.auth}/></Route>
+                <Route exact path="/music"><Music images={this.props.images} auth={this.props.auth} /></Route>
                 <Route exact path="/music/buymusic" component={BuyMusic} />
                 <Route exact path="/music/originals" component={DefaultSongs} />
                 <Route exact path="/music/songs" component={DefaultSongs} />

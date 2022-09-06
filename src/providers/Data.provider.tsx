@@ -31,12 +31,10 @@ export interface ISong {
 }
 
 const useSongsState: (arg0: ISong[]) =>
-[ISong[], (arg0: ISong[]) => void] = 
-createPersistedState('songs', sessionStorage);
+[ISong[], (arg0: ISong[]) => void] = createPersistedState('songs', sessionStorage);
 
 const useGigsState:(arg0: IGig[]) =>
-[IGig[], (arg0: IGig[]) => void] = 
-createPersistedState('gigs', sessionStorage);
+[IGig[], (arg0: IGig[]) => void] = createPersistedState('gigs', sessionStorage);
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const setGigsDef = (_arg0:IGig[]) => {};
@@ -51,10 +49,16 @@ export const DataContext = createContext({
   setSongs: setSongsDef,
 });
 
-export const DataProvider = ({ children }: { children: ReactChild }): JSX.Element => {
+export function DataProvider({ children }: { children: ReactChild }): JSX.Element {
   const [gigs, setGigs] = useGigsState([defaultGig]);
   const [songs, setSongs] = useSongsState([defaultSong]);
-  const Provider = MakeProvider({ Context:DataContext, fetches:[fetchGigs.getGigs, fetchSongs.getSongs], setters:[setGigs, setSongs] });
-  return (<Provider value={{ gigs, setGigs, songs, setSongs }}>{children}</Provider>
+  const Provider = MakeProvider({ Context: DataContext, fetches: [fetchGigs.getGigs, fetchSongs.getSongs], setters: [setGigs, setSongs] });
+  return (
+    <Provider value={{
+      gigs, setGigs, songs, setSongs,
+    }}
+    >
+      {children}
+    </Provider>
   );
-};
+}

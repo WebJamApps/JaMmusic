@@ -31,7 +31,7 @@ export const newTourForm = (comp:MusicDashboard, editTour:IeditTour): JSX.Elemen
       <form id="new-tour" style={{ marginLeft: '4px', marginTop: '12px' }}>
         <p>* Date</p>
         {comp.forms.makeInput('date', 'Date', true, comp.onChange, date)}
-        <AddTime setFormTime={comp.setFormTime} initTime={time} show={true}/>
+        <AddTime setFormTime={comp.setFormTime} initTime={time} show />
         {Utils.editor(venue, comp)}
         <p>{' '}</p>
         {comp.forms.makeInput('text', 'Location', true, comp.onChange, location)}
@@ -43,16 +43,18 @@ export const newTourForm = (comp:MusicDashboard, editTour:IeditTour): JSX.Elemen
   );
 };
 
-export const TourEditor = ({ editTour, comp }:PageProps): JSX.Element => (
-  <div className="Tour-Block">
-    <p>&nbsp;</p>
-    {newTourForm(comp, editTour)}
-    <p>&nbsp;</p>
-    {!editTour._id ? (
-      <div className="search-table-outer" style={{ maxWidth: '96%', margin: 'auto', zIndex: 0 }}>
-        <h5 style={{ textAlign: 'center', marginBottom: '3px' }}>Modify</h5>
-        <Ttable deleteButton />
-      </div>
-    ) : null}
-  </div>
-);
+export function TourEditor({ editTour, comp }:PageProps): JSX.Element {
+  return (
+    <div className="Tour-Block">
+      <p>&nbsp;</p>
+      {newTourForm(comp, editTour)}
+      <p>&nbsp;</p>
+      {!editTour._id ? (
+        <div className="search-table-outer" style={{ maxWidth: '96%', margin: 'auto', zIndex: 0 }}>
+          <h5 style={{ textAlign: 'center', marginBottom: '3px' }}>Modify</h5>
+          <Ttable deleteButton />
+        </div>
+      ) : null}
+    </div>
+  );
+}

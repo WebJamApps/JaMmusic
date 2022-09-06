@@ -6,7 +6,7 @@ interface PProps {
   Container:React.ElementType,
   path:string
 }
-export const PrivateRoute = ({ Container, path }:PProps): JSX.Element => {
+export function PrivateRoute({ Container, path }:PProps): JSX.Element {
   const userRoles: string[] = commonUtils.getUserRoles();
   const authStr = sessionStorage.getItem('persist:root') || '{}';
   let a = { isAuthenticated: false, user: { userType: '' } };
@@ -26,5 +26,5 @@ export const PrivateRoute = ({ Container, path }:PProps): JSX.Element => {
       ))}
     />
   );
-};
+}
 

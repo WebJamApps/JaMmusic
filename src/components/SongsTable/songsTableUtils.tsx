@@ -4,7 +4,7 @@ import type { ISong } from 'src/providers/Data.provider';
 
 const editSong = (data: ISong, makeNewEditor:any, editor:any, picsForm:HTMLElement | null): boolean => {
   const songData = { ...data, modify: undefined };
-  makeNewEditor({ ...editor, song:songData }); // this is storing the song globally in redux
+  makeNewEditor({ ...editor, song: songData }); // this is storing the song globally in redux
   if (picsForm && picsForm.scrollIntoView) picsForm.scrollIntoView({ behavior: 'smooth' });
   return true;
 };
@@ -23,8 +23,14 @@ const deleteSong = async (id: string, token:string): Promise<string> => { // esl
   return 'no delete';
 };
 
-const makeSongButtons = (deleteSongId: string,
-  editSongId: string, token: string, makeNewEditor:any, editor:any, song: ISong):JSX.Element => {
+const makeSongButtons = (
+  deleteSongId: string,
+  editSongId: string,
+  token: string,
+  makeNewEditor:any,
+  editor:any,
+  song: ISong,
+):JSX.Element => {
   const picsForm = document.getElementById('picsForm');
   return (
     <div>
@@ -34,7 +40,7 @@ const makeSongButtons = (deleteSongId: string,
         type="button"
         id={editSongId}
         onClick={() => {
-          editSong(song, makeNewEditor, editor, picsForm); //Here is what we need to change!
+          editSong(song, makeNewEditor, editor, picsForm); // Here is what we need to change!
         }}
       >
         Edit

@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import ReactPlayer from 'react-player';
 import { FacebookShareButton, FacebookIcon } from 'react-share';
-import musicPlayerUtils from './musicPlayerUtils';
 import type { ISong } from 'src/providers/Data.provider';
+import musicPlayerUtils from './musicPlayerUtils';
 import musicUtils from './musicUtils';
 import commonUtils from '../../lib/commonUtils';
 import './musicPlayer.scss';
@@ -99,7 +99,7 @@ export class MusicPlayer extends Component<MProps, MusicPlayerState> {
     const { player } = this.state;
     return (
       <ReactPlayer
-        style={this.musicUtils.setPlayerStyle(song as ISong)}
+        style={this.musicUtils.setPlayerStyle(song)}
         url={song.url}
         playing={player.playing}
         controls

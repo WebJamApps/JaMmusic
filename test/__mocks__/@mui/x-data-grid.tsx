@@ -1,2 +1,4 @@
 
-export const DataGrid = ():JSX.Element => <table></table>;
+export function DataGrid():JSX.Element {
+  return <table />;
+}

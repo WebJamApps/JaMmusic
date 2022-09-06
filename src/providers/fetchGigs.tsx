@@ -1,5 +1,5 @@
-import type { IGig } from './Data.provider';
 import scc from 'socketcluster-client';
+import type { IGig } from './Data.provider';
 
 export const defaultGig: IGig = {
   date: '',
@@ -11,15 +11,20 @@ export const defaultGig: IGig = {
   datetime: '',
 };
 
-const validateGigsArr = (receiver: IteratorResult<any, any>,
-  setFunc: (_arg0: IGig[]) => void) => {
+const validateGigsArr = (
+  receiver: IteratorResult<any, any>,
+  setFunc: (_arg0: IGig[]) => void,
+) => {
   let gigsArr = [defaultGig];
   if (Array.isArray(receiver.value)) gigsArr = receiver.value.map((g: IGig, i: number) => ({ ...g, id: i }));
   setFunc(gigsArr);
 };
 
-const listenForGigs = (socket: scc.AGClientSocket, name: string,
-  setFunc: (_arg0: IGig[]) => void): void => {
+const listenForGigs = (
+  socket: scc.AGClientSocket,
+  name: string,
+  setFunc: (_arg0: IGig[]) => void,
+): void => {
   (async () => {
     const consumer = socket.receiver(name).createConsumer();
     while (true) { // eslint-disable-line no-constant-condition

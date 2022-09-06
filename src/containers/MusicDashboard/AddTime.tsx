@@ -2,6 +2,7 @@
 import createPersistedState from 'use-persisted-state';
 import { PersistedTimeKeeper } from './PersistedTimeKeeper';
 import { ShowTimeButton } from './ShowTimeButton';
+
 const useTimeState = createPersistedState('showTime', sessionStorage);
 type Props = {
   setFormTime: (args0: string) => void, initTime: string, show:boolean
@@ -16,11 +17,11 @@ export default function AddTime({ setFormTime, initTime, show }: Props): JSX.Ele
       <br />
       {showTime
         ? (
-          <PersistedTimeKeeper time={time} setShowTime={setShowTime} setFormTime={setFormTime}/>
+          <PersistedTimeKeeper time={time} setShowTime={setShowTime} setFormTime={setFormTime} />
         ) : null}
       {!showTime
         ? (
-          <ShowTimeButton setShowTime={setShowTime} time={time}/>
+          <ShowTimeButton setShowTime={setShowTime} time={time} />
         ) : null}
     </div>
   );

@@ -15,8 +15,8 @@ type PageProps = {
 };
 
 const radioButtons = (comp:MusicDashboard, editPic:any): JSX.Element => (
-  <div id="radio-buttons" style={{ marginBottom:'10px' }}>
-    <label htmlFor="showCaption" style={{ display: 'inline', padding: '10px', paddingLeft:'0px' }}>
+  <div id="radio-buttons" style={{ marginBottom: '10px' }}>
+    <label htmlFor="showCaption" style={{ display: 'inline', padding: '10px', paddingLeft: '0px' }}>
       Show Caption
       <input
         type="radio"
@@ -42,7 +42,7 @@ const radioButtons = (comp:MusicDashboard, editPic:any): JSX.Element => (
   </div>
 );
 
-export const PicEditor = ({ comp, controller, editPic }:PageProps): JSX.Element => {
+export function PicEditor({ comp, controller, editPic }:PageProps): JSX.Element {
   let { title, url } = comp.state;
   if (title === '' && editPic.title !== undefined) { title = editPic.title; }
   if (url === '' && editPic.url !== undefined) { url = editPic.url; }
@@ -70,5 +70,5 @@ export const PicEditor = ({ comp, controller, editPic }:PageProps): JSX.Element 
       </button>
     </form>
   );
-};
+}
 export default PicEditor;
