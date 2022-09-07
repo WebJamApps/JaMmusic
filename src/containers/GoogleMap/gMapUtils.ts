@@ -1,4 +1,4 @@
-import type { Iloc } from './';
+import type { Iloc } from '.';
 import type UMap from './UserMap';
 import type CMap from './CompanyMap';
 

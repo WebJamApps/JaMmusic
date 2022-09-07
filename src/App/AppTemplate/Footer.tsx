@@ -27,15 +27,17 @@ const footerLinks = () => {
   );
 };
 
-export const Footer = (): JSX.Element => (
-  <div
-    id="wjfooter"
-    className="footer"
-    style={{
-      backgroundColor: '#565656', paddingTop: '20px', paddingBottom: '20px', bottom: '0',
-    }}
-  >
-    {footerLinks()}
-  </div>
-);
+export function Footer(): JSX.Element {
+  return (
+    <div
+      id="wjfooter"
+      className="footer"
+      style={{
+        backgroundColor: '#565656', paddingTop: '20px', paddingBottom: '20px', bottom: '0',
+      }}
+    >
+      {footerLinks()}
+    </div>
+  );
+}
 

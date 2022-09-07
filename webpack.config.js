@@ -45,7 +45,7 @@ module.exports = (env) => ({
   },
 
   entry: {
-    app: [`${srcDir}/index.tsx`],
+    app: [`${srcDir}/Main.tsx`],
     vendor: ['jquery', 'bootstrap'],
   },
 

@@ -105,7 +105,7 @@ export class MusicDashboardController {
     const { title, url, showCaption } = this.view.state;
     const { editPic, scc, auth } = this.view.props;
     const image = {
-      title: title || editPic.title, 
+      title: title || editPic.title,
       url: url || editPic.url,
       comments: showCaption || editPic.comments,
       type: 'JaMmusic-music',

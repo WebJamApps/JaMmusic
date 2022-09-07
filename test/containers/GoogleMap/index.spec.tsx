@@ -30,7 +30,7 @@ describe('GoogleMap container', () => {
     const wrapper2 = shallow<GoogleMap>(<GoogleMap />);
     expect(wrapper2.instance().gMap).toBe(null);
   });
-  it('equals returns true', ()=>{
+  it('equals returns true', () => {
     expect(equals()).toBe(true);
   });
 });

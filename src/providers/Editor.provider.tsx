@@ -8,12 +8,15 @@ export interface Ieditor {
 }
 
 const useEditorState: (arg0: Ieditor) =>
-[Ieditor, (arg0: Ieditor) => void] =
-  createPersistedState('editor', sessionStorage);
+[Ieditor, (arg0: Ieditor) => void] = createPersistedState('editor', sessionStorage);
 
-export const defaultSong: ISong = { category: '', year: 2021, title: '', url: '', _id: '' };
+export const defaultSong: ISong = {
+  category: '', year: 2021, title: '', url: '', _id: '',
+};
 
-const initEditor: Ieditor = { isValid: false, hasChanged: false, song: defaultSong, tour: {}, image: {} };
+const initEditor: Ieditor = {
+  isValid: false, hasChanged: false, song: defaultSong, tour: {}, image: {},
+};
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const setEditorDef = (_arg0: Ieditor) => {};
@@ -24,10 +27,10 @@ export const EditorContext = createContext({
 });
 
 type Props = { children: ReactChild };
-export const EditorProvider = ({ children }: Props): JSX.Element => {
+export function EditorProvider({ children }: Props): JSX.Element {
   const { Provider } = EditorContext;
   const [editor, setEditor] = useEditorState(initEditor);
   return (<Provider value={{ editor, setEditor }}>{children}</Provider>
   );
-};
+}
 

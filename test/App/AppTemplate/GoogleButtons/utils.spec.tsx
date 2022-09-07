@@ -14,16 +14,31 @@ describe('GoogleButtons/utils', () => {
   it('responseGoogleLogin', async () => {
     window.location.reload = jest.fn();
     const dispatch = jest.fn();
-    const vMock:any = jest.fn(()=>({ sub:'' }));
+    const vMock:any = jest.fn(() => ({ sub: '' }));
     jwt.verify = vMock;
-    const getMock:any = jest.fn(()=>({ set:()=>({ set:()=>Promise.resolve({ body:{} }) }) }));
-    const postMock:any = jest.fn(()=>({ set:()=>({ send:()=>Promise.resolve({ body:{ token:'', email:'' } }) }) }));
+    const getMock:any = jest.fn(() => ({ set: () => ({ set: () => Promise.resolve({ body: {} }) }) }));
+    const postMock:any = jest.fn(() => ({ set: () => ({ send: () => Promise.resolve({ body: { token: '', email: '' } }) }) }));
     superagent.post = postMock;
     superagent.get = getMock;
     await utils.responseGoogleLogin({ code: '' } as any, dispatch);
     expect(window.location.reload).toHaveBeenCalled();
   });
-  it('makeState', ()=>{
+  it('responseGoogleLogin failes', async () => {
+    window.location.reload = jest.fn();
+    commonUtils.notify = jest.fn();
+    window.location.href = 'https://web-jam.com';
+    process.env.NODE_ENV = 'production';
+    const dispatch = jest.fn();
+    const vMock:any = jest.fn(() => ({ sub: '' }));
+    jwt.verify = vMock;
+    const getMock:any = jest.fn(() => ({ set: () => ({ set: () => Promise.resolve({ body: {} }) }) }));
+    const postMock:any = jest.fn(() => ({ set: () => ({ send: () => Promise.reject(new Error('failed')) }) }));
+    superagent.post = postMock;
+    superagent.get = getMock;
+    await utils.responseGoogleLogin({ code: '' } as any, dispatch);
+    expect(commonUtils.notify).toHaveBeenCalled();
+  });
+  it('makeState', () => {
     const state = utils.makeState();
     const result = state();
     expect(typeof result).toBe('string');

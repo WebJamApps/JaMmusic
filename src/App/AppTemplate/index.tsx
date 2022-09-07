@@ -11,33 +11,29 @@ export interface AppTemplateProps extends RouteComponentProps {
   userCount: number;
   auth: Auth;
   dispatch: Dispatch<unknown>;
-  children?: React.ReactNode;
+  children: JSX.Element;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const defaultDispatch:Dispatch<Record<string, unknown>> = (_arg0: Record<string, unknown>): void => { };
-
-export class AppTemplate extends React.Component<AppTemplateProps> {
-  static defaultProps = {
-    dispatch: defaultDispatch,
-    auth: {
-      isAuthenticated: false, token: '', error: '', email: '', user: { userType: '' },
-    },
-    userCount: 0,
-    heartBeat: 'white',
-  };
-
+export class AppTemplate extends React.Component<AppTemplateProps, unknown> {
   // eslint-disable-next-line @typescript-eslint/no-useless-constructor
   constructor(props: AppTemplateProps) {
     super(props);
   }
 
   render(): JSX.Element {
-    const { children, userCount, heartBeat, auth, location, dispatch } = this.props;
-    return <PageHost
-      children={children} userCount={userCount} heartBeat={heartBeat} auth={auth}
-      location={location} dispatch={dispatch}
-    />;
+    const {
+      children, userCount, heartBeat, auth, location, dispatch,
+    } = this.props;
+    return (
+      <PageHost
+        children={children}
+        userCount={userCount}
+        heartBeat={heartBeat}
+        auth={auth}
+        location={location}
+        dispatch={dispatch}
+      />
+    );
   }
 }
 

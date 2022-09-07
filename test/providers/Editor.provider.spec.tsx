@@ -14,7 +14,7 @@ describe('EditorProvider', () => {
     act(() => { ReactDOM.render(<EditorProvider><div /></EditorProvider>, container); });
     expect(document.getElementById('play-buttons')).toBeDefined();
   });
-  it('setEditorDef', ()=>{
+  it('setEditorDef', () => {
     expect(setEditorDef({} as Ieditor)).toBeUndefined();
   });
 });

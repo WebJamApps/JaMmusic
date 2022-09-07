@@ -10,21 +10,21 @@ import { DataProvider } from './providers/Data.provider';
 import { EditorProvider } from './providers/Editor.provider';
 import '../static/styles.scss';
 
-const Main = () => {
+function Main() {
   return (
-    <GoogleOAuthProvider clientId={process.env.GoogleClientId || '' }>
-    <DataProvider>
-      <EditorProvider>
-        <Provider store={store.store}>
-          <PersistGate loading={null} persistor={store.persistor}>
-            <ConnectedApp />
-          </PersistGate>
-        </Provider>
-      </EditorProvider>
-    </DataProvider>
+    <GoogleOAuthProvider clientId={process.env.GoogleClientId || ''}>
+      <DataProvider>
+        <EditorProvider>
+          <Provider store={store.store}>
+            <PersistGate loading={null} persistor={store.persistor}>
+              <ConnectedApp />
+            </PersistGate>
+          </Provider>
+        </EditorProvider>
+      </DataProvider>
     </GoogleOAuthProvider>
   );
-};
+}
 
 const HotMain = hot(module)(Main);
 

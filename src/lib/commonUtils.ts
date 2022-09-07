@@ -1,3 +1,5 @@
+import { Store } from 'react-notifications-component';
+
 const setTitleAndScroll = (pageTitle: string, width: number): void => {
   if (pageTitle !== '') pageTitle += ' | ';// eslint-disable-line no-param-reassign
   document.title = `${pageTitle}Web Jam LLC`;
@@ -15,6 +17,26 @@ function getUserRoles(): string[] {
   return userRoles;
 }
 
-const delay = (seconds:number) => new Promise(resolve => setTimeout(resolve, seconds * 1000)); 
+const delay = (seconds:number) => new Promise((resolve) => setTimeout(resolve, seconds * 1000));
 
-export default { setTitleAndScroll, getUserRoles, delay };
+type NotificationType = 'success' | 'danger' | 'info' | 'default' | 'warning';
+
+function notify(title: string, message: string, type: NotificationType) {
+  Store.addNotification({
+    title,
+    message,
+    type,
+    insert: 'top',
+    container: 'top-right',
+    animationIn: ['animate__animated animate__fadeIn'],
+    animationOut: ['animate__animated animate__fadeOut'],
+    dismiss: {
+      duration: 5000,
+      onScreen: true,
+    },
+  });
+}
+
+export default {
+  setTitleAndScroll, getUserRoles, delay, notify,
+};

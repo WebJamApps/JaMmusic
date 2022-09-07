@@ -1,7 +1,7 @@
 export interface ITour {
   datetime?: string, _id?: string
 }
-export interface ITourState{
+export interface ITourState {
   tour:ITour[],
   tourUpdated: boolean,
   editTour: ITour

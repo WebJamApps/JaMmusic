@@ -2,7 +2,7 @@
 import { shallow } from 'enzyme';
 import NarrowCurrentProjects from '../../../../src/containers/Homepage/Narrowscreen/NarrowCurrentProjects';
 
-const wrapper = shallow<typeof NarrowCurrentProjects>(<NarrowCurrentProjects/>);
+const wrapper = shallow<typeof NarrowCurrentProjects>(<NarrowCurrentProjects />);
 
 describe('NarrowCurrentProjects', () => {
   it('Renders the NarrowCurrentProjects', () => {

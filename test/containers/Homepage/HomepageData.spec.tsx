@@ -2,7 +2,7 @@
 import { shallow } from 'enzyme';
 import HomepageData from '../../../src/containers/Homepage/HomepageData';
 
-const wrapper = shallow<typeof HomepageData>(<HomepageData/>);
+const wrapper = shallow<typeof HomepageData>(<HomepageData />);
 
 describe('HomepageData', () => {
   it('Renders the homepageData', () => {

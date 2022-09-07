@@ -1,5 +1,6 @@
 import { CodeResponse, googleLogout } from '@react-oauth/google';
 import type { Dispatch } from 'react';
+import 'react-notifications-component/dist/theme.css';
 import jwt from 'jsonwebtoken';
 import superagent from 'superagent';
 import commonUtils from 'src/lib/commonUtils';
@@ -11,22 +12,20 @@ export interface GoogleBody {
   state(): string,
 }
 
-const setUserRedux = async (dispatch: (...args: any) => void, token: string, userId: string) => {
-  try {
-    const user = await superagent.get(`${process.env.BackendUrl}/user/${userId}`)
-      .set('Accept', 'application/json').set('Authorization', `Bearer ${token}`);
-    dispatch({ type: 'SET_USER', data: user.body });
-    window.location.reload();
-  } catch (e) { console.log(e); }
+const setUserRedux = async (
+  dispatch: (...args: any) => void,
+  token: string,
+  userId: string | undefined,
+) => {
+  const user = await superagent.get(`${process.env.BackendUrl}/user/${userId}`)
+    .set('Accept', 'application/json').set('Authorization', `Bearer ${token}`);
+  dispatch({ type: 'SET_USER', data: user.body });
+  window.location.reload();
 };
 
 const setUser = async (dispatch: Dispatch<unknown>, token:string): Promise<void> => {
-  let userId;
-  try {
-    const { sub } = jwt.verify(token, process.env.HashString /* istanbul ignore next */|| '') as jwt.JwtPayload;
-    userId = sub;
-  } catch (e) { console.log(e); }
-  await setUserRedux(dispatch, token, userId || '');
+  const { sub } = jwt.verify(token, process.env.HashString as string) as jwt.JwtPayload;
+  await setUserRedux(dispatch, token, sub);
 };
 
 const gotToken = (doc: unknown): { type: string; data: unknown } => ({
@@ -35,7 +34,8 @@ const gotToken = (doc: unknown): { type: string; data: unknown } => ({
 });
 
 const authenticate = async (
-  googleBody: GoogleBody, dispatch:Dispatch<unknown>,
+  googleBody: GoogleBody,
+  dispatch:Dispatch<unknown>,
 ): Promise<{ token:string, email:string }> => {
   const { body } = await superagent.post(`${process.env.BackendUrl}/user/auth/google`)
     .set({ Accept: 'application/json' }).send(googleBody);
@@ -49,22 +49,26 @@ const makeState = () => () => {
 };
 
 const responseGoogleLogin = async (
-  response: Omit<CodeResponse, 'error' | 'error_description' | 'error_uri'>, dispatch: Dispatch<unknown>,
+  response: Omit<CodeResponse, 'error' | 'error_description' | 'error_uri'>,
+  dispatch: Dispatch<unknown>,
 ): Promise<void> => {
-  const uri = window.location.href;
-  const baseUri = uri.split('/')[2];
-  const body = {
-    clientId: process.env.GoogleClientId,
-    redirectUri: !baseUri.includes('localhost') 
-    && process.env.NODE_ENV === 'production' /* istanbul ignore next */? `https://${baseUri}` 
-      : `http://${baseUri}`,
-    code: `${response.code}`,
-    state: makeState(),
-  };
   try {
+    const uri = window.location.href;
+    const baseUri = uri.split('/')[2];
+    const body = {
+      clientId: process.env.GoogleClientId,
+      redirectUri: !baseUri.includes('localhost')
+    && process.env.NODE_ENV === 'production' ? `https://${baseUri}`
+        : `http://${baseUri}`,
+      code: `${response.code}`,
+      state: makeState(),
+    };
     const { token } = await authenticate(body, dispatch);
     await setUser(dispatch, token);
-  } catch (e) { console.log(e); }
+  } catch (e) {
+    const eMessage = (e as Error).message;
+    commonUtils.notify('Failed to authenticate', eMessage, 'danger');
+  }
 };
 
 const responseGoogleLogout = async (dispatch: Dispatch<unknown>): Promise<void> => {
@@ -74,4 +78,6 @@ const responseGoogleLogout = async (dispatch: Dispatch<unknown>): Promise<void> 
   window.location.assign('/');
 };
 
-export default { responseGoogleLogin, responseGoogleLogout, authenticate, setUser, makeState };
+export default {
+  responseGoogleLogin, responseGoogleLogout, authenticate, setUser, makeState,
+};

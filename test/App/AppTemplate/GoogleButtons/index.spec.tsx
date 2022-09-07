@@ -15,11 +15,11 @@ describe('GoogleButtons', () => {
     const loginButton: any = gb.findByProps({ className: 'loginButton' });
     expect(loginButton.props.onClick()).toBe('loginClicked');
   });
-  it('runs loginConfig onSuccess and onError', ()=>{
+  it('runs loginConfig onSuccess and onError', () => {
     const dispatch = jest.fn();
     utils.responseGoogleLogin = jest.fn();
     const config = loginConfig(dispatch);
-    config.onSuccess({ code:'token', scope:'' });
+    config.onSuccess({ code: 'token', scope: '' });
     expect(utils.responseGoogleLogin).toHaveBeenCalled();
     expect(config.onError()).toBe(false);
   });

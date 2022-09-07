@@ -9,15 +9,16 @@ export const loginConfig = (dispatch: Dispatch<unknown>) => ({
   flow: 'auth-code',
 });
 
-export const GoogleButtons = (
-  props: { type: string, index: number, dispatch: Dispatch<unknown> },
-): JSX.Element => {
+export function GoogleButtons(props: { type: string, index: number, dispatch: Dispatch<unknown> }): JSX.Element {
   const { type, index, dispatch } = props;
   const login = useGoogleLogin(loginConfig(dispatch) as Record<string, unknown>);
   if (type === 'login') {
     return (
       <div key={index} className="menu-item googleLogin">
-        <Button variant="contained" className="loginButton" size="small"
+        <Button
+          variant="contained"
+          className="loginButton"
+          size="small"
           onClick={() => { login(); return 'loginClicked'; }}
         >
           Login
@@ -31,4 +32,4 @@ export const GoogleButtons = (
       </Button>
     </div>
   );
-};
+}

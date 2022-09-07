@@ -4,7 +4,7 @@ exports[`SongEditor renders correctly 1`] = `
 <div
   className="material-content elevation3"
   style={
-    Object {
+    {
       "margin": "30px auto",
       "maxWidth": "320px",
     }
@@ -12,7 +12,7 @@ exports[`SongEditor renders correctly 1`] = `
 >
   <h5
     style={
-      Object {
+      {
         "marginBottom": 0,
       }
     }
@@ -133,7 +133,7 @@ exports[`SongEditor renders correctly 1`] = `
     </p>
     <div
       style={
-        Object {
+        {
           "marginTop": "10px",
           "textAlign": "left",
         }
@@ -141,7 +141,7 @@ exports[`SongEditor renders correctly 1`] = `
     >
       <span
         style={
-          Object {
+          {
             "display": "inline-block",
             "fontSize": "16px",
             "marginRight": "20px",

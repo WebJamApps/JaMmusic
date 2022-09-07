@@ -1,4 +1,4 @@
-interface JSOG{
+interface JSOG {
   encode:(arg0: unknown) => unknown;
   decode:(arg0: unknown) => unknown;
 }

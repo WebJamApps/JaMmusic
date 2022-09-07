@@ -5,24 +5,21 @@ import type { Iimage, Auth } from '../../redux/mapStoreToProps';
 import { Intro } from './intro';
 import JoshBio from './joshBio';
 import MariaBio from './mariaBio';
-import WjBand from './wjBand';
 import commonUtils from '../../lib/commonUtils';
 
-export const Musicians = (): JSX.Element => {
+export function Musicians(): JSX.Element {
   return (
     <div className="elevation3" style={{ maxWidth: '1000px', margin: 'auto' }}>
       <section>
         <JoshBio />
         <hr />
         <MariaBio />
-        <hr />
-        <WjBand />
       </section>
       <p>{' '}</p>
       <p>{' '}</p>
     </div>
   );
-};
+}
 
 export function checkIsAdmin(auth: Auth | null, setIsAdmin: (arg0: boolean) => void) {
   let isAdmin = false;
@@ -39,7 +36,7 @@ interface ImusicNewProps {
   images?: Iimage[]
   auth: Auth | null;
 }
-export const Music = ({ images, auth }: ImusicNewProps): JSX.Element => {
+export function Music({ images, auth }: ImusicNewProps): JSX.Element {
   const [isAdmin, setIsAdmin] = useState(false);
   useEffect(() => commonUtils.setTitleAndScroll('Music', window.screen.width), []);
   useEffect(() => {
@@ -68,5 +65,4 @@ export const Music = ({ images, auth }: ImusicNewProps): JSX.Element => {
       <Musicians />
     </div>
   );
-
-};
+}

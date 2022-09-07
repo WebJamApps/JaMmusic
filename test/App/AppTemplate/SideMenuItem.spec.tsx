@@ -13,9 +13,12 @@ describe('SideMenuItem', () => {
   it('returns null for auth item when user is incorrect type', () => {
     commonUtils.getUserRoles = jest.fn(() => ['tester']);
     const props = {
-      index: 1, auth: { isAuthenticated: true, user: { userType: 'joker' } } as Auth,
+      index: 1,
+      auth: { isAuthenticated: true, user: { userType: 'joker' } } as Auth,
       location: { pathname: '/music' } as RouteComponentProps['location'],
-      menu: { auth: true, link: '/dashboard' } as ImenuItem, dispatch: jest.fn(), handleClose: jest.fn(),
+      menu: { auth: true, link: '/dashboard' } as ImenuItem,
+      dispatch: jest.fn(),
+      handleClose: jest.fn(),
     };
     const smi = renderer.create(<SideMenuItem {...props} />).toJSON();
     expect(smi).toBeNull();
@@ -23,9 +26,12 @@ describe('SideMenuItem', () => {
   it('returns MakeLink for /music', () => {
     commonUtils.getUserRoles = jest.fn(() => ['tester']);
     const props = {
-      index: 1, auth: { isAuthenticated: false, user: { userType: 'joker' } } as Auth,
+      index: 1,
+      auth: { isAuthenticated: false, user: { userType: 'joker' } } as Auth,
       location: { pathname: '/music' } as RouteComponentProps['location'],
-      menu: { auth: false, link: '/music' } as ImenuItem, dispatch: jest.fn(), handleClose: jest.fn(),
+      menu: { auth: false, link: '/music' } as ImenuItem,
+      dispatch: jest.fn(),
+      handleClose: jest.fn(),
     };
     const smi: any = renderer.create(<BrowserRouter><SideMenuItem {...props} /></BrowserRouter>).toJSON();
     expect(smi.props.className).toBe('menu-item');
@@ -33,9 +39,12 @@ describe('SideMenuItem', () => {
   it('returns MakeLink for /music when Web Jam LLC', () => {
     commonUtils.getUserRoles = jest.fn(() => ['tester']);
     const props = {
-      index: 1, auth: { isAuthenticated: false, user: { userType: 'joker' } } as Auth,
+      index: 1,
+      auth: { isAuthenticated: false, user: { userType: 'joker' } } as Auth,
       location: { pathname: '/music' } as RouteComponentProps['location'],
-      menu: { auth: false, link: '/', name:'Web Jam LLC' } as ImenuItem, dispatch: jest.fn(), handleClose: jest.fn(),
+      menu: { auth: false, link: '/', name: 'Web Jam LLC' } as ImenuItem,
+      dispatch: jest.fn(),
+      handleClose: jest.fn(),
     };
     const smi: any = renderer.create(<BrowserRouter><SideMenuItem {...props} /></BrowserRouter>).toJSON();
     expect(smi.props.className).toBe('menu-item');

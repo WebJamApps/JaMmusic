@@ -15,7 +15,7 @@ exports[`AppTemplate renders the component 1`] = `
     <div
       className="drawer"
       style={
-        Object {
+        {
           "backgroundColor": "#c0c0c0",
           "position": "relative",
           "zIndex": -1,
@@ -30,7 +30,7 @@ exports[`AppTemplate renders the component 1`] = `
           id="webjamwidelogo"
           src="../static/imgs/webjamlogo1.png"
           style={
-            Object {
+            {
               "marginLeft": 0,
               "marginRight": 0,
               "width": "182px",
@@ -41,7 +41,7 @@ exports[`AppTemplate renders the component 1`] = `
       <div
         className="nav-list"
         style={
-          Object {
+          {
             "width": "180px",
           }
         }
@@ -49,7 +49,7 @@ exports[`AppTemplate renders the component 1`] = `
         <div
           id="musTT"
           style={
-            Object {
+            {
               "backgroundColor": "white",
               "display": "none",
               "padding": "3px",
@@ -71,7 +71,7 @@ exports[`AppTemplate renders the component 1`] = `
           >
             <div
               style={
-                Object {
+                {
                   "display": "inline",
                 }
               }
@@ -98,7 +98,7 @@ exports[`AppTemplate renders the component 1`] = `
           >
             <div
               style={
-                Object {
+                {
                   "display": "inline",
                 }
               }
@@ -129,7 +129,7 @@ exports[`AppTemplate renders the component 1`] = `
         </div>
         <p
           style={
-            Object {
+            {
               "fontSize": "6pt",
               "margin": 0,
               "padding": 0,
@@ -144,7 +144,7 @@ exports[`AppTemplate renders the component 1`] = `
           <div>
             <button
               style={
-                Object {
+                {
                   "backgroundColor": "white",
                   "cursor": "none",
                   "height": "20px",
@@ -161,7 +161,7 @@ exports[`AppTemplate renders the component 1`] = `
           <div
             className="active-users-text"
             style={
-              Object {
+              {
                 "marginTop": "8px",
                 "paddingLeft": "10px",
               }
@@ -218,7 +218,7 @@ exports[`AppTemplate renders the component 1`] = `
           <h3
             className="header-text"
             style={
-              Object {
+              {
                 "marginTop": 0,
               }
             }
@@ -231,7 +231,7 @@ exports[`AppTemplate renders the component 1`] = `
         className="content-block"
         id="contentBlock"
         style={
-          Object {
+          {
             "width": "auto",
           }
         }
@@ -243,7 +243,7 @@ exports[`AppTemplate renders the component 1`] = `
           className="footer"
           id="wjfooter"
           style={
-            Object {
+            {
               "backgroundColor": "#565656",
               "bottom": "0",
               "paddingBottom": "20px",
@@ -253,7 +253,7 @@ exports[`AppTemplate renders the component 1`] = `
         >
           <div
             style={
-              Object {
+              {
                 "padding": "6px",
                 "textAlign": "center",
               }
@@ -263,7 +263,7 @@ exports[`AppTemplate renders the component 1`] = `
               href="https://github.com/WebJamApps"
               rel="noopener noreferrer"
               style={
-                Object {
+                {
                   "color": "#c09580",
                   "paddingRight": "5px",
                 }
@@ -280,7 +280,7 @@ exports[`AppTemplate renders the component 1`] = `
               href="https://www.linkedin.com/company/webjam/"
               rel="noopener noreferrer"
               style={
-                Object {
+                {
                   "color": "#c09580",
                   "paddingRight": "5px",
                 }
@@ -297,7 +297,7 @@ exports[`AppTemplate renders the component 1`] = `
               href="https://www.instagram.com/joshua.v.sherman/"
               rel="noopener noreferrer"
               style={
-                Object {
+                {
                   "color": "#c09580",
                   "paddingRight": "5px",
                 }
@@ -314,7 +314,7 @@ exports[`AppTemplate renders the component 1`] = `
               href="https://twitter.com/JoshuaVSherman"
               rel="noopener noreferrer"
               style={
-                Object {
+                {
                   "color": "#c09580",
                   "paddingRight": "5px",
                 }
@@ -331,7 +331,7 @@ exports[`AppTemplate renders the component 1`] = `
               href="https://www.facebook.com/WebJamLLC/"
               rel="noopener noreferrer"
               style={
-                Object {
+                {
                   "color": "#c09580",
                   "paddingRight": "5px",
                 }
@@ -348,7 +348,7 @@ exports[`AppTemplate renders the component 1`] = `
               href="https://joshuavsherman.tumblr.com/"
               rel="noopener noreferrer"
               style={
-                Object {
+                {
                   "color": "#c09580",
                   "paddingRight": "5px",
                 }
@@ -363,7 +363,7 @@ exports[`AppTemplate renders the component 1`] = `
             </a>
             <p
               style={
-                Object {
+                {
                   "color": "white",
                   "fontSize": "9pt",
                   "marginBottom": 0,

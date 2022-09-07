@@ -1,7 +1,33 @@
 {
+  "testEnvironmentOptions":{
+    "url": "http://localhost/"
+  },
   "testEnvironment": "jsdom",
   "verbose": true,
-  "timers": "fake",
+  "fakeTimers": {
+    "advanceTimers": 40,
+    "doNotFake": [
+      "Date",
+      "hrtime",
+      "nextTick",
+      "performance",
+      "queueMicrotask",
+      "requestAnimationFrame",
+      "cancelAnimationFrame",
+      "requestIdleCallback",
+      "cancelIdleCallback",
+      "setImmediate",
+      "clearImmediate",
+      "setInterval",
+      "clearInterval",
+      "setTimeout",
+      "clearTimeout"
+    ],
+    "enableGlobally": true,
+    "legacyFakeTimers": false,
+    "now": 1483228800000,
+    "timerLimit": 1000
+  },
   "testTimeout": 40000,
   "bail": true,
   "resetMocks": true,
@@ -28,11 +54,10 @@
   "coverageProvider": "v8",
   "collectCoverageFrom": [
     "src/**/*.{js,jsx,ts,tsx}",
-    "!src/index.tsx",
+    "!src/Main.tsx",
     "!src/redux/store/index.ts"
   ],
   "collectCoverage": true,
-  "testURL": "http://localhost/",
   "transform": {
     "^.+\\.tsx?$": "ts-jest"
   },
