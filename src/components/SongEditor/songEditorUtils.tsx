@@ -1,28 +1,10 @@
 import type superagent from 'superagent';
-import { Store } from 'react-notifications-component';
 import 'react-notifications-component/dist/theme.css';
 import type { ISong } from 'src/providers/Data.provider';
 import type { Auth } from 'src/redux/mapStoreToProps';
 import type { Ieditor } from 'src/providers/Editor.provider';
 import fetchSongs from 'src/providers/fetchSongs';
-
-type NotificationType = 'success' | 'danger' | 'info' | 'default' | 'warning';
-
-function notify(title: string, message: string, type: NotificationType) {
-  Store.addNotification({
-    title,
-    message,
-    type,
-    insert: 'top',
-    container: 'top-right',
-    animationIn: ['animate__animated animate__fadeIn'],
-    animationOut: ['animate__animated animate__fadeOut'],
-    dismiss: {
-      duration: 5000,
-      onScreen: true,
-    },
-  });
-}
+import commonUtils from 'src/lib/commonUtils';
 
 const updateSongAPI = async (
   sa: typeof superagent,
@@ -41,11 +23,11 @@ const updateSongAPI = async (
       .send(songChanges);
     if (r.status !== 200) throw new Error(`${r.status} song was not updated`);
     setEditor({ song: {}, image: {}, tour: {} } as Ieditor);
-    notify('The song has been updated', '', 'success');
+    commonUtils.notify('The song has been updated', '', 'success');
     await fetchSongs.getSongs(setSongs);
   } catch (e) {
     const eMessage = (e as Error).message;
-    notify('Failed to update the song', eMessage, 'danger');
+    commonUtils.notify('Failed to update the song', eMessage, 'danger');
   }
 };
 
@@ -66,11 +48,11 @@ const addSongAPI = async (
       .send(newSong);
     if (r.status !== 201) throw new Error(`${r.status} song was not created`);
     setNewEditor({ song: {}, image: {}, tour: {} } as Ieditor);
-    notify(`${newSong.title} song was created`, '', 'success');
+    commonUtils.notify(`${newSong.title} song was created`, '', 'success');
     await fetchSongs.getSongs(setSongs);
   } catch (e) {
     const eMessage = (e as Error).message;
-    notify('Failed to create the song', eMessage, 'danger');
+    commonUtils.notify('Failed to create the song', eMessage, 'danger');
   }
 };
 

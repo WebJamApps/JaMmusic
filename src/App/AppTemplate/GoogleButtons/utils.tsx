@@ -1,5 +1,6 @@
 import { CodeResponse, googleLogout } from '@react-oauth/google';
 import type { Dispatch } from 'react';
+import 'react-notifications-component/dist/theme.css';
 import jwt from 'jsonwebtoken';
 import superagent from 'superagent';
 import commonUtils from 'src/lib/commonUtils';
@@ -50,7 +51,7 @@ const makeState = () => () => {
 const responseGoogleLogin = async (
   response: Omit<CodeResponse, 'error' | 'error_description' | 'error_uri'>,
   dispatch: Dispatch<unknown>,
-): Promise<boolean> => {
+): Promise<void> => {
   try {
     const uri = window.location.href;
     const baseUri = uri.split('/')[2];
@@ -64,8 +65,10 @@ const responseGoogleLogin = async (
     };
     const { token } = await authenticate(body, dispatch);
     await setUser(dispatch, token);
-    return true;
-  } catch (e) { console.log(e); return false; }// TODO add error notification here
+  } catch (e) {
+    const eMessage = (e as Error).message;
+    commonUtils.notify('Failed to authenticate', eMessage, 'danger');
+  }
 };
 
 const responseGoogleLogout = async (dispatch: Dispatch<unknown>): Promise<void> => {
