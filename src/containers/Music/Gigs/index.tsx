@@ -59,7 +59,7 @@ export const columns: GridColumns = [
   },
 ];
 
-export const orderGigs = (gigs: IGig[], setGigsInOrder: { (arg0: IGig[]): void; }) => {
+export const orderGigs = (gigs: IGig[], setGigsInOrder: { (arg0: IGig[]): void; }, setPageSize: (arg0: number) => void) => {
   const now = new Date();
   now.setDate(now.getDate() - 1);
   const current = now.toISOString();
@@ -74,6 +74,7 @@ export const orderGigs = (gigs: IGig[], setGigsInOrder: { (arg0: IGig[]): void; 
     ...defaultGig, venue: 'Our Past Performances', id: 999, tickets: ' ',
   });
   setGigsInOrder(sortedFuture.concat(pastGigs));
+  setPageSize(futureGigs.length - 1 > 5 ? futureGigs.length - 1 : 5);
 };
 
 export function Gigs({ isAdmin }: { isAdmin: boolean }): JSX.Element {
@@ -82,7 +83,8 @@ export function Gigs({ isAdmin }: { isAdmin: boolean }): JSX.Element {
   const [gigsInOrder, setGigsInOrder] = useState(gigs);
   const now = new Date() as Date | null;
   const [dateTime, setDateTime] = useState(now);
-  useEffect(() => orderGigs(gigs, setGigsInOrder), [gigs]);
+  const [pageSize, setPageSize] = useState(5);
+  useEffect(() => orderGigs(gigs, setGigsInOrder, setPageSize), [gigs]);
   return (
     <div className="gigsDiv" style={{ margin: 'auto', padding: '10px', width: '100%' }}>
       <h4 style={{ textAlign: 'center' }}>
@@ -102,12 +104,12 @@ export function Gigs({ isAdmin }: { isAdmin: boolean }): JSX.Element {
           </Tooltip>
         ) : ''}
       </h4>
-      <div style={{ height: 400, width: '100%' }}>
+      <div style={{ height: '500px', width: '100%' }}>
         <DataGrid
           rows={gigsInOrder}
           columns={columns}
-          pageSize={5}
-          rowsPerPageOptions={[5]}
+          pageSize={pageSize}
+          rowsPerPageOptions={[pageSize]}
           disableSelectionOnClick
         />
       </div>
