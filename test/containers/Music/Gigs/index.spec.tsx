@@ -57,7 +57,7 @@ describe('Gigs', () => {
     future.setDate(future.getDate() + 2);
     future = new Date(future).toISOString();
     const gigs = [{ datetime: tomorrow }, { datetime: yesterday }, { datetime: future }, { datetime: today }, { datetime: tomorrow }] as IGig[];
-    orderGigs(gigs, setGigsInOrder);
+    orderGigs(gigs, setGigsInOrder, jest.fn());
     expect(setGigsInOrder).toHaveBeenCalled();
   });
 });

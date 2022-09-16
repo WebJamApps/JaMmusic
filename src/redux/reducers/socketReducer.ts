@@ -7,12 +7,13 @@ const initialState = {
   heartBeat: 'white',
   scc: {},
 };
-// eslint-disable-next-line @typescript-eslint/default-param-last
+
 const reducer = (
-  state = initialState,
+  state: ISocketReducer,
   action: { type: string; scc: Record<string, unknown>;
     data: string },
 ): ISocketReducer => {
+  if (!state) state = initialState;
   switch (action.type) {
     case 'SCC': return { ...state, scc: action.scc };
     case 'NUM_USERS': return { ...state, userCount: parseInt(action.data, 10) };
