@@ -19,7 +19,9 @@ export function GoogleButtons(props: { type: string, index: number, dispatch: Di
           variant="contained"
           className="loginButton"
           size="small"
-          onClick={() => { login(); return 'loginClicked'; }}
+          onClick={() => {
+            login(); return 'loginClicked';
+          }}
         >
           Login
         </Button>
