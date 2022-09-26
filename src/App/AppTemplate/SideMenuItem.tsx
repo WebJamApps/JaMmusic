@@ -6,22 +6,6 @@ import commonUtils from '../../lib/commonUtils';
 import type { ImenuItem } from './menuConfig';
 import { GoogleButtons } from './GoogleButtons';
 
-export const continueMenuItem = (
-  menu: ImenuItem,
-  index: number,
-  auth: Auth,
-  pathname: string,
-  dispatch: Dispatch<unknown>,
-): JSX.Element | null => {
-  if (menu.type === 'googleLogin' && !auth.isAuthenticated && pathname === '/') {
-    return <GoogleButtons key="googleLogin" type="login" index={index} dispatch={dispatch} />;
-  }
-  if (menu.type === 'googleLogout' && auth.isAuthenticated) {
-    return <GoogleButtons key="googleLogout" type="logout" index={index} dispatch={dispatch} />;
-  }
-  return null;
-};
-
 export function IconAndText({ menu }: { menu: ImenuItem }): JSX.Element {
   return (
     <div style={{ display: 'inline' }}>
@@ -52,6 +36,29 @@ export function MakeLink(props: ImakeLinkProps): JSX.Element {
     </div>
   );
 }
+
+export const continueMenuItem = (
+  menu: ImenuItem,
+  index: number,
+  auth: Auth,
+  pathname: string,
+  dispatch: Dispatch<unknown>,
+  handleClose: () => void,
+): JSX.Element | null => {
+  if (pathname.includes('/music') && (menu.link.includes('/music'))) {
+    return <MakeLink menu={menu} index={index} type="Link" handleClose={handleClose} />;
+  }
+  if (menu.type === 'link' && !menu.link.includes('/music/') && !pathname.includes('/music')) {
+    return <MakeLink menu={menu} index={index} type="Link" handleClose={handleClose} />;
+  }
+  if (menu.type === 'googleLogin' && !auth.isAuthenticated && pathname === '/') {
+    return <GoogleButtons key="googleLogin" type="login" index={index} dispatch={dispatch} />;
+  }
+  if (menu.type === 'googleLogout' && auth.isAuthenticated) {
+    return <GoogleButtons key="googleLogout" type="logout" index={index} dispatch={dispatch} />;
+  }
+  return null;
+};
 
 interface IsideMenuItemProps {
   menu: ImenuItem, index: number, auth: Auth, location: RouteComponentProps['location'],
@@ -87,12 +94,6 @@ export function SideMenuItem(props: IsideMenuItemProps): JSX.Element | null {
       />
     );
   }
-  if (location.pathname.includes('/music') && (menu.link.includes('/music'))) {
-    return <MakeLink menu={menu} index={index} type="Link" handleClose={handleClose} />;
-  }
-  if (menu.type === 'link' && !menu.link.includes('/music/') && !location.pathname.includes('/music')) {
-    return <MakeLink menu={menu} index={index} type="Link" handleClose={handleClose} />;
-  }
-  return continueMenuItem(menu, index, auth, location.pathname, dispatch);
+  return continueMenuItem(menu, index, auth, location.pathname, dispatch, handleClose);
 }
 
