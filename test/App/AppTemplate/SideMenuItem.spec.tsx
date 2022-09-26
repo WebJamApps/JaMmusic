@@ -50,7 +50,7 @@ describe('SideMenuItem', () => {
     expect(smi.props.className).toBe('menu-item');
   });
   it('continueMenuItem returns googleLogout', () => {
-    const result: any = continueMenuItem({ type: 'googleLogout' } as ImenuItem, 1, { isAuthenticated: true } as Auth, '', jest.fn());
+    const result: any = continueMenuItem({ type: 'googleLogout' } as ImenuItem, 1, { isAuthenticated: true } as Auth, '', jest.fn(), jest.fn());
     expect(result.key).toBe('googleLogout');
   });
   it('clears storage when clicking on menu items from joshandmariamusic', () => {
