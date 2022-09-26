@@ -63,6 +63,18 @@ export function SideMenuItem(props: IsideMenuItemProps): JSX.Element | null {
   } = props;
   const userRoles: string[] = commonUtils.getUserRoles();
   if (menu.auth && (!auth.isAuthenticated || userRoles.indexOf(auth.user.userType) === -1)) return null;
+  if (menu.name === 'Web Jam LLC') {
+    return (
+      <MakeLink
+        menu={menu}
+        index={index}
+        type="Link"
+        handleClose={() => {
+          window.location.assign('/');
+        }}
+      />
+    );
+  }
   if (menu.nav === 'jam') {
     return (
       <MakeLink
@@ -75,7 +87,7 @@ export function SideMenuItem(props: IsideMenuItemProps): JSX.Element | null {
       />
     );
   }
-  if (location.pathname.includes('/music') && (menu.link.includes('/music') || menu.name === 'Web Jam LLC')) {
+  if (location.pathname.includes('/music') && (menu.link.includes('/music'))) {
     return <MakeLink menu={menu} index={index} type="Link" handleClose={handleClose} />;
   }
   if (menu.type === 'link' && !menu.link.includes('/music/') && !location.pathname.includes('/music')) {
