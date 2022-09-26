@@ -26,7 +26,7 @@ export function IconAndText({ menu }: { menu: ImenuItem }): JSX.Element {
   return (
     <div style={{ display: 'inline' }}>
       <i className={`${menu.iconClass}`} />
-    &nbsp;
+      &nbsp;
       <span className="nav-item">{menu.name}</span>
     </div>
   );
@@ -70,7 +70,7 @@ export function SideMenuItem(props: IsideMenuItemProps): JSX.Element | null {
         index={index}
         type="Link"
         handleClose={() => {
-          localStorage.clear(); sessionStorage.clear();
+          localStorage.clear(); sessionStorage.clear(); return 'cleared';
         }}
       />
     );
