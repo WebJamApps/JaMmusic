@@ -25,10 +25,12 @@ export const isFormValid = (state: InquiryState) => {
   return formError !== '';
 };
 
-export const CommentsSection = (
+export function CommentsSection(
   props: { currentState: InquiryState; comments: string; setState: (args0: InquiryState) => void; validateForm: () => void; },
-) => {
-  const { comments, setState, validateForm, currentState } = props;
+) {
+  const {
+    comments, setState, validateForm, currentState,
+  } = props;
   return (
     <TextareaAutosize
       style={{ marginTop: '20px', height: '80px', width: '100%' }}
@@ -38,11 +40,9 @@ export const CommentsSection = (
       onChange={(evt) => { setState({ ...currentState, comments: evt.target.value }); validateForm(); }}
     />
   );
-};
+}
 
-export const FormActions = (
-  props: { currentState:InquiryState; createEmail: (arg0: any) => void; },
-) => {
+export function FormActions(props: { currentState:InquiryState; createEmail: (arg0: any) => void; }) {
   const { createEmail, currentState } = props;
   return (
     <div className="inquiryValidation input-field col" style={{ marginBottom: '12px' }}>
@@ -56,7 +56,7 @@ export const FormActions = (
       </Button>
     </div>
   );
-};
+}
 
 export default class Inquiry extends Component<unknown, InquiryState> {
   stateValues: string[];
@@ -134,7 +134,7 @@ export default class Inquiry extends Component<unknown, InquiryState> {
       emailaddress,
     } = this.state;
     let validEmail = false;
-    // eslint-disable-next-line no-useless-escape
+    // eslint-disable-next-line no-useless-escape, prefer-regex-literals
     const regEx = RegExp('^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$');
     if (regEx.test(emailaddress) && emailaddress.includes('.')) {
       validEmail = true;

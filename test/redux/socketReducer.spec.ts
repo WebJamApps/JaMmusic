@@ -1,8 +1,8 @@
-import reducer from '../../src/redux/reducers/socketReducer';
+import reducer from 'src/redux/reducers/socketReducer';
 
 describe('socket reducer', () => {
   it('should return the initial state', () => {
-    expect(reducer(undefined, {
+    expect(reducer(undefined as any, {
       type: '',
       scc: {},
       data: '',
@@ -33,7 +33,7 @@ describe('socket reducer', () => {
     );
   });
   it('handles SCC', () => {
-    expect(reducer(undefined, { type: 'SCC', scc: { id: '23' }, data: '' })).toEqual(
+    expect(reducer(undefined as any, { type: 'SCC', scc: { id: '23' }, data: '' })).toEqual(
       {
         userCount: 0,
         heartBeat: 'white',
@@ -42,7 +42,7 @@ describe('socket reducer', () => {
     );
   });
   it('handles NUM_USERS', () => {
-    expect(reducer(undefined, { type: 'NUM_USERS', data: '23', scc: {} })).toEqual(
+    expect(reducer(undefined as any, { type: 'NUM_USERS', data: '23', scc: {} })).toEqual(
       {
         userCount: 23,
         heartBeat: 'white',

@@ -15,6 +15,18 @@ import connectToSC from './connectToSC';
 import mapStoreToProps, { Iimage, Auth } from '../redux/mapStoreToProps';
 import { PrivateRoute } from './PrivateRoute';
 
+export const defaultDispatch:Dispatch<unknown> = (_arg0: any): void => { };
+
+const defaultProps = {
+  dispatch: defaultDispatch,
+  auth: {
+    isAuthenticated: false, token: '', error: '', email: '', user: { userType: '' },
+  },
+  userCount: 0,
+  heartBeat: 'white',
+  children: <div />,
+};
+
 export interface AppProps {
   dispatch: Dispatch<unknown>;
   images: Iimage[];
@@ -55,20 +67,19 @@ export class App extends Component<AppProps> {
   }
 
   render(): JSX.Element {
-
     return (
       <StrictMode>
         <div id="App" className="App">
           <ReactNotifications />
           <Router>
-            <ATemplate>
+            <ATemplate {...defaultProps}>
               <Switch>
                 <Route exact path="/">
-                  {this.appName === 'web-jam.com' ? <HomePage /> : <Music images={this.props.images} auth={null}/>}
+                  {this.appName === 'web-jam.com' ? <HomePage /> : <Music images={this.props.images} auth={null} />}
                 </Route>
                 {this.loadMap()}
                 <PrivateRoute path="/sort" Container={DefaultSort} />
-                <Route exact path="/music"><Music images={this.props.images} auth={this.props.auth}/></Route>
+                <Route exact path="/music"><Music images={this.props.images} auth={this.props.auth} /></Route>
                 <Route exact path="/music/buymusic" component={BuyMusic} />
                 <Route exact path="/music/originals" component={DefaultSongs} />
                 <Route exact path="/music/songs" component={DefaultSongs} />

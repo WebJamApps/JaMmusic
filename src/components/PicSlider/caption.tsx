@@ -1,5 +1,5 @@
 
-const Caption = (props: { caption?: string }): JSX.Element => {
+function Caption(props: { caption?: string }): JSX.Element {
   const { caption } = props;
   return (
     <div
@@ -18,7 +18,7 @@ const Caption = (props: { caption?: string }): JSX.Element => {
       {' '}
     </div>
   );
-};
+}
 
 Caption.defaultProps = {
   caption: '',

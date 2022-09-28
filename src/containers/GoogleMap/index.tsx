@@ -5,7 +5,7 @@ import CMap from './CompanyMap';
 import gMapUtils from './gMapUtils';
 
 export interface Iloc { lat: number, lng: number }
-
+export const equals = () => true;
 class GoogleMap extends Component {
   gMap: google.maps.Map | null;
 
@@ -40,7 +40,7 @@ class GoogleMap extends Component {
       + `<p><strong>Company Slogan:</strong> ${this.companyMap.catchPhrase}</p>`
       + `<p><strong>Latitude:</strong> ${this.companyMap.loc.lat}</p></div>`;
     this.addMarker(this.companyMap, {
-      scaledSize: { width: 40, height: 40, equals: /* istanbul ignore next */() => true },
+      scaledSize: { width: 40, height: 40, equals },
       url: 'https://image.flaticon.com/icons/png/512/63/63838.png',
     });
   }

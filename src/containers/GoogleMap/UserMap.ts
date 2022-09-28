@@ -1,5 +1,5 @@
 import faker from 'faker';
-import type { Iloc } from './';
+import type { Iloc } from '.';
 import gMapUtils from './gMapUtils';
 
 export class UserMap {

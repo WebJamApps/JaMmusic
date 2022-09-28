@@ -9,8 +9,11 @@ const editPic = (data: Iimage, dispatch: (arg0: { type: string; data: Iimage; })
   return true;
 };
 
-const addThumbs = (arr: Iimage[], controller: { deleteData: (arg0: string, arg1: string | undefined) => void; }, 
-  dispatch: (arg0: { type: string; data: Iimage; }) => void): Iimage[] => {
+const addThumbs = (
+  arr: Iimage[],
+  controller: { deleteData: (arg0: string, arg1: string | undefined) => void; },
+  dispatch: (arg0: { type: string; data: Iimage; }) => void,
+): Iimage[] => {
   const newArr = arr;/* eslint-disable security/detect-object-injection */
   for (let i = 0; i < arr.length; i += 1) { // eslint-disable-next-line security/detect-object-injection
     newArr[i].thumbnail = `<img src=${arr[i].url} width="200px"/>`;
@@ -42,12 +45,12 @@ const addThumbs = (arr: Iimage[], controller: { deleteData: (arg0: string, arg1:
 const setCustomBody = (value:any, label:string):JSX.Element => {
   if (typeof value !== 'string' && label !== 'Modify') value = '';
   return (
-  <div style={{
-    margin: 0, fontSize: '12pt', maxWidth: '200px',
-  }}
-  >
-    {label !== 'Modify' ? HtmlReactParser(value) : value}
-  </div>
+    <div style={{
+      margin: 0, fontSize: '12pt', maxWidth: '200px',
+    }}
+    >
+      {label !== 'Modify' ? HtmlReactParser(value) : value}
+    </div>
   );
 };
 
@@ -69,4 +72,6 @@ const setColumns = (): MUIDataTableColumnDef[] => {
   return columns;
 };
 
-export default { editPic, addThumbs, setColumns, setCustomBody };
+export default {
+  editPic, addThumbs, setColumns, setCustomBody,
+};

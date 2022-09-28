@@ -1,4 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-export const DateTimePicker = (props:any) => <input {...props}>{props.children}</input>;
+export function DateTimePicker(props:any) {
+  return <input {...props}>{props.children}</input>;
+}
 
-export const LocalizationProvider = (props:any) => <div {...props}>{props.children}</div>;
+export function LocalizationProvider(props:any) {
+  return <div {...props}>{props.children}</div>;
+}

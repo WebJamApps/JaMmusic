@@ -1,7 +1,6 @@
 
 import type { ISong } from 'src/providers/Data.provider';
-import type { Iplayer } from './';
-import type { MusicPlayer } from '.';
+import type { Iplayer, MusicPlayer } from '.';
 
 const showHideButtons = (display: string): boolean => {
   const mAndP = document.getElementById('mAndP');
@@ -28,9 +27,11 @@ const copyShare = (view: MusicPlayer): void => {
     }, 1500);
   });
 };
-async function checkOnePlayer(params: URLSearchParams,
+async function checkOnePlayer(
+  params: URLSearchParams,
   player: Iplayer,
-  view: MusicPlayer): Promise<boolean> {
+  view: MusicPlayer,
+): Promise<boolean> {
   const { songs } = view.props;
   let missionState = 'off', pubState = 'off', originalState = 'off', newSongs: ISong[] = [];
   if (params.get('oneplayer')) {
@@ -105,8 +106,15 @@ const shuffleThem = (songs: ISong[]): ISong[] => {
   }
   return shuffled;
 };
-const resetState = (view: MusicPlayer, player: Iplayer, pageTitle: string, songsState: ISong[],
-  typeInState: string, shuffled: ISong[], type:string) => {
+const resetState = (
+  view: MusicPlayer,
+  player: Iplayer,
+  pageTitle: string,
+  songsState: ISong[],
+  typeInState: string,
+  shuffled: ISong[],
+  type:string,
+) => {
   view.setState({
     ...view.state,
     player: { ...player },

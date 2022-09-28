@@ -150,7 +150,7 @@ describe('MusicDashboardController', () => {
     const evt:any = { persist: jest.fn(), target: { id: 'title', value: 'title' } };
     controller.onChangePic(evt);
     controller.checkPicEdit = jest.fn();
-    expect(viewStub.setState).toBeCalled();
+    expect(viewStub.setState).toHaveBeenCalled();
     viewStub.setState = jest.fn((obj) => { expect(obj.title).toBe('title'); });
   });
   // it('failure to checkPicEdit', () =>{
@@ -177,7 +177,7 @@ describe('MusicDashboardController', () => {
     const controller = new Controller(viewStub);
     const evt:any = { persist: jest.fn(), target: { id: 'title', value: 'title' } };
     controller.onChangePic(evt);
-    expect(viewStub.setState).toBeCalled();
+    expect(viewStub.setState).toHaveBeenCalled();
   });
   it('reset editform for pic', () => {
     viewStub.setState = jest.fn();

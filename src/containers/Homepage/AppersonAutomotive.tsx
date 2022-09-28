@@ -1,22 +1,24 @@
 
-const AppersonAutomotive = (): JSX.Element => (
-  <div className="elevation2 project apperson">
-    <h4>Apperson Automotive</h4>
-    <div>
-      <img
-        alt="Apperson Automotive Home Page"
-        src="../static/imgs/AppersonAutomotive.png"
-      />
-      <br />
-      <a
-        href="https://www.appersonautomotive.com"
-        target="_blank"
-        rel="noreferrer noopener"
-      >
-        appersonautomotive.com
-      </a>
+function AppersonAutomotive(): JSX.Element {
+  return (
+    <div className="elevation2 project apperson">
+      <h4>Apperson Automotive</h4>
+      <div>
+        <img
+          alt="Apperson Automotive Home Page"
+          src="../static/imgs/AppersonAutomotive.png"
+        />
+        <br />
+        <a
+          href="https://www.appersonautomotive.com"
+          target="_blank"
+          rel="noreferrer noopener"
+        >
+          appersonautomotive.com
+        </a>
+      </div>
     </div>
-  </div>
-);
+  );
+}
 
 export default AppersonAutomotive;

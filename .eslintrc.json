@@ -1,16 +1,70 @@
 {
-  "plugins": ["node", "security", "react", "jest", "@typescript-eslint", "json"],
-  "extends": ["airbnb-typescript", "airbnb/hooks", "plugin:security/recommended", "plugin:json/recommended",
-    "plugin:node/recommended", "plugin:jest/recommended", "plugin:@typescript-eslint/recommended"
+  "plugins": [
+    "node",
+    "security",
+    "react",
+    "jest",
+    "@typescript-eslint",
+    "json"
+  ],
+  "extends": [
+    "eslint:recommended",
+    "airbnb",
+    "airbnb-typescript",
+    "airbnb/hooks",
+    "plugin:security/recommended",
+    "plugin:json/recommended",
+    "plugin:node/recommended",
+    "plugin:jest/recommended",
+    "plugin:react/recommended",
+    "plugin:react/jsx-runtime",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:@typescript-eslint/recommended-requiring-type-checking"
   ],
   "rules": {
-    "import/extensions":0,
-    "import/no-extraneous-dependencies":0,
+    "@typescript-eslint/restrict-template-expressions": 0,
+    "@typescript-eslint/no-unsafe-assignment": 0,
+    "@typescript-eslint/unbound-method": 0,
+    "@typescript-eslint/no-unsafe-argument": 0,
+    "@typescript-eslint/no-explicit-any": 0,
+    "@typescript-eslint/no-unsafe-member-access": 0,
+    "@typescript-eslint/no-unsafe-call": 0,
+    "@typescript-eslint/require-await": 0,
+    "@typescript-eslint/no-unsafe-return": 0,
+    "@typescript-eslint/restrict-plus-operands":0,
+    "@typescript-eslint/no-floating-promises":0,
+    "@typescript-eslint/no-misused-promises":0,
+    "react/no-unused-class-component-methods":0,
+    "react/require-default-props":0,
+    "react/no-children-prop":0,
+    "react/prefer-stateless-function":0,
+    "react/default-props-match-prop-types":0,
+    "react/sort-comp":0,
+    "react/no-array-index-key":0,
+    "react/no-unstable-nested-components":0,
+    "react/function-component-definition":0,
+    "react/no-unused-prop-types":0,
+    "react/jsx-props-no-spreading":0,
+    "react/button-has-type":0,
+    "react/void-dom-elements-no-children":0,
+    "no-promise-executor-return":0,
+    "no-param-reassign":0,
+    "class-methods-use-this":0,
+    "react/destructuring-assignment":0,
+    "import/no-import-module-exports":0,
+    "import/extensions": 0,
+    "import/prefer-default-export":0,
+    "import/no-extraneous-dependencies": 0,
     "jest/no-conditional-expect": 0,
-    "react/jsx-filename-extension": [1, {
-      "extensions": ["tsx"]
-    }],
     "react/static-property-placement": 0,
+    "react/jsx-filename-extension": [
+      1,
+      {
+        "extensions": [
+          "tsx"
+        ]
+      }
+    ],
     "node/no-unsupported-features/es-syntax": 0,
     "node/no-missing-import": 0,
     "no-multiple-empty-lines": [
@@ -21,15 +75,24 @@
       }
     ],
     "no-underscore-dangle": 0,
-    "one-var-declaration-per-line": [0, "never"],
-    "one-var": [2, {
-      "var": "never",
-      "let": "always",
-      "const": "never"
-    }],
-    "max-len": ["error", {
-      "code": 150
-    }]
+    "one-var-declaration-per-line": [
+      0,
+      "never"
+    ],
+    "one-var": [
+      2,
+      {
+        "var": "never",
+        "let": "always",
+        "const": "never"
+      }
+    ],
+    "max-len": [
+      "error",
+      {
+        "code": 150
+      }
+    ]
   },
   "env": {
     "jest": true,
@@ -45,7 +108,7 @@
   },
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
-    "ecmaVersion": 11,
+    "ecmaVersion": 13,
     "sourceType": "module",
     "project": "./tsconfig.eslint.json"
   }

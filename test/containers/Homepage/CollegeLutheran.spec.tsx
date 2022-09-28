@@ -2,7 +2,7 @@
 import { shallow } from 'enzyme';
 import CollegeLutheran from '../../../src/containers/Homepage/CollegeLutheran';
 
-const wrapper = shallow<typeof CollegeLutheran>(<CollegeLutheran/>);
+const wrapper = shallow<typeof CollegeLutheran>(<CollegeLutheran />);
 
 describe('CollegeLutheran', () => {
   it('Renders CollegeLutheran', () => {

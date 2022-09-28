@@ -8,20 +8,20 @@ import { ShowTimeButton } from '../../../src/containers/MusicDashboard/ShowTimeB
 describe('AddTime function', () => {
   let wrapper: any;
   beforeEach(() => {
-    wrapper = shallow(<AddTime setFormTime={() => {}} initTime="1:45 am" show={true}/>);
+    wrapper = shallow(<AddTime setFormTime={() => {}} initTime="1:45 am" show />);
   });
-  it('is defined', () => { 
-    expect(AddTime).toBeDefined(); 
+  it('is defined', () => {
+    expect(AddTime).toBeDefined();
     expect(wrapper.find(PersistedTimeKeeper).exists()).toBe(true);
   });
   it('renders correctly', () => { expect(wrapper).toMatchSnapshot(); });
-  it('renders when init time is empty string', ()=>{
-    const wrapper2 = shallow(<AddTime setFormTime={() => {}} initTime="" show={true}/>);
+  it('renders when init time is empty string', () => {
+    const wrapper2 = shallow(<AddTime setFormTime={() => {}} initTime="" show />);
     expect(wrapper2.find(PersistedTimeKeeper).exists()).toBe(true);
     expect(wrapper2).toMatchSnapshot();
   });
-  it('renders when show is false', ()=>{
-    const wrapper3 = shallow(<AddTime setFormTime={() => {}} initTime="1:45 am" show={false}/>);
+  it('renders when show is false', () => {
+    const wrapper3 = shallow(<AddTime setFormTime={() => {}} initTime="1:45 am" show={false} />);
     expect(wrapper3).toMatchSnapshot();
     expect(wrapper3.find(ShowTimeButton).exists()).toBe(true);
   });

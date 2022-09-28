@@ -2,7 +2,7 @@
 import { shallow } from 'enzyme';
 import AppersonAutomotive from '../../../src/containers/Homepage/AppersonAutomotive';
 
-const wrapper = shallow<typeof AppersonAutomotive>(<AppersonAutomotive/>);
+const wrapper = shallow<typeof AppersonAutomotive>(<AppersonAutomotive />);
 
 describe('AppersonAutomotive', () => {
   it('Renders the AppersonAutomotive', () => {

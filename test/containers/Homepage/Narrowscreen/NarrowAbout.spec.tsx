@@ -2,7 +2,7 @@
 import { shallow } from 'enzyme';
 import NarrowAbout from '../../../../src/containers/Homepage/Narrowscreen/NarrowAbout';
 
-const wrapper = shallow<typeof NarrowAbout>(<NarrowAbout/>);
+const wrapper = shallow<typeof NarrowAbout>(<NarrowAbout />);
 
 describe('NarrowAbout', () => {
   it('Renders the NarrowAbout', () => {

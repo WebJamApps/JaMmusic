@@ -147,17 +147,19 @@ describe('Inquiry Form', () => {
     expect(wrapper.find('div.contacted').exists()).toBe(true);
   });
   it('renders CommentsSection and handles onChange', () => {
-    const props = { currentState: {} as InquiryState, comments: '', setState: jest.fn(), validateForm: jest.fn() };
+    const props = {
+      currentState: {} as InquiryState, comments: '', setState: jest.fn(), validateForm: jest.fn(),
+    };
     const commentsSection = renderer.create(<CommentsSection {...props} />).root;
     commentsSection.findByProps({ className: 'comments' }).props.onChange({ target: { value: 'good' } });
     expect(props.validateForm).toHaveBeenCalled();
   });
   it('renders FormActions and handles click', () => {
     const props = {
-      currentState:{} as InquiryState, createEmail: jest.fn(),
+      currentState: {} as InquiryState, createEmail: jest.fn(),
     };
     const formActions = renderer.create(<FormActions {...props} />).root;
-    formActions.findByProps({ id:'sendEmailButton' }).props.onClick();
+    formActions.findByProps({ id: 'sendEmailButton' }).props.onClick();
     expect(props.createEmail).toHaveBeenCalled();
   });
 });

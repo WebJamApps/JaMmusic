@@ -2,7 +2,7 @@
 
 import { shallow } from 'enzyme';
 import env from 'dotenv';
-import { App } from 'src/App';
+import { App, defaultDispatch } from 'src/App';
 
 env.config();
 describe('App component', () => {
@@ -40,5 +40,8 @@ describe('App component', () => {
   it('doesn\'t render Google Map API when localhost null', () => {
     delete process.env.BackendUrl;
     expect(wrapper.instance().loadMap()).toBe(null);
+  });
+  it('defaultDispatch', () => {
+    expect(defaultDispatch({})).toBeUndefined();
   });
 });

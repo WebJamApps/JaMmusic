@@ -129,15 +129,17 @@ export class MusicDashboard extends Component<MusicDashboardProps, MusicDashboar
   handleRadioChange(evt: { target: { value: string } }): void {
     this.setState({ showCaption: evt.target.value });
     const { dispatch } = this.props;
-    dispatch({ type: 'EDIT_PIC', data: { ...this.props.editPic, comments:evt.target.value } });
+    dispatch({ type: 'EDIT_PIC', data: { ...this.props.editPic, comments: evt.target.value } });
   }
 
   // eslint-disable-next-line class-methods-use-this
-  fixDate(date: string,
+  fixDate(
+    date: string,
     editTour: {
       date?: string; time?: string; tickets?: string; more?: string;
       venue?: string; location?: string; _id?: string; datetime?: string;
-    }): string {
+    },
+  ): string {
     let newDate = date;
     // eslint-disable-next-line prefer-destructuring
     if (date === '' && editTour.datetime !== undefined) newDate = editTour.datetime.split('T')[0];

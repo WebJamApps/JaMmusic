@@ -1,20 +1,40 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-export const TextField = (props:any) => <input {...props}>{props.children}</input>;
+export function TextField(props:any) {
+  return <input {...props}>{props.children}</input>;
+}
 
-export const TextareaAutosize = (props:any) => <input {...props}>{props.children}</input>;
+export function TextareaAutosize(props:any) {
+  return <input {...props}>{props.children}</input>;
+}
 
-export const Button = (props:any) => <button {...props}>{props.children}</button>;
+export function Button(props:any) {
+  return <button {...props}>{props.children}</button>;
+}
 
-export const Dialog = (props:any) => <div {...props}>{props.children}</div>;
+export function Dialog(props:any) {
+  return <div {...props}>{props.children}</div>;
+}
 
-export const DialogActions = (props:any) => <div {...props}>{props.children}</div>;
+export function DialogActions(props:any) {
+  return <div {...props}>{props.children}</div>;
+}
 
-export const DialogContentText = (props:any) => <div {...props}>{props.children}</div>;
+export function DialogContentText(props:any) {
+  return <div {...props}>{props.children}</div>;
+}
 
-export const DialogContent = (props:any) => <div {...props}>{props.children}</div>;
+export function DialogContent(props:any) {
+  return <div {...props}>{props.children}</div>;
+}
 
-export const DialogTitle = (props:any) => <div {...props}>{props.children}</div>;
+export function DialogTitle(props:any) {
+  return <div {...props}>{props.children}</div>;
+}
 
-export const IconButton = (props:any) => <button {...props}>{props.children}</button>;
+export function IconButton(props:any) {
+  return <button {...props}>{props.children}</button>;
+}
 
-export const Tooltip = (props:any) => <div {...props}>{props.children}</div>;
+export function Tooltip(props:any) {
+  return <div {...props}>{props.children}</div>;
+}

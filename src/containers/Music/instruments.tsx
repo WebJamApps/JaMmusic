@@ -1,5 +1,5 @@
 
-const Instruments = (props: { type: string }): JSX.Element => {
+function Instruments(props: { type: string }): JSX.Element {
   const { type } = props;
   return (
     <ol className="instruments">
@@ -25,6 +25,6 @@ const Instruments = (props: { type: string }): JSX.Element => {
         )}
     </ol>
   );
-};
+}
 
 export default Instruments;

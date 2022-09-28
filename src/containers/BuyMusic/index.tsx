@@ -17,7 +17,8 @@ export default class BuyMusic extends Component {
 
   render(): JSX.Element {
     return (
-      <div className="page-content"
+      <div
+        className="page-content"
         style={{
           paddingRight: '15px', maxWidth: '800px', margin: 'auto', borderRight: 'none',
         }}
@@ -37,10 +38,10 @@ export default class BuyMusic extends Component {
             <Jss />
           </div>
         </div>
-        <div style={{ margin: 'auto', textAlign: 'center', marginTop:'50px' }}>
+        <div style={{ margin: 'auto', textAlign: 'center', marginTop: '50px' }}>
           <Jssp />
         </div>
-        <div style={{ textAlign:'center' }}>
+        <div style={{ textAlign: 'center' }}>
           <Jsyt />
         </div>
       </div>

@@ -1,6 +1,6 @@
 import commonUtils from '../../src/lib/commonUtils';
 
-describe('forms', () => {
+describe('commonUtils', () => {
   it('calls scrollIntoView', () => {
     const scrollIntoViewMock = jest.fn();
     window.HTMLElement.prototype.scrollIntoView = scrollIntoViewMock;
@@ -8,4 +8,10 @@ describe('forms', () => {
     commonUtils.setTitleAndScroll('home', 1200);
     expect(scrollIntoViewMock).toHaveBeenCalled();
   });
+  it('runs delay', async () => {
+    jest.useRealTimers();
+    jest.spyOn(global, 'setTimeout');
+    await commonUtils.delay(0.0001);
+    expect(setTimeout).toHaveBeenCalledTimes(1);
+  }, 15000);
 });

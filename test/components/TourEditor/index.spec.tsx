@@ -15,7 +15,7 @@ describe('TourEditor', () => {
   const scc:any = { transmit: () => { } };
   beforeEach(() => {
     wrapper = shallow<MusicDashboard>(<MusicDashboard
-      auth={auth as Auth}
+      auth={auth}
       scc={scc}
       dispatch={jest.fn()}
       editTour={anyProp}
@@ -38,7 +38,7 @@ describe('TourEditor', () => {
   it('handles onChange with editTour', () => {
     const wrapper2 = shallow<MusicDashboard>(
       <MusicDashboard
-        auth={auth as Auth}
+        auth={auth}
         scc={scc}
         dispatch={jest.fn()}
         editTour={{ venue: 'wjllc' }}

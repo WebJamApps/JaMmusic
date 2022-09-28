@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable class-methods-use-this, max-classes-per-file,  */
 import { shallow, ShallowWrapper } from 'enzyme';
-import GoogleMap from '../../../src/containers/GoogleMap';
+import GoogleMap, { equals } from '../../../src/containers/GoogleMap';
 
 describe('GoogleMap container', () => {
   let lType = '', wrapper: ShallowWrapper<Readonly<any> & Readonly<{ children?: React.ReactNode; }>, Readonly<any>, GoogleMap>;
@@ -29,5 +29,8 @@ describe('GoogleMap container', () => {
     document.body.innerHTML = '<div></div>';
     const wrapper2 = shallow<GoogleMap>(<GoogleMap />);
     expect(wrapper2.instance().gMap).toBe(null);
+  });
+  it('equals returns true', () => {
+    expect(equals()).toBe(true);
   });
 });

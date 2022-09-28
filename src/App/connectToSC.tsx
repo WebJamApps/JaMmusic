@@ -1,9 +1,13 @@
 import scc from 'socketcluster-client';
 import type { Dispatch } from 'react';
 
-const listenForMessages = (socket: scc.AGClientSocket,
-  method: string, name: string, type: string,
-  dispatch: Dispatch<unknown>): void => {
+const listenForMessages = (
+  socket: scc.AGClientSocket,
+  method: string,
+  name: string,
+  type: string,
+  dispatch: Dispatch<unknown>,
+): void => {
   (async () => {
     let receiver;
     const consumer = method === 'subscribe' ? socket.subscribe(name).createConsumer() : socket.receiver(name).createConsumer();
