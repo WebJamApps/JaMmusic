@@ -8,14 +8,14 @@ export function ActiveUsers({ heartBeat, userCount }: { heartBeat: string, userC
   return (
     <div className="active-users">
       <div>
-        <button
+        {/* <button
           type="button"
           style={{
             cursor: 'none', marginLeft: '10px', height: '20px', width: '20px', marginTop: '10px', backgroundColor: heartBeat,
           }}
         >
           {' '}
-        </button>
+        </button> */}
       </div>
       <div className="active-users-text" style={{ paddingLeft: '10px', marginTop: '8px' }}>
         <i>Active Users</i>
