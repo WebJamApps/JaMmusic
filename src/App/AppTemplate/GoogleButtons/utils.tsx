@@ -20,7 +20,6 @@ const setUserRedux = async (
   const user = await superagent.get(`${process.env.BackendUrl}/user/${userId}`)
     .set('Accept', 'application/json').set('Authorization', `Bearer ${token}`);
   dispatch({ type: 'SET_USER', data: user.body });
-  window.location.reload();
 };
 
 const setUser = async (dispatch: Dispatch<unknown>, token:string): Promise<void> => {
