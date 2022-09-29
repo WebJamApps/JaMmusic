@@ -19,7 +19,7 @@ const setUserRedux = async (
 ) => {
   const user = await superagent.get(`${process.env.BackendUrl}/user/${userId}`)
     .set('Accept', 'application/json').set('Authorization', `Bearer ${token}`);
-  dispatch({ type: 'SET_USER', data: user.body });
+  dispatch({ type: 'SET_USER', data: user.body, token });
 };
 
 const setUser = async (dispatch: Dispatch<unknown>, token:string): Promise<void> => {
@@ -27,18 +27,11 @@ const setUser = async (dispatch: Dispatch<unknown>, token:string): Promise<void>
   await setUserRedux(dispatch, token, sub);
 };
 
-const gotToken = (doc: unknown): { type: string; data: unknown } => ({
-  type: 'GOT_TOKEN',
-  data: doc,
-});
-
 const authenticate = async (
   googleBody: GoogleBody,
-  dispatch:Dispatch<unknown>,
 ): Promise<{ token:string, email:string }> => {
   const { body } = await superagent.post(`${process.env.BackendUrl}/user/auth/google`)
     .set({ Accept: 'application/json' }).send(googleBody);
-  dispatch(gotToken(body));
   return body;
 };
 
@@ -62,7 +55,7 @@ const responseGoogleLogin = async (
       code: `${response.code}`,
       state: makeState(),
     };
-    const { token } = await authenticate(body, dispatch);
+    const { token } = await authenticate(body);
     await setUser(dispatch, token);
   } catch (e) {
     const eMessage = (e as Error).message;
