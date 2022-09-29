@@ -12,32 +12,6 @@ describe('auth reducer', () => {
       },
     );
   });
-  it('handles GOT_TOKEN', () => {
-    expect(
-      reducer(undefined as any, { type: 'GOT_TOKEN', data: { email: 'j@b.com', token: '123' } }),
-    ).toEqual(
-      {
-        isAuthenticated: true,
-        error: '',
-        email: 'j@b.com',
-        token: '123',
-        user: { userType: '' },
-      },
-    );
-  });
-  it('handles GOT_TOKEN with undefined data', () => {
-    expect(
-      reducer(undefined as any, { type: 'GOT_TOKEN', data: undefined }),
-    ).toEqual(
-      {
-        isAuthenticated: true,
-        error: '',
-        email: '',
-        token: '',
-        user: { userType: '' },
-      },
-    );
-  });
   it('handles LOGOUT', () => {
     expect(
       reducer(undefined as any, { type: 'LOGOUT' }),
@@ -85,15 +59,16 @@ describe('auth reducer', () => {
     expect(
       reducer(undefined as any, {
         type: 'SET_USER',
-        data: { name: 'Justin Bieber' },
+        data: { name: 'Justin Bieber', email: 'j@b.com' },
+        token: 'token',
       }),
     ).toEqual(
       {
-        isAuthenticated: false,
+        isAuthenticated: true,
         error: '',
-        email: '',
-        token: '',
-        user: { name: 'Justin Bieber' },
+        email: 'j@b.com',
+        token: 'token',
+        user: { name: 'Justin Bieber', email: 'j@b.com' },
       },
     );
   });

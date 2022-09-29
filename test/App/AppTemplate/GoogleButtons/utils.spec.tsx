@@ -12,7 +12,6 @@ describe('GoogleButtons/utils', () => {
     expect(window.location.assign).toHaveBeenCalledWith('/');
   });
   it('responseGoogleLogin', async () => {
-    window.location.reload = jest.fn();
     const dispatch = jest.fn();
     const vMock:any = jest.fn(() => ({ sub: '' }));
     jwt.verify = vMock;
@@ -21,7 +20,7 @@ describe('GoogleButtons/utils', () => {
     superagent.post = postMock;
     superagent.get = getMock;
     await utils.responseGoogleLogin({ code: '' } as any, dispatch);
-    expect(window.location.reload).toHaveBeenCalled();
+    expect(jwt.verify).toHaveBeenCalled();
   });
   it('responseGoogleLogin failes', async () => {
     window.location.reload = jest.fn();
