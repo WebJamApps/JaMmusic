@@ -31,7 +31,7 @@ const connectToSCC = (dispatch: Dispatch<unknown>): boolean => {
   listenForMessages(socket, 'subscribe', 'tourUpdated', 'UPDATED_TOUR', dispatch);
   listenForMessages(socket, 'receiver', 'allTours', 'ALL_TOUR', dispatch);
   listenForMessages(socket, 'receiver', 'allBooks', 'FETCHED_IMAGES', dispatch);
-  listenForMessages(socket, 'receiver', 'pulse', 'SC_HEARTBEAT', dispatch);
+  // listenForMessages(socket, 'receiver', 'pulse', 'SC_HEARTBEAT', dispatch);
   listenForMessages(socket, 'receiver', 'num_clients', 'NUM_USERS', dispatch);
   listenForMessages(socket, 'subscribe', 'sample', 'NUM_USERS', dispatch);
   return true;

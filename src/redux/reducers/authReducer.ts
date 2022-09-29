@@ -22,7 +22,7 @@ const reducer = (
       };
     case 'SET_USER':
       return {
-        ...state, isAuthenticated: true, email: action.data?.email, token: action.token, user: action.data,
+        error: '', isAuthenticated: true, email: action.data?.email, token: action.token, user: action.data,
       };
     default:
       return initialState;
