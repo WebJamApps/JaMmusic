@@ -53,21 +53,21 @@ describe('SideMenuItem', () => {
     const result: any = continueMenuItem({ type: 'googleLogout' } as ImenuItem, 1, { isAuthenticated: true } as Auth, '', jest.fn(), jest.fn());
     expect(result.key).toBe('googleLogout');
   });
-  // it('clears storage when clicking on menu items from joshandmariamusic', () => {
-  //   localStorage.clear = jest.fn();
-  //   sessionStorage.clear = jest.fn();
-  //   const props = {
-  //     index: 1,
-  //     auth: { isAuthenticated: false, user: { userType: 'joker' } } as Auth,
-  //     location: { pathname: '/' } as RouteComponentProps['location'],
-  //     menu: {
-  //       nav: 'jam', auth: false, link: '/songs', name: 'Songs',
-  //     } as ImenuItem,
-  //     dispatch: jest.fn(),
-  //     handleClose: jest.fn(),
-  //   };
-  //   const smi: any = renderer.create(<BrowserRouter><SideMenuItem {...props} /></BrowserRouter>).root;
-  //   const result = smi.findByProps({ type: 'Link' }).props.handleClose();
-  //   expect(result).toBe('cleared');
-  // });
+  it('clears storage when clicking on menu items from joshandmariamusic', () => {
+    localStorage.clear = jest.fn();
+    sessionStorage.clear = jest.fn();
+    const props = {
+      index: 1,
+      auth: { isAuthenticated: false, user: { userType: 'joker' } } as Auth,
+      location: { pathname: '/' } as RouteComponentProps['location'],
+      menu: {
+        nav: 'jam', auth: false, link: '/songs', name: 'Songs',
+      } as ImenuItem,
+      dispatch: jest.fn(),
+      handleClose: jest.fn(),
+    };
+    const smi: any = renderer.create(<BrowserRouter><SideMenuItem {...props} /></BrowserRouter>).root;
+    const result = smi.findByProps({ type: 'Link' }).props.handleClose();
+    expect(result).toBe('cleared');
+  });
 });
