@@ -122,7 +122,7 @@
     "sass": "^1.35.2",
     "sass-loader": "^13.0.2",
     "slick-carousel": "^1.8.1",
-    "snyk": "^1.667.0",
+    "snyk": "^1.996.0",
     "socketcluster-client": "^16.0.3",
     "source-map-loader": "^4.0.0",
     "stream-browserify": "^3.0.0",
