@@ -3,6 +3,7 @@ import Jsb from './BuyLinks/joshShermanBand';
 import Jss from './BuyLinks/joshShermanSolo';
 import Jsyt from './MediaLinks/joshShermanYoutube';
 import Jssp from './MediaLinks/joshShermanSpotify';
+import Jsam from './MediaLinks/joshShermanApple';
 import commonUtils from '../../lib/commonUtils';
 
 export default class BuyMusic extends Component {
@@ -38,11 +39,20 @@ export default class BuyMusic extends Component {
             <Jss />
           </div>
         </div>
-        <div style={{ margin: 'auto', textAlign: 'center', marginTop: '50px' }}>
-          <Jssp />
+        <div className="col">
+          <div style={{ margin: 'auto', textAlign: 'center', marginTop: '50px' }}>
+            <Jssp />
+          </div>
         </div>
-        <div style={{ textAlign: 'center' }}>
-          <Jsyt />
+        <div className="col">
+          <div style={{ textAlign: 'center' }}>
+            <Jsyt />
+          </div>
+        </div>
+        <div className="col">
+          <div style={{ textAlign: 'center' }}>
+            <Jsam />
+          </div>
         </div>
       </div>
     );
