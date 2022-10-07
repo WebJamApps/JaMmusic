@@ -8,6 +8,7 @@ import {
   Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, TextField, Tooltip,
 } from '@mui/material';
 import { Add as AddIcon } from '@mui/icons-material';
+import { Editor } from '@tinymce/tinymce-react';
 import { DataContext, IGig } from 'src/providers/Data.provider';
 import HtmlReactParser from 'html-react-parser';
 import { defaultGig } from 'src/providers/fetchGigs';
@@ -84,6 +85,7 @@ export function Gigs({ isAdmin }: { isAdmin: boolean }): JSX.Element {
   const now = new Date() as Date | null;
   const [dateTime, setDateTime] = useState(now);
   const [pageSize, setPageSize] = useState(5);
+  const [venue, setVenue] = useState('');
   useEffect(() => orderGigs(gigs, setGigsInOrder, setPageSize), [gigs]);
   return (
     <div className="gigsDiv" style={{ margin: 'auto', padding: '10px', width: '100%' }}>
@@ -119,7 +121,7 @@ export function Gigs({ isAdmin }: { isAdmin: boolean }): JSX.Element {
         onClose={() => { setShowDialog(false); return false; }}
       >
         <DialogTitle>Create New Gig</DialogTitle>
-        <DialogContent>
+        <DialogContent sx={{ padding: '10px 10px' }}>
           <DialogContentText sx={{ marginBottom: '30px' }}>
             Enter all *required fields to create a new gig.
           </DialogContentText>
@@ -131,6 +133,26 @@ export function Gigs({ isAdmin }: { isAdmin: boolean }): JSX.Element {
               renderInput={(params) => <TextField className="dateTimeInput" {...params} />}
             />
           </LocalizationProvider>
+          <p style={{ fontSize: '9pt', marginBottom: '0px' }}>* Venue</p>
+          <Editor
+            value={venue}
+            apiKey={process.env.TINY_KEY}
+            init={{
+              height: 500,
+              menubar: 'insert tools',
+              menu: { format: { title: 'Format', items: 'forecolor backcolor' } },
+              plugins: [
+                'advlist autolink lists link image charmap print preview anchor',
+                'searchreplace visualblocks code fullscreen',
+                'insertdatetime media table paste code help wordcount',
+              ],
+              toolbar:
+            'undo redo | formatselect | bold italic backcolor forecolor |'
+            + 'alignleft aligncenter alignright alignjustify |'
+            + 'bullist numlist outdent indent | removeformat | help',
+            }}
+            onEditorChange={(evt) => setVenue(evt)}
+          />
           <TextField
             autoFocus
             margin="dense"
@@ -143,12 +165,14 @@ export function Gigs({ isAdmin }: { isAdmin: boolean }): JSX.Element {
         </DialogContent>
         <DialogActions>
           <Button
+            size="small"
             className="cancelButton"
             onClick={() => { setShowDialog(false); return false; }}
           >
             Cancel
           </Button>
           <Button
+            size="small"
             variant="contained"
             onClick={() => { console.log('run create call'); return 'create'; }}
           >
