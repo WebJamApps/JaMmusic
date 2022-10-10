@@ -78,6 +78,10 @@ export const orderGigs = (gigs: IGig[], setGigsInOrder: { (arg0: IGig[]): void; 
   setPageSize(futureGigs.length - 1 > 5 ? futureGigs.length - 1 : 5);
 };
 
+export const createGig = async (dateTime: Date | null, venue:string, city:string, usState:string, tickets:string) => {
+  console.log('createGig');
+};
+
 export function Gigs({ isAdmin }: { isAdmin: boolean }): JSX.Element {
   const [showDialog, setShowDialog] = useState(false);
   const { gigs } = useContext(DataContext);
@@ -86,7 +90,15 @@ export function Gigs({ isAdmin }: { isAdmin: boolean }): JSX.Element {
   const [dateTime, setDateTime] = useState(now);
   const [pageSize, setPageSize] = useState(5);
   const [venue, setVenue] = useState('');
+  const [city, setCity] = useState('');
+  const [usState, setUSstate] = useState('');
+  const [tickets, setTickets] = useState('');
   useEffect(() => orderGigs(gigs, setGigsInOrder, setPageSize), [gigs]);
+  const checkDisabled = () => {
+    let isDisabled = true;
+    if (city && usState && dateTime && venue) isDisabled = false;
+    return isDisabled;
+  };
   return (
     <div className="gigsDiv" style={{ margin: 'auto', padding: '10px', width: '100%' }}>
       <h4 style={{ textAlign: 'center' }}>
@@ -156,11 +168,32 @@ export function Gigs({ isAdmin }: { isAdmin: boolean }): JSX.Element {
           <TextField
             autoFocus
             margin="dense"
+            id="city"
+            label="* City"
+            type="text"
+            fullWidth
+            variant="standard"
+            onChange={(evt) => setCity(evt.target.value)}
+          />
+          <TextField
+            autoFocus
+            margin="dense"
+            id="state"
+            label="* State"
+            type="text"
+            fullWidth
+            variant="standard"
+            onChange={(evt) => setUSstate(evt.target.value)}
+          />
+          <TextField
+            autoFocus
+            margin="dense"
             id="tickets"
             label="Tickets"
             type="text"
             fullWidth
             variant="standard"
+            onChange={(evt) => setTickets(evt.target.value)}
           />
         </DialogContent>
         <DialogActions>
@@ -172,9 +205,10 @@ export function Gigs({ isAdmin }: { isAdmin: boolean }): JSX.Element {
             Cancel
           </Button>
           <Button
+            disabled={checkDisabled()}
             size="small"
             variant="contained"
-            onClick={() => { console.log('run create call'); return 'create'; }}
+            onClick={() => createGig(dateTime, venue, city, usState, tickets)}
           >
             Create
           </Button>
