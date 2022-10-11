@@ -5,7 +5,8 @@ import {
   DataGrid, GridColumns, GridEnrichedColDef, GridRenderCellParams,
 } from '@mui/x-data-grid';
 import {
-  Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, TextField, Tooltip,
+  Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle,
+  FormControl, IconButton, InputLabel, MenuItem, Select, TextField, Tooltip,
 } from '@mui/material';
 import { Add as AddIcon } from '@mui/icons-material';
 import { Editor } from '@tinymce/tinymce-react';
@@ -13,6 +14,9 @@ import { DataContext, IGig } from 'src/providers/Data.provider';
 import HtmlReactParser from 'html-react-parser';
 import { defaultGig } from 'src/providers/fetchGigs';
 import './Gigs.scss';
+
+// eslint-disable-next-line max-len
+const usStateOptions = ['Alabama', 'Alaska', 'American Samoa', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'District of Columbia', 'Federated States of Micronesia', 'Florida', 'Georgia', 'Guam', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Marshall Islands', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Northern Mariana Islands', 'Ohio', 'Oklahoma', 'Oregon', 'Palau', 'Pennsylvania', 'Puerto Rico', 'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virgin Island', 'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'];
 
 export const makeVenueValue = (value: string) => {
   const parsed = HtmlReactParser(value);
@@ -167,7 +171,7 @@ export function Gigs({ isAdmin }: { isAdmin: boolean }): JSX.Element {
           />
           <TextField
             autoFocus
-            margin="dense"
+            margin="normal"
             id="city"
             label="* City"
             type="text"
@@ -175,16 +179,18 @@ export function Gigs({ isAdmin }: { isAdmin: boolean }): JSX.Element {
             variant="standard"
             onChange={(evt) => setCity(evt.target.value)}
           />
-          <TextField
-            autoFocus
-            margin="dense"
-            id="state"
-            label="* State"
-            type="text"
-            fullWidth
-            variant="standard"
-            onChange={(evt) => setUSstate(evt.target.value)}
-          />
+          <FormControl fullWidth sx={{ marginTop: '20px' }}>
+            <InputLabel id="select-us-state-label">* State</InputLabel>
+            <Select
+              labelId="select-us-state-label"
+              id="select-us-state"
+              value={usState || 'Virginia'}
+              label="* State"
+              onChange={(evt) => setUSstate(evt.target.value)}
+            >
+              {usStateOptions.map((s:string) => <MenuItem key={s} value={s}>{s}</MenuItem>)}
+            </Select>
+          </FormControl>
           <TextField
             autoFocus
             margin="dense"
