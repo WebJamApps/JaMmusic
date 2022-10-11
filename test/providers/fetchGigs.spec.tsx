@@ -1,10 +1,9 @@
 import fetchGigs, { defaultGig } from '../../src/providers/fetchGigs';
 
 describe('fetchGigs', () => {
-  it('getGigs runs setGigs', async () => {
+  it('getGigs runs setGigs', () => {
     const setGigs = jest.fn();
-    await fetchGigs.getGigs(setGigs);
-    expect(setGigs).toHaveBeenCalled();
+    expect(fetchGigs.getGigs(setGigs)).toBe(true);
   });
   it('validateGigsArr', () => {
     const setGigs = jest.fn();

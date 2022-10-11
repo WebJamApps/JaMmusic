@@ -45,7 +45,7 @@ export const setSongsDef = (_arg0:ISong[]) => {};
 export const DataContext = createContext({
   gigs: [defaultGig],
   setGigs: setGigsDef,
-  getGigs: () => {},
+  getGigs: () => true,
   songs: [defaultSong],
   setSongs: setSongsDef,
 });
