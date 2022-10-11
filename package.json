@@ -78,6 +78,7 @@
     "@types/webpack-bundle-analyzer": "^4.4.2",
     "@types/webpack-env": "1.18.0",
     "@wojtekmaj/enzyme-adapter-react-17": "latest",
+    "axios": "^1.1.2",
     "bootstrap": "^5.2.0",
     "copy-webpack-plugin": "^11.0.0",
     "core-js": "^3.8.0",

@@ -1,4 +1,5 @@
 import { useContext, useEffect, useState } from 'react';
+import scc from 'socketcluster-client';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DateTimePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import {
@@ -28,29 +29,35 @@ export const makeVenue = (): GridEnrichedColDef => (
   {
     field: 'venue',
     headerName: 'Venue',
-    width: 600,
+    minWidth: 400,
+    flex: 1,
     editable: false,
     renderCell: (params: GridRenderCellParams) => makeVenueValue(params.value),
   }
 );
 
+export const makeDateValue = (datetime:string) => new Date(datetime).toLocaleString().split(',')[0];
+export const makeTimeValue = (datetime:string) => new Date(datetime).toLocaleString().split(',')[1];
+
 export const columns: GridColumns = [
   {
     field: 'date',
     headerName: 'Date',
-    width: 150,
+    width: 120,
     editable: false,
+    renderCell: (params: GridRenderCellParams) => makeDateValue(params.row.datetime),
   },
   {
     field: 'time',
     headerName: 'Time',
-    width: 150,
+    width: 120,
     editable: false,
+    renderCell: (params: GridRenderCellParams) => makeTimeValue(params.row.datetime),
   },
   {
     field: 'location',
     headerName: 'Location',
-    minWidth: 150,
+    minWidth: 200,
     flex: 1,
     editable: false,
   },
@@ -82,22 +89,48 @@ export const orderGigs = (gigs: IGig[], setGigsInOrder: { (arg0: IGig[]): void; 
   setPageSize(futureGigs.length - 1 > 5 ? futureGigs.length - 1 : 5);
 };
 
-export const createGig = async (dateTime: Date | null, venue:string, city:string, usState:string, tickets:string) => {
-  console.log('createGig');
+export const createGig = async (
+  getGigs: () => void,
+  setShowDialog: (arg0: boolean) => void,
+  datetime: Date | null,
+  venue: string,
+  city: string,
+  usState: string,
+  tickets: string,
+) => {
+  try {
+    const persistRoot = sessionStorage.getItem('persist:root') || '';
+    const { auth } = JSON.parse(persistRoot);
+    const { token } = JSON.parse(auth);
+    const tour = {
+      datetime, venue, tickets, location: `${city}, ${usState}`,
+    };
+    console.log('createGig');
+    const socket = scc.create({
+      hostname: process.env.SCS_HOST,
+      port: Number(process.env.SCS_PORT),
+      autoConnect: true,
+      secure: process.env.SOCKETCLUSTER_SECURE !== 'false',
+    });
+    console.log(token);
+    socket.transmit('newTour', { tour, token });
+    setShowDialog(false);
+    getGigs();
+  } catch (err) { console.log((err as Error).message); }
 };
 
 export function Gigs({ isAdmin }: { isAdmin: boolean }): JSX.Element {
   const [showDialog, setShowDialog] = useState(false);
-  const { gigs } = useContext(DataContext);
+  const { gigs, getGigs } = useContext(DataContext);
   const [gigsInOrder, setGigsInOrder] = useState(gigs);
   const now = new Date() as Date | null;
   const [dateTime, setDateTime] = useState(now);
   const [pageSize, setPageSize] = useState(5);
   const [venue, setVenue] = useState('');
   const [city, setCity] = useState('');
-  const [usState, setUSstate] = useState('');
+  const [usState, setUSstate] = useState('Virginia');
   const [tickets, setTickets] = useState('');
-  useEffect(() => orderGigs(gigs, setGigsInOrder, setPageSize), [gigs]);
+  useEffect(() => { orderGigs(gigs, setGigsInOrder, setPageSize); console.log(gigs[0]); }, [gigs]);
   const checkDisabled = () => {
     let isDisabled = true;
     if (city && usState && dateTime && venue) isDisabled = false;
@@ -163,9 +196,9 @@ export function Gigs({ isAdmin }: { isAdmin: boolean }): JSX.Element {
                 'insertdatetime media table paste code help wordcount',
               ],
               toolbar:
-            'undo redo | formatselect | bold italic backcolor forecolor |'
-            + 'alignleft aligncenter alignright alignjustify |'
-            + 'bullist numlist outdent indent | removeformat | help',
+                'undo redo | formatselect | bold italic backcolor forecolor |'
+                + 'alignleft aligncenter alignright alignjustify |'
+                + 'bullist numlist outdent indent | removeformat | help',
             }}
             onEditorChange={(evt) => setVenue(evt)}
           />
@@ -188,7 +221,7 @@ export function Gigs({ isAdmin }: { isAdmin: boolean }): JSX.Element {
               label="* State"
               onChange={(evt) => setUSstate(evt.target.value)}
             >
-              {usStateOptions.map((s:string) => <MenuItem key={s} value={s}>{s}</MenuItem>)}
+              {usStateOptions.map((s: string) => <MenuItem key={s} value={s}>{s}</MenuItem>)}
             </Select>
           </FormControl>
           <TextField
@@ -214,7 +247,7 @@ export function Gigs({ isAdmin }: { isAdmin: boolean }): JSX.Element {
             disabled={checkDisabled()}
             size="small"
             variant="contained"
-            onClick={() => createGig(dateTime, venue, city, usState, tickets)}
+            onClick={() => createGig(getGigs, setShowDialog, dateTime, venue, city, usState, tickets)}
           >
             Create
           </Button>

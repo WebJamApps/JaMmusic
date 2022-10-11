@@ -45,6 +45,7 @@ export const setSongsDef = (_arg0:ISong[]) => {};
 export const DataContext = createContext({
   gigs: [defaultGig],
   setGigs: setGigsDef,
+  getGigs: () => {},
   songs: [defaultSong],
   setSongs: setSongsDef,
 });
@@ -55,7 +56,7 @@ export function DataProvider({ children }: { children: ReactChild }): JSX.Elemen
   const Provider = MakeProvider({ Context: DataContext, fetches: [fetchGigs.getGigs, fetchSongs.getSongs], setters: [setGigs, setSongs] });
   return (
     <Provider value={{
-      gigs, setGigs, songs, setSongs,
+      gigs, setGigs, getGigs: () => fetchGigs.getGigs(setGigs), songs, setSongs,
     }}
     >
       {children}

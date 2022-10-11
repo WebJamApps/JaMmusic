@@ -36,7 +36,7 @@ const listenForGigs = (
   })();
 };
 
-const getGigs = async (setGigs: (_arg0: IGig[]) => void): Promise<void> => {
+const getGigs = (setGigs: (_arg0: IGig[]) => void): void => {
   const socket = scc.create({
     hostname: process.env.SCS_HOST,
     port: Number(process.env.SCS_PORT),
