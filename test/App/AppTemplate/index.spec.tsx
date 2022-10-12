@@ -7,7 +7,7 @@ describe('AppTemplate', () => {
     const props = {
       dispatch: jest.fn(),
       auth: {
-        isAuthenticated: false, token: '', error: '', email: '', user: { userType: '' },
+        isAuthenticated: false, token: '', error: '', user: { userType: '', email: '' },
       },
       userCount: 0,
       heartBeat: 'white',

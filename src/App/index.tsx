@@ -20,7 +20,7 @@ export const defaultDispatch:Dispatch<unknown> = (_arg0: any): void => { };
 const defaultProps = {
   dispatch: defaultDispatch,
   auth: {
-    isAuthenticated: false, token: '', error: '', email: '', user: { userType: '' },
+    isAuthenticated: false, token: '', error: '', user: { userType: '', email: '' },
   },
   userCount: 0,
   heartBeat: 'white',
@@ -44,7 +44,7 @@ export class App extends Component<AppProps> {
     songs: [],
     images: [],
     auth: {
-      isAuthenticated: false, token: '', error: '', email: '', user: { userType: '' },
+      isAuthenticated: false, token: '', error: '', user: { userType: '', email: '' },
     },
     showMap: false,
   };

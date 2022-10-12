@@ -4,10 +4,10 @@ import type { ISong } from '../providers/Data.provider';
 export interface Auth {
   isAuthenticated: boolean,
   error: string,
-  email: string,
   token: string,
   user: {
     userType: string;
+    email: string,
   };
 }
 export interface Tour {
