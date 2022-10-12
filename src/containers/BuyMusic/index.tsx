@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import { Component } from 'react';
 import Jsb from './BuyLinks/joshShermanBand';
 import Jss from './BuyLinks/joshShermanSolo';
 import Jsyt from './MediaLinks/joshShermanYoutube';
@@ -31,29 +31,12 @@ export default class BuyMusic extends Component {
           Buy from CD Baby
         </h2>
         <div className="row top-row-style">
-          <div className="col">
-            <Jsb />
-          </div>
-          <p style={{ fontSize: '8pt' }}>{' '}</p>
-          <div className="col">
-            <Jss />
-          </div>
+          <Jsb />
+          <Jss />
         </div>
-        <div className="col">
-          <div style={{ margin: 'auto', textAlign: 'center', marginTop: '50px' }}>
-            <Jssp />
-          </div>
-        </div>
-        <div className="col">
-          <div style={{ textAlign: 'center' }}>
-            <Jsyt />
-          </div>
-        </div>
-        <div className="col">
-          <div style={{ textAlign: 'center' }}>
-            <Jsam />
-          </div>
-        </div>
+        <Jssp />
+        <Jsyt />
+        <Jsam />
       </div>
     );
   }
