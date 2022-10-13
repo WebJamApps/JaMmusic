@@ -42,21 +42,26 @@ export const setGigsDef = (_arg0:IGig[]) => {};
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const setSongsDef = (_arg0:ISong[]) => {};
 
+export const getGigsDef = () => true;
+
 export const DataContext = createContext({
   gigs: [defaultGig],
   setGigs: setGigsDef,
-  getGigs: () => true,
+  getGigs: getGigsDef,
   songs: [defaultSong],
   setSongs: setSongsDef,
 });
 
+export const makeGetGigs = (setGigs: (arg0: IGig[]) => void) => () => fetchGigs.getGigs(setGigs);
+
 export function DataProvider({ children }: { children: ReactChild }): JSX.Element {
   const [gigs, setGigs] = useGigsState([defaultGig]);
   const [songs, setSongs] = useSongsState([defaultSong]);
+  const getGigs = makeGetGigs(setGigs);
   const Provider = MakeProvider({ Context: DataContext, fetches: [fetchGigs.getGigs, fetchSongs.getSongs], setters: [setGigs, setSongs] });
   return (
     <Provider value={{
-      gigs, setGigs, getGigs: () => fetchGigs.getGigs(setGigs), songs, setSongs,
+      gigs, setGigs, getGigs, songs, setSongs,
     }}
     >
       {children}

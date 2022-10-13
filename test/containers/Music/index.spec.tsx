@@ -15,24 +15,24 @@ const data:any = [
 ];
 
 describe('/music', () => {
-  // it('renders the component without images', () => {
-  //   const music = renderer.create(<Music images={undefined} auth={null} />).toJSON();
-  //   expect(JSON.stringify(music).includes('page-content')).toBe(true);
-  // });
-  // it('renders with images', () => {
-  //   const music = renderer.create(<Music images={data} auth={null} />).toJSON();
-  //   expect(JSON.stringify(music).includes('picSlider')).toBe(true);
-  // });
-  // it('renders and runs useEffect', () => {
-  //   const container = document.createElement('div');
-  //   document.body.appendChild(container);
-  //   act(() => {
-  //     ReactDom.render(<Music images={data} auth={null} />, container);
-  //   });
-  //   const musicSlider:any = document.getElementById('musicSlide1');
-  //   expect(musicSlider).toBeDefined();
-  //   document.body.removeChild(container);
-  // });
+  it('renders the component without images', () => {
+    const music = renderer.create(<Music images={undefined} auth={null} />).toJSON();
+    expect(JSON.stringify(music).includes('page-content')).toBe(true);
+  });
+  it('renders with images', () => {
+    const music = renderer.create(<Music images={data} auth={null} />).toJSON();
+    expect(JSON.stringify(music).includes('picSlider')).toBe(true);
+  });
+  it('renders and runs useEffect', () => {
+    const container = document.createElement('div');
+    document.body.appendChild(container);
+    act(() => {
+      ReactDom.render(<Music images={data} auth={null} />, container);
+    });
+    const musicSlider:any = document.getElementById('musicSlide1');
+    expect(musicSlider).toBeDefined();
+    document.body.removeChild(container);
+  });
   it('renders ClickToListen and handles click when joshandmariamusic.com', () => {
     window.open = jest.fn();
     const ctl = renderer.create(<ClickToListen appName="joshandmariamusic.com" />).root;
