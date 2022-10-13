@@ -16,5 +16,6 @@ describe('/music/buymusic', () => {
     expect(wrapper.find('JoshShermanSolo').dive().find('.elevation2').exists()).toBe(true);
     expect(wrapper.find('JoshShermanYoutube').dive().find('.youtube').exists()).toBe(true);
     expect(wrapper.find('JoshShermanSpotify').dive().find('.spotify').exists()).toBe(true);
+    expect(wrapper.find('JoshShermanApple').dive().find('.appleMusic').exists()).toBe(true);
   });
 });
