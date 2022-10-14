@@ -105,18 +105,22 @@ export const createGig = async (
     const tour = {
       datetime, venue, tickets, location: `${city}, ${usState}`,
     };
-    console.log('createGig');
     const socket = scc.create({
       hostname: process.env.SCS_HOST,
       port: Number(process.env.SCS_PORT),
       autoConnect: true,
       secure: process.env.SOCKETCLUSTER_SECURE !== 'false',
     });
-    console.log(token);
     socket.transmit('newTour', { tour, token });
     setShowDialog(false);
     getGigs();
   } catch (err) { console.log((err as Error).message); }
+};
+
+export const checkDisabled = (city:string, usState:string, dateTime:Date | null, venue:string) => {
+  let isDisabled = true;
+  if (city && usState && dateTime && venue) isDisabled = false;
+  return isDisabled;
 };
 
 export function Gigs({ isAdmin }: { isAdmin: boolean }): JSX.Element {
@@ -130,12 +134,7 @@ export function Gigs({ isAdmin }: { isAdmin: boolean }): JSX.Element {
   const [city, setCity] = useState('');
   const [usState, setUSstate] = useState('Virginia');
   const [tickets, setTickets] = useState('');
-  useEffect(() => { orderGigs(gigs, setGigsInOrder, setPageSize); console.log(gigs[0]); }, [gigs]);
-  const checkDisabled = () => {
-    let isDisabled = true;
-    if (city && usState && dateTime && venue) isDisabled = false;
-    return isDisabled;
-  };
+  useEffect(() => { orderGigs(gigs, setGigsInOrder, setPageSize); }, [gigs]);
   return (
     <div className="gigsDiv" style={{ margin: 'auto', padding: '10px', width: '100%' }}>
       <h4 style={{ textAlign: 'center' }}>
@@ -184,6 +183,7 @@ export function Gigs({ isAdmin }: { isAdmin: boolean }): JSX.Element {
           </LocalizationProvider>
           <p style={{ fontSize: '9pt', marginBottom: '0px' }}>* Venue</p>
           <Editor
+            id="edit-venue"
             value={venue}
             apiKey={process.env.TINY_KEY}
             init={{
@@ -200,26 +200,26 @@ export function Gigs({ isAdmin }: { isAdmin: boolean }): JSX.Element {
                 + 'alignleft aligncenter alignright alignjustify |'
                 + 'bullist numlist outdent indent | removeformat | help',
             }}
-            onEditorChange={(evt) => setVenue(evt)}
+            onEditorChange={(text) => { setVenue(text); return text; }}
           />
           <TextField
             autoFocus
             margin="normal"
-            id="city"
+            id="edit-city"
             label="* City"
             type="text"
             fullWidth
             variant="standard"
-            onChange={(evt) => setCity(evt.target.value)}
+            onChange={(evt) => { setCity(evt.target.value); return evt.target.value; }}
           />
           <FormControl fullWidth sx={{ marginTop: '20px' }}>
             <InputLabel id="select-us-state-label">* State</InputLabel>
             <Select
               labelId="select-us-state-label"
               id="select-us-state"
-              value={usState || 'Virginia'}
+              value={usState}
               label="* State"
-              onChange={(evt) => setUSstate(evt.target.value)}
+              onChange={(evt) => { setUSstate(evt.target.value); return evt.target.value; }}
             >
               {usStateOptions.map((s: string) => <MenuItem key={s} value={s}>{s}</MenuItem>)}
             </Select>
@@ -227,12 +227,12 @@ export function Gigs({ isAdmin }: { isAdmin: boolean }): JSX.Element {
           <TextField
             autoFocus
             margin="dense"
-            id="tickets"
+            id="edit-tickets"
             label="Tickets"
             type="text"
             fullWidth
             variant="standard"
-            onChange={(evt) => setTickets(evt.target.value)}
+            onChange={(evt) => { setTickets(evt.target.value); return evt.target.value; }}
           />
         </DialogContent>
         <DialogActions>
@@ -244,10 +244,10 @@ export function Gigs({ isAdmin }: { isAdmin: boolean }): JSX.Element {
             Cancel
           </Button>
           <Button
-            disabled={checkDisabled()}
+            disabled={checkDisabled(city, usState, dateTime, venue)}
             size="small"
             variant="contained"
-            onClick={() => createGig(getGigs, setShowDialog, dateTime, venue, city, usState, tickets)}
+            onClick={() => { createGig(getGigs, setShowDialog, dateTime, venue, city, usState, tickets); return true; }}
           >
             Create
           </Button>

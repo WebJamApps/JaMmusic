@@ -16,9 +16,18 @@ describe('Gigs', () => {
     expect(result).toBe(true);
     expect(gigs.findByProps({ className: 'createNewGigDialog' }).props.onClose()).toBe(false);
     expect(gigs.findByProps({ className: 'cancelButton' }).props.onClick()).toBe(false);
+    expect(gigs.findByProps({ variant: 'contained' }).props.onClick()).toBe(true);
     const dtPicker = gigs.findByProps({ label: '* Date and Time' });
     expect(dtPicker.props.onChange(null)).toBeNull();
     expect(dtPicker.props.renderInput().props.className).toBe('dateTimeInput');
+    const venueEditor = gigs.findByProps({ id: 'edit-venue' });
+    expect(venueEditor.props.onEditorChange('venue')).toBe('venue');
+    const cityEditor = gigs.findByProps({ id: 'edit-city' });
+    expect(cityEditor.props.onChange({ target: { value: 'city' } })).toBe('city');
+    const stateEditor = gigs.findByProps({ id: 'select-us-state' });
+    expect(stateEditor.props.onChange({ target: { value: 'Georgia' } })).toBe('Georgia');
+    const ticketsEditor = gigs.findByProps({ id: 'edit-tickets' });
+    expect(ticketsEditor.props.onChange({ target: { value: 'tickets' } })).toBe('tickets');
   });
   it('makeVenue', () => {
     const columnDef:any = makeVenue();
