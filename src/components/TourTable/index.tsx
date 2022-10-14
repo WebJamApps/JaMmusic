@@ -1,4 +1,4 @@
-import React, { Component, Dispatch } from 'react';
+import { Component, Dispatch } from 'react';
 import { TableCell } from '@material-ui/core';
 import type { MUIDataTableColumn } from 'mui-datatables';
 import HtmlReactParser from 'html-react-parser';
