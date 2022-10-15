@@ -45,14 +45,22 @@ export const columns: GridColumns = [
     headerName: 'Date',
     width: 120,
     editable: false,
-    renderCell: (params: GridRenderCellParams) => makeDateValue(params.row.datetime),
+    renderCell: (params: GridRenderCellParams) => {
+      const { row: { datetime } } = params;
+      if (!datetime) return '';
+      return makeDateValue(datetime);
+    },
   },
   {
     field: 'time',
     headerName: 'Time',
     width: 120,
     editable: false,
-    renderCell: (params: GridRenderCellParams) => makeTimeValue(params.row.datetime),
+    renderCell: (params: GridRenderCellParams) => {
+      const { row: { datetime } } = params;
+      if (!datetime) return '';
+      return makeTimeValue(datetime);
+    },
   },
   {
     field: 'location',
