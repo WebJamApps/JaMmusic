@@ -53,9 +53,21 @@ describe('Gigs', () => {
     const cell:any = date.renderCell(params);
     expect(typeof cell).toBe('string');
   });
+  it('makeDateValue when null', () => {
+    const date:any = columns[0];
+    const params:any = { row: { datetime: null } };
+    const cell:any = date.renderCell(params);
+    expect(typeof cell).toBe('string');
+  });
   it('makeTimeValue', () => {
     const time:any = columns[1];
     const params:any = { row: { datetime: new Date().toISOString() } };
+    const cell:any = time.renderCell(params);
+    expect(typeof cell).toBe('string');
+  });
+  it('makeTimeValue when null', () => {
+    const time:any = columns[1];
+    const params:any = { row: { datetime: null } };
     const cell:any = time.renderCell(params);
     expect(typeof cell).toBe('string');
   });
