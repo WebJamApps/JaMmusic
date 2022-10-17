@@ -54,7 +54,7 @@ describe('Gigs', () => {
     expect(typeof cell).toBe('string');
   });
   it('makeTimeValue', () => {
-    const time:any = columns[0];
+    const time:any = columns[1];
     const params:any = { row: { datetime: new Date().toISOString() } };
     const cell:any = time.renderCell(params);
     expect(typeof cell).toBe('string');
