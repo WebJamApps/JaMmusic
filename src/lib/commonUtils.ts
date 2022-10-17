@@ -12,8 +12,8 @@ const setTitleAndScroll = (pageTitle: string, width: number): void => {
 function getUserRoles(): string[] {
   let userRoles: string[] = [];
   try {
-    userRoles = JSON.parse(process.env.userRoles || /* istanbul ignore next */'').roles;
-  } catch (e) { /* istanbul ignore next */userRoles = []; }
+    userRoles = JSON.parse(process.env.userRoles || '').roles;
+  } catch (e) { userRoles = []; }
   return userRoles;
 }
 

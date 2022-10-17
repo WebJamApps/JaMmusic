@@ -1,17 +1,23 @@
 import { useContext, useEffect, useState } from 'react';
+import scc from 'socketcluster-client';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DateTimePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import {
   DataGrid, GridColumns, GridEnrichedColDef, GridRenderCellParams,
 } from '@mui/x-data-grid';
 import {
-  Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, TextField, Tooltip,
+  Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle,
+  FormControl, IconButton, InputLabel, MenuItem, Select, TextField, Tooltip,
 } from '@mui/material';
 import { Add as AddIcon } from '@mui/icons-material';
+import { Editor } from '@tinymce/tinymce-react';
 import { DataContext, IGig } from 'src/providers/Data.provider';
 import HtmlReactParser from 'html-react-parser';
 import { defaultGig } from 'src/providers/fetchGigs';
 import './Gigs.scss';
+
+// eslint-disable-next-line max-len
+const usStateOptions = ['Alabama', 'Alaska', 'American Samoa', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'District of Columbia', 'Federated States of Micronesia', 'Florida', 'Georgia', 'Guam', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Marshall Islands', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Northern Mariana Islands', 'Ohio', 'Oklahoma', 'Oregon', 'Palau', 'Pennsylvania', 'Puerto Rico', 'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virgin Island', 'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'];
 
 export const makeVenueValue = (value: string) => {
   const parsed = HtmlReactParser(value);
@@ -23,29 +29,43 @@ export const makeVenue = (): GridEnrichedColDef => (
   {
     field: 'venue',
     headerName: 'Venue',
-    width: 600,
+    minWidth: 400,
+    flex: 1,
     editable: false,
     renderCell: (params: GridRenderCellParams) => makeVenueValue(params.value),
   }
 );
 
+export const makeDateValue = (datetime:string) => new Date(datetime).toLocaleString().split(',')[0];
+export const makeTimeValue = (datetime:string) => new Date(datetime).toLocaleString().split(',')[1];
+
 export const columns: GridColumns = [
   {
     field: 'date',
     headerName: 'Date',
-    width: 150,
+    width: 120,
     editable: false,
+    renderCell: (params: GridRenderCellParams) => {
+      const { row: { datetime } } = params;
+      if (!datetime) return '';
+      return makeDateValue(datetime);
+    },
   },
   {
     field: 'time',
     headerName: 'Time',
-    width: 150,
+    width: 120,
     editable: false,
+    renderCell: (params: GridRenderCellParams) => {
+      const { row: { datetime } } = params;
+      if (!datetime) return '';
+      return makeTimeValue(datetime);
+    },
   },
   {
     field: 'location',
     headerName: 'Location',
-    minWidth: 150,
+    minWidth: 200,
     flex: 1,
     editable: false,
   },
@@ -77,14 +97,52 @@ export const orderGigs = (gigs: IGig[], setGigsInOrder: { (arg0: IGig[]): void; 
   setPageSize(futureGigs.length - 1 > 5 ? futureGigs.length - 1 : 5);
 };
 
+export const createGig = async (
+  getGigs: () => void,
+  setShowDialog: (arg0: boolean) => void,
+  datetime: Date | null,
+  venue: string,
+  city: string,
+  usState: string,
+  tickets: string,
+) => {
+  try {
+    const persistRoot = sessionStorage.getItem('persist:root') || '';
+    const { auth } = JSON.parse(persistRoot);
+    const { token } = JSON.parse(auth);
+    const tour = {
+      datetime, venue, tickets, location: `${city}, ${usState}`,
+    };
+    const socket = scc.create({
+      hostname: process.env.SCS_HOST,
+      port: Number(process.env.SCS_PORT),
+      autoConnect: true,
+      secure: process.env.SOCKETCLUSTER_SECURE !== 'false',
+    });
+    socket.transmit('newTour', { tour, token });
+    setShowDialog(false);
+    getGigs();
+  } catch (err) { console.log((err as Error).message); }
+};
+
+export const checkDisabled = (city:string, usState:string, dateTime:Date | null, venue:string) => {
+  let isDisabled = true;
+  if (city && usState && dateTime && venue) isDisabled = false;
+  return isDisabled;
+};
+
 export function Gigs({ isAdmin }: { isAdmin: boolean }): JSX.Element {
   const [showDialog, setShowDialog] = useState(false);
-  const { gigs } = useContext(DataContext);
+  const { gigs, getGigs } = useContext(DataContext);
   const [gigsInOrder, setGigsInOrder] = useState(gigs);
   const now = new Date() as Date | null;
   const [dateTime, setDateTime] = useState(now);
   const [pageSize, setPageSize] = useState(5);
-  useEffect(() => orderGigs(gigs, setGigsInOrder, setPageSize), [gigs]);
+  const [venue, setVenue] = useState('');
+  const [city, setCity] = useState('');
+  const [usState, setUSstate] = useState('Virginia');
+  const [tickets, setTickets] = useState('');
+  useEffect(() => { orderGigs(gigs, setGigsInOrder, setPageSize); }, [gigs]);
   return (
     <div className="gigsDiv" style={{ margin: 'auto', padding: '10px', width: '100%' }}>
       <h4 style={{ textAlign: 'center' }}>
@@ -119,7 +177,7 @@ export function Gigs({ isAdmin }: { isAdmin: boolean }): JSX.Element {
         onClose={() => { setShowDialog(false); return false; }}
       >
         <DialogTitle>Create New Gig</DialogTitle>
-        <DialogContent>
+        <DialogContent sx={{ padding: '10px 10px' }}>
           <DialogContentText sx={{ marginBottom: '30px' }}>
             Enter all *required fields to create a new gig.
           </DialogContentText>
@@ -131,26 +189,73 @@ export function Gigs({ isAdmin }: { isAdmin: boolean }): JSX.Element {
               renderInput={(params) => <TextField className="dateTimeInput" {...params} />}
             />
           </LocalizationProvider>
+          <p style={{ fontSize: '9pt', marginBottom: '0px' }}>* Venue</p>
+          <Editor
+            id="edit-venue"
+            value={venue}
+            apiKey={process.env.TINY_KEY}
+            init={{
+              height: 500,
+              menubar: 'insert tools',
+              menu: { format: { title: 'Format', items: 'forecolor backcolor' } },
+              plugins: [
+                'advlist autolink lists link image charmap print preview anchor',
+                'searchreplace visualblocks code fullscreen',
+                'insertdatetime media table paste code help wordcount',
+              ],
+              toolbar:
+                'undo redo | formatselect | bold italic backcolor forecolor |'
+                + 'alignleft aligncenter alignright alignjustify |'
+                + 'bullist numlist outdent indent | removeformat | help',
+            }}
+            onEditorChange={(text) => { setVenue(text); return text; }}
+          />
+          <TextField
+            autoFocus
+            margin="normal"
+            id="edit-city"
+            label="* City"
+            type="text"
+            fullWidth
+            variant="standard"
+            onChange={(evt) => { setCity(evt.target.value); return evt.target.value; }}
+          />
+          <FormControl fullWidth sx={{ marginTop: '20px' }}>
+            <InputLabel id="select-us-state-label">* State</InputLabel>
+            <Select
+              labelId="select-us-state-label"
+              id="select-us-state"
+              value={usState}
+              label="* State"
+              onChange={(evt) => { setUSstate(evt.target.value); return evt.target.value; }}
+            >
+              {usStateOptions.map((s: string) => <MenuItem key={s} value={s}>{s}</MenuItem>)}
+            </Select>
+          </FormControl>
           <TextField
             autoFocus
             margin="dense"
-            id="tickets"
+            id="edit-tickets"
             label="Tickets"
             type="text"
             fullWidth
             variant="standard"
+            onChange={(evt) => { setTickets(evt.target.value); return evt.target.value; }}
           />
         </DialogContent>
         <DialogActions>
           <Button
+            size="small"
             className="cancelButton"
             onClick={() => { setShowDialog(false); return false; }}
           >
             Cancel
           </Button>
           <Button
+            disabled={checkDisabled(city, usState, dateTime, venue)}
+            size="small"
             variant="contained"
-            onClick={() => { console.log('run create call'); return 'create'; }}
+            onClick={() => { createGig(getGigs, setShowDialog, dateTime, venue, city, usState, tickets); return true; }}
           >
             Create
           </Button>

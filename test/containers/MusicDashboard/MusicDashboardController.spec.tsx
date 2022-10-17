@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import Controller from '../../../src/containers/MusicDashboard/MusicDashboardController';
+import Controller from 'src/containers/MusicDashboard/MusicDashboardController';
 
 describe('MusicDashboardController', () => {
   const viewStub: any = {
@@ -153,25 +153,6 @@ describe('MusicDashboardController', () => {
     expect(viewStub.setState).toHaveBeenCalled();
     viewStub.setState = jest.fn((obj) => { expect(obj.title).toBe('title'); });
   });
-  // it('failure to checkPicEdit', () =>{
-  //   const viewStub2: any = {
-  //     props: {
-  //       dispatch: jest.fn(),
-  //       auth: { token: 'token' },
-  //       editPic: {
-  //         _id: '123',
-  //         thumbnail: 'string',
-  //         modify: <div />,
-  //       },
-  //       scc: { transmit: jest.fn() },
-  //       showtable: true,
-  //     },
-  //     state: { title: '', url: '', comments: 'showCaption' },
-  //   };
-  //   viewStub2.setState = jest.fn();
-  //   const controller = new Controller(viewStub2);
-  //   controller.checkPicEdit();
-  // });
   it('set state in handleChangePic', () => {
     viewStub.setState = jest.fn((cb) => cb({}));
     const controller = new Controller(viewStub);

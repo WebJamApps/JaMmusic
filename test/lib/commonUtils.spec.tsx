@@ -14,4 +14,8 @@ describe('commonUtils', () => {
     await commonUtils.delay(0.0001);
     expect(setTimeout).toHaveBeenCalledTimes(1);
   }, 15000);
+  it('getUserRoles when userRoles is missing from env vars', () => {
+    delete process.env.userRoles;
+    expect(commonUtils.getUserRoles().length).toBe(0);
+  });
 });

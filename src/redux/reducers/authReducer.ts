@@ -3,9 +3,8 @@ import type { Auth } from '../mapStoreToProps';
 const initialState = {
   isAuthenticated: false,
   error: '',
-  email: '',
   token: '',
-  user: { userType: '' },
+  user: { userType: '', email: '' },
 };
 const reducer = (
   state: Auth,
@@ -22,7 +21,7 @@ const reducer = (
       };
     case 'SET_USER':
       return {
-        error: '', isAuthenticated: true, email: action.data?.email, token: action.token, user: action.data,
+        error: '', isAuthenticated: true, token: action.token, user: action.data,
       };
     default:
       return initialState;

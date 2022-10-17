@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import * as React from 'react';
 import { shallow } from 'enzyme';
 import { PersistedTimeKeeper } from '../../../src/containers/MusicDashboard/PersistedTimeKeeper';
 import AddTime from '../../../src/containers/MusicDashboard/AddTime';

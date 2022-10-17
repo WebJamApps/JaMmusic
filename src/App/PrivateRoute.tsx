@@ -9,7 +9,7 @@ interface PProps {
 export function PrivateRoute({ Container, path }:PProps): JSX.Element {
   const userRoles: string[] = commonUtils.getUserRoles();
   const authStr = sessionStorage.getItem('persist:root') || '{}';
-  let a = { isAuthenticated: false, user: { userType: '' } };
+  let a = { isAuthenticated: false, user: { userType: '', email: '' } };
   try {
     const { auth } = (JSON.parse(authStr) as { auth:string });
     a = JSON.parse(auth);
