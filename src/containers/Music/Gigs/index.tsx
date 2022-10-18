@@ -348,7 +348,7 @@ export function Gigs({ isAdmin }: { isAdmin: boolean }): JSX.Element {
         <DialogActions>
           <Button
             size="small"
-            className="cancelButton"
+            className="cancelEditGigButton"
             onClick={() => { setShowDialog(false); return false; }}
           >
             Cancel
