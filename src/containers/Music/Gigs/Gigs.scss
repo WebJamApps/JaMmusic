@@ -16,4 +16,8 @@
   font-size:14pt !important;
 }
 
-
+.adminGrid {
+  .MuiDataGrid-row{
+    cursor:pointer;
+  }
+}

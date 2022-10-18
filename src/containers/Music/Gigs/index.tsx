@@ -3,7 +3,7 @@ import scc from 'socketcluster-client';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DateTimePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import {
-  DataGrid, GridColumns, GridEnrichedColDef, GridRenderCellParams,
+  DataGrid, GridColumns, GridEnrichedColDef, GridRenderCellParams, GridRowParams,
 } from '@mui/x-data-grid';
 import {
   Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle,
@@ -131,6 +131,15 @@ export const checkDisabled = (city:string, usState:string, dateTime:Date | null,
   return isDisabled;
 };
 
+export const clickToEdit = (
+  setEditGig:(arg0:GridRowParams['row'])=>void,
+  isAdmin:boolean,
+  rowData:GridRowParams['row'],
+) => {
+  console.log(rowData);
+  if (isAdmin) setEditGig(rowData);
+};
+
 export function Gigs({ isAdmin }: { isAdmin: boolean }): JSX.Element {
   const [showDialog, setShowDialog] = useState(false);
   const { gigs, getGigs } = useContext(DataContext);
@@ -142,6 +151,7 @@ export function Gigs({ isAdmin }: { isAdmin: boolean }): JSX.Element {
   const [city, setCity] = useState('');
   const [usState, setUSstate] = useState('Virginia');
   const [tickets, setTickets] = useState('');
+  const [editGig, setEditGig] = useState({ _id: '', datetime: null as Date | null, venue: '' });
   useEffect(() => { orderGigs(gigs, setGigsInOrder, setPageSize); }, [gigs]);
   return (
     <div className="gigsDiv" style={{ margin: 'auto', padding: '10px', width: '100%' }}>
@@ -164,6 +174,8 @@ export function Gigs({ isAdmin }: { isAdmin: boolean }): JSX.Element {
       </h4>
       <div style={{ height: '500px', width: '100%' }}>
         <DataGrid
+          className={isAdmin ? 'adminGrid' : ''}
+          onRowClick={(rowParams) => clickToEdit(setEditGig, isAdmin, rowParams.row)}
           rows={gigsInOrder}
           columns={columns}
           pageSize={pageSize}
@@ -209,6 +221,96 @@ export function Gigs({ isAdmin }: { isAdmin: boolean }): JSX.Element {
                 + 'bullist numlist outdent indent | removeformat | help',
             }}
             onEditorChange={(text) => { setVenue(text); return text; }}
+          />
+          <TextField
+            autoFocus
+            margin="normal"
+            id="edit-city"
+            label="* City"
+            type="text"
+            fullWidth
+            variant="standard"
+            onChange={(evt) => { setCity(evt.target.value); return evt.target.value; }}
+          />
+          <FormControl fullWidth sx={{ marginTop: '20px' }}>
+            <InputLabel id="select-us-state-label">* State</InputLabel>
+            <Select
+              labelId="select-us-state-label"
+              id="select-us-state"
+              value={usState}
+              label="* State"
+              onChange={(evt) => { setUSstate(evt.target.value); return evt.target.value; }}
+            >
+              {usStateOptions.map((s: string) => <MenuItem key={s} value={s}>{s}</MenuItem>)}
+            </Select>
+          </FormControl>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="edit-tickets"
+            label="Tickets"
+            type="text"
+            fullWidth
+            variant="standard"
+            onChange={(evt) => { setTickets(evt.target.value); return evt.target.value; }}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button
+            size="small"
+            className="cancelButton"
+            onClick={() => { setShowDialog(false); return false; }}
+          >
+            Cancel
+          </Button>
+          <Button
+            disabled={checkDisabled(city, usState, dateTime, venue)}
+            size="small"
+            variant="contained"
+            onClick={() => { createGig(getGigs, setShowDialog, dateTime, venue, city, usState, tickets); return true; }}
+          >
+            Create
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog
+        className="editGigDialog"
+        open={!!editGig._id}
+        onClose={() => { setShowDialog(false); return false; }}
+      >
+        <DialogTitle>Edit Gig</DialogTitle>
+        <DialogContent sx={{ padding: '10px 10px' }}>
+          <DialogContentText sx={{ marginBottom: '30px' }}>
+            Enter all *required.
+          </DialogContentText>
+          <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <DateTimePicker
+              label="* Date and Time"
+              value={editGig.datetime}
+              onChange={(newValue: Date | null) => { setEditGig({ ...editGig, datetime: newValue }); return newValue; }}
+              renderInput={(params) => <TextField className="dateTimeInput" {...params} />}
+            />
+          </LocalizationProvider>
+          <p style={{ fontSize: '9pt', marginBottom: '0px' }}>* Venue</p>
+          <Editor
+            id="edit-venue"
+            value={editGig.venue}
+            apiKey={process.env.TINY_KEY}
+            init={{
+              height: 500,
+              menubar: 'insert tools',
+              menu: { format: { title: 'Format', items: 'forecolor backcolor' } },
+              plugins: [
+                'advlist autolink lists link image charmap print preview anchor',
+                'searchreplace visualblocks code fullscreen',
+                'insertdatetime media table paste code help wordcount',
+              ],
+              toolbar:
+                'undo redo | formatselect | bold italic backcolor forecolor |'
+                + 'alignleft aligncenter alignright alignjustify |'
+                + 'bullist numlist outdent indent | removeformat | help',
+            }}
+            onEditorChange={(text) => { setEditGig({ ...editGig, venue: text }); return text; }}
           />
           <TextField
             autoFocus
