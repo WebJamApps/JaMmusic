@@ -1,5 +1,4 @@
 import { useContext, useEffect, useState } from 'react';
-import scc from 'socketcluster-client';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DateTimePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import {
@@ -11,10 +10,11 @@ import {
 } from '@mui/material';
 import { Add as AddIcon } from '@mui/icons-material';
 import { Editor } from '@tinymce/tinymce-react';
-import { DataContext, IGig } from 'src/providers/Data.provider';
 import HtmlReactParser from 'html-react-parser';
+import { DataContext, IGig } from 'src/providers/Data.provider';
 import { defaultGig } from 'src/providers/fetchGigs';
-import './Gigs.scss';
+import utils from './gigs.utils';
+import './gigs.scss';
 
 // eslint-disable-next-line max-len
 const usStateOptions = ['Alabama', 'Alaska', 'American Samoa', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'District of Columbia', 'Federated States of Micronesia', 'Florida', 'Georgia', 'Guam', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Marshall Islands', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Northern Mariana Islands', 'Ohio', 'Oklahoma', 'Oregon', 'Palau', 'Pennsylvania', 'Puerto Rico', 'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virgin Island', 'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'];
@@ -65,9 +65,13 @@ export const columns: GridColumns = [
   {
     field: 'location',
     headerName: 'Location',
-    minWidth: 200,
-    flex: 1,
+    width: 150,
     editable: false,
+    renderCell: (params: GridRenderCellParams) => {
+      const { row: { location, city, usState } } = params;
+      if (location) return location;
+      return `${city}, ${usState}`;
+    },
   },
   makeVenue(),
   {
@@ -97,34 +101,6 @@ export const orderGigs = (gigs: IGig[], setGigsInOrder: { (arg0: IGig[]): void; 
   setPageSize(futureGigs.length - 1 > 5 ? futureGigs.length - 1 : 5);
 };
 
-export const createGig = async (
-  getGigs: () => void,
-  setShowDialog: (arg0: boolean) => void,
-  datetime: Date | null,
-  venue: string,
-  city: string,
-  usState: string,
-  tickets: string,
-) => {
-  try {
-    const persistRoot = sessionStorage.getItem('persist:root') || '';
-    const { auth } = JSON.parse(persistRoot);
-    const { token } = JSON.parse(auth);
-    const tour = {
-      datetime, venue, tickets, location: `${city}, ${usState}`,
-    };
-    const socket = scc.create({
-      hostname: process.env.SCS_HOST,
-      port: Number(process.env.SCS_PORT),
-      autoConnect: true,
-      secure: process.env.SOCKETCLUSTER_SECURE !== 'false',
-    });
-    socket.transmit('newTour', { tour, token });
-    setShowDialog(false);
-    getGigs();
-  } catch (err) { console.log((err as Error).message); }
-};
-
 export const checkDisabled = (city:string, usState:string, dateTime:Date | null, venue:string) => {
   let isDisabled = true;
   if (city && usState && dateTime && venue) isDisabled = false;
@@ -133,11 +109,12 @@ export const checkDisabled = (city:string, usState:string, dateTime:Date | null,
 
 export const clickToEdit = (
   setEditGig:(arg0:GridRowParams['row'])=>void,
+  setRowData:(arg0:GridRowParams['row'])=>void,
   isAdmin:boolean,
   rowData:GridRowParams['row'],
 ) => {
   console.log(rowData);
-  if (isAdmin) setEditGig(rowData);
+  if (isAdmin) { setEditGig(rowData); setRowData(rowData); }
 };
 
 export function Gigs({ isAdmin }: { isAdmin: boolean }): JSX.Element {
@@ -151,10 +128,16 @@ export function Gigs({ isAdmin }: { isAdmin: boolean }): JSX.Element {
   const [city, setCity] = useState('');
   const [usState, setUSstate] = useState('Virginia');
   const [tickets, setTickets] = useState('');
-  const [editGig, setEditGig] = useState({ _id: '', datetime: null as Date | null, venue: '' });
+  const [editGig, setEditGig] = useState(utils.defaultGig);
+  const [rowData, setRowData] = useState(utils.defaultGig);
   useEffect(() => { orderGigs(gigs, setGigsInOrder, setPageSize); }, [gigs]);
   return (
-    <div className="gigsDiv" style={{ margin: 'auto', padding: '10px', width: '100%' }}>
+    <div
+      className="gigsDiv"
+      style={{
+        margin: 'auto', padding: '10px', width: '100%', maxWidth: '1040px',
+      }}
+    >
       <h4 style={{ textAlign: 'center' }}>
         Gigs
         {isAdmin ? (
@@ -175,7 +158,7 @@ export function Gigs({ isAdmin }: { isAdmin: boolean }): JSX.Element {
       <div style={{ height: '500px', width: '100%' }}>
         <DataGrid
           className={isAdmin ? 'adminGrid' : ''}
-          onRowClick={(rowParams) => clickToEdit(setEditGig, isAdmin, rowParams.row)}
+          onRowClick={(rowParams) => clickToEdit(setEditGig, setRowData, isAdmin, rowParams.row)}
           rows={gigsInOrder}
           columns={columns}
           pageSize={pageSize}
@@ -203,7 +186,7 @@ export function Gigs({ isAdmin }: { isAdmin: boolean }): JSX.Element {
           </LocalizationProvider>
           <p style={{ fontSize: '9pt', marginBottom: '0px' }}>* Venue</p>
           <Editor
-            id="edit-venue"
+            id="create-venue"
             value={venue}
             apiKey={process.env.TINY_KEY}
             init={{
@@ -225,18 +208,19 @@ export function Gigs({ isAdmin }: { isAdmin: boolean }): JSX.Element {
           <TextField
             autoFocus
             margin="normal"
-            id="edit-city"
+            id="create-city"
             label="* City"
             type="text"
             fullWidth
             variant="standard"
+            value={city}
             onChange={(evt) => { setCity(evt.target.value); return evt.target.value; }}
           />
           <FormControl fullWidth sx={{ marginTop: '20px' }}>
-            <InputLabel id="select-us-state-label">* State</InputLabel>
+            <InputLabel id="create-us-state-label">* State</InputLabel>
             <Select
-              labelId="select-us-state-label"
-              id="select-us-state"
+              labelId="create-us-state-label"
+              id="create-us-state"
               value={usState}
               label="* State"
               onChange={(evt) => { setUSstate(evt.target.value); return evt.target.value; }}
@@ -247,18 +231,19 @@ export function Gigs({ isAdmin }: { isAdmin: boolean }): JSX.Element {
           <TextField
             autoFocus
             margin="dense"
-            id="edit-tickets"
+            id="create-tickets"
             label="Tickets"
             type="text"
             fullWidth
             variant="standard"
+            value={tickets}
             onChange={(evt) => { setTickets(evt.target.value); return evt.target.value; }}
           />
         </DialogContent>
         <DialogActions>
           <Button
             size="small"
-            className="cancelButton"
+            className="cancelCreateButton"
             onClick={() => { setShowDialog(false); return false; }}
           >
             Cancel
@@ -267,7 +252,8 @@ export function Gigs({ isAdmin }: { isAdmin: boolean }): JSX.Element {
             disabled={checkDisabled(city, usState, dateTime, venue)}
             size="small"
             variant="contained"
-            onClick={() => { createGig(getGigs, setShowDialog, dateTime, venue, city, usState, tickets); return true; }}
+            className="createGigButton"
+            onClick={() => { utils.createGig(getGigs, setShowDialog, dateTime, venue, city, usState, tickets); return true; }}
           >
             Create
           </Button>
@@ -285,6 +271,7 @@ export function Gigs({ isAdmin }: { isAdmin: boolean }): JSX.Element {
           </DialogContentText>
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <DateTimePicker
+              className="editDateTime"
               label="* Date and Time"
               value={editGig.datetime}
               onChange={(newValue: Date | null) => { setEditGig({ ...editGig, datetime: newValue }); return newValue; }}
@@ -320,16 +307,17 @@ export function Gigs({ isAdmin }: { isAdmin: boolean }): JSX.Element {
             type="text"
             fullWidth
             variant="standard"
-            onChange={(evt) => { setCity(evt.target.value); return evt.target.value; }}
+            value={editGig.city}
+            onChange={(evt) => { setEditGig({ ...editGig, city: evt.target.value }); return evt.target.value; }}
           />
           <FormControl fullWidth sx={{ marginTop: '20px' }}>
-            <InputLabel id="select-us-state-label">* State</InputLabel>
+            <InputLabel id="edit-us-state-label">* State</InputLabel>
             <Select
-              labelId="select-us-state-label"
-              id="select-us-state"
-              value={usState}
+              labelId="edit-us-state-label"
+              id="edit-us-state"
+              value={editGig.usState}
               label="* State"
-              onChange={(evt) => { setUSstate(evt.target.value); return evt.target.value; }}
+              onChange={(evt) => { setEditGig({ ...editGig, usState: evt.target.value }); return evt.target.value; }}
             >
               {usStateOptions.map((s: string) => <MenuItem key={s} value={s}>{s}</MenuItem>)}
             </Select>
@@ -342,24 +330,28 @@ export function Gigs({ isAdmin }: { isAdmin: boolean }): JSX.Element {
             type="text"
             fullWidth
             variant="standard"
-            onChange={(evt) => { setTickets(evt.target.value); return evt.target.value; }}
+            value={editGig.tickets}
+            onChange={(evt) => { setEditGig({ ...editGig, tickets: evt.target.value }); return evt.target.value; }}
           />
         </DialogContent>
         <DialogActions>
           <Button
             size="small"
             className="cancelEditGigButton"
-            onClick={() => { setShowDialog(false); return false; }}
+            onClick={() => {
+              setEditGig(utils.defaultGig); return false;
+            }}
           >
             Cancel
           </Button>
           <Button
-            disabled={checkDisabled(city, usState, dateTime, venue)}
+            disabled={JSON.stringify(editGig) === JSON.stringify(rowData)}
             size="small"
             variant="contained"
-            onClick={() => { createGig(getGigs, setShowDialog, dateTime, venue, city, usState, tickets); return true; }}
+            className="updateGigButton"
+            onClick={() => { utils.updateGig(getGigs, setEditGig, editGig); return true; }}
           >
-            Create
+            Update
           </Button>
         </DialogActions>
       </Dialog>
