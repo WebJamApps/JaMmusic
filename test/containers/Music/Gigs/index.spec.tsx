@@ -2,7 +2,7 @@
 import renderer from 'react-test-renderer';
 import type { IGig } from 'src/providers/Data.provider';
 import {
-  Gigs, makeVenue, columns, makeVenueValue, orderGigs, checkDisabled,
+  Gigs, makeVenue, columns, makeVenueValue, orderGigs,
 } from 'src/containers/Music/Gigs';
 
 describe('Gigs', () => {
@@ -15,18 +15,18 @@ describe('Gigs', () => {
     const result = gigs.findByProps({ className: 'showCreateDialog' }).props.onClick();
     expect(result).toBe(true);
     expect(gigs.findByProps({ className: 'createNewGigDialog' }).props.onClose()).toBe(false);
-    expect(gigs.findByProps({ className: 'cancelButton' }).props.onClick()).toBe(false);
-    expect(gigs.findByProps({ variant: 'contained' }).props.onClick()).toBe(true);
-    const dtPicker = gigs.findByProps({ label: '* Date and Time' });
+    expect(gigs.findByProps({ className: 'cancelCreateButton' }).props.onClick()).toBe(false);
+    expect(gigs.findByProps({ className: 'createGigButton' }).props.onClick()).toBe(true);
+    const dtPicker = gigs.findByProps({ className: 'createDatetime' });
     expect(dtPicker.props.onChange(null)).toBeNull();
     expect(dtPicker.props.renderInput().props.className).toBe('dateTimeInput');
-    const venueEditor = gigs.findByProps({ id: 'edit-venue' });
+    const venueEditor = gigs.findByProps({ id: 'create-venue' });
     expect(venueEditor.props.onEditorChange('venue')).toBe('venue');
-    const cityEditor = gigs.findByProps({ id: 'edit-city' });
+    const cityEditor = gigs.findByProps({ id: 'create-city' });
     expect(cityEditor.props.onChange({ target: { value: 'city' } })).toBe('city');
-    const stateEditor = gigs.findByProps({ id: 'select-us-state' });
+    const stateEditor = gigs.findByProps({ id: 'create-us-state' });
     expect(stateEditor.props.onChange({ target: { value: 'Georgia' } })).toBe('Georgia');
-    const ticketsEditor = gigs.findByProps({ id: 'edit-tickets' });
+    const ticketsEditor = gigs.findByProps({ id: 'create-tickets' });
     expect(ticketsEditor.props.onChange({ target: { value: 'tickets' } })).toBe('tickets');
   });
   it('makeVenue', () => {
@@ -114,8 +114,5 @@ describe('Gigs', () => {
     ] as IGig[];
     orderGigs(gigs, setGigsInOrder, setPageSize);
     expect(setPageSize).toHaveBeenCalledWith(12);
-  });
-  it('checkDisabled when false', () => {
-    expect(checkDisabled('city', 'state', new Date(), 'venue')).toBe(false);
   });
 });

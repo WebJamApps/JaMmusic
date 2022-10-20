@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from 'react';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DateTimePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import {
-  DataGrid, GridColumns, GridEnrichedColDef, GridRenderCellParams, GridRowParams,
+  DataGrid, GridColumns, GridEnrichedColDef, GridRenderCellParams,
 } from '@mui/x-data-grid';
 import {
   Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle,
@@ -18,6 +18,7 @@ import './gigs.scss';
 
 // eslint-disable-next-line max-len
 const usStateOptions = ['Alabama', 'Alaska', 'American Samoa', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'District of Columbia', 'Federated States of Micronesia', 'Florida', 'Georgia', 'Guam', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Marshall Islands', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Northern Mariana Islands', 'Ohio', 'Oklahoma', 'Oregon', 'Palau', 'Pennsylvania', 'Puerto Rico', 'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virgin Island', 'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'];
+let tinyCount = 0;
 
 export const makeVenueValue = (value: string) => {
   const parsed = HtmlReactParser(value);
@@ -65,12 +66,14 @@ export const columns: GridColumns = [
   {
     field: 'location',
     headerName: 'Location',
-    width: 150,
+    minWidth: 160,
+    flex: 1,
     editable: false,
     renderCell: (params: GridRenderCellParams) => {
       const { row: { location, city, usState } } = params;
       if (location) return location;
-      return `${city}, ${usState}`;
+      if (city) return `${city}, ${usState}`;
+      return '';
     },
   },
   makeVenue(),
@@ -101,22 +104,6 @@ export const orderGigs = (gigs: IGig[], setGigsInOrder: { (arg0: IGig[]): void; 
   setPageSize(futureGigs.length - 1 > 5 ? futureGigs.length - 1 : 5);
 };
 
-export const checkDisabled = (city:string, usState:string, dateTime:Date | null, venue:string) => {
-  let isDisabled = true;
-  if (city && usState && dateTime && venue) isDisabled = false;
-  return isDisabled;
-};
-
-export const clickToEdit = (
-  setEditGig:(arg0:GridRowParams['row'])=>void,
-  setRowData:(arg0:GridRowParams['row'])=>void,
-  isAdmin:boolean,
-  rowData:GridRowParams['row'],
-) => {
-  console.log(rowData);
-  if (isAdmin) { setEditGig(rowData); setRowData(rowData); }
-};
-
 export function Gigs({ isAdmin }: { isAdmin: boolean }): JSX.Element {
   const [showDialog, setShowDialog] = useState(false);
   const { gigs, getGigs } = useContext(DataContext);
@@ -129,7 +116,7 @@ export function Gigs({ isAdmin }: { isAdmin: boolean }): JSX.Element {
   const [usState, setUSstate] = useState('Virginia');
   const [tickets, setTickets] = useState('');
   const [editGig, setEditGig] = useState(utils.defaultGig);
-  const [rowData, setRowData] = useState(utils.defaultGig);
+  const [editChanged, setEditChanged] = useState(false);
   useEffect(() => { orderGigs(gigs, setGigsInOrder, setPageSize); }, [gigs]);
   return (
     <div
@@ -158,7 +145,10 @@ export function Gigs({ isAdmin }: { isAdmin: boolean }): JSX.Element {
       <div style={{ height: '500px', width: '100%' }}>
         <DataGrid
           className={isAdmin ? 'adminGrid' : ''}
-          onRowClick={(rowParams) => clickToEdit(setEditGig, setRowData, isAdmin, rowParams.row)}
+          onRowClick={(rowParams) => {
+            tinyCount = 0;
+            utils.clickToEdit(setEditGig, isAdmin, rowParams.row);
+          }}
           rows={gigsInOrder}
           columns={columns}
           pageSize={pageSize}
@@ -178,6 +168,7 @@ export function Gigs({ isAdmin }: { isAdmin: boolean }): JSX.Element {
           </DialogContentText>
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <DateTimePicker
+              className="createDatetime"
               label="* Date and Time"
               value={dateTime}
               onChange={(newValue: Date | null) => { setDateTime(newValue); return newValue; }}
@@ -249,7 +240,7 @@ export function Gigs({ isAdmin }: { isAdmin: boolean }): JSX.Element {
             Cancel
           </Button>
           <Button
-            disabled={checkDisabled(city, usState, dateTime, venue)}
+            disabled={utils.checkNewDisabled(city, usState, dateTime, venue)}
             size="small"
             variant="contained"
             className="createGigButton"
@@ -274,31 +265,45 @@ export function Gigs({ isAdmin }: { isAdmin: boolean }): JSX.Element {
               className="editDateTime"
               label="* Date and Time"
               value={editGig.datetime}
-              onChange={(newValue: Date | null) => { setEditGig({ ...editGig, datetime: newValue }); return newValue; }}
+              onChange={(newValue: Date | null) => {
+                setEditChanged(true);
+                setEditGig({ ...editGig, datetime: newValue }); return newValue;
+              }}
               renderInput={(params) => <TextField className="dateTimeInput" {...params} />}
             />
           </LocalizationProvider>
           <p style={{ fontSize: '9pt', marginBottom: '0px' }}>* Venue</p>
-          <Editor
-            id="edit-venue"
-            value={editGig.venue}
-            apiKey={process.env.TINY_KEY}
-            init={{
-              height: 500,
-              menubar: 'insert tools',
-              menu: { format: { title: 'Format', items: 'forecolor backcolor' } },
-              plugins: [
-                'advlist autolink lists link image charmap print preview anchor',
-                'searchreplace visualblocks code fullscreen',
-                'insertdatetime media table paste code help wordcount',
-              ],
-              toolbar:
+          {!editGig._id ? null : (
+            <Editor
+              id="edit-venue"
+              value={editGig.venue}
+              apiKey={process.env.TINY_KEY}
+              init={{
+                height: 500,
+                menubar: 'insert tools',
+                menu: { format: { title: 'Format', items: 'forecolor backcolor' } },
+                plugins: [
+                  'advlist autolink lists link image charmap print preview anchor',
+                  'searchreplace visualblocks code fullscreen',
+                  'insertdatetime media table paste code help wordcount',
+                ],
+                toolbar:
                 'undo redo | formatselect | bold italic backcolor forecolor |'
                 + 'alignleft aligncenter alignright alignjustify |'
                 + 'bullist numlist outdent indent | removeformat | help',
-            }}
-            onEditorChange={(text) => { setEditGig({ ...editGig, venue: text }); return text; }}
-          />
+              }}
+              onEditorChange={(text:string) => {
+                console.log(text);
+                tinyCount += 1;
+                console.log(tinyCount);
+                if (text !== editGig.venue && tinyCount > 1) {
+                  setEditChanged(true);
+                  setEditGig({ ...editGig, venue: text }); return text;
+                }
+                return '';
+              }}
+            />
+          )}
           <TextField
             autoFocus
             margin="normal"
@@ -308,7 +313,10 @@ export function Gigs({ isAdmin }: { isAdmin: boolean }): JSX.Element {
             fullWidth
             variant="standard"
             value={editGig.city}
-            onChange={(evt) => { setEditGig({ ...editGig, city: evt.target.value }); return evt.target.value; }}
+            onChange={(evt) => {
+              setEditChanged(true);
+              setEditGig({ ...editGig, city: evt.target.value }); return evt.target.value;
+            }}
           />
           <FormControl fullWidth sx={{ marginTop: '20px' }}>
             <InputLabel id="edit-us-state-label">* State</InputLabel>
@@ -317,7 +325,10 @@ export function Gigs({ isAdmin }: { isAdmin: boolean }): JSX.Element {
               id="edit-us-state"
               value={editGig.usState}
               label="* State"
-              onChange={(evt) => { setEditGig({ ...editGig, usState: evt.target.value }); return evt.target.value; }}
+              onChange={(evt) => {
+                setEditChanged(true);
+                setEditGig({ ...editGig, usState: evt.target.value }); return evt.target.value;
+              }}
             >
               {usStateOptions.map((s: string) => <MenuItem key={s} value={s}>{s}</MenuItem>)}
             </Select>
@@ -331,7 +342,10 @@ export function Gigs({ isAdmin }: { isAdmin: boolean }): JSX.Element {
             fullWidth
             variant="standard"
             value={editGig.tickets}
-            onChange={(evt) => { setEditGig({ ...editGig, tickets: evt.target.value }); return evt.target.value; }}
+            onChange={(evt) => {
+              setEditChanged(true);
+              setEditGig({ ...editGig, tickets: evt.target.value }); return evt.target.value;
+            }}
           />
         </DialogContent>
         <DialogActions>
@@ -339,17 +353,19 @@ export function Gigs({ isAdmin }: { isAdmin: boolean }): JSX.Element {
             size="small"
             className="cancelEditGigButton"
             onClick={() => {
+              setEditChanged(false);
+              tinyCount = 0;
               setEditGig(utils.defaultGig); return false;
             }}
           >
             Cancel
           </Button>
           <Button
-            disabled={JSON.stringify(editGig) === JSON.stringify(rowData)}
+            disabled={utils.checkUpdateDisabled(editGig, editChanged)}
             size="small"
             variant="contained"
             className="updateGigButton"
-            onClick={() => { utils.updateGig(getGigs, setEditGig, editGig); return true; }}
+            onClick={() => { utils.updateGig(getGigs, setEditGig, setEditChanged, editGig); return true; }}
           >
             Update
           </Button>
