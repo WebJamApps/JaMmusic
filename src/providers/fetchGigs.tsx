@@ -8,7 +8,7 @@ export const defaultGig: IGig = {
   venue: '',
   location: '',
   id: 0,
-  datetime: '',
+  datetime: null,
 };
 
 const validateGigsArr = (

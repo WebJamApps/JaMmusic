@@ -1,10 +1,9 @@
-import type { GridRowParams } from '@mui/x-data-grid';
+import type { GridEnrichedColDef, GridRenderCellParams, GridRowParams } from '@mui/x-data-grid';
+import HtmlReactParser from 'html-react-parser';
 import scc from 'socketcluster-client';
 import commonUtils from 'src/lib/commonUtils';
-
-const defaultGig = {
-  _id: '', datetime: null as Date | null, venue: '', city: '', usState: '', tickets: '',
-};
+import type { IGig } from 'src/providers/Data.provider';
+import { defaultGig } from 'src/providers/fetchGigs';
 
 const createGig = async (
   getGigs: () => void,
@@ -113,6 +112,61 @@ async function deleteGig(
   } return false;
 }
 
+export const orderGigs = (
+  gigs: IGig[],
+  setGigsInOrder: { (arg0: IGig[]): void; },
+  setPageSize: (arg0: number) => void,
+) => {
+  const now = new Date();
+  now.setDate(now.getDate() - 1);
+  const current = now.toISOString();
+  const futureGigs = gigs.filter((g) => typeof g.datetime === 'string' && g.datetime >= current);
+  const pastGigs = gigs.filter((g) => typeof g.datetime === 'string' && g.datetime < current);
+  const sortedFuture = futureGigs.sort((a, b) => {
+    if (a.datetime && b.datetime) {
+      if (a.datetime > b.datetime) return 1;
+      if (a.datetime < b.datetime) return -1;
+    }
+    return 0;
+  });
+  sortedFuture.push({
+    ...defaultGig, venue: 'Our Past Performances', id: 999, tickets: ' ',
+  });
+  setGigsInOrder(sortedFuture.concat(pastGigs));
+  setPageSize(futureGigs.length - 1 > 5 ? futureGigs.length - 1 : 5);
+};
+
+const makeDateValue = (datetime:string) => new Date(datetime).toLocaleString().split(',')[0];
+
+const makeTimeValue = (datetime:string) => new Date(datetime).toLocaleString().split(',')[1];
+
+const makeVenueValue = (value: string) => {
+  const parsed = HtmlReactParser(value);
+  if (value === 'Our Past Performances') return <span className="ourPastPerformances">{parsed}</span>;
+  return <span>{parsed}</span>;
+};
+
+const makeVenue = (): GridEnrichedColDef => (
+  {
+    field: 'venue',
+    headerName: 'Venue',
+    minWidth: 400,
+    flex: 1,
+    editable: false,
+    renderCell: (params: GridRenderCellParams) => makeVenueValue(params.value),
+  }
+);
+
 export default {
-  createGig, updateGig, defaultGig, clickToEdit, checkNewDisabled, checkUpdateDisabled, deleteGig,
+  makeVenue,
+  makeVenueValue,
+  makeDateValue,
+  makeTimeValue,
+  createGig,
+  updateGig,
+  clickToEdit,
+  checkNewDisabled,
+  checkUpdateDisabled,
+  deleteGig,
+  orderGigs,
 };
