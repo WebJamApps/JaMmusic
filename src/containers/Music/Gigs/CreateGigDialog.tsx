@@ -68,7 +68,6 @@ export function CreateGigDialog({
         />
         <TextField
           autoFocus
-          id="create-city"
           label="* City"
           type="text"
           fullWidth
@@ -89,7 +88,6 @@ export function CreateGigDialog({
         </FormControl>
         <TextField
           autoFocus
-          id="create-tickets"
           label="Tickets"
           type="text"
           fullWidth
