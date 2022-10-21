@@ -84,6 +84,35 @@ const checkUpdateDisabled = (editGig: GridRowParams['row'], editChanged:boolean)
   return disabled;
 };
 
+async function deleteGig(
+  tourId: string,
+  getGigs: () => void,
+  setEditGig: (arg0: typeof defaultGig) => void,
+  setEditChanged:(arg0:boolean)=>void,
+): Promise<boolean> { // eslint-disable-next-line no-restricted-globals
+  const result = confirm('Deleting Gig, are you sure?');// eslint-disable-line no-alert
+  if (result) {
+    try {
+      const persistRoot = sessionStorage.getItem('persist:root') || '';
+      const { auth } = JSON.parse(persistRoot);
+      const { token } = JSON.parse(auth);
+      const socket = scc.create({
+        hostname: process.env.SCS_HOST,
+        port: Number(process.env.SCS_PORT),
+        autoConnect: true,
+        secure: process.env.SOCKETCLUSTER_SECURE !== 'false',
+      });
+      const tour = { tourId };
+      socket.transmit('deleteTour', { tour, token });
+      await commonUtils.delay(2);
+      setEditGig(defaultGig);
+      setEditChanged(false);
+      getGigs();
+      return true;
+    } catch (err) { console.log((err as Error).message); return false; }
+  } return false;
+}
+
 export default {
-  createGig, updateGig, defaultGig, clickToEdit, checkNewDisabled, checkUpdateDisabled,
+  createGig, updateGig, defaultGig, clickToEdit, checkNewDisabled, checkUpdateDisabled, deleteGig,
 };

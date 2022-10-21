@@ -233,13 +233,6 @@ export function Gigs({ isAdmin }: { isAdmin: boolean }): JSX.Element {
         </DialogContent>
         <DialogActions>
           <Button
-            size="small"
-            className="cancelCreateButton"
-            onClick={() => { setShowDialog(false); return false; }}
-          >
-            Cancel
-          </Button>
-          <Button
             disabled={utils.checkNewDisabled(city, usState, dateTime, venue)}
             size="small"
             variant="contained"
@@ -247,6 +240,13 @@ export function Gigs({ isAdmin }: { isAdmin: boolean }): JSX.Element {
             onClick={() => { utils.createGig(getGigs, setShowDialog, dateTime, venue, city, usState, tickets); return true; }}
           >
             Create
+          </Button>
+          <Button
+            size="small"
+            className="cancelCreateButton"
+            onClick={() => { setShowDialog(false); return false; }}
+          >
+            Cancel
           </Button>
         </DialogActions>
       </Dialog>
@@ -350,24 +350,40 @@ export function Gigs({ isAdmin }: { isAdmin: boolean }): JSX.Element {
         </DialogContent>
         <DialogActions>
           <Button
+            disabled={utils.checkUpdateDisabled(editGig, editChanged)}
+            size="small"
+            variant="contained"
+            className="updateGigButton"
+            onClick={() => {
+              tinyCount = 0;
+              utils.updateGig(getGigs, setEditGig, setEditChanged, editGig);
+            }}
+          >
+            Update
+          </Button>
+          <Button
+            size="small"
+            className="deleteGigButton"
+            sx={{ color: 'red' }}
+            onClick={() => {
+              setEditChanged(false);
+              tinyCount = 0;
+              utils.deleteGig(editGig._id, getGigs, setEditGig, setEditChanged);
+            }}
+          >
+            Delete
+          </Button>
+          <Button
             size="small"
             className="cancelEditGigButton"
             onClick={() => {
               setEditChanged(false);
               tinyCount = 0;
-              setEditGig(utils.defaultGig); return false;
+              setEditGig(utils.defaultGig);
+              return false;
             }}
           >
             Cancel
-          </Button>
-          <Button
-            disabled={utils.checkUpdateDisabled(editGig, editChanged)}
-            size="small"
-            variant="contained"
-            className="updateGigButton"
-            onClick={() => { utils.updateGig(getGigs, setEditGig, setEditChanged, editGig); return true; }}
-          >
-            Update
           </Button>
         </DialogActions>
       </Dialog>
