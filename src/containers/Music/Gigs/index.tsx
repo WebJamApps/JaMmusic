@@ -165,7 +165,6 @@ export function Gigs({ isAdmin }: { isAdmin: boolean }): JSX.Element {
             />
           )}
           <TextField
-            id="edit-city"
             label="* City"
             type="text"
             fullWidth
@@ -191,7 +190,6 @@ export function Gigs({ isAdmin }: { isAdmin: boolean }): JSX.Element {
             </Select>
           </FormControl>
           <TextField
-            id="edit-tickets"
             label="Tickets"
             type="text"
             fullWidth
