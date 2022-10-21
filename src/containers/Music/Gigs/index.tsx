@@ -165,13 +165,10 @@ export function Gigs({ isAdmin }: { isAdmin: boolean }): JSX.Element {
             />
           )}
           <TextField
-            autoFocus
-            margin="normal"
             id="edit-city"
             label="* City"
             type="text"
             fullWidth
-            variant="standard"
             value={editGig.city}
             onChange={(evt) => {
               setEditChanged(true);
@@ -194,13 +191,10 @@ export function Gigs({ isAdmin }: { isAdmin: boolean }): JSX.Element {
             </Select>
           </FormControl>
           <TextField
-            autoFocus
-            margin="dense"
             id="edit-tickets"
             label="Tickets"
             type="text"
             fullWidth
-            variant="standard"
             value={editGig.tickets}
             onChange={(evt) => {
               setEditChanged(true);

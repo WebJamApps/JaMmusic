@@ -68,12 +68,10 @@ export function CreateGigDialog({
         />
         <TextField
           autoFocus
-          margin="normal"
           id="create-city"
           label="* City"
           type="text"
           fullWidth
-          variant="standard"
           value={city}
           onChange={(evt) => { setCity(evt.target.value); return evt.target.value; }}
         />
@@ -91,12 +89,10 @@ export function CreateGigDialog({
         </FormControl>
         <TextField
           autoFocus
-          margin="dense"
           id="create-tickets"
           label="Tickets"
           type="text"
           fullWidth
-          variant="standard"
           value={tickets}
           onChange={(evt) => { setTickets(evt.target.value); return evt.target.value; }}
         />
