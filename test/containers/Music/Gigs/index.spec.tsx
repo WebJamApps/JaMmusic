@@ -26,8 +26,8 @@ describe('Gigs', () => {
     // expect(cityEditor.props.onChange({ target: { value: 'city' } })).toBe('city');
     const stateEditor = gigs.findByProps({ id: 'create-us-state' });
     expect(stateEditor.props.onChange({ target: { value: 'Georgia' } })).toBe('Georgia');
-    const ticketsEditor = gigs.findByProps({ id: 'create-tickets' });
-    expect(ticketsEditor.props.onChange({ target: { value: 'tickets' } })).toBe('tickets');
+    // const ticketsEditor = gigs.findByProps({ id: 'create-tickets' });
+    // expect(ticketsEditor.props.onChange({ target: { value: 'tickets' } })).toBe('tickets');
   });
   // it('makeVenue', () => {
   //   const columnDef:any = makeVenue();
