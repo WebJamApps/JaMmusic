@@ -65,6 +65,35 @@ export const columns: GridColumns = [
   },
 ];
 
+interface InewTextProps {
+  value:'city' | 'tickets',
+  editGig: typeof defaultGig,
+  setEditChanged:(arg0:boolean)=>void,
+  setEditGig:(arg0:typeof defaultGig)=>void,
+  required:boolean
+}
+const NewText = (props:InewTextProps) => {
+  const {
+    value, editGig, setEditChanged, setEditGig, required,
+  } = props;
+  let label = required ? '* ' : '';
+  label = label + value.charAt(0).toUpperCase() + value.slice(1);
+  return (
+    <TextField
+      label={label}
+      type="text"
+      fullWidth
+    // eslint-disable-next-line security/detect-object-injection
+      value={editGig[value]}
+      onChange={(evt) => {
+        setEditChanged(true);
+        setEditGig({ ...editGig, [value]: evt.target.value });
+        return evt.target.value;
+      }}
+    />
+  );
+};
+
 export function Gigs({ isAdmin }: { isAdmin: boolean }): JSX.Element {
   const [showDialog, setShowDialog] = useState(false);
   const { gigs, getGigs } = useContext(DataContext);
@@ -164,16 +193,7 @@ export function Gigs({ isAdmin }: { isAdmin: boolean }): JSX.Element {
               }}
             />
           )}
-          <TextField
-            label="* City"
-            type="text"
-            fullWidth
-            value={editGig.city}
-            onChange={(evt) => {
-              setEditChanged(true);
-              setEditGig({ ...editGig, city: evt.target.value }); return evt.target.value;
-            }}
-          />
+          <NewText value="city" editGig={editGig} setEditChanged={setEditChanged} setEditGig={setEditGig} required />
           <FormControl fullWidth sx={{ marginTop: '20px' }}>
             <InputLabel id="edit-us-state-label">* State</InputLabel>
             <Select
@@ -189,16 +209,7 @@ export function Gigs({ isAdmin }: { isAdmin: boolean }): JSX.Element {
               {usStateOptions.map((s: string) => <MenuItem key={s} value={s}>{s}</MenuItem>)}
             </Select>
           </FormControl>
-          <TextField
-            label="Tickets"
-            type="text"
-            fullWidth
-            value={editGig.tickets}
-            onChange={(evt) => {
-              setEditChanged(true);
-              setEditGig({ ...editGig, tickets: evt.target.value }); return evt.target.value;
-            }}
-          />
+          <NewText value="tickets" editGig={editGig} setEditChanged={setEditChanged} setEditGig={setEditGig} required={false} />
         </DialogContent>
         <DialogActions>
           <Button
