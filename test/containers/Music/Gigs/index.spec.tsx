@@ -22,8 +22,8 @@ describe('Gigs', () => {
     expect(dtPicker.props.renderInput().props.className).toBe('dateTimeInput');
     const venueEditor = gigs.findByProps({ id: 'create-venue' });
     expect(venueEditor.props.onEditorChange('venue')).toBe('venue');
-    const cityEditor = gigs.findByProps({ id: 'create-city' });
-    expect(cityEditor.props.onChange({ target: { value: 'city' } })).toBe('city');
+    // const cityEditor = gigs.findByProps({ id: 'create-city' });
+    // expect(cityEditor.props.onChange({ target: { value: 'city' } })).toBe('city');
     const stateEditor = gigs.findByProps({ id: 'create-us-state' });
     expect(stateEditor.props.onChange({ target: { value: 'Georgia' } })).toBe('Georgia');
     const ticketsEditor = gigs.findByProps({ id: 'create-tickets' });

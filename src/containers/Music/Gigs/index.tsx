@@ -72,7 +72,7 @@ interface InewTextProps {
   setEditGig:(arg0:typeof defaultGig)=>void,
   required:boolean
 }
-const NewText = (props:InewTextProps) => {
+const EditText = (props:InewTextProps) => {
   const {
     value, editGig, setEditChanged, setEditGig, required,
   } = props;
@@ -83,6 +83,7 @@ const NewText = (props:InewTextProps) => {
       label={label}
       type="text"
       fullWidth
+      sx={{ marginTop: '20px' }}
     // eslint-disable-next-line security/detect-object-injection
       value={editGig[value]}
       onChange={(evt) => {
@@ -163,7 +164,7 @@ export function Gigs({ isAdmin }: { isAdmin: boolean }): JSX.Element {
               renderInput={(params) => <TextField className="dateTimeInput" {...params} />}
             />
           </LocalizationProvider>
-          <p style={{ fontSize: '9pt', marginBottom: '0px' }}>* Venue</p>
+          <p className="venueLabel">* Venue</p>
           {!editGig._id ? null : (
             <Editor
               id="edit-venue"
@@ -193,7 +194,7 @@ export function Gigs({ isAdmin }: { isAdmin: boolean }): JSX.Element {
               }}
             />
           )}
-          <NewText value="city" editGig={editGig} setEditChanged={setEditChanged} setEditGig={setEditGig} required />
+          <EditText value="city" editGig={editGig} setEditChanged={setEditChanged} setEditGig={setEditGig} required />
           <FormControl fullWidth sx={{ marginTop: '20px' }}>
             <InputLabel id="edit-us-state-label">* State</InputLabel>
             <Select
@@ -209,7 +210,7 @@ export function Gigs({ isAdmin }: { isAdmin: boolean }): JSX.Element {
               {usStateOptions.map((s: string) => <MenuItem key={s} value={s}>{s}</MenuItem>)}
             </Select>
           </FormControl>
-          <NewText value="tickets" editGig={editGig} setEditChanged={setEditChanged} setEditGig={setEditGig} required={false} />
+          <EditText value="tickets" editGig={editGig} setEditChanged={setEditChanged} setEditGig={setEditGig} required={false} />
         </DialogContent>
         <DialogActions>
           <Button
