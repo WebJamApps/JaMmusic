@@ -45,7 +45,7 @@ export function CreateGigDialog({
             renderInput={(params) => <TextField className="dateTimeInput" {...params} />}
           />
         </LocalizationProvider>
-        <p style={{ fontSize: '9pt', marginBottom: '0px' }}>* Venue</p>
+        <p className="venueLabel">* Venue</p>
         <Editor
           id="create-venue"
           value={venue}
@@ -67,7 +67,7 @@ export function CreateGigDialog({
           onEditorChange={(text) => { setVenue(text); return text; }}
         />
         <TextField
-          autoFocus
+          sx={{ marginTop: '20px' }}
           label="* City"
           type="text"
           fullWidth
@@ -87,7 +87,7 @@ export function CreateGigDialog({
           </Select>
         </FormControl>
         <TextField
-          autoFocus
+          sx={{ marginTop: '20px' }}
           label="Tickets"
           type="text"
           fullWidth
