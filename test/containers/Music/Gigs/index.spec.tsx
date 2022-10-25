@@ -94,7 +94,7 @@ describe('Gigs', () => {
   });
   it('renders EditText and handles onChange', () => {
     const props = {
-      key: 'city' as any, editGig: {} as any, setEditGig: jest.fn(), setEditChanged: jest.fn(), required: true,
+      objKey: 'city' as any, editGig: {} as any, setEditGig: jest.fn(), setEditChanged: jest.fn(), required: true,
     };
     const editText = renderer.create(<EditText {...props} />).root;
     editText.findByProps({ type: 'text' }).props.onChange({ target: { value: 'city' } });
