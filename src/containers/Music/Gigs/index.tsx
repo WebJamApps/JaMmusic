@@ -65,31 +65,67 @@ export const columns: GridColumns = [
   },
 ];
 
-interface InewTextProps {
-  value:'city' | 'tickets',
+interface IeditTextProps {
+  objKey: 'city' | 'tickets',
   editGig: typeof defaultGig,
-  setEditChanged:(arg0:boolean)=>void,
-  setEditGig:(arg0:typeof defaultGig)=>void,
-  required:boolean
+  setEditChanged: (arg0: boolean) => void,
+  setEditGig: (arg0: typeof defaultGig) => void,
+  required: boolean
 }
-const EditText = (props:InewTextProps) => {
+export const EditText = (props: IeditTextProps) => {
   const {
-    value, editGig, setEditChanged, setEditGig, required,
+    objKey, editGig, setEditChanged, setEditGig, required,
   } = props;
   let label = required ? '* ' : '';
-  label = label + value.charAt(0).toUpperCase() + value.slice(1);
+  label = label + objKey.charAt(0).toUpperCase() + objKey.slice(1);
   return (
     <TextField
       label={label}
       type="text"
       fullWidth
       sx={{ marginTop: '20px' }}
-    // eslint-disable-next-line security/detect-object-injection
-      value={editGig[value]}
+      // eslint-disable-next-line security/detect-object-injection
+      value={editGig[objKey]}
       onChange={(evt) => {
         setEditChanged(true);
-        setEditGig({ ...editGig, [value]: evt.target.value });
-        return evt.target.value;
+        setEditGig({ ...editGig, [objKey]: evt.target.value });
+      }}
+    />
+  );
+};
+
+interface IvenueEditorProps {
+  editGig: typeof defaultGig, setEditChanged: (arg0: boolean) => void,
+  setEditGig: (arg0: typeof defaultGig) => void
+}
+export const VenueEditor = ({ editGig, setEditChanged, setEditGig }: IvenueEditorProps) => {
+  if (!editGig._id) return null;
+  return (
+    <Editor
+      id="edit-venue"
+      value={editGig.venue}
+      apiKey={process.env.TINY_KEY}
+      init={{
+        height: 500,
+        menubar: 'insert tools',
+        menu: { format: { title: 'Format', items: 'forecolor backcolor' } },
+        plugins: [
+          'advlist autolink lists link image charmap print preview anchor',
+          'searchreplace visualblocks code fullscreen',
+          'insertdatetime media table paste code help wordcount',
+        ],
+        toolbar:
+          'undo redo | formatselect | bold italic backcolor forecolor |'
+          + 'alignleft aligncenter alignright alignjustify |'
+          + 'bullist numlist outdent indent | removeformat | help',
+      }}
+      onEditorChange={(text: string) => {
+        tinyCount += 1;
+        if (text !== editGig.venue && tinyCount > 1) {
+          setEditChanged(true);
+          setEditGig({ ...editGig, venue: text }); return text;
+        }
+        return '';
       }}
     />
   );
@@ -165,36 +201,8 @@ export function Gigs({ isAdmin }: { isAdmin: boolean }): JSX.Element {
             />
           </LocalizationProvider>
           <p className="venueLabel">* Venue</p>
-          {!editGig._id ? null : (
-            <Editor
-              id="edit-venue"
-              value={editGig.venue}
-              apiKey={process.env.TINY_KEY}
-              init={{
-                height: 500,
-                menubar: 'insert tools',
-                menu: { format: { title: 'Format', items: 'forecolor backcolor' } },
-                plugins: [
-                  'advlist autolink lists link image charmap print preview anchor',
-                  'searchreplace visualblocks code fullscreen',
-                  'insertdatetime media table paste code help wordcount',
-                ],
-                toolbar:
-                'undo redo | formatselect | bold italic backcolor forecolor |'
-                + 'alignleft aligncenter alignright alignjustify |'
-                + 'bullist numlist outdent indent | removeformat | help',
-              }}
-              onEditorChange={(text:string) => {
-                tinyCount += 1;
-                if (text !== editGig.venue && tinyCount > 1) {
-                  setEditChanged(true);
-                  setEditGig({ ...editGig, venue: text }); return text;
-                }
-                return '';
-              }}
-            />
-          )}
-          <EditText value="city" editGig={editGig} setEditChanged={setEditChanged} setEditGig={setEditGig} required />
+          <VenueEditor editGig={editGig} setEditChanged={setEditChanged} setEditGig={setEditGig} />
+          <EditText objKey="city" editGig={editGig} setEditChanged={setEditChanged} setEditGig={setEditGig} required />
           <FormControl fullWidth sx={{ marginTop: '20px' }}>
             <InputLabel id="edit-us-state-label">* State</InputLabel>
             <Select
@@ -210,7 +218,7 @@ export function Gigs({ isAdmin }: { isAdmin: boolean }): JSX.Element {
               {usStateOptions.map((s: string) => <MenuItem key={s} value={s}>{s}</MenuItem>)}
             </Select>
           </FormControl>
-          <EditText value="tickets" editGig={editGig} setEditChanged={setEditChanged} setEditGig={setEditGig} required={false} />
+          <EditText objKey="tickets" editGig={editGig} setEditChanged={setEditChanged} setEditGig={setEditGig} required={false} />
         </DialogContent>
         <DialogActions>
           <Button
