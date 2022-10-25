@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import renderer from 'react-test-renderer';
 import {
-  Gigs, columns, EditText,
+  Gigs, columns, EditText, VenueEditor,
 } from 'src/containers/Music/Gigs';
 import utils from 'src/containers/Music/Gigs/gigs.utils';
 
@@ -30,7 +30,9 @@ describe('Gigs', () => {
     gigs.findByProps({ className: 'adminGrid' }).props.onRowClick({ row: {} });
     expect(utils.clickToEdit).toHaveBeenCalled();
     expect(gigs.findByProps({ className: 'editGigDialog' }).props.onClose()).toBe(false);
-    expect(gigs.findByProps({ className: 'editDateTime' }).props.onChange(null)).toBe(null);
+    const editDateTime = gigs.findByProps({ className: 'editDateTime' });
+    expect(editDateTime.props.onChange(null)).toBe(null);
+    expect(editDateTime.props.renderInput({}).props.className).toBe('dateTimeInput');
     expect(gigs.findByProps({ id: 'edit-us-state' }).props.onChange({ target: { value: 'Virginia' } })).toBe('Virginia');
     gigs.findByProps({ className: 'updateGigButton' }).props.onClick();
     expect(utils.updateGig).toHaveBeenCalled();
@@ -99,5 +101,20 @@ describe('Gigs', () => {
     const editText = renderer.create(<EditText {...props} />).root;
     editText.findByProps({ type: 'text' }).props.onChange({ target: { value: 'city' } });
     expect(props.setEditGig).toHaveBeenCalledWith({ city: 'city' });
+  });
+  it('renders VenueEditor and handles change event', () => {
+    const props = {
+      editGig: { _id: 'id' } as any, setEditGig: jest.fn(), setEditChanged: jest.fn(),
+    };
+    const venueEditor = renderer.create(<VenueEditor {...props} />).root;
+    expect(venueEditor.findByProps({ id: 'edit-venue' }).props.onEditorChange('venue')).toBe('');
+    expect(venueEditor.findByProps({ id: 'edit-venue' }).props.onEditorChange('venue')).toBe('venue');
+  });
+  it('renders VenueEditor as null', () => {
+    const props = {
+      editGig: { } as any, setEditGig: jest.fn(), setEditChanged: jest.fn(),
+    };
+    const venueEditor = renderer.create(<VenueEditor {...props} />).toJSON();
+    expect(venueEditor).toBeNull();
   });
 });
