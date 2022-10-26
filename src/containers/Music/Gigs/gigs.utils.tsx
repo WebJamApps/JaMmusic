@@ -108,7 +108,7 @@ async function deleteGig(
       setEditChanged(false);
       getGigs();
       return true;
-    } catch (err) { console.log((err as Error).message); return false; }
+    } catch (err) { console.log((err as Error)); return false; }
   } return false;
 }
 

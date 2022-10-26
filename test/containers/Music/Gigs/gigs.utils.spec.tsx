@@ -1,4 +1,5 @@
 import utils from 'src/containers/Music/Gigs/gigs.utils';
+import commonUtils from 'src/lib/commonUtils';
 import type { IGig } from 'src/providers/Data.provider';
 
 describe('gigs.utils', () => {
@@ -46,5 +47,25 @@ describe('gigs.utils', () => {
     ] as IGig[];
     utils.orderGigs(gigs, setGigsInOrder, setPageSize);
     expect(setPageSize).toHaveBeenCalledWith(12);
+  });
+  it('makeVenue', () => {
+    const venue:any = utils.makeVenue();
+    const result = venue.renderCell({ value: 'value' });
+    expect(result.type).toBe('span');
+  });
+  it('deleteGig fails', async () => {
+    commonUtils.delay = jest.fn();
+    global.confirm = jest.fn(() => true);
+    const result = await utils.deleteGig('id', jest.fn(), jest.fn(), jest.fn());
+    expect(result).toBe(false);
+  });
+  it('deleteGig successful', async () => {
+    commonUtils.delay = jest.fn();
+    const auth = JSON.stringify({ token: 'token' });
+    const persistRoot = JSON.stringify({ auth });
+    Storage.prototype.getItem = jest.fn(() => persistRoot);
+    global.confirm = jest.fn(() => true);
+    const result = await utils.deleteGig('id', jest.fn(), jest.fn(), jest.fn());
+    expect(result).toBe(true);
   });
 });
