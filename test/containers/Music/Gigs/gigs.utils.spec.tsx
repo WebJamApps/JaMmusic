@@ -68,4 +68,55 @@ describe('gigs.utils', () => {
     const result = await utils.deleteGig('id', jest.fn(), jest.fn(), jest.fn());
     expect(result).toBe(true);
   });
+  it('deleteGig returns false', async () => {
+    commonUtils.delay = jest.fn();
+    const auth = JSON.stringify({ token: 'token' });
+    const persistRoot = JSON.stringify({ auth });
+    Storage.prototype.getItem = jest.fn(() => persistRoot);
+    global.confirm = jest.fn(() => false);
+    const result = await utils.deleteGig('id', jest.fn(), jest.fn(), jest.fn());
+    expect(result).toBe(false);
+  });
+  it('updateGig successful', async () => {
+    commonUtils.delay = jest.fn();
+    const getGigs = jest.fn();
+    const auth = JSON.stringify({ token: 'token' });
+    const persistRoot = JSON.stringify({ auth });
+    Storage.prototype.getItem = jest.fn(() => persistRoot);
+    await utils.updateGig(getGigs, jest.fn(), jest.fn(), {} as any);
+    expect(getGigs).toHaveBeenCalled();
+  });
+  it('updateGig catches', async () => {
+    const getGigs = jest.fn();
+    await utils.updateGig(getGigs, jest.fn(), jest.fn(), {} as any);
+    expect(getGigs).not.toHaveBeenCalled();
+  });
+  it('createGig successful', async () => {
+    commonUtils.delay = jest.fn();
+    const getGigs = jest.fn();
+    const auth = JSON.stringify({ token: 'token' });
+    const persistRoot = JSON.stringify({ auth });
+    Storage.prototype.getItem = jest.fn(() => persistRoot);
+    await utils.createGig(getGigs, jest.fn(), new Date(), 'item', 'item', 'item', 'item');
+    expect(getGigs).toHaveBeenCalled();
+  });
+  it('checkUpdateDisabled', () => {
+    const editGig = {
+      venue: 'venue', city: 'city', datetime: 'datetime', usState: 'usState',
+    };
+    expect(utils.checkUpdateDisabled(editGig, true)).toBe(false);
+  });
+  it('checkNewDisabled', () => {
+    expect(utils.checkNewDisabled('city', 'city', new Date(), 'city')).toBe(false);
+  });
+  it('clickToEdit when isAdmin', () => {
+    const setEditGig = jest.fn();
+    utils.clickToEdit(setEditGig, true, {});
+    expect(setEditGig).toHaveBeenCalled();
+  });
+  it('clickToEdit when not isAdmin', () => {
+    const setEditGig = jest.fn();
+    utils.clickToEdit(setEditGig, false, {});
+    expect(setEditGig).not.toHaveBeenCalled();
+  });
 });
