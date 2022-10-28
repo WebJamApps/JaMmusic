@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import renderer from 'react-test-renderer';
-import type { IGig } from 'src/providers/Data.provider';
 import {
-  Gigs, makeVenue, columns, makeVenueValue, orderGigs, checkDisabled,
+  Gigs, columns, EditText, VenueEditor,
 } from 'src/containers/Music/Gigs';
+import utils from 'src/containers/Music/Gigs/gigs.utils';
 
 describe('Gigs', () => {
   it('renders correctly when not isAdmin', () => {
@@ -11,29 +11,52 @@ describe('Gigs', () => {
     expect(JSON.stringify(gigs.toJSON()).includes('gigsDiv')).toBe(true);
   });
   it('renders when isAdmin and handles clicks', () => {
+    utils.clickToEdit = jest.fn();
+    utils.updateGig = jest.fn();
+    utils.deleteGig = jest.fn();
     const gigs = renderer.create(<Gigs isAdmin />).root;
     const result = gigs.findByProps({ className: 'showCreateDialog' }).props.onClick();
     expect(result).toBe(true);
     expect(gigs.findByProps({ className: 'createNewGigDialog' }).props.onClose()).toBe(false);
-    expect(gigs.findByProps({ className: 'cancelButton' }).props.onClick()).toBe(false);
-    expect(gigs.findByProps({ variant: 'contained' }).props.onClick()).toBe(true);
-    const dtPicker = gigs.findByProps({ label: '* Date and Time' });
+    expect(gigs.findByProps({ className: 'cancelCreateButton' }).props.onClick()).toBe(false);
+    expect(gigs.findByProps({ className: 'createGigButton' }).props.onClick()).toBe(true);
+    const dtPicker = gigs.findByProps({ className: 'createDatetime' });
     expect(dtPicker.props.onChange(null)).toBeNull();
     expect(dtPicker.props.renderInput().props.className).toBe('dateTimeInput');
-    const venueEditor = gigs.findByProps({ id: 'edit-venue' });
+    const venueEditor = gigs.findByProps({ id: 'create-venue' });
     expect(venueEditor.props.onEditorChange('venue')).toBe('venue');
-    const cityEditor = gigs.findByProps({ id: 'edit-city' });
-    expect(cityEditor.props.onChange({ target: { value: 'city' } })).toBe('city');
-    const stateEditor = gigs.findByProps({ id: 'select-us-state' });
+    const stateEditor = gigs.findByProps({ id: 'create-us-state' });
     expect(stateEditor.props.onChange({ target: { value: 'Georgia' } })).toBe('Georgia');
-    const ticketsEditor = gigs.findByProps({ id: 'edit-tickets' });
-    expect(ticketsEditor.props.onChange({ target: { value: 'tickets' } })).toBe('tickets');
+    gigs.findByProps({ className: 'adminGrid' }).props.onRowClick({ row: {} });
+    expect(utils.clickToEdit).toHaveBeenCalled();
+    expect(gigs.findByProps({ className: 'editGigDialog' }).props.onClose()).toBe(false);
+    const editDateTime = gigs.findByProps({ className: 'editDateTime' });
+    expect(editDateTime.props.onChange(null)).toBe(null);
+    expect(editDateTime.props.renderInput({}).props.className).toBe('dateTimeInput');
+    expect(gigs.findByProps({ id: 'edit-us-state' }).props.onChange({ target: { value: 'Virginia' } })).toBe('Virginia');
+    gigs.findByProps({ className: 'updateGigButton' }).props.onClick();
+    expect(utils.updateGig).toHaveBeenCalled();
+    gigs.findByProps({ className: 'deleteGigButton' }).props.onClick();
+    expect(utils.deleteGig).toHaveBeenCalled();
+    expect(gigs.findByProps({ className: 'cancelEditGigButton' }).props.onClick()).toBe(false);
   });
-  it('makeVenue', () => {
-    const columnDef:any = makeVenue();
-    const params:any = { value: '<div></div>' };
-    const cell:any = columnDef.renderCell(params);
-    expect(cell.type).toBe('span');
+  it('renders the location cell with city, state', () => {
+    const location:any = columns[2];
+    const params:any = { row: { location: '', city: 'Salem', usState: 'Virginia' } };
+    const cell:any = location.renderCell(params);
+    expect(cell).toBe('Salem, Virginia');
+  });
+  it('renders the location cell with location', () => {
+    const location:any = columns[2];
+    const params:any = { row: { location: 'location', city: 'Salem', usState: 'Virginia' } };
+    const cell:any = location.renderCell(params);
+    expect(cell).toBe('location');
+  });
+  it('renders the location cell when undefined', () => {
+    const location:any = columns[2];
+    const params:any = { row: { } };
+    const cell:any = location.renderCell(params);
+    expect(cell).toBe('');
   });
   it('makeTickets', () => {
     const tickets:any = columns[4];
@@ -71,51 +94,27 @@ describe('Gigs', () => {
     const cell:any = time.renderCell(params);
     expect(typeof cell).toBe('string');
   });
-  it('makeVenueValue when Our Past Performances', () => {
-    const result = makeVenueValue('Our Past Performances');
-    expect(result.type).toBe('span');
+  it('renders EditText and handles onChange', () => {
+    const props = {
+      objKey: 'city' as any, editGig: {} as any, setEditGig: jest.fn(), setEditChanged: jest.fn(), required: true,
+    };
+    const editText = renderer.create(<EditText {...props} />).root;
+    editText.findByProps({ type: 'text' }).props.onChange({ target: { value: 'city' } });
+    expect(props.setEditGig).toHaveBeenCalledWith({ city: 'city' });
   });
-  it('properly sets the order for gigs', () => {
-    const setGigsInOrder = jest.fn();
-    const today = new Date().toISOString();
-    let tomorrow:any, future:any, yesterday:any;
-    yesterday = new Date(today);
-    yesterday.setDate(yesterday.getDate() - 1);
-    yesterday = new Date(yesterday).toISOString();
-    tomorrow = new Date(today);
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    tomorrow = new Date(tomorrow).toISOString();
-    future = new Date(tomorrow);
-    future.setDate(future.getDate() + 2);
-    future = new Date(future).toISOString();
-    const gigs = [{ datetime: tomorrow }, { datetime: yesterday }, { datetime: future }, { datetime: today }, { datetime: tomorrow }] as IGig[];
-    orderGigs(gigs, setGigsInOrder, jest.fn());
-    expect(setGigsInOrder).toHaveBeenCalled();
+  it('renders VenueEditor and handles change event', () => {
+    const props = {
+      editGig: { _id: 'id' } as any, setEditGig: jest.fn(), setEditChanged: jest.fn(),
+    };
+    const venueEditor = renderer.create(<VenueEditor {...props} />).root;
+    expect(venueEditor.findByProps({ id: 'edit-venue' }).props.onEditorChange('venue')).toBe('');
+    expect(venueEditor.findByProps({ id: 'edit-venue' }).props.onEditorChange('venue')).toBe('venue');
   });
-  it('properly sets the order for gigs when we have many future gigs', () => {
-    const setGigsInOrder = jest.fn();
-    const setPageSize = jest.fn();
-    const today = new Date().toISOString();
-    let tomorrow:any, future:any, yesterday:any;
-    yesterday = new Date(today);
-    yesterday.setDate(yesterday.getDate() - 1);
-    yesterday = new Date(yesterday).toISOString();
-    tomorrow = new Date(today);
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    tomorrow = new Date(tomorrow).toISOString();
-    future = new Date(tomorrow);
-    future.setDate(future.getDate() + 2);
-    future = new Date(future).toISOString();
-    const gigs = [
-      { datetime: future }, { datetime: future },
-      { datetime: future }, { datetime: future }, { datetime: future },
-      { datetime: future }, { datetime: future }, { datetime: tomorrow },
-      { datetime: yesterday }, { datetime: future }, { datetime: today }, { datetime: tomorrow },
-    ] as IGig[];
-    orderGigs(gigs, setGigsInOrder, setPageSize);
-    expect(setPageSize).toHaveBeenCalledWith(12);
-  });
-  it('checkDisabled when false', () => {
-    expect(checkDisabled('city', 'state', new Date(), 'venue')).toBe(false);
+  it('renders VenueEditor as null', () => {
+    const props = {
+      editGig: { } as any, setEditGig: jest.fn(), setEditChanged: jest.fn(),
+    };
+    const venueEditor = renderer.create(<VenueEditor {...props} />).toJSON();
+    expect(venueEditor).toBeNull();
   });
 });
