@@ -6,9 +6,8 @@ describe('auth reducer', () => {
       {
         isAuthenticated: false,
         error: '',
-        email: '',
         token: '',
-        user: { userType: '' },
+        user: { userType: '', email: '' },
       },
     );
   });
@@ -19,9 +18,8 @@ describe('auth reducer', () => {
       {
         isAuthenticated: false,
         error: '',
-        email: '',
         token: '',
-        user: { userType: '' },
+        user: { userType: '', email: '' },
       },
     );
   });
@@ -34,9 +32,8 @@ describe('auth reducer', () => {
     ).toEqual({
       isAuthenticated: false,
       error: 'Error',
-      email: '',
       token: '',
-      user: { userType: '' },
+      user: { userType: '', email: '' },
     });
   });
   it('handles AUTH_ERROR with no error', () => {
@@ -49,9 +46,8 @@ describe('auth reducer', () => {
       {
         isAuthenticated: false,
         error: undefined,
-        email: '',
         token: '',
-        user: { userType: '' },
+        user: { userType: '', email: '' },
       },
     );
   });
@@ -66,7 +62,6 @@ describe('auth reducer', () => {
       {
         isAuthenticated: true,
         error: '',
-        email: 'j@b.com',
         token: 'token',
         user: { name: 'Justin Bieber', email: 'j@b.com' },
       },

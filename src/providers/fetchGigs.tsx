@@ -8,7 +8,7 @@ export const defaultGig: IGig = {
   venue: '',
   location: '',
   id: 0,
-  datetime: '',
+  datetime: null,
 };
 
 const validateGigsArr = (
@@ -24,7 +24,7 @@ const listenForGigs = (
   socket: scc.AGClientSocket,
   name: string,
   setFunc: (_arg0: IGig[]) => void,
-): void => {
+): boolean => {
   (async () => {
     const consumer = socket.receiver(name).createConsumer();
     while (true) { // eslint-disable-line no-constant-condition
@@ -34,17 +34,20 @@ const listenForGigs = (
       /* istanbul ignore else */if (receiver.done) break;
     }
   })();
+  return true;
 };
 
-const getGigs = async (setGigs: (_arg0: IGig[]) => void): Promise<void> => {
-  const socket = scc.create({
-    hostname: process.env.SCS_HOST,
-    port: Number(process.env.SCS_PORT),
-    autoConnect: true,
-    secure: process.env.SOCKETCLUSTER_SECURE !== 'false',
-  });
-  socket.transmit('initial message', 123);
-  listenForGigs(socket, 'allTours', setGigs);
+const getGigs = (setGigs: (_arg0: IGig[]) => void): boolean => {
+  try {
+    const socket = scc.create({
+      hostname: process.env.SCS_HOST,
+      port: Number(process.env.SCS_PORT),
+      autoConnect: true,
+      secure: process.env.SOCKETCLUSTER_SECURE !== 'false',
+    });
+    socket.transmit('initial message', 123);
+    return listenForGigs(socket, 'allTours', setGigs);
+  } catch (err) { console.log((err as Error).message); return false; }
 };
 
 export default { getGigs, listenForGigs, validateGigsArr };

@@ -38,3 +38,19 @@ export function IconButton(props:any) {
 export function Tooltip(props:any) {
   return <div {...props}>{props.children}</div>;
 }
+
+export function FormControl(props:any) {
+  return <div {...props}>{props.children}</div>;
+}
+
+export function Select(props:any) {
+  return <select {...props}>{props.children}</select>;
+}
+
+export function MenuItem(props:any) {
+  return <option {...props}>{props.children}</option>;
+}
+
+export function InputLabel(props:any) {
+  return <p {...props}>{props.children}</p>;
+}
