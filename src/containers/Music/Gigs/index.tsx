@@ -1,4 +1,6 @@
-import { useContext, useEffect, useState } from 'react';
+import {
+  useContext, useEffect, useState, useRef,
+} from 'react';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DateTimePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import {
@@ -110,9 +112,9 @@ export const VenueEditor = ({ editGig, setEditChanged, setEditGig }: IvenueEdito
         menubar: 'insert tools',
         menu: { format: { title: 'Format', items: 'forecolor backcolor' } },
         plugins: [
-          'advlist autolink lists link image charmap print preview anchor',
-          'searchreplace visualblocks code fullscreen',
-          'insertdatetime media table paste code help wordcount',
+          'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview', 'anchor',
+          'searchreplace', 'visualblocks', 'code', 'fullscreen',
+          'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount',
         ],
         toolbar:
           'undo redo | formatselect | bold italic backcolor forecolor |'
@@ -179,6 +181,8 @@ export function Gigs({ isAdmin }: { isAdmin: boolean }): JSX.Element {
       </div>
       <CreateGigDialog showDialog={showDialog} setShowDialog={setShowDialog} />
       <Dialog
+        disableEnforceFocus
+        disableAutoFocus
         className="editGigDialog"
         open={!!editGig._id}
         onClose={() => { setShowDialog(false); return false; }}

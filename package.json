@@ -1,6 +1,6 @@
 {
   "name": "jammusic",
-  "version": "1.10.0",
+  "version": "1.10.1",
   "description": "joshandmariamusic.com",
   "main": "dist/index.html",
   "repository": {
@@ -52,7 +52,7 @@
     "@react-oauth/google": "^0.2.6",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^12.1.5",
-    "@tinymce/tinymce-react": "^3.12.6",
+    "@tinymce/tinymce-react": "^4.2.0",
     "@types/core-js": "^2.5.4",
     "@types/domutils": "^1.7.2",
     "@types/ejs": "^3.0.1",
