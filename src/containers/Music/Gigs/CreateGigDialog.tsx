@@ -27,6 +27,8 @@ export function CreateGigDialog({
   const [tickets, setTickets] = useState('');
   return (
     <Dialog
+      disableEnforceFocus
+      disableAutoFocus
       className="createNewGigDialog"
       open={showDialog}
       onClose={() => { setShowDialog(false); return false; }}
@@ -55,9 +57,9 @@ export function CreateGigDialog({
             menubar: 'insert tools',
             menu: { format: { title: 'Format', items: 'forecolor backcolor' } },
             plugins: [
-              'advlist autolink lists link image charmap print preview anchor',
-              'searchreplace visualblocks code fullscreen',
-              'insertdatetime media table paste code help wordcount',
+              'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview', 'anchor',
+              'searchreplace', 'visualblocks', 'code', 'fullscreen',
+              'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount',
             ],
             toolbar:
               'undo redo | formatselect | bold italic backcolor forecolor |'
