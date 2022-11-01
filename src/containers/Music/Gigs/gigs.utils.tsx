@@ -138,12 +138,13 @@ export const orderGigs = (
 
 const makeDateValue = (datetime:string) => new Date(datetime).toLocaleString().split(',')[0];
 
-const makeTimeValue = (datetime:string) => new Date(datetime).toLocaleString().split(',')[1];
+const makeTimeValue = (datetime:string) => new Date(datetime)
+  .toLocaleString('en-US', { hour: '2-digit', minute: '2-digit' });
 
 const makeVenueValue = (value: string) => {
   const parsed = HtmlReactParser(value);
   if (value === 'Our Past Performances') return <span className="ourPastPerformances">{parsed}</span>;
-  return <span>{parsed}</span>;
+  return <div>{parsed}</div>;
 };
 
 const makeVenue = (): GridEnrichedColDef => (
