@@ -5,7 +5,7 @@ import type { IGig } from 'src/providers/Data.provider';
 describe('gigs.utils', () => {
   it('makeVenueValue when Our Past Performances', () => {
     const result = utils.makeVenueValue('Our Past Performances');
-    expect(result.type).toBe('div');
+    expect(result.type).toBe('span');
   });
   it('properly sets the order for gigs', () => {
     const setGigsInOrder = jest.fn();
