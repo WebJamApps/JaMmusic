@@ -25,7 +25,7 @@ export const columns: GridColumns = [
   {
     field: 'date',
     headerName: 'Date',
-    width: 120,
+    width: 100,
     editable: false,
     renderCell: (params: GridRenderCellParams) => {
       const { row: { datetime } } = params;
@@ -36,7 +36,7 @@ export const columns: GridColumns = [
   {
     field: 'time',
     headerName: 'Time',
-    width: 120,
+    width: 110,
     editable: false,
     renderCell: (params: GridRenderCellParams) => {
       const { row: { datetime } } = params;
@@ -61,7 +61,7 @@ export const columns: GridColumns = [
   {
     field: 'tickets',
     headerName: 'Tickets',
-    width: 140,
+    width: 120,
     editable: false,
     renderCell: (params: GridRenderCellParams) => <span>{HtmlReactParser(params.value || 'Free')}</span>,
   },
