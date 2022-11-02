@@ -51,7 +51,7 @@ describe('gigs.utils', () => {
   it('makeVenue', () => {
     const venue:any = utils.makeVenue();
     const result = venue.renderCell({ value: 'value' });
-    expect(result.type).toBe('span');
+    expect(result.type).toBe('div');
   });
   it('deleteGig fails', async () => {
     commonUtils.delay = jest.fn();
