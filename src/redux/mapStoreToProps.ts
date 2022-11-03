@@ -1,15 +1,15 @@
 import type { AGClientSocket } from 'socketcluster-client';
 import type { ISong } from '../providers/Data.provider';
 
-export interface Auth {
-  isAuthenticated: boolean,
-  error: string,
-  token: string,
-  user: {
-    userType: string;
-    email: string,
-  };
-}
+// export interface Auth {
+//   isAuthenticated: boolean,
+//   error: string,
+//   token: string,
+//   user: {
+//     userType: string;
+//     email: string,
+//   };
+// }
 export interface Tour {
   modify?:JSX.Element,
   datetime?: string;
