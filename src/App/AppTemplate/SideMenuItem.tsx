@@ -1,7 +1,7 @@
 
 import { Link, RouteComponentProps } from 'react-router-dom';
 import type { Dispatch } from 'react';
-import type { Auth } from '../../redux/mapStoreToProps';
+import type { Iauth } from 'src/providers/Auth.provider';
 import commonUtils from '../../lib/commonUtils';
 import type { ImenuItem } from './menuConfig';
 import { GoogleButtons } from './GoogleButtons';
@@ -40,7 +40,7 @@ export function MakeLink(props: ImakeLinkProps): JSX.Element {
 export const continueMenuItem = (
   menu: ImenuItem,
   index: number,
-  auth: Auth,
+  auth: Iauth,
   pathname: string,
   dispatch: Dispatch<unknown>,
   handleClose: () => void,
@@ -61,7 +61,7 @@ export const continueMenuItem = (
 };
 
 interface IsideMenuItemProps {
-  menu: ImenuItem, index: number, auth: Auth, location: RouteComponentProps['location'],
+  menu: ImenuItem, index: number, auth: Iauth, location: RouteComponentProps['location'],
   dispatch: Dispatch<unknown>, handleClose: () => void,
 }
 export function SideMenuItem(props: IsideMenuItemProps): JSX.Element | null {

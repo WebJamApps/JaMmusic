@@ -4,7 +4,6 @@ import renderer from 'react-test-renderer';
 import type { ImenuItem } from 'src/App/AppTemplate/menuConfig';
 import { continueMenuItem, SideMenuItem } from 'src/App/AppTemplate/SideMenuItem';
 import commonUtils from 'src/lib/commonUtils';
-import type { Auth } from 'src/redux/mapStoreToProps';
 
 describe('SideMenuItem', () => {
   it('is defined', () => {
@@ -14,7 +13,7 @@ describe('SideMenuItem', () => {
     commonUtils.getUserRoles = jest.fn(() => ['tester']);
     const props = {
       index: 1,
-      auth: { isAuthenticated: true, user: { userType: 'joker' } } as Auth,
+      auth: { isAuthenticated: true, user: { userType: 'joker' } } as any,
       location: { pathname: '/music' } as RouteComponentProps['location'],
       menu: { auth: true, link: '/dashboard' } as ImenuItem,
       dispatch: jest.fn(),
@@ -27,7 +26,7 @@ describe('SideMenuItem', () => {
     commonUtils.getUserRoles = jest.fn(() => ['tester']);
     const props = {
       index: 1,
-      auth: { isAuthenticated: false, user: { userType: 'joker' } } as Auth,
+      auth: { isAuthenticated: false, user: { userType: 'joker' } } as any,
       location: { pathname: '/music' } as RouteComponentProps['location'],
       menu: { auth: false, link: '/music' } as ImenuItem,
       dispatch: jest.fn(),
@@ -41,7 +40,7 @@ describe('SideMenuItem', () => {
     commonUtils.getUserRoles = jest.fn(() => ['tester']);
     const props = {
       index: 1,
-      auth: { isAuthenticated: false, user: { userType: 'joker' } } as Auth,
+      auth: { isAuthenticated: false, user: { userType: 'joker' } } as any,
       location: { pathname: '/music' } as RouteComponentProps['location'],
       menu: { auth: false, link: '/', name: 'Web Jam LLC' } as ImenuItem,
       dispatch: jest.fn(),
@@ -53,7 +52,14 @@ describe('SideMenuItem', () => {
     expect(window.location.assign).toHaveBeenCalledWith('/');
   });
   it('continueMenuItem returns googleLogout', () => {
-    const result: any = continueMenuItem({ type: 'googleLogout' } as ImenuItem, 1, { isAuthenticated: true } as Auth, '', jest.fn(), jest.fn());
+    const result: any = continueMenuItem(
+      { type: 'googleLogout' } as ImenuItem,
+      1,
+      { isAuthenticated: true } as any,
+      '',
+      jest.fn(),
+      jest.fn(),
+    );
     expect(result.key).toBe('googleLogout');
   });
   it('clears storage when clicking on menu items from joshandmariamusic', () => {
@@ -61,7 +67,7 @@ describe('SideMenuItem', () => {
     sessionStorage.clear = jest.fn();
     const props = {
       index: 1,
-      auth: { isAuthenticated: false, user: { userType: 'joker' } } as Auth,
+      auth: { isAuthenticated: false, user: { userType: 'joker' } } as any,
       location: { pathname: '/' } as RouteComponentProps['location'],
       menu: {
         nav: 'jam', auth: false, link: '/songs', name: 'Songs',

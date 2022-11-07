@@ -1,6 +1,5 @@
 import { createContext, ReactChild } from 'react';
 import createPersistedState from 'use-persisted-state';
-import type { ISong } from './Data.provider';
 
 export interface Iauth {
   isAuthenticated: boolean,
@@ -25,23 +24,17 @@ export const defaultAuth: Iauth = {
   },
 };
 
-const initEditor: Ieditor = {
-  isValid: false, hasChanged: false, song: defaultSong, tour: {}, image: {},
-};
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const setEditorDef = (_arg0: Ieditor) => {};
-
-export const EditorContext = createContext({
-  editor: initEditor,
-  setEditor: setEditorDef,
+export const AuthContext = createContext({
+  auth: defaultAuth,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  setAuth: (_arg0: Iauth) => {},
 });
 
 type Props = { children: ReactChild };
-export function EditorProvider({ children }: Props): JSX.Element {
-  const { Provider } = EditorContext;
-  const [editor, setEditor] = useEditorState(initEditor);
-  return (<Provider value={{ editor, setEditor }}>{children}</Provider>
+export function AuthProvider({ children }: Props): JSX.Element {
+  const { Provider } = AuthContext;
+  const [auth, setAuth] = useAuthState(defaultAuth);
+  return (<Provider value={{ auth, setAuth }}>{children}</Provider>
   );
 }
 

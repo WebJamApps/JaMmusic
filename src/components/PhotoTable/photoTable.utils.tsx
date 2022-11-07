@@ -1,6 +1,7 @@
 import type { MUIDataTableColumnDef } from 'mui-datatables';
 import HtmlReactParser from 'html-react-parser';
-
+import type MusicDashboardController from 'src/containers/MusicDashboard/MusicDashboardController';
+import type { Iauth } from 'src/providers/Auth.provider';
 import type { Iimage } from '../../redux/mapStoreToProps';
 
 const editPic = (data: Iimage, dispatch: (arg0: { type: string; data: Iimage; }) => void): boolean => {
@@ -10,8 +11,9 @@ const editPic = (data: Iimage, dispatch: (arg0: { type: string; data: Iimage; })
 };
 
 const addThumbs = (
+  auth:Iauth,
   arr: Iimage[],
-  controller: { deleteData: (arg0: string, arg1: string | undefined) => void; },
+  controller: MusicDashboardController,
   dispatch: (arg0: { type: string; data: Iimage; }) => void,
 ): Iimage[] => {
   const newArr = arr;/* eslint-disable security/detect-object-injection */
@@ -27,7 +29,7 @@ const addThumbs = (
           type="button"
           id={deletePicId}
           onClick={() => {
-            controller.deleteData('deleteImage', newArr[i]._id);
+            controller.deleteData(auth, 'deleteImage', newArr[i]._id);
           }}
         >
           Delete Pic

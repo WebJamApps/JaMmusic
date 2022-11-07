@@ -2,14 +2,14 @@
 import React, { Dispatch } from 'react';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { connect } from 'react-redux';
-import type { Auth } from 'src/redux/mapStoreToProps';
 import mapStoreToATemplateProps from 'src/redux/mapStoreToAppTemplateProps';
+import type { Iauth } from 'src/providers/Auth.provider';
 import { PageHost } from './PageHost';
 
 export interface AppTemplateProps extends RouteComponentProps {
   heartBeat: string;
   userCount: number;
-  auth: Auth;
+  auth: Iauth;
   dispatch: Dispatch<unknown>;
   children: JSX.Element;
 }

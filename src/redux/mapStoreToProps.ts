@@ -37,14 +37,14 @@ export interface Iimage {
 export interface Store {
   sc: { scc: AGClientSocket; userCount: number };
   images: { images: Iimage[] };
-  auth: Auth;
+  // auth: Auth;
   tour: { tour: Tour[]; tourUpdated: boolean; editTour: Tour; editSong: ISong };
   showTable: { showTable: boolean };
   image: { editPic: Iimage };
 }
 
 interface MapProps {
-  images:Iimage[];userCount:number;auth:Auth;tour:Tour[];
+  images:Iimage[];userCount:number;tour:Tour[];
   scc:AGClientSocket;tourUpdated:boolean;editTour:Tour;editSong:ISong;editPic:Iimage;
   showTable: boolean;
 }
@@ -54,7 +54,7 @@ const mapStoreToProps = (store: Store): MapProps => {
   return ({
     images: store.images.images,
     userCount: store.sc.userCount,
-    auth: store.auth,
+    // auth: store.auth,
     tour: store.tour.tour,
     scc: store.sc.scc,
     tourUpdated: store.tour.tourUpdated,

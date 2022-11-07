@@ -1,15 +1,15 @@
 import type superagent from 'superagent';
 import 'react-notifications-component/dist/theme.css';
 import type { ISong } from 'src/providers/Data.provider';
-import type { Auth } from 'src/redux/mapStoreToProps';
 import type { Ieditor } from 'src/providers/Editor.provider';
 import fetchSongs from 'src/providers/fetchSongs';
 import commonUtils from 'src/lib/commonUtils';
+import type { Iauth } from 'src/providers/Auth.provider';
 
 const updateSongAPI = async (
   sa: typeof superagent,
   songChanges: ISong,
-  auth: Auth,
+  auth: Iauth,
   setEditor: (arg0: Ieditor) => void,
   setSongs: (arg0: ISong[]) => void,
 ): Promise<void> => {

@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import renderer from 'react-test-renderer';
 import { defaultSong, EditorProvider } from 'src/providers/Editor.provider';
-import type { Auth } from 'src/redux/mapStoreToProps';
 import {
   SongEditor, onChangeSong, SongFormTitle, SongButtons, EditSongButtons, SongForm,
   handleCategoryChange, SongInput, validateSongInput,
@@ -51,7 +50,7 @@ describe('SongEditor', () => {
         song, tour: {}, image: {}, isValid: true, hasChanged: true,
       }}
       setEditor={jest.fn()}
-      auth={{} as Auth}
+      auth={{} as any}
     />).root;
     songButtons.findByProps({ id: 'add-song-button' }).props.onClick();
     expect(utils.addSongAPI).toHaveBeenCalled();
@@ -65,7 +64,7 @@ describe('SongEditor', () => {
         song, tour: {}, image: {}, isValid: true, hasChanged: true,
       }}
       setEditor={jest.fn()}
-      auth={{} as Auth}
+      auth={{} as any}
     />).root;
     expect(songButtons.findByProps({ id: 'add-song-button' }).props.disabled).toBe(true);
   });
@@ -79,7 +78,7 @@ describe('SongEditor', () => {
         song, tour: {}, image: {}, isValid: true, hasChanged: true,
       }}
       setEditor={jest.fn()}
-      auth={{} as Auth}
+      auth={{} as any}
     />).root;
     songButtons.findByProps({ id: 'update-song-button' }).props.onClick();
     expect(utils.updateSongAPI).toHaveBeenCalled();
@@ -92,7 +91,7 @@ describe('SongEditor', () => {
     const editSongButtons = renderer.create(<EditSongButtons
       setEditor={setNewEditor}
       setSongs={jest.fn()}
-      auth={{} as Auth}
+      auth={{} as any}
       editor={{
         song, tour: {}, image: {}, isValid: true, hasChanged: true,
       }}

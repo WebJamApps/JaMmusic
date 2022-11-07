@@ -2,11 +2,11 @@
 import { ChangeEvent, useContext } from 'react';
 import superagent from 'superagent';
 import { DataContext, ISong } from 'src/providers/Data.provider';
-import type { Auth } from 'src/redux/mapStoreToProps';
 import { Button, TextField } from '@mui/material';
+import forms from 'src/lib/forms';
+import type { Iauth } from 'src/providers/Auth.provider';
 import { defaultSong, EditorContext, Ieditor } from '../../providers/Editor.provider';
 import songEditorUtils from './songEditorUtils';
-import forms from '../../lib/forms';
 
 export const validateSongInput = (id: string, value: string) => {
   let valid = true;
@@ -123,7 +123,7 @@ export function EditSongButtons({
   setEditor: (arg0: Ieditor) => void,
   setSongs: (arg0: ISong[]) => void,
   editor: Ieditor,
-  auth: Auth,
+  auth: Iauth,
 }): JSX.Element {
   return (
     <span>
@@ -154,7 +154,7 @@ export function EditSongButtons({
 }
 
 interface IsongButtonsProps {
-  setEditor: (arg0: Ieditor) => void; editor: Ieditor; auth: Auth;
+  setEditor: (arg0: Ieditor) => void; editor: Ieditor; auth: Iauth;
 }
 export function SongButtons({ editor, setEditor, auth }: IsongButtonsProps): JSX.Element {
   const { setSongs } = useContext(DataContext);
@@ -193,7 +193,7 @@ export function SongFormTitle({ editor }: { editor: Ieditor }): JSX.Element {
 
 interface IsongEditorDiv {
   editor: Ieditor,
-  setEditor: (arg0: Ieditor) => void, auth: Auth
+  setEditor: (arg0: Ieditor) => void, auth: Iauth
 }
 export function SongEditorDiv({ editor, setEditor, auth }: IsongEditorDiv) {
   if (!editor.song.category) editor.song.category = 'original';
@@ -217,7 +217,7 @@ export function SongEditorDiv({ editor, setEditor, auth }: IsongEditorDiv) {
 
 export function SongEditor({
   auth,
-}: { auth: Auth }): JSX.Element {
+}: { auth: Iauth }): JSX.Element {
   const { editor, setEditor } = useContext(EditorContext);
   return <SongEditorDiv editor={editor} setEditor={setEditor} auth={auth} />;
 }

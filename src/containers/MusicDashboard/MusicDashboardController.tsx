@@ -1,12 +1,11 @@
 
 import Superagent from 'superagent';
+import type { Iauth } from 'src/providers/Auth.provider';
 import type { MusicDashboard } from './index';
 import Forms from '../../lib/forms';
 import SongsTable from '../../components/SongsTable';
 import SongEditorUtils from '../../components/SongEditor/songEditorUtils';
 import { SongEditor } from '../../components/SongEditor';
-import { PhotoTable } from '../../components/PhotoTable';
-import { PicEditor } from '../../components/PicEditor';
 
 export class MusicDashboardController {
   view: MusicDashboard;
@@ -19,7 +18,6 @@ export class MusicDashboardController {
 
   constructor(view: MusicDashboard) {
     this.view = view;
-    this.changePicDiv = this.changePicDiv.bind(this);
     this.addPic = this.addPic.bind(this);
     this.modifySongsSection = this.modifySongsSection.bind(this);
     this.editPicAPI = this.editPicAPI.bind(this);
@@ -60,8 +58,8 @@ export class MusicDashboardController {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  modifySongsSection():JSX.Element {
-    const { auth, dispatch } = this.view.props;
+  modifySongsSection(auth:Iauth):JSX.Element {
+    const { dispatch } = this.view.props;
     return (
       <div
         className="search-table-outer"
@@ -75,9 +73,9 @@ export class MusicDashboardController {
     );
   }
 
-  addPic(): void {
+  addPic(auth:Iauth): void {
     const { title, url, showCaption } = this.view.state;
-    const { scc, auth } = this.view.props;
+    const { scc } = this.view.props;
     const image = {
       title,
       url,
@@ -88,10 +86,10 @@ export class MusicDashboardController {
     window.location.assign('/music');
   }
 
-  deleteData(message: string, id?: string): boolean { // eslint-disable-next-line no-restricted-globals
+  deleteData(auth:Iauth, message: string, id?: string): boolean { // eslint-disable-next-line no-restricted-globals
     const result = confirm('Delete, are you sure?'); // eslint-disable-line no-alert
     if (result) {
-      const { scc, auth } = this.view.props;
+      const { scc } = this.view.props;
       const data = { id };
       if (scc && auth && id) {
         scc.transmit(message, { data: data.id, token: auth.token });
@@ -101,9 +99,9 @@ export class MusicDashboardController {
     } return false;
   }
 
-  editPicAPI(): boolean {
+  editPicAPI(auth:Iauth): boolean {
     const { title, url, showCaption } = this.view.state;
-    const { editPic, scc, auth } = this.view.props;
+    const { editPic, scc } = this.view.props;
     const image = {
       title: title || editPic.title,
       url: url || editPic.url,
@@ -117,47 +115,49 @@ export class MusicDashboardController {
     } return false;
   }
 
-  changePicDiv(): JSX.Element {
-    const { editPic } = this.view.props;
-    return (
-      <div
-        className="material-content elevation3"
-        style={{ maxWidth: '320px', margin: '30px auto' }}
-      >
-        <h5 style={{ marginBottom: 0 }}>
-          {editPic && editPic._id && editPic._id !== '' ? 'Edit ' : 'Add '}
-          Pictures
-        </h5>
-        <PicEditor comp={this.view} controller={this} editPic={editPic} />
-      </div>
-    );
-  }
+  // TODO this should be a functional component
+  // changePicDiv(): JSX.Element {
+  //   const { editPic } = this.view.props;
+  //   return (
+  //     <div
+  //       className="material-content elevation3"
+  //       style={{ maxWidth: '320px', margin: '30px auto' }}
+  //     >
+  //       <h5 style={{ marginBottom: 0 }}>
+  //         {editPic && editPic._id && editPic._id !== '' ? 'Edit ' : 'Add '}
+  //         Pictures
+  //       </h5>
+  //       <PicEditor comp={this.view} controller={this} editPic={editPic} />
+  //     </div>
+  //   );
+  // }
 
-  pictureBlock(): JSX.Element {
-    const {
-      dispatch, auth, showTable, images,
-    } = this.view.props;
-    return (
-      <div className="material-content elevation3" style={{ maxWidth: '9.1in', margin: 'auto' }}>
-        <h5 style={{ textAlign: 'center', marginBottom: 0 }}>Modify Photo Slideshow</h5>
-        {this.changePicDiv()}
-        {showTable ? (
-          <h4 style={{ textAlign: 'center' }}>
-            All Images
-            <PhotoTable auth={auth} dispatch={dispatch} images={images} controller={this} />
-          </h4>
-        ) : null}
-      </div>
-    );
-  }
+  // TODO this should be a functional component
+  // pictureBlock(auth:Iauth): JSX.Element {
+  //   const {
+  //     dispatch, showTable, images,
+  //   } = this.view.props;
+  //   return (
+  //     <div className="material-content elevation3" style={{ maxWidth: '9.1in', margin: 'auto' }}>
+  //       <h5 style={{ textAlign: 'center', marginBottom: 0 }}>Modify Photo Slideshow</h5>
+  //       {this.changePicDiv()}
+  //       {showTable ? (
+  //         <h4 style={{ textAlign: 'center' }}>
+  //           All Images
+  //           <PhotoTable auth={auth} dispatch={dispatch} images={images} controller={this} />
+  //         </h4>
+  //       ) : null}
+  //     </div>
+  //   );
+  // }
 
-  songBlock(): JSX.Element {
+  songBlock(auth:Iauth): JSX.Element {
     return (
       <div className="Song-Block">
         <p>&nbsp;</p>
-        <SongEditor auth={this.view.props.auth} />
+        <SongEditor auth={auth} />
         <p>&nbsp;</p>
-        {this.modifySongsSection()}
+        {this.modifySongsSection(auth)}
         <p>&nbsp;</p>
       </div>
     );

@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import renderer from 'react-test-renderer';
-import utils from '../../../src/components/PhotoTable/photoTable.utils';
-// ;
+import utils from 'src/components/PhotoTable/photoTable.utils';
 
 describe('photoTable.utils', () => {
   it('setCustomBody when null value', () => {
@@ -11,7 +10,7 @@ describe('photoTable.utils', () => {
   it('addThumbs when caption is hide and handles click on buttons', () => {
     const imgArr:any[] = [{ comments: '', modify: null }];
     const deleteData = jest.fn();
-    const arr:any[] = utils.addThumbs(imgArr, { deleteData }, jest.fn());
+    const arr:any[] = utils.addThumbs({} as any, imgArr, { deleteData } as any, jest.fn());
     const buttons = renderer.create(arr[0].modify).root;
     const allButtons = buttons.findAllByType('button');
     allButtons[0].props.onClick();

@@ -16,18 +16,18 @@ const data:any = [
 
 describe('/music', () => {
   it('renders the component without images', () => {
-    const music = renderer.create(<Music images={undefined} auth={null} />).toJSON();
+    const music = renderer.create(<Music images={undefined} />).toJSON();
     expect(JSON.stringify(music).includes('page-content')).toBe(true);
   });
   it('renders with images', () => {
-    const music = renderer.create(<Music images={data} auth={null} />).toJSON();
+    const music = renderer.create(<Music images={data} />).toJSON();
     expect(JSON.stringify(music).includes('picSlider')).toBe(true);
   });
   it('renders and runs useEffect', () => {
     const container = document.createElement('div');
     document.body.appendChild(container);
     act(() => {
-      ReactDom.render(<Music images={data} auth={null} />, container);
+      ReactDom.render(<Music images={data} />, container);
     });
     const musicSlider:any = document.getElementById('musicSlide1');
     expect(musicSlider).toBeDefined();

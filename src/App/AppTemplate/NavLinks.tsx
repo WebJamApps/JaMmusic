@@ -1,9 +1,10 @@
 import type { Dispatch } from 'react';
 import type { RouteComponentProps } from 'react-router-dom';
-import type { Auth } from 'src/redux/mapStoreToProps';
+import type { Iauth } from 'src/providers/Auth.provider';
 import menuConfig from './menuConfig';
 import { MakeLink, SideMenuItem } from './SideMenuItem';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function ActiveUsers({ heartBeat, userCount }: { heartBeat: string, userCount: number }) {
   return (
     <div className="active-users">
@@ -44,7 +45,7 @@ const MusTT = () => (
 );
 
 interface InavLinksProps {
-  handleClose: () => void, userCount: number, heartBeat: string, auth: Auth,
+  handleClose: () => void, userCount: number, heartBeat: string, auth: Iauth,
   location: RouteComponentProps['location'], dispatch: Dispatch<unknown>
 }
 export function NavLinks(props: InavLinksProps) {

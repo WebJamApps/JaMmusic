@@ -8,20 +8,23 @@ import ConnectedApp from './App/index';
 import store from './redux/store/index';
 import { DataProvider } from './providers/Data.provider';
 import { EditorProvider } from './providers/Editor.provider';
+import { AuthProvider } from './providers/Auth.provider';
 import '../static/styles.scss';
 
 function Main() {
   return (
     <GoogleOAuthProvider clientId={process.env.GoogleClientId || ''}>
-      <DataProvider>
-        <EditorProvider>
-          <Provider store={store.store}>
-            <PersistGate loading={null} persistor={store.persistor}>
-              <ConnectedApp />
-            </PersistGate>
-          </Provider>
-        </EditorProvider>
-      </DataProvider>
+      <AuthProvider>
+        <DataProvider>
+          <EditorProvider>
+            <Provider store={store.store}>
+              <PersistGate loading={null} persistor={store.persistor}>
+                <ConnectedApp />
+              </PersistGate>
+            </Provider>
+          </EditorProvider>
+        </DataProvider>
+      </AuthProvider>
     </GoogleOAuthProvider>
   );
 }

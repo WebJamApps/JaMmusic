@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction, useState } from 'react';
 import type { RouteComponentProps } from 'react-router-dom';
-import type { Auth } from 'src/redux/mapStoreToProps';
+import type { Iauth } from 'src/providers/Auth.provider';
 import { DrawerContainer } from './DrawerContainer';
 import { MainPanel } from './MainPanel';
 
@@ -39,7 +39,7 @@ export const makeHandleKeyPress = (
 ) => (evt: { key: string; }) => handleEscapePress(evt, setMenuOpen);
 
 interface IpageHostProps {
-  userCount: number, heartBeat: string, auth: Auth, location: RouteComponentProps['location'], dispatch: Dispatch<unknown>,
+  userCount: number, heartBeat: string, auth: Iauth, location: RouteComponentProps['location'], dispatch: Dispatch<unknown>,
   children: React.ReactNode,
 }
 export function PageHost(props: IpageHostProps) {

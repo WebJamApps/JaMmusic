@@ -8,6 +8,5 @@ const mapStoreToProps = (store: TStore): Record<string, unknown> => ({
   images: store.images.images,
   heartBeat: store.sc.heartBeat,
   userCount: store.sc.userCount,
-  auth: store.auth,
 });
 export default mapStoreToProps;

@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { Auth } from 'src/redux/mapStoreToProps';
 import songEditorUtils from 'src/components/SongEditor/songEditorUtils';
 import fetchSongs from 'src/providers/fetchSongs';
 import { Store } from 'react-notifications-component';
@@ -19,7 +18,7 @@ describe('songEditorUtils', () => {
     Store.addNotification = jest.fn();
     fetchSongs.getSongs = jest.fn();
     const songChanges:any = { _id: 'id' };
-    await songEditorUtils.updateSongAPI(sa, songChanges, {} as Auth, jest.fn(), jest.fn());
+    await songEditorUtils.updateSongAPI(sa, songChanges, {} as any, jest.fn(), jest.fn());
     expect(fetchSongs.getSongs).toHaveBeenCalled();
   });
   it('updateSongAPI catches error', async () => {
@@ -27,7 +26,7 @@ describe('songEditorUtils', () => {
     fetchSongs.getSongs = jest.fn();
     const songChanges:any = { _id: 'id' };
     sa.put = () => ({ set: () => ({ set: () => ({ send: () => Promise.reject(new Error('bad')) }) }) });
-    await songEditorUtils.updateSongAPI(sa, songChanges, {} as Auth, jest.fn(), jest.fn());
+    await songEditorUtils.updateSongAPI(sa, songChanges, {} as any, jest.fn(), jest.fn());
     expect(fetchSongs.getSongs).not.toHaveBeenCalled();
     expect(Store.addNotification).toHaveBeenCalled();
   });
@@ -36,7 +35,7 @@ describe('songEditorUtils', () => {
     fetchSongs.getSongs = jest.fn();
     const songChanges:any = { _id: 'id' };
     sa.put = () => ({ set: () => ({ set: () => ({ send: () => Promise.resolve({ status: 400 }) }) }) });
-    await songEditorUtils.updateSongAPI(sa, songChanges, {} as Auth, jest.fn(), jest.fn());
+    await songEditorUtils.updateSongAPI(sa, songChanges, {} as any, jest.fn(), jest.fn());
     expect(fetchSongs.getSongs).not.toHaveBeenCalled();
     expect(Store.addNotification).toHaveBeenCalled();
   });

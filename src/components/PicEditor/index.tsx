@@ -1,8 +1,10 @@
 
-import type { MusicDashboard } from '../../containers/MusicDashboard';
-import type { MusicDashboardController } from '../../containers/MusicDashboard/MusicDashboardController';
+import type { MusicDashboard } from 'src/containers/MusicDashboard';
+import type { MusicDashboardController } from 'src/containers/MusicDashboard/MusicDashboardController';
+import type { Iauth } from 'src/providers/Auth.provider';
 
 export interface IeditPic {
+  auth:Iauth,
   _id?: string;
   title?: string;
   url?: string;
@@ -42,6 +44,7 @@ const radioButtons = (comp:MusicDashboard, editPic:any): JSX.Element => (
   </div>
 );
 
+// TODO do not pass in comp. do not pass in controller
 export function PicEditor({ comp, controller, editPic }:PageProps): JSX.Element {
   let { title, url } = comp.state;
   if (title === '' && editPic.title !== undefined) { title = editPic.title; }
@@ -63,11 +66,11 @@ export function PicEditor({ comp, controller, editPic }:PageProps): JSX.Element 
           Cancel
         </button>
       ) : null}
-      <button disabled={!(title && url)} type="button" onClick={editPic._id ? controller.editPicAPI : controller.addPic}>
+      {/* <button disabled={!(title && url)} type="button" onClick={editPic._id ? controller.editPicAPI : controller.addPic}>
         {editPic._id ? 'Edit' : 'Create'}
         {' '}
         Picture
-      </button>
+      </button> */}
     </form>
   );
 }
