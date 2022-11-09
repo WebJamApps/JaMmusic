@@ -52,10 +52,10 @@ export const continueMenuItem = (
     return <MakeLink menu={menu} index={index} type="Link" handleClose={handleClose} />;
   }
   if (menu.type === 'googleLogin' && !auth.isAuthenticated && pathname === '/') {
-    return <GoogleButtons key="googleLogin" type="login" index={index} dispatch={dispatch} />;
+    return <GoogleButtons key="googleLogin" type="login" index={index} />;
   }
   if (menu.type === 'googleLogout' && auth.isAuthenticated) {
-    return <GoogleButtons key="googleLogout" type="logout" index={index} dispatch={dispatch} />;
+    return <GoogleButtons key="googleLogout" type="logout" index={index} />;
   }
   return null;
 };

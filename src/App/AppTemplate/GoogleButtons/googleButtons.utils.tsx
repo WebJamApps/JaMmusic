@@ -1,5 +1,5 @@
 import { CodeResponse, googleLogout } from '@react-oauth/google';
-import type { Dispatch } from 'react';
+import { defaultAuth, Iauth } from 'src/providers/Auth.provider';
 import 'react-notifications-component/dist/theme.css';
 import jwt from 'jsonwebtoken';
 import superagent from 'superagent';
@@ -12,19 +12,20 @@ export interface GoogleBody {
   state(): string,
 }
 
-const setUserRedux = async (
-  dispatch: (...args: any) => void,
+const setUserAuth = async (
+  auth:Iauth,
+  setAuth: (arg0:Iauth)=>void,
   token: string,
   userId: string | undefined,
 ) => {
-  const user = await superagent.get(`${process.env.BackendUrl}/user/${userId}`)
+  const { body } = await superagent.get(`${process.env.BackendUrl}/user/${userId}`)
     .set('Accept', 'application/json').set('Authorization', `Bearer ${token}`);
-  dispatch({ type: 'SET_USER', data: user.body, token });
+  setAuth({ ...auth, user: body });
 };
 
-const setUser = async (dispatch: Dispatch<unknown>, token:string): Promise<void> => {
+const setUser = async (auth:Iauth, setAuth:(args0:Iauth)=>void, token:string): Promise<void> => {
   const { sub } = jwt.verify(token, process.env.HashString as string) as jwt.JwtPayload;
-  await setUserRedux(dispatch, token, sub);
+  await setUserAuth(auth, setAuth, token, sub);
 };
 
 const authenticate = async (
@@ -42,7 +43,8 @@ const makeState = () => () => {
 
 const responseGoogleLogin = async (
   response: Omit<CodeResponse, 'error' | 'error_description' | 'error_uri'>,
-  dispatch: Dispatch<unknown>,
+  auth:Iauth,
+  setAuth: (arg0:Iauth)=>void,
 ): Promise<void> => {
   try {
     const uri = window.location.href;
@@ -56,15 +58,15 @@ const responseGoogleLogin = async (
       state: makeState(),
     };
     const { token } = await authenticate(body);
-    await setUser(dispatch, token);
+    await setUser(auth, setAuth, token);
   } catch (e) {
     const eMessage = (e as Error).message;
     commonUtils.notify('Failed to authenticate', eMessage, 'danger');
   }
 };
 
-const responseGoogleLogout = async (dispatch: Dispatch<unknown>): Promise<void> => {
-  dispatch({ type: 'LOGOUT' });
+const responseGoogleLogout = async (setAuth:(arg0:Iauth)=>void): Promise<void> => {
+  setAuth(defaultAuth);
   googleLogout();
   await commonUtils.delay(2);
   window.location.assign('/');
