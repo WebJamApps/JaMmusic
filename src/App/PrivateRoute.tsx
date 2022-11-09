@@ -1,5 +1,7 @@
 
+import { useContext } from 'react';
 import { Route, Redirect } from 'react-router-dom';
+import { AuthContext } from 'src/providers/Auth.provider';
 import commonUtils from '../lib/commonUtils';
 
 interface PProps {
@@ -7,15 +9,9 @@ interface PProps {
   path:string
 }
 export function PrivateRoute({ Container, path }:PProps): JSX.Element {
+  const { auth } = useContext(AuthContext);
   const userRoles: string[] = commonUtils.getUserRoles();
-  const authStr = sessionStorage.getItem('persist:root') || '{}';
-  let a = { isAuthenticated: false, user: { userType: '', email: '' } };
-  try {
-    const { auth } = (JSON.parse(authStr) as { auth:string });
-    a = JSON.parse(auth);
-  // eslint-disable-next-line no-console
-  } catch (e) { console.log((e as Error).message); }
-  const isAllowed = !!(a.isAuthenticated && a.user.userType && userRoles.indexOf(a.user.userType) !== -1);
+  const isAllowed = !!(auth.isAuthenticated && auth.user.userType && userRoles.indexOf(auth.user.userType) !== -1);
   return (
     <Route
       path={path}
