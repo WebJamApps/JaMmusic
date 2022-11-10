@@ -13,19 +13,20 @@ export interface GoogleBody {
 }
 
 const setUserAuth = async (
-  auth:Iauth,
   setAuth: (arg0:Iauth)=>void,
   token: string,
   userId: string | undefined,
 ) => {
   const { body } = await superagent.get(`${process.env.BackendUrl}/user/${userId}`)
     .set('Accept', 'application/json').set('Authorization', `Bearer ${token}`);
-  setAuth({ ...auth, user: body });
+  setAuth({
+    error: '', isAuthenticated: true, token, user: body,
+  });
 };
 
 const setUser = async (auth:Iauth, setAuth:(args0:Iauth)=>void, token:string): Promise<void> => {
   const { sub } = jwt.verify(token, process.env.HashString as string) as jwt.JwtPayload;
-  await setUserAuth(auth, setAuth, token, sub);
+  await setUserAuth(setAuth, token, sub);
 };
 
 const authenticate = async (
@@ -62,14 +63,14 @@ const responseGoogleLogin = async (
   } catch (e) {
     const eMessage = (e as Error).message;
     commonUtils.notify('Failed to authenticate', eMessage, 'danger');
+    setAuth({ ...defaultAuth, error: eMessage });
   }
 };
 
 const responseGoogleLogout = async (setAuth:(arg0:Iauth)=>void): Promise<void> => {
-  setAuth(defaultAuth);
   googleLogout();
-  await commonUtils.delay(2);
-  window.location.assign('/');
+  setAuth(defaultAuth);
+  window.location.reload();
 };
 
 export default {

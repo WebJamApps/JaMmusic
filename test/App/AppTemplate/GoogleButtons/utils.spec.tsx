@@ -5,11 +5,10 @@ import jwt from 'jsonwebtoken';
 
 describe('GoogleButtons/utils', () => {
   it('responseGoogleLogout', async () => {
-    commonUtils.delay = jest.fn();
-    window.location.assign = jest.fn();
-    const dispatch = jest.fn();
-    await utils.responseGoogleLogout(dispatch);
-    expect(window.location.assign).toHaveBeenCalledWith('/');
+    window.location.reload = jest.fn();
+    const setAuth = jest.fn();
+    await utils.responseGoogleLogout(setAuth);
+    expect(window.location.reload).toHaveBeenCalled();
   });
   it('responseGoogleLogin', async () => {
     const setAuth = jest.fn();

@@ -1,13 +1,12 @@
-import type { Dispatch } from 'react';
 import { NavLinks } from './NavLinks';
 
 interface IdrawerContainerProps {
   handleKeyPress: (arg0:any)=>void, className:any, userCount:number,
-  heartBeat:any, auth:any, location:any, dispatch:Dispatch<unknown>, handleClose:()=>void
+  heartBeat:any, location:any, handleClose:()=>void
 }
 export function DrawerContainer(props:IdrawerContainerProps) {
   const {
-    userCount, heartBeat, auth, location, dispatch, className, handleClose, handleKeyPress,
+    userCount, heartBeat, location, className, handleClose, handleKeyPress,
   } = props;
   return (
     <div tabIndex={0} role="button" id="sidebar" onClick={handleClose} onKeyPress={handleKeyPress} className={className}>
@@ -24,9 +23,7 @@ export function DrawerContainer(props:IdrawerContainerProps) {
           handleClose={handleClose}
           userCount={userCount}
           heartBeat={heartBeat}
-          auth={auth}
           location={location}
-          dispatch={dispatch}
         />
       </div>
     </div>

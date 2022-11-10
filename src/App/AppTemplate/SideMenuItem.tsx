@@ -1,7 +1,7 @@
 
 import { Link, RouteComponentProps } from 'react-router-dom';
-import type { Dispatch } from 'react';
-import type { Iauth } from 'src/providers/Auth.provider';
+import { useContext } from 'react';
+import { AuthContext, Iauth } from 'src/providers/Auth.provider';
 import commonUtils from '../../lib/commonUtils';
 import type { ImenuItem } from './menuConfig';
 import { GoogleButtons } from './GoogleButtons';
@@ -42,7 +42,6 @@ export const continueMenuItem = (
   index: number,
   auth: Iauth,
   pathname: string,
-  dispatch: Dispatch<unknown>,
   handleClose: () => void,
 ): JSX.Element | null => {
   if (pathname.includes('/music') && (menu.link.includes('/music'))) {
@@ -61,13 +60,14 @@ export const continueMenuItem = (
 };
 
 interface IsideMenuItemProps {
-  menu: ImenuItem, index: number, auth: Iauth, location: RouteComponentProps['location'],
-  dispatch: Dispatch<unknown>, handleClose: () => void,
+  menu: ImenuItem, index: number, location: RouteComponentProps['location'],
+  handleClose: () => void,
 }
 export function SideMenuItem(props: IsideMenuItemProps): JSX.Element | null {
   const {
-    menu, index, auth, location, dispatch, handleClose,
+    menu, index, location, handleClose,
   } = props;
+  const { auth } = useContext(AuthContext);
   const userRoles: string[] = commonUtils.getUserRoles();
   if (menu.auth && (!auth.isAuthenticated || userRoles.indexOf(auth.user.userType) === -1)) return null;
   if (menu.name === 'Web Jam LLC') {
@@ -94,6 +94,6 @@ export function SideMenuItem(props: IsideMenuItemProps): JSX.Element | null {
       />
     );
   }
-  return continueMenuItem(menu, index, auth, location.pathname, dispatch, handleClose);
+  return continueMenuItem(menu, index, auth, location.pathname, handleClose);
 }
 

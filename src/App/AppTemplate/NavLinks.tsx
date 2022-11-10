@@ -1,6 +1,4 @@
-import type { Dispatch } from 'react';
 import type { RouteComponentProps } from 'react-router-dom';
-import type { Iauth } from 'src/providers/Auth.provider';
 import menuConfig from './menuConfig';
 import { MakeLink, SideMenuItem } from './SideMenuItem';
 
@@ -45,12 +43,12 @@ const MusTT = () => (
 );
 
 interface InavLinksProps {
-  handleClose: () => void, userCount: number, heartBeat: string, auth: Iauth,
-  location: RouteComponentProps['location'], dispatch: Dispatch<unknown>
+  handleClose: () => void, userCount: number, heartBeat: string,
+  location: RouteComponentProps['location'],
 }
 export function NavLinks(props: InavLinksProps) {
   const {
-    userCount, heartBeat, auth, location, dispatch, handleClose,
+    userCount, heartBeat, location, handleClose,
   } = props;
   return (
     <div className="nav-list" style={{ width: '180px' }}>
@@ -63,9 +61,7 @@ export function NavLinks(props: InavLinksProps) {
             key={index}
             menu={menu}
             index={index}
-            auth={auth}
             location={location}
-            dispatch={dispatch}
             handleClose={handleClose}
           />
         ),

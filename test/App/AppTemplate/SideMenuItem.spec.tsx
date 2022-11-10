@@ -16,7 +16,6 @@ describe('SideMenuItem', () => {
       auth: { isAuthenticated: true, user: { userType: 'joker' } } as any,
       location: { pathname: '/music' } as RouteComponentProps['location'],
       menu: { auth: true, link: '/dashboard' } as ImenuItem,
-      dispatch: jest.fn(),
       handleClose: jest.fn(),
     };
     const smi = renderer.create(<SideMenuItem {...props} />).toJSON();
@@ -29,7 +28,6 @@ describe('SideMenuItem', () => {
       auth: { isAuthenticated: false, user: { userType: 'joker' } } as any,
       location: { pathname: '/music' } as RouteComponentProps['location'],
       menu: { auth: false, link: '/music' } as ImenuItem,
-      dispatch: jest.fn(),
       handleClose: jest.fn(),
     };
     const smi: any = renderer.create(<BrowserRouter><SideMenuItem {...props} /></BrowserRouter>).toJSON();
@@ -43,7 +41,6 @@ describe('SideMenuItem', () => {
       auth: { isAuthenticated: false, user: { userType: 'joker' } } as any,
       location: { pathname: '/music' } as RouteComponentProps['location'],
       menu: { auth: false, link: '/', name: 'Web Jam LLC' } as ImenuItem,
-      dispatch: jest.fn(),
       handleClose: jest.fn(),
     };
     const smi: any = renderer.create(<BrowserRouter><SideMenuItem {...props} /></BrowserRouter>);
@@ -58,7 +55,6 @@ describe('SideMenuItem', () => {
       { isAuthenticated: true } as any,
       '',
       jest.fn(),
-      jest.fn(),
     );
     expect(result.key).toBe('googleLogout');
   });
@@ -72,7 +68,6 @@ describe('SideMenuItem', () => {
       menu: {
         nav: 'jam', auth: false, link: '/songs', name: 'Songs',
       } as ImenuItem,
-      dispatch: jest.fn(),
       handleClose: jest.fn(),
     };
     const smi: any = renderer.create(<BrowserRouter><SideMenuItem {...props} /></BrowserRouter>).root;
