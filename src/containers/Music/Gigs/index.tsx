@@ -14,12 +14,11 @@ import { Add as AddIcon } from '@mui/icons-material';
 import { Editor } from '@tinymce/tinymce-react';
 import HtmlReactParser from 'html-react-parser';
 import { DataContext } from 'src/providers/Data.provider';
+import { AuthContext } from 'src/providers/Auth.provider';
 import { defaultGig } from 'src/providers/fetchGigs';
 import utils from './gigs.utils';
 import { CreateGigDialog, usStateOptions } from './CreateGigDialog';
 import './gigs.scss';
-
-let tinyCount = 0;
 
 export const columns: GridColumns = [
   {
@@ -122,10 +121,10 @@ export const VenueEditor = ({ editGig, setEditChanged, setEditGig }: IvenueEdito
           + 'bullist numlist outdent indent | removeformat | help',
       }}
       onEditorChange={(text: string) => {
-        tinyCount += 1;
-        if (text !== editGig.venue && tinyCount > 1) {
+        if (text !== `<p>${editGig.venue}</p>`) {
           setEditChanged(true);
-          setEditGig({ ...editGig, venue: text }); return text;
+          setEditGig({ ...editGig, venue: text });
+          return text;
         }
         return '';
       }}
@@ -134,8 +133,9 @@ export const VenueEditor = ({ editGig, setEditChanged, setEditGig }: IvenueEdito
 };
 
 export function Gigs({ isAdmin }: { isAdmin: boolean }): JSX.Element {
-  const [showDialog, setShowDialog] = useState(false);
+  const { auth } = useContext(AuthContext);
   const { gigs, getGigs } = useContext(DataContext);
+  const [showDialog, setShowDialog] = useState(false);
   const [gigsInOrder, setGigsInOrder] = useState(gigs);
   const [pageSize, setPageSize] = useState(5);
   const [editGig, setEditGig] = useState(defaultGig);
@@ -169,7 +169,6 @@ export function Gigs({ isAdmin }: { isAdmin: boolean }): JSX.Element {
         <DataGrid
           className={isAdmin ? 'adminGrid' : ''}
           onRowClick={(rowParams) => {
-            tinyCount = 0;
             utils.clickToEdit(setEditGig, isAdmin, rowParams.row);
           }}
           rows={gigsInOrder}
@@ -231,8 +230,7 @@ export function Gigs({ isAdmin }: { isAdmin: boolean }): JSX.Element {
             variant="contained"
             className="updateGigButton"
             onClick={() => {
-              tinyCount = 0;
-              utils.updateGig(getGigs, setEditGig, setEditChanged, editGig);
+              utils.updateGig(getGigs, setEditGig, setEditChanged, editGig, auth.token);
             }}
           >
             Update
@@ -243,8 +241,7 @@ export function Gigs({ isAdmin }: { isAdmin: boolean }): JSX.Element {
             sx={{ color: 'red' }}
             onClick={() => {
               setEditChanged(false);
-              tinyCount = 0;
-              utils.deleteGig(editGig._id || '', getGigs, setEditGig, setEditChanged);
+              utils.deleteGig(editGig._id || '', getGigs, setEditGig, setEditChanged, auth.token);
             }}
           >
             Delete
@@ -254,7 +251,6 @@ export function Gigs({ isAdmin }: { isAdmin: boolean }): JSX.Element {
             className="cancelEditGigButton"
             onClick={() => {
               setEditChanged(false);
-              tinyCount = 0;
               setEditGig(defaultGig);
               return false;
             }}

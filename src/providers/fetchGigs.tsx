@@ -5,10 +5,12 @@ export const defaultGig: IGig = {
   date: '',
   time: '',
   tickets: '',
-  venue: '',
   location: '',
-  id: 0,
+  venue: '',
+  _id: '',
   datetime: null,
+  city: '',
+  usState: 'Virginia',
 };
 
 const validateGigsArr = (

@@ -7,6 +7,7 @@ import { DateTimePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { Editor } from '@tinymce/tinymce-react';
 import { useContext, useState } from 'react';
 import { DataContext } from 'src/providers/Data.provider';
+import { AuthContext } from 'src/providers/Auth.provider';
 import utils from './gigs.utils';
 
 // eslint-disable-next-line max-len
@@ -18,6 +19,7 @@ interface IcreateGigDialogProps {
 export function CreateGigDialog({
   showDialog, setShowDialog,
 }: IcreateGigDialogProps) {
+  const { auth } = useContext(AuthContext);
   const { getGigs } = useContext(DataContext);
   const now = new Date() as Date | null;
   const [dateTime, setDateTime] = useState(now);
@@ -103,7 +105,7 @@ export function CreateGigDialog({
           size="small"
           variant="contained"
           className="createGigButton"
-          onClick={() => { utils.createGig(getGigs, setShowDialog, dateTime, venue, city, usState, tickets); return true; }}
+          onClick={() => { utils.createGig(getGigs, setShowDialog, dateTime, venue, city, usState, tickets, auth); }}
         >
           Create
         </Button>

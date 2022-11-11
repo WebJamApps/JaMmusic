@@ -19,15 +19,6 @@ function DashButtons({ comp }:PageProps): JSX.Element {
         Photos
       </button>
       <button
-        className="floatRight2"
-        type="button"
-        id="Tours-Button"
-        style={{ margin: '5px', fontSize: '55%' }}
-        onClick={comp.handleNavClick}
-      >
-        Tours
-      </button>
-      <button
         className="floatRight3"
         type="button"
         id="Songs-Button"
