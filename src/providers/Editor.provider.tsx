@@ -1,7 +1,7 @@
 import { createContext, ReactChild } from 'react';
 import createPersistedState from 'use-persisted-state';
 import type { ISong } from './Data.provider';
-
+// TODO remove this entirely
 export interface Ieditor {
   isValid: boolean; hasChanged: boolean; song: ISong; tour:
   Record<string, unknown>; image: Record<string, unknown>;

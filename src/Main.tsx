@@ -19,7 +19,7 @@ function Main() {
           <EditorProvider>
             <Provider store={store.store}>
               <PersistGate loading={null} persistor={store.persistor}>
-                <ConnectedApp />
+                <ConnectedApp images={[]} showMap={false} />
               </PersistGate>
             </Provider>
           </EditorProvider>

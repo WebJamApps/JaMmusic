@@ -9,18 +9,6 @@ describe('SideMenuItem', () => {
   it('is defined', () => {
     expect(SideMenuItem).toBeDefined();
   });
-  it('returns null for auth item when user is incorrect type', () => {
-    commonUtils.getUserRoles = jest.fn(() => ['tester']);
-    const props = {
-      index: 1,
-      auth: { isAuthenticated: true, user: { userType: 'joker' } } as any,
-      location: { pathname: '/music' } as RouteComponentProps['location'],
-      menu: { auth: true, link: '/dashboard' } as ImenuItem,
-      handleClose: jest.fn(),
-    };
-    const smi = renderer.create(<SideMenuItem {...props} />).toJSON();
-    expect(smi).toBeNull();
-  });
   it('returns MakeLink for /music', () => {
     commonUtils.getUserRoles = jest.fn(() => ['tester']);
     const props = {

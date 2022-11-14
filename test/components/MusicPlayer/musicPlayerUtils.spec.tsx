@@ -1,12 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { shallow } from 'enzyme';
-import musicPlayerUtils from '../../../src/components/MusicPlayer/musicPlayerUtils';
+import musicPlayerUtils from 'src/components/MusicPlayer/musicPlayerUtils';
 
 describe('musicPlayerUtils', () => {
-  beforeEach(() => {
-    document.body.innerHTML = "<div id='sidebar'></div> <div id='header'></div><div id='wjfooter'></div><div id='mobilemenutoggle'></div>"
-      + "<div id='contentBlock'></div><div id='pageContent'></div><div id='headerTitle'></div><div id='mainPlayer'><div id='mAndP'></div></div>";
-  });
   const params:any = {
     get: (item: string) => {
       if (item === 'oneplayer') return true;
@@ -70,22 +65,6 @@ describe('musicPlayerUtils', () => {
     Object.defineProperty(window, 'outerWidth', { writable: true, configurable: true, value: 800 });
     const result = musicPlayerUtils.runIfOnePlayer(view);
     expect(result).toBe(true);
-  });
-  it('makes the home button that navigates to /music page', () => {
-    const wrapper = shallow(musicPlayerUtils.homeButton(true));
-    Object.defineProperty(window, 'location', { value: { href: '/booya', assign: () => { }, reload: () => { } }, writable: true });
-    window.location.assign = jest.fn();
-    wrapper.find('button').simulate('click');
-    expect(window.location.assign).toHaveBeenCalled();
-  });
-  it('hides the buttons', () => {
-    musicPlayerUtils.showHideButtons('none');
-    const testDiv = document.getElementById('mAndP');
-    if (testDiv) expect(testDiv.style.display).toBe('none');
-  });
-  it('hides the home button', () => {
-    const wrapper = shallow(musicPlayerUtils.homeButton(false));
-    expect(wrapper.find('button').length).toBe(1);
   });
   it('does nothing to the mission and pub buttons when they do not exist', () => {
     document.body.innerHTML = '';

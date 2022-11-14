@@ -9,10 +9,8 @@ import Caption from './caption';
 export interface PicSliderProps {
   data?: Iimage[];
 }
-
+// TODO redo as a functional component here
 class PicSlider extends Component<PicSliderProps> {
-  static defaultProps: { data: [{ url: ''; title: ''; _id: 0 }]; };
-
   settings: {
     autoplay: boolean;
     autoplaySpeed: number;
