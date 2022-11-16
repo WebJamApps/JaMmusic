@@ -17,7 +17,6 @@ export interface Isettings {
 export interface IpicSliderProps {
   data?: Iimage[];
 }
-// TODO redo as a functional component here
 export function PicSlider({ data }:IpicSliderProps) {
   const settings:Isettings = {
     autoplay: true,
