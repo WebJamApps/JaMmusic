@@ -13,8 +13,8 @@ import {
 import { Add as AddIcon } from '@mui/icons-material';
 import { Editor } from '@tinymce/tinymce-react';
 import HtmlReactParser from 'html-react-parser';
-import { DataContext } from 'src/providers/Data.provider';
-import { AuthContext } from 'src/providers/Auth.provider';
+import { DataContext, Igig } from 'src/providers/Data.provider';
+import { AuthContext, Iauth } from 'src/providers/Auth.provider';
 import { defaultGig } from 'src/providers/fetchGigs';
 import utils from './gigs.utils';
 import { CreateGigDialog, usStateOptions } from './CreateGigDialog';
@@ -132,15 +132,16 @@ export const VenueEditor = ({ editGig, setEditChanged, setEditGig }: IvenueEdito
   );
 };
 
-export function Gigs({ isAdmin }: { isAdmin: boolean }): JSX.Element {
-  const { auth } = useContext(AuthContext);
-  const { gigs, getGigs } = useContext(DataContext);
-  const [showDialog, setShowDialog] = useState(false);
-  const [gigsInOrder, setGigsInOrder] = useState(gigs);
-  const [pageSize, setPageSize] = useState(5);
-  const [editGig, setEditGig] = useState(defaultGig);
-  const [editChanged, setEditChanged] = useState(false);
-  useEffect(() => { utils.orderGigs(gigs, setGigsInOrder, setPageSize); }, [gigs]);
+interface IgigsDivProps {
+  isAdmin:boolean, showDialog: boolean, setShowDialog: (arg0:boolean)=>void,
+  gigsInOrder: Igig[], pageSize: number, editGig: Igig, setEditGig: (arg0:Igig)=>void,
+  editChanged: boolean, setEditChanged: (arg0:boolean)=>void, getGigs: ()=>boolean, auth: Iauth
+}
+export const GigsDiv = (props:IgigsDivProps) => {
+  const {
+    isAdmin, setShowDialog, setEditGig, gigsInOrder, pageSize, showDialog, editGig,
+    setEditChanged, editChanged, getGigs, auth,
+  } = props;
   return (
     <div
       className="gigsDiv"
@@ -261,5 +262,30 @@ export function Gigs({ isAdmin }: { isAdmin: boolean }): JSX.Element {
       </Dialog>
     </div>
   );
+};
+
+export function Gigs({ isAdmin }: { isAdmin: boolean }): JSX.Element {
+  const { auth } = useContext(AuthContext);
+  const { gigs, getGigs } = useContext(DataContext);
+  const [showDialog, setShowDialog] = useState(false);
+  const [gigsInOrder, setGigsInOrder] = useState(gigs);
+  const [pageSize, setPageSize] = useState(5);
+  const [editGig, setEditGig] = useState(defaultGig);
+  const [editChanged, setEditChanged] = useState(false);
+  useEffect(() => { utils.orderGigs(gigs, setGigsInOrder, setPageSize); }, [gigs]);
+  const props = {
+    isAdmin,
+    setShowDialog,
+    setEditGig,
+    gigsInOrder,
+    pageSize,
+    showDialog,
+    editGig,
+    setEditChanged,
+    editChanged,
+    getGigs,
+    auth,
+  };
+  return <GigsDiv {...props} />;
 }
 

@@ -59,6 +59,11 @@ export const continueMenuItem = (
   return null;
 };
 
+export const checkIsAllowed = (menu: ImenuItem, auth: Iauth, userRoles: string[]) => {
+  if (menu.auth && (!auth.isAuthenticated || userRoles.indexOf(auth.user.userType) === -1)) return false;
+  return true;
+};
+
 interface IsideMenuItemProps {
   menu: ImenuItem, index: number, location: RouteComponentProps['location'],
   handleClose: () => void,
@@ -69,7 +74,8 @@ export function SideMenuItem(props: IsideMenuItemProps): JSX.Element | null {
   } = props;
   const { auth } = useContext(AuthContext);
   const userRoles: string[] = commonUtils.getUserRoles();
-  if (menu.auth && (!auth.isAuthenticated || userRoles.indexOf(auth.user.userType) === -1)) return null;
+  const isAllowed = checkIsAllowed(menu, auth, userRoles);
+  if (!isAllowed) return null;
   if (menu.name === 'Web Jam LLC') {
     return (
       <MakeLink

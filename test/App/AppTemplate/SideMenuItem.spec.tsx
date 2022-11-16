@@ -2,7 +2,7 @@
 import { BrowserRouter, RouteComponentProps } from 'react-router-dom';
 import renderer from 'react-test-renderer';
 import type { ImenuItem } from 'src/App/AppTemplate/menuConfig';
-import { continueMenuItem, SideMenuItem } from 'src/App/AppTemplate/SideMenuItem';
+import { checkIsAllowed, continueMenuItem, SideMenuItem } from 'src/App/AppTemplate/SideMenuItem';
 import commonUtils from 'src/lib/commonUtils';
 
 describe('SideMenuItem', () => {
@@ -61,5 +61,12 @@ describe('SideMenuItem', () => {
     const smi: any = renderer.create(<BrowserRouter><SideMenuItem {...props} /></BrowserRouter>).root;
     const result = smi.findByProps({ type: 'Link' }).props.handleClose();
     expect(result).toBe('cleared');
+  });
+  it('checkIsAllowed return false if item requires auth and userType is not allowed', () => {
+    const menu:any = { auth: true };
+    const auth:any = { isAuthenticated: true, user: { userType: 'tester' } };
+    const userRoles = ['admin'];
+    const isAllowed = checkIsAllowed(menu, auth, userRoles);
+    expect(isAllowed).toBe(false);
   });
 });

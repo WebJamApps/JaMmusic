@@ -18,16 +18,14 @@ export const defaultAuth: Iauth = {
   isAuthenticated: false,
   error: '',
   token: '',
-  user: {
-    userType: '',
-    email: '',
-  },
+  user: { userType: '', email: '' },
 };
+
+export const defaultSetAuth = (arg0: Iauth) => { console.log(arg0); };
 
 export const AuthContext = createContext({
   auth: defaultAuth,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  setAuth: (_arg0: Iauth) => {},
+  setAuth: defaultSetAuth,
 });
 
 type Props = { children: ReactChild };

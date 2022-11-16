@@ -1,7 +1,7 @@
 import utils from 'src/containers/Music/Gigs/gigs.utils';
 import commonUtils from 'src/lib/commonUtils';
 import type { Iauth } from 'src/providers/Auth.provider';
-import type { IGig } from 'src/providers/Data.provider';
+import type { Igig } from 'src/providers/Data.provider';
 
 describe('gigs.utils', () => {
   it('makeVenueValue when Our Past Performances', () => {
@@ -22,7 +22,7 @@ describe('gigs.utils', () => {
     future.setDate(future.getDate() + 2);
     future = new Date(future).toISOString();
     const gigs = [{ datetime: tomorrow }, { datetime: yesterday }, { datetime: future },
-      { datetime: today }, { datetime: tomorrow }] as IGig[];
+      { datetime: today }, { datetime: tomorrow }] as Igig[];
     utils.orderGigs(gigs, setGigsInOrder, jest.fn());
     expect(setGigsInOrder).toHaveBeenCalled();
   });
@@ -45,7 +45,7 @@ describe('gigs.utils', () => {
       { datetime: future }, { datetime: future }, { datetime: future },
       { datetime: future }, { datetime: future }, { datetime: tomorrow },
       { datetime: yesterday }, { datetime: future }, { datetime: today }, { datetime: tomorrow },
-    ] as IGig[];
+    ] as Igig[];
     utils.orderGigs(gigs, setGigsInOrder, setPageSize);
     expect(setPageSize).toHaveBeenCalledWith(12);
   });

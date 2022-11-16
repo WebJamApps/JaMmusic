@@ -3,7 +3,7 @@ import HtmlReactParser from 'html-react-parser';
 import scc from 'socketcluster-client';
 import commonUtils from 'src/lib/commonUtils';
 import type { Iauth } from 'src/providers/Auth.provider';
-import type { IGig } from 'src/providers/Data.provider';
+import type { Igig } from 'src/providers/Data.provider';
 import { defaultGig } from 'src/providers/fetchGigs';
 
 const createGig = async (
@@ -42,7 +42,7 @@ const updateGig = async (
   token: string,
 ) => {
   try {
-    const tour: IGig = { ...editGig };
+    const tour: Igig = { ...editGig };
     delete tour.date;
     delete tour.time;
     delete tour.location;
@@ -109,8 +109,8 @@ async function deleteGig(
 }
 
 export const orderGigs = (
-  gigs: IGig[],
-  setGigsInOrder: { (arg0: IGig[]): void; },
+  gigs: Igig[],
+  setGigsInOrder: { (arg0: Igig[]): void; },
   setPageSize: (arg0: number) => void,
 ) => {
   const now = new Date();
