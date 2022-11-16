@@ -1,6 +1,6 @@
 import { useEffect, useState, useContext } from 'react';
 import { AuthContext, Iauth } from 'src/providers/Auth.provider';
-import PicSlider from 'src/components/PicSlider';
+import { PicSlider } from 'src/components/PicSlider';
 import { Gigs } from './Gigs';
 import type { Iimage } from '../../redux/mapStoreToProps';
 import { Intro } from './intro';
