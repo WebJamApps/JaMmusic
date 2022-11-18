@@ -9,6 +9,7 @@ import { defaultGig } from 'src/providers/fetchGigs';
 import { Editor } from '@tinymce/tinymce-react';
 import type { Iauth } from 'src/providers/Auth.provider';
 import utils from './gigs.utils';
+import { UsStateDropDown } from './UsStateDropDown';
 
 interface IeditTextProps {
   objKey: 'city' | 'tickets',
@@ -141,9 +142,7 @@ export function EditGigDialog(props: IeditGigDialogProps) {
     >
       <DialogTitle>Edit Gig</DialogTitle>
       <DialogContent sx={{ padding: '10px 10px' }}>
-        <DialogContentText sx={{ marginBottom: '30px' }}>
-          Enter all *required.
-        </DialogContentText>
+        <DialogContentText sx={{ marginBottom: '30px' }}>Enter all *required</DialogContentText>
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <DateTimePicker
             className="editDateTime"
@@ -159,21 +158,7 @@ export function EditGigDialog(props: IeditGigDialogProps) {
         <p className="venueLabel">* Venue</p>
         <VenueEditor editGig={editGig} setEditChanged={setEditChanged} setEditGig={setEditGig} />
         <EditText objKey="city" editGig={editGig} setEditChanged={setEditChanged} setEditGig={setEditGig} required />
-        <FormControl fullWidth sx={{ marginTop: '20px' }}>
-          <InputLabel id="edit-us-state-label">* State</InputLabel>
-          <Select
-            labelId="edit-us-state-label"
-            id="edit-us-state"
-            value={editGig.usState}
-            label="* State"
-            onChange={(evt) => {
-              setEditChanged(true);
-              setEditGig({ ...editGig, usState: evt.target.value }); return evt.target.value;
-            }}
-          >
-            {utils.usStateOptions.map((s: string) => <MenuItem key={s} value={s}>{s}</MenuItem>)}
-          </Select>
-        </FormControl>
+        <UsStateDropDown editGig={editGig} setEditChanged={setEditChanged} setEditGig={setEditGig} />
         <EditText objKey="tickets" editGig={editGig} setEditChanged={setEditChanged} setEditGig={setEditGig} required={false} />
       </DialogContent>
       <ButtonsSection
