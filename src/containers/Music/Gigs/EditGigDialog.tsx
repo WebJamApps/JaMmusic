@@ -76,9 +76,56 @@ export const VenueEditor = ({ editGig, setEditChanged, setEditGig }: IvenueEdito
   );
 };
 
+interface IbuttonsSectionProps {
+  editGig: Igig, setEditGig: (arg0: Igig) => void, getGigs: () => void,
+  editChanged: boolean, setEditChanged: (arg0: boolean) => void, auth: Iauth
+}
+export const ButtonsSection = (props: IbuttonsSectionProps) => {
+  const {
+    editGig, editChanged, getGigs, setEditGig, setEditChanged, auth,
+  } = props;
+  return (
+    <DialogActions>
+      <Button
+        disabled={utils.checkUpdateDisabled(editGig, editChanged)}
+        size="small"
+        variant="contained"
+        className="updateGigButton"
+        onClick={() => {
+          utils.updateGig(getGigs, setEditGig, setEditChanged, editGig, auth.token);
+        }}
+      >
+        Update
+      </Button>
+      <Button
+        size="small"
+        className="deleteGigButton"
+        sx={{ color: 'red' }}
+        onClick={() => {
+          setEditChanged(false);
+          utils.deleteGig(editGig._id || '', getGigs, setEditGig, setEditChanged, auth.token);
+        }}
+      >
+        Delete
+      </Button>
+      <Button
+        size="small"
+        className="cancelEditGigButton"
+        onClick={() => {
+          setEditChanged(false);
+          setEditGig(defaultGig);
+          return false;
+        }}
+      >
+        Cancel
+      </Button>
+    </DialogActions>
+  );
+};
+
 interface IeditGigDialogProps {
   editGig: Igig, setEditGig: (arg0: Igig) => void, setShowDialog: (arg0: boolean) => void,
-  setEditChanged: (arg0: boolean) => void, editChanged:boolean, getGigs:()=>void, auth:Iauth
+  setEditChanged: (arg0: boolean) => void, editChanged: boolean, getGigs: () => void, auth: Iauth
 }
 export function EditGigDialog(props: IeditGigDialogProps) {
   const {
@@ -129,41 +176,14 @@ export function EditGigDialog(props: IeditGigDialogProps) {
         </FormControl>
         <EditText objKey="tickets" editGig={editGig} setEditChanged={setEditChanged} setEditGig={setEditGig} required={false} />
       </DialogContent>
-      <DialogActions>
-        <Button
-          disabled={utils.checkUpdateDisabled(editGig, editChanged)}
-          size="small"
-          variant="contained"
-          className="updateGigButton"
-          onClick={() => {
-            utils.updateGig(getGigs, setEditGig, setEditChanged, editGig, auth.token);
-          }}
-        >
-          Update
-        </Button>
-        <Button
-          size="small"
-          className="deleteGigButton"
-          sx={{ color: 'red' }}
-          onClick={() => {
-            setEditChanged(false);
-            utils.deleteGig(editGig._id || '', getGigs, setEditGig, setEditChanged, auth.token);
-          }}
-        >
-          Delete
-        </Button>
-        <Button
-          size="small"
-          className="cancelEditGigButton"
-          onClick={() => {
-            setEditChanged(false);
-            setEditGig(defaultGig);
-            return false;
-          }}
-        >
-          Cancel
-        </Button>
-      </DialogActions>
+      <ButtonsSection
+        editGig={editGig}
+        editChanged={editChanged}
+        getGigs={getGigs}
+        setEditGig={setEditGig}
+        setEditChanged={setEditChanged}
+        auth={auth}
+      />
     </Dialog>
   );
 }

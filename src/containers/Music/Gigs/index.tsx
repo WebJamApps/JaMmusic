@@ -61,12 +61,32 @@ export const columns: GridColumns = [
   },
 ];
 
+export const ShowCreateGigButton = (
+  { isAdmin, setShowDialog }: { isAdmin: boolean, setShowDialog: (arg0: boolean) => void },
+) => {
+  if (!isAdmin) return null;
+  return (
+    <Tooltip title="Add New Gig" placement="right">
+      <IconButton
+        className="showCreateDialog"
+        sx={{ marginLeft: '10px', color: 'blue' }}
+        onClick={() => {
+          setShowDialog(true);
+          return true;
+        }}
+      >
+        <AddIcon />
+      </IconButton>
+    </Tooltip>
+  );
+};
+
 interface IgigsDivProps {
-  isAdmin:boolean, showDialog: boolean, setShowDialog: (arg0:boolean)=>void,
-  gigsInOrder: Igig[], pageSize: number, editGig: Igig, setEditGig: (arg0:Igig)=>void,
-  editChanged: boolean, setEditChanged: (arg0:boolean)=>void, getGigs: ()=>boolean, auth: Iauth
+  isAdmin: boolean, showDialog: boolean, setShowDialog: (arg0: boolean) => void,
+  gigsInOrder: Igig[], pageSize: number, editGig: Igig, setEditGig: (arg0: Igig) => void,
+  editChanged: boolean, setEditChanged: (arg0: boolean) => void, getGigs: () => boolean, auth: Iauth
 }
-export const GigsDiv = (props:IgigsDivProps) => {
+export const GigsDiv = (props: IgigsDivProps) => {
   const {
     isAdmin, setShowDialog, setEditGig, editGig, gigsInOrder, pageSize, showDialog, editChanged, setEditChanged, getGigs, auth,
   } = props;
@@ -79,20 +99,7 @@ export const GigsDiv = (props:IgigsDivProps) => {
     >
       <h4 style={{ textAlign: 'center' }}>
         Gigs
-        {isAdmin ? (
-          <Tooltip title="Add New Gig" placement="right">
-            <IconButton
-              className="showCreateDialog"
-              sx={{ marginLeft: '10px', color: 'blue' }}
-              onClick={() => {
-                setShowDialog(true);
-                return true;
-              }}
-            >
-              <AddIcon />
-            </IconButton>
-          </Tooltip>
-        ) : ''}
+        <ShowCreateGigButton isAdmin={isAdmin} setShowDialog={setShowDialog} />
       </h4>
       <div style={{ height: '500px', width: '100%' }}>
         <DataGrid
