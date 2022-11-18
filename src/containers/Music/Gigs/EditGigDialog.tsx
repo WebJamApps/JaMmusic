@@ -1,8 +1,7 @@
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DateTimePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import {
-  Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle,
-  FormControl, InputLabel, MenuItem, Select, TextField,
+  Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField,
 } from '@mui/material';
 import type { Igig } from 'src/providers/Data.provider';
 import { defaultGig } from 'src/providers/fetchGigs';
