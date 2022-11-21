@@ -1,4 +1,4 @@
-
+import renderer from 'react-test-renderer';
 import { PicSlider } from 'src/components/PicSlider';
 
 const data:any = [
@@ -13,5 +13,9 @@ describe('picture slider component test', () => {
   it('is defined', () => {
     expect(PicSlider).toBeDefined();
     expect(data).toBeDefined();
+  });
+  it('renders with undefined images', () => {
+    const slider:any = renderer.create(<PicSlider />).toJSON();
+    expect(slider.children[0].children[0]).toBe('');
   });
 });
