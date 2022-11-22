@@ -70,10 +70,7 @@ export const ShowCreateGigButton = (
       <IconButton
         className="showCreateDialog"
         sx={{ marginLeft: '10px', color: 'blue' }}
-        onClick={() => {
-          setShowDialog(true);
-          return true;
-        }}
+        onClick={() => setShowDialog(true)}
       >
         <AddIcon />
       </IconButton>

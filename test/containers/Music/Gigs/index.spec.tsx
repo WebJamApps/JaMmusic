@@ -1,45 +1,40 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import renderer from 'react-test-renderer';
 import {
-  Gigs, columns,
+  Gigs, columns, GigsDiv, ShowCreateGigButton,
 } from 'src/containers/Music/Gigs';
-// import utils from 'src/containers/Music/Gigs/gigs.utils';
+import utils from 'src/containers/Music/Gigs/gigs.utils';
 
 describe('Gigs', () => {
   it('renders correctly when not isAdmin', () => {
     const gigs = renderer.create(<Gigs isAdmin={false} />);
     expect(JSON.stringify(gigs.toJSON()).includes('gigsDiv')).toBe(true);
   });
-  // it('renders when isAdmin and handles clicks', () => {
-  //   utils.clickToEdit = jest.fn();
-  //   utils.updateGig = jest.fn();
-  //   utils.deleteGig = jest.fn();
-  //   const gigs = renderer.create(<Gigs isAdmin />).root;
-  //   const result = gigs.findByProps({ className: 'showCreateDialog' }).props.onClick();
-  //   expect(result).toBe(true);
-  //   expect(gigs.findByProps({ className: 'createNewGigDialog' }).props.onClose()).toBe(false);
-  //   expect(gigs.findByProps({ className: 'cancelCreateButton' }).props.onClick()).toBe(false);
-  //   expect(gigs.findByProps({ className: 'createGigButton' }).props.onClick()).toBe(true);
-  //   const dtPicker = gigs.findByProps({ className: 'createDatetime' });
-  //   expect(dtPicker.props.onChange(null)).toBeNull();
-  //   expect(dtPicker.props.renderInput().props.className).toBe('dateTimeInput');
-  //   const venueEditor = gigs.findByProps({ id: 'create-venue' });
-  //   expect(venueEditor.props.onEditorChange('venue')).toBe('venue');
-  //   const stateEditor = gigs.findByProps({ id: 'create-us-state' });
-  //   expect(stateEditor.props.onChange({ target: { value: 'Georgia' } })).toBe('Georgia');
-  //   gigs.findByProps({ className: 'adminGrid' }).props.onRowClick({ row: {} });
-  //   expect(utils.clickToEdit).toHaveBeenCalled();
-  //   expect(gigs.findByProps({ className: 'editGigDialog' }).props.onClose()).toBe(false);
-  //   const editDateTime = gigs.findByProps({ className: 'editDateTime' });
-  //   expect(editDateTime.props.onChange(null)).toBe(null);
-  //   expect(editDateTime.props.renderInput({}).props.className).toBe('dateTimeInput');
-  //   expect(gigs.findByProps({ id: 'edit-us-state' }).props.onChange({ target: { value: 'Virginia' } })).toBe('Virginia');
-  //   gigs.findByProps({ className: 'updateGigButton' }).props.onClick();
-  //   expect(utils.updateGig).toHaveBeenCalled();
-  //   gigs.findByProps({ className: 'deleteGigButton' }).props.onClick();
-  //   expect(utils.deleteGig).toHaveBeenCalled();
-  //   expect(gigs.findByProps({ className: 'cancelEditGigButton' }).props.onClick()).toBe(false);
-  // });
+  it('renders GigsDiv when isAdmin and handles onRowClick', () => {
+    utils.clickToEdit = jest.fn();
+    const props = {
+      isAdmin: true,
+      setShowDialog: jest.fn(),
+      setEditGig: jest.fn(),
+      editGig: {} as any,
+      gigsInOrder: {} as any,
+      pageSize: 14,
+      showDialog: false,
+      editChanged: false,
+      setEditChanged: jest.fn(),
+      getGigs: jest.fn(),
+      auth: {} as any,
+    };
+    const gigsDiv = renderer.create(<GigsDiv {...props} />).root;
+    gigsDiv.findByProps({ className: 'adminGrid' }).props.onRowClick({ row: {} });
+    expect(utils.clickToEdit).toHaveBeenCalled();
+  });
+  it('renders ShowCreateGigButton and handles click', () => {
+    const props = { isAdmin: true, setShowDialog: jest.fn() };
+    const sButton = renderer.create(<ShowCreateGigButton {...props} />).root;
+    sButton.findByProps({ className: 'showCreateDialog' }).props.onClick();
+    expect(props.setShowDialog).toHaveBeenCalledWith(true);
+  });
   it('renders the location cell with city, state', () => {
     const location:any = columns[2];
     const params:any = { row: { location: '', city: 'Salem', usState: 'Virginia' } };
