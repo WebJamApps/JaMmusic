@@ -89,27 +89,4 @@ describe('Gigs', () => {
     const cell:any = time.renderCell(params);
     expect(typeof cell).toBe('string');
   });
-  // it('renders EditText and handles onChange', () => {
-  //   const props = {
-  //     objKey: 'city' as any, editGig: {} as any, setEditGig: jest.fn(), setEditChanged: jest.fn(), required: true,
-  //   };
-  //   const editText = renderer.create(<EditText {...props} />).root;
-  //   editText.findByProps({ type: 'text' }).props.onChange({ target: { value: 'city' } });
-  //   expect(props.setEditGig).toHaveBeenCalledWith({ city: 'city' });
-  // });
-  // it('renders VenueEditor and handles change event', () => {
-  //   const props = {
-  //     editGig: { _id: 'id' } as any, setEditGig: jest.fn(), setEditChanged: jest.fn(),
-  //   };
-  //   const venueEditor = renderer.create(<VenueEditor {...props} />).root;
-  //   expect(venueEditor.findByProps({ id: 'edit-venue' }).props.onEditorChange('venue')).toBe('');
-  //   expect(venueEditor.findByProps({ id: 'edit-venue' }).props.onEditorChange('venue')).toBe('venue');
-  // });
-  // it('renders VenueEditor as null', () => {
-  //   const props = {
-  //     editGig: { } as any, setEditGig: jest.fn(), setEditChanged: jest.fn(),
-  //   };
-  //   const venueEditor = renderer.create(<VenueEditor {...props} />).toJSON();
-  //   expect(venueEditor).toBeNull();
-  // });
 });

@@ -68,9 +68,7 @@ export const VenueEditor = ({ editGig, setEditChanged, setEditGig }: IvenueEdito
         if (text !== `<p>${editGig.venue}</p>`) {
           setEditChanged(true);
           setEditGig({ ...editGig, venue: text });
-          return text;
         }
-        return '';
       }}
     />
   );
@@ -114,7 +112,6 @@ export const ButtonsSection = (props: IbuttonsSectionProps) => {
         onClick={() => {
           setEditChanged(false);
           setEditGig(defaultGig);
-          return false;
         }}
       >
         Cancel
