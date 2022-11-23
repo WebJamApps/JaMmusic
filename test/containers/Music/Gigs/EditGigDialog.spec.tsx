@@ -57,6 +57,6 @@ describe('EditGigDialog', () => {
     };
     const editText = renderer.create(<EditText {...props} />).root;
     editText.findByProps({ type: 'text' }).props.onChange({ target: { value: 'value' } });
-    expect(editText).toHaveBeenCAlledWith({ tickets: 'value' });
+    expect(editText).toHaveBeenCalledWith({ tickets: 'value' });
   });
 });
