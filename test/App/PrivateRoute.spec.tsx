@@ -1,28 +1,25 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { Route } from 'react-router-dom';
-import { shallow } from 'enzyme';
-import { PrivateRoute } from '../../src/App/PrivateRoute';
-import GoogleMap from '../../src/containers/GoogleMap';
-import commonUtils from '../../src/lib/commonUtils';
+import { BrowserRouter } from 'react-router-dom';
+import { PrivateRoute } from 'src/App/PrivateRoute';
+import GoogleMap from 'src/containers/GoogleMap';
+// import commonUtils from 'src/lib/commonUtils';
+// import renderer from 'react-test-renderer';
+import ReactDom from 'react-dom';
+import { act } from 'react-dom/test-utils';
 
 describe('PrivateRoute', () => {
-  const wrapper = shallow(<PrivateRoute Container={GoogleMap} path="/map" />);
-  it('renders correctly', () => {
-    expect(wrapper).toMatchSnapshot();
-  });
-  it('renders the redirect', () => {
-    const route = wrapper.find(Route).get(0);
-    const result = route.props.render();
-    expect(result.props.to).toBe('/');
-  });
-  it('renders the component', () => {
-    const userRoles: string[] = commonUtils.getUserRoles();
-    const authJson = JSON.stringify({ isAuthenticated: true, user: { userType: userRoles[0] } });
-    sessionStorage.setItem('persist:root', JSON.stringify({ auth: authJson }));
-    const wrapper2 = shallow(<PrivateRoute Container={GoogleMap} path="/map" />);
-    const route = wrapper2.find(Route).get(0);
-    const result = route.props.render();
-    expect(result.type).toBeDefined();
+  it('renders and runs useEffect', () => {
+    const container = document.createElement('div');
+    document.body.appendChild(container);
+    const props = {
+      Container: GoogleMap, path: '/googlemap',
+    };
+    act(() => {
+      ReactDom.render(<BrowserRouter><PrivateRoute {...props} /></BrowserRouter>, container);
+    });
+    const gMap:any = document.getElementById('googleMap');
+    expect(gMap).toBeDefined();
+    document.body.removeChild(container);
   });
 });
