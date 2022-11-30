@@ -17,9 +17,14 @@ const share = (view: MusicPlayer): void => {
   else view.setState({ player: { ...player, displayCopier: 'none' } });
   showHideButtons('none');
 };
+function playUrl(song:ISong | null): string {
+  const url = window.location.href.split('/music')[0];
+  if (song && song._id) return `${url}/music/songs?oneplayer=true&output=embed&id=${song._id}`;
+  return `${url}/music/songs`;
+}
 const copyShare = (view: MusicPlayer): void => {
-  const { player } = view.state;
-  view.navigator.clipboard.writeText(view.playUrl()).then(() => {
+  const { player, song } = view.state;
+  view.navigator.clipboard.writeText(playUrl(song)).then(() => {
     view.setState({ player: { ...player, displayCopyMessage: true } });
     setTimeout(() => {
       showHideButtons('block');
@@ -170,7 +175,21 @@ function prev(view:MusicPlayer): void {
     view.setState({ index: newIndex, song: songsState[newIndex] });// eslint-disable-line security/detect-object-injection
   } else view.setState({ song: songsState[minusIndex], index: minusIndex });// eslint-disable-line security/detect-object-injection
 }
+function setClassOverlay(
+  song: ISong | null,
+  player: { playing: boolean; },
+): string {
+  let classOverlay = 'mainPlayer';
+  if (player.playing === false) {
+    if (song && song.url[8] === 's') classOverlay = 'soundcloudOverlay';
+    if (song && song.url[12] === 'y') classOverlay = 'youtubeOverlay';
+  }
+  return classOverlay;
+}
+
 export default {
+  playUrl,
+  setClassOverlay,
   prev,
   shuffleThem,
   toggleSongTypes,
