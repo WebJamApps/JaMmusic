@@ -50,11 +50,7 @@ export class MusicPlayer extends Component<MProps, MusicPlayerState> {
         playing: false, shown: false, isShuffleOn: false, displayCopier: 'none', displayCopyMessage: false, onePlayerMode: false,
       },
     };
-    this.play = this.play.bind(this);
     this.pause = this.pause.bind(this);
-    this.shuffle = this.shuffle.bind(this);
-    this.next = this.next.bind(this);
-    this.buttons = this.buttons.bind(this);
     this.navigator = window.navigator;
     this.musicUtils = musicUtils;
     this.commonUtils = commonUtils;
@@ -119,85 +115,14 @@ export class MusicPlayer extends Component<MProps, MusicPlayerState> {
     );
   }
 
-  buttons(): JSX.Element {
-    const { song, player: { playing, isShuffleOn } } = this.state;
-    const url = musicPlayerUtils.playUrl(song);
-    return (
-      <section className="mt-0 songPlayerButtonsSection" style={{ paddingTop: 0 }}>
-        <div id="play-buttons">
-          <button type="button" id="play-pause" role="menu" className={playing ? 'on' : 'off'} onClick={this.play}>Play/Pause</button>
-          <button type="button" role="menu" id="next" onClick={this.next}>Next</button>
-          <button type="button" role="menu" id="prev" onClick={() => musicPlayerUtils.prev(this)}>
-            Prev
-          </button>
-          <button type="button" id="shuffle" role="menu" className={isShuffleOn ? 'on' : 'off'} onClick={this.shuffle}>Shuffle</button>
-        </div>
-        {this.lineTwoButtons()}
-        {this.lineThreeButtons(url)}
-      </section>
-    );
-  }
-
-  shuffle(): void {
-    const {
-      player, songsState, missionState, pubState,
-    } = this.state;
-    if (player.isShuffleOn) {
-      let reset = songsState;
-      if (missionState === 'on') reset = this.musicUtils.setIndex(reset, 'mission');
-      if (pubState === 'on') reset = this.musicUtils.setIndex(reset, 'pub');
-      this.setState({
-        songsState: reset, player: { ...player, isShuffleOn: false }, song: reset[0], index: 0,
-      });
-    } else {
-      const shuffled = musicPlayerUtils.shuffleThem(songsState);
-      this.setState({
-        songsState: shuffled, player: { ...player, isShuffleOn: true }, song: shuffled[0], index: 0,
-      });
-    }
-  }
-
-  play(): void {
-    const { player } = this.state;
-    const isPlaying = !player.playing;
-    this.setState({ player: { ...player, playing: isPlaying } });
-  }
-
   pause(): void {
     const { player } = this.state;
     this.setState({ player: { ...player, playing: false } });
   }
 
-  next(): void {
-    let { index } = this.state;
-    index += 1;
-    const { songsState } = this.state;
-    if (index >= songsState.length) this.setState({ index: 0, song: songsState[0] });
-    else this.setState({ song: songsState[index], index });// eslint-disable-line security/detect-object-injection
-  }
-
-  copyInput(player: MusicPlayerState['player'], song: ISong | null): JSX.Element {
-    return (
-      <div id="copyInput" style={{ marginTop: '-20px', marginBottom: '40px' }}>
-        {player.displayCopyMessage && <div className="copySuccess"> Url copied Url to clipboard </div>}
-        {song ? <input id="copyUrl" disabled value={musicPlayerUtils.playUrl(song)} style={{ backgroundColor: '#fff' }} className="form-control" />
-          : null}
-        <div
-          id="copyButton"
-          role="presentation"
-          onClick={() => musicPlayerUtils.copyShare(this)}
-        >
-          <span className="copy-url">
-            Copy URL
-          </span>
-        </div>
-      </div>
-    );
-  }
-
   render(): JSX.Element {
     const {
-      song, player, pageTitle, index, songsState,
+      song, player, pageTitle, index, songsState, missionState, pubState,
     } = this.state;
     const classOverlay = musicPlayerUtils.setClassOverlay(song, player);
     return (
@@ -209,6 +134,9 @@ export class MusicPlayer extends Component<MProps, MusicPlayerState> {
         setState={this.setState}
         pageTitle={pageTitle}
         classOverlay={classOverlay}
+        missionState={missionState}
+        pubState={pubState}
+        writeText={this.navigator.clipboard.writeText}
       />
     );
   }

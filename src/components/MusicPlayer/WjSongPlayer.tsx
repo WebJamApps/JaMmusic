@@ -1,5 +1,7 @@
 import ReactPlayer from 'react-player';
 import type { ISong } from 'src/providers/Data.provider';
+import type { Iplayer } from '.';
+import musicPlayerUtils from './musicPlayerUtils';
 import musicUtils from './musicUtils';
 
 const PageH4 = ({ pageTitle }: { pageTitle:string }): JSX.Element => (
@@ -30,7 +32,7 @@ function WjReactPlayer(props:IwjReactPlayerProps) {
       url={song.url}
       playing={player.playing}
       controls
-      onEnded={() => musicUtils.next(index, songsState, setState)}
+      onEnded={() => musicPlayerUtils.next(index, songsState, setState)}
       width="100%"
       height="40vh"
       id="mainPlayer"
@@ -72,13 +74,87 @@ function TextUnderPlayer({ song }:{ song: ISong | null }) {
     </section>
   );
 }
+
+function ButtonsSection({
+  song, player, index, songsState, setState, missionState, pubState,
+}:any): JSX.Element {
+  const url = musicPlayerUtils.playUrl(song);
+  return (
+    <section className="mt-0 songPlayerButtonsSection" style={{ paddingTop: 0 }}>
+      <div id="play-buttons">
+        <button
+          type="button"
+          id="play-pause"
+          role="menu"
+          className={player.playing ? 'on' : 'off'}
+          onClick={() => musicPlayerUtils.play(player, setState)}
+        >
+          Play/Pause
+        </button>
+        <button
+          type="button"
+          role="menu"
+          id="next"
+          onClick={() => musicPlayerUtils.next(index, songsState, setState)}
+        >
+          Next
+
+        </button>
+        <button
+          type="button"
+          role="menu"
+          id="prev"
+          onClick={() => musicPlayerUtils.prev(index, songsState, setState)}
+        >
+          Prev
+        </button>
+        <button
+          type="button"
+          id="shuffle"
+          role="menu"
+          className={player.isShuffleOn ? 'on' : 'off'}
+          onClick={() => musicPlayerUtils.shuffle(player, songsState, missionState, pubState, setState)}
+        >
+          Shuffle
+
+        </button>
+      </div>
+      {this.lineTwoButtons()}
+      {this.lineThreeButtons(url)}
+    </section>
+  );
+}
+interface IcopyInputProps {
+  player: Iplayer, song: ISong | null, writeText:(arg0:string)=>Promise<void>, setState:(...args:any)=>void
+}
+function CopyInput(props:IcopyInputProps): JSX.Element {
+  const {
+    player, song, writeText, setState,
+  } = props;
+  return (
+    <div id="copyInput" style={{ marginTop: '-20px', marginBottom: '40px' }}>
+      {player.displayCopyMessage && <div className="copySuccess"> Url copied Url to clipboard </div>}
+      {song ? <input id="copyUrl" disabled value={musicPlayerUtils.playUrl(song)} style={{ backgroundColor: '#fff' }} className="form-control" />
+        : null}
+      <div
+        id="copyButton"
+        role="presentation"
+        onClick={() => musicPlayerUtils.copyShare(player, song, writeText, setState)}
+      >
+        <span className="copy-url">
+          Copy URL
+        </span>
+      </div>
+    </div>
+  );
+}
 interface IWjSongPlayerProps {
-  pageTitle:string, classOverlay:string, song:ISong | null, player:any, index:number,
-  songsState:any, setState:(...args:any)=>void
+  pageTitle:string, classOverlay:string, song:ISong | null, player:Iplayer, index:number,
+  songsState:any, setState:(...args:any)=>void, missionState:string, pubState:string, writeText:(arg0:string)=>Promise<void>
 }
 export function WjSongPlayer(props:IWjSongPlayerProps) {
   const {
-    pageTitle, classOverlay, song, player, index, songsState, setState,
+    pageTitle, classOverlay, song, player, index, songsState, setState, missionState, pubState, writeText,
   } = props;
   return (
     <div className="container-fluid">
@@ -89,9 +165,17 @@ export function WjSongPlayer(props:IWjSongPlayerProps) {
           <WjReactPlayer song={song} player={player} index={index} songsState={songsState} setState={setState} />
         </section>
         <TextUnderPlayer song={song} />
-        {this.buttons()}
+        <ButtonsSection
+          song={song}
+          player={player}
+          index={index}
+          songState={songsState}
+          setState={setState}
+          missionState={missionState}
+          pubState={pubState}
+        />
         <section className="mt-1 col-12" id="copier" style={{ display: player.displayCopier, marginTop: '0' }}>
-          {this.copyInput(player, song)}
+          <CopyInput player={player} song={song} writeText={writeText} setState={setState} />
         </section>
       </div>
     </div>
