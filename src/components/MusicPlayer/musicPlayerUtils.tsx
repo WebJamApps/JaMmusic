@@ -146,9 +146,8 @@ const setIndex = (songs: ISong[], category: string): ISong[] => {
   categorySongs = categorySongs.concat(otherSongs);
   return categorySongs;
 };
-function toggleOn(lcType: string, view: MusicPlayer, type: string, typeInState: string): boolean {
-  const { player } = view.state;
-  let { songsState, pageTitle } = view.state, shuffled: ISong[] = songsState, { songs } = view.props;
+function toggleOn(lcType: string, player, songState, pageTitle, songs, type: string, typeInState: string): boolean {
+  let shuffled: ISong[] = songsState;
   if (!songs) songs = [];
   songsState = [
     ...songsState,
@@ -161,16 +160,23 @@ function toggleOn(lcType: string, view: MusicPlayer, type: string, typeInState: 
   resetState(view, player, pageTitle, songsState, typeInState, shuffled, 'on');
   return true;
 }
-function toggleSongTypes(type: string, view: MusicPlayer): boolean {
+function toggleSongTypes(
+  type: string,
+  player:Iplayer,
+  missionState:string,
+  pubState:string,
+  songsState,
+  pageTitle,
+  songs,
+): boolean {
   const lcType = type.toLowerCase();
-  const { player, missionState, pubState } = view.state;
   if (lcType === 'original' && missionState === 'off' && pubState === 'off') return false;
-  let typeState = 'off', { songsState, pageTitle } = view.state, shuffled: ISong[] = songsState, { songs } = view.props;
+  let typeState = 'off', shuffled: ISong[] = songsState;
   if (!songs) songs = [];
   const typeInState = `${lcType}State`;
-  if (typeInState === 'pubState') typeState = view.state.pubState;
-  else if (typeInState === 'originalState') typeState = view.state.originalState;
-  else typeState = view.state.missionState;
+  if (typeInState === 'pubState') typeState = pubState;
+  else if (typeInState === 'originalState') typeState = originalState;
+  else typeState = missionState;
   if (typeState === 'off') return toggleOn(lcType, view, type, typeInState);
   songsState = songsState.filter((song: ISong) => song.category !== lcType);
   pageTitle = pageTitle.replace(` & ${type}`, '');
@@ -183,16 +189,17 @@ function toggleSongTypes(type: string, view: MusicPlayer): boolean {
   resetState(view, player, pageTitle, songsState, typeInState, shuffled, 'off');
   return true;
 }
-function prev(
-  index: number,
-  songsState: ISong[],
-  setState: (arg0: { index: number; song: ISong }) => void,
-): void {
+function prev(index: number, songsState: ISong[], setState: (arg0: { index: number; song: ISong }) => void): void {
   const minusIndex = index - 1;
   if (minusIndex < 0 || minusIndex > songsState.length) {
     const newIndex = songsState.length - 1;
     setState({ index: newIndex, song: songsState[newIndex] });// eslint-disable-line security/detect-object-injection
   } else setState({ song: songsState[minusIndex], index: minusIndex });// eslint-disable-line security/detect-object-injection
+}
+function next(index: number, songsState: ISong[], setState: (arg0: { index: number; song: ISong; }) => void): void {
+  const newIndex = index + 1;
+  if (newIndex >= songsState.length) setState({ index: 0, song: songsState[0] });
+  else setState({ song: songsState[index], index });// eslint-disable-line security/detect-object-injection
 }
 function setClassOverlay(
   song: ISong | null,
@@ -211,15 +218,6 @@ function play(
 ): void {
   const isPlaying = !player.playing;
   setState({ player: { ...player, playing: isPlaying } });
-}
-function next(
-  index: number,
-  songsState: ISong[],
-  setState: (arg0: { index: number; song: ISong; }) => void,
-): void {
-  const newIndex = index + 1;
-  if (newIndex >= songsState.length) setState({ index: 0, song: songsState[0] });
-  else setState({ song: songsState[index], index });// eslint-disable-line security/detect-object-injection
 }
 function shuffle(
   player: Iplayer,

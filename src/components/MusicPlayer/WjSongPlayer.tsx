@@ -75,6 +75,26 @@ function TextUnderPlayer({ song }:{ song: ISong | null }) {
   );
 }
 
+function LineTwoButtons(props:any): JSX.Element {
+  const {
+    missionState, pubState, originalState, player: { onePlayerMode },
+  } = props;
+  return (
+    <div id="mAndP" style={{ height: '22px', margin: 'auto' }}>
+      <button type="button" onClick={() => musicPlayerUtils.toggleSongTypes('Original', this)} className={`original${originalState}`}>
+        Original
+      </button>
+      <button type="button" onClick={() => musicPlayerUtils.toggleSongTypes('Mission', this)} className={`mission${missionState}`}>
+        Mission
+      </button>
+      <button type="button" onClick={() => musicPlayerUtils.toggleSongTypes('Pub', this)} className={`pub${pubState}`}>
+        Pub
+      </button>
+      {onePlayerMode ? musicPlayerUtils.homeButton(onePlayerMode) : null}
+    </div>
+  );
+}
+
 function ButtonsSection({
   song, player, index, songsState, setState, missionState, pubState,
 }:any): JSX.Element {

@@ -45,6 +45,7 @@ export class MusicPlayer extends Component<MProps, MusicPlayerState> {
       index: 0,
       missionState: 'off',
       pubState: 'off',
+      // eslint-disable-next-line react/no-unused-state
       originalState: 'on',
       player: {
         playing: false, shown: false, isShuffleOn: false, displayCopier: 'none', displayCopyMessage: false, onePlayerMode: false,
@@ -65,26 +66,6 @@ export class MusicPlayer extends Component<MProps, MusicPlayerState> {
     this.setState({ song: newSongs[0], songsState: newSongs });
     await musicPlayerUtils.checkOnePlayer(params, player, this);
     return musicPlayerUtils.runIfOnePlayer(this);
-  }
-
-  lineTwoButtons(): JSX.Element {
-    const {
-      missionState, pubState, originalState, player: { onePlayerMode },
-    } = this.state;
-    return (
-      <div id="mAndP" style={{ height: '22px', margin: 'auto' }}>
-        <button type="button" onClick={() => musicPlayerUtils.toggleSongTypes('Original', this)} className={`original${originalState}`}>
-          Original
-        </button>
-        <button type="button" onClick={() => musicPlayerUtils.toggleSongTypes('Mission', this)} className={`mission${missionState}`}>
-          Mission
-        </button>
-        <button type="button" onClick={() => musicPlayerUtils.toggleSongTypes('Pub', this)} className={`pub${pubState}`}>
-          Pub
-        </button>
-        {onePlayerMode ? musicPlayerUtils.homeButton(onePlayerMode) : null}
-      </div>
-    );
   }
 
   lineThreeButtons(url: string): JSX.Element {
