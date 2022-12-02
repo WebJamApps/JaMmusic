@@ -17,23 +17,13 @@ const share = (view: MusicPlayer): void => {
   else view.setState({ player: { ...player, displayCopier: 'none' } });
   showHideButtons('none');
 };
-function playUrl(song: ISong | null): string {
-  const url = window.location.href.split('/music')[0];
-  if (song && song._id) return `${url}/music/songs?oneplayer=true&output=embed&id=${song._id}`;
-  return `${url}/music/songs`;
-}
-const copyShare = (
-  player: Iplayer,
-  song: ISong | null,
-  writeText: (arg0: string) => Promise<void>,
-  setState: (arg0: { player: Iplayer; }) => void,
-): void => {
-  // view.navigator.clipboard.writeText(playUrl(song)).then(() => {
-  writeText(playUrl(song)).then(() => {
-    setState({ player: { ...player, displayCopyMessage: true } });
+const copyShare = (view: MusicPlayer): void => {
+  const { player } = view.state;
+  view.navigator.clipboard.writeText(view.playUrl()).then(() => {
+    view.setState({ player: { ...player, displayCopyMessage: true } });
     setTimeout(() => {
       showHideButtons('block');
-      setState({ player: { ...player, displayCopier: 'none', displayCopyMessage: false } });
+      view.setState({ player: { ...player, displayCopier: 'none', displayCopyMessage: false } });
     }, 1500);
   });
 };
@@ -123,7 +113,7 @@ const resetState = (
   songsState: ISong[],
   typeInState: string,
   shuffled: ISong[],
-  type: string,
+  type:string,
 ) => {
   view.setState({
     ...view.state,
@@ -135,17 +125,6 @@ const resetState = (
     index: 0,
   });
 };
-const setIndex = (songs: ISong[], category: string): ISong[] => {
-  let categorySongs: ISong[] = [];
-  const otherSongs: ISong[] = [];
-  for (let i = 0; songs.length > i; i += 1) {
-    // eslint-disable-next-line security/detect-object-injection
-    if (songs[i].category === category) categorySongs.push(songs[i]);
-    else otherSongs.push(songs[i]);// eslint-disable-line security/detect-object-injection
-  }
-  categorySongs = categorySongs.concat(otherSongs);
-  return categorySongs;
-};
 function toggleOn(lcType: string, view: MusicPlayer, type: string, typeInState: string): boolean {
   const { player } = view.state;
   let { songsState, pageTitle } = view.state, shuffled: ISong[] = songsState, { songs } = view.props;
@@ -155,7 +134,7 @@ function toggleOn(lcType: string, view: MusicPlayer, type: string, typeInState: 
     ...songs.filter((song: ISong) => song.category === lcType),
   ];
   if (player.isShuffleOn) shuffled = shuffleThem(songsState);
-  else { songsState = setIndex(songsState, lcType); }
+  else { songsState = view.musicUtils.setIndex(songsState, lcType); }
   pageTitle = pageTitle.replace('Songs', '');
   pageTitle += ` & ${type} Songs`;
   resetState(view, player, pageTitle, songsState, typeInState, shuffled, 'on');
@@ -183,72 +162,15 @@ function toggleSongTypes(type: string, view: MusicPlayer): boolean {
   resetState(view, player, pageTitle, songsState, typeInState, shuffled, 'off');
   return true;
 }
-function prev(
-  index: number,
-  songsState: ISong[],
-  setState: (arg0: { index: number; song: ISong }) => void,
-): void {
+function prev(view:MusicPlayer): void {
+  const { index, songsState } = view.state;
   const minusIndex = index - 1;
   if (minusIndex < 0 || minusIndex > songsState.length) {
     const newIndex = songsState.length - 1;
-    setState({ index: newIndex, song: songsState[newIndex] });// eslint-disable-line security/detect-object-injection
-  } else setState({ song: songsState[minusIndex], index: minusIndex });// eslint-disable-line security/detect-object-injection
-}
-function setClassOverlay(
-  song: ISong | null,
-  player: { playing: boolean; },
-): string {
-  let classOverlay = 'mainPlayer';
-  if (player.playing === false) {
-    if (song && song.url[8] === 's') classOverlay = 'soundcloudOverlay';
-    if (song && song.url[12] === 'y') classOverlay = 'youtubeOverlay';
-  }
-  return classOverlay;
-}
-function play(
-  player: { playing: boolean; },
-  setState: (arg0: { player: any; }) => void,
-): void {
-  const isPlaying = !player.playing;
-  setState({ player: { ...player, playing: isPlaying } });
-}
-function next(
-  index: number,
-  songsState: ISong[],
-  setState: (arg0: { index: number; song: ISong; }) => void,
-): void {
-  const newIndex = index + 1;
-  if (newIndex >= songsState.length) setState({ index: 0, song: songsState[0] });
-  else setState({ song: songsState[index], index });// eslint-disable-line security/detect-object-injection
-}
-function shuffle(
-  player: Iplayer,
-  songsState: ISong[],
-  missionState: string,
-  pubState: string,
-  setState: (arg0: { songsState: ISong[]; player: Iplayer; song: ISong; index: number; }
-  ) => void,
-): void {
-  if (player.isShuffleOn) {
-    let reset = songsState;
-    if (missionState === 'on') reset = setIndex(reset, 'mission');
-    if (pubState === 'on') reset = setIndex(reset, 'pub');
-    setState({
-      songsState: reset, player: { ...player, isShuffleOn: false }, song: reset[0], index: 0,
-    });
-  } else {
-    const shuffled = shuffleThem(songsState);
-    setState({
-      songsState: shuffled, player: { ...player, isShuffleOn: true }, song: shuffled[0], index: 0,
-    });
-  }
+    view.setState({ index: newIndex, song: songsState[newIndex] });// eslint-disable-line security/detect-object-injection
+  } else view.setState({ song: songsState[minusIndex], index: minusIndex });// eslint-disable-line security/detect-object-injection
 }
 export default {
-  shuffle,
-  next,
-  play,
-  playUrl,
-  setClassOverlay,
   prev,
   shuffleThem,
   toggleSongTypes,
