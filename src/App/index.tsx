@@ -1,4 +1,6 @@
-import { Component, Dispatch, StrictMode } from 'react';
+import {
+  Component, Dispatch, ReactElement, StrictMode,
+} from 'react';
 import { ReactNotifications } from 'react-notifications-component';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -14,26 +16,25 @@ import connectToSC from './connectToSC';
 import mapStoreToProps, { Iimage } from '../redux/mapStoreToProps';
 import { PrivateRoute } from './PrivateRoute';
 
-const defaultProps = {
-  dispatch: () => {},
-  auth: {
-    isAuthenticated: false, token: '', error: '', user: { userType: '', email: '' },
-  },
-  userCount: 0,
-  heartBeat: 'white',
-  children: <div />,
-};
+export const getAppName = (appName?:string) => appName || 'web-jam.com';
+
+// const defaultProps = {
+//   userCount: 0,
+//   heartBeat: 'white',
+//   children: <div />,
+// };
 
 export interface AppProps {
   dispatch?: Dispatch<unknown>;
   images: Iimage[];
   showMap: boolean;
+  heartBeat?:string;
+  children?: ReactElement<any, any>;
+  userCount?:number;
 }
 
 export class App extends Component<AppProps> {
   connectToSC: typeof connectToSC;
-
-  appName = process.env.APP_NAME || 'web-jam.com';
 
   constructor(props: AppProps) {
     super(props);
@@ -41,8 +42,8 @@ export class App extends Component<AppProps> {
   }
 
   async componentDidMount(): Promise<void> {
-    const { dispatch = () => {} } = this.props;
-    this.connectToSC.connectToSCC(dispatch);
+    const { dispatch } = this.props;
+    if (dispatch) this.connectToSC.connectToSCC(dispatch);
   }
 
   loadMap(): JSX.Element | null {
@@ -59,10 +60,10 @@ export class App extends Component<AppProps> {
         <div id="App" className="App">
           <ReactNotifications />
           <Router>
-            <ATemplate {...defaultProps}>
+            <ATemplate {...this.props}>
               <Switch>
                 <Route exact path="/">
-                  {this.appName === 'web-jam.com' ? <HomePage />
+                  {getAppName(process.env.APP_NAME) === 'web-jam.com' ? <HomePage />
                     : <Music images={images} />}
                 </Route>
                 {this.loadMap()}

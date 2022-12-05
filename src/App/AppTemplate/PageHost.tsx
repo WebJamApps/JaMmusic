@@ -42,7 +42,7 @@ export const makeHandleKeyPress = (
 ) => (evt: { key: string; }) => handleEscapePress(evt, setMenuOpen);
 
 interface IpageHostProps {
-  userCount: number, heartBeat: string, location: RouteComponentProps['location'],
+  userCount?: number, heartBeat?: string, location: RouteComponentProps['location'],
   children: React.ReactNode,
 }
 export function PageHost(props: IpageHostProps) {

@@ -1,8 +1,8 @@
 import { NavLinks } from './NavLinks';
 
 interface IdrawerContainerProps {
-  handleKeyPress: (arg0:any)=>void, className:any, userCount:number,
-  heartBeat:any, location:any, handleClose:()=>void
+  handleKeyPress: (arg0:any)=>void, className:any, userCount?:number,
+  heartBeat?:string, location:any, handleClose:()=>void
 }
 export function DrawerContainer(props:IdrawerContainerProps) {
   const {

@@ -12,7 +12,7 @@ describe('App component', () => {
   });
   it('renders', () => {
     const props = {
-      dispatch: jest.fn(), images: [], showMap: false,
+      dispatch: jest.fn(), images: [], showMap: false, heartBeat: 'white', userCount: 0,
     };
     const app:any = renderer.create(<Provider store={store.store}><App {...props}><div /></App></Provider>).toJSON();
     expect(app.props.className).toBe('App');

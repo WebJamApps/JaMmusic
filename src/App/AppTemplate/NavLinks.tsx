@@ -3,7 +3,7 @@ import menuConfig from './menuConfig';
 import { MakeLink, SideMenuItem } from './SideMenuItem';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export function ActiveUsers({ heartBeat, userCount }: { heartBeat: string, userCount: number }) {
+export function ActiveUsers({ heartBeat, userCount }: { heartBeat?: string, userCount?: number }) {
   return (
     <div className="active-users">
       <div>
@@ -43,7 +43,7 @@ const MusTT = () => (
 );
 
 interface InavLinksProps {
-  handleClose: () => void, userCount: number, heartBeat: string,
+  handleClose: () => void, userCount?: number, heartBeat?: string,
   location: RouteComponentProps['location'],
 }
 export function NavLinks(props: InavLinksProps) {

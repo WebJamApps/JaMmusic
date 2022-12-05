@@ -6,8 +6,8 @@ import mapStoreToATemplateProps from 'src/redux/mapStoreToAppTemplateProps';
 import { PageHost } from './PageHost';
 
 export interface AppTemplateProps extends RouteComponentProps {
-  heartBeat: string;
-  userCount: number;
+  heartBeat?: string;
+  userCount?: number;
   children: JSX.Element;
 }
 
