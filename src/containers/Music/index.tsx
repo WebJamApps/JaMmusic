@@ -45,7 +45,7 @@ export function Music({ images }: ImusicNewProps): JSX.Element {
   }, [auth]);
   const data = Array.isArray(images) ? images : [];
   return (
-    <div className="page-content">
+    <div className="page-content music">
       <div style={{ paddingTop: '1px', paddingBottom: 0, marginBottom: 0 }}>
         <div id="musicSlide1">
           {data.length > 0 ? (<PicSlider data={data} />) : null}

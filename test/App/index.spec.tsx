@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import env from 'dotenv';
-import { App } from 'src/App';
+import { App, LoadMap, HomeOrMusic } from 'src/App';
 import renderer from 'react-test-renderer';
 import { Provider } from 'react-redux';
 import store from 'src/redux/store/index';
@@ -20,5 +20,13 @@ describe('App component', () => {
   it('renders Google Map API when localhost', () => {
     process.env.BackendUrl = 'http://localhost:7000';
     expect('/map').toBeDefined();
+  });
+  it('HomeOrMusic when music', () => {
+    const hOm:any = renderer.create(<HomeOrMusic appName="JaM" images={[]} />).toJSON();
+    expect(hOm.props.className).toBe('page-content music');
+  });
+  it('LoadMap when null', () => {
+    const lm:any = renderer.create(<LoadMap backendUrl="https://web-jam.com" />).toJSON();
+    expect(lm).toBeNull();
   });
 });

@@ -16,13 +16,17 @@ import connectToSC from './connectToSC';
 import mapStoreToProps, { Iimage } from '../redux/mapStoreToProps';
 import { PrivateRoute } from './PrivateRoute';
 
-export const getAppName = (appName?:string) => appName || 'web-jam.com';
+export const HomeOrMusic = ({ appName, images }:{ appName?:string, images:Iimage[] }) => {
+  if (appName === 'web-jam.com') return <HomePage />;
+  return <Music images={images} />;
+};
 
-// const defaultProps = {
-//   userCount: 0,
-//   heartBeat: 'white',
-//   children: <div />,
-// };
+export const LoadMap = ({ backendUrl }:{ backendUrl?:string }) => {
+  if (backendUrl === 'http://localhost:7000') {
+    return <PrivateRoute Container={GoogleMap} path="/map" />;
+  }
+  return null;
+};
 
 export interface AppProps {
   dispatch?: Dispatch<unknown>;
@@ -32,7 +36,6 @@ export interface AppProps {
   children?: ReactElement<any, any>;
   userCount?:number;
 }
-
 export class App extends Component<AppProps> {
   connectToSC: typeof connectToSC;
 
@@ -46,13 +49,6 @@ export class App extends Component<AppProps> {
     if (dispatch) this.connectToSC.connectToSCC(dispatch);
   }
 
-  loadMap(): JSX.Element | null {
-    if (process.env.BackendUrl === 'http://localhost:7000') {
-      return <PrivateRoute Container={GoogleMap} path="/map" />;
-    }
-    return null;
-  }
-
   render(): JSX.Element {
     const { images } = this.props;
     return (
@@ -63,10 +59,9 @@ export class App extends Component<AppProps> {
             <ATemplate {...this.props}>
               <Switch>
                 <Route exact path="/">
-                  {getAppName(process.env.APP_NAME) === 'web-jam.com' ? <HomePage />
-                    : <Music images={images} />}
+                  <HomeOrMusic appName={process.env.APP_NAME} images={images} />
                 </Route>
-                {this.loadMap()}
+                <LoadMap backendUrl={process.env.BackendUrl} />
                 <PrivateRoute path="/sort" Container={DefaultSort} />
                 <Route exact path="/music"><Music images={images} /></Route>
                 <Route exact path="/music/buymusic" component={BuyMusic} />
