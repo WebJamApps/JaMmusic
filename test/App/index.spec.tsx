@@ -27,7 +27,7 @@ describe('App component', () => {
     expect(lm).toBeNull();
   });
   it('LoadMap when GoogleMap', () => {
-    const lm:any = renderer.create(<BrowserRouter><LoadMap backendUrl="http://localhost:7000" /></BrowserRouter>).root;
-    expect(lm.findByProps({ className: 'page-content google' })).toBeDefined();
+    const lm = renderer.create(<BrowserRouter><LoadMap backendUrl="http://localhost:7000" /></BrowserRouter>).root;
+    expect(lm.findByProps({ path: '/map' })).toBeDefined();
   });
 });
