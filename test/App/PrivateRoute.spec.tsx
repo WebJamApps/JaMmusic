@@ -25,7 +25,7 @@ describe('PrivateRoute', () => {
   it('makeRender returns the Container', () => {
     const Mr = makeRender({ isAuthenticated: true, user: { userType: 'test' } } as any, ['test'], Music);
     const rendered:any = renderer.create(<Mr />).toJSON();
-    expect(rendered.props.className).toBe('page-content');
+    expect(rendered.props.className).toBe('page-content music');
   });
   it('makeRender returns the Redirect', () => {
     const Mr = makeRender({ isAuthenticated: true, user: { userType: 'test' } } as any, ['test2'], Music);
