@@ -1,9 +1,9 @@
 
 import { act } from 'react-dom/test-utils';
 import ReactDOM from 'react-dom';
-import { EditorProvider, Ieditor, setEditorDef } from '../../src/providers/Editor.provider';
+import { AuthProvider, Iauth, defaultSetAuth } from 'src/providers/Auth.provider';
 
-describe('EditorProvider', () => {
+describe('AuthProvider', () => {
   let container: ReactDOM.Container;
   beforeEach(() => {
     container = document.createElement('div');
@@ -11,10 +11,10 @@ describe('EditorProvider', () => {
   });
   afterEach(() => { document.body.removeChild(container); });
   it('EditorProvider is defined', () => {
-    act(() => { ReactDOM.render(<EditorProvider><div /></EditorProvider>, container); });
+    act(() => { ReactDOM.render(<AuthProvider><div /></AuthProvider>, container); });
     expect(document.getElementById('play-buttons')).toBeDefined();
   });
-  it('setEditorDef', () => {
-    expect(setEditorDef({} as Ieditor)).toBeUndefined();
+  it('setAuthDefault', () => {
+    expect(defaultSetAuth({} as Iauth)).toBeUndefined();
   });
 });

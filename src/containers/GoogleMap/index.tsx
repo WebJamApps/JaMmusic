@@ -63,7 +63,7 @@ class GoogleMap extends Component {
 
   render(): JSX.Element {
     return (
-      <div className="page-content">
+      <div className="page-content google">
         <div style={{ margin: 'auto', textAlign: 'center' }}>
           <h3 style={{ marginTop: '10px' }}>Google Map Here</h3>
           <div id="googleMap" style={{ height: '8.5in', maxWidth: '11in', margin: 'auto' }} />

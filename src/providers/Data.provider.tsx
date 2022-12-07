@@ -4,7 +4,7 @@ import fetchGigs, { defaultGig } from './fetchGigs';
 import fetchSongs, { defaultSong } from './fetchSongs';
 import { MakeProvider } from './MakeProvider';
 
-export interface IGig {
+export interface Igig {
   modify?: JSX.Element,
   datetime: Date | null;
   more?: string;
@@ -35,11 +35,11 @@ export interface ISong {
 const useSongsState: (arg0: ISong[]) =>
 [ISong[], (arg0: ISong[]) => void] = createPersistedState('songs', sessionStorage);
 
-const useGigsState: (arg0: IGig[]) =>
-[IGig[], (arg0: IGig[]) => void] = createPersistedState('gigs', sessionStorage);
+const useGigsState: (arg0: Igig[]) =>
+[Igig[], (arg0: Igig[]) => void] = createPersistedState('gigs', sessionStorage);
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const setGigsDef = (_arg0: IGig[]) => { };
+export const setGigsDef = (_arg0: Igig[]) => { };
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const setSongsDef = (_arg0: ISong[]) => { };
@@ -54,7 +54,7 @@ export const DataContext = createContext({
   setSongs: setSongsDef,
 });
 
-export const makeGetGigs = (setGigs: (arg0: IGig[]) => void) => () => fetchGigs.getGigs(setGigs);
+export const makeGetGigs = (setGigs: (arg0: Igig[]) => void) => () => fetchGigs.getGigs(setGigs);
 
 export function DataProvider({ children }: { children: ReactChild }): JSX.Element {
   const [gigs, setGigs] = useGigsState([defaultGig]);

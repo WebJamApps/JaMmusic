@@ -1,9 +1,10 @@
-import { Component, Dispatch, StrictMode } from 'react';
+import {
+  Component, Dispatch, ReactElement, StrictMode,
+} from 'react';
 import { ReactNotifications } from 'react-notifications-component';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { connect } from 'react-redux';
 import DefaultSort from '../containers/SortContainer';
-import DefaultMusicDashboard from '../containers/MusicDashboard';
 import BuyMusic from '../containers/BuyMusic';
 import AppFourOhFour from './404';
 import GoogleMap from '../containers/GoogleMap';
@@ -12,42 +13,31 @@ import ATemplate from './AppTemplate';
 import DefaultSongs from '../containers/Songs';
 import HomePage from '../containers/Homepage';
 import connectToSC from './connectToSC';
-import mapStoreToProps, { Iimage, Auth } from '../redux/mapStoreToProps';
+import mapStoreToProps, { Iimage } from '../redux/mapStoreToProps';
 import { PrivateRoute } from './PrivateRoute';
 
-export const defaultDispatch:Dispatch<unknown> = (_arg0: any): void => { };
+export const HomeOrMusic = ({ appName, images }:{ appName?:string, images:Iimage[] }) => {
+  if (appName === 'web-jam.com') return <HomePage />;
+  return <Music images={images} />;
+};
 
-const defaultProps = {
-  dispatch: defaultDispatch,
-  auth: {
-    isAuthenticated: false, token: '', error: '', user: { userType: '', email: '' },
-  },
-  userCount: 0,
-  heartBeat: 'white',
-  children: <div />,
+export const LoadMap = ({ backendUrl }:{ backendUrl?:string }) => {
+  if (backendUrl === 'http://localhost:7000') {
+    return <PrivateRoute Container={GoogleMap} path="/map" />;
+  }
+  return null;
 };
 
 export interface AppProps {
-  dispatch: Dispatch<unknown>;
+  dispatch?: Dispatch<unknown>;
   images: Iimage[];
-  auth: Auth;
   showMap: boolean;
+  heartBeat?:string;
+  children?: ReactElement<any, any>;
+  userCount?:number;
 }
-
 export class App extends Component<AppProps> {
   connectToSC: typeof connectToSC;
-
-  appName = process.env.APP_NAME || 'web-jam.com';
-
-  static defaultProps = {
-    dispatch: (): void => { },
-    songs: [],
-    images: [],
-    auth: {
-      isAuthenticated: false, token: '', error: '', user: { userType: '', email: '' },
-    },
-    showMap: false,
-  };
 
   constructor(props: AppProps) {
     super(props);
@@ -56,34 +46,27 @@ export class App extends Component<AppProps> {
 
   async componentDidMount(): Promise<void> {
     const { dispatch } = this.props;
-    this.connectToSC.connectToSCC(dispatch);
-  }
-
-  loadMap(): JSX.Element | null {
-    if (process.env.BackendUrl === 'http://localhost:7000') {
-      return <PrivateRoute Container={GoogleMap} path="/map" />;
-    }
-    return null;
+    if (dispatch) this.connectToSC.connectToSCC(dispatch);
   }
 
   render(): JSX.Element {
+    const { images } = this.props;
     return (
       <StrictMode>
         <div id="App" className="App">
           <ReactNotifications />
           <Router>
-            <ATemplate {...defaultProps}>
+            <ATemplate {...this.props}>
               <Switch>
                 <Route exact path="/">
-                  {this.appName === 'web-jam.com' ? <HomePage /> : <Music images={this.props.images} auth={null} />}
+                  <HomeOrMusic appName={process.env.APP_NAME} images={images} />
                 </Route>
-                {this.loadMap()}
+                <LoadMap backendUrl={process.env.BackendUrl} />
                 <PrivateRoute path="/sort" Container={DefaultSort} />
-                <Route exact path="/music"><Music images={this.props.images} auth={this.props.auth} /></Route>
+                <Route exact path="/music"><Music images={images} /></Route>
                 <Route exact path="/music/buymusic" component={BuyMusic} />
                 <Route exact path="/music/originals" component={DefaultSongs} />
                 <Route exact path="/music/songs" component={DefaultSongs} />
-                <PrivateRoute path="/music/dashboard" Container={DefaultMusicDashboard} />
                 <Route component={AppFourOhFour} />
               </Switch>
             </ATemplate>

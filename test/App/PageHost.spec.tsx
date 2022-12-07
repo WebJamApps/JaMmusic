@@ -4,14 +4,13 @@ import renderer from 'react-test-renderer';
 import {
   PageHost, makeDrawerClass, handleEscapePress, handleKeyMenu,
 } from 'src/App/AppTemplate/PageHost';
-import type { Auth } from 'src/redux/mapStoreToProps';
 
 describe('PageHost', () => {
   it('renders correctly', () => {
     const props = {
       userCount: 1,
       heartBeat: '',
-      auth: {} as Auth,
+      auth: {} as any,
       location: { pathname: '' } as RouteComponentProps['location'],
       dispatch: jest.fn(),
       children: <div />,

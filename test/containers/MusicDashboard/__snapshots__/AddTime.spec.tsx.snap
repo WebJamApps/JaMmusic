@@ -1,7 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`AddTime function renders correctly 1`] = `ShallowWrapper {}`;
-
-exports[`AddTime function renders when init time is empty string 1`] = `ShallowWrapper {}`;
-
-exports[`AddTime function renders when show is false 1`] = `ShallowWrapper {}`;

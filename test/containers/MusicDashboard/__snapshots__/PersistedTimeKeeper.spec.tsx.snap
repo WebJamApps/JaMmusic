@@ -1,5 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`PersistedTimeKeeper function handles click to show the time widget 1`] = `ShallowWrapper {}`;
-
-exports[`PersistedTimeKeeper function handles onChange 1`] = `ShallowWrapper {}`;

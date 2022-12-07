@@ -1,29 +1,31 @@
 import scc from 'socketcluster-client';
-import type { IGig } from './Data.provider';
+import type { Igig } from './Data.provider';
 
-export const defaultGig: IGig = {
+export const defaultGig: Igig = {
   date: '',
   time: '',
   tickets: '',
-  venue: '',
   location: '',
-  id: 0,
+  venue: '',
+  _id: '',
   datetime: null,
+  city: '',
+  usState: 'Virginia',
 };
 
 const validateGigsArr = (
   receiver: IteratorResult<any, any>,
-  setFunc: (_arg0: IGig[]) => void,
+  setFunc: (_arg0: Igig[]) => void,
 ) => {
   let gigsArr = [defaultGig];
-  if (Array.isArray(receiver.value)) gigsArr = receiver.value.map((g: IGig, i: number) => ({ ...g, id: i }));
+  if (Array.isArray(receiver.value)) gigsArr = receiver.value.map((g: Igig, i: number) => ({ ...g, id: i }));
   setFunc(gigsArr);
 };
 
 const listenForGigs = (
   socket: scc.AGClientSocket,
   name: string,
-  setFunc: (_arg0: IGig[]) => void,
+  setFunc: (_arg0: Igig[]) => void,
 ): boolean => {
   (async () => {
     const consumer = socket.receiver(name).createConsumer();
@@ -37,7 +39,7 @@ const listenForGigs = (
   return true;
 };
 
-const getGigs = (setGigs: (_arg0: IGig[]) => void): boolean => {
+const getGigs = (setGigs: (_arg0: Igig[]) => void): boolean => {
   try {
     const socket = scc.create({
       hostname: process.env.SCS_HOST,

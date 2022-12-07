@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { GoogleButtons, loginConfig } from 'src/App/AppTemplate/GoogleButtons';
-import utils from 'src/App/AppTemplate/GoogleButtons/utils';
+import utils from 'src/App/AppTemplate/GoogleButtons/googleButtons.utils';
 import renderer from 'react-test-renderer';
 
 describe('GoogleButtons', () => {
@@ -16,9 +16,9 @@ describe('GoogleButtons', () => {
     expect(loginButton.props.onClick()).toBe('loginClicked');
   });
   it('runs loginConfig onSuccess and onError', () => {
-    const dispatch = jest.fn();
+    const setAuth = jest.fn();
     utils.responseGoogleLogin = jest.fn();
-    const config = loginConfig(dispatch);
+    const config = loginConfig({} as any, setAuth);
     config.onSuccess({ code: 'token', scope: '' });
     expect(utils.responseGoogleLogin).toHaveBeenCalled();
     expect(config.onError()).toBe(false);

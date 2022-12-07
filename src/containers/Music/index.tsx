@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react';
-import PicSlider from 'src/components/PicSlider';
+import { useEffect, useState, useContext } from 'react';
+import { AuthContext, Iauth } from 'src/providers/Auth.provider';
+import { PicSlider } from 'src/components/PicSlider';
 import { Gigs } from './Gigs';
-import type { Iimage, Auth } from '../../redux/mapStoreToProps';
+import type { Iimage } from '../../redux/mapStoreToProps';
 import { Intro } from './intro';
 import JoshBio from './joshBio';
 import MariaBio from './mariaBio';
@@ -21,7 +22,7 @@ export function Musicians(): JSX.Element {
   );
 }
 
-export function checkIsAdmin(auth: Auth | null, setIsAdmin: (arg0: boolean) => void) {
+export function checkIsAdmin(auth: Iauth, setIsAdmin: (arg0: boolean) => void) {
   let isAdmin = false;
   if (auth && auth.isAuthenticated && process.env.userRoles) {
     const { user: { userType } } = auth;
@@ -34,9 +35,9 @@ export function checkIsAdmin(auth: Auth | null, setIsAdmin: (arg0: boolean) => v
 
 interface ImusicNewProps {
   images?: Iimage[]
-  auth: Auth | null;
 }
-export function Music({ images, auth }: ImusicNewProps): JSX.Element {
+export function Music({ images }: ImusicNewProps): JSX.Element {
+  const { auth } = useContext(AuthContext);
   const [isAdmin, setIsAdmin] = useState(false);
   useEffect(() => commonUtils.setTitleAndScroll('Music', window.screen.width), []);
   useEffect(() => {
@@ -44,7 +45,7 @@ export function Music({ images, auth }: ImusicNewProps): JSX.Element {
   }, [auth]);
   const data = Array.isArray(images) ? images : [];
   return (
-    <div className="page-content">
+    <div className="page-content music">
       <div style={{ paddingTop: '1px', paddingBottom: 0, marginBottom: 0 }}>
         <div id="musicSlide1">
           {data.length > 0 ? (<PicSlider data={data} />) : null}

@@ -1,7 +1,7 @@
 
 import { Link, RouteComponentProps } from 'react-router-dom';
-import type { Dispatch } from 'react';
-import type { Auth } from '../../redux/mapStoreToProps';
+import { useContext } from 'react';
+import { AuthContext, Iauth } from 'src/providers/Auth.provider';
 import commonUtils from '../../lib/commonUtils';
 import type { ImenuItem } from './menuConfig';
 import { GoogleButtons } from './GoogleButtons';
@@ -40,9 +40,8 @@ export function MakeLink(props: ImakeLinkProps): JSX.Element {
 export const continueMenuItem = (
   menu: ImenuItem,
   index: number,
-  auth: Auth,
+  auth: Iauth,
   pathname: string,
-  dispatch: Dispatch<unknown>,
   handleClose: () => void,
 ): JSX.Element | null => {
   if (pathname.includes('/music') && (menu.link.includes('/music'))) {
@@ -52,33 +51,38 @@ export const continueMenuItem = (
     return <MakeLink menu={menu} index={index} type="Link" handleClose={handleClose} />;
   }
   if (menu.type === 'googleLogin' && !auth.isAuthenticated && pathname === '/') {
-    return <GoogleButtons key="googleLogin" type="login" index={index} dispatch={dispatch} />;
+    return <GoogleButtons key="googleLogin" type="login" index={index} />;
   }
   if (menu.type === 'googleLogout' && auth.isAuthenticated) {
-    return <GoogleButtons key="googleLogout" type="logout" index={index} dispatch={dispatch} />;
+    return <GoogleButtons key="googleLogout" type="logout" index={index} />;
   }
   return null;
 };
 
+export const checkIsAllowed = (menu: ImenuItem, auth: Iauth, userRoles: string[]) => {
+  if (menu.auth && (!auth.isAuthenticated || userRoles.indexOf(auth.user.userType) === -1)) return false;
+  return true;
+};
+
 interface IsideMenuItemProps {
-  menu: ImenuItem, index: number, auth: Auth, location: RouteComponentProps['location'],
-  dispatch: Dispatch<unknown>, handleClose: () => void,
+  menu: ImenuItem, index: number, location: RouteComponentProps['location'],
+  handleClose: () => void,
 }
 export function SideMenuItem(props: IsideMenuItemProps): JSX.Element | null {
   const {
-    menu, index, auth, location, dispatch, handleClose,
+    menu, index, location, handleClose,
   } = props;
+  const { auth } = useContext(AuthContext);
   const userRoles: string[] = commonUtils.getUserRoles();
-  if (menu.auth && (!auth.isAuthenticated || userRoles.indexOf(auth.user.userType) === -1)) return null;
+  const isAllowed = checkIsAllowed(menu, auth, userRoles);
+  if (!isAllowed) return null;
   if (menu.name === 'Web Jam LLC') {
     return (
       <MakeLink
         menu={menu}
         index={index}
         type="Link"
-        handleClose={() => {
-          window.location.assign('/');
-        }}
+        handleClose={() => window.location.assign('/')}
       />
     );
   }
@@ -88,12 +92,10 @@ export function SideMenuItem(props: IsideMenuItemProps): JSX.Element | null {
         menu={menu}
         index={index}
         type="Link"
-        handleClose={() => {
-          localStorage.clear(); sessionStorage.clear(); return 'cleared';
-        }}
+        handleClose={() => { localStorage.clear(); sessionStorage.clear(); return 'cleared'; }}
       />
     );
   }
-  return continueMenuItem(menu, index, auth, location.pathname, dispatch, handleClose);
+  return continueMenuItem(menu, index, auth, location.pathname, handleClose);
 }
 

@@ -7,21 +7,21 @@ import { PersistGate } from 'redux-persist/integration/react';
 import ConnectedApp from './App/index';
 import store from './redux/store/index';
 import { DataProvider } from './providers/Data.provider';
-import { EditorProvider } from './providers/Editor.provider';
+import { AuthProvider } from './providers/Auth.provider';
 import '../static/styles.scss';
 
 function Main() {
   return (
     <GoogleOAuthProvider clientId={process.env.GoogleClientId || ''}>
-      <DataProvider>
-        <EditorProvider>
+      <AuthProvider>
+        <DataProvider>
           <Provider store={store.store}>
             <PersistGate loading={null} persistor={store.persistor}>
-              <ConnectedApp />
+              <ConnectedApp images={[]} showMap={false} />
             </PersistGate>
           </Provider>
-        </EditorProvider>
-      </DataProvider>
+        </DataProvider>
+      </AuthProvider>
     </GoogleOAuthProvider>
   );
 }

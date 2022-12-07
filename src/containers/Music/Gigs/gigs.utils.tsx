@@ -2,8 +2,12 @@ import type { GridEnrichedColDef, GridRenderCellParams, GridRowParams } from '@m
 import HtmlReactParser from 'html-react-parser';
 import scc from 'socketcluster-client';
 import commonUtils from 'src/lib/commonUtils';
-import type { IGig } from 'src/providers/Data.provider';
+import type { Iauth } from 'src/providers/Auth.provider';
+import type { Igig } from 'src/providers/Data.provider';
 import { defaultGig } from 'src/providers/fetchGigs';
+
+// eslint-disable-next-line max-len
+const usStateOptions = ['Alabama', 'Alaska', 'American Samoa', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'District of Columbia', 'Federated States of Micronesia', 'Florida', 'Georgia', 'Guam', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Marshall Islands', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Northern Mariana Islands', 'Ohio', 'Oklahoma', 'Oregon', 'Palau', 'Pennsylvania', 'Puerto Rico', 'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virgin Island', 'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'];
 
 const createGig = async (
   getGigs: () => void,
@@ -13,11 +17,10 @@ const createGig = async (
   city: string,
   usState: string,
   tickets: string,
+  auth: Iauth,
 ) => {
   try {
-    const persistRoot = sessionStorage.getItem('persist:root') || '';
-    const { auth } = JSON.parse(persistRoot);
-    const { token } = JSON.parse(auth);
+    const { token } = auth;
     const tour = {
       datetime, venue, tickets, city, usState,
     };
@@ -37,14 +40,12 @@ const createGig = async (
 const updateGig = async (
   getGigs: () => void,
   setEditGig: (arg0: typeof defaultGig) => void,
-  setEditChanged:(arg0:boolean)=>void,
+  setEditChanged: (arg0: boolean) => void,
   editGig: typeof defaultGig,
+  token: string,
 ) => {
   try {
-    const persistRoot = sessionStorage.getItem('persist:root') || '';
-    const { auth } = JSON.parse(persistRoot);
-    const { token } = JSON.parse(auth);
-    const tour:any = { ...editGig };
+    const tour: Igig = { ...editGig };
     delete tour.date;
     delete tour.time;
     delete tour.location;
@@ -64,20 +65,20 @@ const updateGig = async (
 };
 
 const clickToEdit = (
-  setEditGig:(arg0:GridRowParams['row'])=>void,
-  isAdmin:boolean,
-  rowData:GridRowParams['row'],
+  setEditGig: (arg0: GridRowParams['row']) => void,
+  isAdmin: boolean,
+  rowData: GridRowParams['row'],
 ) => {
   if (isAdmin) { setEditGig(rowData); }
 };
 
-const checkNewDisabled = (city:string, usState:string, dateTime:Date | null, venue:string) => {
+const checkNewDisabled = (city: string, usState: string, dateTime: Date | null, venue: string) => {
   let isDisabled = true;
   if (city && usState && dateTime && venue) isDisabled = false;
   return isDisabled;
 };
 
-const checkUpdateDisabled = (editGig: GridRowParams['row'], editChanged:boolean) => {
+const checkUpdateDisabled = (editGig: GridRowParams['row'], editChanged: boolean) => {
   let disabled = true;
   if (editChanged && editGig.venue && editGig.city && editGig.datetime && editGig.usState) disabled = false;
   return disabled;
@@ -87,14 +88,12 @@ async function deleteGig(
   tourId: string,
   getGigs: () => void,
   setEditGig: (arg0: typeof defaultGig) => void,
-  setEditChanged:(arg0:boolean)=>void,
+  setEditChanged: (arg0: boolean) => void,
+  token:string,
 ): Promise<boolean> { // eslint-disable-next-line no-restricted-globals
   const result = confirm('Deleting Gig, are you sure?');// eslint-disable-line no-alert
   if (result) {
     try {
-      const persistRoot = sessionStorage.getItem('persist:root') || '';
-      const { auth } = JSON.parse(persistRoot);
-      const { token } = JSON.parse(auth);
       const socket = scc.create({
         hostname: process.env.SCS_HOST,
         port: Number(process.env.SCS_PORT),
@@ -113,8 +112,8 @@ async function deleteGig(
 }
 
 export const orderGigs = (
-  gigs: IGig[],
-  setGigsInOrder: { (arg0: IGig[]): void; },
+  gigs: Igig[],
+  setGigsInOrder: { (arg0: Igig[]): void; },
   setPageSize: (arg0: number) => void,
 ) => {
   const now = new Date();
@@ -136,9 +135,9 @@ export const orderGigs = (
   setPageSize(futureGigs.length - 1 > 5 ? futureGigs.length - 1 : 5);
 };
 
-const makeDateValue = (datetime:string) => new Date(datetime).toLocaleString().split(',')[0];
+const makeDateValue = (datetime: string) => new Date(datetime).toLocaleString().split(',')[0];
 
-const makeTimeValue = (datetime:string) => new Date(datetime)
+const makeTimeValue = (datetime: string) => new Date(datetime)
   .toLocaleString('en-US', { hour: '2-digit', minute: '2-digit' });
 
 const makeVenueValue = (value: string) => {
@@ -170,4 +169,5 @@ export default {
   checkUpdateDisabled,
   deleteGig,
   orderGigs,
+  usStateOptions,
 };
