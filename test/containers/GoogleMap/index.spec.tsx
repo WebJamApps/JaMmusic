@@ -1,6 +1,6 @@
 /* eslint-disable max-classes-per-file */
 import renderer from 'react-test-renderer';
-import GoogleMap from 'src/containers/GoogleMap';
+import GoogleMap, { equals } from 'src/containers/GoogleMap';
 
 describe('GoogleMap container', () => {
   let lType = '';
@@ -23,5 +23,8 @@ describe('GoogleMap container', () => {
     const gMap = renderer.create(<GoogleMap />).toJSON();
     expect(gMap).toMatchSnapshot();
     expect(lType).toBe('click');
+  });
+  it('equals is true', () => {
+    expect(equals()).toBe(true);
   });
 });

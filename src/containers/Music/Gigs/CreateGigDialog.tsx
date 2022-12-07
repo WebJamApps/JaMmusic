@@ -30,7 +30,7 @@ export function CreateGigDialog({
       disableAutoFocus
       className="createNewGigDialog"
       open={showDialog}
-      onClose={() => { setShowDialog(false); return false; }}
+      onClose={() => setShowDialog(false)}
     >
       <DialogTitle>Create New Gig</DialogTitle>
       <DialogContent sx={{ padding: '10px 10px' }}>
@@ -109,7 +109,7 @@ export function CreateGigDialog({
         <Button
           size="small"
           className="cancelCreateButton"
-          onClick={() => { setShowDialog(false); return false; }}
+          onClick={() => setShowDialog(false)}
         >
           Cancel
         </Button>
