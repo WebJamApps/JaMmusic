@@ -1,12 +1,12 @@
 import superagent from 'superagent';
-import type { ISong } from './Data.provider';
+import type { Isong } from './Data.provider';
 
-export const defaultSong: ISong = {
+export const defaultSong: Isong = {
   category: '', title: '', url: '', _id: '', year: 2000,
 };
 
-export const getSongs = async (setSongs: (arg0: ISong[]) => void): Promise<ISong[]> => {
-  let res: { body: ISong[] }, newSongs: ISong[] = [];
+export const getSongs = async (setSongs: (arg0: Isong[]) => void): Promise<Isong[]> => {
+  let res: { body: Isong[] }, newSongs: Isong[] = [];
   if (!window.location.href.includes('8888') && !window.location.href.includes('joshandmariamusic')) {
     try {
       res = await superagent.get(`${process.env.BackendUrl}/song`).set('Accept', 'application/json');

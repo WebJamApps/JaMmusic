@@ -19,7 +19,7 @@ describe('App component', () => {
     expect(app.props.className).toBe('App');
   });
   it('HomeOrMusic when music', () => {
-    const hOm:any = renderer.create(<HomeOrMusic appName="JaM" images={[]} />).toJSON();
+    const hOm:any = renderer.create(<HomeOrMusic appName="JaM" />).toJSON();
     expect(hOm.props.className).toBe('page-content music');
   });
   it('LoadMap when null', () => {

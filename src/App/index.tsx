@@ -4,6 +4,7 @@ import {
 import { ReactNotifications } from 'react-notifications-component';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { connect } from 'react-redux';
+import mapStoreToProps from 'src/redux/mapStoreToProps';
 import DefaultSort from '../containers/SortContainer';
 import BuyMusic from '../containers/BuyMusic';
 import AppFourOhFour from './404';
@@ -13,12 +14,11 @@ import ATemplate from './AppTemplate';
 import DefaultSongs from '../containers/Songs';
 import HomePage from '../containers/Homepage';
 import connectToSC from './connectToSC';
-import mapStoreToProps, { Iimage } from '../redux/mapStoreToProps';
 import { PrivateRoute } from './PrivateRoute';
 
-export const HomeOrMusic = ({ appName, images }:{ appName?:string, images:Iimage[] }) => {
+export const HomeOrMusic = ({ appName }:{ appName?:string }) => {
   if (appName === 'web-jam.com') return <HomePage />;
-  return <Music images={images} />;
+  return <Music />;
 };
 
 export const LoadMap = ({ backendUrl }:{ backendUrl?:string }) => {
@@ -30,7 +30,6 @@ export const LoadMap = ({ backendUrl }:{ backendUrl?:string }) => {
 
 export interface AppProps {
   dispatch?: Dispatch<unknown>;
-  images: Iimage[];
   showMap: boolean;
   heartBeat?:string;
   children?: ReactElement<any, any>;
@@ -50,7 +49,6 @@ export class App extends Component<AppProps> {
   }
 
   render(): JSX.Element {
-    const { images } = this.props;
     return (
       <StrictMode>
         <div id="App" className="App">
@@ -59,11 +57,11 @@ export class App extends Component<AppProps> {
             <ATemplate {...this.props}>
               <Switch>
                 <Route exact path="/">
-                  <HomeOrMusic appName={process.env.APP_NAME} images={images} />
+                  <HomeOrMusic appName={process.env.APP_NAME} />
                 </Route>
                 <LoadMap backendUrl={process.env.BackendUrl} />
                 <PrivateRoute path="/sort" Container={DefaultSort} />
-                <Route exact path="/music"><Music images={images} /></Route>
+                <Route exact path="/music"><Music /></Route>
                 <Route exact path="/music/buymusic" component={BuyMusic} />
                 <Route exact path="/music/originals" component={DefaultSongs} />
                 <Route exact path="/music/songs" component={DefaultSongs} />

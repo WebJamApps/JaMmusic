@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import {
-  DataProvider, getGigsDef, Igig, ISong, makeGetGigs, setGigsDef, setSongsDef,
+  DataProvider, getGigsDef, Igig, Isong, makeGetGigs, setGigsDef, setSongsDef,
 } from 'src/providers/Data.provider';
 import fetchSongs from 'src/providers/fetchSongs';
 import fetchGigs from 'src/providers/fetchGigs';
@@ -17,7 +17,7 @@ describe('DataProvider', () => {
     expect(setGigsDef([] as Igig[])).toBeUndefined();
   });
   it('setSongsDef', () => {
-    expect(setSongsDef([] as ISong[])).toBeUndefined();
+    expect(setSongsDef([] as Isong[])).toBeUndefined();
   });
   it('getGigsDef', () => {
     expect(getGigsDef()).toBe(true);

@@ -1,7 +1,7 @@
 import { Component } from 'react';
 import ReactPlayer from 'react-player';
 import { FacebookShareButton, FacebookIcon } from 'react-share';
-import type { ISong } from 'src/providers/Data.provider';
+import type { Isong } from 'src/providers/Data.provider';
 import musicPlayerUtils from './musicPlayerUtils';
 import musicUtils from './musicUtils';
 import commonUtils from '../../lib/commonUtils';
@@ -17,15 +17,15 @@ export interface MusicPlayerState {
   pageTitle: string;
   pubState: string;
   originalState: string;
-  songsState: ISong[];
+  songsState: Isong[];
   index: number;
-  song: ISong | null;
+  song: Isong | null;
   copy?: string[];
   player: Iplayer;
 }
 
 interface MProps {
-  songs: ISong[];
+  songs: Isong[];
   filterBy: string;
 }
 
@@ -95,7 +95,7 @@ export class MusicPlayer extends Component<MProps, MusicPlayerState> {
     return `${url}/music/songs`;
   }
 
-  reactPlayer(song: ISong): JSX.Element {
+  reactPlayer(song: Isong): JSX.Element {
     const { player } = this.state;
     return (
       <ReactPlayer
@@ -220,7 +220,7 @@ export class MusicPlayer extends Component<MProps, MusicPlayerState> {
     else this.setState({ song: songsState[index], index });// eslint-disable-line security/detect-object-injection
   }
 
-  copyInput(player: MusicPlayerState['player'], song: ISong | null): JSX.Element {
+  copyInput(player: MusicPlayerState['player'], song: Isong | null): JSX.Element {
     return (
       <div id="copyInput" style={{ marginTop: '-20px', marginBottom: '40px' }}>
         {player.displayCopyMessage && <div className="copySuccess"> Url copied Url to clipboard </div>}

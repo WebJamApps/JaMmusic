@@ -22,7 +22,7 @@ export function CreatePicDialog({ showDialog, setShowDialog }: IcreatePicDialogP
     <Dialog
       disableEnforceFocus
       disableAutoFocus
-      className="createNewGigDialog"
+      className="createNewPicDialog"
       open={showDialog}
       onClose={() => setShowDialog(false)}
     >

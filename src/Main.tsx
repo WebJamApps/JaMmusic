@@ -17,7 +17,7 @@ function Main() {
         <DataProvider>
           <Provider store={store.store}>
             <PersistGate loading={null} persistor={store.persistor}>
-              <ConnectedApp images={[]} showMap={false} />
+              <ConnectedApp showMap={false} />
             </PersistGate>
           </Provider>
         </DataProvider>

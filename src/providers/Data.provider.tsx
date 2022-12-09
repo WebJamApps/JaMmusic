@@ -19,7 +19,7 @@ export interface Igig {
   usState?: string;
 }
 
-export interface ISong {
+export interface Isong {
   artist?: string;
   composer?: string;
   category: string;
@@ -32,8 +32,22 @@ export interface ISong {
   modify?: JSX.Element
 }
 
-const useSongsState: (arg0: ISong[]) =>
-[ISong[], (arg0: ISong[]) => void] = createPersistedState('songs', sessionStorage);
+export interface Ipic {
+  '_id'?: string;
+  'url': string;
+  'title': string;
+  'type': string;
+  'caption': string;
+  'thumbnail': string | undefined;
+  'link': string;
+  'modify': JSX.Element | undefined;
+  'comments': string;
+  'created_at'?: string;
+  'updated_at'?: string;
+}
+
+const useSongsState: (arg0: Isong[]) =>
+[Isong[], (arg0: Isong[]) => void] = createPersistedState('songs', sessionStorage);
 
 const useGigsState: (arg0: Igig[]) =>
 [Igig[], (arg0: Igig[]) => void] = createPersistedState('gigs', sessionStorage);
@@ -42,7 +56,7 @@ const useGigsState: (arg0: Igig[]) =>
 export const setGigsDef = (_arg0: Igig[]) => { };
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const setSongsDef = (_arg0: ISong[]) => { };
+export const setSongsDef = (_arg0: Isong[]) => { };
 
 export const getGigsDef = () => true;
 

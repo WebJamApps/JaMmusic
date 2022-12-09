@@ -1,7 +1,6 @@
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import type { Iimage } from '../../redux/mapStoreToProps';
 import Caption from './caption';
 
 export interface Isettings {
@@ -14,10 +13,9 @@ export interface Isettings {
   arrows: boolean;
   fade: boolean;
 }
-export interface IpicSliderProps {
-  data?: Iimage[];
-}
-export function PicSlider({ data }:IpicSliderProps) {
+
+export function PicSlider() {
+  const data:any = [];
   const settings:Isettings = {
     autoplay: true,
     autoplaySpeed: 3000,

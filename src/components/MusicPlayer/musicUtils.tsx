@@ -1,5 +1,5 @@
 
-import type { ISong } from 'src/providers/Data.provider';
+import type { Isong } from 'src/providers/Data.provider';
 
 const pageH4 = (pageTitle: string): JSX.Element => (
   <h4
@@ -16,9 +16,9 @@ const pageH4 = (pageTitle: string): JSX.Element => (
   </h4>
 );
 
-const setIndex = (songs: ISong[], category: string): ISong[] => {
-  let categorySongs: ISong[] = [];
-  const otherSongs: ISong[] = [];
+const setIndex = (songs: Isong[], category: string): Isong[] => {
+  let categorySongs: Isong[] = [];
+  const otherSongs: Isong[] = [];
   for (let i = 0; songs.length > i; i += 1) {
     // eslint-disable-next-line security/detect-object-injection
     if (songs[i].category === category) categorySongs.push(songs[i]);
@@ -32,7 +32,7 @@ function copyRight(): JSX.Element { // eslint-disable-line class-methods-use-thi
   return (<span>All Original Songs &copy;2019 &ndash; 2020 Web Jam LLC</span>);
 }
 
-function textUnderPlayer(song: ISong): JSX.Element {
+function textUnderPlayer(song: Isong): JSX.Element {
   return (
     <section
       className="mt-1 textUnderPlayer"
@@ -62,7 +62,7 @@ function textUnderPlayer(song: ISong): JSX.Element {
   );
 }
 
-function setPlayerStyle(song: ISong):Record<string, unknown> {
+function setPlayerStyle(song: Isong):Record<string, unknown> {
   let playerStyle = {
     backgroundColor: '#2a2a2a',
     textAlign: 'center',
