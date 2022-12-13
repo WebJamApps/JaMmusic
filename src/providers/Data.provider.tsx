@@ -52,6 +52,9 @@ const useSongsState: (arg0: Isong[]) =>
 const useGigsState: (arg0: Igig[]) =>
 [Igig[], (arg0: Igig[]) => void] = createPersistedState('gigs', sessionStorage);
 
+const usePicsState: (arg0: Ipic[] | null) =>
+[Ipic[] | null, (arg0: Ipic[] | null) => void] = createPersistedState('pics', sessionStorage);
+
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const setGigsDef = (_arg0: Igig[]) => { };
 
@@ -62,6 +65,7 @@ export const getGigsDef = () => true;
 
 export const DataContext = createContext({
   gigs: [defaultGig],
+  pics: null,
   setGigs: setGigsDef,
   getGigs: getGigsDef,
   songs: [defaultSong],
@@ -73,11 +77,13 @@ export const makeGetGigs = (setGigs: (arg0: Igig[]) => void) => () => fetchGigs.
 export function DataProvider({ children }: { children: ReactChild }): JSX.Element {
   const [gigs, setGigs] = useGigsState([defaultGig]);
   const [songs, setSongs] = useSongsState([defaultSong]);
+  const [pics, setPics] = usePicsState(null);
+
   const getGigs = makeGetGigs(setGigs);
   const Provider = MakeProvider({ Context: DataContext, fetches: [fetchGigs.getGigs, fetchSongs.getSongs], setters: [setGigs, setSongs] });
   return (
     <Provider value={{
-      gigs, setGigs, getGigs, songs, setSongs,
+      gigs, setGigs, getGigs, songs, setSongs, pics, setPics,
     }}
     >
       {children}
