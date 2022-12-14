@@ -16,18 +16,6 @@ import HomePage from '../containers/Homepage';
 import connectToSC from './connectToSC';
 import { PrivateRoute } from './PrivateRoute';
 
-export const HomeOrMusic = ({ appName }:{ appName?:string }) => {
-  if (appName === 'web-jam.com') return <HomePage />;
-  return <Music />;
-};
-
-export const LoadMap = ({ backendUrl }:{ backendUrl?:string }) => {
-  if (backendUrl === 'http://localhost:7000') {
-    return <PrivateRoute Container={GoogleMap} path="/map" />;
-  }
-  return null;
-};
-
 export interface AppProps {
   dispatch?: Dispatch<unknown>;
   showMap: boolean;
@@ -56,12 +44,13 @@ export class App extends Component<AppProps> {
           <Router>
             <ATemplate {...this.props}>
               <Switch>
-                <Route exact path="/">
-                  <HomeOrMusic appName={process.env.APP_NAME} />
-                </Route>
-                <LoadMap backendUrl={process.env.BackendUrl} />
+                {process.env.APP_NAME === 'web-jam.com'
+                  ? <Route exact path="/" component={HomePage} />
+                  : <Route exact path="/music" component={Music} />}
+                {process.env.BackendUrl === 'http://localhost:7000'
+                  ? <PrivateRoute Container={GoogleMap} path="/map" /> : null}
                 <PrivateRoute path="/sort" Container={DefaultSort} />
-                <Route exact path="/music"><Music /></Route>
+                <Route exact path="/music" component={Music} />
                 <Route exact path="/music/buymusic" component={BuyMusic} />
                 <Route exact path="/music/originals" component={DefaultSongs} />
                 <Route exact path="/music/songs" component={DefaultSongs} />

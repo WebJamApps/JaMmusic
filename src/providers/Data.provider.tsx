@@ -1,6 +1,7 @@
 import { createContext, ReactChild } from 'react';
 import createPersistedState from 'use-persisted-state';
 import fetchGigs, { defaultGig } from './fetchGigs';
+import fetchPics from './fetchPics';
 import fetchSongs, { defaultSong } from './fetchSongs';
 import { MakeProvider } from './MakeProvider';
 
@@ -65,7 +66,7 @@ export const getGigsDef = () => true;
 
 export const DataContext = createContext({
   gigs: [defaultGig],
-  pics: null,
+  pics: null as Ipic[] | null,
   setGigs: setGigsDef,
   getGigs: getGigsDef,
   songs: [defaultSong],
@@ -74,16 +75,20 @@ export const DataContext = createContext({
 
 export const makeGetGigs = (setGigs: (arg0: Igig[]) => void) => () => fetchGigs.getGigs(setGigs);
 
+export const makeGetPics = (setPics: (arg0: Ipic[] | null) => void) => () => fetchPics.getPics(setPics);
+
 export function DataProvider({ children }: { children: ReactChild }): JSX.Element {
   const [gigs, setGigs] = useGigsState([defaultGig]);
   const [songs, setSongs] = useSongsState([defaultSong]);
   const [pics, setPics] = usePicsState(null);
-
+  const getPics = makeGetPics(setPics);
   const getGigs = makeGetGigs(setGigs);
-  const Provider = MakeProvider({ Context: DataContext, fetches: [fetchGigs.getGigs, fetchSongs.getSongs], setters: [setGigs, setSongs] });
+  const Provider = MakeProvider(
+    { Context: DataContext, fetches: [fetchGigs.getGigs, fetchSongs.getSongs, fetchPics.getPics], setters: [setGigs, setSongs, setPics] },
+  );
   return (
     <Provider value={{
-      gigs, setGigs, getGigs, songs, setSongs, pics, setPics,
+      gigs, setGigs, getGigs, songs, setSongs, pics, setPics, getPics,
     }}
     >
       {children}

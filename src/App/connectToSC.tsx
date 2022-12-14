@@ -27,11 +27,6 @@ const connectToSCC = (dispatch: Dispatch<unknown>): boolean => {
   });
   dispatch({ type: 'SCC', scc: socket });
   socket.transmit('initial message', 123);
-  listenForMessages(socket, 'subscribe', 'tourCreated', 'NEW_TOUR', dispatch);
-  listenForMessages(socket, 'subscribe', 'tourUpdated', 'UPDATED_TOUR', dispatch);
-  listenForMessages(socket, 'receiver', 'allTours', 'ALL_TOUR', dispatch);
-  // TODO move fetch images into provider
-  listenForMessages(socket, 'receiver', 'allBooks', 'FETCHED_IMAGES', dispatch);
   // TODO move heartbeat out of redux
   // listenForMessages(socket, 'receiver', 'pulse', 'SC_HEARTBEAT', dispatch);
   listenForMessages(socket, 'receiver', 'num_clients', 'NUM_USERS', dispatch);

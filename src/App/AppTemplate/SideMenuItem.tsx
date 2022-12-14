@@ -82,7 +82,9 @@ export function SideMenuItem(props: IsideMenuItemProps): JSX.Element | null {
         menu={menu}
         index={index}
         type="Link"
-        handleClose={() => window.location.assign('/')}
+        handleClose={() => {
+          // window.location.assign('/');
+        }}
       />
     );
   }
@@ -92,7 +94,9 @@ export function SideMenuItem(props: IsideMenuItemProps): JSX.Element | null {
         menu={menu}
         index={index}
         type="Link"
-        handleClose={() => { localStorage.clear(); sessionStorage.clear(); return 'cleared'; }}
+        handleClose={() => {
+          // localStorage.clear(); sessionStorage.clear(); return 'cleared';
+        }}
       />
     );
   }

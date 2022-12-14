@@ -39,6 +39,7 @@ export function Music(): JSX.Element {
   useEffect(() => {
     checkIsAdmin(auth, setIsAdmin);
   }, [auth]);
+  console.log('music page');
   return (
     <div className="page-content music">
       <div style={{ paddingTop: '1px', paddingBottom: 0, marginBottom: 0 }}>
