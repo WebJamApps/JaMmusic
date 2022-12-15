@@ -15,14 +15,15 @@ import { BrowserRouter } from 'react-router-dom';
 // ];
 
 describe('/music', () => {
-  it('renders the component without images', () => {
+  it('renders the component', () => {
     const music = renderer.create(<Music />).toJSON();
     expect(JSON.stringify(music).includes('page-content')).toBe(true);
+    expect(music).toMatchSnapshot();
   });
-  it('renders with images', () => {
-    const music = renderer.create(<Music />).toJSON();
-    expect(JSON.stringify(music).includes('picSlider')).toBe(true);
-  });
+  // it('renders with images', () => {
+  //   const music = renderer.create(<Music />).toJSON();
+  //   expect(JSON.stringify(music).includes('picSlider')).toBe(true);
+  // });
   it('renders and runs useEffect', () => {
     const container = document.createElement('div');
     document.body.appendChild(container);
