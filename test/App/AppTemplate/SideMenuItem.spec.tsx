@@ -46,22 +46,6 @@ describe('SideMenuItem', () => {
     );
     expect(result.key).toBe('googleLogout');
   });
-  // it('clears storage when clicking on menu items from joshandmariamusic', () => {
-  //   localStorage.clear = jest.fn();
-  //   sessionStorage.clear = jest.fn();
-  //   const props = {
-  //     index: 1,
-  //     auth: { isAuthenticated: false, user: { userType: 'joker' } } as any,
-  //     location: { pathname: '/' } as RouteComponentProps['location'],
-  //     menu: {
-  //       nav: 'jam', auth: false, link: '/songs', name: 'Songs',
-  //     } as ImenuItem,
-  //     handleClose: jest.fn(),
-  //   };
-  //   const smi: any = renderer.create(<BrowserRouter><SideMenuItem {...props} /></BrowserRouter>).root;
-  //   const result = smi.findByProps({ type: 'Link' }).props.handleClose();
-  //   expect(result).toBe('cleared');
-  // });
   it('checkIsAllowed return false if item requires auth and userType is not allowed', () => {
     const menu:any = { auth: true };
     const auth:any = { isAuthenticated: true, user: { userType: 'tester' } };

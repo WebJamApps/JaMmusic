@@ -27,7 +27,6 @@ const connectToSCC = (dispatch: Dispatch<unknown>): boolean => {
   });
   dispatch({ type: 'SCC', scc: socket });
   socket.transmit('initial message', 123);
-  // TODO move heartbeat out of redux
   // listenForMessages(socket, 'receiver', 'pulse', 'SC_HEARTBEAT', dispatch);
   listenForMessages(socket, 'receiver', 'num_clients', 'NUM_USERS', dispatch);
   listenForMessages(socket, 'subscribe', 'sample', 'NUM_USERS', dispatch);

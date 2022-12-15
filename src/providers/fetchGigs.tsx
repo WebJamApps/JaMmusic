@@ -1,4 +1,5 @@
-import scc from 'socketcluster-client';
+// import scc from 'socketcluster-client';
+import socketClusterMessages from './socketClusterMessages';
 import type { Igig } from './Data.provider';
 
 export const defaultGig: Igig = {
@@ -13,43 +14,44 @@ export const defaultGig: Igig = {
   usState: 'Virginia',
 };
 
-const validateGigsArr = (
-  receiver: IteratorResult<any, any>,
-  setFunc: (_arg0: Igig[]) => void,
-) => {
-  let gigsArr = [defaultGig];
-  if (Array.isArray(receiver.value)) gigsArr = receiver.value.map((g: Igig, i: number) => ({ ...g, id: i }));
-  setFunc(gigsArr);
-};
+// const validateGigsArr = (
+//   receiver: IteratorResult<any, any>,
+//   setFunc: (_arg0: Igig[]) => void,
+// ) => {
+//   let gigsArr = [defaultGig];
+//   if (Array.isArray(receiver.value)) gigsArr = receiver.value.map((g: Igig, i: number) => ({ ...g, id: i }));
+//   setFunc(gigsArr);
+// };
 
-const listenForGigs = (
-  socket: scc.AGClientSocket,
-  name: string,
-  setFunc: (_arg0: Igig[]) => void,
-): boolean => {
-  (async () => {
-    const consumer = socket.receiver(name).createConsumer();
-    while (true) { // eslint-disable-line no-constant-condition
-      const receiver = await consumer.next();// eslint-disable-line no-await-in-loop
-      validateGigsArr(receiver, setFunc);
-      socket.disconnect();
-      /* istanbul ignore else */if (receiver.done) break;
-    }
-  })();
-  return true;
-};
+// const listenForGigs = (
+//   socket: scc.AGClientSocket,
+//   name: string,
+//   setFunc: (_arg0: Igig[]) => void,
+// ): boolean => {
+//   (async () => {
+//     const consumer = socket.receiver(name).createConsumer();
+//     while (true) { // eslint-disable-line no-constant-condition
+//       const receiver = await consumer.next();// eslint-disable-line no-await-in-loop
+//       validateGigsArr(receiver, setFunc);
+//       socket.disconnect();
+//       /* istanbul ignore else */if (receiver.done) break;
+//     }
+//   })();
+//   return true;
+// };
 
-const getGigs = (setGigs: (_arg0: Igig[]) => void): boolean => {
-  try {
-    const socket = scc.create({
-      hostname: process.env.SCS_HOST,
-      port: Number(process.env.SCS_PORT),
-      autoConnect: true,
-      secure: process.env.SOCKETCLUSTER_SECURE !== 'false',
-    });
-    socket.transmit('initial message', 123);
-    return listenForGigs(socket, 'allTours', setGigs);
-  } catch (err) { console.log((err as Error).message); return false; }
-};
+const getGigs = (
+  setGigs: (_arg0: Igig[] | null) => void,
+): boolean => socketClusterMessages.initialMessage(setGigs, 'allTours');
+// try {
+//   const socket = scc.create({
+//     hostname: process.env.SCS_HOST,
+//     port: Number(process.env.SCS_PORT),
+//     autoConnect: true,
+//     secure: process.env.SOCKETCLUSTER_SECURE !== 'false',
+//   });
+//   socket.transmit('initial message', 123);
+//   return listenForGigs(socket, 'allTours', setGigs);
+// } catch (err) { console.log((err as Error).message); return false; }
 
-export default { getGigs, listenForGigs, validateGigsArr };
+export default { getGigs };
