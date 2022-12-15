@@ -50,14 +50,14 @@ export interface Ipic {
 const useSongsState: (arg0: Isong[]) =>
 [Isong[], (arg0: Isong[]) => void] = createPersistedState('songs', sessionStorage);
 
-const useGigsState: (arg0: Igig[]) =>
-[Igig[], (arg0: Igig[]) => void] = createPersistedState('gigs', sessionStorage);
+const useGigsState: (arg0: Igig[] | null) =>
+[Igig[] | null, (arg0: Igig[] | null) => void] = createPersistedState('gigs', sessionStorage);
 
 const usePicsState: (arg0: Ipic[] | null) =>
 [Ipic[] | null, (arg0: Ipic[] | null) => void] = createPersistedState('pics', sessionStorage);
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const setGigsDef = (_arg0: Igig[]) => { };
+export const setGigsDef = (_arg0: Igig[] | null) => { };
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const setSongsDef = (_arg0: Isong[]) => { };
@@ -73,12 +73,12 @@ export const DataContext = createContext({
   setSongs: setSongsDef,
 });
 
-export const makeGetGigs = (setGigs: (arg0: Igig[]) => void) => () => fetchGigs.getGigs(setGigs);
+export const makeGetGigs = (setGigs: (arg0: Igig[] | null) => void) => () => fetchGigs.getGigs(setGigs);
 
 export const makeGetPics = (setPics: (arg0: Ipic[] | null) => void) => () => fetchPics.getPics(setPics);
 
 export function DataProvider({ children }: { children: ReactChild }): JSX.Element {
-  const [gigs, setGigs] = useGigsState([defaultGig]);
+  const [gigs, setGigs] = useGigsState([defaultGig] as Igig[] | null);
   const [songs, setSongs] = useSongsState([defaultSong]);
   const [pics, setPics] = usePicsState(null);
   const getPics = makeGetPics(setPics);
