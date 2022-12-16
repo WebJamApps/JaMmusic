@@ -4,13 +4,13 @@ const validateData = (
   receiver: IteratorResult<any, any>,
   setFunc: (_arg0: any[] | null) => void,
 ) => {
-  let gigsArr = null;
+  let dataArr = null;
   if (Array.isArray(receiver.value)) {
-    gigsArr = receiver.value.map(
+    dataArr = receiver.value.map(
       (g: any, i: number) => ({ ...g, id: i }),
     );
   }
-  setFunc(gigsArr);
+  setFunc(dataArr);
 };
 
 const listenForData = (
@@ -43,4 +43,4 @@ const initialMessage = (setFunc: (arg0: any[] | null) => void, message: string) 
   } catch (err) { console.log((err as Error).message); return false; }
 };
 
-export default { initialMessage };
+export default { initialMessage, validateData };
