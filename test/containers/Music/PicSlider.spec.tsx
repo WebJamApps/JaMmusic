@@ -1,4 +1,4 @@
-import renderer from 'react-test-renderer';
+// import renderer from 'react-test-renderer';
 import { PicSlider } from 'src/containers/Music/Pictures/PicSlider';
 
 // const data:any = [
