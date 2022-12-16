@@ -14,8 +14,8 @@ describe('picture slider component test', () => {
     expect(PicSlider).toBeDefined();
     // expect(data).toBeDefined();
   });
-  it('renders with undefined images', () => {
-    const slider:any = renderer.create(<PicSlider />).toJSON();
-    expect(slider.children[0].children[0]).toBe('');
-  });
+  // it('renders with undefined images', () => {
+  //   const slider:any = renderer.create(<PicSlider />).toJSON();
+  //   expect(slider.children[0].children[0]).toBe('');
+  // });
 });
