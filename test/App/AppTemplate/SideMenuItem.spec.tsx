@@ -22,7 +22,6 @@ describe('SideMenuItem', () => {
     expect(smi.props.className).toBe('menu-item');
   });
   it('returns MakeLink for /music when Web Jam LLC', () => {
-    window.location.assign = jest.fn();
     commonUtils.getUserRoles = jest.fn(() => ['tester']);
     const props = {
       index: 1,
@@ -34,7 +33,7 @@ describe('SideMenuItem', () => {
     const smi: any = renderer.create(<BrowserRouter><SideMenuItem {...props} /></BrowserRouter>);
     expect(smi.toJSON().props.className).toBe('menu-item');
     smi.root.findByProps({ type: 'Link' }).props.handleClose();
-    // expect(window.location.assign).toHaveBeenCalledWith('/');
+    expect(props.handleClose).toHaveBeenCalled();
   });
   it('continueMenuItem returns googleLogout', () => {
     const result: any = continueMenuItem(

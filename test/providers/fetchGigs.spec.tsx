@@ -11,9 +11,4 @@ describe('fetchGigs', () => {
     const setGigs = jest.fn();
     expect(fetchGigs.getGigs(setGigs)).toBe(false);
   });
-  // it('validateGigsArr', () => {
-  //   const setGigs = jest.fn();
-  //   fetchGigs.validateGigsArr({ value: [defaultGig, defaultGig] }, setGigs);
-  //   expect(setGigs).toHaveBeenCalled();
-  // });
 });

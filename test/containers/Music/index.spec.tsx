@@ -6,24 +6,12 @@ import { Music, checkIsAdmin } from 'src/containers/Music';
 import { ClickToListen } from 'src/containers/Music/intro';
 import { BrowserRouter } from 'react-router-dom';
 
-// const data:any = [
-//   { _id: 1, url: '../static/imgs/ohaf/slideshow2.png', comments: 'showCaption' },
-//   { _id: 2, url: '../static/imgs/ohaf/slideshow3.png' },
-//   { _id: 3, url: '../static/imgs/ohaf/slideshow4.png' },
-//   { _id: 4, url: '../static/imgs/ohaf/slideshow5.png' },
-//   { _id: 5, url: '../static/imgs/ohaf/slideshow6.png' },
-// ];
-
 describe('/music', () => {
   it('renders the component', () => {
     const music = renderer.create(<Music />).toJSON();
     expect(JSON.stringify(music).includes('page-content')).toBe(true);
     expect(music).toMatchSnapshot();
   });
-  // it('renders with images', () => {
-  //   const music = renderer.create(<Music />).toJSON();
-  //   expect(JSON.stringify(music).includes('picSlider')).toBe(true);
-  // });
   it('renders and runs useEffect', () => {
     const container = document.createElement('div');
     document.body.appendChild(container);
