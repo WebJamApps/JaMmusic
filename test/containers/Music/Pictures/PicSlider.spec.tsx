@@ -1,5 +1,5 @@
 import renderer from 'react-test-renderer';
-import { PicSlider } from 'src/components/PicSlider';
+import { Isettings, PicSlider, SliderContent } from 'src/containers/Music/Pictures/PicSlider';
 
 const data:any = [
   { _id: 1, url: '../static/imgs/ohaf/slideshow2.png', comments: 'showCaption' },
@@ -9,13 +9,23 @@ const data:any = [
   { _id: 5, url: '../static/imgs/ohaf/slideshow6.png' },
 ];
 
+const settings: Isettings = {
+  autoplay: true,
+  autoplaySpeed: 3000,
+  infinite: true,
+  speed: 1000,
+  slidesToShow: 1,
+  slidesToScroll: 1,
+  arrows: false,
+  fade: true,
+};
+
 describe('picture slider component test', () => {
   it('is defined', () => {
     expect(PicSlider).toBeDefined();
-    expect(data).toBeDefined();
   });
-  it('renders with undefined images', () => {
-    const slider:any = renderer.create(<PicSlider />).toJSON();
-    expect(slider.children[0].children[0]).toBe('');
+  it('renders SliderContent when having pics', () => {
+    const slider:any = renderer.create(<SliderContent pics={data} settings={settings} />).toJSON();
+    expect(slider.children[0].children[0].props.className).toBe('slick-list');
   });
 });

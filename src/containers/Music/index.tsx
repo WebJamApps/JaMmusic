@@ -1,12 +1,11 @@
 import { useEffect, useState, useContext } from 'react';
 import { AuthContext, Iauth } from 'src/providers/Auth.provider';
-import { PicSlider } from 'src/components/PicSlider';
+import { PicSlider } from 'src/containers/Music/Pictures/PicSlider';
+import commonUtils from 'src/lib/commonUtils';
 import { Gigs } from './Gigs';
-import type { Iimage } from '../../redux/mapStoreToProps';
 import { Intro } from './intro';
 import JoshBio from './joshBio';
 import MariaBio from './mariaBio';
-import commonUtils from '../../lib/commonUtils';
 
 export function Musicians(): JSX.Element {
   return (
@@ -33,22 +32,19 @@ export function checkIsAdmin(auth: Iauth, setIsAdmin: (arg0: boolean) => void) {
   setIsAdmin(isAdmin);
 }
 
-interface ImusicNewProps {
-  images?: Iimage[]
-}
-export function Music({ images }: ImusicNewProps): JSX.Element {
+export function Music(): JSX.Element {
   const { auth } = useContext(AuthContext);
   const [isAdmin, setIsAdmin] = useState(false);
   useEffect(() => commonUtils.setTitleAndScroll('Music', window.screen.width), []);
   useEffect(() => {
     checkIsAdmin(auth, setIsAdmin);
   }, [auth]);
-  const data = Array.isArray(images) ? images : [];
+  console.log('music page');
   return (
     <div className="page-content music">
       <div style={{ paddingTop: '1px', paddingBottom: 0, marginBottom: 0 }}>
         <div id="musicSlide1">
-          {data.length > 0 ? (<PicSlider data={data} />) : null}
+          <PicSlider />
         </div>
         <Intro />
       </div>

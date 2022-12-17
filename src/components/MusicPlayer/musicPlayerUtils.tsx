@@ -1,5 +1,5 @@
 
-import type { ISong } from 'src/providers/Data.provider';
+import type { Isong } from 'src/providers/Data.provider';
 import type { Iplayer, MusicPlayer } from '.';
 
 const showHideButtons = (display: string): boolean => {
@@ -33,14 +33,14 @@ async function checkOnePlayer(
   view: MusicPlayer,
 ): Promise<boolean> {
   const { songs } = view.props;
-  let missionState = 'off', pubState = 'off', originalState = 'off', newSongs: ISong[] = [];
+  let missionState = 'off', pubState = 'off', originalState = 'off', newSongs: Isong[] = [];
   if (params.get('oneplayer')) {
-    const song = songs.filter((s: ISong) => s._id === params.get('id'));
-    const index = songs.findIndex((s: ISong) => s._id === params.get('id'));
+    const song = songs.filter((s: Isong) => s._id === params.get('id'));
+    const index = songs.findIndex((s: Isong) => s._id === params.get('id'));
     if (song.length === 0) song.push(songs[0]);
-    if (song[0].category === 'mission') { missionState = 'on'; newSongs = songs.filter((s: ISong) => s.category === 'mission'); }
-    if (song[0].category === 'pub') { pubState = 'on'; newSongs = songs.filter((s: ISong) => s.category === 'pub'); }
-    if (song[0].category === 'original') { originalState = 'on'; newSongs = songs.filter((s: ISong) => s.category === 'original'); }
+    if (song[0].category === 'mission') { missionState = 'on'; newSongs = songs.filter((s: Isong) => s.category === 'mission'); }
+    if (song[0].category === 'pub') { pubState = 'on'; newSongs = songs.filter((s: Isong) => s.category === 'pub'); }
+    if (song[0].category === 'original') { originalState = 'on'; newSongs = songs.filter((s: Isong) => s.category === 'original'); }
     view.setState({
       player: { ...player, onePlayerMode: true },
       song: song[0],
@@ -98,7 +98,7 @@ const homeButton = (onePlayerMode: boolean): JSX.Element => (
   </button>
 );
 
-const shuffleThem = (songs: ISong[]): ISong[] => {
+const shuffleThem = (songs: Isong[]): Isong[] => {
   const shuffled = songs;
   for (let i = shuffled.length - 1; i > 0; i -= 1) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -110,9 +110,9 @@ const resetState = (
   view: MusicPlayer,
   player: Iplayer,
   pageTitle: string,
-  songsState: ISong[],
+  songsState: Isong[],
   typeInState: string,
-  shuffled: ISong[],
+  shuffled: Isong[],
   type:string,
 ) => {
   view.setState({
@@ -127,11 +127,11 @@ const resetState = (
 };
 function toggleOn(lcType: string, view: MusicPlayer, type: string, typeInState: string): boolean {
   const { player } = view.state;
-  let { songsState, pageTitle } = view.state, shuffled: ISong[] = songsState, { songs } = view.props;
+  let { songsState, pageTitle } = view.state, shuffled: Isong[] = songsState, { songs } = view.props;
   if (!songs) songs = [];
   songsState = [
     ...songsState,
-    ...songs.filter((song: ISong) => song.category === lcType),
+    ...songs.filter((song: Isong) => song.category === lcType),
   ];
   if (player.isShuffleOn) shuffled = shuffleThem(songsState);
   else { songsState = view.musicUtils.setIndex(songsState, lcType); }
@@ -144,17 +144,17 @@ function toggleSongTypes(type: string, view: MusicPlayer): boolean {
   const lcType = type.toLowerCase();
   const { player, missionState, pubState } = view.state;
   if (lcType === 'original' && missionState === 'off' && pubState === 'off') return false;
-  let typeState = 'off', { songsState, pageTitle } = view.state, shuffled: ISong[] = songsState, { songs } = view.props;
+  let typeState = 'off', { songsState, pageTitle } = view.state, shuffled: Isong[] = songsState, { songs } = view.props;
   if (!songs) songs = [];
   const typeInState = `${lcType}State`;
   if (typeInState === 'pubState') typeState = view.state.pubState;
   else if (typeInState === 'originalState') typeState = view.state.originalState;
   else typeState = view.state.missionState;
   if (typeState === 'off') return toggleOn(lcType, view, type, typeInState);
-  songsState = songsState.filter((song: ISong) => song.category !== lcType);
+  songsState = songsState.filter((song: Isong) => song.category !== lcType);
   pageTitle = pageTitle.replace(` & ${type}`, '');
   if (songsState.length === 0) {
-    songsState = [...songsState, ...songs.filter((song: ISong) => song.category === 'original')]; pageTitle = 'Original Songs';
+    songsState = [...songsState, ...songs.filter((song: Isong) => song.category === 'original')]; pageTitle = 'Original Songs';
     view.setState({ originalState: 'on' });
   }
   pageTitle = pageTitle.replace(`${type}`, '').replace('&', '');

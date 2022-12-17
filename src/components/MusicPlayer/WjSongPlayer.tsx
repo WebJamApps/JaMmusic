@@ -1,5 +1,5 @@
 // import ReactPlayer from 'react-player';
-// import type { ISong } from 'src/providers/Data.provider';
+// import type { Isong } from 'src/providers/Data.provider';
 // import type { Iplayer } from '.';
 // import musicPlayerUtils from './musicPlayerUtils';
 // import musicUtils from './musicUtils';
@@ -19,7 +19,7 @@
 //   </h4>
 // );
 // interface IwjReactPlayerProps {
-//   song:ISong | null, player:any, index:number, songsState:any, setState:(...args:any)=>void
+//   song:Isong | null, player:any, index:number, songsState:any, setState:(...args:any)=>void
 // }
 // function WjReactPlayer(props:IwjReactPlayerProps) {
 //   const {
@@ -44,7 +44,7 @@
 // function CopyRight(): JSX.Element { // eslint-disable-line class-methods-use-this
 //   return (<span>All Original Songs &copy;2019 &ndash; 2020 Web Jam LLC</span>);
 // }
-// function TextUnderPlayer({ song }:{ song: ISong | null }) {
+// function TextUnderPlayer({ song }:{ song: Isong | null }) {
 //   if (!song) return null;
 //   return (
 //     <section
@@ -125,7 +125,7 @@
 //   );
 // }
 // interface IcopyInputProps {
-//   player: Iplayer, song: ISong | null, writeText:(arg0:string)=>Promise<void>, setState:(...args:any)=>void
+//   player: Iplayer, song: Isong | null, writeText:(arg0:string)=>Promise<void>, setState:(...args:any)=>void
 // }
 // function CopyInput(props:IcopyInputProps): JSX.Element {
 //   const {
@@ -149,7 +149,7 @@
 //   );
 // }
 // interface IWjSongPlayerProps {
-//   pageTitle:string, classOverlay:string, song:ISong | null, player:Iplayer, index:number,
+//   pageTitle:string, classOverlay:string, song:Isong | null, player:Iplayer, index:number,
 //   songsState:any, setState:(...args:any)=>void, missionState:string, pubState:string, writeText:(arg0:string)=>Promise<void>
 // }
 // export function WjSongPlayer(props:IWjSongPlayerProps) {

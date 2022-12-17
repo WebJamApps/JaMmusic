@@ -1,10 +1,10 @@
 
 import { useContext } from 'react';
-import { DataContext, ISong } from 'src/providers/Data.provider';
+import { DataContext, Isong } from 'src/providers/Data.provider';
 import DefaultMusicPlayer from '../../components/MusicPlayer';
 
 type Props = {
-  songArr?:ISong[]
+  songArr?:Isong[]
 };
 export function Player({ songArr }:Props):JSX.Element {
   const { songs } = useContext(DataContext);
