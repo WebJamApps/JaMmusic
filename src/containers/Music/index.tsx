@@ -46,7 +46,7 @@ export function Music(): JSX.Element {
         <div id="musicSlide1">
           <PicSlider />
         </div>
-        <Intro />
+        <Intro isAdmin={isAdmin} />
       </div>
       <div
         className="search-table-outer"
