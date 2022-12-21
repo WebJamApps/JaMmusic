@@ -24,21 +24,32 @@ describe('/music', () => {
   });
   it('renders ClickToListen and handles click when joshandmariamusic.com', () => {
     window.open = jest.fn();
-    const ctl = renderer.create(<ClickToListen appName="joshandmariamusic.com" isAdmin={false} />).root;
+    const ctl = renderer.create(
+      <ClickToListen appName="joshandmariamusic.com" isAdmin={false} setShowCreatePic={jest.fn()} setShowEditPic={jest.fn()} />,
+    ).root;
     ctl.findByProps({ variant: 'contained' }).props.onClick();
     // eslint-disable-next-line security/detect-non-literal-fs-filename
     expect(window.open).toHaveBeenCalled();
   });
   it('renders ClickToListen and handles click when web-jam.com', () => {
     window.open = jest.fn();
-    const ctl = renderer.create(<BrowserRouter><ClickToListen appName="web-jam.com" isAdmin={false} /></BrowserRouter>).root;
+    const ctl = renderer.create(
+      <BrowserRouter>
+        <ClickToListen appName="web-jam.com" isAdmin={false} setShowCreatePic={jest.fn()} setShowEditPic={jest.fn()} />
+      </BrowserRouter>,
+    ).root;
     ctl.findByProps({ variant: 'contained' }).props.onClick();
     // eslint-disable-next-line security/detect-non-literal-fs-filename
     expect(window.open).not.toHaveBeenCalled();
   });
   it('renders ClickToListen and handles click when undefined appName', () => {
     window.open = jest.fn();
-    const ctl = renderer.create(<BrowserRouter><ClickToListen isAdmin={false} /></BrowserRouter>).root;
+    const ctl = renderer.create(
+      <BrowserRouter>
+        <ClickToListen isAdmin={false} setShowCreatePic={jest.fn()} setShowEditPic={jest.fn()} />
+      </BrowserRouter>,
+    )
+      .root;
     ctl.findByProps({ variant: 'contained' }).props.onClick();
     // eslint-disable-next-line security/detect-non-literal-fs-filename
     expect(window.open).not.toHaveBeenCalled();

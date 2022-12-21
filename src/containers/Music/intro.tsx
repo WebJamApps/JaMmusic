@@ -2,7 +2,13 @@ import { Button } from '@mui/material';
 import { Add, Edit } from '@mui/icons-material';
 import { useHistory } from 'react-router-dom';
 
-export function ClickToListen({ appName = '', isAdmin }: { appName?: string, isAdmin:boolean }) {
+interface IclickToListenProps {
+  appName?: string, isAdmin:boolean, setShowCreatePic:(arg0:boolean)=>void, setShowEditPic:(arg0:boolean)=>void
+}
+export function ClickToListen(props:IclickToListenProps) {
+  const {
+    appName, isAdmin, setShowCreatePic, setShowEditPic,
+  } = props;
   const history = useHistory();
   const handleClick = () => {
     if (appName === 'joshandmariamusic.com') return window.open('https://web-jam.com/music/songs');
@@ -19,7 +25,7 @@ export function ClickToListen({ appName = '', isAdmin }: { appName?: string, isA
               sx={{ marginLeft: '10px' }}
               variant="outlined"
               className="createPicButton"
-              onClick={() => console.log('createPic')}
+              onClick={() => setShowCreatePic(true)}
             >
               Add Pic
             </Button>
@@ -28,7 +34,7 @@ export function ClickToListen({ appName = '', isAdmin }: { appName?: string, isA
               sx={{ marginLeft: '10px' }}
               variant="outlined"
               className="editPicButton"
-              onClick={() => console.log('editPic')}
+              onClick={() => setShowEditPic(true)}
             >
               Edit Pic
             </Button>
@@ -38,7 +44,11 @@ export function ClickToListen({ appName = '', isAdmin }: { appName?: string, isA
   );
 }
 
-export function Intro({ isAdmin }:{ isAdmin:boolean }): JSX.Element {
+interface IintroProps {
+  isAdmin:boolean, setShowCreatePic:(arg0:boolean)=>void, setShowEditPic:(arg0:boolean)=>void
+}
+export function Intro(props:IintroProps): JSX.Element {
+  const { isAdmin, setShowCreatePic, setShowEditPic } = props;
   return (
     <div
       className="intro"
@@ -46,7 +56,12 @@ export function Intro({ isAdmin }:{ isAdmin:boolean }): JSX.Element {
         margin: 'auto', maxWidth: '900px', padding: '6px', paddingBottom: 0,
       }}
     >
-      <ClickToListen appName={process.env.APP_NAME} isAdmin={isAdmin} />
+      <ClickToListen
+        appName={process.env.APP_NAME}
+        isAdmin={isAdmin}
+        setShowCreatePic={setShowCreatePic}
+        setShowEditPic={setShowEditPic}
+      />
       <p style={{ marginTop: '10px', marginBottom: '6px' }}>
         Josh and Maria have been performing their music together for over 10 years now!
         Whether it is at church, charity events, public venues, or outdoor festivals, this couple will blow your socks off.
