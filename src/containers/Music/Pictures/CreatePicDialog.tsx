@@ -1,23 +1,20 @@
 import {
   Button,
-  Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle,
+  Checkbox,
+  Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, FormGroup, FormControlLabel,
 } from '@mui/material';
-// import { useContext } from 'react';
-// import { AuthContext } from 'src/providers/Auth.provider';
-// import { DataContext } from 'src/providers/Data.provider';
+import { useState, useContext } from 'react';
+import { AuthContext } from 'src/providers/Auth.provider';
+import { DataContext } from 'src/providers/Data.provider';
+import utils from './pictures.utils';
 
 interface IcreatePicDialogProps {
   showDialog: boolean, setShowDialog: (arg0: boolean) => void,
 }
 export function CreatePicDialog({ showDialog, setShowDialog }: IcreatePicDialogProps) {
-  // const { auth } = useContext(AuthContext);
-  //   const { getGigs } = useContext(DataContext);
-  //   const now = new Date() as Date | null;
-  //   const [dateTime, setDateTime] = useState(now);
-  //   const [venue, setVenue] = useState('');
-  //   const [city, setCity] = useState('');
-  //   const [usState, setUSstate] = useState('Virginia');
-  //   const [tickets, setTickets] = useState('');
+  const [pic, setPic] = useState({ url: '', comments: '', title: '' });
+  const { auth } = useContext(AuthContext);
+  const { getPics } = useContext(DataContext);
   return (
     <Dialog
       disableEnforceFocus
@@ -31,31 +28,48 @@ export function CreatePicDialog({ showDialog, setShowDialog }: IcreatePicDialogP
         <DialogContentText sx={{ marginBottom: '30px' }}>
           Enter all *required fields to create a new picture.
         </DialogContentText>
-        <p className="venueLabel">* Venue</p>
-        {/* <TextField
+        <TextField
           sx={{ marginTop: '20px' }}
-          label="* City"
+          label="* URL"
           type="text"
           fullWidth
-          value={city}
-          onChange={(evt) => { setCity(evt.target.value); return evt.target.value; }}
-        /> */}
-        {/* <TextField
+          value={pic.url}
+          onChange={(evt) => { setPic({ ...pic, url: evt.target.value }); }}
+        />
+        <TextField
           sx={{ marginTop: '20px' }}
-          label="Tickets"
+          label="* Title"
           type="text"
           fullWidth
-          value={tickets}
-          onChange={(evt) => { setTickets(evt.target.value); return evt.target.value; }}
-        /> */}
+          value={pic.title}
+          onChange={(evt) => { setPic({ ...pic, title: evt.target.value }); }}
+        />
+        <FormGroup>
+          <FormControlLabel
+            control={(
+              <Checkbox
+                checked={pic.comments === 'showCaption'}
+                onClick={
+                  (evt: any) => {
+                    const { target: { checked } } = evt;
+                    // console.log(checked);
+                    const comments = checked ? 'showCaption' : '';
+                    // console.log(comments);
+                    setPic({ ...pic, comments });
+                  }
+                }
+              />
+            )}
+            label="Show Title In Caption"
+          />
+        </FormGroup>
       </DialogContent>
       <DialogActions>
         <Button
-          // disabled={utils.checkNewDisabled(city, usState, dateTime, venue)}
           size="small"
           variant="contained"
           className="createPicButton"
-          // onClick={() => { utils.createGig(getGigs, setShowDialog, dateTime, venue, city, usState, tickets, auth); }}
+          onClick={() => { utils.createPic(getPics, setShowDialog, pic, auth); }}
         >
           Create
         </Button>

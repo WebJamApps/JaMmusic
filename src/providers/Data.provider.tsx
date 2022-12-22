@@ -64,11 +64,18 @@ export const setSongsDef = (_arg0: Isong[]) => { };
 
 export const getGigsDef = () => true;
 
+export const getPicsDef = () => true;
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const setPicsDef = (_arg0: Ipic[] | null) => { };
+
 export const DataContext = createContext({
   gigs: [defaultGig],
-  pics: null as Ipic[] | null,
   setGigs: setGigsDef,
   getGigs: getGigsDef,
+  pics: null as Ipic[] | null,
+  setPics: setPicsDef,
+  getPics: getPicsDef,
   songs: [defaultSong],
   setSongs: setSongsDef,
 });

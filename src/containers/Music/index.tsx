@@ -7,6 +7,7 @@ import { Intro } from './intro';
 import JoshBio from './joshBio';
 import MariaBio from './mariaBio';
 import { CreatePicDialog } from './Pictures/CreatePicDialog';
+import { EditPicTable } from './Pictures/EditPicTable';
 
 export function Musicians(): JSX.Element {
   return (
@@ -37,7 +38,7 @@ export function Music(): JSX.Element {
   const { auth } = useContext(AuthContext);
   const [isAdmin, setIsAdmin] = useState(false);
   const [showCreatePic, setShowCreatePic] = useState(false);
-  const [showEditPic, setShowEditPic] = useState(false);
+  const [showEditPicTable, setShowEditPicTable] = useState(false);
   useEffect(() => commonUtils.setTitleAndScroll('Music', window.screen.width), []);
   useEffect(() => {
     checkIsAdmin(auth, setIsAdmin);
@@ -46,9 +47,10 @@ export function Music(): JSX.Element {
     <div className="page-content music">
       <div style={{ paddingTop: '1px', paddingBottom: 0, marginBottom: 0 }}>
         <div id="musicSlide1">
-          <PicSlider />
+          {!showEditPicTable ? <PicSlider /> : <EditPicTable setShowTable={setShowEditPicTable} />}
         </div>
-        <Intro isAdmin={isAdmin} setShowEditPic={setShowEditPic} setShowCreatePic={setShowCreatePic} />
+        {showEditPicTable ? null
+          : <Intro isAdmin={isAdmin} setShowEditPic={setShowEditPicTable} setShowCreatePic={setShowCreatePic} />}
         <CreatePicDialog showDialog={showCreatePic} setShowDialog={setShowCreatePic} />
       </div>
       <div
