@@ -9,7 +9,6 @@ import { BrowserRouter } from 'react-router-dom';
 describe('/music', () => {
   it('renders the component', () => {
     const music = renderer.create(<Music />).toJSON();
-    expect(JSON.stringify(music).includes('page-content')).toBe(true);
     expect(music).toMatchSnapshot();
   });
   it('renders and runs useEffect', () => {
