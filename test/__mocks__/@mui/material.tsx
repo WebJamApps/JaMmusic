@@ -4,6 +4,11 @@ export function TextField(props:any) {
   return <input {...props}>{children}</input>;
 }
 
+export function Checkbox(props:any) {
+  const { children } = props;
+  return <input {...props}>{children}</input>;
+}
+
 export function TextareaAutosize(props:any) {
   const { children } = props;
   return <input {...props}>{children}</input>;
@@ -50,6 +55,16 @@ export function Tooltip(props:any) {
 }
 
 export function FormControl(props:any) {
+  const { children } = props;
+  return <div {...props}>{children}</div>;
+}
+
+export function FormGroup(props:any) {
+  const { children } = props;
+  return <div {...props}>{children}</div>;
+}
+
+export function FormControlLabel(props:any) {
   const { children } = props;
   return <div {...props}>{children}</div>;
 }
