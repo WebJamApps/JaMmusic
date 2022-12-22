@@ -54,6 +54,86 @@ exports[`/music renders the component 1`] = `
         Josh and Maria have been performing their music together for over 10 years now! Whether it is at church, charity events, public venues, or outdoor festivals, this couple will blow your socks off.
       </p>
     </div>
+    <div
+      className="createNewPicDialog"
+      disableAutoFocus={true}
+      disableEnforceFocus={true}
+      onClose={[Function]}
+      open={false}
+    >
+      <div>
+        Create New Picture
+      </div>
+      <div
+        sx={
+          {
+            "padding": "10px 10px",
+          }
+        }
+      >
+        <div
+          sx={
+            {
+              "marginBottom": "30px",
+            }
+          }
+        >
+          Enter all *required fields to create a new picture.
+        </div>
+        <input
+          fullWidth={true}
+          label="* URL"
+          onChange={[Function]}
+          sx={
+            {
+              "marginTop": "20px",
+            }
+          }
+          type="text"
+          value=""
+        />
+        <input
+          fullWidth={true}
+          label="* Title"
+          onChange={[Function]}
+          sx={
+            {
+              "marginTop": "20px",
+            }
+          }
+          type="text"
+          value=""
+        />
+        <div>
+          <div
+            control={
+              <Checkbox
+                checked={false}
+                onClick={[Function]}
+              />
+            }
+            label="Show Title In Caption"
+          />
+        </div>
+      </div>
+      <div>
+        <button
+          className="createPicButton"
+          onClick={[Function]}
+          size="small"
+          variant="contained"
+        >
+          Create
+        </button>
+        <button
+          className="cancelPicButton"
+          onClick={[Function]}
+          size="small"
+        >
+          Cancel
+        </button>
+      </div>
+    </div>
   </div>
   <div
     className="search-table-outer"
