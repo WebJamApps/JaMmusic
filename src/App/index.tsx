@@ -2,15 +2,14 @@ import {
   Component, Dispatch, ReactElement, StrictMode,
 } from 'react';
 import { ReactNotifications } from 'react-notifications-component';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { connect } from 'react-redux';
 import mapStoreToProps from 'src/redux/mapStoreToProps';
 import DefaultSort from '../containers/SortContainer';
 import BuyMusic from '../containers/BuyMusic';
-import AppFourOhFour from './404';
 import GoogleMap from '../containers/GoogleMap';
 import { Music } from '../containers/Music';
-import ATemplate from './AppTemplate';
+import {AppTemplate} from './AppTemplate';
 import DefaultSongs from '../containers/Songs';
 import HomePage from '../containers/Homepage';
 import connectToSC from './connectToSC';
@@ -42,21 +41,18 @@ export class App extends Component<AppProps> {
         <div id="App" className="App">
           <ReactNotifications />
           <Router>
-            <ATemplate {...this.props}>
-              <Switch>
+            <AppTemplate {...this.props}>
                 {process.env.APP_NAME === 'web-jam.com'
-                  ? <Route exact path="/" component={HomePage} />
-                  : <Route exact path="/music" component={Music} />}
+                  ? <Route path="/" ><HomePage/></Route>
+                  : null
+                  // <Route path="/" ><Music/></Route>
+                  }
                 {process.env.BackendUrl === 'http://localhost:7000'
                   ? <PrivateRoute Container={GoogleMap} path="/map" /> : null}
-                <PrivateRoute path="/sort" Container={DefaultSort} />
-                <Route exact path="/music" component={Music} />
-                <Route exact path="/music/buymusic" component={BuyMusic} />
-                <Route exact path="/music/originals" component={DefaultSongs} />
-                <Route exact path="/music/songs" component={DefaultSongs} />
-                <Route component={AppFourOhFour} />
-              </Switch>
-            </ATemplate>
+                {/* <Route path="/music" ><Music/></Route> */}
+                <Route  path="/music/buymusic" ><BuyMusic/></Route>
+                <Route  path="/music/songs" ><DefaultSongs/></Route>
+            </AppTemplate>
           </Router>
         </div>
       </StrictMode>

@@ -1,5 +1,4 @@
 import { SetStateAction, useState } from 'react';
-import type { RouteComponentProps } from 'react-router-dom';
 import { DrawerContainer } from './DrawerContainer';
 import { MainPanel } from './MainPanel';
 
@@ -42,7 +41,7 @@ export const makeHandleKeyPress = (
 ) => (evt: { key: string; }) => handleEscapePress(evt, setMenuOpen);
 
 interface IpageHostProps {
-  userCount?: number, heartBeat?: string, location: RouteComponentProps['location'],
+  userCount?: number, heartBeat?: string, location: any,
   children: React.ReactNode,
 }
 export function PageHost(props: IpageHostProps) {

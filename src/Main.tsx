@@ -1,7 +1,7 @@
 
+import React from 'react';
 import { Provider } from 'react-redux';
-import { render } from 'react-dom';
-import { hot } from 'react-hot-loader';
+import { createRoot } from 'react-dom/client';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { PersistGate } from 'redux-persist/integration/react';
 import ConnectedApp from './App/index';
@@ -10,6 +10,7 @@ import { DataProvider } from './providers/Data.provider';
 import { AuthProvider } from './providers/Auth.provider';
 import '../static/styles.scss';
 
+const root = createRoot(document.getElementById('root') as HTMLElement);
 function Main() {
   return (
     <GoogleOAuthProvider clientId={process.env.GoogleClientId || ''}>
@@ -26,10 +27,8 @@ function Main() {
   );
 }
 
-const HotMain = hot(module)(Main);
-
 const renderMain = (): void => {
-  render(<HotMain />, document.getElementById('root'));
+  root.render(<React.StrictMode><Main /></React.StrictMode>);
 };
 
 renderMain();

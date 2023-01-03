@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { BrowserRouter, RouteComponentProps } from 'react-router-dom';
+import { BrowserRouter } from 'react-router-dom';
 import renderer from 'react-test-renderer';
 import {
   PageHost, makeDrawerClass, handleEscapePress, handleKeyMenu,
@@ -11,7 +11,7 @@ describe('PageHost', () => {
       userCount: 1,
       heartBeat: '',
       auth: {} as any,
-      location: { pathname: '' } as RouteComponentProps['location'],
+      location: { pathname: '' },
       dispatch: jest.fn(),
       children: <div />,
     };

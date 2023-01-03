@@ -1,4 +1,3 @@
-import type { RouteComponentProps } from 'react-router-dom';
 import menuConfig from './menuConfig';
 import { MakeLink, SideMenuItem } from './SideMenuItem';
 
@@ -44,7 +43,7 @@ const MusTT = () => (
 
 interface InavLinksProps {
   handleClose: () => void, userCount?: number, heartBeat?: string,
-  location: RouteComponentProps['location'],
+  location: any,
 }
 export function NavLinks(props: InavLinksProps) {
   const {

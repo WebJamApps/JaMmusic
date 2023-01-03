@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { BrowserRouter, RouteComponentProps } from 'react-router-dom';
+import { BrowserRouter } from 'react-router-dom';
 import renderer from 'react-test-renderer';
 import type { ImenuItem } from 'src/App/AppTemplate/menuConfig';
 import { checkIsAllowed, continueMenuItem, SideMenuItem } from 'src/App/AppTemplate/SideMenuItem';
@@ -14,7 +14,7 @@ describe('SideMenuItem', () => {
     const props = {
       index: 1,
       auth: { isAuthenticated: false, user: { userType: 'joker' } } as any,
-      location: { pathname: '/music' } as RouteComponentProps['location'],
+      location: { pathname: '/music' },
       menu: { auth: false, link: '/music' } as ImenuItem,
       handleClose: jest.fn(),
     };
@@ -26,7 +26,7 @@ describe('SideMenuItem', () => {
     const props = {
       index: 1,
       auth: { isAuthenticated: false, user: { userType: 'joker' } } as any,
-      location: { pathname: '/music' } as RouteComponentProps['location'],
+      location: { pathname: '/music' },
       menu: { auth: false, link: '/', name: 'Web Jam LLC' } as ImenuItem,
       handleClose: jest.fn(),
     };

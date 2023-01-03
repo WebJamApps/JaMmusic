@@ -1,5 +1,5 @@
 
-import { Link, RouteComponentProps } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useContext } from 'react';
 import { AuthContext, Iauth } from 'src/providers/Auth.provider';
 import commonUtils from '../../lib/commonUtils';
@@ -65,7 +65,7 @@ export const checkIsAllowed = (menu: ImenuItem, auth: Iauth, userRoles: string[]
 };
 
 interface IsideMenuItemProps {
-  menu: ImenuItem, index: number, location: RouteComponentProps['location'],
+  menu: ImenuItem, index: number, location: any,
   handleClose: () => void,
 }
 export function SideMenuItem(props: IsideMenuItemProps): JSX.Element | null {
