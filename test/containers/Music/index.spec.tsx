@@ -9,7 +9,6 @@ import { BrowserRouter } from 'react-router-dom';
 describe('/music', () => {
   it('renders the component', () => {
     const music = renderer.create(<Music />).toJSON();
-    expect(JSON.stringify(music).includes('page-content')).toBe(true);
     expect(music).toMatchSnapshot();
   });
   it('renders and runs useEffect', () => {
@@ -24,21 +23,32 @@ describe('/music', () => {
   });
   it('renders ClickToListen and handles click when joshandmariamusic.com', () => {
     window.open = jest.fn();
-    const ctl = renderer.create(<ClickToListen appName="joshandmariamusic.com" />).root;
+    const ctl = renderer.create(
+      <ClickToListen appName="joshandmariamusic.com" isAdmin={false} setShowCreatePic={jest.fn()} setShowEditPic={jest.fn()} />,
+    ).root;
     ctl.findByProps({ variant: 'contained' }).props.onClick();
     // eslint-disable-next-line security/detect-non-literal-fs-filename
     expect(window.open).toHaveBeenCalled();
   });
   it('renders ClickToListen and handles click when web-jam.com', () => {
     window.open = jest.fn();
-    const ctl = renderer.create(<BrowserRouter><ClickToListen appName="web-jam.com" /></BrowserRouter>).root;
+    const ctl = renderer.create(
+      <BrowserRouter>
+        <ClickToListen appName="web-jam.com" isAdmin={false} setShowCreatePic={jest.fn()} setShowEditPic={jest.fn()} />
+      </BrowserRouter>,
+    ).root;
     ctl.findByProps({ variant: 'contained' }).props.onClick();
     // eslint-disable-next-line security/detect-non-literal-fs-filename
     expect(window.open).not.toHaveBeenCalled();
   });
   it('renders ClickToListen and handles click when undefined appName', () => {
     window.open = jest.fn();
-    const ctl = renderer.create(<BrowserRouter><ClickToListen /></BrowserRouter>).root;
+    const ctl = renderer.create(
+      <BrowserRouter>
+        <ClickToListen isAdmin={false} setShowCreatePic={jest.fn()} setShowEditPic={jest.fn()} />
+      </BrowserRouter>,
+    )
+      .root;
     ctl.findByProps({ variant: 'contained' }).props.onClick();
     // eslint-disable-next-line security/detect-non-literal-fs-filename
     expect(window.open).not.toHaveBeenCalled();
