@@ -30,7 +30,7 @@
     "cc": "codeclimate analyze -f html > codeclimate.html",
     "start": "webpack serve --node-env=development --env --inline",
     "test:stylelint": "stylelint \"static/**/*.scss\"",
-    "test:lint-fix": "npm run test:stylelint && eslint . --ext .js,.ts,.tsx --fix",
+    "test:lint-fix": "eslint . --ext .js,.ts,.tsx --fix",
     "test:lint": "npm run test:stylelint && eslint . --ext .js,.ts,.tsx",
     "test": "npm run test:lint && npm run test:jest",
     "test:local": "npm run test:lint-fix && npm run test:jest && npm run cc",

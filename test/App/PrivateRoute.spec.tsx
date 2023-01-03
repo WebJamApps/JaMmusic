@@ -6,7 +6,7 @@ import GoogleMap from 'src/containers/GoogleMap';
 import renderer from 'react-test-renderer';
 import ReactDom from 'react-dom';
 import { act } from 'react-dom/test-utils';
-//import { Music } from 'src/containers/Music';
+// import { Music } from 'src/containers/Music';
 
 describe('PrivateRoute', () => {
   it('renders and runs useEffect', () => {

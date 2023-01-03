@@ -9,7 +9,7 @@ import DefaultSort from '../containers/SortContainer';
 import BuyMusic from '../containers/BuyMusic';
 import GoogleMap from '../containers/GoogleMap';
 import { Music } from '../containers/Music';
-import {AppTemplate} from './AppTemplate';
+import { AppTemplate } from './AppTemplate';
 import DefaultSongs from '../containers/Songs';
 import HomePage from '../containers/Homepage';
 import connectToSC from './connectToSC';
@@ -18,9 +18,9 @@ import { PrivateRoute } from './PrivateRoute';
 export interface AppProps {
   dispatch?: Dispatch<unknown>;
   showMap: boolean;
-  heartBeat?:string;
+  heartBeat?: string;
   children?: ReactElement<any, any>;
-  userCount?:number;
+  userCount?: number;
 }
 export class App extends Component<AppProps> {
   connectToSC: typeof connectToSC;
@@ -42,16 +42,15 @@ export class App extends Component<AppProps> {
           <ReactNotifications />
           <Router>
             <AppTemplate {...this.props}>
-                {process.env.APP_NAME === 'web-jam.com'
-                  ? <Route path="/" ><HomePage/></Route>
-                  : null
-                  // <Route path="/" ><Music/></Route>
-                  }
-                {process.env.BackendUrl === 'http://localhost:7000'
-                  ? <PrivateRoute Container={GoogleMap} path="/map" /> : null}
-                {/* <Route path="/music" ><Music/></Route> */}
-                <Route  path="/music/buymusic" ><BuyMusic/></Route>
-                <Route  path="/music/songs" ><DefaultSongs/></Route>
+              {process.env.APP_NAME === 'web-jam.com'
+                ? <Route path="/"><HomePage /></Route>
+                : <Route path="/"><Music /></Route>}
+              <Route path="/sort"><DefaultSort /></Route>
+              {process.env.BackendUrl === 'http://localhost:7000'
+                ? <PrivateRoute Container={GoogleMap} path="/map" /> : null}
+              <Route path="/music"><Music /></Route>
+              <Route path="/music/buymusic"><BuyMusic /></Route>
+              <Route path="/music/songs"><DefaultSongs /></Route>
             </AppTemplate>
           </Router>
         </div>

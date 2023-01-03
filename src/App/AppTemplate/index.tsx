@@ -1,17 +1,17 @@
 /* eslint-disable react/sort-comp */
 import { PageHost } from './PageHost';
 
-export function AppTemplate(props:any){
-    const {
-      children, userCount, heartBeat, location,
-    } = props;
-    return (
-      <PageHost
-        children={children}
-        userCount={userCount}
-        heartBeat={heartBeat}
-        location={location}
-      />
-    );
-  }
+export function AppTemplate(props:any) {
+  const {
+    children, userCount, heartBeat, location,
+  } = props;
+  return (
+    <PageHost
+      children={children}
+      userCount={userCount}
+      heartBeat={heartBeat}
+      location={location}
+    />
+  );
+}
 
