@@ -1,8 +1,8 @@
 import {
-  Component, Dispatch, ReactElement, StrictMode,
+  Component, Dispatch, ReactElement,
 } from 'react';
 import { ReactNotifications } from 'react-notifications-component';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { connect } from 'react-redux';
 import mapStoreToProps from 'src/redux/mapStoreToProps';
 import DefaultSort from '../containers/SortContainer';
@@ -13,7 +13,6 @@ import { AppTemplate } from './AppTemplate';
 import DefaultSongs from '../containers/Songs';
 import HomePage from '../containers/Homepage';
 import connectToSC from './connectToSC';
-import { PrivateRoute } from './PrivateRoute';
 
 export interface AppProps {
   dispatch?: Dispatch<unknown>;
@@ -37,24 +36,26 @@ export class App extends Component<AppProps> {
 
   render(): JSX.Element {
     return (
-      <StrictMode>
-        <div id="App" className="App">
-          <ReactNotifications />
-          <Router>
-            <AppTemplate {...this.props}>
-              {process.env.APP_NAME === 'web-jam.com'
-                ? <Route path="/"><HomePage /></Route>
-                : <Route path="/"><Music /></Route>}
-              <Route path="/sort"><DefaultSort /></Route>
+      <div id="App" className="App">
+        <ReactNotifications />
+        <BrowserRouter>
+          <AppTemplate {...this.props}>
+            <Routes>
+              <Route
+                path="/"
+                element={process.env.APP_NAME === 'web-jam.com'
+                  ? <HomePage /> : <Music />}
+              />
+              <Route path="/sort" element={<DefaultSort />} />
               {process.env.BackendUrl === 'http://localhost:7000'
-                ? <PrivateRoute Container={GoogleMap} path="/map" /> : null}
-              <Route path="/music"><Music /></Route>
-              <Route path="/music/buymusic"><BuyMusic /></Route>
-              <Route path="/music/songs"><DefaultSongs /></Route>
-            </AppTemplate>
-          </Router>
-        </div>
-      </StrictMode>
+                ? <Route path="/map" element={<GoogleMap />} /> : null}
+              <Route path="/music" element={<Music />} />
+              <Route path="/music/buymusic" element={<BuyMusic />} />
+              <Route path="/music/songs" element={<DefaultSongs />} />
+            </Routes>
+          </AppTemplate>
+        </BrowserRouter>
+      </div>
     );
   }
 }

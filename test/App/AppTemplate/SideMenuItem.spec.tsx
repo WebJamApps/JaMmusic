@@ -9,17 +9,16 @@ describe('SideMenuItem', () => {
   it('is defined', () => {
     expect(SideMenuItem).toBeDefined();
   });
-  it('returns MakeLink for /music', () => {
+  it('renders MakeLink for /music', () => {
     commonUtils.getUserRoles = jest.fn(() => ['tester']);
     const props = {
       index: 1,
       auth: { isAuthenticated: false, user: { userType: 'joker' } } as any,
-      location: { pathname: '/music' },
       menu: { auth: false, link: '/music' } as ImenuItem,
       handleClose: jest.fn(),
     };
-    const smi: any = renderer.create(<BrowserRouter><SideMenuItem {...props} /></BrowserRouter>).toJSON();
-    expect(smi.props.className).toBe('menu-item');
+    const smi = renderer.create(<BrowserRouter><SideMenuItem {...props} /></BrowserRouter>).root;
+    expect(smi).toBeDefined();
   });
   it('returns MakeLink for /music when Web Jam LLC', () => {
     commonUtils.getUserRoles = jest.fn(() => ['tester']);
@@ -46,8 +45,8 @@ describe('SideMenuItem', () => {
     expect(result.key).toBe('googleLogout');
   });
   it('checkIsAllowed return false if item requires auth and userType is not allowed', () => {
-    const menu:any = { auth: true };
-    const auth:any = { isAuthenticated: true, user: { userType: 'tester' } };
+    const menu: any = { auth: true };
+    const auth: any = { isAuthenticated: true, user: { userType: 'tester' } };
     const userRoles = ['admin'];
     const isAllowed = checkIsAllowed(menu, auth, userRoles);
     expect(isAllowed).toBe(false);

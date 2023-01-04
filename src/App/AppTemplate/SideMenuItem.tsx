@@ -1,5 +1,5 @@
 
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useContext } from 'react';
 import { AuthContext, Iauth } from 'src/providers/Auth.provider';
 import commonUtils from '../../lib/commonUtils';
@@ -65,14 +65,16 @@ export const checkIsAllowed = (menu: ImenuItem, auth: Iauth, userRoles: string[]
 };
 
 interface IsideMenuItemProps {
-  menu: ImenuItem, index: number, location: any,
+  menu: ImenuItem, index: number,
   handleClose: () => void,
 }
 export function SideMenuItem(props: IsideMenuItemProps): JSX.Element | null {
   const {
-    menu, index, location, handleClose,
+    menu, index, handleClose,
   } = props;
   const { auth } = useContext(AuthContext);
+  const location = useLocation();
+  const { pathname } = location;
   const userRoles: string[] = commonUtils.getUserRoles();
   const isAllowed = checkIsAllowed(menu, auth, userRoles);
   if (!isAllowed) return null;
@@ -86,6 +88,6 @@ export function SideMenuItem(props: IsideMenuItemProps): JSX.Element | null {
       />
     );
   }
-  return continueMenuItem(menu, index, auth, location.pathname, handleClose);
+  return continueMenuItem(menu, index, auth, pathname, handleClose);
 }
 

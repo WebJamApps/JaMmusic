@@ -20,6 +20,7 @@ Object.defineProperty(window, 'location', { value: { assign: () => { }, reload: 
 window.location = {
   ...window.location,
   href: 'https://web-jam.com',
+  origin: 'https://web-jam.com',
   reload: jest.fn(),
   assign: jest.fn(),
 };

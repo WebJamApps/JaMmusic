@@ -14,6 +14,14 @@ describe('App component', () => {
     const props = {
       dispatch: jest.fn(), images: [], showMap: false, heartBeat: 'white', userCount: 0,
     };
+    Object.defineProperty(window, 'location', { value: { assign: () => { }, reload: () => { } }, writable: true });
+    window.location = {
+      ...window.location,
+      href: 'https://web-jam.com',
+      origin: 'https://web-jam.com',
+      reload: jest.fn(),
+      assign: jest.fn(),
+    };
     const app:any = renderer.create(<Provider store={store.store}><App {...props}><div /></App></Provider>).toJSON();
     expect(app.props.className).toBe('App');
   });

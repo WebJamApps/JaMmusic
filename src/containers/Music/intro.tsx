@@ -1,5 +1,6 @@
 import { Button } from '@mui/material';
 import { Add, Edit } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
 
 interface IclickToListenProps {
   appName?: string, isAdmin:boolean, setShowCreatePic:(arg0:boolean)=>void, setShowEditPic:(arg0:boolean)=>void
@@ -8,9 +9,10 @@ export function ClickToListen(props:IclickToListenProps) {
   const {
     appName, isAdmin, setShowCreatePic, setShowEditPic,
   } = props;
+  const navigate = useNavigate();
   const handleClick = () => {
-    if (appName === 'joshandmariamusic.com') return window.open('https://web-jam.com/music/songs');
-    // return history.push('/music/songs');
+    if (appName === 'joshandmariamusic.com') window.open('https://web-jam.com/music/songs');
+    else navigate('/music/songs');
   };
   return (
     <div style={{ margin: 'auto', textAlign: 'center' }}>
