@@ -80,13 +80,15 @@ export const ShowCreateGigButton = (
 
 interface IgigsDivProps {
   isAdmin: boolean, showDialog: boolean, setShowDialog: (arg0: boolean) => void,
-  gigsInOrder: Igig[], pageSize: number, editGig: Igig, setEditGig: (arg0: Igig) => void,
+  gigsInOrder: Igig[] | null, pageSize: number, editGig: Igig, setEditGig: (arg0: Igig) => void,
   editChanged: boolean, setEditChanged: (arg0: boolean) => void, getGigs: () => boolean, auth: Iauth
 }
 export const GigsDiv = (props: IgigsDivProps) => {
   const {
     isAdmin, setShowDialog, setEditGig, editGig, gigsInOrder, pageSize, showDialog, editChanged, setEditChanged, getGigs, auth,
   } = props;
+  if (!gigsInOrder) return null;
+  console.log(gigsInOrder);
   return (
     <div
       className="gigsDiv"
@@ -104,7 +106,7 @@ export const GigsDiv = (props: IgigsDivProps) => {
           onRowClick={(rowParams) => {
             utils.clickToEdit(setEditGig, isAdmin, rowParams.row);
           }}
-          rows={gigsInOrder}
+          rows={gigsInOrder || []}
           columns={columns}
           pageSize={pageSize}
           rowsPerPageOptions={[pageSize]}

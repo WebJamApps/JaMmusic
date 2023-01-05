@@ -89,7 +89,7 @@ async function deleteGig(
   getGigs: () => void,
   setEditGig: (arg0: typeof defaultGig) => void,
   setEditChanged: (arg0: boolean) => void,
-  token:string,
+  token: string,
 ): Promise<boolean> { // eslint-disable-next-line no-restricted-globals
   const result = confirm('Deleting Gig, are you sure?');// eslint-disable-line no-alert
   if (result) {
@@ -112,10 +112,12 @@ async function deleteGig(
 }
 
 export const orderGigs = (
-  gigs: Igig[],
+  iGigs: Igig[] | null,
   setGigsInOrder: { (arg0: Igig[]): void; },
   setPageSize: (arg0: number) => void,
 ) => {
+  if (!iGigs) return;
+  const gigs = iGigs.map((g, i) => ({ ...g, id: i }));
   const now = new Date();
   now.setDate(now.getDate() - 1);
   const current = now.toISOString();

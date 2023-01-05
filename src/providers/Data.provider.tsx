@@ -69,7 +69,7 @@ export const getPicsDef = () => true;
 export const setPicsDef = (_arg0: Ipic[] | null) => { };
 
 export const DataContext = createContext({
-  gigs: [defaultGig],
+  gigs: null as Igig[] | null,
   setGigs: setGigsDef,
   getGigs: getGigsDef,
   pics: null as Ipic[] | null,
