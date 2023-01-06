@@ -1,21 +1,6 @@
 
 import type { Isong } from 'src/providers/Data.provider';
 
-const pageH4 = (pageTitle: string): JSX.Element => (
-  <h4
-    style={{
-      textAlign: 'center',
-      margin: '20px',
-      fontWeight: 'bold',
-      marginBottom: '0px',
-      fontSize: '16pt',
-    }}
-    id="headerTitle"
-  >
-    {pageTitle}
-  </h4>
-);
-
 const setIndex = (songs: Isong[], category: string): Isong[] => {
   let categorySongs: Isong[] = [];
   const otherSongs: Isong[] = [];
@@ -95,7 +80,6 @@ function setPlayerStyle(song: Isong):Record<string, unknown> {
 }
 
 export default {
-  pageH4,
   setIndex,
   textUnderPlayer,
   copyRight,

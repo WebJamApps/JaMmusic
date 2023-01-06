@@ -1,27 +1,14 @@
-import React, { Component, RefObject } from 'react';
+import { useEffect } from 'react';
 import commonUtils from '../../lib/commonUtils';
-import DefaultPlayer from './Player';
+import {Player} from './Player';
 
-type SProps = any;
-export class Songs extends Component<SProps> {
-  o: RefObject<unknown>;
-
-  commonUtils: typeof commonUtils;
-
-  constructor(props: SProps) {
-    super(props);
-    this.o = React.createRef();
-    this.commonUtils = commonUtils;
-  }
-
-  componentDidMount(): void { this.commonUtils.setTitleAndScroll('Songs', window.screen.width); }
-
-  render(): JSX.Element {
-    return (
-      <div id="pageContent" className="page-content">
-        <DefaultPlayer />
-      </div>
-    );
-  }
+export function Songs() {
+  useEffect(() => {
+    commonUtils.setTitleAndScroll('Songs', window.screen.width);
+  });
+  return (
+    <div id="pageContent" className="page-content">
+      <Player />
+    </div>
+  );
 }
-export default Songs;

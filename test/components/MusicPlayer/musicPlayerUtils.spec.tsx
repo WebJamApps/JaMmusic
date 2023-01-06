@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import musicPlayerUtils from 'src/components/MusicPlayer/musicPlayerUtils';
+import musicPlayerUtils from 'src/containers/Songs/MusicPlayer/musicPlayerUtils';
 
 describe('musicPlayerUtils', () => {
   const params:any = {

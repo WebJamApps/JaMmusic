@@ -140,26 +140,28 @@ function toggleOn(lcType: string, view: MusicPlayer, type: string, typeInState: 
   resetState(view, player, pageTitle, songsState, typeInState, shuffled, 'on');
   return true;
 }
-function toggleSongTypes(type: string, view: MusicPlayer): boolean {
+function toggleSongTypes(
+  type: string, player: { isShuffleOn: any; }, missionState: string, pubState: string, originalState: string, songsState: any[], pageTitle: string, songs: any[]
+  ): boolean {
   const lcType = type.toLowerCase();
-  const { player, missionState, pubState } = view.state;
+  // const { player, missionState, pubState } = view.state;
   if (lcType === 'original' && missionState === 'off' && pubState === 'off') return false;
-  let typeState = 'off', { songsState, pageTitle } = view.state, shuffled: Isong[] = songsState, { songs } = view.props;
+  let typeState = 'off', shuffled: Isong[] = songsState;
   if (!songs) songs = [];
   const typeInState = `${lcType}State`;
-  if (typeInState === 'pubState') typeState = view.state.pubState;
-  else if (typeInState === 'originalState') typeState = view.state.originalState;
-  else typeState = view.state.missionState;
-  if (typeState === 'off') return toggleOn(lcType, view, type, typeInState);
+  if (typeInState === 'pubState') typeState = pubState;
+  else if (typeInState === 'originalState') typeState = originalState;
+  else typeState = missionState;
+  // if (typeState === 'off') return toggleOn(lcType, type, typeInState);
   songsState = songsState.filter((song: Isong) => song.category !== lcType);
   pageTitle = pageTitle.replace(` & ${type}`, '');
   if (songsState.length === 0) {
     songsState = [...songsState, ...songs.filter((song: Isong) => song.category === 'original')]; pageTitle = 'Original Songs';
-    view.setState({ originalState: 'on' });
+    // view.setState({ originalState: 'on' });
   }
   pageTitle = pageTitle.replace(`${type}`, '').replace('&', '');
   if (player.isShuffleOn) shuffled = shuffleThem(songsState);
-  resetState(view, player, pageTitle, songsState, typeInState, shuffled, 'off');
+  // resetState(view, player, pageTitle, songsState, typeInState, shuffled, 'off');
   return true;
 }
 function prev(view:MusicPlayer): void {

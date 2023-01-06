@@ -10,7 +10,7 @@ import BuyMusic from '../containers/BuyMusic';
 import GoogleMap from '../containers/GoogleMap';
 import { Music } from '../containers/Music';
 import { AppTemplate } from './AppTemplate';
-import DefaultSongs from '../containers/Songs';
+import { Songs } from '../containers/Songs';
 import HomePage from '../containers/Homepage';
 import connectToSC from './connectToSC';
 
@@ -51,7 +51,7 @@ export class App extends Component<AppProps> {
                 ? <Route path="/map" element={<GoogleMap />} /> : null}
               <Route path="/music" element={<Music />} />
               <Route path="/music/buymusic" element={<BuyMusic />} />
-              <Route path="/music/songs" element={<DefaultSongs />} />
+              <Route path="/music/songs" element={<Songs />} />
             </Routes>
           </AppTemplate>
         </BrowserRouter>
