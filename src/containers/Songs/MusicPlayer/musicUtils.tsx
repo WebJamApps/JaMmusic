@@ -13,40 +13,6 @@ const setIndex = (songs: Isong[], category: string): Isong[] => {
   return categorySongs;
 };
 
-function copyRight(): JSX.Element { // eslint-disable-line class-methods-use-this
-  return (<span>All Original Songs &copy;2019 &ndash; 2020 Web Jam LLC</span>);
-}
-
-function textUnderPlayer(song: Isong): JSX.Element {
-  return (
-    <section
-      className="mt-1 textUnderPlayer"
-      style={{
-        fontSize: '0.8em', marginTop: 0, marginBottom: '0', paddingTop: 0, paddingBottom: 0,
-      }}
-    >
-      <strong>
-        {song.title ? song.title : null}
-        {song.composer && song.category !== 'original' ? ` by ${song.composer}` : null}
-        {song.artist ? ` - ${song.artist}` : null}
-      </strong>
-      <p style={{
-        textAlign: 'center', fontSize: '8pt', marginTop: '4px', marginBottom: 0,
-      }}
-      >
-        {song.album ? song.album : null}
-        {song.year ? `, ${song.year}` : null}
-      </p>
-      <p style={{
-        textAlign: 'center', fontSize: '8pt', marginTop: '2px', marginBottom: 0,
-      }}
-      >
-        {song !== null && song.category === 'original' ? copyRight() : null}
-      </p>
-    </section>
-  );
-}
-
 function setPlayerStyle(song: Isong):Record<string, unknown> {
   let playerStyle = {
     backgroundColor: '#2a2a2a',
@@ -81,7 +47,7 @@ function setPlayerStyle(song: Isong):Record<string, unknown> {
 
 export default {
   setIndex,
-  textUnderPlayer,
-  copyRight,
+  // textUnderPlayer,
+  // copyRight,
   setPlayerStyle,
 };

@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import commonUtils from '../../lib/commonUtils';
-import {Player} from './Player';
+import { Player } from './Player';
 
 export function Songs() {
   useEffect(() => {

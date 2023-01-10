@@ -1,7 +1,7 @@
 
 import { MusicPlayer } from 'src/containers/Songs/MusicPlayer';
 import renderer from 'react-test-renderer';
-import TSongs from '../../testSongs';
+import TSongs from '../../../testSongs';
 
 describe('Music player component init', () => {
   it('is defined', () => {
