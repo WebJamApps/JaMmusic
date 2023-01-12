@@ -8,7 +8,7 @@ import musicUtils from './musicUtils';
 import './musicPlayer.scss';
 
 export interface Iplayer {
-  playing: boolean;
+  // playing: boolean;
   shown: boolean; isShuffleOn: boolean; displayCopier: string; displayCopyMessage: boolean; onePlayerMode: boolean
 }
 
@@ -79,18 +79,21 @@ function next(index: number, songsState: any): void {
 }
 
 interface ImyReactPlayerProps {
-  song: any, player: any, index: any, songsState: any
+  song: Isong, playing: boolean, index: number, songsState: Isong[]
 }
 function MyReactPlayer(props: ImyReactPlayerProps): JSX.Element {
   const {
-    song, player, index, songsState,
+    song, playing, index, songsState,
   } = props;
+  console.log(playing);
+  console.log(song);
   // const { player } = this.state;
   return (
     <ReactPlayer
+      muted={!playing}
       style={musicUtils.setPlayerStyle(song)}
       url={song.url}
-      playing={player.playing}
+      playing={playing}
       controls
       onEnded={() => next(index, songsState)}
       width="100%"
@@ -178,48 +181,48 @@ function MyReactPlayer(props: ImyReactPlayerProps): JSX.Element {
 //   this.setState({ player: { ...player, playing: false } });
 // }
 
-function playUrl(song: Isong): string {
-  const url = window.location.href.split('/music')[0];
-  if (song && song._id) return `${url}/music/songs?oneplayer=true&output=embed&id=${song._id}`;
-  return `${url}/music/songs`;
-}
+// function playUrl(song: Isong): string {
+//   const url = window.location.href.split('/music')[0];
+//   if (song && song._id) return `${url}/music/songs?oneplayer=true&output=embed&id=${song._id}`;
+//   return `${url}/music/songs`;
+// }
 
-interface IcopyInputProps {
-  player: any, song: any
-}
-function CopyInput(props: IcopyInputProps): JSX.Element {
-  const { player, song } = props;
-  return (
-    <div id="copyInput" style={{ marginTop: '-20px', marginBottom: '40px' }}>
-      {player.displayCopyMessage && <div className="copySuccess"> Url copied Url to clipboard </div>}
-      {song
-        ? (
-          <input
-            id="copyUrl"
-            disabled
-            value={playUrl(song)}
-            style={{ backgroundColor: '#fff' }}
-            className="form-control"
-          />
-        )
-        : null}
-      <div
-        id="copyButton"
-        role="presentation"
-        onClick={
-          () => {
-            console.log('copyButton');
-            // musicPlayerUtils.copyShare();
-          }
-        }
-      >
-        <span className="copy-url">
-          Copy URL
-        </span>
-      </div>
-    </div>
-  );
-}
+// interface IcopyInputProps {
+//   player: any, song: any
+// }
+// function CopyInput(props: IcopyInputProps): JSX.Element {
+//   const { player, song } = props;
+//   return (
+//     <div id="copyInput" style={{ marginTop: '-20px', marginBottom: '40px' }}>
+//       {player.displayCopyMessage && <div className="copySuccess"> Url copied Url to clipboard </div>}
+//       {song
+//         ? (
+//           <input
+//             id="copyUrl"
+//             disabled
+//             value={playUrl(song)}
+//             style={{ backgroundColor: '#fff' }}
+//             className="form-control"
+//           />
+//         )
+//         : null}
+//       <div
+//         id="copyButton"
+//         role="presentation"
+//         onClick={
+//           () => {
+//             console.log('copyButton');
+//             // musicPlayerUtils.copyShare();
+//           }
+//         }
+//       >
+//         <span className="copy-url">
+//           Copy URL
+//         </span>
+//       </div>
+//     </div>
+//   );
+// }
 
 const PageH4 = ({ pageTitle }: { pageTitle: string }): JSX.Element => (
   <h4
@@ -236,14 +239,15 @@ const PageH4 = ({ pageTitle }: { pageTitle: string }): JSX.Element => (
   </h4>
 );
 
-function play(player: Iplayer, setPlayer: (arg0: { player: Iplayer; }) => void): void {
-  const isPlaying = !player.playing;
-  setPlayer({ player: { ...player, playing: isPlaying } });
+function play(playing: boolean, setPlaying: (arg0: boolean) => void): void {
+  // const isPlaying = !player.playing;
+  setPlaying(!playing);
 }
 
 function MyButtons(props:any): JSX.Element {
-  const { player, setPlayer } = props;
-  // const url = this.playUrl();
+  const { playing, setPlaying } = props;
+  // console.log(player);
+  // const { playing } = player;
   return (
     <div style={{ paddingTop: 0 }}>
       <div id="play-buttons">
@@ -251,8 +255,8 @@ function MyButtons(props:any): JSX.Element {
           type="button"
           id="play-pause"
           role="menu"
-          className={player.playing ? 'on' : 'off'}
-          onClick={() => play(player, setPlayer)}
+          className={playing ? 'on' : 'off'}
+          onClick={() => play(playing, setPlaying)}
         >
           Play/Pause
         </button>
@@ -266,30 +270,30 @@ function MyButtons(props:any): JSX.Element {
   );
 }
 
-function configClassOverlay(song: any, player: any): string {
-  let classOverlay = 'mainPlayer';
-  if (player.playing === false) {
-    if (song !== null && song !== undefined && song.url[8] === 's') classOverlay = 'soundcloudOverlay';
-    if (song !== null && song !== undefined && song.url[12] === 'y') classOverlay = 'youtubeOverlay';
-  }
-  return classOverlay;
-}
+// function configClassOverlay(song: any, player: any): string {
+//   let classOverlay = 'mainPlayer';
+//   if (player.playing === false) {
+//     if (song !== null && song !== undefined && song.url[8] === 's') classOverlay = 'soundcloudOverlay';
+//     if (song !== null && song !== undefined && song.url[12] === 'y') classOverlay = 'youtubeOverlay';
+//   }
+//   return classOverlay;
+// }
 
 function setupPage(
   songs: any[],
   filterBy: string | undefined,
-  player: Iplayer,
+  // player: Iplayer,
   setSong: (arg0: any) => void,
   setSongsState: (arg0: any) => void,
-  setClassOverlay: (arg0: string) => void,
+  // setClassOverlay: (arg0: string) => void,
 ) {
   // const params = new URLSearchParams(window.location.search);
   // commonUtils.setTitleAndScroll('songs', window.screen.width);
   const newSongs = songs.filter((song: { category?: string }) => song.category === filterBy);
   setSong(newSongs[0]);
   setSongsState(newSongs);
-  const co = configClassOverlay(newSongs[0], player);
-  setClassOverlay(co);
+  // const co = configClassOverlay(newSongs[0], player);
+  // setClassOverlay(co);
   // this.setState({ song: newSongs[0], songsState: newSongs });
   // await musicPlayerUtils.checkOnePlayer(params, player, this);
   // return this.musicPlayerUtils.runIfOnePlayer(this);
@@ -334,18 +338,19 @@ interface ImusicPlayerProps {
   filterBy: string;
 }
 export function MusicPlayer(this: any, { songs, filterBy }: ImusicPlayerProps) {
-  const [classOverlay, setClassOverlay] = useState('');
+  // const [classOverlay, setClassOverlay] = useState('');
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [index, setIndex] = useState(0);
   const [songsState, setSongsState] = useState(songs);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [pageTitle, setPageTitle] = useState('Original Songs');
   const [song, setSong] = useState(songs[0]);
-  const [player, setPlayer] = useState({
-    playing: false, shown: false, isShuffleOn: false, displayCopier: 'none', displayCopyMessage: false, onePlayerMode: false,
-  });
+  const [playing, setPlaying] = useState(false);
+  // const [player, setPlayer] = useState({
+  //   shown: false, isShuffleOn: false, displayCopier: 'none', displayCopyMessage: false, onePlayerMode: false,
+  // });
   useEffect(() => {
-    setupPage(songs, filterBy, player, setSong, setSongsState, setClassOverlay);
+    setupPage(songs, filterBy, setSong, setSongsState);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);// initial setup only
   return (
@@ -353,16 +358,15 @@ export function MusicPlayer(this: any, { songs, filterBy }: ImusicPlayerProps) {
       <PageH4 pageTitle={pageTitle} />
       <div id="player" className="mb-2 row justify-content-md-center">
         <section id="playSection" className="col-12 mt-2 mr-0 col-md-7">
-          <div className={classOverlay} />
           {song !== null && song !== undefined && song.url !== undefined
-            ? <MyReactPlayer song={song} player={player} index={index} songsState={songsState} />
+            ? <MyReactPlayer song={song} playing={playing} index={index} songsState={songsState} />
             : null}
         </section>
-        <MyButtons player={player} setPlayer={setPlayer} />
+        <MyButtons playing={playing} setPlaying={setPlaying} />
         {song ? <TextUnderPlayer song={song} /> : null}
-        <section className="mt-1 col-12" id="copier" style={{ display: player.displayCopier, marginTop: '0' }}>
+        {/* <section className="mt-1 col-12" id="copier" style={{ display: player.displayCopier, marginTop: '0' }}>
           <CopyInput player={player} song={song} />
-        </section>
+        </section> */}
       </div>
     </div>
   );

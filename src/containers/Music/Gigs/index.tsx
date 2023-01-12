@@ -88,7 +88,6 @@ export const GigsDiv = (props: IgigsDivProps) => {
     isAdmin, setShowDialog, setEditGig, editGig, gigsInOrder, pageSize, showDialog, editChanged, setEditChanged, getGigs, auth,
   } = props;
   if (!gigsInOrder) return null;
-  console.log(gigsInOrder);
   return (
     <div
       className="gigsDiv"
