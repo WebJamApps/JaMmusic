@@ -1,5 +1,4 @@
-import { createContext, ReactChild } from 'react';
-import createPersistedState from 'use-persisted-state';
+import { createContext, useState } from 'react';
 import fetchGigs, { defaultGig } from './fetchGigs';
 import fetchPics from './fetchPics';
 import fetchSongs, { defaultSong } from './fetchSongs';
@@ -47,14 +46,14 @@ export interface Ipic {
   'updated_at'?: string;
 }
 
-const useSongsState: (arg0: Isong[]) =>
-[Isong[], (arg0: Isong[]) => void] = createPersistedState('songs', sessionStorage);
+// const useSongsState: (arg0: Isong[]) =>
+// [Isong[], (arg0: Isong[]) => void] = createPersistedState('songs', sessionStorage);
 
-const useGigsState: (arg0: Igig[] | null) =>
-[Igig[] | null, (arg0: Igig[] | null) => void] = createPersistedState('gigs', sessionStorage);
+// const useGigsState: (arg0: Igig[] | null) =>
+// [Igig[] | null, (arg0: Igig[] | null) => void] = createPersistedState('gigs', sessionStorage);
 
-const usePicsState: (arg0: Ipic[] | null) =>
-[Ipic[] | null, (arg0: Ipic[] | null) => void] = createPersistedState('pics', sessionStorage);
+// const usePicsState: (arg0: Ipic[] | null) =>
+// [Ipic[] | null, (arg0: Ipic[] | null) => void] = createPersistedState('pics', sessionStorage);
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const setGigsDef = (_arg0: Igig[] | null) => { };
@@ -70,7 +69,7 @@ export const getPicsDef = () => true;
 export const setPicsDef = (_arg0: Ipic[] | null) => { };
 
 export const DataContext = createContext({
-  gigs: [defaultGig],
+  gigs: null as Igig[] | null,
   setGigs: setGigsDef,
   getGigs: getGigsDef,
   pics: null as Ipic[] | null,
@@ -84,10 +83,10 @@ export const makeGetGigs = (setGigs: (arg0: Igig[] | null) => void) => () => fet
 
 export const makeGetPics = (setPics: (arg0: Ipic[] | null) => void) => () => fetchPics.getPics(setPics);
 
-export function DataProvider({ children }: { children: ReactChild }): JSX.Element {
-  const [gigs, setGigs] = useGigsState([defaultGig] as Igig[] | null);
-  const [songs, setSongs] = useSongsState([defaultSong]);
-  const [pics, setPics] = usePicsState(null);
+export function DataProvider({ children }:any): JSX.Element {
+  const [gigs, setGigs] = useState([defaultGig] as Igig[] | null);
+  const [songs, setSongs] = useState([defaultSong]);
+  const [pics, setPics] = useState(null as Ipic[] | null);
   const getPics = makeGetPics(setPics);
   const getGigs = makeGetGigs(setGigs);
   const Provider = MakeProvider(

@@ -32,12 +32,13 @@ if (process.env.BackendUrl === 'http://localhost:7000') {
 }
 module.exports = (env) => ({
   resolve: {
-    alias: { src: srcDir, 'react-dom': '@hot-loader/react-dom' },
+    alias: { src: srcDir },
     extensions: ['.js', '.jsx', '.ts', '.tsx'],
-    fallback: { // needed for jsonwebtoken
+    fallback: { // needed for jwt-simple
       crypto: require.resolve('crypto-browserify'),
       stream: require.resolve('stream-browserify'),
       util: require.resolve('util/'),
+      "buffer": require.resolve("buffer")
     },
   },
   optimization: {
@@ -175,6 +176,7 @@ module.exports = (env) => ({
       'window.jQuery': 'jquery',
       Popper: ['popper.js', 'default'],
       process: 'process/browser',
+      Buffer: ['buffer', 'Buffer'],
     }),
     new HtmlWebpackPlugin({
       template: `${srcDir}/index.ejs`,

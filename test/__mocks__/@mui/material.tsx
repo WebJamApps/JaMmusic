@@ -83,3 +83,7 @@ export function InputLabel(props:any) {
   const { children } = props;
   return <p {...props}>{children}</p>;
 }
+
+export function CircularProgress(props:any) {
+  return <div {...props} />;
+}

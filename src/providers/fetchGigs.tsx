@@ -11,6 +11,7 @@ export const defaultGig: Igig = {
   datetime: null,
   city: '',
   usState: 'Virginia',
+  id: 0,
 };
 
 const getGigs = (

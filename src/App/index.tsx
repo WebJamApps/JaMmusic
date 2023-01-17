@@ -1,27 +1,25 @@
 import {
-  Component, Dispatch, ReactElement, StrictMode,
+  Component, Dispatch, ReactElement,
 } from 'react';
 import { ReactNotifications } from 'react-notifications-component';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { connect } from 'react-redux';
 import mapStoreToProps from 'src/redux/mapStoreToProps';
 import DefaultSort from '../containers/SortContainer';
 import BuyMusic from '../containers/BuyMusic';
-import AppFourOhFour from './404';
 import GoogleMap from '../containers/GoogleMap';
 import { Music } from '../containers/Music';
-import ATemplate from './AppTemplate';
-import DefaultSongs from '../containers/Songs';
+import { AppTemplate } from './AppTemplate';
+import { Songs } from '../containers/Songs';
 import HomePage from '../containers/Homepage';
 import connectToSC from './connectToSC';
-import { PrivateRoute } from './PrivateRoute';
 
 export interface AppProps {
   dispatch?: Dispatch<unknown>;
   showMap: boolean;
-  heartBeat?:string;
+  heartBeat?: string;
   children?: ReactElement<any, any>;
-  userCount?:number;
+  userCount?: number;
 }
 export class App extends Component<AppProps> {
   connectToSC: typeof connectToSC;
@@ -38,28 +36,26 @@ export class App extends Component<AppProps> {
 
   render(): JSX.Element {
     return (
-      <StrictMode>
-        <div id="App" className="App">
-          <ReactNotifications />
-          <Router>
-            <ATemplate {...this.props}>
-              <Switch>
-                {process.env.APP_NAME === 'web-jam.com'
-                  ? <Route exact path="/" component={HomePage} />
-                  : <Route exact path="/music" component={Music} />}
-                {process.env.BackendUrl === 'http://localhost:7000'
-                  ? <PrivateRoute Container={GoogleMap} path="/map" /> : null}
-                <PrivateRoute path="/sort" Container={DefaultSort} />
-                <Route exact path="/music" component={Music} />
-                <Route exact path="/music/buymusic" component={BuyMusic} />
-                <Route exact path="/music/originals" component={DefaultSongs} />
-                <Route exact path="/music/songs" component={DefaultSongs} />
-                <Route component={AppFourOhFour} />
-              </Switch>
-            </ATemplate>
-          </Router>
-        </div>
-      </StrictMode>
+      <div id="App" className="App">
+        <ReactNotifications />
+        <BrowserRouter>
+          <AppTemplate {...this.props}>
+            <Routes>
+              <Route
+                path="/"
+                element={process.env.APP_NAME === 'web-jam.com'
+                  ? <HomePage /> : <Music />}
+              />
+              <Route path="/sort" element={<DefaultSort />} />
+              {process.env.BackendUrl === 'http://localhost:7000'
+                ? <Route path="/map" element={<GoogleMap />} /> : null}
+              <Route path="/music" element={<Music />} />
+              <Route path="/music/buymusic" element={<BuyMusic />} />
+              <Route path="/music/songs" element={<Songs />} />
+            </Routes>
+          </AppTemplate>
+        </BrowserRouter>
+      </div>
     );
   }
 }

@@ -1,5 +1,4 @@
-import { createContext, ReactChild } from 'react';
-import createPersistedState from 'use-persisted-state';
+import { createContext, useState } from 'react';
 
 export interface Iauth {
   isAuthenticated: boolean,
@@ -11,8 +10,8 @@ export interface Iauth {
   };
 }
 
-const useAuthState: (arg0: Iauth) =>
-[Iauth, (arg0: Iauth) => void] = createPersistedState('auth', localStorage);
+// const useAuthState: (arg0: Iauth) =>
+// [Iauth, (arg0: Iauth) => void] = createPersistedState('auth', localStorage);
 
 export const defaultAuth: Iauth = {
   isAuthenticated: false,
@@ -28,10 +27,9 @@ export const AuthContext = createContext({
   setAuth: defaultSetAuth,
 });
 
-type Props = { children: ReactChild };
-export function AuthProvider({ children }: Props): JSX.Element {
+export function AuthProvider({ children }: any): JSX.Element {
   const { Provider } = AuthContext;
-  const [auth, setAuth] = useAuthState(defaultAuth);
+  const [auth, setAuth] = useState(defaultAuth);
   return (<Provider value={{ auth, setAuth }}>{children}</Provider>
   );
 }

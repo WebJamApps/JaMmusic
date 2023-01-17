@@ -2,11 +2,11 @@ import { NavLinks } from './NavLinks';
 
 interface IdrawerContainerProps {
   handleKeyPress: (arg0:any)=>void, className:any, userCount?:number,
-  heartBeat?:string, location:any, handleClose:()=>void
+  heartBeat?:string, handleClose:()=>void
 }
 export function DrawerContainer(props:IdrawerContainerProps) {
   const {
-    userCount, heartBeat, location, className, handleClose, handleKeyPress,
+    userCount, heartBeat, className, handleClose, handleKeyPress,
   } = props;
   return (
     <div tabIndex={0} role="button" id="sidebar" onClick={handleClose} onKeyPress={handleKeyPress} className={className}>
@@ -23,7 +23,6 @@ export function DrawerContainer(props:IdrawerContainerProps) {
           handleClose={handleClose}
           userCount={userCount}
           heartBeat={heartBeat}
-          location={location}
         />
       </div>
     </div>
