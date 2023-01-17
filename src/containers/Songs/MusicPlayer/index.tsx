@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 import ReactPlayer from 'react-player';
+import { Button, CircularProgress } from '@mui/material';
 // import { FacebookShareButton, FacebookIcon } from 'react-share';
 import type { Isong } from 'src/providers/Data.provider';
 // import commonUtils from 'src/lib/commonUtils';
 // import musicPlayerUtils from './musicPlayerUtils';
 import musicUtils from './musicUtils';
 import './musicPlayer.scss';
-import { Button, CircularProgress } from '@mui/material';
 
 export interface Iplayer {
   // playing: boolean;
