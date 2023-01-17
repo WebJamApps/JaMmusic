@@ -170,14 +170,7 @@ const shuffleThem = (songs: Isong[]): Isong[] => {
 //   // resetState(view, player, pageTitle, songsState, typeInState, shuffled, 'off');
 //   return true;
 // }
-// function prev(view:MusicPlayer): void {
-//   const { index, songsState } = view.state;
-//   const minusIndex = index - 1;
-//   if (minusIndex < 0 || minusIndex > songsState.length) {
-//     const newIndex = songsState.length - 1;
-//     view.setState({ index: newIndex, song: songsState[newIndex] });// eslint-disable-line security/detect-object-injection
-//   } else view.setState({ song: songsState[minusIndex], index: minusIndex });// eslint-disable-line security/detect-object-injection
-// }
+
 // function configClassOverlay(song: any, player: any): string {
 //   let classOverlay = 'mainPlayer';
 //   if (player.playing === false) {

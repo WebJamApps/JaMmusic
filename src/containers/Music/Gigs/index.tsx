@@ -85,9 +85,8 @@ interface IgigsDivProps {
 }
 export const GigsDiv = (props: IgigsDivProps) => {
   const {
-    isAdmin, setShowDialog, setEditGig, editGig, gigsInOrder, pageSize, showDialog, editChanged, setEditChanged, getGigs, auth,
+    isAdmin, setShowDialog, setEditGig, editGig, gigsInOrder = [], pageSize, showDialog, editChanged, setEditChanged, getGigs, auth,
   } = props;
-  if (!gigsInOrder) return null;
   return (
     <div
       className="gigsDiv"
