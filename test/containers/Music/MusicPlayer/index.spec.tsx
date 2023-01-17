@@ -9,7 +9,14 @@ describe('Music player component init', () => {
     expect(TSongs).toBeDefined();
   });
   it('renders', () => {
-    const mp:any = renderer.create(<MusicPlayer songs={[]} filterBy="originals" />).toJSON();
+    const song = {
+      category: 'original',
+      year: 2020,
+      title: 'title',
+      url: 'url',
+      _id: 'songid',
+    };
+    const mp:any = renderer.create(<MusicPlayer songs={[song]} filterBy="originals" />).toJSON();
     expect(mp.props.className).toBe('container-fluid');
   });
 });
