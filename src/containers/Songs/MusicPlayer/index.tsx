@@ -6,6 +6,7 @@ import type { Isong } from 'src/providers/Data.provider';
 // import musicPlayerUtils from './musicPlayerUtils';
 import musicUtils from './musicUtils';
 import './musicPlayer.scss';
+import { Button, CircularProgress } from '@mui/material';
 
 export interface Iplayer {
   // playing: boolean;
@@ -66,44 +67,6 @@ export interface Iplayer {
 //     this.musicUtils = musicUtils;
 //     this.commonUtils = commonUtils;
 //   }
-
-function next(index: number, songsState: any): void {
-  // let { index } = this.state;
-  const nextIndex = index + 1;
-  // const { songsState } = this.state;
-  if (nextIndex >= songsState.length) {
-    // this.setState({ index: 0, song: songsState[0] });
-  } else {
-    // this.setState({ song: songsState[index], index });
-  }// eslint-disable-line security/detect-object-injection
-}
-
-interface ImyReactPlayerProps {
-  song: Isong, playing: boolean, index: number, songsState: Isong[]
-}
-function MyReactPlayer(props: ImyReactPlayerProps): JSX.Element {
-  const {
-    song, playing, index, songsState,
-  } = props;
-  console.log(playing);
-  console.log(song);
-  // const { player } = this.state;
-  return (
-    <ReactPlayer
-      muted={!playing}
-      style={musicUtils.setPlayerStyle(song)}
-      url={song.url}
-      playing={playing}
-      controls
-      onEnded={() => next(index, songsState)}
-      width="100%"
-      height="40vh"
-      id="mainPlayer"
-      className="audio"
-      config={{ youtube: { playerVars: { controls: 0 } }, file: { attributes: { controlsList: 'nodownload' } } }}
-    />
-  );
-}
 
 // function LineTwoButtons(props: any): JSX.Element {
 //   const {
@@ -244,24 +207,80 @@ function play(playing: boolean, setPlaying: (arg0: boolean) => void): void {
   setPlaying(!playing);
 }
 
-function MyButtons(props:any): JSX.Element {
-  const { playing, setPlaying } = props;
-  // console.log(player);
-  // const { playing } = player;
+function next(index: number, songsState: Isong[], setIndex: (arg0: number) => void): void {
+  const nextIndex = index + 1;
+  if (nextIndex >= songsState.length) {
+    setIndex(0);
+  } else {
+    setIndex(nextIndex);
+  }
+}
+
+function prev(index: number, songsState: Isong[], setIndex: (arg0: number) => void): void {
+  const minusIndex = index - 1;
+  if (minusIndex < 0 || minusIndex > songsState.length) {
+    const newIndex = songsState.length - 1;
+    setIndex(newIndex);
+  } else setIndex(minusIndex);
+}
+
+interface ImyReactPlayerProps {
+  playing: boolean,
+  index: number, songsState: Isong[], setIndex: (arg0: number) => void
+}
+function MyReactPlayer(props: ImyReactPlayerProps): JSX.Element {
+  const {
+    playing, index, songsState, setIndex,
+  } = props;
+  // eslint-disable-next-line security/detect-object-injection
+  const song = songsState[index];
+  console.log(song);
   return (
-    <div style={{ paddingTop: 0 }}>
+    <ReactPlayer
+      muted={!playing}
+      style={musicUtils.setPlayerStyle(song)}
+      url={song.url}
+      playing={playing}
+      controls
+      onEnded={() => next(index, songsState, setIndex)}
+      width="100%"
+      height="40vh"
+      id="mainPlayer"
+      className="audio"
+      config={{ youtube: { playerVars: { controls: 0 } }, file: { attributes: { controlsList: 'nodownload' } } }}
+    />
+  );
+}
+
+interface ImyButtonsProps {
+  playing: boolean, setPlaying: (arg0: boolean) => void, index: number,
+  songsState: Isong[], setIndex: (arg0: number) => void
+}
+function MyButtons(props: ImyButtonsProps): JSX.Element {
+  const {
+    playing, setPlaying, index, songsState, setIndex,
+  } = props;
+  return (
+    <div style={{ paddingTop: 0, margin: 'auto' }}>
       <div id="play-buttons">
-        <button
-          type="button"
+        <Button
+          variant="contained"
           id="play-pause"
-          role="menu"
           className={playing ? 'on' : 'off'}
           onClick={() => play(playing, setPlaying)}
         >
           Play/Pause
-        </button>
-        {/* <button type="button" role="menu" id="next" onClick={this.next}>Next</button> */}
-        {/* <button type="button" role="menu" id="prev" onClick={this.prev}>Prev</button> */}
+        </Button>
+        <Button
+          variant="outlined"
+          id="next"
+          onClick={() => next(index, songsState, setIndex)}
+        >
+          Next
+        </Button>
+        <Button variant="outlined" id="prev" onClick={() => prev(index, songsState, setIndex)}>
+          Prev
+        </Button>
         {/* <button type="button" id="shuffle" role="menu" className={isShuffleOn ? 'on' : 'off'} onClick={this.shuffle}>Shuffle</button> */}
       </div>
       {/* {this.lineTwoButtons()}
@@ -270,40 +289,15 @@ function MyButtons(props:any): JSX.Element {
   );
 }
 
-// function configClassOverlay(song: any, player: any): string {
-//   let classOverlay = 'mainPlayer';
-//   if (player.playing === false) {
-//     if (song !== null && song !== undefined && song.url[8] === 's') classOverlay = 'soundcloudOverlay';
-//     if (song !== null && song !== undefined && song.url[12] === 'y') classOverlay = 'youtubeOverlay';
-//   }
-//   return classOverlay;
-// }
-
-function setupPage(
-  songs: any[],
-  filterBy: string | undefined,
-  // player: Iplayer,
-  setSong: (arg0: any) => void,
-  setSongsState: (arg0: any) => void,
-  // setClassOverlay: (arg0: string) => void,
-) {
-  // const params = new URLSearchParams(window.location.search);
-  // commonUtils.setTitleAndScroll('songs', window.screen.width);
-  const newSongs = songs.filter((song: { category?: string }) => song.category === filterBy);
-  setSong(newSongs[0]);
-  setSongsState(newSongs);
-  // const co = configClassOverlay(newSongs[0], player);
-  // setClassOverlay(co);
-  // this.setState({ song: newSongs[0], songsState: newSongs });
-  // await musicPlayerUtils.checkOnePlayer(params, player, this);
-  // return this.musicPlayerUtils.runIfOnePlayer(this);
-}
-
 function CopyRight(): JSX.Element { // eslint-disable-line class-methods-use-this
   return (<span>All Original Songs &copy;2019 &ndash; 2020 Web Jam LLC</span>);
 }
 
-function TextUnderPlayer({ song }:{ song: Isong }): JSX.Element {
+function TextUnderPlayer(
+  { songsState, index }: { songsState: Isong[], index:number },
+): JSX.Element {
+  // eslint-disable-next-line security/detect-object-injection
+  const song = songsState[index];
   return (
     <section
       className="mt-1 textUnderPlayer"
@@ -333,37 +327,55 @@ function TextUnderPlayer({ song }:{ song: Isong }): JSX.Element {
   );
 }
 
+function initSongs(
+  songs: Isong[],
+  filterBy: string | undefined,
+  setSongsState: (arg0: any) => void,
+) {
+  const newSongs = songs.filter((song: { category?: string }) => song.category === filterBy);
+  setSongsState(newSongs);
+}
+
 interface ImusicPlayerProps {
   songs: Isong[];
   filterBy: string;
 }
-export function MusicPlayer(this: any, { songs, filterBy }: ImusicPlayerProps) {
+export function MusicPlayer({ songs, filterBy }: ImusicPlayerProps) {
   // const [classOverlay, setClassOverlay] = useState('');
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [index, setIndex] = useState(0);
   const [songsState, setSongsState] = useState(songs);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [pageTitle, setPageTitle] = useState('Original Songs');
-  const [song, setSong] = useState(songs[0]);
   const [playing, setPlaying] = useState(false);
   // const [player, setPlayer] = useState({
   //   shown: false, isShuffleOn: false, displayCopier: 'none', displayCopyMessage: false, onePlayerMode: false,
   // });
   useEffect(() => {
-    setupPage(songs, filterBy, setSong, setSongsState);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    initSongs(songs, filterBy, setSongsState);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);// initial setup only
+  if (!Array.isArray(songsState) || songsState.length === 0) return <CircularProgress />;
   return (
     <div className="container-fluid">
       <PageH4 pageTitle={pageTitle} />
       <div id="player" className="mb-2 row justify-content-md-center">
         <section id="playSection" className="col-12 mt-2 mr-0 col-md-7">
-          {song !== null && song !== undefined && song.url !== undefined
-            ? <MyReactPlayer song={song} playing={playing} index={index} songsState={songsState} />
-            : null}
+          <MyReactPlayer
+            setIndex={setIndex}
+            playing={playing}
+            index={index}
+            songsState={songsState}
+          />
         </section>
-        <MyButtons playing={playing} setPlaying={setPlaying} />
-        {song ? <TextUnderPlayer song={song} /> : null}
+        <MyButtons
+          setIndex={setIndex}
+          playing={playing}
+          setPlaying={setPlaying}
+          index={index}
+          songsState={songsState}
+        />
+        <TextUnderPlayer songsState={songsState} index={index} />
         {/* <section className="mt-1 col-12" id="copier" style={{ display: player.displayCopier, marginTop: '0' }}>
           <CopyInput player={player} song={song} />
         </section> */}

@@ -178,6 +178,14 @@ const shuffleThem = (songs: Isong[]): Isong[] => {
 //     view.setState({ index: newIndex, song: songsState[newIndex] });// eslint-disable-line security/detect-object-injection
 //   } else view.setState({ song: songsState[minusIndex], index: minusIndex });// eslint-disable-line security/detect-object-injection
 // }
+// function configClassOverlay(song: any, player: any): string {
+//   let classOverlay = 'mainPlayer';
+//   if (player.playing === false) {
+//     if (song !== null && song !== undefined && song.url[8] === 's') classOverlay = 'soundcloudOverlay';
+//     if (song !== null && song !== undefined && song.url[12] === 'y') classOverlay = 'youtubeOverlay';
+//   }
+//   return classOverlay;
+// }
 export default {
   // prev,
   shuffleThem,

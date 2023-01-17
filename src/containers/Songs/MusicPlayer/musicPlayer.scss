@@ -13,6 +13,7 @@
 }
 
 
-#play-pause.on { background-color: green !important; }
-#play-pause.off { background-color: #eee; } 
+#play-pause.on { background-color: green; color: black; }
+#play-pause.off { background-color: #eee; color: black;} 
 
+#play-buttons { margin-bottom:10px;}
