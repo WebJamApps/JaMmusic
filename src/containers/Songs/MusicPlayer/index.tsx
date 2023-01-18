@@ -232,11 +232,14 @@ function MyReactPlayer(props: ImyReactPlayerProps): JSX.Element {
   const {
     playing, index, songsState, setIndex,
   } = props;
-  // eslint-disable-next-line security/detect-object-injection
   const song = songsState[index];
   console.log(song);
   return (
     <ReactPlayer
+      onError={() => {
+        console.log('Something went wroung...');
+      }}
+      onReady={(player) => console.log(player)}
       muted={!playing}
       style={musicUtils.setPlayerStyle(song)}
       url={song.url}
@@ -264,6 +267,7 @@ function MyButtons(props: ImyButtonsProps): JSX.Element {
     <div style={{ paddingTop: 0, margin: 'auto' }}>
       <div id="play-buttons">
         <Button
+          size="small"
           variant="contained"
           id="play-pause"
           className={playing ? 'on' : 'off'}
@@ -272,13 +276,19 @@ function MyButtons(props: ImyButtonsProps): JSX.Element {
           Play/Pause
         </Button>
         <Button
+          size="small"
           variant="outlined"
           id="next"
           onClick={() => next(index, songsState, setIndex)}
         >
           Next
         </Button>
-        <Button variant="outlined" id="prev" onClick={() => prev(index, songsState, setIndex)}>
+        <Button
+          size="small"
+          variant="outlined"
+          id="prev"
+          onClick={() => prev(index, songsState, setIndex)}
+        >
           Prev
         </Button>
         {/* <button type="button" id="shuffle" role="menu" className={isShuffleOn ? 'on' : 'off'} onClick={this.shuffle}>Shuffle</button> */}
@@ -344,7 +354,7 @@ export function MusicPlayer({ songs, filterBy }: ImusicPlayerProps) {
   // const [classOverlay, setClassOverlay] = useState('');
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [index, setIndex] = useState(0);
-  const [songsState, setSongsState] = useState(songs);
+  const [songsState, setSongsState] = useState([]);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [pageTitle, setPageTitle] = useState('Original Songs');
   const [playing, setPlaying] = useState(false);
@@ -355,7 +365,7 @@ export function MusicPlayer({ songs, filterBy }: ImusicPlayerProps) {
     initSongs(songs, filterBy, setSongsState);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);// initial setup only
-  if (!Array.isArray(songsState) || songsState.length === 0) return <CircularProgress />;
+  if (songsState.length === 0) return <CircularProgress />;
   return (
     <div className="container-fluid">
       <PageH4 pageTitle={pageTitle} />

@@ -9,7 +9,6 @@ export const MakeProvider = (props: ImakeProviderProps) => {
   useEffect(() => {
     fetches[0](setters[0]);
     fetches[1](setters[1]);
-    fetches[2](setters[2]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);// empty array here to stop it from repeatedly fetching
 
