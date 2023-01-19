@@ -1,5 +1,5 @@
 import musicUtils from 'src/containers/Songs/MusicPlayer/musicUtils';
-import TSongs from '../../../testSongs';
+import TSongs from '../../../../testSongs';
 
 describe('musicUtils', () => {
   // it('makes text under player when empty song object', () => {

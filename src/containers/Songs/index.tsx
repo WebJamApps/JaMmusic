@@ -20,7 +20,6 @@ export function Songs() {
   useEffect(() => {
     commonUtils.setTitleAndScroll('Songs', window.screen.width);
   }, []);
-  console.log(songs);
   return (
     <div id="pageContent" className="page-content">
       <Player songs={songs} />
