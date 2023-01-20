@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import ReactPlayer from 'react-player';
-import { Button } from '@mui/material';
+import { Button, Input } from '@mui/material';
+import { Share } from '@mui/icons-material';
 // import { FacebookShareButton, FacebookIcon } from 'react-share';
 import type { Isong } from 'src/providers/Data.provider';
 // import commonUtils from 'src/lib/commonUtils';
@@ -130,60 +131,7 @@ export interface Iplayer {
 //   return `${url}/music/songs`;
 // }
 
-// interface IcopyInputProps {
-//   player: any, song: any
-// }
-// function CopyInput(props: IcopyInputProps): JSX.Element {
-//   const { player, song } = props;
-//   return (
-//     <div id="copyInput" style={{ marginTop: '-20px', marginBottom: '40px' }}>
-//       {player.displayCopyMessage && <div className="copySuccess"> Url copied Url to clipboard </div>}
-//       {song
-//         ? (
-//           <input
-//             id="copyUrl"
-//             disabled
-//             value={playUrl(song)}
-//             style={{ backgroundColor: '#fff' }}
-//             className="form-control"
-//           />
-//         )
-//         : null}
-//       <div
-//         id="copyButton"
-//         role="presentation"
-//         onClick={
-//           () => {
-//             console.log('copyButton');
-//             // musicPlayerUtils.copyShare();
-//           }
-//         }
-//       >
-//         <span className="copy-url">
-//           Copy URL
-//         </span>
-//       </div>
-//     </div>
-//   );
-// }
-
-const PageH4 = ({ pageTitle }: { pageTitle: string }): JSX.Element => (
-  <h4
-    style={{
-      textAlign: 'center',
-      margin: '20px',
-      fontWeight: 'bold',
-      marginBottom: '0px',
-      fontSize: '16pt',
-    }}
-    id="headerTitle"
-  >
-    {pageTitle}
-  </h4>
-);
-
 function play(playing: boolean, setPlaying: (arg0: boolean) => void): void {
-  // const isPlaying = !player.playing;
   setPlaying(!playing);
 }
 
@@ -286,7 +234,7 @@ function CopyRight(): JSX.Element { // eslint-disable-line class-methods-use-thi
 }
 
 function TextUnderPlayer(
-  { songsState, index }: { songsState: Isong[], index:number },
+  { songsState, index }: { songsState: Isong[], index: number },
 ): JSX.Element {
   // eslint-disable-next-line security/detect-object-injection
   const song = songsState[index];
@@ -329,19 +277,14 @@ function initSongs(
 }
 
 interface IcategoryButtonsProps {
-  category:string, setCategory:(arg0:string)=>void
+  category: string, setCategory: (arg0: string) => void
 }
-function CategoryButtons(props:IcategoryButtonsProps): JSX.Element {
+function CategoryButtons(props: IcategoryButtonsProps): JSX.Element {
   const {
     category, setCategory,
   } = props;
   return (
-    <div
-      className="categoryButtons"
-      style={{
-        height: '22px', margin: 'auto', minWidth: '50vw', paddingTop: '10px',
-      }}
-    >
+    <div className="categoryButtons">
       <button type="button" onClick={() => setCategory('original')} className={`original${category === 'original' ? 'on' : 'off'}`}>
         Original
       </button>
@@ -356,28 +299,59 @@ function CategoryButtons(props:IcategoryButtonsProps): JSX.Element {
   );
 }
 
+interface IcopyInputProps {
+  index: number, songsState: Isong[]
+}
+function CopyShare(props: IcopyInputProps): JSX.Element {
+  const { index, songsState } = props;
+  const [showCopyUrl, setShowCopyUrl] = useState(false);
+  // eslint-disable-next-line security/detect-object-injection
+  const songUrl = `${window.location.href}?id=${songsState[index]._id}&single&play`;
+  return (
+    <div className="copyShare">
+      {showCopyUrl ? null
+        : (
+          <Button size="small" onClick={() => setShowCopyUrl(true)} variant="contained" endIcon={<Share />}>
+            Share
+          </Button>
+        )}
+      {!showCopyUrl ? null : (
+        <>
+          <u id="copyUrl">{songUrl}</u>
+          <Button
+            size="small"
+            variant="contained"
+            className="copyUrl"
+            onClick={() => {
+              console.log('copyButton');
+              // musicPlayerUtils.copyShare();
+            }}
+          >
+            Copy URL
+          </Button>
+          <Button size="small">Cancel</Button>
+        </>
+      )}
+    </div>
+  );
+}
+
 interface ImusicPlayerProps {
   songs: Isong[];
   filterBy: string;
 }
 export function MusicPlayer({ songs, filterBy }: ImusicPlayerProps) {
-  // const [classOverlay, setClassOverlay] = useState('');
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [index, setIndex] = useState(0);
   const [songsState, setSongsState] = useState(songs);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [category, setCategory] = useState(filterBy);
   const [playing, setPlaying] = useState(false);
-  // const [player, setPlayer] = useState({
-  //   shown: false, isShuffleOn: false, displayCopier: 'none', displayCopyMessage: false, onePlayerMode: false,
-  // });
   useEffect(() => {
     initSongs(songs, category, setSongsState);
   }, [category, songs]);
   return (
     <div className="container-fluid">
-      <PageH4 pageTitle={`${category.charAt(0).toUpperCase() + category.slice(1)} Songs`} />
-      <div id="player" className="mb-2 row justify-content-md-center">
+      <h4 className="categoryTitle">{`${category.charAt(0).toUpperCase() + category.slice(1)} Songs`}</h4>
+      <div id="player">
         <section id="playSection" className="col-12 mt-2 mr-0 col-md-7">
           <MyReactPlayer
             setIndex={setIndex}
@@ -395,9 +369,7 @@ export function MusicPlayer({ songs, filterBy }: ImusicPlayerProps) {
         />
         <TextUnderPlayer songsState={songsState} index={index} />
         <CategoryButtons category={category} setCategory={setCategory} />
-        {/* <section className="mt-1 col-12" id="copier" style={{ display: player.displayCopier, marginTop: '0' }}>
-          <CopyInput player={player} song={song} />
-        </section> */}
+        <CopyShare songsState={songsState} index={index} />
       </div>
     </div>
   );
