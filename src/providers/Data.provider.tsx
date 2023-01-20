@@ -1,4 +1,4 @@
-import { createContext, useState } from 'react';
+import { createContext, useEffect, useState } from 'react';
 import fetchGigs, { defaultGig } from './fetchGigs';
 import fetchPics from './fetchPics';
 import fetchSongs, { defaultSong } from './fetchSongs';
@@ -46,15 +46,6 @@ export interface Ipic {
   'updated_at'?: string;
 }
 
-// const useSongsState: (arg0: Isong[]) =>
-// [Isong[], (arg0: Isong[]) => void] = createPersistedState('songs', sessionStorage);
-
-// const useGigsState: (arg0: Igig[] | null) =>
-// [Igig[] | null, (arg0: Igig[] | null) => void] = createPersistedState('gigs', sessionStorage);
-
-// const usePicsState: (arg0: Ipic[] | null) =>
-// [Ipic[] | null, (arg0: Ipic[] | null) => void] = createPersistedState('pics', sessionStorage);
-
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const setGigsDef = (_arg0: Igig[] | null) => { };
 
@@ -85,12 +76,17 @@ export const makeGetPics = (setPics: (arg0: Ipic[] | null) => void) => () => fet
 
 export function DataProvider({ children }:any): JSX.Element {
   const [gigs, setGigs] = useState([defaultGig] as Igig[] | null);
-  const [songs, setSongs] = useState([defaultSong]);
+  const [songs, setSongs] = useState(null as Isong[] | null);
   const [pics, setPics] = useState(null as Ipic[] | null);
   const getPics = makeGetPics(setPics);
   const getGigs = makeGetGigs(setGigs);
+  useEffect(() => {
+    (async () => {
+      await fetchSongs.getSongs(setSongs);
+    })();
+  }, []);
   const Provider = MakeProvider(
-    { Context: DataContext, fetches: [fetchGigs.getGigs, fetchSongs.getSongs, fetchPics.getPics], setters: [setGigs, setSongs, setPics] },
+    { Context: DataContext, fetches: [fetchGigs.getGigs, fetchPics.getPics], setters: [setGigs, setPics] },
   );
   return (
     <Provider value={{

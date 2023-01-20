@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import ReactPlayer from 'react-player';
-import { Button, CircularProgress } from '@mui/material';
+import { Button } from '@mui/material';
 // import { FacebookShareButton, FacebookIcon } from 'react-share';
 import type { Isong } from 'src/providers/Data.provider';
 // import commonUtils from 'src/lib/commonUtils';
@@ -67,26 +67,6 @@ export interface Iplayer {
 //     this.musicUtils = musicUtils;
 //     this.commonUtils = commonUtils;
 //   }
-
-// function LineTwoButtons(props: any): JSX.Element {
-//   const {
-//     missionState, pubState, originalState, player: { onePlayerMode },
-//   } = props;
-//   return (
-//     <div id="mAndP" style={{ height: '22px', margin: 'auto' }}>
-//       {/* <button type="button" onClick={() => musicPlayerUtils.toggleSongTypes('Original', this)} className={`original${originalState}`}>
-//         Original
-//       </button>
-//       <button type="button" onClick={() => musicPlayerUtils.toggleSongTypes('Mission', this)} className={`mission${missionState}`}>
-//         Mission
-//       </button>
-//       <button type="button" onClick={() => musicPlayerUtils.toggleSongTypes('Pub', this)} className={`pub${pubState}`}>
-//         Pub
-//       </button> */}
-//       {onePlayerMode ? musicPlayerUtils.homeButton(onePlayerMode) : null}
-//     </div>
-//   );
-// }
 
 // function lineThreeButtons(this: any, url: string): JSX.Element {
 //   let { song } = this.state, composer = '', quote = '';
@@ -234,9 +214,14 @@ function MyReactPlayer(props: ImyReactPlayerProps): JSX.Element {
   } = props;
   // eslint-disable-next-line security/detect-object-injection
   const song = songsState[index];
-  console.log(song);
   return (
     <ReactPlayer
+      onError={() => {
+        // eslint-disable-next-line no-console
+        console.log('Something went wroung...');
+      }}
+      // eslint-disable-next-line no-console
+      onReady={(player) => console.log(player)}
       muted={!playing}
       style={musicUtils.setPlayerStyle(song)}
       url={song.url}
@@ -264,6 +249,7 @@ function MyButtons(props: ImyButtonsProps): JSX.Element {
     <div style={{ paddingTop: 0, margin: 'auto' }}>
       <div id="play-buttons">
         <Button
+          size="small"
           variant="contained"
           id="play-pause"
           className={playing ? 'on' : 'off'}
@@ -272,13 +258,19 @@ function MyButtons(props: ImyButtonsProps): JSX.Element {
           Play/Pause
         </Button>
         <Button
+          size="small"
           variant="outlined"
           id="next"
           onClick={() => next(index, songsState, setIndex)}
         >
           Next
         </Button>
-        <Button variant="outlined" id="prev" onClick={() => prev(index, songsState, setIndex)}>
+        <Button
+          size="small"
+          variant="outlined"
+          id="prev"
+          onClick={() => prev(index, songsState, setIndex)}
+        >
           Prev
         </Button>
         {/* <button type="button" id="shuffle" role="menu" className={isShuffleOn ? 'on' : 'off'} onClick={this.shuffle}>Shuffle</button> */}
@@ -329,11 +321,39 @@ function TextUnderPlayer(
 
 function initSongs(
   songs: Isong[],
-  filterBy: string | undefined,
+  category: string,
   setSongsState: (arg0: any) => void,
 ) {
-  const newSongs = songs.filter((song: { category?: string }) => song.category === filterBy);
+  const newSongs = songs.filter((song: { category?: string }) => song.category === category);
   setSongsState(newSongs);
+}
+
+interface IcategoryButtonsProps {
+  category:string, setCategory:(arg0:string)=>void
+}
+function CategoryButtons(props:IcategoryButtonsProps): JSX.Element {
+  const {
+    category, setCategory,
+  } = props;
+  return (
+    <div
+      className="categoryButtons"
+      style={{
+        height: '22px', margin: 'auto', minWidth: '50vw', paddingTop: '10px',
+      }}
+    >
+      <button type="button" onClick={() => setCategory('original')} className={`original${category === 'original' ? 'on' : 'off'}`}>
+        Original
+      </button>
+      <button type="button" onClick={() => setCategory('mission')} className={`mission${category === 'mission' ? 'on' : 'off'}`}>
+        Mission
+      </button>
+      <button type="button" onClick={() => setCategory('pub')} className={`pub${category === 'pub' ? 'on' : 'off'}`}>
+        Pub
+      </button>
+      {/* {onePlayerMode ? musicPlayerUtils.homeButton(onePlayerMode) : null} */}
+    </div>
+  );
 }
 
 interface ImusicPlayerProps {
@@ -346,19 +366,17 @@ export function MusicPlayer({ songs, filterBy }: ImusicPlayerProps) {
   const [index, setIndex] = useState(0);
   const [songsState, setSongsState] = useState(songs);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [pageTitle, setPageTitle] = useState('Original Songs');
+  const [category, setCategory] = useState(filterBy);
   const [playing, setPlaying] = useState(false);
   // const [player, setPlayer] = useState({
   //   shown: false, isShuffleOn: false, displayCopier: 'none', displayCopyMessage: false, onePlayerMode: false,
   // });
   useEffect(() => {
-    initSongs(songs, filterBy, setSongsState);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);// initial setup only
-  if (!Array.isArray(songsState) || songsState.length === 0) return <CircularProgress />;
+    initSongs(songs, category, setSongsState);
+  }, [category, songs]);
   return (
     <div className="container-fluid">
-      <PageH4 pageTitle={pageTitle} />
+      <PageH4 pageTitle={`${category.charAt(0).toUpperCase() + category.slice(1)} Songs`} />
       <div id="player" className="mb-2 row justify-content-md-center">
         <section id="playSection" className="col-12 mt-2 mr-0 col-md-7">
           <MyReactPlayer
@@ -376,6 +394,7 @@ export function MusicPlayer({ songs, filterBy }: ImusicPlayerProps) {
           songsState={songsState}
         />
         <TextUnderPlayer songsState={songsState} index={index} />
+        <CategoryButtons category={category} setCategory={setCategory} />
         {/* <section className="mt-1 col-12" id="copier" style={{ display: player.displayCopier, marginTop: '0' }}>
           <CopyInput player={player} song={song} />
         </section> */}
