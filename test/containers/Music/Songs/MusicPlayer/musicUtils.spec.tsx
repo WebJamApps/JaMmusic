@@ -1,4 +1,4 @@
-import musicUtils from 'src/containers/Songs/MusicPlayer/musicUtils';
+import musicUtils from 'src/containers/Songs/MusicPlayer/utils';
 import TSongs from 'test/testSongs';
 
 describe('musicUtils', () => {

@@ -6,7 +6,7 @@ import { Share } from '@mui/icons-material';
 import type { Isong } from 'src/providers/Data.provider';
 // import commonUtils from 'src/lib/commonUtils';
 // import musicPlayerUtils from './musicPlayerUtils';
-import musicUtils from './musicUtils';
+import utils from './utils';
 import './musicPlayer.scss';
 
 export interface Iplayer {
@@ -171,7 +171,7 @@ function MyReactPlayer(props: ImyReactPlayerProps): JSX.Element {
       // eslint-disable-next-line no-console
       onReady={(player) => console.log(player)}
       muted={!playing}
-      style={musicUtils.setPlayerStyle(song)}
+      style={utils.setPlayerStyle(song)}
       url={song.url}
       playing={playing}
       controls
@@ -317,19 +317,16 @@ function CopyShare(props: IcopyInputProps): JSX.Element {
         )}
       {!showCopyUrl ? null : (
         <>
-          <u id="copyUrl">{songUrl}</u>
+          <input type="text" id="copyUrl" value={songUrl} disabled />
           <Button
             size="small"
             variant="contained"
             className="copyUrl"
-            onClick={() => {
-              console.log('copyButton');
-              // musicPlayerUtils.copyShare();
-            }}
+            onClick={() => utils.copyShare()}
           >
             Copy URL
           </Button>
-          <Button size="small">Cancel</Button>
+          <Button size="small" onClick={() => setShowCopyUrl(false)}>Cancel</Button>
         </>
       )}
     </div>

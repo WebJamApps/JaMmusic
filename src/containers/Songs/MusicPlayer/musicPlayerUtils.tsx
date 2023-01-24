@@ -17,15 +17,7 @@ const showHideButtons = (display: string): boolean => {
 //   else view.setState({ player: { ...player, displayCopier: 'none' } });
 //   showHideButtons('none');
 // };
-// const copyShare = (player): void => {
-//   view.navigator.clipboard.writeText(view.playUrl()).then(() => {
-//     view.setState({ player: { ...player, displayCopyMessage: true } });
-//     setTimeout(() => {
-//       showHideButtons('block');
-//       view.setState({ player: { ...player, displayCopier: 'none', displayCopyMessage: false } });
-//     }, 1500);
-//   });
-// };
+
 // async function checkOnePlayer(
 //   params: URLSearchParams,
 //   player: Iplayer,
@@ -188,7 +180,6 @@ export default {
   makeOnePlayerMode,
   homeButton,
   showHideButtons,
-  // copyShare,
   // share,
   // toggleOn,
 };

@@ -1,4 +1,4 @@
-
+import commonUtils from 'src/lib/commonUtils';
 import type { Isong } from 'src/providers/Data.provider';
 
 const setIndex = (songs: Isong[], category: string): Isong[] => {
@@ -45,8 +45,22 @@ function setPlayerStyle(song: Isong):Record<string, unknown> {
   return playerStyle;
 }
 
+function copyShare() {
+  // Get the text field
+  const copyText = document.getElementById('copyUrl') as HTMLInputElement;
+
+  // Select the text field
+  copyText.select();
+  copyText.setSelectionRange(0, 99999); // For mobile devices
+
+  // Copy the text inside the text field
+  navigator.clipboard.writeText(copyText.value);
+  commonUtils.notify('A shareable song url has been copied to your clipboard', '', 'success');
+}
+
 export default {
   setIndex,
+  copyShare,
   // textUnderPlayer,
   // copyRight,
   setPlayerStyle,
