@@ -299,7 +299,7 @@ function CopyShare(props: IcopyInputProps): JSX.Element {
   const { index, songsState } = props;
   const [showCopyUrl, setShowCopyUrl] = useState(false);
   // eslint-disable-next-line security/detect-object-injection
-  const songUrl = `${window.location.href}?id=${songsState[index]._id}&single=true&play=true`;
+  const songUrl = `${window.location.href}?id=${songsState[index]._id}`;
   return (
     <div className="copyShare">
       {showCopyUrl ? null
@@ -336,11 +336,9 @@ export function MusicPlayer({ songs, filterBy }: ImusicPlayerProps) {
   const [category, setCategory] = useState(filterBy);
   const [playing, setPlaying] = useState(false);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [single, setSingle] = useState(false);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [searchParams, setSearchParams] = useSearchParams();
   useEffect(() => {
-    utils.initSongs(songs, category, setSongsState, searchParams, setPlaying, setIndex, setSingle);
+    utils.initSongs(songs, category, setSongsState, searchParams, setPlaying, setIndex);
   }, [category, searchParams, songs]);
   return (
     <div className="container-fluid">

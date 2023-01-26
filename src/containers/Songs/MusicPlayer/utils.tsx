@@ -65,21 +65,16 @@ function initSongs(
   searchParams: any,
   setPlaying: (arg0: boolean) => void,
   setIndex: (arg0: number) => void,
-  setSingle: (arg0: boolean) => void,
 ) {
   const id = searchParams.get('id');
-  const single = searchParams.get('single');
-  const play = searchParams.get('play');
   const newSongs = typeof id === 'string' ? songs : songs.filter((song: { category?: string }) => song.category === category);
   setSongsState(newSongs);
   if (typeof id === 'string') {
     const songIds = newSongs.map((s) => s._id);
     const songIndex = songIds.indexOf(id);
     setIndex(songIndex);
+    setPlaying(true);
   }
-  console.log(play);
-  if (single === 'true') setSingle(true);
-  if (play === 'true') setPlaying(true);
 }
 
 export default {
