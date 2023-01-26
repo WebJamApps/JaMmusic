@@ -1,17 +1,17 @@
 import commonUtils from 'src/lib/commonUtils';
 import type { Isong } from 'src/providers/Data.provider';
 
-const setIndex = (songs: Isong[], category: string): Isong[] => {
-  let categorySongs: Isong[] = [];
-  const otherSongs: Isong[] = [];
-  for (let i = 0; songs.length > i; i += 1) {
-    // eslint-disable-next-line security/detect-object-injection
-    if (songs[i].category === category) categorySongs.push(songs[i]);
-    else otherSongs.push(songs[i]);// eslint-disable-line security/detect-object-injection
-  }
-  categorySongs = categorySongs.concat(otherSongs);
-  return categorySongs;
-};
+// const sortSongs = (songs: Isong[], category: string): Isong[] => {
+//   let categorySongs: Isong[] = [];
+//   const otherSongs: Isong[] = [];
+//   for (let i = 0; songs.length > i; i += 1) {
+//     // eslint-disable-next-line security/detect-object-injection
+//     if (songs[i].category === category) categorySongs.push(songs[i]);
+//     else otherSongs.push(songs[i]);// eslint-disable-line security/detect-object-injection
+//   }
+//   categorySongs = categorySongs.concat(otherSongs);
+//   return categorySongs;
+// };
 
 function setPlayerStyle(song: Isong):Record<string, unknown> {
   let playerStyle = {
@@ -58,10 +58,34 @@ function copyShare() {
   commonUtils.notify('A shareable song url has been copied to your clipboard', '', 'success');
 }
 
+function initSongs(
+  songs: Isong[],
+  category: string,
+  setSongsState: (arg0: any) => void,
+  searchParams: any,
+  setPlaying: (arg0: boolean) => void,
+  setIndex: (arg0: number) => void,
+  setSingle: (arg0: boolean) => void,
+) {
+  const id = searchParams.get('id');
+  const single = searchParams.get('single');
+  const play = searchParams.get('play');
+  const newSongs = typeof id === 'string' ? songs : songs.filter((song: { category?: string }) => song.category === category);
+  setSongsState(newSongs);
+  if (typeof id === 'string') {
+    const songIds = newSongs.map((s) => s._id);
+    const songIndex = songIds.indexOf(id);
+    setIndex(songIndex);
+  }
+  console.log(play);
+  if (single === 'true') setSingle(true);
+  if (play === 'true') setPlaying(true);
+}
+
 export default {
-  setIndex,
+  // sortSongs,
   copyShare,
-  // textUnderPlayer,
+  initSongs,
   // copyRight,
   setPlayerStyle,
 };

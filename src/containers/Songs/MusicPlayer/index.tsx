@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import ReactPlayer from 'react-player';
 import { Button } from '@mui/material';
 import { Share } from '@mui/icons-material';
+import { useSearchParams } from 'react-router-dom';
 // import { FacebookShareButton, FacebookIcon } from 'react-share';
 import type { Isong } from 'src/providers/Data.provider';
 // import commonUtils from 'src/lib/commonUtils';
@@ -164,9 +165,10 @@ function MyReactPlayer(props: ImyReactPlayerProps): JSX.Element {
   const song = songsState[index];
   return (
     <ReactPlayer
-      onError={() => {
+      onError={(err) => {
         // eslint-disable-next-line no-console
         console.log('Something went wroung...');
+        console.log(err);
       }}
       // eslint-disable-next-line no-console
       onReady={(player) => console.log(player)}
@@ -267,15 +269,6 @@ function TextUnderPlayer(
   );
 }
 
-function initSongs(
-  songs: Isong[],
-  category: string,
-  setSongsState: (arg0: any) => void,
-) {
-  const newSongs = songs.filter((song: { category?: string }) => song.category === category);
-  setSongsState(newSongs);
-}
-
 interface IcategoryButtonsProps {
   category: string, setCategory: (arg0: string) => void
 }
@@ -306,7 +299,7 @@ function CopyShare(props: IcopyInputProps): JSX.Element {
   const { index, songsState } = props;
   const [showCopyUrl, setShowCopyUrl] = useState(false);
   // eslint-disable-next-line security/detect-object-injection
-  const songUrl = `${window.location.href}?id=${songsState[index]._id}&single&play`;
+  const songUrl = `${window.location.href}?id=${songsState[index]._id}&single=true&play=true`;
   return (
     <div className="copyShare">
       {showCopyUrl ? null
@@ -342,9 +335,13 @@ export function MusicPlayer({ songs, filterBy }: ImusicPlayerProps) {
   const [songsState, setSongsState] = useState(songs);
   const [category, setCategory] = useState(filterBy);
   const [playing, setPlaying] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [single, setSingle] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [searchParams, setSearchParams] = useSearchParams();
   useEffect(() => {
-    initSongs(songs, category, setSongsState);
-  }, [category, songs]);
+    utils.initSongs(songs, category, setSongsState, searchParams, setPlaying, setIndex, setSingle);
+  }, [category, searchParams, songs]);
   return (
     <div className="container-fluid">
       <h4 className="categoryTitle">{`${category.charAt(0).toUpperCase() + category.slice(1)} Songs`}</h4>
