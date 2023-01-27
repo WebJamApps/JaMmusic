@@ -189,11 +189,11 @@ function MyReactPlayer(props: ImyReactPlayerProps): JSX.Element {
 
 interface ImyButtonsProps {
   playing: boolean, setPlaying: (arg0: boolean) => void, index: number,
-  songsState: Isong[], setIndex: (arg0: number) => void
+  songsState: Isong[], setIndex: (arg0: number) => void, isSingle:boolean
 }
 function MyButtons(props: ImyButtonsProps): JSX.Element {
   const {
-    playing, setPlaying, index, songsState, setIndex,
+    playing, setPlaying, index, songsState, setIndex, isSingle,
   } = props;
   return (
     <div style={{ paddingTop: 0, margin: 'auto' }}>
@@ -207,22 +207,37 @@ function MyButtons(props: ImyButtonsProps): JSX.Element {
         >
           Play/Pause
         </Button>
-        <Button
-          size="small"
-          variant="outlined"
-          id="next"
-          onClick={() => next(index, songsState, setIndex)}
-        >
-          Next
-        </Button>
-        <Button
-          size="small"
-          variant="outlined"
-          id="prev"
-          onClick={() => prev(index, songsState, setIndex)}
-        >
-          Prev
-        </Button>
+        {!isSingle ? null : (
+          <Button
+            size="small"
+            variant="outlined"
+            id="home"
+            onClick={() => window.open('https://web-jam.com/music/songs', '_blank')}
+          >
+            More Songs
+          </Button>
+        )}
+        {isSingle ? null
+          : (
+            <>
+              <Button
+                size="small"
+                variant="outlined"
+                id="next"
+                onClick={() => next(index, songsState, setIndex)}
+              >
+                Next
+              </Button>
+              <Button
+                size="small"
+                variant="outlined"
+                id="prev"
+                onClick={() => prev(index, songsState, setIndex)}
+              >
+                Prev
+              </Button>
+            </>
+          )}
         {/* <button type="button" id="shuffle" role="menu" className={isShuffleOn ? 'on' : 'off'} onClick={this.shuffle}>Shuffle</button> */}
       </div>
       {/* {this.lineTwoButtons()}
@@ -249,8 +264,13 @@ function TextUnderPlayer(
     >
       <strong>
         {song.title ? song.title : null}
-        {song.composer && song.category !== 'original' ? ` by ${song.composer}` : null}
-        {song.artist ? ` - ${song.artist}` : null}
+        {song.composer && song.category !== 'original' ? ` - ${song.composer}` : null}
+        {song.category === 'original' ? ` - ${song.artist}` : (
+          <>
+            <br />
+            {song.artist}
+          </>
+        )}
       </strong>
       <p style={{
         textAlign: 'center', fontSize: '8pt', marginTop: '4px', marginBottom: 0,
@@ -270,12 +290,13 @@ function TextUnderPlayer(
 }
 
 interface IcategoryButtonsProps {
-  category: string, setCategory: (arg0: string) => void
+  category: string, setCategory: (arg0: string) => void, isSingle:boolean
 }
 function CategoryButtons(props: IcategoryButtonsProps): JSX.Element {
   const {
-    category, setCategory,
+    category, setCategory, isSingle,
   } = props;
+  if (isSingle) return <> </>;
   return (
     <div className="categoryButtons">
       <button type="button" onClick={() => setCategory('original')} className={`original${category === 'original' ? 'on' : 'off'}`}>
@@ -293,13 +314,14 @@ function CategoryButtons(props: IcategoryButtonsProps): JSX.Element {
 }
 
 interface IcopyInputProps {
-  index: number, songsState: Isong[]
+  index: number, songsState: Isong[], isSingle:boolean
 }
 function CopyShare(props: IcopyInputProps): JSX.Element {
-  const { index, songsState } = props;
+  const { index, songsState, isSingle } = props;
   const [showCopyUrl, setShowCopyUrl] = useState(false);
   // eslint-disable-next-line security/detect-object-injection
   const songUrl = `${window.location.href}?id=${songsState[index]._id}`;
+  if (isSingle) return <> </>;
   return (
     <div className="copyShare">
       {showCopyUrl ? null
@@ -335,14 +357,21 @@ export function MusicPlayer({ songs, filterBy }: ImusicPlayerProps) {
   const [songsState, setSongsState] = useState(songs);
   const [category, setCategory] = useState(filterBy);
   const [playing, setPlaying] = useState(false);
+  const [isSingle, setIsSingle] = useState(false);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [searchParams, setSearchParams] = useSearchParams();
   useEffect(() => {
-    utils.initSongs(songs, category, setSongsState, searchParams, setPlaying, setIndex);
+    utils.initSongs(songs, category, setSongsState, searchParams, setPlaying, setIndex, setIsSingle);
   }, [category, searchParams, songs]);
+  useEffect(() => { utils.makeSingleSong(isSingle); }, [isSingle]);
   return (
     <div className="container-fluid">
-      <h4 className="categoryTitle">{`${category.charAt(0).toUpperCase() + category.slice(1)} Songs`}</h4>
+      {isSingle ? null
+        : (
+          <h4 className="categoryTitle">
+            {`${category.charAt(0).toUpperCase() + category.slice(1)} Songs`}
+          </h4>
+        )}
       <div id="player">
         <section id="playSection" className="col-12 mt-2 mr-0 col-md-7">
           <MyReactPlayer
@@ -358,10 +387,11 @@ export function MusicPlayer({ songs, filterBy }: ImusicPlayerProps) {
           setPlaying={setPlaying}
           index={index}
           songsState={songsState}
+          isSingle={isSingle}
         />
         <TextUnderPlayer songsState={songsState} index={index} />
-        <CategoryButtons category={category} setCategory={setCategory} />
-        <CopyShare songsState={songsState} index={index} />
+        <CategoryButtons category={category} setCategory={setCategory} isSingle={isSingle} />
+        <CopyShare songsState={songsState} index={index} isSingle={isSingle} />
       </div>
     </div>
   );

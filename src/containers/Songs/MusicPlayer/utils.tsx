@@ -13,7 +13,7 @@ import type { Isong } from 'src/providers/Data.provider';
 //   return categorySongs;
 // };
 
-function setPlayerStyle(song: Isong):Record<string, unknown> {
+function setPlayerStyle(song: Isong): Record<string, unknown> {
   let playerStyle = {
     backgroundColor: '#2a2a2a',
     textAlign: 'center',
@@ -65,22 +65,49 @@ function initSongs(
   searchParams: any,
   setPlaying: (arg0: boolean) => void,
   setIndex: (arg0: number) => void,
+  setIsSingle: (arg0: boolean) => void,
 ) {
   const id = searchParams.get('id');
   const newSongs = typeof id === 'string' ? songs : songs.filter((song: { category?: string }) => song.category === category);
   setSongsState(newSongs);
   if (typeof id === 'string') {
+    setIsSingle(true);
     const songIds = newSongs.map((s) => s._id);
     const songIndex = songIds.indexOf(id);
     setIndex(songIndex);
-    setPlaying(true);
+    // setPlaying(true); // TODO is there a way to have it autoplay? Google seems to block this
   }
 }
 
+const makeSingleSong = (isSingle: boolean): boolean => {
+  if (!isSingle) return false;
+  const sidebar = document.getElementById('sidebar');
+  const header = document.getElementById('header');
+  const footer = document.getElementById('wjfooter');
+  const toggler = document.getElementById('mobilemenutoggle');
+  const contentBlock = document.getElementById('contentBlock');
+  const pageContent = document.getElementById('pageContent');
+  const headerTitle = document.getElementById('headerTitle');
+  const mainPlayer = document.getElementById('mainPlayer');
+  if (sidebar) sidebar.style.display = 'none';
+  if (header) header.style.display = 'none';
+  if (footer) footer.style.display = 'none';
+  if (toggler) toggler.style.display = 'none';
+  if (headerTitle) headerTitle.style.display = 'none';
+  if (contentBlock) {
+    contentBlock.style.overflowY = 'auto';
+    contentBlock.style.width = '100%';
+    contentBlock.style.height = '100%';
+    contentBlock.style.marginTop = '0px';
+  }
+  if (mainPlayer && window.outerWidth < 600) mainPlayer.style.height = '55vh';
+  if (pageContent) pageContent.style.borderColor = '#fff';
+  return true;
+};
+
 export default {
-  // sortSongs,
+  makeSingleSong,
   copyShare,
   initSongs,
-  // copyRight,
   setPlayerStyle,
 };
