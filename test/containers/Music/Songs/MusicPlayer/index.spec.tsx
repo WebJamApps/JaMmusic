@@ -2,8 +2,9 @@
 import { MusicPlayer } from 'src/containers/Songs/MusicPlayer';
 import renderer from 'react-test-renderer';
 import TSongs from 'test/testSongs';
+import { BrowserRouter } from 'react-router-dom';
 
-describe('Music player component init', () => {
+describe('MusicPlayer index', () => {
   it('is defined', () => {
     expect(MusicPlayer).toBeDefined();
     expect(TSongs).toBeDefined();
@@ -16,7 +17,11 @@ describe('Music player component init', () => {
       url: 'url',
       _id: 'songid',
     };
-    const mp:any = renderer.create(<MusicPlayer songs={[song]} filterBy="originals" />).toJSON();
+    const mp:any = renderer.create(
+      <BrowserRouter>
+        <MusicPlayer songs={[song]} filterBy="originals" />
+      </BrowserRouter>,
+    ).toJSON();
     expect(mp.props.className).toBe('container-fluid');
   });
 });

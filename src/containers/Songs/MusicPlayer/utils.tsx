@@ -1,18 +1,6 @@
 import commonUtils from 'src/lib/commonUtils';
 import type { Isong } from 'src/providers/Data.provider';
 
-// const sortSongs = (songs: Isong[], category: string): Isong[] => {
-//   let categorySongs: Isong[] = [];
-//   const otherSongs: Isong[] = [];
-//   for (let i = 0; songs.length > i; i += 1) {
-//     // eslint-disable-next-line security/detect-object-injection
-//     if (songs[i].category === category) categorySongs.push(songs[i]);
-//     else otherSongs.push(songs[i]);// eslint-disable-line security/detect-object-injection
-//   }
-//   categorySongs = categorySongs.concat(otherSongs);
-//   return categorySongs;
-// };
-
 function setPlayerStyle(song: Isong): Record<string, unknown> {
   let playerStyle = {
     backgroundColor: '#2a2a2a',
@@ -48,11 +36,9 @@ function setPlayerStyle(song: Isong): Record<string, unknown> {
 function copyShare() {
   // Get the text field
   const copyText = document.getElementById('copyUrl') as HTMLInputElement;
-
   // Select the text field
   copyText.select();
   copyText.setSelectionRange(0, 99999); // For mobile devices
-
   // Copy the text inside the text field
   navigator.clipboard.writeText(copyText.value);
   commonUtils.notify('A shareable song url has been copied to your clipboard', '', 'success');
@@ -63,7 +49,7 @@ function initSongs(
   category: string,
   setSongsState: (arg0: any) => void,
   searchParams: any,
-  setPlaying: (arg0: boolean) => void,
+  setPlaying: (arg0: boolean) => void, // TODO is there a way to have it autoplay? Google seems to block this
   setIndex: (arg0: number) => void,
   setIsSingle: (arg0: boolean) => void,
 ) {
