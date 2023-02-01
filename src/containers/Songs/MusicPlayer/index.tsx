@@ -180,6 +180,7 @@ function CategoryButtons(props: IcategoryButtonsProps): JSX.Element {
       <button type="button" onClick={() => setCategory('pub')} className={`pub${category === 'pub' ? 'on' : 'off'}`}>
         Pub
       </button>
+      {/* {onePlayerMode ? musicPlayerUtils.homeButton(onePlayerMode) : null} */}
     </div>
   );
 }
@@ -232,7 +233,7 @@ export function MusicPlayer({ songs, filterBy }: ImusicPlayerProps) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [searchParams, setSearchParams] = useSearchParams();
   useEffect(() => {
-    utils.initSongs(songs, category, setSongsState, searchParams, setPlaying, setIndex, setIsSingle);
+    utils.initSongs(songs, category, searchParams, { setSongsState, setIndex, setIsSingle });
   }, [category, searchParams, songs]);
   useEffect(() => { utils.makeSingleSong(isSingle); }, [isSingle]);
   return (

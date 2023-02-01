@@ -47,12 +47,15 @@ function copyShare() {
 function initSongs(
   songs: Isong[],
   category: string,
-  setSongsState: (arg0: any) => void,
-  searchParams: any,
-  setPlaying: (arg0: boolean) => void, // TODO is there a way to have it autoplay? Google seems to block this
-  setIndex: (arg0: number) => void,
-  setIsSingle: (arg0: boolean) => void,
+  searchParams: URLSearchParams,
+  setters: {
+    setSongsState: (arg0: any) => void,
+    setIndex: (arg0: number) => void,
+    setIsSingle: (arg0: boolean) => void,
+  },
+  // setPlaying: (arg0: boolean) => void, // issue 886
 ) {
+  const { setSongsState, setIndex, setIsSingle } = setters;
   const id = searchParams.get('id');
   const newSongs = typeof id === 'string' ? songs : songs.filter((song: { category?: string }) => song.category === category);
   setSongsState(newSongs);
@@ -61,7 +64,7 @@ function initSongs(
     const songIds = newSongs.map((s) => s._id);
     const songIndex = songIds.indexOf(id);
     setIndex(songIndex);
-    // setPlaying(true); // TODO is there a way to have it autoplay? Google seems to block this
+    // setPlaying(true); issue 886
   }
 }
 
