@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import env from 'dotenv';
-import { App } from 'src/App';
+import { App, checkAppName, checkBackendUrl } from 'src/App';
 import renderer from 'react-test-renderer';
 import { Provider } from 'react-redux';
 import store from 'src/redux/store/index';
+import { BrowserRouter } from 'react-router-dom';
 
 env.config();
 describe('App component', () => {
@@ -24,5 +25,15 @@ describe('App component', () => {
     };
     const app:any = renderer.create(<Provider store={store.store}><App {...props}><div /></App></Provider>).toJSON();
     expect(app.props.className).toBe('App');
+  });
+  it('checkAppName and return <Music />', () => {
+    process.env.APP_NAME = 'joshandmariamusic.com';
+    const music:any = renderer.create(<BrowserRouter>{checkAppName()}</BrowserRouter>).toJSON();
+    expect(music.props.className.includes('music')).toBe(true);
+  });
+  it('checkBackendUrl and return null', () => {
+    process.env.BackendUrl = 'web-jam.com';
+    const result = checkBackendUrl();
+    expect(result).toBeNull();
   });
 });

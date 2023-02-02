@@ -37,13 +37,17 @@ export function MakeLink(props: ImakeLinkProps): JSX.Element {
   );
 }
 
-export const continueMenuItem = (
+interface IcontinueMenuItemProps {
   menu: ImenuItem,
   index: number,
   auth: Iauth,
   pathname: string,
   handleClose: () => void,
-): JSX.Element | null => {
+}
+export const ContinueMenuItem = (props:IcontinueMenuItemProps): JSX.Element | null => {
+  const {
+    menu, index, auth, pathname, handleClose,
+  } = props;
   if (pathname.includes('/music') && (menu.link.includes('/music'))) {
     return <MakeLink menu={menu} index={index} type="Link" handleClose={handleClose} />;
   }
@@ -88,6 +92,9 @@ export function SideMenuItem(props: IsideMenuItemProps): JSX.Element | null {
       />
     );
   }
-  return continueMenuItem(menu, index, auth, pathname, handleClose);
+  const cmiProps = {
+    menu, index, auth, pathname, handleClose,
+  };
+  return <ContinueMenuItem {...cmiProps} />;
 }
 
