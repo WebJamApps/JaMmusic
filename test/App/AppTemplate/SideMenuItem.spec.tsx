@@ -2,7 +2,7 @@
 import { BrowserRouter } from 'react-router-dom';
 import renderer from 'react-test-renderer';
 import type { ImenuItem } from 'src/App/AppTemplate/menuConfig';
-import { checkIsAllowed, continueMenuItem, SideMenuItem } from 'src/App/AppTemplate/SideMenuItem';
+import { checkIsAllowed, ContinueMenuItem, SideMenuItem } from 'src/App/AppTemplate/SideMenuItem';
 import commonUtils from 'src/lib/commonUtils';
 
 describe('SideMenuItem', () => {
@@ -34,15 +34,27 @@ describe('SideMenuItem', () => {
     smi.root.findByProps({ type: 'Link' }).props.handleClose();
     expect(props.handleClose).toHaveBeenCalled();
   });
-  it('continueMenuItem returns googleLogout', () => {
-    const result: any = continueMenuItem(
-      { type: 'googleLogout' } as ImenuItem,
-      1,
-      { isAuthenticated: true } as any,
-      '',
-      jest.fn(),
-    );
-    expect(result.key).toBe('googleLogout');
+  it('ContinueMenuItem returns googleLogout', () => {
+    const props = {
+      menu: { type: 'googleLogout' } as ImenuItem,
+      index: 1,
+      auth: { isAuthenticated: true } as any,
+      pathname: '',
+      handleClose: jest.fn(),
+    };
+    const result: any = renderer.create(<ContinueMenuItem {...props} />).toJSON();
+    expect(result.props.className.includes('googleLogout')).toBe(true);
+  });
+  it('ContinueMenuItem when music', () => {
+    const props = {
+      menu: { type: 'link', link: '/music' } as ImenuItem,
+      index: 1,
+      auth: { isAuthenticated: true } as any,
+      pathname: '/music',
+      handleClose: jest.fn(),
+    };
+    const result: any = renderer.create(<BrowserRouter><ContinueMenuItem {...props} /></BrowserRouter>).toJSON();
+    expect(result.children[0].props.href).toBe('/music');
   });
   it('checkIsAllowed return false if item requires auth and userType is not allowed', () => {
     const menu: any = { auth: true };

@@ -14,6 +14,16 @@ import { Songs } from '../containers/Songs';
 import HomePage from '../containers/Homepage';
 import connectToSC from './connectToSC';
 
+export function checkAppName() {
+  return process.env.APP_NAME === 'web-jam.com'
+    ? <HomePage /> : <Music />;
+}
+
+export function checkBackendUrl() {
+  return process.env.BackendUrl === 'http://localhost:7000'
+    ? <Route path="/map" element={<GoogleMap />} /> : null;
+}
+
 export interface AppProps {
   dispatch?: Dispatch<unknown>;
   showMap: boolean;
@@ -43,12 +53,10 @@ export class App extends Component<AppProps> {
             <Routes>
               <Route
                 path="/"
-                element={process.env.APP_NAME === 'web-jam.com'
-                  ? <HomePage /> : <Music />}
+                element={checkAppName()}
               />
               <Route path="/sort" element={<DefaultSort />} />
-              {process.env.BackendUrl === 'http://localhost:7000'
-                ? <Route path="/map" element={<GoogleMap />} /> : null}
+              {checkBackendUrl()}
               <Route path="/music" element={<Music />} />
               <Route path="/music/buymusic" element={<BuyMusic />} />
               <Route path="/music/songs" element={<Songs />} />

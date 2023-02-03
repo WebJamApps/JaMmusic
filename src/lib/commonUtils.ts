@@ -1,4 +1,5 @@
 import { Store } from 'react-notifications-component';
+import 'react-notifications-component/dist/theme.css';
 
 const setTitleAndScroll = (pageTitle: string, width: number): void => {
   if (pageTitle !== '') pageTitle += ' | ';// eslint-disable-line no-param-reassign
