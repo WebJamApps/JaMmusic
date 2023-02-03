@@ -6,7 +6,7 @@ const createSong = async (
   getSongs: () => Promise<Isong[]>,
   setShowDialog: (arg0: boolean) => void,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  song: Record<string, unknown>,
+  song: Isong,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   auth: Iauth,
 ) => {
