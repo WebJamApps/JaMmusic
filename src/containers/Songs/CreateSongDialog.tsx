@@ -6,31 +6,21 @@ import { AuthContext } from 'src/providers/Auth.provider';
 import { DataContext, Isong } from 'src/providers/Data.provider';
 import utils from './songs.utils';
 
-// artist?: string;
-//   composer?: string;
-//   category: string;
-//   album?: string;
-//   year: number;
-//   image?: string;
-//   title: string;
-//   url: string;
-//   _id?: string;
-//   modify?: JSX.Element
-
+const defaultSong = {
+  url: '',
+  title: '',
+  category: 'original',
+  year: new Date().getFullYear(),
+  artist: 'Josh & Maria Sherman',
+  composer: 'Josh & Maria Sherman',
+  album: '',
+  image: '',
+};
 interface IcreatePicDialogProps {
   showDialog: boolean, setShowDialog: (arg0: boolean) => void,
 }
 export function CreateSongDialog({ showDialog, setShowDialog }: IcreatePicDialogProps) {
-  const [song, setSong] = useState({
-    url: '',
-    title: '',
-    category: 'original',
-    year: new Date().getFullYear(),
-    artist: 'Josh & Maria Sherman',
-    composer: 'Josh & Maria Sherman',
-    album: '',
-    image: '',
-  } as Isong);
+  const [song, setSong] = useState(defaultSong as Isong);
   const { auth } = useContext(AuthContext);
   const { getSongs } = useContext(DataContext);
   return (
@@ -73,9 +63,18 @@ export function CreateSongDialog({ showDialog, setShowDialog }: IcreatePicDialog
           sx={{ marginTop: '20px' }}
           label="* Year"
           type="number"
+          InputProps={{
+            inputProps: {
+              max: new Date().getFullYear(), min: 2000,
+            },
+          }}
           fullWidth
           value={song.year}
-          onChange={(evt) => { setSong({ ...song, year: Number(evt.target.value) }); }}
+          onChange={(evt) => {
+            const { target: { value } } = evt;
+            const numValue = Number(value);
+            setSong({ ...song, year: numValue > 1 ? numValue : 2 });
+          }}
         />
         <FormControl fullWidth sx={{ marginTop: '20px' }}>
           <InputLabel id="select-category-label">Category</InputLabel>
@@ -118,6 +117,7 @@ export function CreateSongDialog({ showDialog, setShowDialog }: IcreatePicDialog
       </DialogContent>
       <DialogActions>
         <Button
+          disabled={utils.checkDisabled(song)}
           size="small"
           variant="contained"
           className="createSongButton"
@@ -128,7 +128,7 @@ export function CreateSongDialog({ showDialog, setShowDialog }: IcreatePicDialog
         <Button
           size="small"
           className="cancelPicButton"
-          onClick={() => setShowDialog(false)}
+          onClick={() => { setSong(defaultSong); setShowDialog(false); }}
         >
           Cancel
         </Button>

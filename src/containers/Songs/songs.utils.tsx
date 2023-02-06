@@ -19,4 +19,9 @@ const createSong = async (
   } catch (err) { console.log((err as Error).message); }
 };
 
-export default { createSong };
+const checkDisabled = (song:Isong) => {
+  if (song.url && song.title && song.artist && song.year) return false;
+  return true;
+};
+
+export default { createSong, checkDisabled };
