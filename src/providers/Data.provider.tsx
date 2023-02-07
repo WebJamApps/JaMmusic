@@ -1,7 +1,7 @@
 import { createContext, useEffect, useState } from 'react';
 import fetchGigs, { defaultGig } from './fetchGigs';
 import fetchPics from './fetchPics';
-import fetchSongs, { emptySong } from './fetchSongs';
+import fetchSongs from './fetchSongs';
 import { MakeProvider } from './MakeProvider';
 
 export interface Igig {
@@ -68,7 +68,7 @@ export const DataContext = createContext({
   pics: null as Ipic[] | null,
   setPics: setPicsDef,
   getPics: getPicsDef,
-  songs: [emptySong],
+  songs: null as Isong[] | null,
   setSongs: setSongsDef,
   getSongs: getSongsDef,
 });

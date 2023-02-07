@@ -1,6 +1,7 @@
 import axios from 'axios';
 import type { Iauth } from 'src/providers/Auth.provider';
 import type { Isong } from 'src/providers/Data.provider';
+import commonUtils from 'src/lib/commonUtils';
 
 export const defaultSong = {
   url: '',
@@ -30,7 +31,7 @@ const createSong = async (
     setShowDialog(false);
     setSong(defaultSong);
     await getSongs();
-  } catch (err) { console.log((err as Error).message); }
+  } catch (err) { commonUtils.notify('Error creating song', (err as Error).message, 'danger'); }
 };
 
 const checkDisabled = (song:Isong) => {
