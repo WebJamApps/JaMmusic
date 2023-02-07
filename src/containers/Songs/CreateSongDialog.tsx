@@ -4,18 +4,8 @@ import {
 import { useState, useContext } from 'react';
 import { AuthContext } from 'src/providers/Auth.provider';
 import { DataContext, Isong } from 'src/providers/Data.provider';
-import utils from './songs.utils';
+import utils, { defaultSong } from './songs.utils';
 
-const defaultSong = {
-  url: '',
-  title: '',
-  category: 'original',
-  year: new Date().getFullYear(),
-  artist: 'Josh & Maria Sherman',
-  composer: 'Josh & Maria Sherman',
-  album: '',
-  image: '',
-};
 interface IcreatePicDialogProps {
   showDialog: boolean, setShowDialog: (arg0: boolean) => void,
 }
@@ -121,7 +111,7 @@ export function CreateSongDialog({ showDialog, setShowDialog }: IcreatePicDialog
           size="small"
           variant="contained"
           className="createSongButton"
-          onClick={() => { utils.createSong(getSongs, setShowDialog, song, auth); }}
+          onClick={() => { utils.createSong(getSongs, setShowDialog, song, setSong, auth); }}
         >
           Create
         </Button>

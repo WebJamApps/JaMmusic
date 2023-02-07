@@ -1,20 +1,34 @@
-import commonUtils from 'src/lib/commonUtils';
+import axios from 'axios';
 import type { Iauth } from 'src/providers/Auth.provider';
 import type { Isong } from 'src/providers/Data.provider';
+
+export const defaultSong = {
+  url: '',
+  title: '',
+  category: 'original',
+  year: new Date().getFullYear(),
+  artist: 'Josh & Maria Sherman',
+  composer: 'Josh & Maria Sherman',
+  album: '',
+  image: '',
+};
 
 const createSong = async (
   getSongs: () => Promise<Isong[]>,
   setShowDialog: (arg0: boolean) => void,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   song: Isong,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  setSong: (arg0:Isong)=>void,
   auth: Iauth,
 ) => {
   try {
-    // const { token } = auth;
-    // axios post here to create song
+    const { token } = auth;
+    await axios.post(
+      `${process.env.BackendUrl}/song`,
+      song,
+      { headers: { Authorization: `Bearer ${token}` } },
+    );
     setShowDialog(false);
-    await commonUtils.delay(2);
+    setSong(defaultSong);
     await getSongs();
   } catch (err) { console.log((err as Error).message); }
 };
