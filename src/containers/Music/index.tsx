@@ -23,6 +23,26 @@ export function Musicians(): JSX.Element {
   );
 }
 
+interface IphotosSectionProps {
+  showEditPicTable: boolean, setShowEditPicTable: (arg0: boolean) => void, isAdmin: boolean,
+  setShowCreatePic: (arg0: boolean) => void, showCreatePic: boolean,
+}
+export function PhotosSection(props: IphotosSectionProps) {
+  const {
+    showEditPicTable, setShowEditPicTable, isAdmin, setShowCreatePic, showCreatePic,
+  } = props;
+  return (
+    <div style={{ paddingTop: '1px', paddingBottom: 0, marginBottom: 0 }}>
+      <div id="musicSlide1">
+        {!showEditPicTable ? <PicSlider /> : <EditPicTable setShowTable={setShowEditPicTable} />}
+      </div>
+      {showEditPicTable ? null
+        : <Intro isAdmin={isAdmin} setShowEditPic={setShowEditPicTable} setShowCreatePic={setShowCreatePic} />}
+      <CreatePicDialog showDialog={showCreatePic} setShowDialog={setShowCreatePic} />
+    </div>
+  );
+}
+
 export function checkIsAdmin(auth: Iauth, setIsAdmin: (arg0: boolean) => void) {
   let isAdmin = false;
   if (auth && auth.isAuthenticated && process.env.userRoles) {
@@ -45,14 +65,13 @@ export function Music(): JSX.Element {
   }, [auth]);
   return (
     <div className="page-content music">
-      <div style={{ paddingTop: '1px', paddingBottom: 0, marginBottom: 0 }}>
-        <div id="musicSlide1">
-          {!showEditPicTable ? <PicSlider /> : <EditPicTable setShowTable={setShowEditPicTable} />}
-        </div>
-        {showEditPicTable ? null
-          : <Intro isAdmin={isAdmin} setShowEditPic={setShowEditPicTable} setShowCreatePic={setShowCreatePic} />}
-        <CreatePicDialog showDialog={showCreatePic} setShowDialog={setShowCreatePic} />
-      </div>
+      <PhotosSection
+        showEditPicTable={showEditPicTable}
+        setShowEditPicTable={setShowEditPicTable}
+        isAdmin={isAdmin}
+        setShowCreatePic={setShowCreatePic}
+        showCreatePic={showCreatePic}
+      />
       <div
         className="search-table-outer"
         style={{
