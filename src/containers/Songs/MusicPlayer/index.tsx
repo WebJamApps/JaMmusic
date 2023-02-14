@@ -38,6 +38,7 @@ function MyReactPlayer(props: ImyReactPlayerProps): JSX.Element {
   } = props;
   // eslint-disable-next-line security/detect-object-injection
   const song = songsState[index];
+  if (!song) return <> </>;
   return (
     <ReactPlayer
       onError={(err) => {
@@ -48,7 +49,7 @@ function MyReactPlayer(props: ImyReactPlayerProps): JSX.Element {
       // eslint-disable-next-line no-console
       onReady={(player) => console.log(player)}
       muted={!playing}
-      style={utils.setPlayerStyle(song)}
+      style={song ? utils.setPlayerStyle(song) : {}}
       url={song.url}
       playing={playing}
       controls
@@ -127,6 +128,7 @@ function TextUnderPlayer(
 ): JSX.Element {
   // eslint-disable-next-line security/detect-object-injection
   const song = songsState[index];
+  if (!song) return <> </>;
   return (
     <section
       className="mt-1 textUnderPlayer"
@@ -192,7 +194,9 @@ function CopyShare(props: IcopyInputProps): JSX.Element {
   const { index, songsState, isSingle } = props;
   const [showCopyUrl, setShowCopyUrl] = useState(false);
   // eslint-disable-next-line security/detect-object-injection
-  const songUrl = `${window.location.href}?id=${songsState[index]._id}`;
+  const song = songsState[index];
+  if (!song) return <> </>;
+  const songUrl = `${window.location.href}?id=${song._id}`;
   if (isSingle) return <> </>;
   return (
     <div className="copyShare">
