@@ -1,7 +1,8 @@
 
-import { MusicPlayer } from 'src/containers/Songs/MusicPlayer';
+import { CategoryTitle, MusicPlayer } from 'src/containers/Songs/MusicPlayer';
 import renderer from 'react-test-renderer';
 import { render, screen } from '@testing-library/react';
+import '@testing-library/jest-dom';
 import TSongs from 'test/testSongs';
 import { BrowserRouter } from 'react-router-dom';
 
@@ -40,6 +41,10 @@ describe('MusicPlayer index', () => {
         <MusicPlayer songs={[song]} filterBy="originals" />
       </BrowserRouter>,
     );
-    screen.debug();
+    expect(screen.getByText('Play/Pause')).toBeInTheDocument();
+  });
+  it('does not render categoryTitle when isSingle', () => {
+    const ct = renderer.create(<CategoryTitle isSingle category="originals" />).toJSON();
+    expect(ct).toBe(' ');
   });
 });

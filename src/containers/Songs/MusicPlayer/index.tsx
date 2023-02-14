@@ -224,6 +224,15 @@ function CopyShare(props: IcopyInputProps): JSX.Element {
   );
 }
 
+export function CategoryTitle({ isSingle, category }:{ isSingle:boolean, category:string }) {
+  if (isSingle) return <> </>;
+  return (
+    <h4 className="categoryTitle">
+      {`${category.charAt(0).toUpperCase() + category.slice(1)} Songs`}
+    </h4>
+  );
+}
+
 interface ImusicPlayerProps {
   songs: Isong[];
   filterBy: string;
@@ -242,12 +251,7 @@ export function MusicPlayer({ songs, filterBy }: ImusicPlayerProps) {
   useEffect(() => { utils.makeSingleSong(isSingle); }, [isSingle]);
   return (
     <div className="container-fluid">
-      {isSingle ? null
-        : (
-          <h4 className="categoryTitle">
-            {`${category.charAt(0).toUpperCase() + category.slice(1)} Songs`}
-          </h4>
-        )}
+      <CategoryTitle isSingle={isSingle} category={category} />
       <div id="player">
         <section id="playSection" className="col-12 mt-2 mr-0 col-md-7">
           <MyReactPlayer
