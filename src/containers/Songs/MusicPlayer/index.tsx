@@ -65,7 +65,7 @@ function MyReactPlayer(props: ImyReactPlayerProps): JSX.Element {
 
 interface ImyButtonsProps {
   playing: boolean, setPlaying: (arg0: boolean) => void, index: number,
-  songsState: Isong[], setIndex: (arg0: number) => void, isSingle:boolean
+  songsState: Isong[], setIndex: (arg0: number) => void, isSingle: boolean
 }
 function MyButtons(props: ImyButtonsProps): JSX.Element {
   const {
@@ -164,7 +164,7 @@ function TextUnderPlayer(
 }
 
 interface IcategoryButtonsProps {
-  category: string, setCategory: (arg0: string) => void, isSingle:boolean
+  category: string, setCategory: (arg0: string) => void, isSingle: boolean
 }
 function CategoryButtons(props: IcategoryButtonsProps): JSX.Element {
   const {
@@ -182,15 +182,45 @@ function CategoryButtons(props: IcategoryButtonsProps): JSX.Element {
       <button type="button" onClick={() => setCategory('pub')} className={`pub${category === 'pub' ? 'on' : 'off'}`}>
         Pub
       </button>
-      {/* {onePlayerMode ? musicPlayerUtils.homeButton(onePlayerMode) : null} */}
     </div>
   );
 }
 
-interface IcopyInputProps {
-  index: number, songsState: Isong[], isSingle:boolean
+export function ShareButton(
+  { showCopyUrl, setShowCopyUrl }: { showCopyUrl: boolean, setShowCopyUrl: (arg0: boolean) => void },
+): JSX.Element {
+  if (showCopyUrl) return <> </>;
+  return (
+    <Button size="small" onClick={() => setShowCopyUrl(true)} variant="contained" endIcon={<Share />}>
+      Share
+    </Button>
+  );
 }
-function CopyShare(props: IcopyInputProps): JSX.Element {
+
+export function CopyUrlButtons(
+  { showCopyUrl, setShowCopyUrl, songUrl }: { songUrl: string, showCopyUrl: boolean, setShowCopyUrl: (arg0: boolean) => void },
+): JSX.Element {
+  if (!showCopyUrl) return <> </>;
+  return (
+    <>
+      <input type="text" id="copyUrl" value={songUrl} disabled />
+      <Button
+        size="small"
+        variant="contained"
+        className="copyUrl"
+        onClick={() => utils.copyShare()}
+      >
+        Copy URL
+      </Button>
+      <Button size="small" className="cancel" onClick={() => setShowCopyUrl(false)}>Cancel</Button>
+    </>
+  );
+}
+
+interface IcopyInputProps {
+  index: number, songsState: Isong[], isSingle: boolean
+}
+export function CopyShare(props: IcopyInputProps): JSX.Element {
   const { index, songsState, isSingle } = props;
   const [showCopyUrl, setShowCopyUrl] = useState(false);
   // eslint-disable-next-line security/detect-object-injection
@@ -200,31 +230,13 @@ function CopyShare(props: IcopyInputProps): JSX.Element {
   if (isSingle) return <> </>;
   return (
     <div className="copyShare">
-      {showCopyUrl ? null
-        : (
-          <Button size="small" onClick={() => setShowCopyUrl(true)} variant="contained" endIcon={<Share />}>
-            Share
-          </Button>
-        )}
-      {!showCopyUrl ? null : (
-        <>
-          <input type="text" id="copyUrl" value={songUrl} disabled />
-          <Button
-            size="small"
-            variant="contained"
-            className="copyUrl"
-            onClick={() => utils.copyShare()}
-          >
-            Copy URL
-          </Button>
-          <Button size="small" onClick={() => setShowCopyUrl(false)}>Cancel</Button>
-        </>
-      )}
+      <ShareButton showCopyUrl={showCopyUrl} setShowCopyUrl={setShowCopyUrl} />
+      <CopyUrlButtons songUrl={songUrl} showCopyUrl={showCopyUrl} setShowCopyUrl={setShowCopyUrl} />
     </div>
   );
 }
 
-export function CategoryTitle({ isSingle, category }:{ isSingle:boolean, category:string }) {
+export function CategoryTitle({ isSingle, category }: { isSingle: boolean, category: string }) {
   if (isSingle) return <> </>;
   return (
     <h4 className="categoryTitle">
