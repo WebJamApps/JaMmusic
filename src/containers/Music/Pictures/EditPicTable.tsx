@@ -6,9 +6,11 @@ interface IeditPicTableProps {
 export function EditPicTable(props:IeditPicTableProps) {
   const { setShowTable } = props;
   return (
-    <div style={{
-      display: 'inlineBlock', margin: 'auto', textAlign: 'center', paddingTop: '10px',
-    }}
+    <div
+      className="editPicTable"
+      style={{
+        display: 'inlineBlock', margin: 'auto', textAlign: 'center', paddingTop: '10px',
+      }}
     >
       <span>Select Which Picture to Edit</span>
       <Button

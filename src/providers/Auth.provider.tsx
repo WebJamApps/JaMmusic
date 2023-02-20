@@ -10,9 +10,6 @@ export interface Iauth {
   };
 }
 
-// const useAuthState: (arg0: Iauth) =>
-// [Iauth, (arg0: Iauth) => void] = createPersistedState('auth', localStorage);
-
 export const defaultAuth: Iauth = {
   isAuthenticated: false,
   error: '',

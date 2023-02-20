@@ -5,7 +5,7 @@ function setPlayerStyle(song: Isong): Record<string, unknown> {
   let playerStyle = {
     backgroundColor: '#2a2a2a',
     textAlign: 'center',
-    backgroundImage: `url(${song.image})`,
+    backgroundImage: song.image ? `url(${song.image})` : '',
     backgroundPosition: 'center',
     backgroundSize: '80%',
     backgroundRepeat: 'no-repeat',

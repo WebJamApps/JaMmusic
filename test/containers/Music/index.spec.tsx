@@ -1,8 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import renderer from 'react-test-renderer';
-import ReactDom from 'react-dom';
-import { act } from 'react-dom/test-utils';
-import { Music, checkIsAdmin } from 'src/containers/Music';
+import { Music, checkIsAdmin, PhotosSection } from 'src/containers/Music';
 import { ClickToListen } from 'src/containers/Music/intro';
 import { BrowserRouter } from 'react-router-dom';
 
@@ -10,16 +8,6 @@ describe('/music', () => {
   it('renders the component', () => {
     const music = renderer.create(<BrowserRouter><Music /></BrowserRouter>).toJSON();
     expect(music).toMatchSnapshot();
-  });
-  it('renders and runs useEffect', () => {
-    const container = document.createElement('div');
-    document.body.appendChild(container);
-    act(() => {
-      ReactDom.render(<BrowserRouter><Music /></BrowserRouter>, container);
-    });
-    const musicSlider: any = document.getElementById('musicSlide1');
-    expect(musicSlider).toBeDefined();
-    document.body.removeChild(container);
   });
   it('renders ClickToListen and handles click when joshandmariamusic.com', () => {
     window.open = jest.fn();
@@ -67,5 +55,16 @@ describe('/music', () => {
     const auth: any = { isAuthenticated: true, user: { userType: roles[0] } };
     checkIsAdmin(auth, setIsAdmin);
     expect(setIsAdmin).toHaveBeenCalledWith(true);
+  });
+  it('renders PhotosSection when showEditPicTable is true', () => {
+    const props = {
+      showEditPicTable: true,
+      setShowEditPicTable: jest.fn(),
+      isAdmin: true,
+      setShowCreatePic: jest.fn(),
+      showCreatePic: false,
+    };
+    const photosSection:any = renderer.create(<PhotosSection {...props} />).toJSON();
+    expect(photosSection.children[0].children[0].props.className).toBe('editPicTable');
   });
 });

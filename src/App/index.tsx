@@ -11,12 +11,12 @@ import GoogleMap from '../containers/GoogleMap';
 import { Music } from '../containers/Music';
 import { AppTemplate } from './AppTemplate';
 import { Songs } from '../containers/Songs';
-import HomePage from '../containers/Homepage';
+import { Homepage } from '../containers/Homepage';
 import connectToSC from './connectToSC';
 
 export function checkAppName() {
   return process.env.APP_NAME === 'web-jam.com'
-    ? <HomePage /> : <Music />;
+    ? <Homepage /> : <Music />;
 }
 
 export function checkBackendUrl() {
@@ -49,7 +49,7 @@ export class App extends Component<AppProps> {
       <div id="App" className="App">
         <ReactNotifications />
         <BrowserRouter>
-          <AppTemplate {...this.props}>
+          <AppTemplate>
             <Routes>
               <Route
                 path="/"

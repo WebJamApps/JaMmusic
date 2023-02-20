@@ -1,5 +1,5 @@
 
-import React from 'react';
+import { StrictMode } from 'react';
 import { Provider } from 'react-redux';
 import { createRoot } from 'react-dom/client';
 import { GoogleOAuthProvider } from '@react-oauth/google';
@@ -28,7 +28,7 @@ function Main() {
 }
 
 const renderMain = (): void => {
-  root.render(<React.StrictMode><Main /></React.StrictMode>);
+  root.render(<StrictMode><Main /></StrictMode>);
 };
 
 renderMain();

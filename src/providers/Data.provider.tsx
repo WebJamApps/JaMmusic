@@ -1,7 +1,7 @@
 import { createContext, useEffect, useState } from 'react';
 import fetchGigs, { defaultGig } from './fetchGigs';
 import fetchPics from './fetchPics';
-import fetchSongs, { defaultSong } from './fetchSongs';
+import fetchSongs from './fetchSongs';
 import { MakeProvider } from './MakeProvider';
 
 export interface Igig {
@@ -56,6 +56,8 @@ export const getGigsDef = () => true;
 
 export const getPicsDef = () => true;
 
+export const getSongsDef = async () => [] as Isong[];
+
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const setPicsDef = (_arg0: Ipic[] | null) => { };
 
@@ -66,8 +68,9 @@ export const DataContext = createContext({
   pics: null as Ipic[] | null,
   setPics: setPicsDef,
   getPics: getPicsDef,
-  songs: [defaultSong],
+  songs: null as Isong[] | null,
   setSongs: setSongsDef,
+  getSongs: getSongsDef,
 });
 
 export const makeGetGigs = (setGigs: (arg0: Igig[] | null) => void) => () => fetchGigs.getGigs(setGigs);
@@ -80,17 +83,16 @@ export function DataProvider({ children }:any): JSX.Element {
   const [pics, setPics] = useState(null as Ipic[] | null);
   const getPics = makeGetPics(setPics);
   const getGigs = makeGetGigs(setGigs);
-  useEffect(() => {
-    (async () => {
-      await fetchSongs.getSongs(setSongs);
-    })();
-  }, []);
+  const getSongs = async () => {
+    await fetchSongs.getSongs(setSongs);
+  };
+  useEffect(() => { getSongs(); }, []);
   const Provider = MakeProvider(
     { Context: DataContext, fetches: [fetchGigs.getGigs, fetchPics.getPics], setters: [setGigs, setPics] },
   );
   return (
     <Provider value={{
-      gigs, setGigs, getGigs, songs, setSongs, pics, setPics, getPics,
+      gigs, setGigs, getGigs, songs, setSongs, getSongs, pics, setPics, getPics,
     }}
     >
       {children}

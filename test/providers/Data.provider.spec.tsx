@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import {
-  DataProvider, getGigsDef, Igig, Isong, makeGetGigs, setGigsDef, setSongsDef,
+  DataProvider, getGigsDef, Igig, Isong, makeGetGigs, setGigsDef, setSongsDef, getPicsDef, getSongsDef, setPicsDef,
 } from 'src/providers/Data.provider';
 import fetchSongs from 'src/providers/fetchSongs';
 import fetchGigs from 'src/providers/fetchGigs';
@@ -21,6 +21,16 @@ describe('DataProvider', () => {
   });
   it('getGigsDef', () => {
     expect(getGigsDef()).toBe(true);
+  });
+  it('getSongsDef', async () => {
+    const result = await getSongsDef();
+    expect(result.length).toBe(0);
+  });
+  it('getPicsDef', () => {
+    expect(getPicsDef()).toBe(true);
+  });
+  it('setPicsDef', () => {
+    expect(setPicsDef(null)).toBe(undefined);
   });
   it('make getGigs and runs it', () => {
     fetchGigs.getGigs = jest.fn();
