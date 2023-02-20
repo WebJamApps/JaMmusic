@@ -49,7 +49,7 @@ export class App extends Component<AppProps> {
       <div id="App" className="App">
         <ReactNotifications />
         <BrowserRouter>
-          <AppTemplate {...this.props}>
+          <AppTemplate>
             <Routes>
               <Route
                 path="/"
