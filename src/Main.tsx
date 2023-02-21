@@ -4,7 +4,7 @@ import { Provider } from 'react-redux';
 import { createRoot } from 'react-dom/client';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { PersistGate } from 'redux-persist/integration/react';
-import ConnectedApp from './App/index';
+import { App } from './App/index';
 import store from './redux/store/index';
 import { DataProvider } from './providers/Data.provider';
 import { AuthProvider } from './providers/Auth.provider';
@@ -18,7 +18,7 @@ function Main() {
         <DataProvider>
           <Provider store={store.store}>
             <PersistGate loading={null} persistor={store.persistor}>
-              <ConnectedApp showMap={false} />
+              <App />
             </PersistGate>
           </Provider>
         </DataProvider>

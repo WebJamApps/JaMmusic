@@ -12,9 +12,6 @@ describe('App component', () => {
     expect(App).toBeDefined();
   });
   it('renders', () => {
-    const props = {
-      dispatch: jest.fn(), images: [], showMap: false, heartBeat: 'white', userCount: 0,
-    };
     Object.defineProperty(window, 'location', { value: { assign: () => { }, reload: () => { } }, writable: true });
     window.location = {
       ...window.location,
@@ -23,14 +20,14 @@ describe('App component', () => {
       reload: jest.fn(),
       assign: jest.fn(),
     };
-    const app:any = renderer.create(<Provider store={store.store}><App {...props}><div /></App></Provider>).toJSON();
+    const app:any = renderer.create(<Provider store={store.store}><App /></Provider>).toJSON();
     expect(app.props.className).toBe('App');
   });
-  // it('checkAppName and return <Music />', () => {
-  //   process.env.APP_NAME = 'joshandmariamusic.com';
-  //   const music:any = renderer.create(<BrowserRouter>{checkAppName()}</BrowserRouter>).toJSON();
-  //   expect(music.props.className.includes('music')).toBe(true);
-  // });
+  it('checkAppName and return <Music />', () => {
+    process.env.APP_NAME = 'joshandmariamusic.com';
+    const music:any = renderer.create(<BrowserRouter>{checkAppName()}</BrowserRouter>).toJSON();
+    expect(music.props.className.includes('music')).toBe(true);
+  });
   it('checkBackendUrl and return null', () => {
     process.env.BackendUrl = 'web-jam.com';
     const result = checkBackendUrl();
