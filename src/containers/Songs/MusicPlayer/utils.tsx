@@ -1,3 +1,4 @@
+import type ReactPlayer from 'react-player';
 import commonUtils from 'src/lib/commonUtils';
 import type { Isong } from 'src/providers/Data.provider';
 
@@ -94,9 +95,42 @@ const makeSingleSong = (isSingle: boolean): boolean => {
   return true;
 };
 
+function play(playing: boolean, setPlaying: (arg0: boolean) => void): void {
+  setPlaying(!playing);
+}
+
+function next(index: number, songsState: Isong[], setIndex: (arg0: number) => void): void {
+  const nextIndex = index + 1;
+  if (nextIndex >= songsState.length) {
+    setIndex(0);
+  } else {
+    setIndex(nextIndex);
+  }
+}
+
+function prev(index: number, songsState: Isong[], setIndex: (arg0: number) => void): void {
+  const minusIndex = index - 1;
+  if (minusIndex < 0 || minusIndex > songsState.length) {
+    const newIndex = songsState.length - 1;
+    setIndex(newIndex);
+  } else setIndex(minusIndex);
+}
+
+const handlePlayerError = (err: any) => {
+  // eslint-disable-next-line no-console
+  console.log(err); return err;
+};
+
+const handlePlayerReady = (player:ReactPlayer) => { console.log(player); return player; };
+
 export default {
   makeSingleSong,
   copyShare,
   initSongs,
   setPlayerStyle,
+  play,
+  next,
+  prev,
+  handlePlayerError,
+  handlePlayerReady,
 };
