@@ -166,7 +166,7 @@ function TextUnderPlayer(
 interface IcategoryButtonsProps {
   category: string, setCategory: (arg0: string) => void, isSingle: boolean
 }
-function CategoryButtons(props: IcategoryButtonsProps): JSX.Element {
+export function CategoryButtons(props: IcategoryButtonsProps): JSX.Element {
   const {
     category, setCategory, isSingle,
   } = props;
