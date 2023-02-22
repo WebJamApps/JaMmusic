@@ -69,16 +69,22 @@ function initSongs(
   }
 }
 
-const makeSingleSong = (isSingle: boolean): boolean => {
-  if (!isSingle) return false;
-  const sidebar = document.getElementById('sidebar');
-  const header = document.getElementById('header');
-  const footer = document.getElementById('wjfooter');
-  const toggler = document.getElementById('mobilemenutoggle');
-  const contentBlock = document.getElementById('contentBlock');
-  const pageContent = document.getElementById('pageContent');
-  const headerTitle = document.getElementById('headerTitle');
-  const mainPlayer = document.getElementById('mainPlayer');
+function setSingleDisplays(
+  elements: {
+    sidebar: any; header: any; footer: any; toggler: any; contentBlock: any;
+    pageContent: any; headerTitle: any; mainPlayer: any; outerWidth: any; },
+) {
+  const {
+    sidebar,
+    header,
+    footer,
+    toggler,
+    contentBlock,
+    pageContent,
+    headerTitle,
+    mainPlayer,
+    outerWidth,
+  } = elements;
   if (sidebar) sidebar.style.display = 'none';
   if (header) header.style.display = 'none';
   if (footer) footer.style.display = 'none';
@@ -90,9 +96,33 @@ const makeSingleSong = (isSingle: boolean): boolean => {
     contentBlock.style.height = '100%';
     contentBlock.style.marginTop = '0px';
   }
-  if (mainPlayer && window.outerWidth < 600) mainPlayer.style.height = '55vh';
+  if (mainPlayer && outerWidth < 600) mainPlayer.style.height = '55vh';
   if (pageContent) pageContent.style.borderColor = '#fff';
-  return true;
+}
+
+const makeSingleSong = (isSingle: boolean): boolean => {
+  if (isSingle) {
+    const sidebar = document.getElementById('sidebar');
+    const header = document.getElementById('header');
+    const footer = document.getElementById('wjfooter');
+    const toggler = document.getElementById('mobilemenutoggle');
+    const contentBlock = document.getElementById('contentBlock');
+    const pageContent = document.getElementById('pageContent');
+    const headerTitle = document.getElementById('headerTitle');
+    const mainPlayer = document.getElementById('mainPlayer');
+    setSingleDisplays({
+      sidebar,
+      header,
+      footer,
+      toggler,
+      contentBlock,
+      pageContent,
+      headerTitle,
+      mainPlayer,
+      outerWidth: window.outerWidth,
+    });
+  }
+  return isSingle;
 };
 
 function play(playing: boolean, setPlaying: (arg0: boolean) => void): void {
