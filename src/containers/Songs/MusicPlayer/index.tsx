@@ -7,53 +7,32 @@ import type { Isong } from 'src/providers/Data.provider';
 import utils from './utils';
 import './musicPlayer.scss';
 
-function play(playing: boolean, setPlaying: (arg0: boolean) => void): void {
-  setPlaying(!playing);
-}
-
-function next(index: number, songsState: Isong[], setIndex: (arg0: number) => void): void {
-  const nextIndex = index + 1;
-  if (nextIndex >= songsState.length) {
-    setIndex(0);
-  } else {
-    setIndex(nextIndex);
-  }
-}
-
-function prev(index: number, songsState: Isong[], setIndex: (arg0: number) => void): void {
-  const minusIndex = index - 1;
-  if (minusIndex < 0 || minusIndex > songsState.length) {
-    const newIndex = songsState.length - 1;
-    setIndex(newIndex);
-  } else setIndex(minusIndex);
+export function makeHandleEnded(index: number, songsState: Isong[], setIndex: (arg0: number)=> void) {
+  return () => utils.next(index, songsState, setIndex);
 }
 
 interface ImyReactPlayerProps {
   playing: boolean,
   index: number, songsState: Isong[], setIndex: (arg0: number) => void
 }
-function MyReactPlayer(props: ImyReactPlayerProps): JSX.Element {
+export function MyReactPlayer(props: ImyReactPlayerProps): JSX.Element {
   const {
     playing, index, songsState, setIndex,
   } = props;
   // eslint-disable-next-line security/detect-object-injection
   const song = songsState[index];
   if (!song) return <> </>;
+  const handleEnded = makeHandleEnded(index, songsState, setIndex);
   return (
     <ReactPlayer
-      onError={(err) => {
-        // eslint-disable-next-line no-console
-        console.log('Something went wroung...');
-        console.log(err);
-      }}
-      // eslint-disable-next-line no-console
-      onReady={(player) => console.log(player)}
+      onError={utils.handlePlayerError}
+      onReady={utils.handlePlayerReady}
       muted={!playing}
-      style={song ? utils.setPlayerStyle(song) : {}}
+      style={utils.setPlayerStyle(song)}
       url={song.url}
       playing={playing}
       controls
-      onEnded={() => next(index, songsState, setIndex)}
+      onEnded={handleEnded}
       width="100%"
       height="40vh"
       id="mainPlayer"
@@ -67,7 +46,7 @@ interface ImyButtonsProps {
   playing: boolean, setPlaying: (arg0: boolean) => void, index: number,
   songsState: Isong[], setIndex: (arg0: number) => void, isSingle: boolean
 }
-function MyButtons(props: ImyButtonsProps): JSX.Element {
+export function MyButtons(props: ImyButtonsProps): JSX.Element {
   const {
     playing, setPlaying, index, songsState, setIndex, isSingle,
   } = props;
@@ -79,7 +58,7 @@ function MyButtons(props: ImyButtonsProps): JSX.Element {
           variant="contained"
           id="play-pause"
           className={playing ? 'on' : 'off'}
-          onClick={() => play(playing, setPlaying)}
+          onClick={() => utils.play(playing, setPlaying)}
         >
           Play/Pause
         </Button>
@@ -100,7 +79,7 @@ function MyButtons(props: ImyButtonsProps): JSX.Element {
                 size="small"
                 variant="outlined"
                 id="next"
-                onClick={() => next(index, songsState, setIndex)}
+                onClick={() => utils.next(index, songsState, setIndex)}
               >
                 Next
               </Button>
@@ -108,7 +87,7 @@ function MyButtons(props: ImyButtonsProps): JSX.Element {
                 size="small"
                 variant="outlined"
                 id="prev"
-                onClick={() => prev(index, songsState, setIndex)}
+                onClick={() => utils.prev(index, songsState, setIndex)}
               >
                 Prev
               </Button>
@@ -123,7 +102,7 @@ function CopyRight(): JSX.Element { // eslint-disable-line class-methods-use-thi
   return (<span>All Original Songs &copy;2019 &ndash; 2020 Web Jam LLC</span>);
 }
 
-function TextUnderPlayer(
+export function TextUnderPlayer(
   { songsState, index }: { songsState: Isong[], index: number },
 ): JSX.Element {
   // eslint-disable-next-line security/detect-object-injection
@@ -166,7 +145,7 @@ function TextUnderPlayer(
 interface IcategoryButtonsProps {
   category: string, setCategory: (arg0: string) => void, isSingle: boolean
 }
-function CategoryButtons(props: IcategoryButtonsProps): JSX.Element {
+export function CategoryButtons(props: IcategoryButtonsProps): JSX.Element {
   const {
     category, setCategory, isSingle,
   } = props;

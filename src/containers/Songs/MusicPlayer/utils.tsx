@@ -1,3 +1,4 @@
+import type ReactPlayer from 'react-player';
 import commonUtils from 'src/lib/commonUtils';
 import type { Isong } from 'src/providers/Data.provider';
 
@@ -68,16 +69,22 @@ function initSongs(
   }
 }
 
-const makeSingleSong = (isSingle: boolean): boolean => {
-  if (!isSingle) return false;
-  const sidebar = document.getElementById('sidebar');
-  const header = document.getElementById('header');
-  const footer = document.getElementById('wjfooter');
-  const toggler = document.getElementById('mobilemenutoggle');
-  const contentBlock = document.getElementById('contentBlock');
-  const pageContent = document.getElementById('pageContent');
-  const headerTitle = document.getElementById('headerTitle');
-  const mainPlayer = document.getElementById('mainPlayer');
+function setSingleDisplays(
+  elements: {
+    sidebar: any; header: any; footer: any; toggler: any; contentBlock: any;
+    pageContent: any; headerTitle: any; mainPlayer: any; outerWidth: any; },
+) {
+  const {
+    sidebar,
+    header,
+    footer,
+    toggler,
+    contentBlock,
+    pageContent,
+    headerTitle,
+    mainPlayer,
+    outerWidth,
+  } = elements;
   if (sidebar) sidebar.style.display = 'none';
   if (header) header.style.display = 'none';
   if (footer) footer.style.display = 'none';
@@ -89,14 +96,71 @@ const makeSingleSong = (isSingle: boolean): boolean => {
     contentBlock.style.height = '100%';
     contentBlock.style.marginTop = '0px';
   }
-  if (mainPlayer && window.outerWidth < 600) mainPlayer.style.height = '55vh';
+  if (mainPlayer && outerWidth < 600) mainPlayer.style.height = '55vh';
   if (pageContent) pageContent.style.borderColor = '#fff';
-  return true;
+}
+
+const makeSingleSong = (isSingle: boolean): boolean => {
+  if (isSingle) {
+    const sidebar = document.getElementById('sidebar');
+    const header = document.getElementById('header');
+    const footer = document.getElementById('wjfooter');
+    const toggler = document.getElementById('mobilemenutoggle');
+    const contentBlock = document.getElementById('contentBlock');
+    const pageContent = document.getElementById('pageContent');
+    const headerTitle = document.getElementById('headerTitle');
+    const mainPlayer = document.getElementById('mainPlayer');
+    setSingleDisplays({
+      sidebar,
+      header,
+      footer,
+      toggler,
+      contentBlock,
+      pageContent,
+      headerTitle,
+      mainPlayer,
+      outerWidth: window.outerWidth,
+    });
+  }
+  return isSingle;
 };
+
+function play(playing: boolean, setPlaying: (arg0: boolean) => void): void {
+  setPlaying(!playing);
+}
+
+function next(index: number, songsState: Isong[], setIndex: (arg0: number) => void): void {
+  const nextIndex = index + 1;
+  if (nextIndex >= songsState.length) {
+    setIndex(0);
+  } else {
+    setIndex(nextIndex);
+  }
+}
+
+function prev(index: number, songsState: Isong[], setIndex: (arg0: number) => void): void {
+  const minusIndex = index - 1;
+  if (minusIndex < 0 || minusIndex > songsState.length) {
+    const newIndex = songsState.length - 1;
+    setIndex(newIndex);
+  } else setIndex(minusIndex);
+}
+
+const handlePlayerError = (err: any) => {
+  // eslint-disable-next-line no-console
+  console.log(err); return err;
+};
+
+const handlePlayerReady = (player:ReactPlayer) => { console.log(player); return player; };
 
 export default {
   makeSingleSong,
   copyShare,
   initSongs,
   setPlayerStyle,
+  play,
+  next,
+  prev,
+  handlePlayerError,
+  handlePlayerReady,
 };
