@@ -1,4 +1,4 @@
-import utils from 'src/App/AppTemplate/GoogleButtons/googleButtons.utils';
+import utils from 'src/App/AppTemplate/GoogleButtons/utils';
 
 describe('GoogleButtons/utils', () => {
   it('responseGoogleLogout', async () => {
