@@ -2,7 +2,7 @@ import { CodeResponse, useGoogleLogin } from '@react-oauth/google';
 import { useContext } from 'react';
 import { Button } from '@mui/material';
 import { AuthContext, Iauth } from 'src/providers/Auth.provider';
-import utils from './googleButtons.utils';
+import utils from './utils';
 
 export const loginConfig = (auth:Iauth, setAuth: (args0:Iauth)=>void) => ({
   onSuccess: (codeResponse: Omit<CodeResponse, 'error' | 'error_description' | 'error_uri'>) => {
