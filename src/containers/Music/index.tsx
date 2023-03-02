@@ -1,11 +1,13 @@
-import { useEffect, useState } from 'react';
-import PicSlider from 'src/components/PicSlider';
+import { useEffect, useState, useContext } from 'react';
+import { AuthContext, Iauth } from 'src/providers/Auth.provider';
+import { PicSlider } from 'src/containers/Music/Pictures/PicSlider';
+import commonUtils from 'src/lib/commonUtils';
 import { Gigs } from './Gigs';
-import type { Iimage, Auth } from '../../redux/mapStoreToProps';
 import { Intro } from './intro';
 import JoshBio from './joshBio';
 import MariaBio from './mariaBio';
-import commonUtils from '../../lib/commonUtils';
+import { CreatePicDialog } from './Pictures/CreatePicDialog';
+import { EditPicTable } from './Pictures/EditPicTable';
 
 export function Musicians(): JSX.Element {
   return (
@@ -21,7 +23,27 @@ export function Musicians(): JSX.Element {
   );
 }
 
-export function checkIsAdmin(auth: Auth | null, setIsAdmin: (arg0: boolean) => void) {
+interface IphotosSectionProps {
+  showEditPicTable: boolean, setShowEditPicTable: (arg0: boolean) => void, isAdmin: boolean,
+  setShowCreatePic: (arg0: boolean) => void, showCreatePic: boolean,
+}
+export function PhotosSection(props: IphotosSectionProps) {
+  const {
+    showEditPicTable, setShowEditPicTable, isAdmin, setShowCreatePic, showCreatePic,
+  } = props;
+  return (
+    <div style={{ paddingTop: '1px', paddingBottom: 0, marginBottom: 0 }}>
+      <div id="musicSlide1">
+        {!showEditPicTable ? <PicSlider /> : <EditPicTable setShowTable={setShowEditPicTable} />}
+      </div>
+      {showEditPicTable ? null
+        : <Intro isAdmin={isAdmin} setShowEditPic={setShowEditPicTable} setShowCreatePic={setShowCreatePic} />}
+      <CreatePicDialog showDialog={showCreatePic} setShowDialog={setShowCreatePic} />
+    </div>
+  );
+}
+
+export function checkIsAdmin(auth: Iauth, setIsAdmin: (arg0: boolean) => void) {
   let isAdmin = false;
   if (auth && auth.isAuthenticated && process.env.userRoles) {
     const { user: { userType } } = auth;
@@ -32,25 +54,24 @@ export function checkIsAdmin(auth: Auth | null, setIsAdmin: (arg0: boolean) => v
   setIsAdmin(isAdmin);
 }
 
-interface ImusicNewProps {
-  images?: Iimage[]
-  auth: Auth | null;
-}
-export function Music({ images, auth }: ImusicNewProps): JSX.Element {
+export function Music(): JSX.Element {
+  const { auth } = useContext(AuthContext);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [showCreatePic, setShowCreatePic] = useState(false);
+  const [showEditPicTable, setShowEditPicTable] = useState(false);
   useEffect(() => commonUtils.setTitleAndScroll('Music', window.screen.width), []);
   useEffect(() => {
     checkIsAdmin(auth, setIsAdmin);
   }, [auth]);
-  const data = Array.isArray(images) ? images : [];
   return (
-    <div className="page-content">
-      <div style={{ paddingTop: '1px', paddingBottom: 0, marginBottom: 0 }}>
-        <div id="musicSlide1">
-          {data.length > 0 ? (<PicSlider data={data} />) : null}
-        </div>
-        <Intro />
-      </div>
+    <div className="page-content music">
+      <PhotosSection
+        showEditPicTable={showEditPicTable}
+        setShowEditPicTable={setShowEditPicTable}
+        isAdmin={isAdmin}
+        setShowCreatePic={setShowCreatePic}
+        showCreatePic={showCreatePic}
+      />
       <div
         className="search-table-outer"
         style={{

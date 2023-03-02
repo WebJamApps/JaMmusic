@@ -5,15 +5,7 @@
 }
 
 #player button {
-  background-color: #eee;
-  padding: 3px 10px;
-  border-radius: 3px;
-  border: 0;
   margin: 3px;
-  outline: 0;
-  font-size: 0.8em;
-  display: inline-block;
-  vertical-align: middle;
 }
 
 #play-buttons {
@@ -28,14 +20,6 @@
   padding: 4px 15px;
   border-radius: 5px;
   font-size: 0.8em;
-}
-
-button.on {
-  background-color: #c0c0c0 !important;
-}
-
-#player button:hover {
-  background-color: #c0c0c0;
 }
 
 #inputGroup {
@@ -53,22 +37,7 @@ button.on {
 }
 
 .copySuccess {
-  /*text-align: left;*/
   color: green;
-}
-
-#play-pause.off {
-  background-color: #c0c0c0 !important;
-}
-
-#play-pause.on {
-  background-color: green !important;
-  color: #ffffff;
-}
-
-#playerAndButtons button.on {
-  background-color: green !important;
-  color: #ffffff;
 }
 
 .missionon, .pubon, .originalon{
@@ -148,7 +117,6 @@ audio::-webkit-media-controls-enclosure {
 
 audio::-webkit-media-controls-panel {
   width: calc(100% + 30px);
-  /* Adjust as needed */
 }
 
 #playSection audio {

@@ -1,4 +1,5 @@
-import commonUtils from '../../src/lib/commonUtils';
+import { Store } from 'react-notifications-component';
+import commonUtils from 'src/lib/commonUtils';
 
 describe('commonUtils', () => {
   it('calls scrollIntoView', () => {
@@ -17,5 +18,10 @@ describe('commonUtils', () => {
   it('getUserRoles when userRoles is missing from env vars', () => {
     delete process.env.userRoles;
     expect(commonUtils.getUserRoles().length).toBe(0);
+  });
+  it('notify', () => {
+    Store.addNotification = jest.fn();
+    commonUtils.notify('title', 'message', 'success');
+    expect(Store.addNotification).toHaveBeenCalled();
   });
 });

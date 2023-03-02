@@ -1,0 +1,31 @@
+.textUnderPlayer{
+    padding-bottom: 0px;
+    margin:auto;
+}
+
+.songPlayerButtonsSection{
+    margin:auto;
+}
+
+
+#play-pause.on { background-color: red; color: black; }
+
+#play-buttons { margin-bottom:10px;}
+
+.categoryButtons {
+    height: 22px; margin: auto; padding-top: 10px;
+}
+
+.categoryTitle {
+    margin:6px;
+}
+
+.copyShare {
+    margin-top: 16px;
+}
+
+#copyUrl {
+    font-size: 9pt;
+    white-space: nowrap;
+    min-width: 450px;
+}

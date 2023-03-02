@@ -1,10 +1,8 @@
-import type { Dispatch } from 'react';
-import type { RouteComponentProps } from 'react-router-dom';
-import type { Auth } from 'src/redux/mapStoreToProps';
 import menuConfig from './menuConfig';
 import { MakeLink, SideMenuItem } from './SideMenuItem';
 
-export function ActiveUsers({ heartBeat, userCount }: { heartBeat: string, userCount: number }) {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function ActiveUsers({ heartBeat, userCount }: { heartBeat?: string, userCount?: number }) {
   return (
     <div className="active-users">
       <div>
@@ -44,12 +42,11 @@ const MusTT = () => (
 );
 
 interface InavLinksProps {
-  handleClose: () => void, userCount: number, heartBeat: string, auth: Auth,
-  location: RouteComponentProps['location'], dispatch: Dispatch<unknown>
+  handleClose: () => void, userCount?: number, heartBeat?: string,
 }
 export function NavLinks(props: InavLinksProps) {
   const {
-    userCount, heartBeat, auth, location, dispatch, handleClose,
+    userCount, heartBeat, handleClose,
   } = props;
   return (
     <div className="nav-list" style={{ width: '180px' }}>
@@ -62,9 +59,6 @@ export function NavLinks(props: InavLinksProps) {
             key={index}
             menu={menu}
             index={index}
-            auth={auth}
-            location={location}
-            dispatch={dispatch}
             handleClose={handleClose}
           />
         ),

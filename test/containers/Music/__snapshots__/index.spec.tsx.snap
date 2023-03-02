@@ -1,0 +1,1209 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`/music renders the component 1`] = `
+<div
+  className="page-content music"
+>
+  <div
+    style={
+      {
+        "marginBottom": 0,
+        "paddingBottom": 0,
+        "paddingTop": "1px",
+      }
+    }
+  >
+    <div
+      id="musicSlide1"
+    />
+    <div
+      className="intro"
+      style={
+        {
+          "margin": "auto",
+          "maxWidth": "900px",
+          "padding": "6px",
+          "paddingBottom": 0,
+        }
+      }
+    >
+      <div
+        style={
+          {
+            "margin": "auto",
+            "textAlign": "center",
+          }
+        }
+      >
+        <button
+          className="clickToListen"
+          onClick={[Function]}
+          variant="contained"
+        >
+          Click To Listen
+        </button>
+      </div>
+      <p
+        style={
+          {
+            "marginBottom": "6px",
+            "marginTop": "10px",
+          }
+        }
+      >
+        Josh and Maria have been performing their music together for over 10 years now! Whether it is at church, charity events, public venues, or outdoor festivals, this couple will blow your socks off.
+      </p>
+    </div>
+    <div
+      className="createNewPicDialog"
+      disableAutoFocus={true}
+      disableEnforceFocus={true}
+      onClose={[Function]}
+      open={false}
+    >
+      <div>
+        Create New Picture
+      </div>
+      <div
+        sx={
+          {
+            "padding": "10px 10px",
+          }
+        }
+      >
+        <div
+          sx={
+            {
+              "marginBottom": "30px",
+            }
+          }
+        >
+          Enter all *required fields to create a new picture.
+        </div>
+        <input
+          fullWidth={true}
+          label="* URL"
+          onChange={[Function]}
+          sx={
+            {
+              "marginTop": "20px",
+            }
+          }
+          type="text"
+          value=""
+        />
+        <input
+          fullWidth={true}
+          label="* Title"
+          onChange={[Function]}
+          sx={
+            {
+              "marginTop": "20px",
+            }
+          }
+          type="text"
+          value=""
+        />
+        <div>
+          <div
+            control={
+              <Checkbox
+                checked={false}
+                onClick={[Function]}
+              />
+            }
+            label="Show Title In Caption"
+          />
+        </div>
+      </div>
+      <div>
+        <button
+          className="createPicButton"
+          onClick={[Function]}
+          size="small"
+          variant="contained"
+        >
+          Create
+        </button>
+        <button
+          className="cancelPicButton"
+          onClick={[Function]}
+          size="small"
+        >
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+  <div
+    className="search-table-outer"
+    style={
+      {
+        "margin": "auto",
+        "maxWidth": "96%",
+        "overflowX": "auto",
+        "position": "relative",
+        "zIndex": 0,
+      }
+    }
+  >
+    <div
+      className="gigsDiv"
+      style={
+        {
+          "margin": "auto",
+          "maxWidth": "1040px",
+          "padding": "10px",
+          "width": "100%",
+        }
+      }
+    >
+      <h4
+        style={
+          {
+            "textAlign": "center",
+          }
+        }
+      >
+        Gigs
+      </h4>
+      <div
+        style={
+          {
+            "height": "500px",
+            "width": "100%",
+          }
+        }
+      >
+        <table />
+      </div>
+      <div
+        className="createNewGigDialog"
+        disableAutoFocus={true}
+        disableEnforceFocus={true}
+        onClose={[Function]}
+        open={false}
+      >
+        <div>
+          Create New Gig
+        </div>
+        <div
+          sx={
+            {
+              "padding": "10px 10px",
+            }
+          }
+        >
+          <div
+            sx={
+              {
+                "marginBottom": "30px",
+              }
+            }
+          >
+            Enter all *required fields to create a new gig.
+          </div>
+          <div
+            dateAdapter={[Function]}
+          >
+            <input
+              className="createDatetime"
+              label="* Date and Time"
+              onChange={[Function]}
+              renderInput={[Function]}
+              value={2017-01-01T00:00:00.000Z}
+            />
+          </div>
+          <p
+            className="venueLabel"
+          >
+            * Venue
+          </p>
+          <textarea
+            id="create-venue"
+            style={
+              {
+                "visibility": "hidden",
+              }
+            }
+          />
+          <input
+            fullWidth={true}
+            label="* City"
+            onChange={[Function]}
+            sx={
+              {
+                "marginTop": "20px",
+              }
+            }
+            type="text"
+            value=""
+          />
+          <div
+            fullWidth={true}
+            sx={
+              {
+                "marginTop": "20px",
+              }
+            }
+          >
+            <p
+              id="create-us-state-label"
+            >
+              * State
+            </p>
+            <select
+              id="create-us-state"
+              label="* State"
+              labelId="create-us-state-label"
+              onChange={[Function]}
+              value="Virginia"
+            >
+              <option
+                value="Alabama"
+              >
+                Alabama
+              </option>
+              <option
+                value="Alaska"
+              >
+                Alaska
+              </option>
+              <option
+                value="American Samoa"
+              >
+                American Samoa
+              </option>
+              <option
+                value="Arizona"
+              >
+                Arizona
+              </option>
+              <option
+                value="Arkansas"
+              >
+                Arkansas
+              </option>
+              <option
+                value="California"
+              >
+                California
+              </option>
+              <option
+                value="Colorado"
+              >
+                Colorado
+              </option>
+              <option
+                value="Connecticut"
+              >
+                Connecticut
+              </option>
+              <option
+                value="Delaware"
+              >
+                Delaware
+              </option>
+              <option
+                value="District of Columbia"
+              >
+                District of Columbia
+              </option>
+              <option
+                value="Federated States of Micronesia"
+              >
+                Federated States of Micronesia
+              </option>
+              <option
+                value="Florida"
+              >
+                Florida
+              </option>
+              <option
+                value="Georgia"
+              >
+                Georgia
+              </option>
+              <option
+                value="Guam"
+              >
+                Guam
+              </option>
+              <option
+                value="Hawaii"
+              >
+                Hawaii
+              </option>
+              <option
+                value="Idaho"
+              >
+                Idaho
+              </option>
+              <option
+                value="Illinois"
+              >
+                Illinois
+              </option>
+              <option
+                value="Indiana"
+              >
+                Indiana
+              </option>
+              <option
+                value="Iowa"
+              >
+                Iowa
+              </option>
+              <option
+                value="Kansas"
+              >
+                Kansas
+              </option>
+              <option
+                value="Kentucky"
+              >
+                Kentucky
+              </option>
+              <option
+                value="Louisiana"
+              >
+                Louisiana
+              </option>
+              <option
+                value="Maine"
+              >
+                Maine
+              </option>
+              <option
+                value="Marshall Islands"
+              >
+                Marshall Islands
+              </option>
+              <option
+                value="Maryland"
+              >
+                Maryland
+              </option>
+              <option
+                value="Massachusetts"
+              >
+                Massachusetts
+              </option>
+              <option
+                value="Michigan"
+              >
+                Michigan
+              </option>
+              <option
+                value="Minnesota"
+              >
+                Minnesota
+              </option>
+              <option
+                value="Mississippi"
+              >
+                Mississippi
+              </option>
+              <option
+                value="Missouri"
+              >
+                Missouri
+              </option>
+              <option
+                value="Montana"
+              >
+                Montana
+              </option>
+              <option
+                value="Nebraska"
+              >
+                Nebraska
+              </option>
+              <option
+                value="Nevada"
+              >
+                Nevada
+              </option>
+              <option
+                value="New Hampshire"
+              >
+                New Hampshire
+              </option>
+              <option
+                value="New Jersey"
+              >
+                New Jersey
+              </option>
+              <option
+                value="New Mexico"
+              >
+                New Mexico
+              </option>
+              <option
+                value="New York"
+              >
+                New York
+              </option>
+              <option
+                value="North Carolina"
+              >
+                North Carolina
+              </option>
+              <option
+                value="North Dakota"
+              >
+                North Dakota
+              </option>
+              <option
+                value="Northern Mariana Islands"
+              >
+                Northern Mariana Islands
+              </option>
+              <option
+                value="Ohio"
+              >
+                Ohio
+              </option>
+              <option
+                value="Oklahoma"
+              >
+                Oklahoma
+              </option>
+              <option
+                value="Oregon"
+              >
+                Oregon
+              </option>
+              <option
+                value="Palau"
+              >
+                Palau
+              </option>
+              <option
+                value="Pennsylvania"
+              >
+                Pennsylvania
+              </option>
+              <option
+                value="Puerto Rico"
+              >
+                Puerto Rico
+              </option>
+              <option
+                value="Rhode Island"
+              >
+                Rhode Island
+              </option>
+              <option
+                value="South Carolina"
+              >
+                South Carolina
+              </option>
+              <option
+                value="South Dakota"
+              >
+                South Dakota
+              </option>
+              <option
+                value="Tennessee"
+              >
+                Tennessee
+              </option>
+              <option
+                value="Texas"
+              >
+                Texas
+              </option>
+              <option
+                value="Utah"
+              >
+                Utah
+              </option>
+              <option
+                value="Vermont"
+              >
+                Vermont
+              </option>
+              <option
+                value="Virgin Island"
+              >
+                Virgin Island
+              </option>
+              <option
+                value="Virginia"
+              >
+                Virginia
+              </option>
+              <option
+                value="Washington"
+              >
+                Washington
+              </option>
+              <option
+                value="West Virginia"
+              >
+                West Virginia
+              </option>
+              <option
+                value="Wisconsin"
+              >
+                Wisconsin
+              </option>
+              <option
+                value="Wyoming"
+              >
+                Wyoming
+              </option>
+            </select>
+          </div>
+          <input
+            fullWidth={true}
+            label="Tickets"
+            onChange={[Function]}
+            sx={
+              {
+                "marginTop": "20px",
+              }
+            }
+            type="text"
+            value=""
+          />
+        </div>
+        <div>
+          <button
+            className="createGigButton"
+            disabled={true}
+            onClick={[Function]}
+            size="small"
+            variant="contained"
+          >
+            Create
+          </button>
+          <button
+            className="cancelCreateButton"
+            onClick={[Function]}
+            size="small"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+      <div
+        className="editGigDialog"
+        disableAutoFocus={true}
+        disableEnforceFocus={true}
+        onClose={[Function]}
+        open={false}
+      >
+        <div>
+          Edit Gig
+        </div>
+        <div
+          sx={
+            {
+              "padding": "10px 10px",
+            }
+          }
+        >
+          <div
+            sx={
+              {
+                "marginBottom": "30px",
+              }
+            }
+          >
+            Enter all *required
+          </div>
+          <div
+            dateAdapter={[Function]}
+          >
+            <input
+              className="editDateTime"
+              label="* Date and Time"
+              onChange={[Function]}
+              renderInput={[Function]}
+              value={null}
+            />
+          </div>
+          <p
+            className="venueLabel"
+          >
+            * Venue
+          </p>
+          <input
+            fullWidth={true}
+            label="* City"
+            onChange={[Function]}
+            sx={
+              {
+                "marginTop": "20px",
+              }
+            }
+            type="text"
+            value=""
+          />
+          <div
+            fullWidth={true}
+            sx={
+              {
+                "marginTop": "20px",
+              }
+            }
+          >
+            <p
+              id="edit-us-state-label"
+            >
+              * State
+            </p>
+            <select
+              id="edit-us-state"
+              label="* State"
+              labelId="edit-us-state-label"
+              onChange={[Function]}
+              value="Virginia"
+            >
+              <option
+                value="Alabama"
+              >
+                Alabama
+              </option>
+              <option
+                value="Alaska"
+              >
+                Alaska
+              </option>
+              <option
+                value="American Samoa"
+              >
+                American Samoa
+              </option>
+              <option
+                value="Arizona"
+              >
+                Arizona
+              </option>
+              <option
+                value="Arkansas"
+              >
+                Arkansas
+              </option>
+              <option
+                value="California"
+              >
+                California
+              </option>
+              <option
+                value="Colorado"
+              >
+                Colorado
+              </option>
+              <option
+                value="Connecticut"
+              >
+                Connecticut
+              </option>
+              <option
+                value="Delaware"
+              >
+                Delaware
+              </option>
+              <option
+                value="District of Columbia"
+              >
+                District of Columbia
+              </option>
+              <option
+                value="Federated States of Micronesia"
+              >
+                Federated States of Micronesia
+              </option>
+              <option
+                value="Florida"
+              >
+                Florida
+              </option>
+              <option
+                value="Georgia"
+              >
+                Georgia
+              </option>
+              <option
+                value="Guam"
+              >
+                Guam
+              </option>
+              <option
+                value="Hawaii"
+              >
+                Hawaii
+              </option>
+              <option
+                value="Idaho"
+              >
+                Idaho
+              </option>
+              <option
+                value="Illinois"
+              >
+                Illinois
+              </option>
+              <option
+                value="Indiana"
+              >
+                Indiana
+              </option>
+              <option
+                value="Iowa"
+              >
+                Iowa
+              </option>
+              <option
+                value="Kansas"
+              >
+                Kansas
+              </option>
+              <option
+                value="Kentucky"
+              >
+                Kentucky
+              </option>
+              <option
+                value="Louisiana"
+              >
+                Louisiana
+              </option>
+              <option
+                value="Maine"
+              >
+                Maine
+              </option>
+              <option
+                value="Marshall Islands"
+              >
+                Marshall Islands
+              </option>
+              <option
+                value="Maryland"
+              >
+                Maryland
+              </option>
+              <option
+                value="Massachusetts"
+              >
+                Massachusetts
+              </option>
+              <option
+                value="Michigan"
+              >
+                Michigan
+              </option>
+              <option
+                value="Minnesota"
+              >
+                Minnesota
+              </option>
+              <option
+                value="Mississippi"
+              >
+                Mississippi
+              </option>
+              <option
+                value="Missouri"
+              >
+                Missouri
+              </option>
+              <option
+                value="Montana"
+              >
+                Montana
+              </option>
+              <option
+                value="Nebraska"
+              >
+                Nebraska
+              </option>
+              <option
+                value="Nevada"
+              >
+                Nevada
+              </option>
+              <option
+                value="New Hampshire"
+              >
+                New Hampshire
+              </option>
+              <option
+                value="New Jersey"
+              >
+                New Jersey
+              </option>
+              <option
+                value="New Mexico"
+              >
+                New Mexico
+              </option>
+              <option
+                value="New York"
+              >
+                New York
+              </option>
+              <option
+                value="North Carolina"
+              >
+                North Carolina
+              </option>
+              <option
+                value="North Dakota"
+              >
+                North Dakota
+              </option>
+              <option
+                value="Northern Mariana Islands"
+              >
+                Northern Mariana Islands
+              </option>
+              <option
+                value="Ohio"
+              >
+                Ohio
+              </option>
+              <option
+                value="Oklahoma"
+              >
+                Oklahoma
+              </option>
+              <option
+                value="Oregon"
+              >
+                Oregon
+              </option>
+              <option
+                value="Palau"
+              >
+                Palau
+              </option>
+              <option
+                value="Pennsylvania"
+              >
+                Pennsylvania
+              </option>
+              <option
+                value="Puerto Rico"
+              >
+                Puerto Rico
+              </option>
+              <option
+                value="Rhode Island"
+              >
+                Rhode Island
+              </option>
+              <option
+                value="South Carolina"
+              >
+                South Carolina
+              </option>
+              <option
+                value="South Dakota"
+              >
+                South Dakota
+              </option>
+              <option
+                value="Tennessee"
+              >
+                Tennessee
+              </option>
+              <option
+                value="Texas"
+              >
+                Texas
+              </option>
+              <option
+                value="Utah"
+              >
+                Utah
+              </option>
+              <option
+                value="Vermont"
+              >
+                Vermont
+              </option>
+              <option
+                value="Virgin Island"
+              >
+                Virgin Island
+              </option>
+              <option
+                value="Virginia"
+              >
+                Virginia
+              </option>
+              <option
+                value="Washington"
+              >
+                Washington
+              </option>
+              <option
+                value="West Virginia"
+              >
+                West Virginia
+              </option>
+              <option
+                value="Wisconsin"
+              >
+                Wisconsin
+              </option>
+              <option
+                value="Wyoming"
+              >
+                Wyoming
+              </option>
+            </select>
+          </div>
+          <input
+            fullWidth={true}
+            label="Tickets"
+            onChange={[Function]}
+            sx={
+              {
+                "marginTop": "20px",
+              }
+            }
+            type="text"
+            value=""
+          />
+        </div>
+        <div>
+          <button
+            className="updateGigButton"
+            disabled={true}
+            onClick={[Function]}
+            size="small"
+            variant="contained"
+          >
+            Update
+          </button>
+          <button
+            className="deleteGigButton"
+            onClick={[Function]}
+            size="small"
+            sx={
+              {
+                "color": "red",
+              }
+            }
+          >
+            Delete
+          </button>
+          <button
+            className="cancelEditGigButton"
+            onClick={[Function]}
+            size="small"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    style={
+      {
+        "height": "10px",
+      }
+    }
+  >
+    <p>
+       
+    </p>
+  </div>
+  <div
+    className="elevation3"
+    style={
+      {
+        "margin": "auto",
+        "maxWidth": "1000px",
+      }
+    }
+  >
+    <section>
+      <div
+        className="joshBio"
+      >
+        <div
+          style={
+            {
+              "height": "10px",
+            }
+          }
+        >
+          <p>
+             
+          </p>
+        </div>
+        <h4
+          id="joshbio"
+          style={
+            {
+              "marginBottom": "4px",
+              "marginTop": "8px",
+            }
+          }
+        >
+          Josh Sherman
+        </h4>
+        <div>
+          <img
+            alt="josh01"
+            className="alignnone size-full wp-image-49"
+            src="/static/imgs/josh01.jpg"
+            width="288px"
+          />
+        </div>
+        <p
+          className="bioText"
+        >
+          Josh began playing the trumpet when he was in third grade. He became skilled with the trumpet, continuing with his musical stylings through high school where he was first chair and regular soloist on the marching field. In college Josh studied music and picked up the guitar. He was primarily self-taught on the guitar, although he received help from his many musical relatives, especially his Uncle Mike. Josh went on to found several bands while living in central Florida. He recorded two cds and was played on the local radio stations. Josh also played in many venues including the Sun cruise casino ship and the Battle of the Bands. His career took a different turn when he moved to Virginia. Leaving his band behind, Josh played at the GE Pig roast several years and performed solo at Mill Mountain coffee shop and the 4th Street coffee shop. Josh started singing with Maria in the fall of 2011. They fell in love and were married in July of 2012. Vive l’amore!
+        </p>
+        <blockquote
+          style={
+            {
+              "fontSize": "9pt",
+              "fontStyle": "italic",
+              "marginTop": "5px",
+              "textAlign": "left",
+            }
+          }
+        >
+          <p>
+            And whenever the harmful spirit from God was upon Saul, David took the lyre and played it with his hand. So Saul was refreshed and was well, and the harmful spirit departed from him.
+             
+            <strong>
+              1 Samuel 16:23
+            </strong>
+          </p>
+        </blockquote>
+        <aside
+          className="instrumentList"
+        >
+          <p>
+            Instruments that Josh plays:
+          </p>
+          <ol
+            className="instruments"
+          >
+            <li>
+              Lead vocals
+            </li>
+            <li>
+              Harmony vocals
+            </li>
+            <span>
+              <li>
+                Acoustic guitar
+              </li>
+              <li>
+                Electric guitar
+              </li>
+              <li>
+                Harmonica
+              </li>
+              <li>
+                Trumpet
+              </li>
+              <li>
+                Kazoo
+              </li>
+            </span>
+          </ol>
+        </aside>
+      </div>
+      <hr />
+      <div
+        className="mariaBio"
+      >
+        <h4
+          id="mariabio"
+          style={
+            {
+              "marginBottom": "4px",
+            }
+          }
+        >
+          Maria Sherman
+        </h4>
+        <div>
+          <img
+            alt="maria01"
+            className="alignnone size-medium wp-image-50"
+            src="/static/imgs/maria01.jpg"
+            width="288px"
+          />
+        </div>
+        <p
+          className="bioText"
+        >
+          Maria started her singing career at the age of 4 when she performed at the JaMar Rec Center in St. Petersburg, Florida. Maria continued adding to her musical repertoire by learning piano, alto saxophone, tenor saxophone, bassoon, and marching tenors. She earned a minor in voice at Roanoke College and did a variety of chorus, musical theatre, and solo performances while teaching in the Roanoke County Schools. Although classically trained, Maria loves singing rock and Christian music with Josh, and hopes to add bass guitar to her list of instruments soon. Josh is the most wonderful husband and is the driving force for the couple; Maria is a fabulous wife and is the organization behind the duo.
+        </p>
+        <blockquote
+          style={
+            {
+              "fontSize": "9pt",
+              "fontStyle": "italic",
+              "marginTop": "5px",
+              "textAlign": "left",
+            }
+          }
+        >
+          <p>
+            Whoever sings songs to a heavy heart is like one who takes off a garment on a cold day, and like vinegar on soda.
+             
+            <strong>
+              Proverbs 25:20
+            </strong>
+          </p>
+        </blockquote>
+        <aside
+          className="instrumentList"
+        >
+          <p>
+            Instruments that Maria plays:
+          </p>
+          <ol
+            className="instruments"
+          >
+            <li>
+              Lead vocals
+            </li>
+            <li>
+              Harmony vocals
+            </li>
+            <span>
+              <li>
+                Bass guitar
+              </li>
+              <li>
+                Accordion
+              </li>
+              <li>
+                Bassoon
+              </li>
+              <li>
+                Saxophone
+              </li>
+              <li>
+                Tri-tom
+              </li>
+            </span>
+          </ol>
+        </aside>
+      </div>
+    </section>
+    <p>
+       
+    </p>
+    <p>
+       
+    </p>
+  </div>
+</div>
+`;

@@ -1,10 +1,9 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable class-methods-use-this, max-classes-per-file,  */
-import { shallow, ShallowWrapper } from 'enzyme';
-import GoogleMap, { equals } from '../../../src/containers/GoogleMap';
+/* eslint-disable max-classes-per-file */
+import renderer from 'react-test-renderer';
+import GoogleMap, { equals } from 'src/containers/GoogleMap';
 
 describe('GoogleMap container', () => {
-  let lType = '', wrapper: ShallowWrapper<Readonly<any> & Readonly<{ children?: React.ReactNode; }>, Readonly<any>, GoogleMap>;
+  let lType = '';
   const fakeFunc: any = jest.fn();
   class Marker { addListener(type: string, cb: () => void) { lType = type; cb(); } }
   class InfoWindow { open() { } }
@@ -19,18 +18,13 @@ describe('GoogleMap container', () => {
         InfoWindow: fakeInfoWindow,
       },
     };
-    wrapper = shallow<GoogleMap>(<GoogleMap />);
   });
   it('renders correctly', () => {
-    expect(wrapper).toMatchSnapshot();
+    const gMap = renderer.create(<GoogleMap />).toJSON();
+    expect(gMap).toMatchSnapshot();
     expect(lType).toBe('click');
   });
-  it('does not render the map', () => {
-    document.body.innerHTML = '<div></div>';
-    const wrapper2 = shallow<GoogleMap>(<GoogleMap />);
-    expect(wrapper2.instance().gMap).toBe(null);
-  });
-  it('equals returns true', () => {
+  it('equals is true', () => {
     expect(equals()).toBe(true);
   });
 });

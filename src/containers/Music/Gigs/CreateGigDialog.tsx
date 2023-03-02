@@ -7,10 +7,8 @@ import { DateTimePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { Editor } from '@tinymce/tinymce-react';
 import { useContext, useState } from 'react';
 import { DataContext } from 'src/providers/Data.provider';
+import { AuthContext } from 'src/providers/Auth.provider';
 import utils from './gigs.utils';
-
-// eslint-disable-next-line max-len
-export const usStateOptions = ['Alabama', 'Alaska', 'American Samoa', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'District of Columbia', 'Federated States of Micronesia', 'Florida', 'Georgia', 'Guam', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Marshall Islands', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Northern Mariana Islands', 'Ohio', 'Oklahoma', 'Oregon', 'Palau', 'Pennsylvania', 'Puerto Rico', 'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virgin Island', 'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'];
 
 interface IcreateGigDialogProps {
   showDialog: boolean, setShowDialog: (arg0: boolean) => void,
@@ -18,6 +16,7 @@ interface IcreateGigDialogProps {
 export function CreateGigDialog({
   showDialog, setShowDialog,
 }: IcreateGigDialogProps) {
+  const { auth } = useContext(AuthContext);
   const { getGigs } = useContext(DataContext);
   const now = new Date() as Date | null;
   const [dateTime, setDateTime] = useState(now);
@@ -31,7 +30,7 @@ export function CreateGigDialog({
       disableAutoFocus
       className="createNewGigDialog"
       open={showDialog}
-      onClose={() => { setShowDialog(false); return false; }}
+      onClose={() => setShowDialog(false)}
     >
       <DialogTitle>Create New Gig</DialogTitle>
       <DialogContent sx={{ padding: '10px 10px' }}>
@@ -85,7 +84,7 @@ export function CreateGigDialog({
             label="* State"
             onChange={(evt) => { setUSstate(evt.target.value); return evt.target.value; }}
           >
-            {usStateOptions.map((s: string) => <MenuItem key={s} value={s}>{s}</MenuItem>)}
+            {utils.usStateOptions.map((s: string) => <MenuItem key={s} value={s}>{s}</MenuItem>)}
           </Select>
         </FormControl>
         <TextField
@@ -103,14 +102,14 @@ export function CreateGigDialog({
           size="small"
           variant="contained"
           className="createGigButton"
-          onClick={() => { utils.createGig(getGigs, setShowDialog, dateTime, venue, city, usState, tickets); return true; }}
+          onClick={() => { utils.createGig(getGigs, setShowDialog, dateTime, venue, city, usState, tickets, auth); }}
         >
           Create
         </Button>
         <Button
           size="small"
           className="cancelCreateButton"
-          onClick={() => { setShowDialog(false); return false; }}
+          onClick={() => setShowDialog(false)}
         >
           Cancel
         </Button>

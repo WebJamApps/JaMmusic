@@ -1,23 +1,14 @@
-import superagent from 'superagent';
-import type { ISong } from './Data.provider';
+import axios from 'axios';
+import type { Isong } from './Data.provider';
 
-export const defaultSong: ISong = {
-  category: '', title: '', url: '', _id: '', year: 2000,
-};
-
-export const getSongs = async (setSongs: (arg0: ISong[]) => void): Promise<ISong[]> => {
-  let res: { body: ISong[] }, newSongs: ISong[] = [];
+export const getSongs = async (setSongs: (arg0: Isong[]) => void): Promise<Isong[]> => {
   if (!window.location.href.includes('8888') && !window.location.href.includes('joshandmariamusic')) {
     try {
-      res = await superagent.get(`${process.env.BackendUrl}/song`).set('Accept', 'application/json');
-    } catch (e) { console.log((e as Error).message); return [defaultSong]; }
-    newSongs = res.body;
-    try {
-      newSongs.sort((a, b) => b.year - a.year);
-    } catch (error) { console.log(error); newSongs = []; }
-    setSongs(newSongs);
-  }
-  return newSongs;
+      const { data }:{ data:Isong[] } = await axios.get(`${process.env.BackendUrl}/song`);
+      data.sort((a:Isong, b:Isong) => b.year - a.year);
+      setSongs(data);
+      return data;
+    } catch (e) { console.log((e as Error).message); return [] as Isong[]; }
+  } return [] as Isong[];
 };
-
 export default { getSongs };

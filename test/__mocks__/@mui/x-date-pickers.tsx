@@ -1,8 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export function DateTimePicker(props:any) {
-  return <input {...props}>{props.children}</input>;
+  const { children } = props;
+  return <input {...props}>{children}</input>;
 }
 
 export function LocalizationProvider(props:any) {
-  return <div {...props}>{props.children}</div>;
+  const { children } = props;
+  return <div {...props}>{children}</div>;
 }

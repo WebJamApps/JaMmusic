@@ -28,9 +28,6 @@ const wjNav = [
     nav: 'wj', className: 'songs', type: 'link', iconClass: 'far fa-lightbulb', link: '/music/songs', name: 'Songs',
   },
   {
-    nav: 'wj', className: 'dashboard', type: 'link', iconClass: 'fas fa-user-secret', link: '/music/dashboard', name: 'Dashboard', auth: true,
-  },
-  {
     nav: 'wj', className: '', type: 'link', iconClass: 'fas fa-map-marker', link: '/map', name: 'Map', auth: true,
   },
   {

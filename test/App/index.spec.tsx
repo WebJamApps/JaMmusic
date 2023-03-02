@@ -1,47 +1,36 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
-import { shallow } from 'enzyme';
 import env from 'dotenv';
-import { App, defaultDispatch } from 'src/App';
+import { App, checkAppName, checkBackendUrl } from 'src/App';
+import renderer from 'react-test-renderer';
+import { Provider } from 'react-redux';
+import store from 'src/redux/store/index';
+import { BrowserRouter } from 'react-router-dom';
 
 env.config();
 describe('App component', () => {
-  const dp = (fun: any) => fun;
-  const wrapper = shallow<App>(<App dispatch={dp} />);
-  it('renders the component', () => {
-    expect(wrapper.find('div#App').exists()).toBe(true);
+  it('is defined', () => {
+    expect(App).toBeDefined();
   });
-  it('renders correctly', () => {
-    expect(wrapper).toMatchSnapshot();
+  it('renders', () => {
+    Object.defineProperty(window, 'location', { value: { assign: () => { }, reload: () => { } }, writable: true });
+    window.location = {
+      ...window.location,
+      href: 'https://web-jam.com',
+      origin: 'https://web-jam.com',
+      reload: jest.fn(),
+      assign: jest.fn(),
+    };
+    const app:any = renderer.create(<Provider store={store.store}><App /></Provider>).toJSON();
+    expect(app.props.className).toBe('App');
   });
-  it('does not fetch the images or songs if they already exist', () => {
-    const images: any[] = [{}];
-    const wrapper2 = shallow(<App dispatch={dp} images={images} />);
-    expect(wrapper2.find('div#App').exists()).toBe(true);
-  });
-  it('renders when dispatch is not defined', () => {
-    const wrapper2 = shallow(<App />);
-    expect(wrapper2).toBeDefined();
-  });
-  it('renders correctly when APP_NAME is missing', () => {
-    delete process.env.APP_NAME;
-    const wrapper2 = shallow(<App />);
-    expect(wrapper2).toBeDefined();
-  });
-  it('renders correctly when APP_NAME is joshandmariamusic.com', () => {
+  it('checkAppName and return <Music />', () => {
     process.env.APP_NAME = 'joshandmariamusic.com';
-    const wrapper2 = shallow(<App />);
-    expect(wrapper2).toBeDefined();
+    const music:any = renderer.create(<BrowserRouter>{checkAppName()}</BrowserRouter>).toJSON();
+    expect(music.props.className.includes('music')).toBe(true);
   });
-  it('renders Google Map API when localhost', () => {
-    process.env.BackendUrl = 'http://localhost:7000';
-    expect('/map').toBeDefined();
-  });
-  it('doesn\'t render Google Map API when localhost null', () => {
-    delete process.env.BackendUrl;
-    expect(wrapper.instance().loadMap()).toBe(null);
-  });
-  it('defaultDispatch', () => {
-    expect(defaultDispatch({})).toBeUndefined();
+  it('checkBackendUrl and return null', () => {
+    process.env.BackendUrl = 'web-jam.com';
+    const result = checkBackendUrl();
+    expect(result).toBeNull();
   });
 });

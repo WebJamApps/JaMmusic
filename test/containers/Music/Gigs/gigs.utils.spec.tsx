@@ -1,6 +1,7 @@
 import utils from 'src/containers/Music/Gigs/gigs.utils';
 import commonUtils from 'src/lib/commonUtils';
-import type { IGig } from 'src/providers/Data.provider';
+import type { Iauth } from 'src/providers/Auth.provider';
+import type { Igig } from 'src/providers/Data.provider';
 
 describe('gigs.utils', () => {
   it('makeVenueValue when Our Past Performances', () => {
@@ -21,7 +22,7 @@ describe('gigs.utils', () => {
     future.setDate(future.getDate() + 2);
     future = new Date(future).toISOString();
     const gigs = [{ datetime: tomorrow }, { datetime: yesterday }, { datetime: future },
-      { datetime: today }, { datetime: tomorrow }] as IGig[];
+      { datetime: today }, { datetime: tomorrow }] as Igig[];
     utils.orderGigs(gigs, setGigsInOrder, jest.fn());
     expect(setGigsInOrder).toHaveBeenCalled();
   });
@@ -44,7 +45,7 @@ describe('gigs.utils', () => {
       { datetime: future }, { datetime: future }, { datetime: future },
       { datetime: future }, { datetime: future }, { datetime: tomorrow },
       { datetime: yesterday }, { datetime: future }, { datetime: today }, { datetime: tomorrow },
-    ] as IGig[];
+    ] as Igig[];
     utils.orderGigs(gigs, setGigsInOrder, setPageSize);
     expect(setPageSize).toHaveBeenCalledWith(12);
   });
@@ -53,52 +54,48 @@ describe('gigs.utils', () => {
     const result = venue.renderCell({ value: 'value' });
     expect(result.type).toBe('div');
   });
-  it('deleteGig fails', async () => {
-    commonUtils.delay = jest.fn();
-    global.confirm = jest.fn(() => true);
-    const result = await utils.deleteGig('id', jest.fn(), jest.fn(), jest.fn());
-    expect(result).toBe(false);
-  });
   it('deleteGig successful', async () => {
     commonUtils.delay = jest.fn();
-    const auth = JSON.stringify({ token: 'token' });
-    const persistRoot = JSON.stringify({ auth });
-    Storage.prototype.getItem = jest.fn(() => persistRoot);
     global.confirm = jest.fn(() => true);
-    const result = await utils.deleteGig('id', jest.fn(), jest.fn(), jest.fn());
+    const result = await utils.deleteGig('id', jest.fn(), jest.fn(), jest.fn(), 'token');
     expect(result).toBe(true);
   });
   it('deleteGig returns false', async () => {
     commonUtils.delay = jest.fn();
-    const auth = JSON.stringify({ token: 'token' });
-    const persistRoot = JSON.stringify({ auth });
-    Storage.prototype.getItem = jest.fn(() => persistRoot);
     global.confirm = jest.fn(() => false);
-    const result = await utils.deleteGig('id', jest.fn(), jest.fn(), jest.fn());
+    const result = await utils.deleteGig('id', jest.fn(), jest.fn(), jest.fn(), 'token');
     expect(result).toBe(false);
+  });
+  it('deleteGig catches error', async () => {
+    const getGigs = jest.fn();
+    commonUtils.delay = jest.fn(() => Promise.reject(new Error('failed')));
+    global.confirm = jest.fn(() => true);
+    await utils.deleteGig('id', getGigs, jest.fn(), jest.fn(), 'token');
+    expect(getGigs).not.toHaveBeenCalled();
   });
   it('updateGig successful', async () => {
     commonUtils.delay = jest.fn();
     const getGigs = jest.fn();
-    const auth = JSON.stringify({ token: 'token' });
-    const persistRoot = JSON.stringify({ auth });
-    Storage.prototype.getItem = jest.fn(() => persistRoot);
-    await utils.updateGig(getGigs, jest.fn(), jest.fn(), {} as any);
+    await utils.updateGig(getGigs, jest.fn(), jest.fn(), {} as any, 'token');
     expect(getGigs).toHaveBeenCalled();
   });
-  it('updateGig catches', async () => {
+  it('updateGig catches error', async () => {
+    commonUtils.delay = jest.fn(() => Promise.reject(new Error('failed')));
     const getGigs = jest.fn();
-    await utils.updateGig(getGigs, jest.fn(), jest.fn(), {} as any);
+    await utils.updateGig(getGigs, jest.fn(), jest.fn(), {} as any, 'token');
     expect(getGigs).not.toHaveBeenCalled();
   });
   it('createGig successful', async () => {
     commonUtils.delay = jest.fn();
     const getGigs = jest.fn();
-    const auth = JSON.stringify({ token: 'token' });
-    const persistRoot = JSON.stringify({ auth });
-    Storage.prototype.getItem = jest.fn(() => persistRoot);
-    await utils.createGig(getGigs, jest.fn(), new Date(), 'item', 'item', 'item', 'item');
+    await utils.createGig(getGigs, jest.fn(), new Date(), 'item', 'item', 'item', 'item', { token: 'token' } as Iauth);
     expect(getGigs).toHaveBeenCalled();
+  });
+  it('createGig catches error', async () => {
+    commonUtils.delay = jest.fn(() => Promise.reject(new Error('failed')));
+    const getGigs = jest.fn();
+    await utils.createGig(getGigs, jest.fn(), new Date(), 'item', 'item', 'item', 'item', { token: 'token' } as Iauth);
+    expect(getGigs).not.toHaveBeenCalled();
   });
   it('checkUpdateDisabled', () => {
     const editGig = {

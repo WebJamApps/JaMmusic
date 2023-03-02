@@ -1,97 +1,42 @@
-import { Component, Dispatch, StrictMode } from 'react';
 import { ReactNotifications } from 'react-notifications-component';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import { connect } from 'react-redux';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import DefaultSort from '../containers/SortContainer';
-import DefaultMusicDashboard from '../containers/MusicDashboard';
 import BuyMusic from '../containers/BuyMusic';
-import AppFourOhFour from './404';
 import GoogleMap from '../containers/GoogleMap';
 import { Music } from '../containers/Music';
-import ATemplate from './AppTemplate';
-import DefaultSongs from '../containers/Songs';
-import HomePage from '../containers/Homepage';
-import connectToSC from './connectToSC';
-import mapStoreToProps, { Iimage, Auth } from '../redux/mapStoreToProps';
-import { PrivateRoute } from './PrivateRoute';
+import { AppTemplate } from './AppTemplate';
+import { Songs } from '../containers/Songs';
+import { Homepage } from '../containers/Homepage';
 
-export const defaultDispatch:Dispatch<unknown> = (_arg0: any): void => { };
-
-const defaultProps = {
-  dispatch: defaultDispatch,
-  auth: {
-    isAuthenticated: false, token: '', error: '', user: { userType: '', email: '' },
-  },
-  userCount: 0,
-  heartBeat: 'white',
-  children: <div />,
-};
-
-export interface AppProps {
-  dispatch: Dispatch<unknown>;
-  images: Iimage[];
-  auth: Auth;
-  showMap: boolean;
+export function checkAppName() {
+  return process.env.APP_NAME === 'web-jam.com'
+    ? <Homepage /> : <Music />;
 }
 
-export class App extends Component<AppProps> {
-  connectToSC: typeof connectToSC;
-
-  appName = process.env.APP_NAME || 'web-jam.com';
-
-  static defaultProps = {
-    dispatch: (): void => { },
-    songs: [],
-    images: [],
-    auth: {
-      isAuthenticated: false, token: '', error: '', user: { userType: '', email: '' },
-    },
-    showMap: false,
-  };
-
-  constructor(props: AppProps) {
-    super(props);
-    this.connectToSC = connectToSC;
-  }
-
-  async componentDidMount(): Promise<void> {
-    const { dispatch } = this.props;
-    this.connectToSC.connectToSCC(dispatch);
-  }
-
-  loadMap(): JSX.Element | null {
-    if (process.env.BackendUrl === 'http://localhost:7000') {
-      return <PrivateRoute Container={GoogleMap} path="/map" />;
-    }
-    return null;
-  }
-
-  render(): JSX.Element {
-    return (
-      <StrictMode>
-        <div id="App" className="App">
-          <ReactNotifications />
-          <Router>
-            <ATemplate {...defaultProps}>
-              <Switch>
-                <Route exact path="/">
-                  {this.appName === 'web-jam.com' ? <HomePage /> : <Music images={this.props.images} auth={null} />}
-                </Route>
-                {this.loadMap()}
-                <PrivateRoute path="/sort" Container={DefaultSort} />
-                <Route exact path="/music"><Music images={this.props.images} auth={this.props.auth} /></Route>
-                <Route exact path="/music/buymusic" component={BuyMusic} />
-                <Route exact path="/music/originals" component={DefaultSongs} />
-                <Route exact path="/music/songs" component={DefaultSongs} />
-                <PrivateRoute path="/music/dashboard" Container={DefaultMusicDashboard} />
-                <Route component={AppFourOhFour} />
-              </Switch>
-            </ATemplate>
-          </Router>
-        </div>
-      </StrictMode>
-    );
-  }
+export function checkBackendUrl() {
+  return process.env.BackendUrl === 'http://localhost:7000'
+    ? <Route path="/map" element={<GoogleMap />} /> : null;
 }
 
-export default connect(mapStoreToProps, null)(App);
+export function App(): JSX.Element {
+  return (
+    <div id="App" className="App">
+      <ReactNotifications />
+      <BrowserRouter>
+        <AppTemplate>
+          <Routes>
+            <Route
+              path="/"
+              element={checkAppName()}
+            />
+            <Route path="/sort" element={<DefaultSort />} />
+            {checkBackendUrl()}
+            <Route path="/music" element={<Music />} />
+            <Route path="/music/buymusic" element={<BuyMusic />} />
+            <Route path="/music/songs" element={<Songs />} />
+          </Routes>
+        </AppTemplate>
+      </BrowserRouter>
+    </div>
+  );
+}

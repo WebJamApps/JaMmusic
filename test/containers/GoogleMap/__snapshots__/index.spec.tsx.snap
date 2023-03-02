@@ -1,3 +1,36 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`GoogleMap container renders correctly 1`] = `ShallowWrapper {}`;
+exports[`GoogleMap container renders correctly 1`] = `
+<div
+  className="page-content google"
+>
+  <div
+    style={
+      {
+        "margin": "auto",
+        "textAlign": "center",
+      }
+    }
+  >
+    <h3
+      style={
+        {
+          "marginTop": "10px",
+        }
+      }
+    >
+      Google Map Here
+    </h3>
+    <div
+      id="googleMap"
+      style={
+        {
+          "height": "8.5in",
+          "margin": "auto",
+          "maxWidth": "11in",
+        }
+      }
+    />
+  </div>
+</div>
+`;

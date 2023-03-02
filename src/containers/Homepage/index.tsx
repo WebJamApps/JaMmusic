@@ -1,57 +1,45 @@
-import React, { RefObject } from 'react';
-import { withResizeDetector } from 'react-resize-detector';
+import { useResizeDetector } from 'react-resize-detector';
+import Inquiry from 'src/components/Inquiry';
+import commonUtils from 'src/lib/commonUtils';
+import { useEffect } from 'react';
 import WideAboutUs from './Widescreen/WideAbout';
 import WideCurrentProjects from './Widescreen/WideCurrentProjects';
 import NarrowAboutUs from './Narrowscreen/NarrowAbout';
 import NarrowCurrentProjects from './Narrowscreen/NarrowCurrentProjects';
 import FacebookFeed from './Narrowscreen/NarrowFacebookFeed';
-import Inquiry from '../../components/Inquiry';
-import commonUtils from '../../lib/commonUtils';
 
-interface HomepageProps {
-  targetRef: RefObject<HTMLDivElement>;
-  width: number;
-  height: number;
-}
-export class Homepage extends React.Component<HomepageProps, unknown> {
-  commonUtils: typeof commonUtils;
-
-  constructor(props: HomepageProps) {
-    super(props);
-    this.commonUtils = commonUtils;
-  }
-
-  componentDidMount(): void { this.commonUtils.setTitleAndScroll('', window.screen.width); }
-
-  render(): JSX.Element {
-    const { width, targetRef } = this.props;
+export function WideOrNarrow({ width }: { width?: number }) {
+  if (width && width >= 1004) {
     return (
-      <div ref={targetRef}>
-        {width >= 1004
-          ? (
-            <div className="page-content">
-              <div className="anchor"> </div>
-              <WideAboutUs />
-              <hr />
-              <WideCurrentProjects />
-              <p style={{ fontSize: '6pt', marginBottom: '0' }}>&nbsp;</p>
-            </div>
-          )
-          : (
-            <div className="page-content">
-              <NarrowAboutUs />
-              <hr />
-              <NarrowCurrentProjects />
-              <p style={{ fontSize: '6pt', marginBottom: '0' }}>&nbsp;</p>
-              <FacebookFeed />
-              <p style={{ fontSize: '6pt', marginBottom: '0' }}>&nbsp;</p>
-              <Inquiry />
-              <p style={{ fontSize: '6pt', marginBottom: '0' }}>&nbsp;</p>
-            </div>
-          )}
+      <div className="page-content wideHome">
+        <div className="anchor"> </div>
+        <WideAboutUs />
+        <hr />
+        <WideCurrentProjects />
+        <p style={{ fontSize: '6pt', marginBottom: '0' }}>&nbsp;</p>
       </div>
     );
   }
+  return (
+    <div className="page-content narrowHome">
+      <NarrowAboutUs />
+      <hr />
+      <NarrowCurrentProjects />
+      <p style={{ fontSize: '6pt', marginBottom: '0' }}>&nbsp;</p>
+      <FacebookFeed />
+      <p style={{ fontSize: '6pt', marginBottom: '0' }}>&nbsp;</p>
+      <Inquiry />
+      <p style={{ fontSize: '6pt', marginBottom: '0' }}>&nbsp;</p>
+    </div>
+  );
 }
 
-export default withResizeDetector(Homepage);
+export function Homepage(): JSX.Element {
+  const { width, ref } = useResizeDetector();
+  useEffect(() => commonUtils.setTitleAndScroll('', window.screen.width), []);
+  return (
+    <div ref={ref}>
+      <WideOrNarrow width={width} />
+    </div>
+  );
+}
