@@ -102,64 +102,67 @@ module.exports = (env) => ({
 
   module: {
     rules: [
-    {
-      test: /\.(ts|tsx)?$/,
-      loader: "ts-loader",
-      exclude: /node_modules/
-    },
-    {
-      enforce: 'pre',
-      test: /\.js$/,
-      loader: 'source-map-loader',
-    },
-    // SCSS required in JS/TS files should use the style-loader that auto-injects it into the website
-    // only when the issuer is a .js/.ts file, so the loaders are not applied inside html templates
-    {
-      test: /\.scss$/,
-      use: [
-        process.env.NODE_ENV !== 'production' ? 'style-loader' : MiniCssExtractPlugin.loader,
-        'css-loader', // translates CSS into CommonJS
-        'sass-loader', // compiles Sass to CSS, using dart sass
-      ],
-    },
-    // Still needed for some node modules that use CSS
-    {
-      test: /\.css$/i,
-      use: [MiniCssExtractPlugin.loader, 'css-loader'],
-    },
-    {
-      test: /\.html$/i,
-      loader: 'html-loader'
-    }, // eslint-disable-next-line no-useless-escape
-    // embed small images and fonts as Data Urls and larger ones as files:
-    {
-      test: /\.(png|gif|jpg|cur)$/i,
-      loader: 'url-loader',
-      options: {
-        limit: 8192
-      }
-    },
-    {
-      test: /\.woff2(\?v=[0-9]\.[0-9]\.[0-9])?$/i,
-      loader: 'url-loader',
-      options: {
-        limit: 10000,
-        mimetype: 'application/font-woff2'
-      }
-    },
-    {
-      test: /\.woff(\?v=[0-9]\.[0-9]\.[0-9])?$/i,
-      loader: 'url-loader',
-      options: {
-        limit: 10000,
-        mimetype: 'application/font-woff'
-      }
-    },
-    // load these fonts normally, as files:
-    {
-      test: /\.(ttf|eot|svg|otf)(\?v=[0-9]\.[0-9]\.[0-9])?$/i,
-      loader: 'file-loader'
-    },
+      {
+        test: /\.(ts|tsx)?$/,
+        loader: "ts-loader",
+        exclude: env.production ? [/node_modules/, /test/] : /node_modules/,
+        options: {
+          configFile: env.production ? "tsconfig.build.json" : "tsconfig.json"
+        }
+      },
+      {
+        enforce: 'pre',
+        test: /\.js$/,
+        loader: 'source-map-loader',
+      },
+      // SCSS required in JS/TS files should use the style-loader that auto-injects it into the website
+      // only when the issuer is a .js/.ts file, so the loaders are not applied inside html templates
+      {
+        test: /\.scss$/,
+        use: [
+          process.env.NODE_ENV !== 'production' ? 'style-loader' : MiniCssExtractPlugin.loader,
+          'css-loader', // translates CSS into CommonJS
+          'sass-loader', // compiles Sass to CSS, using dart sass
+        ],
+      },
+      // Still needed for some node modules that use CSS
+      {
+        test: /\.css$/i,
+        use: [MiniCssExtractPlugin.loader, 'css-loader'],
+      },
+      {
+        test: /\.html$/i,
+        loader: 'html-loader'
+      }, // eslint-disable-next-line no-useless-escape
+      // embed small images and fonts as Data Urls and larger ones as files:
+      {
+        test: /\.(png|gif|jpg|cur)$/i,
+        loader: 'url-loader',
+        options: {
+          limit: 8192
+        }
+      },
+      {
+        test: /\.woff2(\?v=[0-9]\.[0-9]\.[0-9])?$/i,
+        loader: 'url-loader',
+        options: {
+          limit: 10000,
+          mimetype: 'application/font-woff2'
+        }
+      },
+      {
+        test: /\.woff(\?v=[0-9]\.[0-9]\.[0-9])?$/i,
+        loader: 'url-loader',
+        options: {
+          limit: 10000,
+          mimetype: 'application/font-woff'
+        }
+      },
+      // load these fonts normally, as files:
+      {
+        test: /\.(ttf|eot|svg|otf)(\?v=[0-9]\.[0-9]\.[0-9])?$/i,
+        loader: 'file-loader'
+      },
     ],
   },
 
