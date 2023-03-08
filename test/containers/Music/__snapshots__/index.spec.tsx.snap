@@ -152,7 +152,6 @@ exports[`/music renders the component 1`] = `
       style={
         {
           "margin": "auto",
-          "maxWidth": "1040px",
           "padding": "10px",
           "width": "100%",
         }
