@@ -47,7 +47,7 @@ module.exports = (env) => ({
 
   entry: {
     app: [`${srcDir}/Main.tsx`],
-    vendor: ['jquery', 'bootstrap'],
+    vendor: ['bootstrap'],
   },
 
   mode: env.production ? 'production' : 'development',
@@ -168,11 +168,6 @@ module.exports = (env) => ({
 
   plugins: [
     new ProvidePlugin({
-      $: 'jquery',
-      jQuery: 'jquery',
-      'window.jQuery': 'jquery',
-      Popper: ['popper.js', 'default'],
-      process: 'process/browser',
       Buffer: ['buffer', 'Buffer'],
     }),
     new HtmlWebpackPlugin({
