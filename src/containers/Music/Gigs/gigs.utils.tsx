@@ -137,10 +137,18 @@ export const orderGigs = (
   setPageSize(futureGigs.length - 1 > 5 ? futureGigs.length - 1 : 5);
 };
 
-const makeDateValue = (datetime: string) => new Date(datetime).toLocaleString().split(',')[0];
+const makeDateValue = (datetime: string) => {
+  const localString = new Date(datetime).toLocaleString('en-US', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+  return localString;
+};
 
 const makeTimeValue = (datetime: string) => new Date(datetime)
-  .toLocaleString('en-US', { hour: '2-digit', minute: '2-digit' });
+  .toLocaleString('en-US', { hour: 'numeric', minute: '2-digit' });
 
 const makeVenueValue = (value: string) => {
   const parsed = HtmlReactParser(value);
@@ -153,7 +161,7 @@ const makeVenue = (): GridEnrichedColDef => (
     field: 'venue',
     headerName: 'Venue',
     minWidth: 400,
-    flex: 1,
+    flex: 2,
     editable: false,
     renderCell: (params: GridRenderCellParams) => makeVenueValue(params.value),
   }
