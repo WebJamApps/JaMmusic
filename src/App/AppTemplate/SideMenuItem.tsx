@@ -21,15 +21,17 @@ export function MakeLink(props: ImakeLinkProps): JSX.Element {
   const {
     menu, index, type, handleClose,
   } = props;
+  let onClick = handleClose;
+  if (menu.link === '/') { onClick = () => { handleClose(); window.location.assign('/'); }; }
   return (
     <div key={index} className="menu-item">
       {type === 'Link' ? (
-        <Link to={menu.link} className="nav-link" onClick={handleClose}>
+        <Link to={menu.link} className="nav-link" onClick={onClick}>
           <IconAndText menu={menu} />
         </Link>
       )
         : (
-          <a href={menu.link} className="nav-link" onClick={handleClose}>
+          <a href={menu.link} className="nav-link" onClick={onClick}>
             <IconAndText menu={menu} />
           </a>
         )}
