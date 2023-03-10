@@ -1,6 +1,6 @@
 import { useResizeDetector } from 'react-resize-detector';
-import Inquiry from 'src/components/Inquiry';
-import commonUtils from 'src/lib/commonUtils';
+import Inquiry from 'src/containers/Homepage/Inquiry';
+import commonUtils from 'src/lib/utils';
 import { useEffect } from 'react';
 import WideAboutUs from './Widescreen/WideAbout';
 import WideCurrentProjects from './Widescreen/WideCurrentProjects';

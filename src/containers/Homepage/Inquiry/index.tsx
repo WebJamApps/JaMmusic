@@ -1,10 +1,10 @@
-/* eslint-disable react/sort-comp */
-import React, { Component } from 'react';
+import { Component } from 'react';
 import superagent from 'superagent';
 import { TextareaAutosize, Button } from '@mui/material';
-import forms from '../lib/forms';
-import stateData from '../lib/StateData.json';
-import countryData from '../lib/CountryData.json';
+import { WjInput } from 'src/components/WjInput';
+import { WjDropdown } from 'src/components/WjDropdown';
+import stateData from './StateData.json';
+import countryData from './CountryData.json';
 
 export interface InquiryState {
   country: string;
@@ -42,7 +42,7 @@ export function CommentsSection(
   );
 }
 
-export function FormActions(props: { currentState:InquiryState; createEmail: (arg0: any) => void; }) {
+export function FormActions(props: { currentState: InquiryState; createEmail: (arg0: any) => void; }) {
   const { createEmail, currentState } = props;
   return (
     <div className="inquiryValidation input-field col" style={{ marginBottom: '12px' }}>
@@ -60,8 +60,6 @@ export function FormActions(props: { currentState:InquiryState; createEmail: (ar
 
 export default class Inquiry extends Component<unknown, InquiryState> {
   stateValues: string[];
-
-  forms: typeof forms;
 
   countryValues: string[];
 
@@ -82,7 +80,6 @@ export default class Inquiry extends Component<unknown, InquiryState> {
       formError: ' ',
     };
     this.stateValues = stateData;
-    this.forms = forms;
     this.onChange = this.onChange.bind(this);
     this.onInputChange = this.onInputChange.bind(this);
     this.handleCountryChange = this.handleCountryChange.bind(this);
@@ -173,7 +170,9 @@ export default class Inquiry extends Component<unknown, InquiryState> {
 
   tableSection(): JSX.Element {
     const {
-      firstname, lastname, emailaddress, phonenumber,
+      firstname, lastname,
+      emailaddress,
+      phonenumber,
     } = this.state;
     return (
       <table style={{
@@ -182,19 +181,23 @@ export default class Inquiry extends Component<unknown, InquiryState> {
       >
         <tbody>
           <tr className="white-background">
-            <td style={{ border: 'none', padding: 0 }}>{this.forms.makeInput('text', 'First Name', true, this.onInputChange, firstname)}</td>
+            <td style={{ border: 'none', padding: 0 }}>
+              <WjInput label="First Name" isRequired type="text" onChange={this.onInputChange} value={firstname} />
+            </td>
             <td style={{ border: 'none', padding: '8px' }}>{' '}</td>
-            <td style={{ border: 'none', padding: 0 }}>{this.forms.makeInput('text', 'Last Name', true, this.onInputChange, lastname)}</td>
+            <td style={{ border: 'none', padding: 0 }}>
+              <WjInput label="Last Name" isRequired type="text" onChange={this.onInputChange} value={lastname} />
+            </td>
           </tr>
           <tr className="white-background"><td style={{ border: 'none', padding: '8px' }}>{' '}</td></tr>
           <tr className="white-background">
             <td style={{ border: 'none', padding: 0 }}>
-              {this.forms.makeInput('email', 'Email Address', true, this.onInputChange, emailaddress)}
+              <WjInput label="Email Address" isRequired type="email" onChange={this.onInputChange} value={emailaddress} />
             </td>
             <td style={{ border: 'none', padding: '8px' }}>{' '}</td>
             <td className="phone" style={{ border: 'none', padding: 0 }}>
               {' '}
-              {this.forms.makeInput('tel', 'Phone Number', false, this.onInputChange, phonenumber)}
+              <WjInput label="Phone Number" isRequired type="tel" onChange={this.onInputChange} value={phonenumber} />
             </td>
           </tr>
         </tbody>
@@ -204,17 +207,41 @@ export default class Inquiry extends Component<unknown, InquiryState> {
 
   newContactForm(): JSX.Element {
     const {
-      country, formError, uSAstate, zipcode, comments,
+      country,
+      formError,
+      uSAstate,
+      zipcode,
+      comments,
     } = this.state;
     return (
       <form id="new-contact" className="col">
         {this.tableSection()}
-        {this.forms.makeDropdown('country', country, this.handleCountryChange, this.countryValues, { width: '100%' })}
+        <WjDropdown
+          style={{ width: '100%' }}
+          htmlFor="country"
+          onChange={this.handleCountryChange}
+          value={country}
+          options={this.countryValues}
+        />
         {country === 'United States'
-          ? this.forms.makeDropdown('state', uSAstate, this.onChange, this.stateValues)
-          : null}
+          ? (
+            <WjDropdown
+              htmlFor="state"
+              onChange={this.onChange}
+              value={uSAstate}
+              options={this.stateValues}
+            />
+          )
+          : <> </>}
         <p style={{ margin: 0 }}>&nbsp;</p>
-        {this.forms.makeInput('text', 'Zipcode', true, this.onInputChange, zipcode, { width: '100%' })}
+        <WjInput
+          label="Zipcode"
+          isRequired
+          type="text"
+          onChange={this.onInputChange}
+          value={zipcode}
+          style={{ width: '100%' }}
+        />
         <p style={{ margin: 0 }}>&nbsp;</p>
         <CommentsSection currentState={this.state} comments={comments} setState={this.setState} validateForm={this.validateForm} />
         <p className="form-errors" style={{ color: 'red', marginBottom: '-15px' }}>{formError}</p>

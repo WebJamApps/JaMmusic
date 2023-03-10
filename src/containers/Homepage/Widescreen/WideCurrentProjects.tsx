@@ -2,7 +2,7 @@
 import CollegeLutheran from '../CollegeLutheran';
 import AppersonAutomotive from '../AppersonAutomotive';
 import WideFacebookFeed from './WideFacebookFeed';
-import Inquiry from '../../../components/Inquiry';
+import Inquiry from '../Inquiry';
 
 function WideCurrentProjects(): JSX.Element {
   return (

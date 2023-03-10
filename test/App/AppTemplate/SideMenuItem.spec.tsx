@@ -3,7 +3,7 @@ import { BrowserRouter } from 'react-router-dom';
 import renderer from 'react-test-renderer';
 import type { ImenuItem } from 'src/App/AppTemplate/menuConfig';
 import { checkIsAllowed, ContinueMenuItem, SideMenuItem } from 'src/App/AppTemplate/SideMenuItem';
-import commonUtils from 'src/lib/commonUtils';
+import commonUtils from 'src/lib/utils';
 
 describe('SideMenuItem', () => {
   it('is defined', () => {
