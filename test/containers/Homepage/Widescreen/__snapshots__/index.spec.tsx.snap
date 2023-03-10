@@ -383,7 +383,7 @@ exports[`Homepage renders Homepage 1`] = `
                     id="phonenumber"
                     name="phonenumber"
                     onChange={[Function]}
-                    placeholder="Phone Number"
+                    placeholder="* Phone Number"
                     type="tel"
                     value=""
                   />
@@ -1585,6 +1585,7 @@ exports[`Homepage renders Homepage 1`] = `
               Zimbabwe
             </option>
           </select>
+           
           <p
             style={
               {
