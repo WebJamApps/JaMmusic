@@ -8,15 +8,16 @@ import { WjDropdown } from 'src/components/WjDropdown';
 import stateData from './StateData.json';
 import countryData from './CountryData.json';
 import utils from './utils';
+import './inquiry.scss';
 
 export interface IinquiryFormData {
   firstname: string; lastname: string; emailaddress: string; uSAstate: string; country: string;
   phonenumber: string; zipcode: string; comments: string;
 }
 interface IcommentsSectionProps {
-  formData:IinquiryFormData, setFormData:(arg0:IinquiryFormData)=>void
+  formData: IinquiryFormData, setFormData: (arg0: IinquiryFormData) => void
 }
-export function CommentsSection(props:IcommentsSectionProps) {
+export function CommentsSection(props: IcommentsSectionProps) {
   const {
     formData, setFormData,
   } = props;
@@ -34,7 +35,7 @@ export function CommentsSection(props:IcommentsSectionProps) {
 
 interface IformActionsProps {
   setHasSubmitted: (arg0: boolean) => void,
-  formData:IinquiryFormData,
+  formData: IinquiryFormData,
 }
 export function FormActions(props: IformActionsProps) {
   const { setHasSubmitted, formData } = props;
@@ -54,22 +55,43 @@ export function FormActions(props: IformActionsProps) {
     </div>
   );
 }
-
 interface ItableSectionProps {
-  formData:IinquiryFormData, setFormData:(arg0:IinquiryFormData)=>void
+  formData: IinquiryFormData, setFormData: (arg0: IinquiryFormData) => void
 }
-function TableSection(props:ItableSectionProps): JSX.Element {
+function EmailPhoneRow(props: ItableSectionProps) {
   const { formData, setFormData } = props;
-  const {
-    firstname, lastname,
-    emailaddress,
-    phonenumber,
-  } = formData;
+  const { emailaddress, phonenumber } = formData;
   return (
-    <table style={{
-      border: 'none', textAlign: 'left', margin: 0, padding: 0, marginBottom: '20px',
-    }}
-    >
+    <tr className="white-background">
+      <td style={{ border: 'none', padding: 0 }}>
+        <WjInput
+          label="Email Address"
+          isRequired
+          type="email"
+          onChange={(evt) => utils.handleInputChange(evt, formData, setFormData)}
+          value={emailaddress}
+        />
+      </td>
+      <td style={{ border: 'none', padding: '8px' }}>{' '}</td>
+      <td className="phone" style={{ border: 'none', padding: 0 }}>
+        {' '}
+        <WjInput
+          label="Phone Number"
+          isRequired
+          type="tel"
+          onChange={(evt) => utils.handleInputChange(evt, formData, setFormData)}
+          value={phonenumber}
+        />
+      </td>
+    </tr>
+  );
+}
+
+function TableSection(props: ItableSectionProps): JSX.Element {
+  const { formData, setFormData } = props;
+  const { firstname, lastname } = formData;
+  return (
+    <table className="tableSection">
       <tbody>
         <tr className="white-background">
           <td style={{ border: 'none', padding: 0 }}>
@@ -93,28 +115,7 @@ function TableSection(props:ItableSectionProps): JSX.Element {
           </td>
         </tr>
         <tr className="white-background"><td style={{ border: 'none', padding: '8px' }}>{' '}</td></tr>
-        <tr className="white-background">
-          <td style={{ border: 'none', padding: 0 }}>
-            <WjInput
-              label="Email Address"
-              isRequired
-              type="email"
-              onChange={(evt) => utils.handleInputChange(evt, formData, setFormData)}
-              value={emailaddress}
-            />
-          </td>
-          <td style={{ border: 'none', padding: '8px' }}>{' '}</td>
-          <td className="phone" style={{ border: 'none', padding: 0 }}>
-            {' '}
-            <WjInput
-              label="Phone Number"
-              isRequired
-              type="tel"
-              onChange={(evt) => utils.handleInputChange(evt, formData, setFormData)}
-              value={phonenumber}
-            />
-          </td>
-        </tr>
+        <EmailPhoneRow formData={formData} setFormData={setFormData} />
       </tbody>
     </table>
   );
