@@ -266,15 +266,7 @@ exports[`Homepage renders Homepage 1`] = `
           id="new-contact"
         >
           <table
-            style={
-              {
-                "border": "none",
-                "margin": 0,
-                "marginBottom": "20px",
-                "padding": 0,
-                "textAlign": "left",
-              }
-            }
+            className="tableSection"
           >
             <tbody>
               <tr
@@ -1619,7 +1611,7 @@ exports[`Homepage renders Homepage 1`] = `
           <input
             className="comments"
             onChange={[Function]}
-            placeholder="Comments"
+            placeholder="* Comments"
             style={
               {
                 "height": "80px",
@@ -1645,6 +1637,7 @@ exports[`Homepage renders Homepage 1`] = `
               disabled={true}
               id="sendEmailButton"
               onClick={[Function]}
+              variant="contained"
             >
               Submit
             </button>
