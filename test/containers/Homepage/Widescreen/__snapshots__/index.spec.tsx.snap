@@ -400,7 +400,6 @@ exports[`Homepage renders Homepage 1`] = `
                 "width": "100%",
               }
             }
-            value="* Select Your Country"
           >
             <option
               id="* Select Your Country"
@@ -1628,19 +1627,7 @@ exports[`Homepage renders Homepage 1`] = `
                 "width": "100%",
               }
             }
-            value=""
           />
-          <p
-            className="form-errors"
-            style={
-              {
-                "color": "red",
-                "marginBottom": "-15px",
-              }
-            }
-          >
-             
-          </p>
           <div
             className="inquiryValidation input-field col"
             style={
@@ -1659,7 +1646,7 @@ exports[`Homepage renders Homepage 1`] = `
               id="sendEmailButton"
               onClick={[Function]}
             >
-              Send
+              Submit
             </button>
           </div>
         </form>

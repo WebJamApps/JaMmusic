@@ -12,14 +12,13 @@ export const WjInput = (props:IwjinputProps): JSX.Element => {
   const {
     label, style, isRequired, type, onChange, value,
   } = props;
-  let fId = label.toLowerCase();
-  fId = fId.replace(/\s/g, '');
+  const fId = label.toLowerCase().replace(/\s/g, '');
   const fIdArr = fId.split('(');
-  fId = fIdArr[0]; // eslint-disable-line prefer-destructuring
+  const tfId = fIdArr[0].trim();
   return (
     <TextField
       style={style}
-      id={fId}
+      id={tfId}
       placeholder={isRequired ? '* '.concat(label) : label}
       type={type}
       name={fId}
