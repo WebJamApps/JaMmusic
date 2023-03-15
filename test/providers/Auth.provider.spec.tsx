@@ -1,10 +1,55 @@
 import { render } from '@testing-library/react';
 
 import {
-  Iauth, defaultSetAuth, AuthProvider,
+  Iauth, defaultSetAuth, AuthProvider, setInitValue,
 } from 'src/providers/Auth.provider';
 
 describe('AuthProvider', () => {
+  let ls:any;
+  beforeAll(() => {
+    ls = window.localStorage;
+    const localStorageMock = (function () {
+      let store = {} as Record<string, unknown>;
+
+      return {
+        getItem(key:string) {
+          // eslint-disable-next-line security/detect-object-injection
+          return store[key];
+        },
+
+        setItem(key:string, value:string) {
+          store[key] = value;
+        },
+
+        clear() {
+          store = {};
+        },
+
+        removeItem(key:string) {
+          delete store[key];
+        },
+
+        getAll() {
+          return store;
+        },
+      };
+    }());
+
+    Object.defineProperty(window, 'localStorage', { value: localStorageMock });
+  });
+  afterAll(() => {
+    Object.defineProperty(window, 'localStorage', { value: ls });
+  });
+  // it('setInitValue catches error', () => {
+  //   const sMock:any = {
+  //     getItem: () => null,
+  //     setItem: () => { throw new Error('failed'); },
+  //   };
+  //   Object.defineProperty(window, 'localStorage', { value: sMock });
+  //   const setValue = jest.fn();
+  //   setInitValue('name', setValue, 'default');
+  //   expect(setValue).toHaveBeenCalledWith('default');
+  // });
   it('AuthProvider renders', () => {
     render(<AuthProvider />);
     const newRoot = document.getElementById('root') as HTMLElement;
@@ -12,5 +57,24 @@ describe('AuthProvider', () => {
   });
   it('setAuthDefault', () => {
     expect(defaultSetAuth({} as Iauth)).toBeUndefined();
+  });
+  it('setInitValue when storedValue', async () => {
+    window.localStorage.setItem('name', 'stored');
+    const setValue = jest.fn();
+    setInitValue('name', setValue, 'default');
+    expect(setValue).toHaveBeenCalledWith('stored');
+  });
+  it('setInitValue sets defaultValue', async () => {
+    window.localStorage.clear();
+    const setValue = jest.fn();
+    setInitValue('name', setValue, 'default');
+    expect(window.localStorage.getItem('name')).toBe('default');
+  });
+  it('setInitValue catches error', async () => {
+    window.localStorage.clear();
+    window.localStorage.setItem = jest.fn(() => { throw new Error('failed'); });
+    const setValue = jest.fn();
+    setInitValue('name', setValue, 'default');
+    expect(setValue).toHaveBeenCalledWith('default');
   });
 });
