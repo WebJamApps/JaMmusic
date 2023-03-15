@@ -40,16 +40,6 @@ describe('AuthProvider', () => {
   afterAll(() => {
     Object.defineProperty(window, 'localStorage', { value: ls });
   });
-  // it('setInitValue catches error', () => {
-  //   const sMock:any = {
-  //     getItem: () => null,
-  //     setItem: () => { throw new Error('failed'); },
-  //   };
-  //   Object.defineProperty(window, 'localStorage', { value: sMock });
-  //   const setValue = jest.fn();
-  //   setInitValue('name', setValue, 'default');
-  //   expect(setValue).toHaveBeenCalledWith('default');
-  // });
   it('AuthProvider renders', () => {
     render(<AuthProvider />);
     const newRoot = document.getElementById('root') as HTMLElement;
