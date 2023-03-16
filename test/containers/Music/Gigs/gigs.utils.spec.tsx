@@ -1,5 +1,5 @@
 import utils from 'src/containers/Music/Gigs/gigs.utils';
-import commonUtils from 'src/lib/commonUtils';
+import commonUtils from 'src/lib/utils';
 import type { Iauth } from 'src/providers/Auth.provider';
 import type { Igig } from 'src/providers/Data.provider';
 

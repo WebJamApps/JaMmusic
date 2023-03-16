@@ -1,40 +1,54 @@
 import {
-  createContext, useEffect, useRef, useState,
+  createContext, MutableRefObject, useEffect, useRef, useState,
 } from 'react';
+
+export const setInitValue = (
+  name: string,
+  setValue: React.Dispatch<React.SetStateAction<string>>,
+  defaultValue: string,
+) => {
+  try {
+    const storedValue = localStorage.getItem(name);
+    if (typeof storedValue === 'string') setValue(storedValue);
+    else localStorage.setItem(name, defaultValue);
+  } catch {
+    setValue(defaultValue);
+  }
+};
+
+export const handleValueChange = (current: string, value: string) => {
+  try {
+    localStorage.setItem(current, value);
+  } catch (err) { console.log((err as Error).message); }
+};
+
+export const handleNameChange = (
+  nameRef: MutableRefObject<string>,
+  name: string,
+  value: string,
+) => {
+  const lastName = nameRef.current;
+  if (name !== lastName) {
+    try {
+      localStorage.setItem(name, value);
+      nameRef.current = name;
+      localStorage.removeItem(lastName);
+    } catch (err) { console.log((err as Error).message); }
+  }
+};
 
 const usePersistedState = (name: string, defaultValue: string) => {
   const initValue = localStorage.getItem(name);
   const [value, setValue] = useState(initValue || defaultValue);
   const nameRef = useRef(name);
 
-  useEffect(() => {
-    try {
-      const storedValue = localStorage.getItem(name);
-      if (storedValue !== null) setValue(storedValue);
-      else localStorage.setItem(name, defaultValue);
-    } catch {
-      setValue(defaultValue);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => { setInitValue(name, setValue, defaultValue); }, []);
 
-  useEffect(() => {
-    try {
-      localStorage.setItem(nameRef.current, value);
-    } catch (err) { console.log((err as Error).message); }
-  }, [value]);
+  useEffect(() => { handleValueChange(nameRef.current, value); }, [value]);
 
-  useEffect(() => {
-    const lastName = nameRef.current;
-    if (name !== lastName) {
-      try {
-        localStorage.setItem(name, value);
-        nameRef.current = name;
-        localStorage.removeItem(lastName);
-      } catch (err) { console.log((err as Error).message); }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [name]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => { handleNameChange(nameRef, name, value); }, [name]);
 
   return [value, setValue];
 };
@@ -63,15 +77,23 @@ export const AuthContext = createContext({
   setAuth: defaultSetAuth,
 });
 
-export function AuthProvider({ children }: any): JSX.Element {
-  const { Provider } = AuthContext;
-  const [authString, setAuthString] = usePersistedState('auth', JSON.stringify(defaultAuth));
+export const configAuth = (authString: string, setAuthString: (arg0: string) => void) => {
   let auth = defaultAuth, setAuth = defaultSetAuth;
   try {
-    auth = JSON.parse(authString as string);
+    auth = JSON.parse(authString);
     const setter: (arg0: string) => void = setAuthString as (arg0: string) => void;
     setAuth = (arg0: Iauth) => { setter(JSON.stringify(arg0)); };
   } catch (err) { console.log((err as Error).message); }
+  return { auth, setAuth };
+};
+
+export function AuthProvider({ children }: any): JSX.Element {
+  const { Provider } = AuthContext;
+  const [authString, setAuthString] = usePersistedState('auth', JSON.stringify(defaultAuth));
+  const { auth, setAuth } = configAuth(
+    authString as string,
+    setAuthString as React.Dispatch<React.SetStateAction<string>>,
+  );
   return (<Provider value={{ auth, setAuth }}>{children}</Provider>
   );
 }

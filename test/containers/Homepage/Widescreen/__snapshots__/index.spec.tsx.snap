@@ -266,15 +266,7 @@ exports[`Homepage renders Homepage 1`] = `
           id="new-contact"
         >
           <table
-            style={
-              {
-                "border": "none",
-                "margin": 0,
-                "marginBottom": "20px",
-                "padding": 0,
-                "textAlign": "left",
-              }
-            }
+            className="tableSection"
           >
             <tbody>
               <tr
@@ -383,7 +375,7 @@ exports[`Homepage renders Homepage 1`] = `
                     id="phonenumber"
                     name="phonenumber"
                     onChange={[Function]}
-                    placeholder="Phone Number"
+                    placeholder="* Phone Number"
                     type="tel"
                     value=""
                   />
@@ -400,7 +392,6 @@ exports[`Homepage renders Homepage 1`] = `
                 "width": "100%",
               }
             }
-            value="* Select Your Country"
           >
             <option
               id="* Select Your Country"
@@ -1585,6 +1576,7 @@ exports[`Homepage renders Homepage 1`] = `
               Zimbabwe
             </option>
           </select>
+           
           <p
             style={
               {
@@ -1619,7 +1611,7 @@ exports[`Homepage renders Homepage 1`] = `
           <input
             className="comments"
             onChange={[Function]}
-            placeholder="Comments"
+            placeholder="* Comments"
             style={
               {
                 "height": "80px",
@@ -1627,19 +1619,7 @@ exports[`Homepage renders Homepage 1`] = `
                 "width": "100%",
               }
             }
-            value=""
           />
-          <p
-            className="form-errors"
-            style={
-              {
-                "color": "red",
-                "marginBottom": "-15px",
-              }
-            }
-          >
-             
-          </p>
           <div
             className="inquiryValidation input-field col"
             style={
@@ -1657,8 +1637,9 @@ exports[`Homepage renders Homepage 1`] = `
               disabled={true}
               id="sendEmailButton"
               onClick={[Function]}
+              variant="contained"
             >
-              Send
+              Submit
             </button>
           </div>
         </form>

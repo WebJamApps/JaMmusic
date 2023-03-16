@@ -1,7 +1,7 @@
 import axios from 'axios';
 import type { Iauth } from 'src/providers/Auth.provider';
 import type { Isong } from 'src/providers/Data.provider';
-import commonUtils from 'src/lib/commonUtils';
+import commonUtils from 'src/lib/utils';
 
 export const defaultSong = {
   url: '',
