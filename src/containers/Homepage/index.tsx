@@ -1,5 +1,5 @@
 import { useResizeDetector } from 'react-resize-detector';
-import { Inquiry } from 'src/containers/Homepage/Inquiry';
+// import { Inquiry } from 'src/containers/Homepage/Inquiry';
 import commonUtils from 'src/lib/utils';
 import { useEffect } from 'react';
 import WideAboutUs from './Widescreen/WideAbout';
@@ -28,8 +28,8 @@ export function WideOrNarrow({ width }: { width?: number }) {
       <p style={{ fontSize: '6pt', marginBottom: '0' }}>&nbsp;</p>
       <FacebookFeed />
       <p style={{ fontSize: '6pt', marginBottom: '0' }}>&nbsp;</p>
-      <Inquiry />
-      <p style={{ fontSize: '6pt', marginBottom: '0' }}>&nbsp;</p>
+      {/* <Inquiry />
+      <p style={{ fontSize: '6pt', marginBottom: '0' }}>&nbsp;</p> */}
     </div>
   );
 }
