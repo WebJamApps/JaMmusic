@@ -1,7 +1,7 @@
 import type { GridEnrichedColDef, GridRenderCellParams, GridRowParams } from '@mui/x-data-grid';
 import HtmlReactParser from 'html-react-parser';
 import scc from 'socketcluster-client';
-import commonUtils from 'src/lib/commonUtils';
+import commonUtils from 'src/lib/utils';
 import type { Iauth } from 'src/providers/Auth.provider';
 import type { Igig } from 'src/providers/Data.provider';
 import { defaultGig } from 'src/providers/fetchGigs';

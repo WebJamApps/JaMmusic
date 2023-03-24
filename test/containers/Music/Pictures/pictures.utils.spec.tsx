@@ -1,6 +1,6 @@
 import utils from 'src/containers/Music/Pictures/pictures.utils';
 import scc from 'socketcluster-client';
-import commonUtils from 'src/lib/commonUtils';
+import commonUtils from 'src/lib/utils';
 
 describe('pictures.utils', () => {
   it('createPic successfully', async () => {

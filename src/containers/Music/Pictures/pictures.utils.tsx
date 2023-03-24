@@ -1,5 +1,5 @@
 import scc from 'socketcluster-client';
-import commonUtils from 'src/lib/commonUtils';
+import commonUtils from 'src/lib/utils';
 import type { Iauth } from 'src/providers/Auth.provider';
 
 const createPic = async (

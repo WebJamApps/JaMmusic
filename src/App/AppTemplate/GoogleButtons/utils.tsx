@@ -3,7 +3,7 @@ import { defaultAuth, Iauth } from 'src/providers/Auth.provider';
 import 'react-notifications-component/dist/theme.css';
 import jwt from 'jwt-simple';
 import superagent from 'superagent';
-import commonUtils from 'src/lib/commonUtils';
+import commonUtils from 'src/lib/utils';
 
 export interface GoogleBody {
   clientId?: string,

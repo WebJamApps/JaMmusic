@@ -2,7 +2,7 @@
 import { Link, useLocation } from 'react-router-dom';
 import { useContext } from 'react';
 import { AuthContext, Iauth } from 'src/providers/Auth.provider';
-import commonUtils from '../../lib/commonUtils';
+import commonUtils from '../../lib/utils';
 import type { ImenuItem } from './menuConfig';
 import { GoogleButtons } from './GoogleButtons';
 

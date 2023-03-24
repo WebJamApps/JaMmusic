@@ -2,7 +2,7 @@
 import CollegeLutheran from '../CollegeLutheran';
 import AppersonAutomotive from '../AppersonAutomotive';
 import WideFacebookFeed from './WideFacebookFeed';
-import Inquiry from '../../../components/Inquiry';
+// import { Inquiry } from '../Inquiry';
 
 function WideCurrentProjects(): JSX.Element {
   return (
@@ -21,7 +21,7 @@ function WideCurrentProjects(): JSX.Element {
             <div className="col">
               <WideFacebookFeed />
             </div>
-            <div className="col" style={{ margin: 'auto', marginTop: 0 }}><Inquiry /></div>
+            {/* <div className="col" style={{ margin: 'auto', marginTop: 0 }}><Inquiry /></div> */}
           </div>
           <p className="spacer">&nbsp;</p>
         </div>

@@ -1,7 +1,7 @@
 import { useEffect, useState, useContext } from 'react';
 import { AuthContext, Iauth } from 'src/providers/Auth.provider';
 import { PicSlider } from 'src/containers/Music/Pictures/PicSlider';
-import commonUtils from 'src/lib/commonUtils';
+import commonUtils from 'src/lib/utils';
 import { Gigs } from './Gigs';
 import { Intro } from './intro';
 import JoshBio from './joshBio';

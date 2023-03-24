@@ -1,5 +1,5 @@
 import type ReactPlayer from 'react-player';
-import commonUtils from 'src/lib/commonUtils';
+import commonUtils from 'src/lib/utils';
 import type { Isong } from 'src/providers/Data.provider';
 
 function setPlayerStyle(song: Isong): Record<string, unknown> {

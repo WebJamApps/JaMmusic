@@ -1,5 +1,5 @@
 import { Store } from 'react-notifications-component';
-import commonUtils from 'src/lib/commonUtils';
+import commonUtils from 'src/lib/utils';
 
 describe('commonUtils', () => {
   it('calls scrollIntoView', () => {

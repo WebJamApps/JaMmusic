@@ -4,7 +4,7 @@ import Jss from './BuyLinks/joshShermanSolo';
 import Jsyt from './MediaLinks/joshShermanYoutube';
 import Jssp from './MediaLinks/joshShermanSpotify';
 import Jsam from './MediaLinks/joshShermanApple';
-import commonUtils from '../../lib/commonUtils';
+import commonUtils from '../../lib/utils';
 
 export default class BuyMusic extends Component {
   commonUtils: { setTitleAndScroll: (pageTitle: string, width: number) => void };
