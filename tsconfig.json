@@ -85,7 +85,6 @@
 
     /* Advanced Options */
     "forceConsistentCasingInFileNames": true, /* Disallow inconsistently-cased references to the same file. */
-    "importsNotUsedAsValues": "error"
   },
   "include":["src","test"],
   "exclude": ["dist", "node_modules", "webpack.config.js"]
