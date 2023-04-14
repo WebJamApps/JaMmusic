@@ -47,11 +47,26 @@ exports[`AppTemplate renders the component 1`] = `
         }
       >
         <div
+          id="musTT"
+          style={
+            {
+              "backgroundColor": "white",
+              "display": "none",
+              "padding": "3px",
+              "position": "absolute",
+              "right": "68px",
+              "top": "305px",
+            }
+          }
+        >
+          Music
+        </div>
+        <div
           className="menu-item"
         >
           <a
             className="nav-link"
-            href="https://web-jam.com/music/songs"
+            href="/music"
             onClick={[Function]}
           >
             <div
@@ -62,13 +77,13 @@ exports[`AppTemplate renders the component 1`] = `
               }
             >
               <i
-                className="far fa-lightbulb"
+                className="fas fa-music"
               />
                
               <span
                 className="nav-item"
               >
-                Songs
+                Music
               </span>
             </div>
           </a>
@@ -78,34 +93,7 @@ exports[`AppTemplate renders the component 1`] = `
         >
           <a
             className="nav-link"
-            href="https://web-jam.com/music/buymusic"
-            onClick={[Function]}
-          >
-            <div
-              style={
-                {
-                  "display": "inline",
-                }
-              }
-            >
-              <i
-                className="far fa-money-bill-alt"
-              />
-               
-              <span
-                className="nav-item"
-              >
-                Buy Music
-              </span>
-            </div>
-          </a>
-        </div>
-        <div
-          className="menu-item"
-        >
-          <a
-            className="nav-link"
-            href="https://web-jam.com"
+            href="/"
             onClick={[Function]}
           >
             <div
@@ -127,6 +115,18 @@ exports[`AppTemplate renders the component 1`] = `
             </div>
           </a>
         </div>
+        <div
+          className="menu-item googleLogin"
+        >
+          <button
+            className="loginButton"
+            onClick={[Function]}
+            size="small"
+            variant="contained"
+          >
+            Login
+          </button>
+        </div>
         <p
           style={
             {
@@ -138,6 +138,11 @@ exports[`AppTemplate renders the component 1`] = `
         >
            
         </p>
+        <div
+          className="active-users"
+        >
+          <div />
+        </div>
       </div>
     </div>
   </div>
