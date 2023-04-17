@@ -15,6 +15,9 @@ const jamNav = [
   {
     nav: 'jam', className: '', type: 'link', iconClass: 'far fa-money-bill-alt', link: 'https://web-jam.com/music/buymusic', name: 'Buy Music',
   },
+  {
+    nav: 'jam', className: '', type: 'link', iconClass: 'fas fa-home', link: 'https://web-jam.com', name: 'Web Jam LLC',
+  },
 ];
 
 const wjNav = [

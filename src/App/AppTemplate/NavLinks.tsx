@@ -15,12 +15,12 @@ export function ActiveUsers({ heartBeat, userCount }: { heartBeat?: string, user
           {' '}
         </button> */}
       </div>
-      <div className="active-users-text" style={{ paddingLeft: '10px', marginTop: '8px' }}>
+      {/* <div className="active-users-text" style={{ paddingLeft: '10px', marginTop: '8px' }}>
         <i>Active Users</i>
         :
         {' '}
         {userCount}
-      </div>
+      </div> */}
     </div>
   );
 }
