@@ -142,21 +142,6 @@ exports[`AppTemplate renders the component 1`] = `
           className="active-users"
         >
           <div />
-          <div
-            className="active-users-text"
-            style={
-              {
-                "marginTop": "8px",
-                "paddingLeft": "10px",
-              }
-            }
-          >
-            <i>
-              Active Users
-            </i>
-            :
-             
-          </div>
         </div>
       </div>
     </div>
