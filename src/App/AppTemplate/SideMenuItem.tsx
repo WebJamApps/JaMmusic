@@ -9,8 +9,7 @@ import { GoogleButtons } from './GoogleButtons';
 export function IconAndText({ menu }: { menu: ImenuItem }): JSX.Element {
   return (
     <div style={{ display: 'inline' }}>
-      <i className={`${menu.iconClass}`} />
-      &nbsp;
+      <i className={`${menu.iconClass}`} style={{ marginRight: '8px' }} />
       <span className="nav-item">{menu.name}</span>
     </div>
   );

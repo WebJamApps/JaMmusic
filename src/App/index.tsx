@@ -7,6 +7,7 @@ import { Music } from '../containers/Music';
 import { AppTemplate } from './AppTemplate';
 import { Songs } from '../containers/Songs';
 import { Homepage } from '../containers/Homepage';
+import { BookUs } from '../containers/BookUs';
 
 export function checkAppName() {
   return process.env.APP_NAME === 'web-jam.com'
@@ -34,6 +35,7 @@ export function App(): JSX.Element {
             <Route path="/music" element={<Music />} />
             <Route path="/music/buymusic" element={<BuyMusic />} />
             <Route path="/music/songs" element={<Songs />} />
+            <Route path="/music/bookus" element={<BookUs />} />
           </Routes>
         </AppTemplate>
       </BrowserRouter>
