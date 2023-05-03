@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { BrowserRouter } from 'react-router-dom';
 import renderer from 'react-test-renderer';
 import {
   Gigs, columns, GigsDiv, ShowCreateGigButton,
@@ -7,7 +8,7 @@ import utils from 'src/containers/Music/Gigs/gigs.utils';
 
 describe('Gigs', () => {
   it('renders correctly when not isAdmin', () => {
-    const gigs = renderer.create(<Gigs isAdmin={false} />);
+    const gigs = renderer.create(<BrowserRouter><Gigs isAdmin={false} /></BrowserRouter>);
     expect(JSON.stringify(gigs.toJSON()).includes('gigsDiv')).toBe(true);
   });
   it('renders GigsDiv when isAdmin and handles onRowClick', () => {
@@ -25,7 +26,7 @@ describe('Gigs', () => {
       getGigs: jest.fn(),
       auth: {} as any,
     };
-    const gigsDiv = renderer.create(<GigsDiv {...props} />).root;
+    const gigsDiv = renderer.create(<BrowserRouter><GigsDiv {...props} /></BrowserRouter>).root;
     gigsDiv.findByProps({ className: 'adminGrid' }).props.onRowClick({ row: {} });
     expect(utils.clickToEdit).toHaveBeenCalled();
   });
