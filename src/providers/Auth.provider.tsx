@@ -16,13 +16,23 @@ export const setInitValue = (
   }
 };
 
-export const handleValueChange = (current: string, value: string) => {
+export const handleValueChange = (
+  setItem: (arg0: string, arg1: string) => void,
+  current: string,
+  value: string,
+) => {
   try {
-    localStorage.setItem(current, value);
-  } catch (err) { console.log((err as Error).message); }
+    setItem(current, value);
+    return value;
+  } catch (err) {
+    const eMessage = (err as Error).message;
+    console.log(eMessage); return eMessage;
+  }
 };
 
 export const handleNameChange = (
+  setItem:(arg0: string, arg1: string) => void,
+  removeItem:(arg0: string) => void,
   nameRef: MutableRefObject<string>,
   name: string,
   value: string,
@@ -30,11 +40,16 @@ export const handleNameChange = (
   const lastName = nameRef.current;
   if (name !== lastName) {
     try {
-      localStorage.setItem(name, value);
+      setItem(name, value);
       nameRef.current = name;
-      localStorage.removeItem(lastName);
-    } catch (err) { console.log((err as Error).message); }
+      removeItem(lastName);
+      return name;
+    } catch (err) {
+      const eMessage = (err as Error).message;
+      console.log(eMessage); return eMessage;
+    }
   }
+  return '';
 };
 
 const usePersistedState = (name: string, defaultValue: string) => {
@@ -45,10 +60,10 @@ const usePersistedState = (name: string, defaultValue: string) => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => { setInitValue(name, setValue, defaultValue); }, []);
 
-  useEffect(() => { handleValueChange(nameRef.current, value); }, [value]);
+  useEffect(() => { handleValueChange(localStorage.setItem, nameRef.current, value); }, [value]);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => { handleNameChange(nameRef, name, value); }, [name]);
+  useEffect(() => { handleNameChange(localStorage.setItem, localStorage.removeItem, nameRef, name, value); }, [name]);
 
   return [value, setValue];
 };

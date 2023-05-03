@@ -78,8 +78,12 @@ exports[`AppTemplate renders the component 1`] = `
             >
               <i
                 className="fas fa-music"
+                style={
+                  {
+                    "marginRight": "8px",
+                  }
+                }
               />
-               
               <span
                 className="nav-item"
               >
@@ -105,8 +109,12 @@ exports[`AppTemplate renders the component 1`] = `
             >
               <i
                 className="fas fa-home"
+                style={
+                  {
+                    "marginRight": "8px",
+                  }
+                }
               />
-               
               <span
                 className="nav-item"
               >

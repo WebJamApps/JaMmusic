@@ -1,7 +1,7 @@
 import { render } from '@testing-library/react';
 
 import {
-  Iauth, defaultSetAuth, AuthProvider, setInitValue,
+  Iauth, defaultSetAuth, AuthProvider, setInitValue, handleValueChange, handleNameChange, configAuth,
 } from 'src/providers/Auth.provider';
 
 describe('AuthProvider', () => {
@@ -66,5 +66,30 @@ describe('AuthProvider', () => {
     const setValue = jest.fn();
     setInitValue('name', setValue, 'default');
     expect(setValue).toHaveBeenCalledWith('default');
+  });
+  it('handleValueChange handles localStorage errors', () => {
+    const setItem = jest.fn(() => { throw new Error('failed'); });
+    expect(handleValueChange(setItem, 'current', 'value')).toBe('failed');
+  });
+  it('handleNameChange when name has changed', () => {
+    const setItem = jest.fn();
+    const removeItem = jest.fn();
+    expect(handleNameChange(setItem, removeItem, { current: '' }, 'name', 'value')).toBe('name');
+  });
+  it('handleNameChange catches error when name has changed', () => {
+    const setItem = jest.fn(() => { throw new Error('failed'); });
+    const removeItem = jest.fn();
+    expect(handleNameChange(setItem, removeItem, { current: '' }, 'name', 'value')).toBe('failed');
+  });
+  it('configAuth catches error', () => {
+    const setAuthString = jest.fn();
+    const result = configAuth('908asdlj;?', setAuthString);
+    expect(result.auth.isAuthenticated).toBe(false);
+  });
+  it('configAuth calls the setter', () => {
+    const setAuthString = jest.fn();
+    const result = configAuth(JSON.stringify({}), setAuthString);
+    result.setAuth({} as any);
+    expect(setAuthString).toHaveBeenCalled();
   });
 });

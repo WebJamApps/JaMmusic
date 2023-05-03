@@ -384,6 +384,7 @@ exports[`Homepage renders Homepage 1`] = `
             </tbody>
           </table>
           <select
+            disabled={false}
             id="country"
             multiple={false}
             onChange={[Function]}
