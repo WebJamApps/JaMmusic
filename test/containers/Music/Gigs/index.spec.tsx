@@ -12,6 +12,7 @@ describe('Gigs', () => {
     expect(JSON.stringify(gigs.toJSON()).includes('gigsDiv')).toBe(true);
   });
   it('renders GigsDiv when isAdmin and handles onRowClick', () => {
+    window.open = jest.fn();
     utils.clickToEdit = jest.fn();
     const props = {
       isAdmin: true,
@@ -29,6 +30,11 @@ describe('Gigs', () => {
     const gigsDiv = renderer.create(<BrowserRouter><GigsDiv {...props} /></BrowserRouter>).root;
     gigsDiv.findByProps({ className: 'adminGrid' }).props.onRowClick({ row: {} });
     expect(utils.clickToEdit).toHaveBeenCalled();
+    gigsDiv.findByProps({ className: 'bookUsButton' }).props.onClick();
+    expect(window.open).not.toHaveBeenCalled();
+    process.env.APP_NAME = 'joshandmariamusic.com';
+    gigsDiv.findByProps({ className: 'bookUsButton' }).props.onClick();
+    expect(window.open).toHaveBeenCalledWith('https://web-jam.com/music/bookus');
   });
   it('renders ShowCreateGigButton and handles click', () => {
     const props = { isAdmin: true, setShowDialog: jest.fn() };
