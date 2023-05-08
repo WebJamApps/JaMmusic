@@ -4,12 +4,13 @@ import {
 import {
   DataGrid, GridColumns, GridRenderCellParams,
 } from '@mui/x-data-grid';
-import { IconButton, Tooltip } from '@mui/material';
+import { Button, IconButton, Tooltip } from '@mui/material';
 import { Add as AddIcon } from '@mui/icons-material';
 import HtmlReactParser from 'html-react-parser';
 import { DataContext, Igig } from 'src/providers/Data.provider';
 import { AuthContext, Iauth } from 'src/providers/Auth.provider';
 import { defaultGig } from 'src/providers/fetchGigs';
+import { useNavigate } from 'react-router-dom';
 import utils from './gigs.utils';
 import { EditGigDialog } from './EditGigDialog';
 import { CreateGigDialog } from './CreateGigDialog';
@@ -87,6 +88,11 @@ export const GigsDiv = (props: IgigsDivProps) => {
   const {
     isAdmin, setShowDialog, setEditGig, editGig, gigsInOrder = [], pageSize, showDialog, editChanged, setEditChanged, getGigs, auth,
   } = props;
+  const navigate = useNavigate();
+  const handleClick = () => {
+    if (process.env.APP_NAME === 'joshandmariamusic.com') window.open('https://web-jam.com/music/bookus');
+    else navigate('/music/bookus');
+  };
   return (
     <div
       className="gigsDiv"
@@ -96,6 +102,7 @@ export const GigsDiv = (props: IgigsDivProps) => {
     >
       <h4 style={{ textAlign: 'center' }}>
         Gigs
+        <Button variant="contained" className="bookUsButton" onClick={handleClick}>Book Us</Button>
         <ShowCreateGigButton isAdmin={isAdmin} setShowDialog={setShowDialog} />
       </h4>
       <div style={{ height: '500px', width: '100%' }}>

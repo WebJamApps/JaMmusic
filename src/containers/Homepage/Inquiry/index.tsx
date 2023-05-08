@@ -125,25 +125,28 @@ interface IinquiryFormProps {
   setHasSubmitted: (arg0: boolean) => void,
   setFormData: (arg0: IinquiryFormData) => void,
   formData: IinquiryFormData,
+  staticCountry?:string
 }
 function InquiryForm(props: IinquiryFormProps): JSX.Element {
   const {
     formData,
     setFormData,
     setHasSubmitted,
+    staticCountry,
   } = props;
   const { country, uSAstate, zipcode } = formData;
   return (
     <form id="new-contact" className="col">
       <TableSection formData={formData} setFormData={setFormData} />
       <WjDropdown
+        disabled={!!staticCountry}
         style={{ width: '100%' }}
         htmlFor="country"
         onChange={(evt) => utils.handleCountryChange(evt, formData, setFormData)}
-        value={country}
+        value={staticCountry || country}
         options={countryData.sort()}
       />
-      {country === 'United States'
+      {country === 'United States' || staticCountry === 'United States'
         ? (
           <WjDropdown
             htmlFor="state"
@@ -169,7 +172,7 @@ function InquiryForm(props: IinquiryFormProps): JSX.Element {
   );
 }
 
-export function Inquiry(): JSX.Element {
+export function Inquiry({ country, hideTitle }:{ country?:string, hideTitle?:boolean }): JSX.Element {
   const [hasSubmitted, setHasSubmitted] = useState(false);
   const [formData, setFormData] = useState({} as IinquiryFormData);
   return (
@@ -180,9 +183,9 @@ export function Inquiry(): JSX.Element {
             textAlign: 'center', marginBottom: '0', marginTop: '10px', paddingTop: 0, fontWeight: 'bold',
           }}
           >
-            Contact Us
+            {hideTitle ? '' : 'Contact Us'}
           </h4>
-          <InquiryForm setHasSubmitted={setHasSubmitted} formData={formData} setFormData={setFormData} />
+          <InquiryForm staticCountry={country} setHasSubmitted={setHasSubmitted} formData={formData} setFormData={setFormData} />
         </div>
       ) : (
         <div className="page-content contacted">

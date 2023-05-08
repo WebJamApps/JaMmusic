@@ -43,16 +43,21 @@ exports[`/music renders the component 1`] = `
           Click To Listen
         </button>
       </div>
-      <p
+      <h5
         style={
           {
+            "fontWeight": "normal",
             "marginBottom": "6px",
             "marginTop": "10px",
           }
         }
       >
-        Josh and Maria have been performing their music together for over 10 years now! Whether it is at church, charity events, public venues, or outdoor festivals, this couple will blow your socks off.
-      </p>
+        <strong>
+          Josh and Maria
+        </strong>
+         
+        have been performing their music together for over 11 years now! Whether it is at church, charity events, public venues, or outdoor festivals, this couple will blow your socks off.
+      </h5>
     </div>
     <div
       className="createNewPicDialog"
@@ -165,6 +170,13 @@ exports[`/music renders the component 1`] = `
         }
       >
         Gigs
+        <button
+          className="bookUsButton"
+          onClick={[Function]}
+          variant="contained"
+        >
+          Book Us
+        </button>
       </h4>
       <div
         style={

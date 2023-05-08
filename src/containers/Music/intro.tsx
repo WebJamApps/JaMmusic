@@ -62,10 +62,12 @@ export function Intro(props:IintroProps): JSX.Element {
         setShowCreatePic={setShowCreatePic}
         setShowEditPic={setShowEditPic}
       />
-      <p style={{ marginTop: '10px', marginBottom: '6px' }}>
-        Josh and Maria have been performing their music together for over 10 years now!
+      <h5 style={{ marginTop: '10px', marginBottom: '6px', fontWeight: 'normal' }}>
+        <strong>Josh and Maria</strong>
+        {' '}
+        have been performing their music together for over 11 years now!
         Whether it is at church, charity events, public venues, or outdoor festivals, this couple will blow your socks off.
-      </p>
+      </h5>
     </div>
   );
 }
