@@ -2,7 +2,7 @@ import { Inquiry } from '../Homepage/Inquiry';
 
 export function BookUs() {
   return (
-    <div className="bookus" style={{ margin: 'auto' }}>
+    <div className="bookus" style={{ margin: 'auto', padding: '6px', paddingRight: '12px' }}>
       <div style={{ maxWidth: '990px' }}>
         <h3 style={{ textAlign: 'center' }}>Book Us</h3>
         <h4 style={{ fontWeight: 'normal' }}>
