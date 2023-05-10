@@ -1,6 +1,6 @@
 {
   "name": "jammusic",
-  "version": "2.3.0",
+  "version": "2.3.1",
   "description": "joshandmariamusic.com",
   "main": "dist/index.html",
   "repository": {
@@ -10,7 +10,7 @@
   "author": "https://github.com/orgs/WebJamApps/teams/handlersandkickers",
   "engines": {
     "node": ">=18.16.0 <19",
-    "npm": ">=9.5.0 <10"
+    "npm": ">=9.5.1 <10"
   },
   "files": [
     "webpack.config.js",
@@ -120,7 +120,7 @@
     "util": "^0.12.5",
     "webpack": "^5.76.0",
     "webpack-bundle-analyzer": "^4.8.0",
-    "webpack-cli": "^5.0.1"
+    "webpack-cli": "^5.1.1"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.16.5",
