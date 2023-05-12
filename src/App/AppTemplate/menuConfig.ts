@@ -24,7 +24,7 @@ const jamNav = [
     name: 'Buy Music',
   },
   {
-    nav: 'jam', className: 'tipjar', type: 'link', iconClass: 'fab fa-gratipay', link: 'https://web-jam.com/music/tipjar', name: 'Tip Jar ',
+    nav: 'jam', className: '', type: 'link', iconClass: 'fab fa-gratipay', link: 'https://web-jam.com/music/tipjar', name: 'Tip Jar ',
   },
   {
     nav: 'jam', className: '', type: 'link', iconClass: 'fas fa-home', link: 'https://web-jam.com', name: 'Web Jam LLC',
