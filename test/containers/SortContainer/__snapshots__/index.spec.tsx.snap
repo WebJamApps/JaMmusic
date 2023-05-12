@@ -1,0 +1,60 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SortContainer renders correctly 1`] = `
+<div
+  id="sort-container"
+  style={
+    {
+      "margin": "auto",
+      "textAlign": "center",
+    }
+  }
+>
+  <h4>
+    Sorting Example
+  </h4>
+  <p
+    style={
+      {
+        "marginLeft": "10px",
+        "textAlign": "left",
+      }
+    }
+  >
+    Given this random number array:
+     
+    <strong>
+      2
+      2
+      0
+      3
+      3
+      3
+    </strong>
+    <br />
+    This is the sorted array:
+     
+    <strong>
+      0
+      2
+      2
+      3
+      3
+      3
+    </strong>
+    <br />
+    <br />
+    Given this random string of letters:
+     
+    <strong>
+      wcqlwXtbXarXpzhjXbatnX
+    </strong>
+    <br />
+    This is the sorted string:
+     
+    <strong>
+      aabbchjlnpqrttwwXXXXXz
+    </strong>
+  </p>
+</div>
+`;

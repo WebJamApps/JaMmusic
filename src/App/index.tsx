@@ -2,7 +2,7 @@ import { ReactNotifications } from 'react-notifications-component';
 import {
   BrowserRouter, Navigate, Route, Routes,
 } from 'react-router-dom';
-import DefaultSort from '../containers/SortContainer';
+import { SortContainer } from '../containers/SortContainer';
 import BuyMusic from '../containers/BuyMusic';
 import GoogleMap from '../containers/GoogleMap';
 import { Music } from '../containers/Music';
@@ -33,7 +33,7 @@ export function App(): JSX.Element {
               path="/"
               element={checkAppName()}
             />
-            <Route path="/sort" element={<DefaultSort />} />
+            <Route path="/sort" element={<SortContainer />} />
             {checkBackendUrl()}
             <Route path="/music" element={<Music />} />
             <Route path="/music/buymusic" element={<BuyMusic />} />
