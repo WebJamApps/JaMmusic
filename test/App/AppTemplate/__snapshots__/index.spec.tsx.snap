@@ -97,6 +97,37 @@ exports[`AppTemplate renders the component 1`] = `
         >
           <a
             className="nav-link"
+            href="/music/tipjar"
+            onClick={[Function]}
+          >
+            <div
+              style={
+                {
+                  "display": "inline",
+                }
+              }
+            >
+              <i
+                className="fab fa-gratipay"
+                style={
+                  {
+                    "marginRight": "8px",
+                  }
+                }
+              />
+              <span
+                className="nav-item"
+              >
+                Tip Jar 
+              </span>
+            </div>
+          </a>
+        </div>
+        <div
+          className="menu-item"
+        >
+          <a
+            className="nav-link"
             href="/"
             onClick={[Function]}
           >
