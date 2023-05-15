@@ -83,7 +83,6 @@ export function SideMenuItem(props: IsideMenuItemProps): JSX.Element | null {
   const userRoles: string[] = commonUtils.getUserRoles();
   const isAllowed = checkIsAllowed(menu, auth, userRoles);
   if (!isAllowed) return null;
-  if (menu.className === 'tipjar' && !pathname.includes('/music')) return null;
   if (menu.name === 'Web Jam LLC' || menu.nav === 'jam') {
     return (
       <MakeLink
