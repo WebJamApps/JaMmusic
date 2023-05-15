@@ -35,4 +35,3 @@ export function SortContainer(): JSX.Element {
   );
 }
 
-export default SortContainer;

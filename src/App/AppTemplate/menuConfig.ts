@@ -13,14 +13,23 @@ const jamNav = [
     nav: 'jam', className: 'songs', type: 'link', iconClass: 'far fa-lightbulb', link: 'https://web-jam.com/music/songs', name: 'Songs',
   },
   {
-    nav: 'jam', className: '', type: 'link', iconClass: 'far fa-calendar-alt', link: 'https://web-jam.com/music/bookus', name: 'Book Us',
+    nav: 'jam', className: 'bookus', type: 'link', iconClass: 'far fa-calendar-alt', link: 'https://web-jam.com/music/bookus', name: 'Book Us',
   },
   {
-    nav: 'jam', className: '', type: 'link', iconClass: 'far fa-money-bill-alt', link: 'https://web-jam.com/music/buymusic', name: 'Buy Music',
+    nav: 'jam',
+    className: 'buymusic',
+    type: 'link',
+    iconClass: 'far fa-money-bill-alt',
+    link: 'https://web-jam.com/music/buymusic',
+    name: 'Buy Music',
+  },
+  {
+    nav: 'jam', className: '', type: 'link', iconClass: 'fab fa-gratipay', link: 'https://web-jam.com/music/tipjar', name: 'Tip Jar ',
   },
   {
     nav: 'jam', className: '', type: 'link', iconClass: 'fas fa-home', link: 'https://web-jam.com', name: 'Web Jam LLC',
   },
+
 ];
 
 const wjNav = [
@@ -34,7 +43,10 @@ const wjNav = [
     nav: 'wj', className: 'bookus', type: 'link', iconClass: 'far fa-calendar-alt', link: '/music/bookus', name: 'Book Us',
   },
   {
-    nav: 'wj', className: '', type: 'link', iconClass: 'far fa-money-bill-alt', link: '/music/buymusic', name: 'Buy Music',
+    nav: 'wj', className: 'buymusic', type: 'link', iconClass: 'far fa-money-bill-alt', link: '/music/buymusic', name: 'Buy Music',
+  },
+  {
+    nav: 'jam', className: 'tipjar', type: 'link', iconClass: 'fab fa-gratipay', link: '/music/tipjar', name: 'Tip Jar ',
   },
   {
     nav: 'wj', className: '', type: 'link', iconClass: 'fas fa-map-marker', link: '/map', name: 'Map', auth: true,
