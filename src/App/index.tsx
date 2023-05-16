@@ -1,6 +1,8 @@
 import { ReactNotifications } from 'react-notifications-component';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import DefaultSort from '../containers/SortContainer';
+import {
+  BrowserRouter, Navigate, Route, Routes,
+} from 'react-router-dom';
+import { SortContainer } from '../containers/SortContainer';
 import BuyMusic from '../containers/BuyMusic';
 import GoogleMap from '../containers/GoogleMap';
 import { Music } from '../containers/Music';
@@ -8,6 +10,7 @@ import { AppTemplate } from './AppTemplate';
 import { Songs } from '../containers/Songs';
 import { Homepage } from '../containers/Homepage';
 import { BookUs } from '../containers/BookUs';
+import { Tipjar } from '../containers/Tipjar';
 
 export function checkAppName() {
   return process.env.APP_NAME === 'web-jam.com'
@@ -30,12 +33,14 @@ export function App(): JSX.Element {
               path="/"
               element={checkAppName()}
             />
-            <Route path="/sort" element={<DefaultSort />} />
+            <Route path="/sort" element={<SortContainer />} />
             {checkBackendUrl()}
             <Route path="/music" element={<Music />} />
             <Route path="/music/buymusic" element={<BuyMusic />} />
             <Route path="/music/songs" element={<Songs />} />
             <Route path="/music/bookus" element={<BookUs />} />
+            <Route path="/music/tipjar" element={<Tipjar />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </AppTemplate>
       </BrowserRouter>

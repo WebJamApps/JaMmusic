@@ -1,0 +1,12 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SortContainer renders correctly 1`] = `
+<div
+  id="tipjar"
+  style={
+    {
+      "margin": "auto",
+    }
+  }
+/>
+`;
