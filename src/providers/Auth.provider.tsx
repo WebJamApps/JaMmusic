@@ -17,7 +17,6 @@ export const setInitValue = (
 };
 
 export const handleValueChange = (
-  // setItem: (arg0: string, arg1: string) => void,
   current: string,
   value: string,
 ) => {
@@ -31,8 +30,6 @@ export const handleValueChange = (
 };
 
 export const handleNameChange = (
-  // setItem:(arg0: string, arg1: string) => void,
-  // removeItem:(arg0: string) => void,
   nameRef: MutableRefObject<string>,
   name: string,
   value: string,
