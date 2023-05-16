@@ -1,0 +1,186 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Songs renders correctly 1`] = `
+<div
+  className="page-content"
+  id="pageContent"
+>
+  <div />
+  <div
+    className="createNewPicDialog"
+    disableAutoFocus={true}
+    disableEnforceFocus={true}
+    onClose={[Function]}
+    open={false}
+  >
+    <div
+      sx={
+        {
+          "textAlign": "center",
+        }
+      }
+    >
+      Add New Song
+    </div>
+    <div
+      sx={
+        {
+          "padding": "10px 10px",
+        }
+      }
+    >
+      <div
+        sx={
+          {
+            "marginBottom": "30px",
+          }
+        }
+      >
+        Enter all *Required fields to add a new song.
+      </div>
+      <input
+        fullWidth={true}
+        label="* Url"
+        onChange={[Function]}
+        type="text"
+        value=""
+      />
+      <input
+        fullWidth={true}
+        label="* Title"
+        onChange={[Function]}
+        sx={
+          {
+            "marginTop": "20px",
+          }
+        }
+        type="text"
+        value=""
+      />
+      <input
+        fullWidth={true}
+        label="* Artist"
+        onChange={[Function]}
+        sx={
+          {
+            "marginTop": "20px",
+          }
+        }
+        type="text"
+        value="Josh & Maria Sherman"
+      />
+      <input
+        InputProps={
+          {
+            "inputProps": {
+              "max": 2016,
+              "min": 2000,
+            },
+          }
+        }
+        fullWidth={true}
+        label="* Year"
+        onChange={[Function]}
+        sx={
+          {
+            "marginTop": "20px",
+          }
+        }
+        type="number"
+        value={2016}
+      />
+      <div
+        fullWidth={true}
+        sx={
+          {
+            "marginTop": "20px",
+          }
+        }
+      >
+        <p
+          id="select-category-label"
+        >
+          Category
+        </p>
+        <select
+          id="select-category"
+          label="Category"
+          labelId="select-category-label"
+          onChange={[Function]}
+          value="original"
+        >
+          <option
+            value="original"
+          >
+            original
+          </option>
+          <option
+            value="mission"
+          >
+            mission
+          </option>
+          <option
+            value="pub"
+          >
+            pub
+          </option>
+        </select>
+      </div>
+      <input
+        fullWidth={true}
+        label="Composer"
+        onChange={[Function]}
+        sx={
+          {
+            "marginTop": "20px",
+          }
+        }
+        type="text"
+        value="Josh & Maria Sherman"
+      />
+      <input
+        fullWidth={true}
+        label="Album"
+        onChange={[Function]}
+        sx={
+          {
+            "marginTop": "20px",
+          }
+        }
+        type="text"
+        value=""
+      />
+      <input
+        fullWidth={true}
+        label="Image"
+        onChange={[Function]}
+        sx={
+          {
+            "marginTop": "20px",
+          }
+        }
+        type="text"
+        value=""
+      />
+    </div>
+    <div>
+      <button
+        className="createSongButton"
+        disabled={true}
+        onClick={[Function]}
+        size="small"
+        variant="contained"
+      >
+        Create
+      </button>
+      <button
+        className="cancelPicButton"
+        onClick={[Function]}
+        size="small"
+      >
+        Cancel
+      </button>
+    </div>
+  </div>
+</div>
+`;
