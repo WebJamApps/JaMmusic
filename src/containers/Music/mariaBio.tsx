@@ -8,8 +8,8 @@ const BioText = () => (
     by learning piano, alto saxophone, tenor saxophone, bassoon, and marching tenors.
     She earned a minor in voice at Roanoke College and did a variety of chorus, musical theatre,
     and solo performances while teaching in the Roanoke County Schools. Although classically
-    trained, Maria loves singing rock and Christian music with Josh, and has since added bass
-    guitar to her list of instruments and most recently accordian (during the covid pandemic). Josh is the most wonderful husband and is the driving
+    trained, Maria loves singing rock and Christian music with Josh. She is currently playing bass
+    guitar and plays accordian. Josh is the most wonderful husband and is the driving
     force for the couple; Maria is a fabulous wife and is the organization behind the duo.
   </p>
 );
