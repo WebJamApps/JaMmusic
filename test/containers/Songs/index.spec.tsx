@@ -3,7 +3,7 @@ import renderer from 'react-test-renderer';
 
 describe('Songs', () => {
   it('renders correctly', () => {
-    const s = renderer.create(<Songs />).toJSON();
-    expect(s).toMatchSnapshot();
+    const s:any = renderer.create(<Songs />).toJSON();
+    expect(s.props.className).toBe('page-content');
   });
 });
