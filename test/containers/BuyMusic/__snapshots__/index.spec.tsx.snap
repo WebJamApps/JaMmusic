@@ -1,0 +1,323 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`BuyMusic renders correctly 1`] = `
+<div
+  className="page-content"
+  style={
+    {
+      "borderRight": "none",
+      "margin": "auto",
+      "maxWidth": "800px",
+      "paddingRight": "15px",
+    }
+  }
+>
+  <h2
+    style={
+      {
+        "fontWeight": "bold",
+        "margin": "20px",
+        "marginBottom": "10px",
+        "textAlign": "center",
+      }
+    }
+  >
+    Buy from CD Baby
+  </h2>
+  <div
+    className="row top-row-style"
+  >
+    <div
+      className="col"
+    >
+      <div
+        className="material-content elevation2"
+        style={
+          {
+            "height": "3in",
+            "margin": "auto",
+            "maxWidth": "3in",
+          }
+        }
+      >
+        <h5
+          style={
+            {
+              "textAlign": "center",
+            }
+          }
+        >
+          Josh Sherman Band
+        </h5>
+        <div
+          style={
+            {
+              "textAlign": "center",
+            }
+          }
+        >
+          <a
+            href="https://www.amazon.com/Live-Central-Florida-2001-Explicit/dp/B0015HGSEO/ref=ntt_mus_dp_dpt_1"
+            rel="noopener noreferrer"
+            style={
+              {
+                "background": "url(https://m.media-amazon.com/images/I/81hDicJieTL._SS500_.jpg) 18px 2px no-repeat, url(http://content.cdbaby.com/img/links/link-artwork-cart-dark-buy-now.png) 0px 0px no-repeat",
+                "backgroundSize": "175px, 211px",
+                "display": "inline-block",
+                "height": "233px",
+                "width": "211px",
+              }
+            }
+            target="_blank"
+            title="Josh Sherman Band: live from central Florida, 2001 - 2005"
+          >
+            <span
+              style={
+                {
+                  "display": "none",
+                }
+              }
+            >
+              Buy Josh Sherman Band
+            </span>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div
+      className="col"
+    >
+      <div
+        className="material-content elevation2"
+        style={
+          {
+            "height": "3in",
+            "margin": "auto",
+            "maxWidth": "3in",
+          }
+        }
+      >
+        <h5
+          style={
+            {
+              "textAlign": "center",
+            }
+          }
+        >
+          Solo Acoustic
+        </h5>
+        <div
+          style={
+            {
+              "textAlign": "center",
+            }
+          }
+        >
+          <a
+            href="https://www.amazon.com/Solo-Acoustic-Explicit-Josh-Sherman/dp/B0013XP8MI/ref=ntt_mus_dp_dpt_2"
+            rel="noopener noreferrer"
+            style={
+              {
+                "background": "url(https://m.media-amazon.com/images/I/81PLWgAmBEL._SS500_.jpg) 18px 2px no-repeat, url(http://content.cdbaby.com/img/links/link-artwork-cart-light-buy-now.png) 0px 0px no-repeat",
+                "backgroundSize": "175px, 211px",
+                "display": "inline-block",
+                "height": "233px",
+                "textAlign": "center",
+                "width": "211px",
+              }
+            }
+            target="_blank"
+            title="Josh Sherman: Solo Acoustic"
+          >
+            <span
+              style={
+                {
+                  "display": "none",
+                }
+              }
+            >
+              Buy Solo Acoustic
+            </span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    className="col"
+  >
+    <div
+      style={
+        {
+          "margin": "auto",
+          "marginTop": "50px",
+          "textAlign": "center",
+        }
+      }
+    >
+      <div
+        className="spotify"
+      >
+        <h4
+          style={
+            {
+              "marginBottom": "0px",
+            }
+          }
+        >
+          Also On Spotify
+        </h4>
+        <div
+          className="row"
+        >
+          <div
+            className="col"
+            style={
+              {
+                "paddingRight": "0px",
+              }
+            }
+          >
+            <iframe
+              height="436"
+              src="https://open.spotify.com/embed/artist/5IvBs06z4RksIE1WvqLULs"
+              title="soloAcoustic"
+              width="312"
+            />
+          </div>
+          <p
+            style={
+              {
+                "fontSize": "1pt",
+              }
+            }
+          >
+             
+          </p>
+          <div
+            className="col"
+            style={
+              {
+                "paddingRight": "0px",
+              }
+            }
+          >
+            <iframe
+              height="436"
+              src="https://open.spotify.com/embed/artist/4XGcA7sSHYypVflLH48KCx"
+              title="soloAcoustic"
+              width="312"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    className="col"
+  >
+    <div
+      style={
+        {
+          "textAlign": "center",
+        }
+      }
+    >
+      <h4
+        style={
+          {
+            "marginBottom": "12px",
+            "marginTop": "30px",
+          }
+        }
+      >
+        Also on YouTube
+      </h4>
+      <div
+        className="youtube elevation3 top-row-style"
+        style={
+          {
+            "marginBottom": "50px",
+            "textAlign": "left",
+          }
+        }
+      >
+        <a
+          className="fab fa-youtube fa-2x"
+          href="https://youtube.com/playlist?list=OLAK5uy_nmxiOsu9BvdnwfHZ2w4ix3AG0POpsJPKA"
+          style={
+            {
+              "color": "#333333",
+              "margin": "20px",
+              "marginLeft": "5%",
+            }
+          }
+        >
+           
+          Josh Solo Acoustic
+        </a>
+        <a
+          className="fab fa-youtube fa-2x"
+          href="https://youtube.com/playlist?list=OLAK5uy_mtLf1U_oKuSgkFRcXYpo5E0OJWnvRt1TI"
+          style={
+            {
+              "color": "#333333",
+              "margin": "20px",
+              "marginLeft": "5%",
+            }
+          }
+        >
+           
+          Josh Sherman Band
+        </a>
+      </div>
+    </div>
+  </div>
+  <div
+    className="col"
+  >
+    <div
+      style={
+        {
+          "textAlign": "center",
+        }
+      }
+    >
+      <h4
+        style={
+          {
+            "marginBottom": "12px",
+            "marginTop": "30px",
+          }
+        }
+      >
+        Also on Apple Music
+      </h4>
+      <div
+        className="appleMusic elevation3 top-row-style"
+        style={
+          {
+            "marginBottom": "50px",
+            "textAlign": "center",
+          }
+        }
+      >
+        <a
+          className="fab fa-apple fa-2x"
+          href="https://music.apple.com/nz/artist/josh-sherman-band/id80070957"
+          style={
+            {
+              "color": "#333333",
+              "margin": "20px",
+              "marginLeft": "5%",
+            }
+          }
+        >
+           
+          Josh Sherman Band
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+`;
