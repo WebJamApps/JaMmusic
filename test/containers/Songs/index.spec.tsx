@@ -1,4 +1,4 @@
-import { Player, Songs } from 'src/containers/Songs';
+import { Player, SongButtons, Songs } from 'src/containers/Songs';
 import renderer from 'react-test-renderer';
 import { Isong } from 'src/providers/Data.provider';
 import { BrowserRouter } from 'react-router-dom';
@@ -8,10 +8,17 @@ describe('Songs', () => {
     const s:any = renderer.create(<Songs />).toJSON();
     expect(s.props.className).toBe('page-content');
   });
-  it('renders with isAdmin', () => {
+  it('renders with SongButtons', () => {
     const isAdmin = true;
-    const result: any = renderer.create(<Songs />).toJSON();
-    expect(result.children[1].children[0].type).toBe('div');
+    const setShow = jest.fn();
+    const result: any = renderer.create(<SongButtons isAdmin={isAdmin} setShowCreateSong={setShow} />).toJSON();
+    expect(result.type).toBe('div');
+  });
+  it('handles onClick', () => {
+    const props = { isAdmin: true, setShowCreateSong: jest.fn() };
+    const result = renderer.create(<SongButtons {...props} />).root;
+    result.findByProps({ className: 'createSongButton' }).props.onClick();
+    expect(props.setShowCreateSong).toHaveBeenCalled();
   });
   it('renders Player', () => {
     const songs: any = [{

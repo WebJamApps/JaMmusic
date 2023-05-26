@@ -31,7 +31,11 @@ export function CreateSongDialog({ showDialog, setShowDialog }: IcreatePicDialog
           type="text"
           fullWidth
           value={song.url}
-          onChange={(evt) => { setSong({ ...song, url: evt.target.value }); }}
+          onChange={(evt) => {
+            const { target: { value } } = evt;
+            setSong({ ...song, url: value });
+            return value;
+          }}
         />
         <TextField
           sx={{ marginTop: '20px' }}
@@ -39,7 +43,11 @@ export function CreateSongDialog({ showDialog, setShowDialog }: IcreatePicDialog
           type="text"
           fullWidth
           value={song.title}
-          onChange={(evt) => { setSong({ ...song, title: evt.target.value }); }}
+          onChange={(evt) => {
+            const { target: { value } } = evt;
+            setSong({ ...song, title: value });
+            return value;
+          }}
         />
         <TextField
           sx={{ marginTop: '20px' }}
@@ -47,7 +55,11 @@ export function CreateSongDialog({ showDialog, setShowDialog }: IcreatePicDialog
           type="text"
           fullWidth
           value={song.artist}
-          onChange={(evt) => { setSong({ ...song, artist: evt.target.value }); }}
+          onChange={(evt) => {
+            const { target: { value } } = evt;
+            setSong({ ...song, artist: value });
+            return value;
+          }}
         />
         <TextField
           sx={{ marginTop: '20px' }}
@@ -73,7 +85,11 @@ export function CreateSongDialog({ showDialog, setShowDialog }: IcreatePicDialog
             id="select-category"
             value={song.category}
             label="Category"
-            onChange={(evt) => { setSong({ ...song, category: evt.target.value }); }}
+            onChange={(evt) => {
+              const { target: { value } } = evt;
+              setSong({ ...song, category: value });
+              return value;
+            }}
           >
             <MenuItem value="original">original</MenuItem>
             <MenuItem value="mission">mission</MenuItem>
@@ -86,7 +102,11 @@ export function CreateSongDialog({ showDialog, setShowDialog }: IcreatePicDialog
           type="text"
           fullWidth
           value={song.composer}
-          onChange={(evt) => { setSong({ ...song, composer: evt.target.value }); }}
+          onChange={(evt) => {
+            const { target: { value } } = evt;
+            setSong({ ...song, composer: value });
+            return value;
+          }}
         />
         <TextField
           sx={{ marginTop: '20px' }}
@@ -94,7 +114,11 @@ export function CreateSongDialog({ showDialog, setShowDialog }: IcreatePicDialog
           type="text"
           fullWidth
           value={song.album}
-          onChange={(evt) => { setSong({ ...song, album: evt.target.value }); }}
+          onChange={(evt) => {
+            const { target: { value } } = evt;
+            setSong({ ...song, album: value });
+            return value;
+          }}
         />
         <TextField
           sx={{ marginTop: '20px' }}
@@ -102,7 +126,11 @@ export function CreateSongDialog({ showDialog, setShowDialog }: IcreatePicDialog
           type="text"
           fullWidth
           value={song.image}
-          onChange={(evt) => { setSong({ ...song, image: evt.target.value }); }}
+          onChange={(evt) => {
+            const { target: { value } } = evt;
+            setSong({ ...song, image: value });
+            return value;
+          }}
         />
       </DialogContent>
       <DialogActions>
