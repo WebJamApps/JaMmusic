@@ -98,8 +98,17 @@ export function MyButtons(props: ImyButtonsProps): JSX.Element {
   );
 }
 
-function CopyRight(): JSX.Element { // eslint-disable-line class-methods-use-this
-  return (<span>All Original Songs &copy;2019 &ndash; 2020 Web Jam LLC</span>);
+function CopyRight(): JSX.Element {
+  const year = new Date().getFullYear();
+  return (
+    <span>
+      All Original Songs &copy;1991 &ndash;
+      {' '}
+      {year}
+      {' '}
+      Web Jam LLC
+    </span>
+  );
 }
 
 export function TextUnderPlayer(

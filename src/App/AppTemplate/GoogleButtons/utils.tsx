@@ -61,7 +61,6 @@ const responseGoogleLogin = async (
     const { token } = await authenticate(body);
     await setUser(auth, setAuth, token);
   } catch (e) {
-    console.log(e);
     const eMessage = (e as Error).message;
     commonUtils.notify('Failed to authenticate', eMessage, 'danger');
     setAuth({ ...defaultAuth, error: eMessage });
