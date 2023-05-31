@@ -76,6 +76,7 @@ export function CreateSongDialog({ showDialog, setShowDialog }: IcreatePicDialog
             const { target: { value } } = evt;
             const numValue = Number(value);
             setSong({ ...song, year: numValue > 1 ? numValue : 2 });
+            return numValue;
           }}
         />
         <FormControl fullWidth sx={{ marginTop: '20px' }}>

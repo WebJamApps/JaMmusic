@@ -72,13 +72,13 @@ describe('CreateSongDialog', () => {
     const tree = result.findByProps({ label: 'Image' }).props.onChange(evt);
     expect(tree).toBe('image');
   });
-  // it('handles onChange with year', () => {
-  //   const showDialog = true;
-  //   const setShowDialog = jest.fn();
-  //   const value = 1980;
-  //   const evt = { target: { value } };
-  //   const result = renderer.create(<CreateSongDialog showDialog={showDialog} setShowDialog={setShowDialog} />).root;
-  //   const tree = result.findByProps({ label: '* Year' }).props.onChange(evt);
-  //   console.log(result);
-  // });
+  it('handles onChange with year', () => {
+    const showDialog = true;
+    const setShowDialog = jest.fn();
+    const value = '2';
+    const evt = { target: { value } };
+    const result = renderer.create(<CreateSongDialog showDialog={showDialog} setShowDialog={setShowDialog} />).root;
+    const tree = result.findByProps({ label: '* Year' }).props.onChange(evt);
+    expect(tree).toBe(2);
+  });
 });
