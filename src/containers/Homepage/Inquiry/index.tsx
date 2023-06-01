@@ -28,7 +28,11 @@ export function CommentsSection(props: IcommentsSectionProps) {
       placeholder="* Comments"
       className="comments"
       value={comments}
-      onChange={(evt) => setFormData({ ...formData, comments: evt.target.value })}
+      onChange={(evt) => {
+        const { target: { value } } = evt;
+        setFormData({ ...formData, comments: evt.target.value });
+        return value;
+      }}
     />
   );
 }
@@ -58,7 +62,7 @@ export function FormActions(props: IformActionsProps) {
 interface ItableSectionProps {
   formData: IinquiryFormData, setFormData: (arg0: IinquiryFormData) => void
 }
-function EmailPhoneRow(props: ItableSectionProps) {
+export function EmailPhoneRow(props: ItableSectionProps) {
   const { formData, setFormData } = props;
   const { emailaddress, phonenumber } = formData;
   return (
@@ -68,8 +72,13 @@ function EmailPhoneRow(props: ItableSectionProps) {
           label="Email Address"
           isRequired
           type="email"
-          onChange={(evt) => utils.handleInputChange(evt, formData, setFormData)}
           value={emailaddress}
+          onChange={(evt) => {
+            const { target: { value } } = evt;
+            utils.handleInputChange(evt, formData, setFormData);
+            return value;
+          }}
+
         />
       </td>
       <td style={{ border: 'none', padding: '8px' }}>{' '}</td>
@@ -79,15 +88,20 @@ function EmailPhoneRow(props: ItableSectionProps) {
           label="Phone Number"
           isRequired
           type="tel"
-          onChange={(evt) => utils.handleInputChange(evt, formData, setFormData)}
           value={phonenumber}
+          onChange={(evt) => {
+            const { target: { value } } = evt;
+            utils.handleInputChange(evt, formData, setFormData);
+            return value;
+          }}
+
         />
       </td>
     </tr>
   );
 }
 
-function TableSection(props: ItableSectionProps): JSX.Element {
+export function TableSection(props: ItableSectionProps): JSX.Element {
   const { formData, setFormData } = props;
   const { firstname, lastname } = formData;
   return (
@@ -99,8 +113,13 @@ function TableSection(props: ItableSectionProps): JSX.Element {
               label="First Name"
               isRequired
               type="text"
-              onChange={(evt) => utils.handleInputChange(evt, formData, setFormData)}
               value={firstname}
+              onChange={(evt) => {
+                const { target: { value } } = evt;
+                utils.handleInputChange(evt, formData, setFormData);
+                return value;
+              }}
+
             />
           </td>
           <td style={{ border: 'none', padding: '8px' }}>{' '}</td>
@@ -109,8 +128,12 @@ function TableSection(props: ItableSectionProps): JSX.Element {
               label="Last Name"
               isRequired
               type="text"
-              onChange={(evt) => utils.handleInputChange(evt, formData, setFormData)}
               value={lastname}
+              onChange={(evt) => {
+                const { target: { value } } = evt;
+                utils.handleInputChange(evt, formData, setFormData);
+                return value;
+              }}
             />
           </td>
         </tr>
@@ -127,7 +150,7 @@ interface IinquiryFormProps {
   formData: IinquiryFormData,
   staticCountry?:string
 }
-function InquiryForm(props: IinquiryFormProps): JSX.Element {
+export function InquiryForm(props: IinquiryFormProps): JSX.Element {
   const {
     formData,
     setFormData,
@@ -142,16 +165,24 @@ function InquiryForm(props: IinquiryFormProps): JSX.Element {
         disabled={!!staticCountry}
         style={{ width: '100%' }}
         htmlFor="country"
-        onChange={(evt) => utils.handleCountryChange(evt, formData, setFormData)}
         value={staticCountry || country}
+        onChange={(evt) => {
+          const { target: { value } } = evt;
+          utils.handleCountryChange(evt, formData, setFormData);
+          return value;
+        }}
         options={countryData.sort()}
       />
       {country === 'United States' || staticCountry === 'United States'
         ? (
           <WjDropdown
             htmlFor="state"
-            onChange={(evt) => utils.handleUsStateChange(evt, formData, setFormData)}
             value={uSAstate}
+            onChange={(evt) => {
+              const { target: { value } } = evt;
+              utils.handleUsStateChange(evt, formData, setFormData);
+              return value;
+            }}
             options={stateData.sort()}
           />
         )
@@ -161,8 +192,12 @@ function InquiryForm(props: IinquiryFormProps): JSX.Element {
         label="Zipcode"
         isRequired
         type="text"
-        onChange={(evt) => utils.handleInputChange(evt, formData, setFormData)}
         value={zipcode}
+        onChange={(evt) => {
+          const { target: { value } } = evt;
+          utils.handleInputChange(evt, formData, setFormData);
+          return value;
+        }}
         style={{ width: '100%' }}
       />
       <p style={{ margin: 0 }}>&nbsp;</p>
@@ -171,6 +206,16 @@ function InquiryForm(props: IinquiryFormProps): JSX.Element {
     </form>
   );
 }
+
+export const ContactRequest = () => (
+  <div className="page-content contacted">
+    <p style={{ textAlign: 'center', margin: '14px', paddingBottom: '15px' }}>
+      Thank you for contacting us.
+      <br />
+      We will respond to your request soon.
+    </p>
+  </div>
+);
 
 export function Inquiry({ country, hideTitle }:{ country?:string, hideTitle?:boolean }): JSX.Element {
   const [hasSubmitted, setHasSubmitted] = useState(false);
@@ -188,13 +233,7 @@ export function Inquiry({ country, hideTitle }:{ country?:string, hideTitle?:boo
           <InquiryForm staticCountry={country} setHasSubmitted={setHasSubmitted} formData={formData} setFormData={setFormData} />
         </div>
       ) : (
-        <div className="page-content contacted">
-          <p style={{ textAlign: 'center', margin: '14px', paddingBottom: '15px' }}>
-            Thank you for contacting us.
-            <br />
-            We will respond to your request soon.
-          </p>
-        </div>
+        <ContactRequest />
       )}
     </div>
   );
