@@ -151,12 +151,8 @@ interface IinquiryFormProps {
   staticCountry?:string
 }
 export function InquiryForm(props: IinquiryFormProps): JSX.Element {
-  const {
-    formData,
-    setFormData,
-    setHasSubmitted,
-    staticCountry,
-  } = props;
+  // eslint-disable-next-line object-curly-newline
+  const { formData, setFormData, setHasSubmitted, staticCountry } = props;
   const { country, uSAstate, zipcode } = formData;
   return (
     <form id="new-contact" className="col">
