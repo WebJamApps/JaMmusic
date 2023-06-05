@@ -74,5 +74,5 @@ const responseGoogleLogout = async (setAuth: (arg0: Iauth) => void): Promise<voi
 };
 
 export default {
-  responseGoogleLogin, responseGoogleLogout, authenticate, setUser, makeState,
+  responseGoogleLogin, responseGoogleLogout, authenticate, setUser, makeState, setUserAuth,
 };

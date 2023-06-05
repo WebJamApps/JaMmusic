@@ -85,5 +85,5 @@ function validateForm(formData:IinquiryFormData): boolean {
 }
 
 export default {
-  handleCountryChange, handleSubmit, handleInputChange, handleUsStateChange, validateForm,
+  handleCountryChange, handleSubmit, handleInputChange, handleUsStateChange, validateForm, createEmailApi, continueValidating,
 };

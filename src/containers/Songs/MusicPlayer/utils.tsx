@@ -163,4 +163,5 @@ export default {
   prev,
   handlePlayerError,
   handlePlayerReady,
+  setSingleDisplays,
 };
