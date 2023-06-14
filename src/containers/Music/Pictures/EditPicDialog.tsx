@@ -1,16 +1,18 @@
 import {
   Button,
   Checkbox,
-  Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, FormGroup, FormControlLabel,
+  Dialog, DialogActions, DialogContent, DialogTitle, TextField, FormGroup, FormControlLabel,
 } from '@mui/material';
-import { useState, useContext } from 'react';
-import { AuthContext } from 'src/providers/Auth.provider';
-import { DataContext } from 'src/providers/Data.provider';
-import utils from './pictures.utils';
+// import { useContext } from 'react';
+// import { AuthContext } from 'src/providers/Auth.provider';
+// import { DataContext } from 'src/providers/Data.provider';
+// import utils from './pictures.utils';
 
-const defaultCreatePic = { url: '', comments: '', title: '' };
+export const defaultEditPic = {
+  url: '', comments: '', title: '', id: '',
+};
 
-export const makeShowHideCaption = (setPic: (arg0: typeof defaultCreatePic) => void, pic: typeof defaultCreatePic) => (evt: any) => {
+export const makeShowHideCaption = (setPic: (arg0: typeof defaultEditPic) => void, pic: typeof defaultEditPic) => (evt: any) => {
   const { target: { checked } } = evt;
   const comments = checked ? 'showCaption' : '';
   setPic({ ...pic, comments });
@@ -35,42 +37,38 @@ export function PicTextField(props: IpicTextFieldProps) {
   );
 }
 
-interface IcreatePicDialogProps {
-  showDialog: boolean, setShowDialog: (arg0: boolean) => void,
+interface IeditPicDialogProps {
+  editPic: typeof defaultEditPic, setEditPic: (arg0: typeof defaultEditPic) => void,
 }
-export function CreatePicDialog({ showDialog, setShowDialog }: IcreatePicDialogProps) {
-  const [pic, setPic] = useState(defaultCreatePic);
-  const { auth } = useContext(AuthContext);
-  const { getPics } = useContext(DataContext);
-  const showHideCaption = makeShowHideCaption(setPic, pic);
+export function EditPicDialog({ editPic, setEditPic }: IeditPicDialogProps) {
+  // const { auth } = useContext(AuthContext);
+  // const { getPics } = useContext(DataContext);
+  const showHideCaption = makeShowHideCaption(setEditPic, editPic);
   return (
     <Dialog
       disableEnforceFocus
       disableAutoFocus
-      className="createNewPicDialog"
-      open={showDialog}
-      onClose={() => setShowDialog(false)}
+      className="editPicDialog"
+      open={!!editPic.id}
+      onClose={() => setEditPic(defaultEditPic)}
     >
-      <DialogTitle>Create New Picture</DialogTitle>
+      <DialogTitle>Edit Picture</DialogTitle>
       <DialogContent sx={{ padding: '10px 10px' }}>
-        <DialogContentText sx={{ marginBottom: '30px' }}>
-          Enter all *required fields to create a new picture.
-        </DialogContentText>
         <PicTextField
-          value={pic.url}
+          value={editPic.url}
           label="* URL"
           onChange={(evt) => {
             const { target: { value } } = evt;
-            setPic({ ...pic, url: value });
+            setEditPic({ ...editPic, url: value });
             return value;
           }}
         />
         <PicTextField
-          value={pic.title}
+          value={editPic.title}
           label="* Title"
           onChange={(evt) => {
             const { target: { value } } = evt;
-            setPic({ ...pic, title: value });
+            setEditPic({ ...editPic, title: value });
             return value;
           }}
         />
@@ -78,10 +76,10 @@ export function CreatePicDialog({ showDialog, setShowDialog }: IcreatePicDialogP
           <FormControlLabel
             control={(
               <Checkbox
-                checked={pic.comments === 'showCaption'}
+                checked={editPic.comments === 'showCaption'}
                 onClick={showHideCaption}
               />
-            )}
+              )}
             label="Show Title In Caption"
           />
         </FormGroup>
@@ -91,14 +89,22 @@ export function CreatePicDialog({ showDialog, setShowDialog }: IcreatePicDialogP
           size="small"
           variant="contained"
           className="createPicButton"
-          onClick={() => { utils.createPic(getPics, setShowDialog, pic, auth); }}
+          onClick={() => { console.log('update pic'); }}
         >
-          Create
+          Update
+        </Button>
+        <Button
+          size="small"
+          variant="contained"
+          className="createPicButton"
+          onClick={() => { console.log('delete'); }}
+        >
+          Delete
         </Button>
         <Button
           size="small"
           className="cancelPicButton"
-          onClick={() => { setPic(defaultCreatePic); setShowDialog(false); }}
+          onClick={() => { setEditPic(defaultEditPic); }}
         >
           Cancel
         </Button>
@@ -106,3 +112,4 @@ export function CreatePicDialog({ showDialog, setShowDialog }: IcreatePicDialogP
     </Dialog>
   );
 }
+
