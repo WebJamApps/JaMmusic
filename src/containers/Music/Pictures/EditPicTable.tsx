@@ -3,7 +3,8 @@ import { DataGrid, GridColumns, GridRenderCellParams } from '@mui/x-data-grid';
 import { useContext, useState } from 'react';
 import { DataContext } from 'src/providers/Data.provider';
 import './editPicTable.scss';
-import { EditPicDialog, defaultEditPic } from './EditPicDialog';
+import { EditPicDialog } from './EditPicDialog';
+import { defaultEditPic } from './pictures.utils';
 
 export const columns: GridColumns = [
   {

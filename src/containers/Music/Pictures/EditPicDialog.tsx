@@ -3,14 +3,10 @@ import {
   Checkbox,
   Dialog, DialogActions, DialogContent, DialogTitle, TextField, FormGroup, FormControlLabel,
 } from '@mui/material';
-// import { useContext } from 'react';
-// import { AuthContext } from 'src/providers/Auth.provider';
-// import { DataContext } from 'src/providers/Data.provider';
-// import utils from './pictures.utils';
-
-export const defaultEditPic = {
-  url: '', comments: '', title: '', id: '',
-};
+import { useContext } from 'react';
+import { AuthContext } from 'src/providers/Auth.provider';
+import { DataContext } from 'src/providers/Data.provider';
+import utils, { defaultEditPic } from './pictures.utils';
 
 export const makeShowHideCaption = (setPic: (arg0: typeof defaultEditPic) => void, pic: typeof defaultEditPic) => (evt: any) => {
   const { target: { checked } } = evt;
@@ -37,12 +33,16 @@ export function PicTextField(props: IpicTextFieldProps) {
   );
 }
 
+function checkDisabled(editPic: typeof defaultEditPic):boolean {
+  return !!(editPic.title && editPic.url);
+}
+
 interface IeditPicDialogProps {
   editPic: typeof defaultEditPic, setEditPic: (arg0: typeof defaultEditPic) => void,
 }
 export function EditPicDialog({ editPic, setEditPic }: IeditPicDialogProps) {
-  // const { auth } = useContext(AuthContext);
-  // const { getPics } = useContext(DataContext);
+  const { auth } = useContext(AuthContext);
+  const { getPics } = useContext(DataContext);
   const showHideCaption = makeShowHideCaption(setEditPic, editPic);
   return (
     <Dialog
@@ -86,16 +86,17 @@ export function EditPicDialog({ editPic, setEditPic }: IeditPicDialogProps) {
       </DialogContent>
       <DialogActions>
         <Button
+          disabled={!checkDisabled(editPic)}
           size="small"
           variant="contained"
           className="createPicButton"
-          onClick={() => { console.log('update pic'); }}
+          onClick={() => { utils.updatePic(editPic, auth, getPics, setEditPic); }}
         >
           Update
         </Button>
         <Button
+          style={{ color: 'red' }}
           size="small"
-          variant="contained"
           className="createPicButton"
           onClick={() => { console.log('delete'); }}
         >
