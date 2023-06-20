@@ -1,7 +1,8 @@
 import {
   Button,
   Checkbox,
-  Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, FormGroup, FormControlLabel,
+  Dialog, DialogActions, DialogContent,
+  DialogContentText, DialogTitle, TextField, FormGroup, FormControlLabel,
 } from '@mui/material';
 import { useState, useContext } from 'react';
 import { AuthContext } from 'src/providers/Auth.provider';

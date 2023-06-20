@@ -13,11 +13,6 @@ export const columns: GridColumns = [
     minWidth: 300,
     flex: 1,
     editable: false,
-    // renderCell: (params: GridRenderCellParams) => {
-    //   const { row: { datetime } } = params;
-    //   if (!datetime) return '';
-    //   return utils.makeDateValue(datetime);
-    // },
   },
   {
     field: 'url',
@@ -69,7 +64,7 @@ export function EditPicTable(props:IeditPicTableProps) {
         // rowsPerPageOptions={[pageSize]}
         // disableSelectionOnClick
       />
-      <EditPicDialog editPic={editPic} setEditPic={setEditPic} />
+      <EditPicDialog editPic={editPic} setEditPic={setEditPic} setShowTable={setShowTable} />
     </div>
   // </div>
   );

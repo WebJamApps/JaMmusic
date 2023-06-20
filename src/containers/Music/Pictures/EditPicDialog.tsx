@@ -1,9 +1,9 @@
 import {
   Button,
   Checkbox,
-  Dialog, DialogActions, DialogContent, DialogTitle, TextField, FormGroup, FormControlLabel,
+  Dialog, DialogActions, DialogContent, DialogTitle, TextField, FormGroup, FormControlLabel, CircularProgress,
 } from '@mui/material';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { AuthContext } from 'src/providers/Auth.provider';
 import { DataContext } from 'src/providers/Data.provider';
 import utils, { defaultEditPic } from './pictures.utils';
@@ -38,18 +38,20 @@ function checkDisabled(editPic: typeof defaultEditPic):boolean {
 }
 
 interface IeditPicDialogProps {
+  setShowTable:(arg0:boolean)=>void,
   editPic: typeof defaultEditPic, setEditPic: (arg0: typeof defaultEditPic) => void,
 }
-export function EditPicDialog({ editPic, setEditPic }: IeditPicDialogProps) {
+export function EditPicDialog({ editPic, setEditPic, setShowTable }: IeditPicDialogProps) {
   const { auth } = useContext(AuthContext);
   const { getPics } = useContext(DataContext);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const showHideCaption = makeShowHideCaption(setEditPic, editPic);
   return (
     <Dialog
       disableEnforceFocus
       disableAutoFocus
       className="editPicDialog"
-      open={!!editPic.id}
+      open={!!editPic._id}
       onClose={() => setEditPic(defaultEditPic)}
     >
       <DialogTitle>Edit Picture</DialogTitle>
@@ -85,30 +87,34 @@ export function EditPicDialog({ editPic, setEditPic }: IeditPicDialogProps) {
         </FormGroup>
       </DialogContent>
       <DialogActions>
-        <Button
-          disabled={!checkDisabled(editPic)}
-          size="small"
-          variant="contained"
-          className="createPicButton"
-          onClick={() => { utils.updatePic(editPic, auth, getPics, setEditPic); }}
-        >
-          Update
-        </Button>
-        <Button
-          style={{ color: 'red' }}
-          size="small"
-          className="createPicButton"
-          onClick={() => { console.log('delete'); }}
-        >
-          Delete
-        </Button>
-        <Button
-          size="small"
-          className="cancelPicButton"
-          onClick={() => { setEditPic(defaultEditPic); }}
-        >
-          Cancel
-        </Button>
+        {isSubmitting ? <CircularProgress /> : (
+          <>
+            <Button
+              disabled={!checkDisabled(editPic)}
+              size="small"
+              variant="contained"
+              className="createPicButton"
+              onClick={() => { utils.updatePic(editPic, auth, getPics, setEditPic, setShowTable, setIsSubmitting); }}
+            >
+              Update
+            </Button>
+            <Button
+              style={{ color: 'red' }}
+              size="small"
+              className="createPicButton"
+              onClick={() => { utils.deletePic(editPic._id, auth, getPics, setEditPic, setShowTable, setIsSubmitting); }}
+            >
+              Delete
+            </Button>
+            <Button
+              size="small"
+              className="cancelPicButton"
+              onClick={() => { setEditPic(defaultEditPic); }}
+            >
+              Cancel
+            </Button>
+          </>
+        )}
       </DialogActions>
     </Dialog>
   );
