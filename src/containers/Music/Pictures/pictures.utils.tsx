@@ -57,12 +57,13 @@ async function deletePic(
   picId:string,
   auth:Iauth,
   getPics:() => void,
-  setEditPic:(arg0:typeof defaultEditPic)=>void,
-  setShowTable:(arg0:boolean)=>void,
-  setIsSubmitting:(arg0:boolean)=>void,
+  setters:{ setEditPic:(arg0:typeof defaultEditPic)=>void,
+    setShowTable:(arg0:boolean)=>void,
+    setIsSubmitting:(arg0:boolean)=>void,
+  },
 ) {
   try {
-    setIsSubmitting(true);
+    setters.setIsSubmitting(true);
     const { token } = auth;
     const socket = scc.create({
       hostname: process.env.SCS_HOST,
@@ -72,10 +73,10 @@ async function deletePic(
     });
     socket.transmit('deleteImage', { data: picId, token });
     await commonUtils.delay(2);
-    setIsSubmitting(false);
-    setEditPic(defaultEditPic);
+    setters.setIsSubmitting(false);
+    setters.setEditPic(defaultEditPic);
     getPics();
-    setShowTable(false);
+    setters.setShowTable(false);
   } catch (err) { console.log((err as Error).message); }
 }
 

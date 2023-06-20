@@ -1,10 +1,29 @@
 import {
-  Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, InputLabel, MenuItem, Select, TextField,
+  Button, Dialog, DialogActions, DialogContent,
+  DialogContentText, DialogTitle, FormControl, InputLabel, MenuItem, Select, TextField,
 } from '@mui/material';
 import { useState, useContext } from 'react';
 import { AuthContext } from 'src/providers/Auth.provider';
 import { DataContext, Isong } from 'src/providers/Data.provider';
 import utils, { defaultSong } from './songs.utils';
+
+interface IsongFieldProps {
+  label:string,
+  value:string,
+  onChange:(arg0:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>)=>string
+}
+function SongField(props:IsongFieldProps):JSX.Element {
+  const { label, value, onChange } = props;
+  return (
+    <TextField
+      label={label}
+      type="text"
+      fullWidth
+      value={value}
+      onChange={onChange}
+    />
+  );
+}
 
 interface IcreatePicDialogProps {
   showDialog: boolean, setShowDialog: (arg0: boolean) => void,
@@ -26,10 +45,8 @@ export function CreateSongDialog({ showDialog, setShowDialog }: IcreatePicDialog
         <DialogContentText sx={{ marginBottom: '30px' }}>
           Enter all *Required fields to add a new song.
         </DialogContentText>
-        <TextField
+        <SongField
           label="* Url"
-          type="text"
-          fullWidth
           value={song.url}
           onChange={(evt) => {
             const { target: { value } } = evt;
@@ -37,11 +54,8 @@ export function CreateSongDialog({ showDialog, setShowDialog }: IcreatePicDialog
             return value;
           }}
         />
-        <TextField
-          sx={{ marginTop: '20px' }}
+        <SongField
           label="* Title"
-          type="text"
-          fullWidth
           value={song.title}
           onChange={(evt) => {
             const { target: { value } } = evt;
@@ -49,12 +63,9 @@ export function CreateSongDialog({ showDialog, setShowDialog }: IcreatePicDialog
             return value;
           }}
         />
-        <TextField
-          sx={{ marginTop: '20px' }}
+        <SongField
           label="* Artist"
-          type="text"
-          fullWidth
-          value={song.artist}
+          value={song.artist || ''}
           onChange={(evt) => {
             const { target: { value } } = evt;
             setSong({ ...song, artist: value });

@@ -102,7 +102,7 @@ export function EditPicDialog({ editPic, setEditPic, setShowTable }: IeditPicDia
               style={{ color: 'red' }}
               size="small"
               className="createPicButton"
-              onClick={() => { utils.deletePic(editPic._id, auth, getPics, setEditPic, setShowTable, setIsSubmitting); }}
+              onClick={() => { utils.deletePic(editPic._id, auth, getPics, { setEditPic, setShowTable, setIsSubmitting }); }}
             >
               Delete
             </Button>
