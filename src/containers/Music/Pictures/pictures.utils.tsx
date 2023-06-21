@@ -2,9 +2,10 @@ import scc from 'socketcluster-client';
 import commonUtils from 'src/lib/utils';
 import type { Iauth } from 'src/providers/Auth.provider';
 
-export const defaultEditPic = {
-  url: '', comments: '', title: '', _id: '', type: 'JaMmusic-music',
+export const defaultPic = {
+  url: '', comments: '', title: '', _id: undefined as string | undefined, type: 'JaMmusic-music',
 };
+
 const createPic = async (
   getPics: () => void,
   setShowDialog: (arg0: boolean) => void,
@@ -28,10 +29,10 @@ const createPic = async (
 };
 
 const updatePic = async (
-  editPic:typeof defaultEditPic,
+  editPic:typeof defaultPic,
   auth:Iauth,
   getPics:() => void,
-  setEditPic:(arg0:typeof defaultEditPic)=>void,
+  setEditPic:(arg0:typeof defaultPic)=>void,
   setShowTable:(arg0:boolean)=>void,
   setIsSubmitting:(arg0:boolean)=>void,
 ) => {
@@ -47,7 +48,7 @@ const updatePic = async (
     socket.transmit('editImage', { editPic, token });
     await commonUtils.delay(2);
     setIsSubmitting(false);
-    setEditPic(defaultEditPic);
+    setEditPic(defaultPic);
     getPics();
     setShowTable(false);
   } catch (err) { console.log((err as Error).message); }
@@ -57,7 +58,7 @@ async function deletePic(
   picId:string,
   auth:Iauth,
   getPics:() => void,
-  setters:{ setEditPic:(arg0:typeof defaultEditPic)=>void,
+  setters:{ setEditPic:(arg0:typeof defaultPic)=>void,
     setShowTable:(arg0:boolean)=>void,
     setIsSubmitting:(arg0:boolean)=>void,
   },
@@ -74,10 +75,18 @@ async function deletePic(
     socket.transmit('deleteImage', { data: picId, token });
     await commonUtils.delay(2);
     setters.setIsSubmitting(false);
-    setters.setEditPic(defaultEditPic);
+    setters.setEditPic(defaultPic);
     getPics();
     setters.setShowTable(false);
   } catch (err) { console.log((err as Error).message); }
 }
 
-export default { createPic, updatePic, deletePic };
+const makeShowHideCaption = (setPic: (arg0: typeof defaultPic) => void, pic: typeof defaultPic) => (evt: any) => {
+  const { target: { checked } } = evt;
+  const comments = checked ? 'showCaption' : '';
+  setPic({ ...pic, comments });
+};
+
+export default {
+  createPic, updatePic, deletePic, makeShowHideCaption,
+};

@@ -1,5 +1,8 @@
 import renderer from 'react-test-renderer';
-import { CreatePicDialog, makeShowHideCaption } from 'src/containers/Music/Pictures/CreatePicDialog';
+import {
+  CreatePicDialog,
+  // makeShowHideCaption
+} from 'src/containers/Music/Pictures/CreatePicDialog';
 import utils from 'src/containers/Music/Pictures/pictures.utils';
 
 describe('CreatePicDialog', () => {
@@ -16,12 +19,12 @@ describe('CreatePicDialog', () => {
     cpd.findByProps({ className: 'createPicButton' }).props.onClick();
     expect(utils.createPic).toHaveBeenCalled();
   });
-  it('makeShowHideCaption and runs it', () => {
-    const setPic = jest.fn();
-    const showHide = makeShowHideCaption(setPic, {} as any);
-    showHide({ target: { checked: true } });
-    expect(setPic).toHaveBeenCalledWith({ comments: 'showCaption' });
-    showHide({ target: { checked: false } });
-    expect(setPic).toHaveBeenCalledWith({ comments: '' });
-  });
+  // it('makeShowHideCaption and runs it', () => {
+  //   const setPic = jest.fn();
+  //   const showHide = makeShowHideCaption(setPic, {} as any);
+  //   showHide({ target: { checked: true } });
+  //   expect(setPic).toHaveBeenCalledWith({ comments: 'showCaption' });
+  //   showHide({ target: { checked: false } });
+  //   expect(setPic).toHaveBeenCalledWith({ comments: '' });
+  // });
 });

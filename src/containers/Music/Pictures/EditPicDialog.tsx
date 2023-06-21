@@ -6,13 +6,7 @@ import {
 import { useContext, useState } from 'react';
 import { AuthContext } from 'src/providers/Auth.provider';
 import { DataContext } from 'src/providers/Data.provider';
-import utils, { defaultEditPic } from './pictures.utils';
-
-export const makeShowHideCaption = (setPic: (arg0: typeof defaultEditPic) => void, pic: typeof defaultEditPic) => (evt: any) => {
-  const { target: { checked } } = evt;
-  const comments = checked ? 'showCaption' : '';
-  setPic({ ...pic, comments });
-};
+import utils, { defaultPic } from './pictures.utils';
 
 interface IpicTextFieldProps {
   value: string,
@@ -33,26 +27,26 @@ export function PicTextField(props: IpicTextFieldProps) {
   );
 }
 
-function checkDisabled(editPic: typeof defaultEditPic):boolean {
+function checkDisabled(editPic: typeof defaultPic):boolean {
   return !!(editPic.title && editPic.url);
 }
 
 interface IeditPicDialogProps {
   setShowTable:(arg0:boolean)=>void,
-  editPic: typeof defaultEditPic, setEditPic: (arg0: typeof defaultEditPic) => void,
+  editPic: typeof defaultPic, setEditPic: (arg0: typeof defaultPic) => void,
 }
 export function EditPicDialog({ editPic, setEditPic, setShowTable }: IeditPicDialogProps) {
   const { auth } = useContext(AuthContext);
   const { getPics } = useContext(DataContext);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const showHideCaption = makeShowHideCaption(setEditPic, editPic);
+  const showHideCaption = utils.makeShowHideCaption(setEditPic, editPic);
   return (
     <Dialog
       disableEnforceFocus
       disableAutoFocus
       className="editPicDialog"
       open={!!editPic._id}
-      onClose={() => setEditPic(defaultEditPic)}
+      onClose={() => setEditPic(defaultPic)}
     >
       <DialogTitle>Edit Picture</DialogTitle>
       <DialogContent sx={{ padding: '10px 10px' }}>
@@ -102,14 +96,14 @@ export function EditPicDialog({ editPic, setEditPic, setShowTable }: IeditPicDia
               style={{ color: 'red' }}
               size="small"
               className="createPicButton"
-              onClick={() => { utils.deletePic(editPic._id, auth, getPics, { setEditPic, setShowTable, setIsSubmitting }); }}
+              onClick={() => { utils.deletePic(editPic._id || '', auth, getPics, { setEditPic, setShowTable, setIsSubmitting }); }}
             >
               Delete
             </Button>
             <Button
               size="small"
               className="cancelPicButton"
-              onClick={() => { setEditPic(defaultEditPic); }}
+              onClick={() => { setEditPic(defaultPic); }}
             >
               Cancel
             </Button>

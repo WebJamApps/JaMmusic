@@ -73,12 +73,7 @@ export function EmailPhoneRow(props: ItableSectionProps) {
           isRequired
           type="email"
           value={emailaddress}
-          onChange={(evt) => {
-            const { target: { value } } = evt;
-            utils.handleInputChange(evt, formData, setFormData);
-            return value;
-          }}
-
+          onChange={(evt) => utils.handleInputChange(evt, formData, setFormData)}
         />
       </td>
       <td style={{ border: 'none', padding: '8px' }}>{' '}</td>
@@ -114,12 +109,7 @@ export function TableSection(props: ItableSectionProps): JSX.Element {
               isRequired
               type="text"
               value={firstname}
-              onChange={(evt) => {
-                const { target: { value } } = evt;
-                utils.handleInputChange(evt, formData, setFormData);
-                return value;
-              }}
-
+              onChange={(evt) => utils.handleInputChange(evt, formData, setFormData)}
             />
           </td>
           <td style={{ border: 'none', padding: '8px' }}>{' '}</td>

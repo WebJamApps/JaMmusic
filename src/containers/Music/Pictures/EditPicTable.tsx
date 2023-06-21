@@ -4,7 +4,7 @@ import { useContext, useState } from 'react';
 import { DataContext } from 'src/providers/Data.provider';
 import './editPicTable.scss';
 import { EditPicDialog } from './EditPicDialog';
-import { defaultEditPic } from './pictures.utils';
+import { defaultPic } from './pictures.utils';
 
 export const columns: GridColumns = [
   {
@@ -32,8 +32,7 @@ interface IeditPicTableProps {
 export function EditPicTable(props:IeditPicTableProps) {
   const { setShowTable } = props;
   const { pics } = useContext(DataContext);
-  const [editPic, setEditPic] = useState(defaultEditPic);
-  console.log(pics);
+  const [editPic, setEditPic] = useState(defaultPic);
   return (
     <div
       className="editPicTable"
@@ -51,21 +50,14 @@ export function EditPicTable(props:IeditPicTableProps) {
       >
         Cancel
       </Button>
-      {/* <div style={{ height: '500px', width: '100%' }}> */}
       <DataGrid
         onRowClick={(rowParams) => {
-          console.log(rowParams.row);
           setEditPic(rowParams.row);
-          // utils.clickToEdit(setEditGig, isAdmin, rowParams.row);
         }}
         rows={pics || []}
         columns={columns}
-        // pageSize={pageSize}
-        // rowsPerPageOptions={[pageSize]}
-        // disableSelectionOnClick
       />
       <EditPicDialog editPic={editPic} setEditPic={setEditPic} setShowTable={setShowTable} />
     </div>
-  // </div>
   );
 }

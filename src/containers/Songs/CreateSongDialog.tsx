@@ -114,11 +114,7 @@ export function CreateSongDialog({ showDialog, setShowDialog }: IcreatePicDialog
           type="text"
           fullWidth
           value={song.composer}
-          onChange={(evt) => {
-            const { target: { value } } = evt;
-            setSong({ ...song, composer: value });
-            return value;
-          }}
+          onChange={(evt) => utils.handleInputChange(evt, setSong, song, 'composer')}
         />
         <TextField
           sx={{ marginTop: '20px' }}
