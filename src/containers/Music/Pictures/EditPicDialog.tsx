@@ -77,6 +77,7 @@ export function EditPicDialog({ editPic, setEditPic, setShowTable }: IeditPicDia
             <Button
               style={{ color: 'red' }}
               size="small"
+              id="delete"
               className="createPicButton"
               onClick={() => { utils.deletePic(editPic._id || '', auth, getPics, { setEditPic, setShowTable, setIsSubmitting }); }}
             >

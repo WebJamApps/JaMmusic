@@ -51,6 +51,7 @@ export function EditPicTable(props:IeditPicTableProps) {
         Cancel
       </Button>
       <DataGrid
+        className="rowParams"
         onRowClick={(rowParams) => {
           setEditPic(rowParams.row);
         }}
