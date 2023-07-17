@@ -1,31 +1,13 @@
 import {
   Button,
   Checkbox,
-  Dialog, DialogActions, DialogContent, DialogTitle, TextField, FormGroup, FormControlLabel, CircularProgress,
+  Dialog, DialogActions, DialogContent, DialogTitle, FormGroup, FormControlLabel, CircularProgress,
 } from '@mui/material';
 import { useContext, useState } from 'react';
 import { AuthContext } from 'src/providers/Auth.provider';
 import { DataContext } from 'src/providers/Data.provider';
 import utils, { defaultPic } from './pictures.utils';
-
-interface IpicTextFieldProps {
-  value: string,
-  label:string,
-  onChange:(arg0:any)=>any
-}
-export function PicTextField(props: IpicTextFieldProps) {
-  const { value, onChange, label } = props;
-  return (
-    <TextField
-      sx={{ marginTop: '20px' }}
-      label={label}
-      type="text"
-      fullWidth
-      value={value}
-      onChange={onChange}
-    />
-  );
-}
+import { PicTextField } from './PicTextField';
 
 function checkDisabled(editPic: typeof defaultPic):boolean {
   return !!(editPic.title && editPic.url);

@@ -116,12 +116,9 @@ export function CreateSongDialog({ showDialog, setShowDialog }: IcreatePicDialog
           value={song.composer}
           onChange={(evt) => utils.handleInputChange(evt, setSong, song, 'composer')}
         />
-        <TextField
-          sx={{ marginTop: '20px' }}
+        <SongField
           label="Album"
-          type="text"
-          fullWidth
-          value={song.album}
+          value={song.album || ''}
           onChange={(evt) => {
             const { target: { value } } = evt;
             setSong({ ...song, album: value });
