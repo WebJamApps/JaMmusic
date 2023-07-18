@@ -1,7 +1,7 @@
 import renderer from 'react-test-renderer';
 import {
   CommentsSection, ContactForm, ContactRequest, EmailPhoneRow, FormActions, Inquiry, InquiryForm, TableSection,
-} from 'src/containers/Homepage/Inquiry';
+} from 'src/containers/NewHomepage/Inquiry';
 
 describe('Inquiry', () => {
   it('handles onChange for CommentsSection', () => {
