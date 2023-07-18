@@ -202,10 +202,19 @@ export const ContactRequest = () => (
     </p>
   </div>
 );
+interface IcontactFormProps {
+  hasSubmitted: boolean,
+  hideTitle?: boolean,
+  country?: string,
+  setHasSubmitted: (arg0: boolean) => void
+  formData: IinquiryFormData,
+  setFormData: (arg0: IinquiryFormData) => void
+}
 
-export function Inquiry({ country, hideTitle }:{ country?:string, hideTitle?:boolean }): JSX.Element {
-  const [hasSubmitted, setHasSubmitted] = useState(false);
-  const [formData, setFormData] = useState({} as IinquiryFormData);
+export function ContactForm(props: IcontactFormProps) {
+  const {
+    hasSubmitted, hideTitle, country, setHasSubmitted, formData, setFormData,
+  } = props;
   return (
     <div className="row form-row" style={{ margin: 'auto', border: '1px solid black' }}>
       {!hasSubmitted ? (
@@ -222,6 +231,16 @@ export function Inquiry({ country, hideTitle }:{ country?:string, hideTitle?:boo
         <ContactRequest />
       )}
     </div>
+  );
+}
+export function Inquiry({ country, hideTitle }:{ country?:string, hideTitle?:boolean }): JSX.Element {
+  const [hasSubmitted, setHasSubmitted] = useState(false);
+  const [formData, setFormData] = useState({} as IinquiryFormData);
+  const props = {
+    hasSubmitted, hideTitle, country, setHasSubmitted, formData, setFormData,
+  };
+  return (
+    <ContactForm {...props} />
   );
 }
 
