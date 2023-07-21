@@ -216,11 +216,17 @@ export function ContactForm(props: IcontactFormProps) {
     hasSubmitted, hideTitle, country, setHasSubmitted, formData, setFormData,
   } = props;
   return (
-    <div className="row form-row" style={{ margin: 'auto', border: '1px solid black' }}>
+    <div
+      className="contact-us"
+      style={{
+        margin: 'auto',
+        // border: '1px solid black'
+      }}
+    >
       {!hasSubmitted ? (
         <div className="contact-form">
           <h4 style={{
-            textAlign: 'center', marginBottom: '0', marginTop: '10px', paddingTop: 0, fontWeight: 'bold',
+            textAlign: 'center', marginBottom: '0', marginTop: '1px', paddingTop: 0, fontWeight: 'bold',
           }}
           >
             {hideTitle ? '' : 'Contact Us'}
