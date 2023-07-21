@@ -7,7 +7,7 @@ function AppersonAutomotive(): JSX.Element {
       <h4>Apperson Automotive</h4>
       <div>
         <img
-          style={{ maxWidth: '300px', height: '375px' }}
+          style={{ maxWidth: '450px', height: '375px' }}
           alt="Apperson Automotive Home Page"
           src="../static/imgs/AppersonAutomotive.png"
         />

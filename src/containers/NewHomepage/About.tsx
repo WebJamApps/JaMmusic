@@ -2,7 +2,7 @@ import Faqs from './FAQs';
 
 function AboutUs(): JSX.Element {
   return (
-    <div className="widescreenHomepage">
+    <div>
       <div className="container-fluid">
         <div className="row">
           <div className="col-md-6" style={{ top: '0', paddingRight: '6px', paddingLeft: '10px' }}>
@@ -22,7 +22,7 @@ function AboutUs(): JSX.Element {
             <Faqs />
           </div>
 
-          <div className="col-md-6 wideSlideshow">
+          <div className="col-md-6 slideshow">
             <div id="slideshow1">
               <img alt="Web Jam Banner Large" src="../static/imgs/banner1.jpg" />
             </div>

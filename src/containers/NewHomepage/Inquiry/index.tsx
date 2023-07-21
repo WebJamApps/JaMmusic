@@ -47,6 +47,7 @@ export function FormActions(props: IformActionsProps) {
     <div className="inquiryValidation input-field col" style={{ marginBottom: '12px' }}>
       <span className="inquiryValidation">* Required</span>
       <Button
+        className="submit-inquiry"
         variant="contained"
         id="sendEmailButton"
         disabled={utils.validateForm(formData)}

@@ -58,10 +58,9 @@ exports[`Bookus renders correctly 1`] = `
       Please fill out this form and we will get back with you soon.
     </p>
     <div
-      className="row form-row"
+      className="contact-us"
       style={
         {
-          "border": "1px solid black",
           "margin": "auto",
         }
       }
@@ -74,7 +73,7 @@ exports[`Bookus renders correctly 1`] = `
             {
               "fontWeight": "bold",
               "marginBottom": "0",
-              "marginTop": "10px",
+              "marginTop": "1px",
               "paddingTop": 0,
               "textAlign": "center",
             }
