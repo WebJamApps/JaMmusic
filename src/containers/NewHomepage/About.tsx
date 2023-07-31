@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import Faqs from './FAQs';
 
 function AboutUs(): JSX.Element {
@@ -6,7 +7,7 @@ function AboutUs(): JSX.Element {
       <div className="container-fluid">
         <div className="row">
           <div className="col-md-6" style={{ top: '0', paddingRight: '6px', paddingLeft: '10px' }}>
-            <p style={{ marginTop: '32px', marginBottom: '40px', fontSize: '18px' }}>
+            <p style={{ marginTop: '32px', marginBottom: '40px', fontSize: '22px' }}>
               Web Jam LLC helps businesses bring their web technologies into the 21st century! Let us
               help make your website mobile-friendly and grow your business by utilizing the power of online services.
               More information is available in our&nbsp;
@@ -24,7 +25,7 @@ function AboutUs(): JSX.Element {
 
           <div className="col-md-6 slideshow">
             <div id="slideshow1">
-              <img alt="Web Jam Banner Large" src="../static/imgs/banner1.jpg" />
+              <img style={{ boxShadow: '0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.4)' }} alt="Web Jam Banner Large" src="../static/imgs/banner1.jpg" />
             </div>
           </div>
         </div>

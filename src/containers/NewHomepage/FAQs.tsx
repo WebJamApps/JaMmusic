@@ -3,7 +3,7 @@
 function Faqs(): JSX.Element {
   return (
     <div className="faqs">
-      <h3>FAQs</h3>
+      <h3 style={{ textDecoration: 'underline' }}>FAQs</h3>
       <div className="qAnda">
         <p><span>Q: </span>How can I contact you?</p>
         <p><span>A: </span>Send an email to Josh &amp; Maria Sherman

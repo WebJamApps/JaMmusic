@@ -1,0 +1,14 @@
+.accordion {
+    background-color: #23527c;
+    color: white;
+}
+
+.active, .accordion:hover {
+    background-color: #444;
+}
+
+.panel {
+    background-color: white;
+    display: none;
+    overflow: hidden;
+}
