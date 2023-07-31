@@ -33,16 +33,16 @@ function CurrentProjects(): JSX.Element {
       <Box sx={{ flexGrow: 1 }}>
         <Grid container columnSpacing={1}>
           <>
-            <Grid className="i1" xs={12} sm={12} md={7} lg={6}>
+            <Grid xs={12} sm={6} md={6} lg={3.25} xl={2.75}>
               <Item><CollegeLutheran /></Item>
             </Grid>
-            <Grid className="i2" xs={12} sm={12} md={7} lg={6}>
+            <Grid xs={12} sm={6} md={6} lg={3.25} xl={2.75}>
               <Item><AppersonAutomotive /></Item>
             </Grid>
-            <Grid className="i3" xs={12} sm={12} md={7} lg={6}>
+            <Grid xs={12} sm={8} md={6.5} lg={5.5} xl={3.75}>
               <Item><FacebookFeed /></Item>
             </Grid>
-            <Grid className="i4" xs={12} sm={12} md={7} lg={6}>
+            <Grid xs={12} sm={4} md={5.5} lg={12} xl={2.75}>
               <Item><Inquiry /></Item>
             </Grid>
 
