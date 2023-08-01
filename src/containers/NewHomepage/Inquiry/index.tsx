@@ -221,7 +221,6 @@ export function ContactForm(props: IcontactFormProps) {
       className="contact-us"
       style={{
         margin: 'auto',
-        // border: '1px solid black'
       }}
     >
       {!hasSubmitted ? (

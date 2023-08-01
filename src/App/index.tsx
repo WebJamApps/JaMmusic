@@ -9,13 +9,11 @@ import GoogleMap from '../containers/GoogleMap';
 import { Music } from '../containers/Music';
 import { AppTemplate } from './AppTemplate';
 import { Songs } from '../containers/Songs';
-// import { Homepage } from '../containers/Homepage';
 import { BookUs } from '../containers/BookUs';
 import { Tipjar } from '../containers/Tipjar';
 
 export function checkAppName() {
   return process.env.APP_NAME === 'web-jam.com'
-    // ? <Homepage /> : <Music />;
     ? <NewHomepage /> : <Music />;
 }
 
