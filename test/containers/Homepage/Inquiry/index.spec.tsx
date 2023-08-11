@@ -1,6 +1,6 @@
 import renderer from 'react-test-renderer';
 import {
-  CommentsSection, ContactRequest, EmailPhoneRow, FormActions, InquiryForm, TableSection,
+  CommentsSection, ContactForm, ContactRequest, EmailPhoneRow, FormActions, Inquiry, InquiryForm, TableSection,
 } from 'src/containers/Homepage/Inquiry';
 
 describe('Inquiry', () => {
@@ -169,6 +169,62 @@ describe('Inquiry', () => {
   it('renders ContactRequest', () => {
     const result: any = renderer.create(<ContactRequest />).toJSON();
     expect(result.type).toBe('div');
+  });
+  it('renders ContactForm when hasSubmitted is false', () => {
+    const formData = {
+      firstname: '',
+      lastname: '',
+      emailaddress: '',
+      uSAstate: '',
+      country: '',
+      phonenumber: '',
+      zipcode: '',
+      comments: '',
+    };
+    const props = {
+      hasSubmitted: false, hideTitle: true, country: '', setHasSubmitted: jest.fn(), formData, setFormData: jest.fn(),
+    };
+    const result: any = renderer.create(<ContactForm {...props} />).toJSON();
+    expect(result.type).toBe('div');
+  });
+  it('renders ContactForm when hasSubmitted is true', () => {
+    const formData = {
+      firstname: '',
+      lastname: '',
+      emailaddress: '',
+      uSAstate: '',
+      country: '',
+      phonenumber: '',
+      zipcode: '',
+      comments: '',
+    };
+    const props = {
+      hasSubmitted: true, hideTitle: false, country: '', setHasSubmitted: jest.fn(), formData, setFormData: jest.fn(),
+    };
+    const result: any = renderer.create(<ContactForm {...props} />).toJSON();
+    expect(result.children[0].props.className).toBe('page-content contacted');
+  });
+  it('renders Inquiry', () => {
+    const props = { country: '', hideTitle: true };
+    const result: any = renderer.create(<Inquiry {...props} />).toJSON();
+    expect(result.type).toBe('div');
+  });
+  it('renders ContactForm when hasSubmitted and hideTitle are false', () => {
+    const formData = {
+      firstname: '',
+      lastname: '',
+      emailaddress: '',
+      uSAstate: '',
+      country: '',
+      phonenumber: '',
+      zipcode: '',
+      comments: '',
+    };
+    const props = {
+      hasSubmitted: false, hideTitle: false, country: '', setHasSubmitted: jest.fn(), formData, setFormData: jest.fn(),
+    };
+    const result: any = renderer.create(<ContactForm {...props} />).toJSON();
+    expect(result.children[0].children[0].children[0]).toBe('Contact Us');
   });
 });
 

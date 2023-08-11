@@ -1,48 +1,23 @@
 import {
   Button,
   Checkbox,
-  Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, FormGroup, FormControlLabel,
+  Dialog, DialogActions, DialogContent,
+  DialogContentText, DialogTitle, FormGroup, FormControlLabel,
 } from '@mui/material';
 import { useState, useContext } from 'react';
 import { AuthContext } from 'src/providers/Auth.provider';
 import { DataContext } from 'src/providers/Data.provider';
-import utils from './pictures.utils';
-
-const defaultCreatePic = { url: '', comments: '', title: '' };
-
-export const makeShowHideCaption = (setPic: (arg0: typeof defaultCreatePic) => void, pic: typeof defaultCreatePic) => (evt: any) => {
-  const { target: { checked } } = evt;
-  const comments = checked ? 'showCaption' : '';
-  setPic({ ...pic, comments });
-};
-
-interface IpicTextFieldProps {
-  pic: typeof defaultCreatePic,
-  label:string,
-  onChange:(arg0:any)=>any
-}
-export function PicTextField(props: IpicTextFieldProps) {
-  const { pic, onChange, label } = props;
-  return (
-    <TextField
-      sx={{ marginTop: '20px' }}
-      label={label}
-      type="text"
-      fullWidth
-      value={pic.url}
-      onChange={onChange}
-    />
-  );
-}
+import utils, { defaultPic } from './pictures.utils';
+import { PicTextField } from './PicTextField';
 
 interface IcreatePicDialogProps {
   showDialog: boolean, setShowDialog: (arg0: boolean) => void,
 }
 export function CreatePicDialog({ showDialog, setShowDialog }: IcreatePicDialogProps) {
-  const [pic, setPic] = useState(defaultCreatePic);
+  const [pic, setPic] = useState(defaultPic);
   const { auth } = useContext(AuthContext);
   const { getPics } = useContext(DataContext);
-  const showHideCaption = makeShowHideCaption(setPic, pic);
+  const showHideCaption = utils.makeShowHideCaption(setPic, pic);
   return (
     <Dialog
       disableEnforceFocus
@@ -57,7 +32,7 @@ export function CreatePicDialog({ showDialog, setShowDialog }: IcreatePicDialogP
           Enter all *required fields to create a new picture.
         </DialogContentText>
         <PicTextField
-          pic={pic}
+          value={pic.url}
           label="* URL"
           onChange={(evt) => {
             const { target: { value } } = evt;
@@ -66,7 +41,7 @@ export function CreatePicDialog({ showDialog, setShowDialog }: IcreatePicDialogP
           }}
         />
         <PicTextField
-          pic={pic}
+          value={pic.title}
           label="* Title"
           onChange={(evt) => {
             const { target: { value } } = evt;
@@ -98,7 +73,7 @@ export function CreatePicDialog({ showDialog, setShowDialog }: IcreatePicDialogP
         <Button
           size="small"
           className="cancelPicButton"
-          onClick={() => setShowDialog(false)}
+          onClick={() => { setPic(defaultPic); setShowDialog(false); }}
         >
           Cancel
         </Button>

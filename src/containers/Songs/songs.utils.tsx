@@ -39,4 +39,10 @@ const checkDisabled = (song:Isong) => {
   return true;
 };
 
-export default { createSong, checkDisabled };
+function handleInputChange(evt: { target: { value: any; }; }, setSong: (arg0: any) => void, song: any, key:string):string {
+  const { target: { value } } = evt;
+  setSong({ ...song, [key]: value });
+  return value;
+}
+
+export default { createSong, checkDisabled, handleInputChange };

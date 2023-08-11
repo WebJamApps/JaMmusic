@@ -36,7 +36,7 @@ export function ClickToListen(props:IclickToListenProps) {
               className="editPicButton"
               onClick={() => setShowEditPic(true)}
             >
-              Edit Pic
+              Edit&nbsp;Pic
             </Button>
           </>
         ) : null}
