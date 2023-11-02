@@ -9,8 +9,8 @@
   },
   "author": "https://github.com/orgs/WebJamApps/teams/handlersandkickers",
   "engines": {
-    "node": ">=20.8.1 <21",
-    "npm": ">=10.1.0 <11"
+    "node": ">=20.9.0 <21",
+    "npm": ">=10.2.1 <11"
   },
   "files": [
     "webpack.config.js",
