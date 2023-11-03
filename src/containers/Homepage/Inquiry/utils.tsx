@@ -46,9 +46,10 @@ function handleInputChange(
   evt: React.ChangeEvent<HTMLInputElement>,
   formData:IinquiryFormData,
   setFormData:(arg0:IinquiryFormData)=>void,
-): void {
+): string {
   const { id, value } = evt.target;
   setFormData({ ...formData, [id]: value });
+  return value;
 }
 
 function handleUsStateChange(

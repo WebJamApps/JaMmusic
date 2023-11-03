@@ -50,7 +50,8 @@ export function Songs() {
   const { auth } = useContext(AuthContext);
   const [isAdmin, setIsAdmin] = useState(false);
   const [showCreateSong, setShowCreateSong] = useState(false);
-  // const [showEditSong, setShowEditSong] = useState(false); //TODO
+  // eslint-disable-next-line max-len
+  // const [showEditSong, setShowEditSong] = useState(false); //https://app.zenhub.com/workspaces/web-jam-apps-board-580fcf0685c9ab2869d3ac8b/issues/gh/webjamapps/jammusic/775
   useEffect(() => {
     commonUtils.setTitleAndScroll('Songs', window.screen.width);
   }, []);

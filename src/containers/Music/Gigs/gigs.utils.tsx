@@ -121,8 +121,8 @@ export const orderGigs = (
   const now = new Date();
   now.setDate(now.getDate() - 1);
   const current = now.toISOString();
-  const futureGigs = gigs.filter((g) => typeof g.datetime === 'string' && g.datetime >= current);
-  const pastGigs = gigs.filter((g) => typeof g.datetime === 'string' && g.datetime < current);
+  const futureGigs = gigs.filter((g) => typeof g.datetime === 'string' && (g.datetime as string) >= current);
+  const pastGigs = gigs.filter((g) => typeof g.datetime === 'string' && (g.datetime as string) < current);
   const sortedFuture = futureGigs.sort((a, b) => {
     if (a.datetime && b.datetime) {
       if (a.datetime > b.datetime) return 1;

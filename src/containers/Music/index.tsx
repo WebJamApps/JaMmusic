@@ -78,12 +78,12 @@ export function Music(): JSX.Element {
           position: 'relative', overflowX: 'auto', maxWidth: '96%', margin: 'auto', zIndex: 0,
         }}
       >
-        <Gigs isAdmin={isAdmin} />
+        {showEditPicTable ? null : <Gigs isAdmin={isAdmin} />}
       </div>
       <div style={{ height: '10px' }}>
         <p>{' '}</p>
       </div>
-      <Musicians />
+      {showEditPicTable ? null : <Musicians />}
     </div>
   );
 }
