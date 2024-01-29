@@ -5,7 +5,12 @@ function JoshShermanSpotify(): JSX.Element {
       <div style={{ margin: 'auto', textAlign: 'center', marginTop: '50px' }}>
         <div className="spotify">
           <h4 style={{ marginBottom: '0px' }}>Also On Spotify</h4>
-          <div className="row">
+          <div
+            className="row"
+            style={{
+              marginLeft: '-15px', marginRight: '-15px', display: 'flex', flexWrap: 'wrap',
+            }}
+          >
             <div className="col" style={{ paddingRight: '0px' }}>
               <iframe
                 src="https://open.spotify.com/embed/artist/5IvBs06z4RksIE1WvqLULs"

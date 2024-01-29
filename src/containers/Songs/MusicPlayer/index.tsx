@@ -250,7 +250,12 @@ export function MusicPlayer({ songs, filterBy }: ImusicPlayerProps) {
   }, [category, searchParams, songs]);
   useEffect(() => { utils.makeSingleSong(isSingle); }, [isSingle]);
   return (
-    <div className="container-fluid">
+    <div
+      className="container-fluid"
+      style={{
+        width: '100%', margin: 'auto', paddingLeft: '15px', paddingRight: '15px',
+      }}
+    >
       <CategoryTitle isSingle={isSingle} category={category} />
       <div id="player">
         <section id="playSection" className="col-12 mt-2 mr-0 col-md-7">
