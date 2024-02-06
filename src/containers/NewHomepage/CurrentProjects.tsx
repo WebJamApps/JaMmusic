@@ -5,7 +5,7 @@ import CollegeLutheran from './CollegeLutheran';
 import FacebookFeed from './FacebookFeed';
 import { Inquiry } from './Inquiry';
 
-function Item(props: { [x: string]: any; sx?: any; }) {
+export function Item(props: { [x: string]: any; sx?: any; }) {
   const { sx, ...other } = props;
   return (
     <Box
