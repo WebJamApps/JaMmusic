@@ -1,4 +1,4 @@
-import { gql, useQuery } from '@apollo/client';
+import { gql, useQuery, ApolloError } from '@apollo/client';
 
 function makeRandomString(): string {
   const randomString = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
@@ -14,11 +14,14 @@ export const TEST_GQL = gql`
     }
   }
 `;
-export function SortContainer(): JSX.Element {
-  const { loading, error, data } = useQuery(TEST_GQL);
-  const dice = Array.from({ length: 6 }, () => Math.floor(Math.random() * 6));
-  const sorted = [...dice].sort();
-  const randomString = makeRandomString();
+
+interface IsortSectionProps {
+  error: ApolloError | undefined, data: Record<string, unknown>, dice: number[], sorted: number[], randomString: string,
+  loading:boolean
+}
+export function SortSection({
+  error, data, dice, sorted, randomString, loading,
+}: IsortSectionProps) {
   if (loading) return <p>Loading...</p>;
   if (error) {
     return (
@@ -55,5 +58,13 @@ export function SortContainer(): JSX.Element {
       <p>{JSON.stringify(data)}</p>
     </div>
   );
+}
+
+export function SortContainer(): JSX.Element {
+  const { loading, error, data } = useQuery(TEST_GQL);
+  const dice = Array.from({ length: 6 }, () => Math.floor(Math.random() * 6));
+  const sorted = [...dice].sort();
+  const randomString = makeRandomString();
+  return <SortSection loading={loading} error={error} data={data} dice={dice} sorted={sorted} randomString={randomString} />;
 }
 
