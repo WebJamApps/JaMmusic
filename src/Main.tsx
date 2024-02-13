@@ -14,7 +14,7 @@ import { AuthProvider } from './providers/Auth.provider';
 import '../static/styles.scss';
 
 export const client = new ApolloClient({
-  uri: `${process.env.BackendUrl}/graphql`, // TODO use same backendurl here
+  uri: `${process.env.BackendUrl}/graphql`,
   cache: new InMemoryCache(),
 });
 
