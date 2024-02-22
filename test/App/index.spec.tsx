@@ -21,6 +21,7 @@ describe('App component', () => {
       assign: jest.fn(),
     };
     const app:any = renderer.create(<Provider store={store.store}><App /></Provider>).toJSON();
+    console.log(app);
     expect(app.props.className).toBe('App');
   });
   it('checkAppName and return <Music />', () => {
