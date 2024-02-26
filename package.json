@@ -9,8 +9,8 @@
   },
   "author": "https://github.com/orgs/WebJamApps/teams/handlersandkickers",
   "engines": {
-    "node": ">=20.9.0 <21",
-    "npm": ">=10.2.1 <11"
+    "node": ">=20.11.0 <21",
+    "npm": ">=10.2.4 <11"
   },
   "files": [
     "webpack.config.js",
@@ -41,6 +41,7 @@
     "postinstall": "npm run build:prod"
   },
   "dependencies": {
+    "@apollo/client": "^3.8.8",
     "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",
     "@mui/icons-material": "^5.11.11",
@@ -82,6 +83,7 @@
     "express-sslify": "^1.2.0",
     "faker": "^5.5.3",
     "file-loader": "^6.2.0",
+    "graphql": "^16.8.1",
     "html-loader": "^4.2.0",
     "html-react-parser": "^3.0.9",
     "html-webpack-plugin": "^5.5.0",
@@ -114,7 +116,7 @@
     "superagent": "^8.0.9",
     "terser-webpack-plugin": "^5.3.9",
     "ts-loader": "^9.4.2",
-    "typescript": "^5.1.6",
+    "typescript": "^5.3.3",
     "url-loader": "^4.1.1",
     "url-search-params-polyfill": "^8.1.1",
     "util": "^0.12.5",
@@ -129,7 +131,7 @@
     "@types/react-test-renderer": "^18.0.0",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
-    "eslint": "^8.45.0",
+    "eslint": "^8.56.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-airbnb-typescript": "^17.1.0",
     "eslint-plugin-es": "^4.1.0",
