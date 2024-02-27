@@ -147,7 +147,7 @@ export function CreateSongDialog({ showDialog, setShowDialog }: IcreatePicDialog
           value={song.orderBy}
           onChange={(evt) => {
             const { target: { value } } = evt;
-            setSong({ ...song, image: value });
+            setSong({ ...song, orderBy: !value ? undefined : Number(value) });
             return value;
           }}
         />
