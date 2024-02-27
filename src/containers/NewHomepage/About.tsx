@@ -7,7 +7,7 @@ function WJLogo(): JSX.Element {
   return (
     <div className="col-md-6 slideshow" style={{ width: '100%', height: '100%' }}>
       <div id="slideshow1">
-        <img style={{ marginTop: '15px', maxHeight: '400px', boxShadow: '0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.4)' }} alt="Web Jam Banner Large" src="../static/imgs/banner1.jpg" />
+        <img style={{ marginTop: '15px', maxHeight: '450px', boxShadow: '0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.4)' }} alt="Web Jam Banner Large" src="../static/imgs/banner1.jpg" />
       </div>
     </div>
   );
@@ -61,17 +61,33 @@ function AboutUs(): JSX.Element {
           <Box sx={{ flexGrow: 1 }}>
             <Grid container columnSpacing={1}>
               <>
-                <Grid xs={12} sm={6} md={6} lg={6} xl={6}>
+                <Grid
+                  xs={12}
+                  sm={12}
+                  md={12}
+                  lg={6}
+                  xl={6}
+                  order={{
+                    xs: 2, sm: 2, md: 2, lg: 1, xl: 1,
+                  }}
+                >
                   <Item><HomepageIntro /></Item>
                 </Grid>
-                <Grid xs={12} sm={6} md={6} lg={6} xl={6}>
+                <Grid
+                  xs={12}
+                  sm={12}
+                  md={12}
+                  lg={6}
+                  xl={6}
+                  order={{
+                    xs: 1, sm: 1, md: 1, lg: 2, xl: 2,
+                  }}
+                >
                   <Item><WJLogo /></Item>
                 </Grid>
               </>
             </Grid>
           </Box>
-          {/* <HomepageIntro />
-          <WJLogo /> */}
         </div>
       </div>
     </div>
