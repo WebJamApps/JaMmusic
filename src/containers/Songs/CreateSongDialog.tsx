@@ -16,6 +16,7 @@ function SongField(props:IsongFieldProps):JSX.Element {
   const { label, value, onChange } = props;
   return (
     <TextField
+      style={{ marginBottom: '12px' }}
       label={label}
       type="text"
       fullWidth
@@ -42,7 +43,7 @@ export function CreateSongDialog({ showDialog, setShowDialog }: IcreatePicDialog
     >
       <DialogTitle sx={{ textAlign: 'center' }}>Add New Song</DialogTitle>
       <DialogContent sx={{ padding: '10px 10px' }}>
-        <DialogContentText sx={{ marginBottom: '30px' }}>
+        <DialogContentText sx={{ marginBottom: '10px' }}>
           Enter all *Required fields to add a new song.
         </DialogContentText>
         <SongField
@@ -73,7 +74,7 @@ export function CreateSongDialog({ showDialog, setShowDialog }: IcreatePicDialog
           }}
         />
         <TextField
-          sx={{ marginTop: '20px' }}
+          sx={{ marginBottom: '12px' }}
           label="* Year"
           type="number"
           InputProps={{
@@ -90,9 +91,10 @@ export function CreateSongDialog({ showDialog, setShowDialog }: IcreatePicDialog
             return numValue;
           }}
         />
-        <FormControl fullWidth sx={{ marginTop: '20px' }}>
+        <FormControl fullWidth sx={{ marginBottom: '12px' }}>
           <InputLabel id="select-category-label">Category</InputLabel>
           <Select
+            style={{ marginBottom: '12px' }}
             labelId="select-category-label"
             id="select-category"
             value={song.category}
@@ -109,7 +111,7 @@ export function CreateSongDialog({ showDialog, setShowDialog }: IcreatePicDialog
           </Select>
         </FormControl>
         <TextField
-          sx={{ marginTop: '20px' }}
+          sx={{ marginBottom: '12px' }}
           label="Composer"
           type="text"
           fullWidth
@@ -126,11 +128,23 @@ export function CreateSongDialog({ showDialog, setShowDialog }: IcreatePicDialog
           }}
         />
         <TextField
-          sx={{ marginTop: '20px' }}
+          sx={{ marginBottom: '12px' }}
           label="Image"
           type="text"
           fullWidth
           value={song.image}
+          onChange={(evt) => {
+            const { target: { value } } = evt;
+            setSong({ ...song, image: value });
+            return value;
+          }}
+        />
+        <TextField
+          sx={{ marginBottom: '12px' }}
+          label="Order (highest number plays first)"
+          type="number"
+          fullWidth
+          value={song.orderBy}
           onChange={(evt) => {
             const { target: { value } } = evt;
             setSong({ ...song, image: value });
