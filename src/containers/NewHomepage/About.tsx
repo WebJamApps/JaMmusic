@@ -1,5 +1,6 @@
 /* eslint-disable max-len */
 import { Box, Grid } from '@mui/material';
+import { ReactNode } from 'react';
 import Faqs from './FAQs';
 import { Item } from './CurrentProjects';
 
@@ -43,7 +44,31 @@ function HomepageIntro(): JSX.Element {
   );
 }
 
+interface GridItemProps {
+  children: ReactNode;
+  order: {
+    xs: number;
+    sm: number;
+    md: number;
+    lg: number;
+    xl: number;
+  };
+}
+
 function AboutUs(): JSX.Element {
+  // eslint-disable-next-line react/prop-types
+  const GridItem: React.FC<GridItemProps> = ({ children, order }) => (
+    <Grid
+      xs={12}
+      sm={12}
+      md={12}
+      lg={6}
+      xl={6}
+      order={order}
+    >
+      <Item>{children}</Item>
+    </Grid>
+  );
   return (
     <div>
       <div
@@ -61,30 +86,18 @@ function AboutUs(): JSX.Element {
           <Box sx={{ flexGrow: 1 }}>
             <Grid container columnSpacing={1}>
               <>
-                <Grid
-                  xs={12}
-                  sm={12}
-                  md={12}
-                  lg={6}
-                  xl={6}
-                  order={{
-                    xs: 2, sm: 2, md: 2, lg: 1, xl: 1,
-                  }}
+                <GridItem order={{
+                  xs: 2, sm: 2, md: 2, lg: 1, xl: 1,
+                }}
                 >
-                  <Item><HomepageIntro /></Item>
-                </Grid>
-                <Grid
-                  xs={12}
-                  sm={12}
-                  md={12}
-                  lg={6}
-                  xl={6}
-                  order={{
-                    xs: 1, sm: 1, md: 1, lg: 2, xl: 2,
-                  }}
+                  <HomepageIntro />
+                </GridItem>
+                <GridItem order={{
+                  xs: 1, sm: 1, md: 1, lg: 2, xl: 2,
+                }}
                 >
-                  <Item><WJLogo /></Item>
-                </Grid>
+                  <WJLogo />
+                </GridItem>
               </>
             </Grid>
           </Box>
