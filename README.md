@@ -13,4 +13,4 @@
 
 * This is a React frontend project that requires both `web-jam-back` and `WebJamSocketCluster` to fully display applicable data and have interations to backend resourses.
 * Copy the `.env.example` file and paste it as `.env` file in the project root directory. Request variable definitions from the project owner or spin up your own resourses where applicable.
-* More information is available in our  [Developer's Guide](https://docs.google.com/document/d/1_QDDbqmBrJuGqBoib59fmgYtls03dAXXuLqRR5roPO4/edit).
+* More information is available in our [Developer's Guide](https://docs.google.com/document/d/1_QDDbqmBrJuGqBoib59fmgYtls03dAXXuLqRR5roPO4/edit).
