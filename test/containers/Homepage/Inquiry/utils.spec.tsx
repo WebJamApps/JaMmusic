@@ -1,4 +1,4 @@
-import utils from 'src/containers/Homepage/Inquiry/utils';
+import utils from 'src/containers/NewHomepage/Inquiry/utils';
 import superagent from 'superagent';
 
 jest.mock('superagent');

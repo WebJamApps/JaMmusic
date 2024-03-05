@@ -87,3 +87,13 @@ export function InputLabel(props:any) {
 export function CircularProgress(props:any) {
   return <div {...props} />;
 }
+
+export function Box(props:any) {
+  const { children } = props;
+  return <div {...props}>{children}</div>;
+}
+
+export function Grid(props:any) {
+  const { children } = props;
+  return <div {...props}>{children}</div>;
+}

@@ -145,6 +145,15 @@ exports[`BuyMusic renders correctly 1`] = `
   </div>
   <div
     className="col"
+    style={
+      {
+        "flexBasis": "0",
+        "flexGrow": "1",
+        "maxWidth": "100%",
+        "msFlexPositive": "1",
+        "msFlexPreferredSize": "0",
+      }
+    }
   >
     <div
       style={
@@ -169,12 +178,24 @@ exports[`BuyMusic renders correctly 1`] = `
         </h4>
         <div
           className="row"
+          style={
+            {
+              "display": "flex",
+              "flexWrap": "wrap",
+              "marginLeft": "-15px",
+              "marginRight": "-15px",
+            }
+          }
         >
           <div
             className="col"
             style={
               {
-                "paddingRight": "0px",
+                "flexBasis": "0",
+                "flexGrow": "1",
+                "maxWidth": "100%",
+                "msFlexPositive": "1",
+                "msFlexPreferredSize": "0",
               }
             }
           >
@@ -198,7 +219,11 @@ exports[`BuyMusic renders correctly 1`] = `
             className="col"
             style={
               {
-                "paddingRight": "0px",
+                "flexBasis": "0",
+                "flexGrow": "1",
+                "maxWidth": "100%",
+                "msFlexPositive": "1",
+                "msFlexPreferredSize": "0",
               }
             }
           >
