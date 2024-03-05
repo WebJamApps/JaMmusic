@@ -40,7 +40,11 @@ describe('MusicPlayer/utils', () => {
   });
   it('setPlayerStyle with empty background', () => {
     const song = {
-      category: '', year: 2023, title: '', url: 'https://ssssyyyy.com/song.mp3',
+      artist: '',
+      category: '',
+      year: 2023,
+      title: '',
+      url: 'https://ssssyyyy.com/song.mp3',
     };
     const playerStyle = {
       backgroundImage: '',

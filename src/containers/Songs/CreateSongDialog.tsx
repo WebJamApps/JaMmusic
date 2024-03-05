@@ -66,7 +66,7 @@ export function CreateSongDialog({ showDialog, setShowDialog }: IcreatePicDialog
         />
         <SongField
           label="* Artist"
-          value={song.artist || ''}
+          value={song.artist}
           onChange={(evt) => {
             const { target: { value } } = evt;
             setSong({ ...song, artist: value });
@@ -87,8 +87,9 @@ export function CreateSongDialog({ showDialog, setShowDialog }: IcreatePicDialog
           onChange={(evt) => {
             const { target: { value } } = evt;
             const numValue = Number(value);
-            setSong({ ...song, year: numValue > 1 ? numValue : 2 });
-            return numValue;
+            const year = numValue > 1 ? numValue : 2;
+            setSong({ ...song, year });
+            return year;
           }}
         />
         <FormControl fullWidth sx={{ marginBottom: '12px' }}>
@@ -147,8 +148,9 @@ export function CreateSongDialog({ showDialog, setShowDialog }: IcreatePicDialog
           value={song.orderBy}
           onChange={(evt) => {
             const { target: { value } } = evt;
-            setSong({ ...song, orderBy: !value ? undefined : Number(value) });
-            return value;
+            const orderBy = !value ? 0 : Number(value);
+            setSong({ ...song, orderBy});
+            return orderBy;
           }}
         />
       </DialogContent>

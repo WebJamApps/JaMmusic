@@ -21,7 +21,7 @@ export interface Igig {
 
 export interface Isong {
   orderBy?: number;
-  artist?: string;
+  artist: string;
   composer?: string;
   category: string;
   album?: string;

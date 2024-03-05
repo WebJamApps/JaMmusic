@@ -10,7 +10,11 @@ describe('songs utils', () => {
     const setShowDialog = jest.fn();
     const setSong = jest.fn();
     const song = {
-      category: '1', title: 'a', year: 12, url: 'https://test1.com',
+      artist: '',
+      category: '1',
+      title: 'a',
+      year: 12,
+      url: 'https://test1.com',
     };
     const auth = {
       isAuthenticated: false, user: { userType: 'joker', email: '' }, error: '', token: '',
@@ -26,7 +30,11 @@ describe('songs utils', () => {
     const setShowDialog = jest.fn();
     const setSong = jest.fn();
     const song = {
-      category: '1', title: 'a', year: 12, url: 'https://test1.com',
+      artist: '',
+      category: '1',
+      title: 'a',
+      year: 12,
+      url: 'https://test1.com',
     };
     const auth = {
       isAuthenticated: false, user: { userType: 'joker', email: '' }, error: '', token: '',
