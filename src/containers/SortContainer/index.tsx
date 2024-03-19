@@ -1,13 +1,37 @@
+import { gql, useQuery, ApolloError } from '@apollo/client';
 
 function makeRandomString(): string {
   const randomString = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
   const withNoDigits = randomString.replace(/[0-9]/g, 'X');
   return withNoDigits;
 }
-export function SortContainer(): JSX.Element {
-  const dice = Array.from({ length: 6 }, () => Math.floor(Math.random() * 6));
-  const sorted = [...dice].sort();
-  const randomString = makeRandomString();
+
+export const TEST_GQL = gql`
+  query Gqldocs {
+    gqldocs {
+      title
+      author
+    }
+  }
+`;
+
+interface IsortSectionProps {
+  error: ApolloError | undefined, data: Record<string, unknown>, dice: number[], sorted: number[], randomString: string,
+  loading:boolean
+}
+export function SortSection({
+  error, data, dice, sorted, randomString, loading,
+}: IsortSectionProps) {
+  if (loading) return <p>Loading...</p>;
+  if (error) {
+    return (
+      <p>
+        Error :
+        {' '}
+        {error.message}
+      </p>
+    );
+  }
   return (
     <div id="sort-container" style={{ margin: 'auto', textAlign: 'center' }}>
       <h4>Sorting Example</h4>
@@ -31,7 +55,16 @@ export function SortContainer(): JSX.Element {
           {randomString.split('').sort((a, b) => a.localeCompare(b, 'en', { sensitivity: 'base' })).join('')}
         </strong>
       </p>
+      <p>{JSON.stringify(data)}</p>
     </div>
   );
+}
+
+export function SortContainer(): JSX.Element {
+  const { loading, error, data } = useQuery(TEST_GQL);
+  const dice = Array.from({ length: 6 }, () => Math.floor(Math.random() * 6));
+  const sorted = [...dice].sort();
+  const randomString = makeRandomString();
+  return <SortSection loading={loading} error={error} data={data} dice={dice} sorted={sorted} randomString={randomString} />;
 }
 

@@ -47,6 +47,7 @@ export function FormActions(props: IformActionsProps) {
     <div className="inquiryValidation input-field col" style={{ marginBottom: '12px' }}>
       <span className="inquiryValidation">* Required</span>
       <Button
+        className="submit-inquiry"
         variant="contained"
         id="sendEmailButton"
         disabled={utils.validateForm(formData)}
@@ -216,11 +217,16 @@ export function ContactForm(props: IcontactFormProps) {
     hasSubmitted, hideTitle, country, setHasSubmitted, formData, setFormData,
   } = props;
   return (
-    <div className="row form-row" style={{ margin: 'auto', border: '1px solid black' }}>
+    <div
+      className="contact-us"
+      style={{
+        margin: 'auto',
+      }}
+    >
       {!hasSubmitted ? (
         <div className="contact-form">
           <h4 style={{
-            textAlign: 'center', marginBottom: '0', marginTop: '10px', paddingTop: 0, fontWeight: 'bold',
+            textAlign: 'center', marginBottom: '0', marginTop: '1px', paddingTop: 0, fontWeight: 'bold',
           }}
           >
             {hideTitle ? '' : 'Contact Us'}

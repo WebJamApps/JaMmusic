@@ -78,7 +78,19 @@ describe('CreateSongDialog', () => {
     const value = '2';
     const evt = { target: { value } };
     const result = renderer.create(<CreateSongDialog showDialog={showDialog} setShowDialog={setShowDialog} />).root;
-    const tree = result.findByProps({ label: '* Year' }).props.onChange(evt);
+    const input = result.findByProps({ label: '* Year' });
+    let yearValue = input.props.onChange(evt);
+    expect(yearValue).toBe(2);
+    yearValue = input.props.onChange({ target: { value: 0 } });
+    expect(yearValue).toBe(2);
+  });
+  it('handles onChange with orderBy', () => {
+    const showDialog = true;
+    const setShowDialog = jest.fn();
+    const value = '2';
+    const evt = { target: { value } };
+    const result = renderer.create(<CreateSongDialog showDialog={showDialog} setShowDialog={setShowDialog} />).root;
+    const tree = result.findByProps({ label: 'Order (highest number plays first)' }).props.onChange(evt);
     expect(tree).toBe(2);
   });
 });
