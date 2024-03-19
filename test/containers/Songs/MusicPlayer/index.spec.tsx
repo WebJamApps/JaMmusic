@@ -24,6 +24,7 @@ describe('MusicPlayer index', () => {
       url: 'url',
       _id: 'songid',
       image: '',
+      artist: '',
     };
     const mp:any = renderer.create(
       <BrowserRouter>
@@ -40,6 +41,7 @@ describe('MusicPlayer index', () => {
       url: 'url',
       _id: 'songid',
       image: 'http://test.com',
+      artist: '',
     };
     render(
       <BrowserRouter>
@@ -60,6 +62,7 @@ describe('MusicPlayer index', () => {
       url: 'url',
       _id: 'songid',
       image: 'http://test.com',
+      artist: '',
     };
     const cs = renderer.create(<CopyShare isSingle index={0} songsState={[song]} />).toJSON();
     expect(cs).toBe(' ');
