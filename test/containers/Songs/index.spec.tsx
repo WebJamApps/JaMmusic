@@ -11,11 +11,11 @@ describe('Songs', () => {
   it('renders with SongButtons', () => {
     const isAdmin = true;
     const setShow = jest.fn();
-    const result: any = renderer.create(<SongButtons isAdmin={isAdmin} setShowCreateSong={setShow} />).toJSON();
+    const result: any = renderer.create(<SongButtons isAdmin={isAdmin} setShowCreateSong={setShow} setShowEditDialog={jest.fn()} />).toJSON();
     expect(result.type).toBe('div');
   });
   it('handles onClick', () => {
-    const props = { isAdmin: true, setShowCreateSong: jest.fn() };
+    const props = { isAdmin: true, setShowCreateSong: jest.fn(), setShowEditDialog: jest.fn() };
     const result = renderer.create(<SongButtons {...props} />).root;
     result.findByProps({ className: 'createSongButton' }).props.onClick();
     expect(props.setShowCreateSong).toHaveBeenCalled();
@@ -27,7 +27,8 @@ describe('Songs', () => {
     {
       category: '2', title: 'b', year: 13, url: 'https://test2.com',
     }] as Isong[];
-    const result: any = renderer.create(<BrowserRouter><Player songs={songs} /></BrowserRouter>).toJSON();
+    const editDialogState = { setShowEditDialog: jest.fn(), showEditDialog: false };
+    const result: any = renderer.create(<BrowserRouter><Player songs={songs} editDialogState={editDialogState} /></BrowserRouter>).toJSON();
     expect(result.type).toBe('div');
   });
 });

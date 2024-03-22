@@ -6,8 +6,9 @@ import { useSearchParams } from 'react-router-dom';
 import type { Isong } from 'src/providers/Data.provider';
 import utils from './utils';
 import './musicPlayer.scss';
+import { EditSongDialog } from '../EditSongDialog';
 
-export function makeHandleEnded(index: number, songsState: Isong[], setIndex: (arg0: number)=> void) {
+export function makeHandleEnded(index: number, songsState: Isong[], setIndex: (arg0: number) => void) {
   return () => utils.next(index, songsState, setIndex);
 }
 
@@ -236,8 +237,9 @@ export function CategoryTitle({ isSingle, category }: { isSingle: boolean, categ
 interface ImusicPlayerProps {
   songs: Isong[];
   filterBy: string;
+  editDialogState: { showEditDialog: boolean, setShowEditDialog: (arg0: boolean) => void }
 }
-export function MusicPlayer({ songs, filterBy }: ImusicPlayerProps) {
+export function MusicPlayer({ songs, filterBy, editDialogState }: ImusicPlayerProps) {
   const [index, setIndex] = useState(0);
   const [songsState, setSongsState] = useState(songs);
   const [category, setCategory] = useState(filterBy);
@@ -278,6 +280,7 @@ export function MusicPlayer({ songs, filterBy }: ImusicPlayerProps) {
         <CategoryButtons category={category} setCategory={setCategory} isSingle={isSingle} />
         <CopyShare songsState={songsState} index={index} isSingle={isSingle} />
       </div>
+      <EditSongDialog editDialogState={editDialogState} eSong={songsState[index]} />
     </div>
   );
 }

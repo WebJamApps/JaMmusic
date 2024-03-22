@@ -26,9 +26,10 @@ describe('MusicPlayer index', () => {
       image: '',
       artist: '',
     };
+    const editDialogState = { setShowEditDialog: jest.fn(), showEditDialog: false };
     const mp:any = renderer.create(
       <BrowserRouter>
-        <MusicPlayer songs={[song]} filterBy="originals" />
+        <MusicPlayer songs={[song]} filterBy="originals" editDialogState={editDialogState} />
       </BrowserRouter>,
     ).toJSON();
     expect(mp.props.className).toBe('container-fluid');
@@ -43,9 +44,10 @@ describe('MusicPlayer index', () => {
       image: 'http://test.com',
       artist: '',
     };
+    const editDialogState = { setShowEditDialog: jest.fn(), showEditDialog: false };
     render(
       <BrowserRouter>
-        <MusicPlayer songs={[song]} filterBy="originals" />
+        <MusicPlayer songs={[song]} filterBy="originals" editDialogState={editDialogState} />
       </BrowserRouter>,
     );
     expect(screen.getByText('Play/Pause')).toBeInTheDocument();
