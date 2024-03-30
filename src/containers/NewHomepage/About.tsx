@@ -32,9 +32,12 @@ function HomepageIntro(): JSX.Element {
   };
   return (
     <div className="col-md-6" style={col6Style}>
-      <p style={{
-        marginTop: '32px', marginBottom: '40px', fontSize: '22px', textAlign: 'left',
-      }}
+      <p
+        translate="no"
+        lang="en"
+        style={{
+          marginTop: '32px', marginBottom: '40px', fontSize: '22px', textAlign: 'left',
+        }}
       >
         Web Jam LLC helps businesses bring their web technologies into the 21st century! Let us
         help make your website mobile-friendly and grow your business by utilizing the power of online services.
