@@ -8,11 +8,11 @@ import { DataContext, Isong } from 'src/providers/Data.provider';
 import utils, { defaultSong } from './songs.utils';
 
 interface IsongFieldProps {
-  label:string,
-  value:string,
-  onChange:(arg0:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>)=>string
+  label: string,
+  value: string,
+  onChange: (arg0: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => string
 }
-function SongField(props:IsongFieldProps):JSX.Element {
+function SongField(props: IsongFieldProps): JSX.Element {
   const { label, value, onChange } = props;
   return (
     <TextField
@@ -26,22 +26,24 @@ function SongField(props:IsongFieldProps):JSX.Element {
   );
 }
 
-interface IcreateSongDialogProps {
-  showDialog: boolean, setShowDialog: (arg0: boolean) => void,
+interface IeditSongDialogProps {
+  editDialogState: { showEditDialog: boolean, setShowEditDialog: (arg0: boolean) => void }, eSong: Isong
 }
-export function CreateSongDialog({ showDialog, setShowDialog }: IcreateSongDialogProps) {
-  const [song, setSong] = useState(defaultSong as Isong);
+export function EditSongDialog({ editDialogState, eSong }: IeditSongDialogProps) {
+  console.log(eSong);
+  const [song, setSong] = useState(eSong);
   const { auth } = useContext(AuthContext);
   const { getSongs } = useContext(DataContext);
+  const { showEditDialog, setShowEditDialog } = editDialogState;
   return (
     <Dialog
       disableEnforceFocus
       disableAutoFocus
       className="createNewPicDialog"
-      open={showDialog}
-      onClose={() => setShowDialog(false)}
+      open={showEditDialog}
+      onClose={() => setShowEditDialog(false)}
     >
-      <DialogTitle sx={{ textAlign: 'center' }}>Add New Song</DialogTitle>
+      <DialogTitle sx={{ textAlign: 'center' }}>Edit Song</DialogTitle>
       <DialogContent sx={{ padding: '10px 10px' }}>
         <DialogContentText sx={{ marginBottom: '10px' }}>
           Enter all *Required fields to add a new song.
@@ -160,14 +162,14 @@ export function CreateSongDialog({ showDialog, setShowDialog }: IcreateSongDialo
           size="small"
           variant="contained"
           className="createSongButton"
-          onClick={() => { utils.createSong(getSongs, setShowDialog, song, setSong, auth); }}
+          onClick={() => { utils.createSong(getSongs, setShowEditDialog, song, setSong, auth); }}
         >
-          Create
+          Update
         </Button>
         <Button
           size="small"
           className="cancelPicButton"
-          onClick={() => { setSong(defaultSong); setShowDialog(false); }}
+          onClick={() => { setSong(defaultSong); setShowEditDialog(false); }}
         >
           Cancel
         </Button>

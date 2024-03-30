@@ -1,4 +1,4 @@
-import { Add } from '@mui/icons-material';
+import { Add, Edit } from '@mui/icons-material';
 import { Button, CircularProgress } from '@mui/material';
 import { useEffect, useContext, useState } from 'react';
 import commonUtils from 'src/lib/utils';
@@ -8,21 +8,32 @@ import { checkIsAdmin } from '../Music';
 import { MusicPlayer } from './MusicPlayer';
 import { CreateSongDialog } from './CreateSongDialog';
 
-export function Player({ songs }: { songs: Isong[] | null }): JSX.Element {
+interface IplayerProps {
+  songs: Isong[] | null, editDialogState: { showEditDialog: boolean, setShowEditDialog: (arg0: boolean) => void }
+}
+export function Player(props: IplayerProps): JSX.Element {
+  const { songs, editDialogState } = props;
   if (!Array.isArray(songs) || songs.length === 0) return <CircularProgress />;
   return (
     <div className="playerDiv" style={{ maxWidth: '5in', margin: 'auto', textAlign: 'center' }}>
       <div id="playerAndButtons">
-        <MusicPlayer filterBy="original" songs={songs} />
+        <MusicPlayer filterBy="original" songs={songs} editDialogState={editDialogState} />
       </div>
     </div>
   );
 }
-export function SongButtons({ isAdmin, setShowCreateSong }:
-{ isAdmin: boolean, setShowCreateSong: React.Dispatch<React.SetStateAction<boolean>> }) {
+
+export function SongButtons({ isAdmin, setShowCreateSong, setShowEditDialog }:
+{
+  isAdmin: boolean, setShowCreateSong: React.Dispatch<React.SetStateAction<boolean>>,
+  setShowEditDialog: React.Dispatch<React.SetStateAction<boolean>>
+}) {
   if (isAdmin) {
     return (
-      <div style={{ margin: 'auto', textAlign: 'center', paddingTop: '10px' }}>
+      <div style={{
+        margin: 'auto', textAlign: 'center', paddingTop: '10px', marginBottom: '10px',
+      }}
+      >
         <Button
           startIcon={<Add />}
           sx={{ marginLeft: '10px' }}
@@ -32,26 +43,26 @@ export function SongButtons({ isAdmin, setShowCreateSong }:
         >
           Add Song
         </Button>
-        {/* <Button
+        <Button
           startIcon={<Edit />}
           sx={{ marginLeft: '10px' }}
           variant="outlined"
           className="editPicButton"
-          onClick={() => setShowEditSong(true)}
+          onClick={() => setShowEditDialog(true)}
         >
           Edit Song
-        </Button> */}
+        </Button>
       </div>
     );
   } return null;
 }
+
 export function Songs() {
   const { songs } = useContext(DataContext);
   const { auth } = useContext(AuthContext);
   const [isAdmin, setIsAdmin] = useState(false);
   const [showCreateSong, setShowCreateSong] = useState(false);
-  // eslint-disable-next-line max-len
-  // const [showEditSong, setShowEditSong] = useState(false); //https://app.zenhub.com/workspaces/web-jam-apps-board-580fcf0685c9ab2869d3ac8b/issues/gh/webjamapps/jammusic/775
+  const [showEditDialog, setShowEditDialog] = useState(false);
   useEffect(() => {
     commonUtils.setTitleAndScroll('Songs', window.screen.width);
   }, []);
@@ -60,8 +71,8 @@ export function Songs() {
   }, [auth]);
   return (
     <div id="pageContent" className="page-content">
-      <Player songs={songs} />
-      <SongButtons isAdmin={isAdmin} setShowCreateSong={setShowCreateSong} />
+      <Player songs={songs} editDialogState={{ showEditDialog, setShowEditDialog }} />
+      <SongButtons isAdmin={isAdmin} setShowCreateSong={setShowCreateSong} setShowEditDialog={setShowEditDialog} />
       <CreateSongDialog showDialog={showCreateSong} setShowDialog={setShowCreateSong} />
     </div>
   );
