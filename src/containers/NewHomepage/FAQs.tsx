@@ -10,7 +10,7 @@ export const AccQ1 = () => (
   <AccordionSummary
     expandIcon={<ExpandMoreIcon />}
   >
-    <Typography style={{ fontWeight: 'bold', fontFamily: '"Habibi", sans-serif' }}>
+    <Typography translate="no" lang="en" style={{ fontWeight: 'bold', fontFamily: '"Habibi", sans-serif' }}>
       How can I contact you?
     </Typography>
   </AccordionSummary>
@@ -20,7 +20,7 @@ const AccQ2 = () => (
   <AccordionSummary
     expandIcon={<ExpandMoreIcon />}
   >
-    <Typography style={{ fontWeight: 'bold', fontFamily: '"Habibi", sans-serif' }}>
+    <Typography translate="no" lang="en" style={{ fontWeight: 'bold', fontFamily: '"Habibi", sans-serif' }}>
       What does Web Jam LLC do?
     </Typography>
   </AccordionSummary>
@@ -30,7 +30,7 @@ const AccQ3 = () => (
   <AccordionSummary
     expandIcon={<ExpandMoreIcon />}
   >
-    <Typography style={{ fontWeight: 'bold', fontFamily: '"Habibi", sans-serif' }}>
+    <Typography translate="no" lang="en" style={{ fontWeight: 'bold', fontFamily: '"Habibi", sans-serif' }}>
       What is your mission statement?
     </Typography>
   </AccordionSummary>
