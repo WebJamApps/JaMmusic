@@ -2,10 +2,10 @@ import {
   Button, Dialog, DialogActions, DialogContent,
   DialogContentText, DialogTitle, FormControl, InputLabel, MenuItem, Select, TextField,
 } from '@mui/material';
-import { useState, useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { AuthContext } from 'src/providers/Auth.provider';
 import { DataContext, Isong } from 'src/providers/Data.provider';
-import utils, { defaultSong } from './songs.utils';
+import utils from './songs.utils';
 
 interface IsongFieldProps {
   label: string,
@@ -27,14 +27,20 @@ function SongField(props: IsongFieldProps): JSX.Element {
 }
 
 interface IeditSongDialogProps {
-  editDialogState: { showEditDialog: boolean, setShowEditDialog: (arg0: boolean) => void }, eSong: Isong
+  editDialogState: { showEditDialog: boolean, setShowEditDialog: (arg0: boolean) => void },
+  editSongState: { editSong: Isong, setEditSong: (arg0: Isong) => void },
+  currentSong: Isong
 }
-export function EditSongDialog({ editDialogState, eSong }: IeditSongDialogProps) {
-  console.log(eSong);
-  const [song, setSong] = useState(eSong);
+export function EditSongDialog({ editDialogState, editSongState, currentSong }: IeditSongDialogProps) {
   const { auth } = useContext(AuthContext);
   const { getSongs } = useContext(DataContext);
   const { showEditDialog, setShowEditDialog } = editDialogState;
+  const { editSong, setEditSong } = editSongState;
+  console.log(currentSong);
+  useEffect(() => {
+    setEditSong(currentSong);
+  }, [currentSong, setEditSong]);
+  if (!editSong._id) return null;
   return (
     <Dialog
       disableEnforceFocus
@@ -50,28 +56,28 @@ export function EditSongDialog({ editDialogState, eSong }: IeditSongDialogProps)
         </DialogContentText>
         <SongField
           label="* Url"
-          value={song.url}
+          value={editSong.url}
           onChange={(evt) => {
             const { target: { value } } = evt;
-            setSong({ ...song, url: value });
+            setEditSong({ ...editSong, url: value });
             return value;
           }}
         />
         <SongField
           label="* Title"
-          value={song.title}
+          value={editSong.title}
           onChange={(evt) => {
             const { target: { value } } = evt;
-            setSong({ ...song, title: value });
+            setEditSong({ ...editSong, title: value });
             return value;
           }}
         />
         <SongField
           label="* Artist"
-          value={song.artist}
+          value={editSong.artist}
           onChange={(evt) => {
             const { target: { value } } = evt;
-            setSong({ ...song, artist: value });
+            setEditSong({ ...editSong, artist: value });
             return value;
           }}
         />
@@ -85,12 +91,12 @@ export function EditSongDialog({ editDialogState, eSong }: IeditSongDialogProps)
             },
           }}
           fullWidth
-          value={song.year}
+          value={editSong.year}
           onChange={(evt) => {
             const { target: { value } } = evt;
             const numValue = Number(value);
             const year = numValue > 1 ? numValue : 2;
-            setSong({ ...song, year });
+            setEditSong({ ...editSong, year });
             return year;
           }}
         />
@@ -100,11 +106,11 @@ export function EditSongDialog({ editDialogState, eSong }: IeditSongDialogProps)
             style={{ marginBottom: '12px' }}
             labelId="select-category-label"
             id="select-category"
-            value={song.category}
+            value={editSong.category}
             label="Category"
             onChange={(evt) => {
               const { target: { value } } = evt;
-              setSong({ ...song, category: value });
+              setEditSong({ ...editSong, category: value });
               return value;
             }}
           >
@@ -118,15 +124,15 @@ export function EditSongDialog({ editDialogState, eSong }: IeditSongDialogProps)
           label="Composer"
           type="text"
           fullWidth
-          value={song.composer}
-          onChange={(evt) => utils.handleInputChange(evt, setSong, song, 'composer')}
+          value={editSong.composer}
+          onChange={(evt) => utils.handleInputChange(evt, setEditSong, editSong, 'composer')}
         />
         <SongField
           label="Album"
-          value={song.album || ''}
+          value={editSong.album || ''}
           onChange={(evt) => {
             const { target: { value } } = evt;
-            setSong({ ...song, album: value });
+            setEditSong({ ...editSong, album: value });
             return value;
           }}
         />
@@ -135,10 +141,10 @@ export function EditSongDialog({ editDialogState, eSong }: IeditSongDialogProps)
           label="Image"
           type="text"
           fullWidth
-          value={song.image}
+          value={editSong.image}
           onChange={(evt) => {
             const { target: { value } } = evt;
-            setSong({ ...song, image: value });
+            setEditSong({ ...editSong, image: value });
             return value;
           }}
         />
@@ -147,29 +153,29 @@ export function EditSongDialog({ editDialogState, eSong }: IeditSongDialogProps)
           label="Order (highest number plays first)"
           type="number"
           fullWidth
-          value={song.orderBy}
+          value={editSong.orderBy || 0}
           onChange={(evt) => {
             const { target: { value } } = evt;
             const orderBy = !value ? 0 : Number(value);
-            setSong({ ...song, orderBy });
+            setEditSong({ ...editSong, orderBy });
             return orderBy;
           }}
         />
       </DialogContent>
       <DialogActions>
         <Button
-          disabled={utils.checkDisabled(song)}
+          disabled={utils.checkDisabled(editSong)}
           size="small"
           variant="contained"
           className="createSongButton"
-          onClick={() => { utils.createSong(getSongs, setShowEditDialog, song, setSong, auth); }}
+          onClick={() => { utils.updateSong(getSongs, setShowEditDialog, editSong, setEditSong, auth); }}
         >
           Update
         </Button>
         <Button
           size="small"
           className="cancelPicButton"
-          onClick={() => { setSong(defaultSong); setShowEditDialog(false); }}
+          onClick={() => { setShowEditDialog(false); }}
         >
           Cancel
         </Button>
