@@ -7,6 +7,7 @@ import type { Isong } from 'src/providers/Data.provider';
 import utils from './utils';
 import './musicPlayer.scss';
 import { EditSongDialog } from '../EditSongDialog';
+import { defaultSong } from '../songs.utils';
 
 export function makeHandleEnded(index: number, songsState: Isong[], setIndex: (arg0: number) => void) {
   return () => utils.next(index, songsState, setIndex);
@@ -245,6 +246,7 @@ export function MusicPlayer({ songs, filterBy, editDialogState }: ImusicPlayerPr
   const [category, setCategory] = useState(filterBy);
   const [playing, setPlaying] = useState(false);
   const [isSingle, setIsSingle] = useState(false);
+  const [editSong, setEditSong] = useState({ ...defaultSong, _id: '' } as Isong);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [searchParams, setSearchParams] = useSearchParams();
   useEffect(() => {
@@ -280,7 +282,7 @@ export function MusicPlayer({ songs, filterBy, editDialogState }: ImusicPlayerPr
         <CategoryButtons category={category} setCategory={setCategory} isSingle={isSingle} />
         <CopyShare songsState={songsState} index={index} isSingle={isSingle} />
       </div>
-      <EditSongDialog editDialogState={editDialogState} eSong={songsState[index]} />
+      <EditSongDialog editDialogState={editDialogState} currentSong={songsState[index]} editSongState={{ editSong, setEditSong }} />
     </div>
   );
 }
