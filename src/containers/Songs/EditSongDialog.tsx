@@ -1,6 +1,6 @@
 import {
   Button, Dialog, DialogActions, DialogContent,
-  DialogContentText, DialogTitle, FormControl, InputLabel, MenuItem, Select, TextField,
+  DialogContentText, DialogTitle, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField,
 } from '@mui/material';
 import { useContext, useEffect } from 'react';
 import { AuthContext } from 'src/providers/Auth.provider';
@@ -25,6 +25,32 @@ function SongField(props: IsongFieldProps): JSX.Element {
     />
   );
 }
+interface IsongSelectProps {
+  label:string, value:string, onChange:(evt: SelectChangeEvent<string>)=>string, labelId:string,
+}
+
+function SongSelect(props: IsongSelectProps): JSX.Element {
+  const {
+    label, value, onChange, labelId,
+  } = props;
+  return (
+    <FormControl fullWidth sx={{ marginBottom: '12px' }}>
+      <InputLabel id={labelId}>Category</InputLabel>
+      <Select
+        style={{ marginBottom: '12px' }}
+        labelId={labelId}
+        id="select-category"
+        value={value}
+        label={label}
+        onChange={onChange}
+      >
+        <MenuItem value="original">original</MenuItem>
+        <MenuItem value="mission">mission</MenuItem>
+        <MenuItem value="pub">pub</MenuItem>
+      </Select>
+    </FormControl>
+  );
+}
 
 interface IeditSongDialogProps {
   editDialogState: { showEditDialog: boolean, setShowEditDialog: (arg0: boolean) => void },
@@ -36,7 +62,6 @@ export function EditSongDialog({ editDialogState, editSongState, currentSong }: 
   const { getSongs } = useContext(DataContext);
   const { showEditDialog, setShowEditDialog } = editDialogState;
   const { editSong, setEditSong } = editSongState;
-  console.log(currentSong);
   useEffect(() => {
     setEditSong(currentSong);
   }, [currentSong, setEditSong]);
