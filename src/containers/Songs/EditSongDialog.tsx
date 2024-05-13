@@ -153,12 +153,11 @@ export function EditSongDialog({ editDialogState, editSongState, currentSong }: 
           label="Order (highest number plays first)"
           type="number"
           fullWidth
-          value={editSong.orderBy || 0}
+          value={editSong.orderBy || ''}
           onChange={(evt) => {
             const { target: { value } } = evt;
-            const orderBy = !value ? 0 : Number(value);
-            setEditSong({ ...editSong, orderBy });
-            return orderBy;
+            setEditSong({ ...editSong, orderBy: Number(value) });
+            return value;
           }}
         />
       </DialogContent>
