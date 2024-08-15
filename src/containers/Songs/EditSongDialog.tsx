@@ -1,10 +1,11 @@
 import {
   Button, Dialog, DialogActions, DialogContent,
-  DialogContentText, DialogTitle, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField,
+  DialogContentText, DialogTitle, TextField,
 } from '@mui/material';
 import { useContext, useEffect } from 'react';
 import { AuthContext } from 'src/providers/Auth.provider';
 import { DataContext, Isong } from 'src/providers/Data.provider';
+import { CategorySelect } from 'src/components/CategorySelect';
 import utils from './songs.utils';
 
 interface IsongFieldProps {
@@ -23,32 +24,6 @@ function SongField(props: IsongFieldProps): JSX.Element {
       value={value}
       onChange={onChange}
     />
-  );
-}
-interface IsongSelectProps {
-  label:string, value:string, onChange:(evt: SelectChangeEvent<string>)=>string, labelId:string,
-}
-
-function SongSelect(props: IsongSelectProps): JSX.Element {
-  const {
-    label, value, onChange, labelId,
-  } = props;
-  return (
-    <FormControl fullWidth sx={{ marginBottom: '12px' }}>
-      <InputLabel id={labelId}>Category</InputLabel>
-      <Select
-        style={{ marginBottom: '12px' }}
-        labelId={labelId}
-        id="select-category"
-        value={value}
-        label={label}
-        onChange={onChange}
-      >
-        <MenuItem value="original">original</MenuItem>
-        <MenuItem value="mission">mission</MenuItem>
-        <MenuItem value="pub">pub</MenuItem>
-      </Select>
-    </FormControl>
   );
 }
 
@@ -125,25 +100,7 @@ export function EditSongDialog({ editDialogState, editSongState, currentSong }: 
             return year;
           }}
         />
-        <FormControl fullWidth sx={{ marginBottom: '12px' }}>
-          <InputLabel id="select-category-label">Category</InputLabel>
-          <Select
-            style={{ marginBottom: '12px' }}
-            labelId="select-category-label"
-            id="select-category"
-            value={editSong.category}
-            label="Category"
-            onChange={(evt) => {
-              const { target: { value } } = evt;
-              setEditSong({ ...editSong, category: value });
-              return value;
-            }}
-          >
-            <MenuItem value="original">original</MenuItem>
-            <MenuItem value="mission">mission</MenuItem>
-            <MenuItem value="pub">pub</MenuItem>
-          </Select>
-        </FormControl>
+        <CategorySelect songJson={editSong} setFunc={setEditSong} />
         <TextField
           sx={{ marginBottom: '12px' }}
           label="Composer"
