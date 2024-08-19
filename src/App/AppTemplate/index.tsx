@@ -1,4 +1,10 @@
-import { SetStateAction, useState } from 'react';
+import {
+  SetStateAction,
+  // useContext, useEffect,
+  useState,
+} from 'react';
+// import { AuthContext, Iauth } from 'src/providers/Auth.provider';
+// import { jwtVerify } from 'jose';
 import { DrawerContainer } from './DrawerContainer';
 import { MainPanel } from './MainPanel';
 
@@ -40,6 +46,14 @@ export const makeHandleKeyPress = (
   setMenuOpen: (value: SetStateAction<boolean>) => void,
 ) => (evt: { key: string; }) => handleEscapePress(evt, setMenuOpen);
 
+// export async function checkIfTokenExpired(auth:Iauth) {
+//   console.log(auth);
+//   try {
+//     const user = await jwtVerify(auth.token);
+//     console.log(user);
+//   } catch (err) { console.log(err); }
+// }
+
 interface IpageHostProps {
   userCount?: number, heartBeat?: string,
   children: React.ReactNode,
@@ -54,6 +68,11 @@ export function AppTemplate(props: IpageHostProps) {
   const onClick = makeOnClick(menuOpen, setMenuOpen);
   const onKeyPress = makeOnKeyPress(menuOpen, setMenuOpen);
   const handleKeyPress = makeHandleKeyPress(setMenuOpen);
+  // const { auth } = useContext(AuthContext);
+  // check if token has expired
+  // useEffect(() => {
+  //   checkIfTokenExpired(auth);
+  // });
   return (
     <div className="page-host">
       <DrawerContainer
