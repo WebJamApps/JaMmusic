@@ -6,6 +6,7 @@ import { useContext, useEffect } from 'react';
 import { AuthContext } from 'src/providers/Auth.provider';
 import { DataContext, Isong } from 'src/providers/Data.provider';
 import { CategorySelect } from 'src/components/CategorySelect';
+import { YearField } from 'src/components/YearField';
 import utils from './songs.utils';
 
 interface IsongFieldProps {
@@ -81,25 +82,7 @@ export function EditSongDialog({ editDialogState, editSongState, currentSong }: 
             return value;
           }}
         />
-        <TextField
-          sx={{ marginBottom: '12px' }}
-          label="* Year"
-          type="number"
-          InputProps={{
-            inputProps: {
-              max: new Date().getFullYear(), min: 2000,
-            },
-          }}
-          fullWidth
-          value={editSong.year}
-          onChange={(evt) => {
-            const { target: { value } } = evt;
-            const numValue = Number(value);
-            const year = numValue > 1 ? numValue : 2;
-            setEditSong({ ...editSong, year });
-            return year;
-          }}
-        />
+        <YearField song={editSong} setSong={setEditSong} />
         <CategorySelect songJson={editSong} setFunc={setEditSong} />
         <TextField
           sx={{ marginBottom: '12px' }}
