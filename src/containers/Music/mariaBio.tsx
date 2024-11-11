@@ -2,7 +2,7 @@
 import Instruments from './instruments';
 
 const BioText = () => (
-  <p className="bioText">
+  <p className="bioText" style={{ paddingLeft: 10, paddingRight: 10 }}>
     Maria started her singing career at the age of 4 when she performed at the JaMar Rec
     Center in St. Petersburg, Florida. Maria continued adding to her musical repertoire
     by learning piano, alto saxophone, tenor saxophone, bassoon, and marching tenors.
@@ -17,8 +17,16 @@ const BioText = () => (
 function MariaBio(): JSX.Element {
   return (
     <div className="mariaBio">
-      <h4 id="mariabio" style={{ marginBottom: '4px' }}>Maria Sherman</h4>
-      <div><img className="alignnone size-medium wp-image-50" src="/static/imgs/maria01.jpg" alt="maria01" width="288px" /></div>
+      <h4 id="mariabio" style={{ marginBottom: '4px', marginTop: '8px', textAlign: 'center' }}>Maria Sherman</h4>
+      <div>
+        <img
+          style={{ paddingLeft: 10, paddingRight: 10, float: 'left' }}
+          className="alignnone size-medium wp-image-50"
+          src="/static/imgs/maria01.jpg"
+          alt="maria01"
+          width="288px"
+        />
+      </div>
       <BioText />
       <blockquote style={{
         fontStyle: 'italic', textAlign: 'left', marginTop: '5px', fontSize: '9pt',

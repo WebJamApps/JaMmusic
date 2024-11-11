@@ -24,7 +24,13 @@ function JoshBio(): JSX.Element {
       <div style={{ height: '10px' }}><p>{' '}</p></div>
       <h4 id="joshbio" style={{ marginBottom: '4px', marginTop: '8px', textAlign: 'center' }}>Josh Sherman</h4>
       <div>
-        <img style={{ paddingLeft: 10 }} className="alignnone size-full wp-image-49" src="/static/imgs/josh01.jpg" alt="josh01" width="288px" />
+        <img
+          style={{ paddingLeft: 10, paddingRight: 10, float: 'left' }}
+          className="alignnone size-full wp-image-49"
+          src="/static/imgs/josh01.jpg"
+          alt="josh01"
+          width="288px"
+        />
       </div>
       <BioText />
       <blockquote style={{
