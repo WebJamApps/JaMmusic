@@ -23,7 +23,7 @@ describe('GoogleButtons/utils', () => {
     const userId = 'user';
     const mockGet = jest.fn().mockResolvedValueOnce({});
     (superagent.get as jest.Mock).mockReturnValueOnce({ set: jest.fn().mockReturnValueOnce({ set: mockGet }) });
-    await utils.setUserAuth(setAuth, token, userId);
+    await utils.setUserAuth(token, userId, setAuth, 'setAuth');
     expect(setAuth).toHaveBeenCalled();
   });
   it('setUser', async () => {

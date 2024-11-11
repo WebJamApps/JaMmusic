@@ -251,75 +251,17 @@ exports[`BuyMusic renders correctly 1`] = `
       <h4
         style={
           {
-            "marginBottom": "12px",
+            "marginBottom": "2px",
             "marginTop": "30px",
           }
         }
       >
-        Also on YouTube
+        Also on
+         
+        Apple Music
       </h4>
       <div
-        className="youtube elevation3 top-row-style"
-        style={
-          {
-            "marginBottom": "50px",
-            "textAlign": "left",
-          }
-        }
-      >
-        <a
-          className="fab fa-youtube fa-2x"
-          href="https://youtube.com/playlist?list=OLAK5uy_nmxiOsu9BvdnwfHZ2w4ix3AG0POpsJPKA"
-          style={
-            {
-              "color": "#333333",
-              "margin": "20px",
-              "marginLeft": "5%",
-            }
-          }
-        >
-           
-          Josh Solo Acoustic
-        </a>
-        <a
-          className="fab fa-youtube fa-2x"
-          href="https://youtube.com/playlist?list=OLAK5uy_mtLf1U_oKuSgkFRcXYpo5E0OJWnvRt1TI"
-          style={
-            {
-              "color": "#333333",
-              "margin": "20px",
-              "marginLeft": "5%",
-            }
-          }
-        >
-           
-          Josh Sherman Band
-        </a>
-      </div>
-    </div>
-  </div>
-  <div
-    className="col"
-  >
-    <div
-      style={
-        {
-          "textAlign": "center",
-        }
-      }
-    >
-      <h4
-        style={
-          {
-            "marginBottom": "12px",
-            "marginTop": "30px",
-          }
-        }
-      >
-        Also on Apple Music
-      </h4>
-      <div
-        className="appleMusic elevation3 top-row-style"
+        className="elevation3 top-row-style"
         style={
           {
             "marginBottom": "50px",
@@ -340,6 +282,82 @@ exports[`BuyMusic renders correctly 1`] = `
         >
            
           Josh Sherman Band
+        </a>
+        <a
+          className="fab fa-apple fa-2x"
+          href="https://music.apple.com/us/album/solo-acoustic/80925503"
+          style={
+            {
+              "color": "#333333",
+              "margin": "20px",
+              "marginLeft": "5%",
+            }
+          }
+        >
+           
+          Josh Solo Acoustic
+        </a>
+      </div>
+    </div>
+  </div>
+  <div
+    className="col"
+  >
+    <div
+      style={
+        {
+          "textAlign": "center",
+        }
+      }
+    >
+      <h4
+        style={
+          {
+            "marginBottom": "2px",
+            "marginTop": "30px",
+          }
+        }
+      >
+        Also on
+         
+        YouTube
+      </h4>
+      <div
+        className="elevation3 top-row-style"
+        style={
+          {
+            "marginBottom": "50px",
+            "textAlign": "center",
+          }
+        }
+      >
+        <a
+          className="fab fa-youtube fa-2x"
+          href=""https://youtube.com/playlist?list=OLAK5uy_mtLf1U_oKuSgkFRcXYpo5E0OJWnvRt1TI""
+          style={
+            {
+              "color": "#333333",
+              "margin": "20px",
+              "marginLeft": "5%",
+            }
+          }
+        >
+           
+          Josh Sherman Band
+        </a>
+        <a
+          className="fab fa-youtube fa-2x"
+          href="https://youtube.com/playlist?list=OLAK5uy_nmxiOsu9BvdnwfHZ2w4ix3AG0POpsJPKA"
+          style={
+            {
+              "color": "#333333",
+              "margin": "20px",
+              "marginLeft": "5%",
+            }
+          }
+        >
+           
+          Josh Solo Acoustic
         </a>
       </div>
     </div>

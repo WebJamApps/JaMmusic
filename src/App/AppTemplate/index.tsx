@@ -1,4 +1,10 @@
-import { SetStateAction, useState } from 'react';
+import {
+  SetStateAction,
+  // useContext, useEffect,
+  useState,
+} from 'react';
+// import { AuthContext, Iauth } from 'src/providers/Auth.provider';
+// import { jwtVerify } from 'jose';
 import { DrawerContainer } from './DrawerContainer';
 import { MainPanel } from './MainPanel';
 
@@ -39,6 +45,14 @@ export function handleEscapePress(e: { key: string; }, setMenuOpen: (arg0: boole
 export const makeHandleKeyPress = (
   setMenuOpen: (value: SetStateAction<boolean>) => void,
 ) => (evt: { key: string; }) => handleEscapePress(evt, setMenuOpen);
+// TODO logout user if token has expired
+// export async function checkIfTokenExpired(auth:Iauth) {
+//   console.log(auth);
+//   try {
+//     const user = await jwtVerify(auth.token);
+//     console.log(user);
+//   } catch (err) { console.log(err); }
+// }
 
 interface IpageHostProps {
   userCount?: number, heartBeat?: string,
@@ -46,14 +60,19 @@ interface IpageHostProps {
 }
 export function AppTemplate(props: IpageHostProps) {
   const {
-    // userCount, heartBeat,
-    children,
+    // userCount, heartBeat, //TODO put heartBeat back to indicate connection to sockercluster
+    children, // TODO put indicator of how many users are currently viewing our website
   } = props;
   const [menuOpen, setMenuOpen] = useState(false);
   const handleClose = makeHandleClose(setMenuOpen);
   const onClick = makeOnClick(menuOpen, setMenuOpen);
   const onKeyPress = makeOnKeyPress(menuOpen, setMenuOpen);
   const handleKeyPress = makeHandleKeyPress(setMenuOpen);
+  // const { auth } = useContext(AuthContext);
+  // check if token has expired
+  // useEffect(() => {
+  //   checkIfTokenExpired(auth);
+  // });
   return (
     <div className="page-host">
       <DrawerContainer
