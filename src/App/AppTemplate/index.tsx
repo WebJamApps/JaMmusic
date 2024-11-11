@@ -45,7 +45,7 @@ export function handleEscapePress(e: { key: string; }, setMenuOpen: (arg0: boole
 export const makeHandleKeyPress = (
   setMenuOpen: (value: SetStateAction<boolean>) => void,
 ) => (evt: { key: string; }) => handleEscapePress(evt, setMenuOpen);
-
+// TODO logout user if token has expired
 // export async function checkIfTokenExpired(auth:Iauth) {
 //   console.log(auth);
 //   try {
@@ -60,8 +60,8 @@ interface IpageHostProps {
 }
 export function AppTemplate(props: IpageHostProps) {
   const {
-    // userCount, heartBeat,
-    children,
+    // userCount, heartBeat, //TODO put heartBeat back to indicate connection to sockercluster
+    children, // TODO put indicator of how many users are currently viewing our website
   } = props;
   const [menuOpen, setMenuOpen] = useState(false);
   const handleClose = makeHandleClose(setMenuOpen);
