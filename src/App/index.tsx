@@ -2,7 +2,7 @@ import { ReactNotifications } from 'react-notifications-component';
 import {
   BrowserRouter, Navigate, Route, Routes,
 } from 'react-router-dom';
-import { NewHomepage } from 'src/containers/NewHomepage';
+import { Homepage } from 'src/containers/Homepage';
 import { SortContainer } from '../containers/SortContainer';
 import BuyMusic from '../containers/BuyMusic';
 import GoogleMap from '../containers/GoogleMap';
@@ -14,7 +14,7 @@ import { Tipjar } from '../containers/Tipjar';
 
 export function checkAppName() {
   return process.env.APP_NAME === 'web-jam.com'
-    ? <NewHomepage /> : <Music />;
+    ? <Homepage /> : <Music />;
 }
 
 export function checkBackendUrl() {
@@ -35,7 +35,7 @@ export function App(): JSX.Element {
             />
             <Route path="/sort" element={<SortContainer />} />
             {checkBackendUrl()}
-            <Route path="/new-homepage" element={<NewHomepage />} />
+            <Route path="/new-homepage" element={<Homepage />} />
             <Route path="/music" element={<Music />} />
             <Route path="/music/buymusic" element={<BuyMusic />} />
             <Route path="/music/songs" element={<Songs />} />

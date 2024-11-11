@@ -45,7 +45,7 @@ module.exports = (env) => ({
   optimization: {
     runtimeChunk: 'single'
   },
-
+  watchOptions: { ignored: /node_modules/ },
   entry: {
     app: [`${srcDir}/Main.tsx`],
   },
