@@ -1,9 +1,8 @@
 import { Component } from 'react';
 import Jsb from './BuyLinks/joshShermanBand';
 import Jss from './BuyLinks/joshShermanSolo';
-import Jsyt from './MediaLinks/joshShermanYoutube';
 import Jssp from './MediaLinks/joshShermanSpotify';
-import Jsam from './MediaLinks/joshShermanApple';
+import { JoshShermanAppleOrYouTube } from './MediaLinks/joshShermanAppleOrYouTube';
 import commonUtils from '../../lib/utils';
 
 export default class BuyMusic extends Component {
@@ -35,8 +34,8 @@ export default class BuyMusic extends Component {
           <Jss />
         </div>
         <Jssp />
-        <Jsyt />
-        <Jsam />
+        <JoshShermanAppleOrYouTube service="Apple Music" />
+        <JoshShermanAppleOrYouTube service="YouTube" />
       </div>
     );
   }
