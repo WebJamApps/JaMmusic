@@ -28,7 +28,7 @@ const envVars = ['APP_NAME', 'SCS_PORT', 'SCS_HOST', 'SOCKETCLUSTER_SECURE', 'NO
 let googleMapKey = '';
 if (nodeEnv === 'development') envVars.push('PORT');
 if (process.env.BackendUrl === 'http://localhost:7000') {
-  googleMapKey = `https://maps.googleapis.com/maps/api/js?key=${process.env.GOOGLE_MAPS_API_KEY}`;
+  googleMapKey = `https://maps.googleapis.com/maps/api/js?key=${process.env.GOOGLE_MAPS_API_KEY}&loading=async&callback=Function.prototype`;
 }
 module.exports = (env) => ({
   resolve: {
@@ -38,7 +38,8 @@ module.exports = (env) => ({
       crypto: require.resolve('crypto-browserify'),
       stream: require.resolve('stream-browserify'),
       util: require.resolve('util/'),
-      "buffer": require.resolve("buffer")
+      buffer: require.resolve("buffer"),
+      vm: require.resolve('vm-browserify')
     },
   },
   optimization: {
@@ -168,6 +169,7 @@ module.exports = (env) => ({
   plugins: [
     new ProvidePlugin({
       Buffer: ['buffer', 'Buffer'],
+      process: 'process/browser.js',
     }),
     new HtmlWebpackPlugin({
       template: `${srcDir}/index.ejs`,

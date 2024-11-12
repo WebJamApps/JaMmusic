@@ -14,7 +14,7 @@ let mWares = applyMiddleware(thunk);
 /* istanbul ignore if */
 if (process.env.NODE_ENV === 'development') {
   const logger = createLogger({ predicate: (_getState, action) => action.type !== 'SC_HEARTBEAT' });
-  mWares = applyMiddleware(thunk, logger);
+  mWares = applyMiddleware(thunk, logger as any);
 }
 const persistedReducer = persistReducer(persistConfig, allReducers);
 const store = createStore(persistedReducer, mWares);

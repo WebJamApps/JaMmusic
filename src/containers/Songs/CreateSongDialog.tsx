@@ -1,10 +1,12 @@
 import {
   Button, Dialog, DialogActions, DialogContent,
-  DialogContentText, DialogTitle, FormControl, InputLabel, MenuItem, Select, TextField,
+  DialogContentText, DialogTitle, TextField,
 } from '@mui/material';
 import { useState, useContext } from 'react';
 import { AuthContext } from 'src/providers/Auth.provider';
 import { DataContext, Isong } from 'src/providers/Data.provider';
+import { CategorySelect } from 'src/components/CategorySelect';
+import { YearField } from 'src/components/YearField';
 import utils, { defaultSong } from './songs.utils';
 
 interface IsongFieldProps {
@@ -73,44 +75,8 @@ export function CreateSongDialog({ showDialog, setShowDialog }: IcreateSongDialo
             return value;
           }}
         />
-        <TextField
-          sx={{ marginBottom: '12px' }}
-          label="* Year"
-          type="number"
-          InputProps={{
-            inputProps: {
-              max: new Date().getFullYear(), min: 2000,
-            },
-          }}
-          fullWidth
-          value={song.year}
-          onChange={(evt) => {
-            const { target: { value } } = evt;
-            const numValue = Number(value);
-            const year = numValue > 1 ? numValue : 2;
-            setSong({ ...song, year });
-            return year;
-          }}
-        />
-        <FormControl fullWidth sx={{ marginBottom: '12px' }}>
-          <InputLabel id="select-category-label">Category</InputLabel>
-          <Select
-            style={{ marginBottom: '12px' }}
-            labelId="select-category-label"
-            id="select-category"
-            value={song.category}
-            label="Category"
-            onChange={(evt) => {
-              const { target: { value } } = evt;
-              setSong({ ...song, category: value });
-              return value;
-            }}
-          >
-            <MenuItem value="original">original</MenuItem>
-            <MenuItem value="mission">mission</MenuItem>
-            <MenuItem value="pub">pub</MenuItem>
-          </Select>
-        </FormControl>
+        <YearField song={song} setSong={setSong} />
+        <CategorySelect songJson={song} setFunc={setSong} />
         <TextField
           sx={{ marginBottom: '12px' }}
           label="Composer"
