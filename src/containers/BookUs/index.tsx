@@ -1,5 +1,5 @@
 import { Button } from '@mui/material';
-import { Inquiry } from '../NewHomepage/Inquiry';
+import { Inquiry } from '../Homepage/Inquiry';
 
 const songlistUrl = 'https://docs.google.com/spreadsheets/d/1uePCuHO6qxg2tHTqGist_O4iYXJjy9AgSmXvMgF9NPM/edit?usp=sharing';
 export function BookUs() {

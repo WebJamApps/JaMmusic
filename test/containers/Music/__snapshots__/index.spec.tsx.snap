@@ -1057,6 +1057,7 @@ exports[`/music renders the component 1`] = `
             {
               "marginBottom": "4px",
               "marginTop": "8px",
+              "textAlign": "center",
             }
           }
         >
@@ -1067,11 +1068,24 @@ exports[`/music renders the component 1`] = `
             alt="josh01"
             className="alignnone size-full wp-image-49"
             src="/static/imgs/josh01.jpg"
+            style={
+              {
+                "float": "left",
+                "paddingLeft": 10,
+                "paddingRight": 10,
+              }
+            }
             width="288px"
           />
         </div>
         <p
           className="bioText"
+          style={
+            {
+              "paddingLeft": 10,
+              "paddingRight": 5,
+            }
+          }
         >
           Josh began playing the trumpet when he was in third grade. He became skilled with the trumpet, continuing with his musical stylings through high school where he was first chair and regular soloist on the marching field. In college Josh studied music and picked up the guitar. He was primarily self-taught on the guitar, although he received help from his many musical relatives, especially his Uncle Mike. Josh went on to found several bands while living in central Florida. He recorded two cds and was played on the local radio stations. Josh also played in many venues including the Sun Cruise casino ship and the Battle of the Bands. His career took a different turn when he moved to Virginia. Leaving his band behind, Josh performed at the annual Bent Mountain pig roast every year since. He joined the College Lutheran Church choir and was a member of the Salem Choral Society. He also performed solo acoustic at local coffee shops. Josh started singing with Maria in the fall of 2011. They fell in love and were married in July of 2012. Vive l’amore!
         </p>
@@ -1137,6 +1151,8 @@ exports[`/music renders the component 1`] = `
           style={
             {
               "marginBottom": "4px",
+              "marginTop": "8px",
+              "textAlign": "center",
             }
           }
         >
@@ -1147,11 +1163,24 @@ exports[`/music renders the component 1`] = `
             alt="maria01"
             className="alignnone size-medium wp-image-50"
             src="/static/imgs/maria01.jpg"
+            style={
+              {
+                "float": "left",
+                "paddingLeft": 10,
+                "paddingRight": 10,
+              }
+            }
             width="288px"
           />
         </div>
         <p
           className="bioText"
+          style={
+            {
+              "paddingLeft": 10,
+              "paddingRight": 10,
+            }
+          }
         >
           Maria started her singing career at the age of 4 when she performed at the JaMar Rec Center in St. Petersburg, Florida. Maria continued adding to her musical repertoire by learning piano, alto saxophone, tenor saxophone, bassoon, and marching tenors. She earned a minor in voice at Roanoke College and did a variety of chorus, musical theatre, and solo performances while teaching in the Roanoke County Schools. Although classically trained, Maria loves singing rock and Christian music with Josh. She is currently playing bass guitar and plays accordian. Josh is the most wonderful husband and is the driving force for the couple; Maria is a fabulous wife and is the organization behind the duo.
         </p>

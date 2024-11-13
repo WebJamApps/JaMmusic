@@ -2,7 +2,7 @@
 import Instruments from './instruments';
 
 const BioText = () => (
-  <p className="bioText">
+  <p className="bioText" style={{ paddingLeft: 10, paddingRight: 5 }}>
     Josh began playing the trumpet when he was in third grade. He became skilled with the trumpet,
     continuing with his musical stylings through high school where he was first chair and regular
     soloist on the marching field. In college Josh studied music and picked up the guitar. He was
@@ -22,9 +22,15 @@ function JoshBio(): JSX.Element {
   return (
     <div className="joshBio">
       <div style={{ height: '10px' }}><p>{' '}</p></div>
-      <h4 id="joshbio" style={{ marginBottom: '4px', marginTop: '8px' }}>Josh Sherman</h4>
+      <h4 id="joshbio" style={{ marginBottom: '4px', marginTop: '8px', textAlign: 'center' }}>Josh Sherman</h4>
       <div>
-        <img className="alignnone size-full wp-image-49" src="/static/imgs/josh01.jpg" alt="josh01" width="288px" />
+        <img
+          style={{ paddingLeft: 10, paddingRight: 10, float: 'left' }}
+          className="alignnone size-full wp-image-49"
+          src="/static/imgs/josh01.jpg"
+          alt="josh01"
+          width="288px"
+        />
       </div>
       <BioText />
       <blockquote style={{

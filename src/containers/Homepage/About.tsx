@@ -36,7 +36,7 @@ function HomepageIntro(): JSX.Element {
         translate="no"
         lang="en"
         style={{
-          marginTop: '32px', marginBottom: '40px', fontSize: '22px', textAlign: 'left',
+          marginTop: '12px', marginBottom: '40px', fontSize: '12pt', textAlign: 'left',
         }}
       >
         Web Jam LLC helps businesses bring their web technologies into the 21st century! Let us
