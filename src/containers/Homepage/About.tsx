@@ -1,4 +1,5 @@
 import { Box, Grid } from '@mui/material';
+import './containers/Homepage.scss';
 import { ReactNode } from 'react';
 import Faqs from './FAQs';
 import { Item } from './CurrentProjects';
@@ -9,7 +10,7 @@ function WJLogo(): JSX.Element {
       <div id="slideshow1">
         <img
           style={{
-            marginTop: '15px',
+            marginTop: '0px',
             maxHeight: '450px',
             boxShadow: '0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.4)',
           }}
