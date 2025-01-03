@@ -1,5 +1,4 @@
 import { Box, Grid } from '@mui/material';
-import './containers/Homepage.scss';
 import { ReactNode } from 'react';
 import Faqs from './FAQs';
 import { Item } from './CurrentProjects';
