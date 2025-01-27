@@ -193,8 +193,14 @@ exports[`Homepage renders correctly 1`] = `
                                   >
                                     <p
                                       className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+                                      style={
+                                        {
+                                          "fontFamily": ""Habibi", sans-serif",
+                                          "textAlign": "left",
+                                        }
+                                      }
                                     >
-                                      Send an email to Josh and Maria Sherman 
+                                      Send an email to Josh and Maria Sherman  
                                       <a
                                         href="mailto:web.jam.adm@gmail.com"
                                       >
@@ -296,6 +302,12 @@ exports[`Homepage renders correctly 1`] = `
                                   >
                                     <p
                                       className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+                                      style={
+                                        {
+                                          "fontFamily": ""Habibi", sans-serif",
+                                          "textAlign": "left",
+                                        }
+                                      }
                                     >
                                       We provide mobile-friendly web technologies and services.
                                     </p>
@@ -383,6 +395,12 @@ exports[`Homepage renders correctly 1`] = `
                                   >
                                     <p
                                       className="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+                                      style={
+                                        {
+                                          "fontFamily": ""Habibi", sans-serif",
+                                          "textAlign": "left",
+                                        }
+                                      }
                                     >
                                       To assist small businesses by refactoring their existing websites to be mobile-friendly, providing new online services, empowering business owners, and training staff to use these new services effectively.
                                     </p>
@@ -434,7 +452,7 @@ exports[`Homepage renders correctly 1`] = `
                         style={
                           {
                             "boxShadow": "0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.4)",
-                            "marginTop": "15px",
+                            "marginTop": "0px",
                             "maxHeight": "450px",
                           }
                         }
