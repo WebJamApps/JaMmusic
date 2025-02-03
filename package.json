@@ -9,8 +9,8 @@
   },
   "author": "https://github.com/orgs/WebJamApps/teams/handlersandkickers",
   "engines": {
-    "node": ">=22.11.0 <23",
-    "npm": ">=10.9.0 <11"
+    "node": ">=22.13.0 <23",
+    "npm": ">=11.1.0 <11"
   },
   "files": [
     "webpack.config.js",
@@ -78,7 +78,7 @@
     "decode-uri-component": "^0.4.1",
     "dotenv": "^16.3.1",
     "expose-loader": "^4.0.0",
-    "express": "^4.19.2",
+    "express": "^4.21.2",
     "express-sslify": "^1.2.0",
     "faker": "^5.5.3",
     "file-loader": "^6.2.0",
