@@ -41,7 +41,7 @@ export function EditSongDialog({ editDialogState, editSongState, currentSong }: 
   useEffect(() => {
     setEditSong(currentSong);
   }, [currentSong, setEditSong]);
-  if (!editSong._id) return null;
+  if (!editSong || !editSong._id) return null;
   return (
     <Dialog
       disableEnforceFocus
