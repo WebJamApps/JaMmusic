@@ -154,22 +154,22 @@ export function TextUnderPlayer(
 }
 
 interface IcategoryButtonsProps {
-  category: string, setCategory: (arg0: string) => void, isSingle: boolean
+  category: string, setCategory: (arg0: string) => void, isSingle: boolean, setIndex: (arg0: number) => void
 }
 export function CategoryButtons(props: IcategoryButtonsProps): JSX.Element {
   const {
-    category, setCategory, isSingle,
+    category, setCategory, isSingle, setIndex,
   } = props;
   if (isSingle) return <> </>;
   return (
     <div className="categoryButtons">
-      <button type="button" onClick={() => setCategory('original')} className={`original${category === 'original' ? 'on' : 'off'}`}>
+      <button type="button" onClick={() => { setCategory('original'); setIndex(0); }} className={`original${category === 'original' ? 'on' : 'off'}`}>
         Original
       </button>
-      <button type="button" onClick={() => setCategory('mission')} className={`mission${category === 'mission' ? 'on' : 'off'}`}>
+      <button type="button" onClick={() => { setCategory('mission'); setIndex(0); }} className={`mission${category === 'mission' ? 'on' : 'off'}`}>
         Mission
       </button>
-      <button type="button" onClick={() => setCategory('pub')} className={`pub${category === 'pub' ? 'on' : 'off'}`}>
+      <button type="button" onClick={() => { setCategory('pub'); setIndex(0); }} className={`pub${category === 'pub' ? 'on' : 'off'}`}>
         Pub
       </button>
     </div>
@@ -279,7 +279,7 @@ export function MusicPlayer({ songs, filterBy, editDialogState }: ImusicPlayerPr
           isSingle={isSingle}
         />
         <TextUnderPlayer songsState={songsState} index={index} />
-        <CategoryButtons category={category} setCategory={setCategory} isSingle={isSingle} />
+        <CategoryButtons category={category} setCategory={setCategory} isSingle={isSingle} setIndex={setIndex} />
         <CopyShare songsState={songsState} index={index} isSingle={isSingle} />
       </div>
       <EditSongDialog editDialogState={editDialogState} currentSong={songsState[index]} editSongState={{ editSong, setEditSong }} />

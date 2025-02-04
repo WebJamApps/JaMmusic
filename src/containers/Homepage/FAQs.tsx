@@ -38,8 +38,8 @@ const AccQ3 = () => (
 
 const AccA1 = () => (
   <AccordionDetails>
-    <Typography>
-      Send an email to Josh and Maria Sherman&nbsp;
+    <Typography style={{ textAlign: 'left', fontFamily: '"Habibi", sans-serif' }}>
+      Send an email to Josh and Maria Sherman &nbsp;
       <a href="mailto:web.jam.adm@gmail.com">
         <strong>web.jam.adm@gmail.com</strong>
       </a> or call <a href="tel:5404948035"><strong>540-494-8035</strong></a>.
@@ -49,14 +49,15 @@ const AccA1 = () => (
 
 const AccA2 = () => (
   <AccordionDetails>
-    <Typography>We provide mobile-friendly web technologies and services.
+    <Typography style={{ textAlign: 'left', fontFamily: '"Habibi", sans-serif' }}>
+      We provide mobile-friendly web technologies and services.
     </Typography>
   </AccordionDetails>
 );
 
 const AccA3 = () => (
   <AccordionDetails>
-    <Typography>
+    <Typography style={{ textAlign: 'left', fontFamily: '"Habibi", sans-serif' }}>
       To assist small businesses by refactoring their existing websites to be mobile-friendly,
       providing new online services, empowering business owners, and training staff to use these new services effectively.
     </Typography>
