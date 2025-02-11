@@ -39,6 +39,7 @@ export function MyReactPlayer(props: ImyReactPlayerProps): JSX.Element {
       height="40vh"
       id="mainPlayer"
       className="audio"
+      backgroundSize="cover"
       config={{ youtube: { playerVars: { controls: 0 } }, file: { attributes: { controlsList: 'nodownload' } } }}
     />
   );

@@ -4,11 +4,11 @@ import type { Isong } from 'src/providers/Data.provider';
 
 function setPlayerStyle(song: Isong): Record<string, unknown> {
   let playerStyle = {
-    backgroundColor: '#2a2a2a',
+    backgroundColor: 'white',
     textAlign: 'center',
     backgroundImage: song.image ? `url(${song.image})` : '',
     backgroundPosition: 'center',
-    backgroundSize: '80%',
+    backgroundSize: '100%',
     backgroundRepeat: 'no-repeat',
   };
   if (song.image === undefined || song.image === '') {
