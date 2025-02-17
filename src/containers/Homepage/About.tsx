@@ -2,6 +2,7 @@ import { Box, Grid } from '@mui/material';
 import { ReactNode } from 'react';
 import Faqs from './FAQs';
 import { Item } from './CurrentProjects';
+import './about.scss';
 
 function WJLogo(): JSX.Element {
   return (
@@ -104,9 +105,10 @@ function AboutUs(): JSX.Element {
                 >
                   <HomepageIntro />
                 </GridItem>
-                <GridItem order={{
-                  xs: 1, sm: 1, md: 1, lg: 2, xl: 2,
-                }}
+                <GridItem
+                  order={{
+                    xs: 1, sm: 1, md: 1, lg: 2, xl: 2,
+                  }}
                 >
                   <WJLogo />
                 </GridItem>
