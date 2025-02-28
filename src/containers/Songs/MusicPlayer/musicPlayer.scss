@@ -7,10 +7,11 @@
     margin:auto;
 }
 
-
 #play-pause.on { background-color: red; color: black; }
 
-#play-buttons { margin-bottom:10px;}
+#play-buttons { margin-bottom:-3px; 
+                margin-top:-5px;
+}
 
 .categoryButtons {
     height: 22px; margin: auto; padding-top: 10px;

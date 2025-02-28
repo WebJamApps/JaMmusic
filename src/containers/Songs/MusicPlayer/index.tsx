@@ -81,18 +81,19 @@ export function MyButtons(props: ImyButtonsProps): JSX.Element {
               <Button
                 size="small"
                 variant="outlined"
-                id="next"
-                onClick={() => utils.next(index, songsState, setIndex)}
-              >
-                Next
-              </Button>
-              <Button
-                size="small"
-                variant="outlined"
                 id="prev"
                 onClick={() => utils.prev(index, songsState, setIndex)}
               >
                 Prev
+              </Button>
+
+              <Button
+                size="small"
+                variant="outlined"
+                id="next"
+                onClick={() => utils.next(index, songsState, setIndex)}
+              >
+                Next
               </Button>
             </>
           )}
