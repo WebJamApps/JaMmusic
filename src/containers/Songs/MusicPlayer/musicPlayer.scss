@@ -1,14 +1,6 @@
 .textUnderPlayer{
-    margin-top: 0px;
     padding-bottom: 0px;
     margin:auto;
-}
-
-.horizontal-line{
-    margin-top: 15px;
-    margin-bottom: 3px;
-    background-color: rgb(120, 36, 199);
-
 }
 
 .songPlayerButtonsSection{
@@ -17,7 +9,7 @@
 
 #play-pause.on { background-color: red; color: black; }
 
-#play-buttons { margin-bottom:-10px; 
+#play-buttons { margin-bottom:-3px; 
                 margin-top:-5px;
 }
 

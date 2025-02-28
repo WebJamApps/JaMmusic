@@ -54,54 +54,51 @@ export function MyButtons(props: ImyButtonsProps): JSX.Element {
     playing, setPlaying, index, songsState, setIndex, isSingle,
   } = props;
   return (
-    <>
-      <div style={{ paddingTop: 0, margin: 'auto' }}>
-        <div id="play-buttons">
+    <div style={{ paddingTop: 0, margin: 'auto' }}>
+      <div id="play-buttons">
+        <Button
+          size="small"
+          variant="contained"
+          id="play-pause"
+          className={playing ? 'on' : 'off'}
+          onClick={() => utils.play(playing, setPlaying)}
+        >
+          Play/Pause
+        </Button>
+        {!isSingle ? null : (
           <Button
             size="small"
-            variant="contained"
-            id="play-pause"
-            className={playing ? 'on' : 'off'}
-            onClick={() => utils.play(playing, setPlaying)}
+            variant="outlined"
+            id="home"
+            onClick={() => window.open('https://web-jam.com/music/songs', '_blank')}
           >
-            Play/Pause
+            More Songs
           </Button>
-          {!isSingle ? null : (
-            <Button
-              size="small"
-              variant="outlined"
-              id="home"
-              onClick={() => window.open('https://web-jam.com/music/songs', '_blank')}
-            >
-              More Songs
-            </Button>
-          )}
-          {isSingle ? null
-            : (
-              <>
-                <Button
-                  size="small"
-                  variant="outlined"
-                  id="prev"
-                  onClick={() => utils.prev(index, songsState, setIndex)}
-                >
-                  Prev
-                </Button>
+        )}
+        {isSingle ? null
+          : (
+            <>
+              <Button
+                size="small"
+                variant="outlined"
+                id="prev"
+                onClick={() => utils.prev(index, songsState, setIndex)}
+              >
+                Prev
+              </Button>
 
-                <Button
-                  size="small"
-                  variant="outlined"
-                  id="next"
-                  onClick={() => utils.next(index, songsState, setIndex)}
-                >
-                  Next
-                </Button>
-              </>
-            )}
-        </div>
+              <Button
+                size="small"
+                variant="outlined"
+                id="next"
+                onClick={() => utils.next(index, songsState, setIndex)}
+              >
+                Next
+              </Button>
+            </>
+          )}
       </div>
-      <hr className="horizontal-line" />
-    </>
+    </div>
   );
 }
 
