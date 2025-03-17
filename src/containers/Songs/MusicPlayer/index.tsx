@@ -44,6 +44,33 @@ export function MyReactPlayer(props: ImyReactPlayerProps): JSX.Element {
     />
   );
 }
+export function PreviousAndNextButtons(props: any): JSX.Element {
+  const {
+    isSingle, index, songsState, setIndex,
+  } = props;
+  if (isSingle) {
+    return (
+      <Button
+        size="small"
+        variant="outlined"
+        id="home"
+        onClick={() => window.open('https://web-jam.com/music/songs', '_blank')}
+      >
+        More Songs
+      </Button>
+    );
+  }
+  return (
+    <>
+      <Button size="small" variant="outlined" id="prev" onClick={() => utils.prev(index, songsState, setIndex)}>
+        Prev
+      </Button>
+      <Button size="small" variant="outlined" id="next" onClick={() => utils.next(index, songsState, setIndex)}>
+        Next
+      </Button>
+    </>
+  );
+}
 
 interface ImyButtonsProps {
   playing: boolean, setPlaying: (arg0: boolean) => void, index: number,
@@ -54,51 +81,24 @@ export function MyButtons(props: ImyButtonsProps): JSX.Element {
     playing, setPlaying, index, songsState, setIndex, isSingle,
   } = props;
   return (
-    <div style={{ paddingTop: 0, margin: 'auto' }}>
-      <div id="play-buttons">
-        <Button
-          size="small"
-          variant="contained"
-          id="play-pause"
-          className={playing ? 'on' : 'off'}
-          onClick={() => utils.play(playing, setPlaying)}
-        >
-          Play/Pause
-        </Button>
-        {!isSingle ? null : (
+
+    <>
+      <div style={{ paddingTop: 0, margin: 'auto' }}>
+        <div id="play-buttons">
           <Button
             size="small"
-            variant="outlined"
-            id="home"
-            onClick={() => window.open('https://web-jam.com/music/songs', '_blank')}
+            variant="contained"
+            id="play-pause"
+            className={playing ? 'on' : 'off'}
+            onClick={() => utils.play(playing, setPlaying)}
           >
-            More Songs
+            Play/Pause
           </Button>
-        )}
-        {isSingle ? null
-          : (
-            <>
-              <Button
-                size="small"
-                variant="outlined"
-                id="prev"
-                onClick={() => utils.prev(index, songsState, setIndex)}
-              >
-                Prev
-              </Button>
-
-              <Button
-                size="small"
-                variant="outlined"
-                id="next"
-                onClick={() => utils.next(index, songsState, setIndex)}
-              >
-                Next
-              </Button>
-            </>
-          )}
+          <PreviousAndNextButtons index={index} songsState={songsState} setIndex={setIndex} isSingle={isSingle} />
+        </div>
       </div>
-    </div>
+      <hr className="horizontal-line" />
+    </>
   );
 }
 
@@ -288,4 +288,3 @@ export function MusicPlayer({ songs, filterBy, editDialogState }: ImusicPlayerPr
     </div>
   );
 }
-
