@@ -120,7 +120,7 @@
     "url-search-params-polyfill": "^8.1.1",
     "util": "^0.12.5",
     "vm-browserify": "^1.1.2",
-    "webpack": "^5.90.3",
+    "webpack": "^5.105.0",
     "webpack-bundle-analyzer": "^4.10.1",
     "webpack-cli": "^5.1.4"
   },
