@@ -1,26 +1,16 @@
 version: 2.1
 jobs:
   build:
-    environment:
-      CC_TEST_REPORTER_ID: 21ed23663dd9d79502dbdcc044e9df8e417dc17e816d80eced94cd17ca402586
     docker:
       - image: cimg/node:lts-browsers
     working_directory: ~/repo
     steps:
       - checkout
       - run:
-          name: Setup Code Climate test-reporter
-          command: |
-            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-            chmod +x ./cc-test-reporter
-      - run:
           name: Test install
           command: npm install
       - run:
           name: run all tests
-          command: |
-            ./cc-test-reporter before-build
-            npm test
-            ./cc-test-reporter after-build --coverage-input-type lcov --exit-code $?
+          command: npm test
       - store_artifacts:
           path: coverage
