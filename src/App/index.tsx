@@ -5,7 +5,6 @@ import {
 import { Homepage } from 'src/containers/Homepage';
 import { SortContainer } from '../containers/SortContainer';
 import BuyMusic from '../containers/BuyMusic';
-import GoogleMap from '../containers/GoogleMap';
 import { Music } from '../containers/Music';
 import { AppTemplate } from './AppTemplate';
 import { Songs } from '../containers/Songs';
@@ -15,11 +14,6 @@ import { Tipjar } from '../containers/Tipjar';
 export function checkAppName() {
   return process.env.APP_NAME === 'web-jam.com'
     ? <Homepage /> : <Music />;
-}
-
-export function checkBackendUrl() {
-  return process.env.BackendUrl === 'http://localhost:7000'
-    ? <Route path="/map" element={<GoogleMap />} /> : null;
 }
 
 export function App(): JSX.Element {
@@ -34,7 +28,6 @@ export function App(): JSX.Element {
               element={checkAppName()}
             />
             <Route path="/sort" element={<SortContainer />} />
-            {checkBackendUrl()}
             <Route path="/new-homepage" element={<Homepage />} />
             <Route path="/music" element={<Music />} />
             <Route path="/music/buymusic" element={<BuyMusic />} />
