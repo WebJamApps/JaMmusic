@@ -9,7 +9,7 @@
   },
   "author": "https://github.com/orgs/WebJamApps/teams/handlersandkickers",
   "engines": {
-    "node": "25.15.0",
+    "node": "24.15.0",
     "npm": "11.12.1"
   },
   "files": [
@@ -26,8 +26,8 @@
   "license": "MIT",
   "scripts": {
     "install:prod": "npm run cleanup && npm install --only=prod",
-    "build:prod": "rm -rf dist && npx webpack --node-env=production --progress --env production",
-    "start": "webpack serve --node-env=development --env --inline",
+    "dev": "vite",
+    "build": "vite build",
     "test:stylelint": "stylelint \"static/**/*.scss\"",
     "test:lint-fix": "eslint . --ext .js,.ts,.tsx --fix",
     "test:lint": "npm run test:stylelint && eslint . --ext .js,.ts,.tsx",
@@ -37,7 +37,7 @@
     "test:unit": "rm -rf coverage && npm run test:jest --",
     "cleanup": "rm -rf yarn.lock && rm -rf package-lock.json && rm -rf node_modules",
     "cleaninstall": "npm install -g npm@latest && npm run cleanup && npm install",
-    "postinstall": "npm run build:prod"
+    "postinstall": "npm run build"
   },
   "dependencies": {
     "@apollo/client": "^3.8.8",
@@ -55,7 +55,6 @@
     "@types/ejs": "^3.1.2",
     "@types/faker": "^5.5.9",
     "@types/google.maps": "^3.55.10",
-    "@types/html-webpack-plugin": "^3.2.6",
     "@types/node": "^22.9.0",
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",
@@ -66,27 +65,18 @@
     "@types/sanitize-html": "^2.8.1",
     "@types/socketcluster-client": "^16.0.0",
     "@types/superagent": "^4.1.16",
-    "@types/webpack-bundle-analyzer": "^4.6.0",
-    "@types/webpack-env": "1.18.0",
     "axios": "^1.7.4",
-    "copy-webpack-plugin": "^11.0.0",
     "core-js": "^3.29.0",
     "crypto-browserify": "^3.12.0",
-    "css-loader": "^6.7.3",
     "date-fns": "^2.29.3",
     "decode-uri-component": "^0.4.1",
     "dotenv": "^16.3.1",
-    "expose-loader": "^4.0.0",
     "express": "^4.21.2",
     "express-sslify": "^1.2.0",
     "faker": "^5.5.3",
-    "file-loader": "^6.2.0",
     "graphql": "^16.8.1",
-    "html-loader": "^4.2.0",
     "html-react-parser": "^3.0.9",
-    "html-webpack-plugin": "^5.5.0",
     "jwt-simple": "^0.5.6",
-    "mini-css-extract-plugin": "^2.7.2",
     "process": "^0.11.10",
     "prop-types": "^15.8.1",
     "react": "^18.2.0",
@@ -104,24 +94,15 @@
     "redux-thunk": "^2.4.2",
     "resize-observer-polyfill": "^1.5.1",
     "sass": "^1.58.3",
-    "sass-loader": "^13.2.0",
     "slick-carousel": "^1.8.1",
     "snyk": "^1.1111.0",
     "socketcluster-client": "^17.1.1",
-    "source-map-loader": "^4.0.1",
     "stream-browserify": "^3.0.0",
-    "style-loader": "^3.3.1",
     "superagent": "^10.0.2",
-    "terser-webpack-plugin": "^5.3.9",
-    "ts-loader": "^9.4.2",
     "typescript": "^5.3.3",
-    "url-loader": "^4.1.1",
     "url-search-params-polyfill": "^8.1.1",
     "util": "^0.12.5",
-    "vm-browserify": "^1.1.2",
-    "webpack": "^5.90.3",
-    "webpack-bundle-analyzer": "^4.10.1",
-    "webpack-cli": "^5.1.4"
+    "vm-browserify": "^1.1.2"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.4.2",
@@ -130,6 +111,7 @@
     "@types/react-test-renderer": "^18.0.7",
     "@typescript-eslint/eslint-plugin": "^7.1.0",
     "@typescript-eslint/parser": "^7.1.0",
+    "@vitejs/plugin-react": "^6.0.1",
     "eslint": "^8.57.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-airbnb-typescript": "^18.0.0",
@@ -151,7 +133,8 @@
     "stylelint-config-standard": "^36.0.0",
     "stylelint-scss": "^6.2.0",
     "ts-jest": "^29.1.2",
-    "webpack-dev-server": "^5.0.2"
+    "vite": "^8.0.10",
+    "vite-plugin-node-polyfills": "^0.26.0"
   },
   "snyk": true
 }
