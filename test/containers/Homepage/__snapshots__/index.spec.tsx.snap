@@ -46,6 +46,7 @@ exports[`Homepage renders correctly 1`] = `
               container={true}
             >
               <div
+                item={true}
                 lg={6}
                 md={12}
                 order={
@@ -416,6 +417,7 @@ exports[`Homepage renders correctly 1`] = `
                 </div>
               </div>
               <div
+                item={true}
                 lg={6}
                 md={12}
                 order={
