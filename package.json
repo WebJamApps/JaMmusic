@@ -13,9 +13,9 @@
     "npm": "11.12.1"
   },
   "files": [
-    "webpack.config.js",
+    "vite.config.ts",
     "src/",
-    "static/"
+    "public/"
   ],
   "keywords": [
     "React",
@@ -28,7 +28,7 @@
     "install:prod": "npm run cleanup && npm install --only=prod",
     "dev": "vite",
     "build": "vite build",
-    "test:stylelint": "stylelint \"static/**/*.scss\"",
+    "test:stylelint": "stylelint \"src/styles/**/*.scss\"",
     "test:lint-fix": "eslint . --ext .js,.ts,.tsx --fix",
     "test:lint": "npm run test:stylelint && eslint . --ext .js,.ts,.tsx",
     "test": "npm run test:jest --",
@@ -71,6 +71,7 @@
     "date-fns": "^2.29.3",
     "decode-uri-component": "^0.4.1",
     "dotenv": "^16.3.1",
+    "events": "^3.3.0",
     "express": "^4.21.2",
     "express-sslify": "^1.2.0",
     "faker": "^5.5.3",
@@ -133,8 +134,7 @@
     "stylelint-config-standard": "^36.0.0",
     "stylelint-scss": "^6.2.0",
     "ts-jest": "^29.1.2",
-    "vite": "^8.0.10",
-    "vite-plugin-node-polyfills": "^0.26.0"
+    "vite": "^8.0.10"
   },
   "snyk": true
 }

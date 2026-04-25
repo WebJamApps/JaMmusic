@@ -1,4 +1,4 @@
-
+import './polyfills';
 import { StrictMode } from 'react';
 import {
   ApolloClient, InMemoryCache, ApolloProvider,

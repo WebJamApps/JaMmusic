@@ -20,7 +20,7 @@ export function App(): JSX.Element {
   return (
     <div id="App" className="App">
       <ReactNotifications />
-      <BrowserRouter>
+      <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <AppTemplate>
           <Routes>
             <Route
