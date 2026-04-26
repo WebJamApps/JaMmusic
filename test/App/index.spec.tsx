@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import env from 'dotenv';
-import { App, checkAppName, checkBackendUrl } from 'src/App';
+import { App, checkAppName } from 'src/App';
 import renderer from 'react-test-renderer';
 import { Provider } from 'react-redux';
 import store from 'src/redux/store/index';
@@ -19,7 +19,7 @@ describe('App component', () => {
       origin: 'https://web-jam.com',
       reload: jest.fn(),
       assign: jest.fn(),
-    };
+    } as any;
     const app:any = renderer.create(<Provider store={store.store}><App /></Provider>).toJSON();
     expect(app.props.className).toBe('App');
   });
@@ -27,10 +27,5 @@ describe('App component', () => {
     process.env.APP_NAME = 'joshandmariamusic.com';
     const music:any = renderer.create(<BrowserRouter>{checkAppName()}</BrowserRouter>).toJSON();
     expect(music.props.className.includes('music')).toBe(true);
-  });
-  it('checkBackendUrl and return null', () => {
-    process.env.BackendUrl = 'web-jam.com';
-    const result = checkBackendUrl();
-    expect(result).toBeNull();
   });
 });

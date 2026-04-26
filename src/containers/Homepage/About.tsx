@@ -71,6 +71,7 @@ function AboutUs(): JSX.Element {
   // eslint-disable-next-line react/prop-types
   const GridItem: React.FC<GridItemProps> = ({ children, order }) => (
     <Grid
+      item
       xs={12}
       sm={12}
       md={12}
