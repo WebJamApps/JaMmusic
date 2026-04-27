@@ -5,7 +5,6 @@ import {
 import { Homepage } from 'src/containers/Homepage';
 import { SortContainer } from '../containers/SortContainer';
 import BuyMusic from '../containers/BuyMusic';
-import GoogleMap from '../containers/GoogleMap';
 import { Music } from '../containers/Music';
 import { AppTemplate } from './AppTemplate';
 import { Songs } from '../containers/Songs';
@@ -17,16 +16,11 @@ export function checkAppName() {
     ? <Homepage /> : <Music />;
 }
 
-export function checkBackendUrl() {
-  return process.env.BackendUrl === 'http://localhost:7000'
-    ? <Route path="/map" element={<GoogleMap />} /> : null;
-}
-
 export function App(): JSX.Element {
   return (
     <div id="App" className="App">
       <ReactNotifications />
-      <BrowserRouter>
+      <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <AppTemplate>
           <Routes>
             <Route
@@ -34,7 +28,6 @@ export function App(): JSX.Element {
               element={checkAppName()}
             />
             <Route path="/sort" element={<SortContainer />} />
-            {checkBackendUrl()}
             <Route path="/new-homepage" element={<Homepage />} />
             <Route path="/music" element={<Music />} />
             <Route path="/music/buymusic" element={<BuyMusic />} />

@@ -2,7 +2,8 @@
 <html translate="no" lang="en">
   <head
     prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# music: http://ogp.me/ns/music#"
-  > <meta name="google" value="notranslate"> 
+  >
+    <meta name="google" value="notranslate">
     <meta property="og:title" content="Web Jam LLC" />
     <meta property="og:description" content="Try out our music player today!" />
     <meta
@@ -12,10 +13,8 @@
     <meta property="og:url" content="https://web-jam.com/music/songs" />
     <meta property="og:type" content="music.playlist" />
     <meta property="fb:app_id" content="2207148322688942" />
-    <title>
-      <%- htmlWebpackPlugin.options.metadata.title %>
-    </title>
-    <base href="<%- htmlWebpackPlugin.options.metadata.baseUrl %>" />
+    <title>Web Jam LLC</title>
+    <base href="/" />
     <link
       href="https://fonts.googleapis.com/css?family=PT Sans Caption"
       rel="stylesheet"
@@ -36,16 +35,14 @@
   </head>
 
   <body>
-    <script src="<%- htmlWebpackPlugin.options.metadata.googleMapKey %>"></script>
     <div translate="no" lang="en">
       <div id="root">
         <div class="splash">
-          <div class="message">
-            <%- htmlWebpackPlugin.options.metadata.title %>
-          </div>
+          <div class="message">Web Jam LLC</div>
           <i class="fa fa-spinner fa-spin"></i>
         </div>
       </div>
     </div>
+    <script type="module" src="/src/Main.tsx"></script>
   </body>
 </html>

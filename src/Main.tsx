@@ -1,4 +1,4 @@
-
+import './polyfills';
 import { StrictMode } from 'react';
 import {
   ApolloClient, InMemoryCache, ApolloProvider,
@@ -11,7 +11,7 @@ import { App } from './App/index';
 import store from './redux/store/index';
 import { DataProvider } from './providers/Data.provider';
 import { AuthProvider } from './providers/Auth.provider';
-import '../static/styles.scss';
+import './styles/styles.scss';
 
 export const client = new ApolloClient({
   uri: `${process.env.BackendUrl}/graphql`,
