@@ -52,8 +52,6 @@
     "@tinymce/tinymce-react": "^5.0.0",
     "@types/core-js": "^2.5.5",
     "@types/domutils": "^1.7.4",
-    "@types/ejs": "^3.1.2",
-    "@types/faker": "^5.5.9",
     "@types/google.maps": "^3.55.10",
     "@types/node": "^22.9.0",
     "@types/react": "^18.0.28",
@@ -74,7 +72,6 @@
     "events": "^3.3.0",
     "express": "^4.21.2",
     "express-sslify": "^1.2.0",
-    "faker": "^5.5.3",
     "graphql": "^16.8.1",
     "html-react-parser": "^3.0.9",
     "jwt-simple": "^0.5.6",
@@ -103,6 +100,7 @@
     "typescript": "^5.3.3",
     "url-search-params-polyfill": "^8.1.1",
     "util": "^0.12.5",
+    "vite": "^8.0.10",
     "vm-browserify": "^1.1.2"
   },
   "devDependencies": {
@@ -133,8 +131,7 @@
     "stylelint-config-recommended-scss": "^14.0.0",
     "stylelint-config-standard": "^36.0.0",
     "stylelint-scss": "^6.2.0",
-    "ts-jest": "^29.1.2",
-    "vite": "^8.0.10"
+    "ts-jest": "^29.1.2"
   },
   "snyk": true
 }
