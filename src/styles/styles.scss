@@ -1,13 +1,13 @@
 
-@import 'menu';
-@import 'footer';
-@import 'home';
-@import 'materialui';
-@import 'music';
-@import 'mobile';
-@import 'musicplayer';
-@import 'slideshow';
-@import 'unsure';
+@use 'menu';
+@use  'footer';
+@use  'home';
+@use 'materialui';
+@use 'music';
+@use  'mobile';
+@use  'musicplayer';
+@use  'slideshow';
+@use  'unsure';
 
 * {
   box-sizing: border-box;

@@ -65,7 +65,7 @@ export function CreateGigDialog({
               + 'alignleft aligncenter alignright alignjustify |'
               + 'bullist numlist outdent indent | removeformat | help',
           }}
-          onEditorChange={(text) => { setVenue(text); return text; }}
+          onEditorChange={(text: string) => { setVenue(text); return text; }}
         />
         <TextField
           sx={{ marginTop: '20px' }}

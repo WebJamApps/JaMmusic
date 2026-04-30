@@ -1,7 +1,8 @@
+import { vi } from 'vitest';
 import utils from 'src/containers/Homepage/Inquiry/utils';
 import superagent from 'superagent';
 
-jest.mock('superagent');
+vi.mock('superagent');
 
 describe('Inquiry utils', () => {
   it('handleCountryChange', () => {
