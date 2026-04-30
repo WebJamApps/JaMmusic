@@ -85,6 +85,6 @@
     /* Advanced Options */
     "forceConsistentCasingInFileNames": true, /* Disallow inconsistently-cased references to the same file. */
   },
-  "include":["src","test"],
-  "exclude": ["dist", "node_modules", "webpack.config.js"]
+  "include":["src","test","types"],
+  "exclude": ["dist", "node_modules", "vite.config.ts"]
 }
