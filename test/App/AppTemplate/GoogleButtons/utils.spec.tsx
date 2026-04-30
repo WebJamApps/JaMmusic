@@ -1,9 +1,10 @@
+import { vi } from 'vitest';
 import utils from 'src/App/AppTemplate/GoogleButtons/utils';
 import superagent from 'superagent';
 import jwt from 'jwt-simple';
 import commonUtils from 'src/lib/utils';
 
-jest.mock('superagent');
+vi.mock('superagent');
 
 describe('GoogleButtons/utils', () => {
   it('responseGoogleLogout', async () => {
@@ -54,9 +55,11 @@ describe('GoogleButtons/utils', () => {
   });
   it('responseGoogleLogin fails', async () => {
     let err = '';
-    commonUtils.notify = jest.fn((m) => { err = m; });
+    const notifySpy = vi.spyOn(commonUtils, 'notify').mockImplementation((m) => { err = m; });
+    (superagent.post as unknown as ReturnType<typeof vi.fn>).mockImplementationOnce(() => { throw new Error('boom'); });
     await utils.responseGoogleLogin({ code: '' } as any, {} as any, jest.fn());
     expect(err).toBe('Failed to authenticate');
+    notifySpy.mockRestore();
   });
   it('responseGoogleLogin succeeds when production', async () => {
     const setAuth = jest.fn();

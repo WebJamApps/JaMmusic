@@ -1,8 +1,11 @@
+/// <reference types="vitest" />
 import { defineConfig, loadEnv, type Plugin } from 'vite';
 import { fileURLToPath } from 'node:url';
 import react from '@vitejs/plugin-react';
+import checker from 'vite-plugin-checker';
 
 const srcDir = fileURLToPath(new URL('./src', import.meta.url));
+const testDir = fileURLToPath(new URL('./test', import.meta.url));
 
 const APP_ENV_KEYS = [
   'BackendUrl',
@@ -35,14 +38,22 @@ function replaceProcessEnv(env: Record<string, string>): Plugin {
 
 export default defineConfig(({ mode }) => {
   const env: Record<string, string> = { ...loadEnv(mode, process.cwd(), ''), NODE_ENV: mode };
+  const isTest = mode === 'test' || process.env.VITEST;
   return {
-    plugins: [replaceProcessEnv(env), react()],
+    plugins: [
+      ...(isTest ? [] : [
+        replaceProcessEnv(env),
+        checker({ typescript: { tsconfigPath: './tsconfig.prod.json' } }),
+      ]),
+      react(),
+    ],
     server: {
       port: Number(env.PORT) || 7878,
     },
     resolve: {
       alias: {
         src: srcDir,
+        test: testDir,
         crypto: 'crypto-browserify',
         stream: 'stream-browserify',
         util: 'util/',
@@ -53,6 +64,25 @@ export default defineConfig(({ mode }) => {
     },
     define: {
       global: 'globalThis',
+    },
+    test: {
+      globals: true,
+      environment: 'jsdom',
+      setupFiles: ['./test/vitest.setup.ts'],
+      css: false,
+      mockReset: true,
+      testTimeout: 40000,
+      include: ['test/**/*.{test,spec}.{ts,tsx}'],
+      fakeTimers: {
+        now: 1483228800000,
+        toFake: ['Date'],
+      },
+      coverage: {
+        provider: 'v8',
+        reporter: ['text', 'html', 'lcov'],
+        include: ['src/**/*.{ts,tsx}'],
+        exclude: ['src/Main.tsx', 'src/redux/store/index.ts'],
+      },
     },
   };
 });

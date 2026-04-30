@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`AppTemplate renders the component 1`] = `
+exports[`AppTemplate > renders the component 1`] = `
 <div
   className="page-host"
 >

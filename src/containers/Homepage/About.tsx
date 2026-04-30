@@ -68,7 +68,6 @@ interface GridItemProps {
 }
 
 function AboutUs(): JSX.Element {
-  // eslint-disable-next-line react/prop-types
   const GridItem: React.FC<GridItemProps> = ({ children, order }) => (
     <Grid
       item

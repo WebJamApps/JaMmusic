@@ -1,5 +1,3 @@
-/* eslint-disable react/jsx-one-expression-per-line */
-
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Accordion from '@mui/material/Accordion';
 import AccordionDetails from '@mui/material/AccordionDetails';

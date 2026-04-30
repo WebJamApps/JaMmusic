@@ -1,8 +1,9 @@
+import { vi } from 'vitest';
 import axios from 'axios';
 import commonUtils from 'src/lib/utils';
 import utils from 'src/containers/Songs/songs.utils';
 
-jest.mock('axios');
+vi.mock('axios');
 
 describe('songs utils', () => {
   it('createSong', async () => {

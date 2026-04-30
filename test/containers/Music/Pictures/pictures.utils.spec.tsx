@@ -48,7 +48,7 @@ describe('pictures.utils', () => {
   it('deletes pic successfully', async () => {
     const auth = { token: 'token' } as any;
     const getPics = jest.fn();
-    const setters = { setEditPic: jest.fn, setShowTable: jest.fn(), setIsSubmitting: jest.fn() };
+    const setters = { setEditPic: jest.fn(), setShowTable: jest.fn(), setIsSubmitting: jest.fn() };
     const transmit = jest.fn();
     const deleteMock: any = jest.fn(() => ({ transmit }));
     scc.create = deleteMock;
@@ -58,7 +58,7 @@ describe('pictures.utils', () => {
   it('deletePic catches error', async () => {
     const auth = { token: 'token' } as any;
     const getPics = jest.fn();
-    const setters = { setEditPic: jest.fn, setShowTable: jest.fn(), setIsSubmitting: jest.fn() };
+    const setters = { setEditPic: jest.fn(), setShowTable: jest.fn(), setIsSubmitting: jest.fn() };
     const transmit = jest.fn(() => { throw new Error('failed'); });
     const deleteMock: any = jest.fn(() => ({ transmit }));
     scc.create = deleteMock;
