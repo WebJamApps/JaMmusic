@@ -8,6 +8,8 @@
 }
 
 
+#mainPlayer iframe { pointer-events: none; }
+
 #play-pause.on { background-color: red; color: black; }
 
 #play-buttons { margin-bottom:10px;}
