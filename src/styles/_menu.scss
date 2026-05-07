@@ -1,12 +1,12 @@
 .nav-link {
   padding-left: 0;
   display: block !important;
-  color: #23527c;
+  color: var(--nav-link);
   outline: none !important;
 }
 
 button.nav-link {
-  background-color: rgb(192, 192, 192);
+  background-color: var(--sidebar-bg);
   font-size: 16px;
   border: none;
   padding-top: 14px;
@@ -16,11 +16,11 @@ button.nav-link {
 }
 
 button.nav-link:hover {
-  background-color: white;
+  background-color: var(--sidebar-hover-bg);
 }
 
 .nav-item {
-  color: #23527c;
+  color: var(--nav-link);
   text-decoration: underline;
   padding-right: 0;
   margin-right: 0;
@@ -44,7 +44,16 @@ button.nav-link:hover {
 }
 
 .menu-item:hover {
-  background-color: white;
+  background-color: var(--sidebar-hover-bg);
+}
+
+.theme-toggle .theme-toggle-button {
+  cursor: pointer;
+  user-select: none;
+  background: transparent;
+  width: 100%;
+  text-align: left;
+  outline: none;
 }
 
 .menu-toggle {
@@ -58,8 +67,8 @@ button.nav-link:hover {
   right: 25px;
   top: 32px;
   z-index: 95;
-  color: #ffffff;
-  background-color: #2a222a;
+  color: var(--header-fg);
+  background-color: var(--header-bg);
   padding: 1px 5px;
 }
 
@@ -72,8 +81,8 @@ button.nav-link:hover {
   position: fixed;
   top: 32px;
   right: 16px;
-  background-color: #2a222a;
-  color: white;
+  background-color: var(--header-bg);
+  color: var(--header-fg);
   padding: 6px;
   z-index: 90000;
 }

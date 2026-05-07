@@ -1,0 +1,47 @@
+/* Theme tokens — light defaults on :root, dark overrides under [data-theme="dark"] */
+
+:root {
+  --bg: #ffffff;
+  --fg: #212529;
+  --sidebar-bg: #c0c0c0;
+  --sidebar-hover-bg: #ffffff;
+  --header-bg: #2a222a;
+  --header-fg: #ffffff;
+  --footer-bg: #565656;
+  --footer-fg: #ffffff;
+  --footer-link: #c09580;
+  --nav-link: #23527c;
+  --nav-link-hover: #0056b3;
+  --button-hover-bg: #ddffcc;
+  --button-disabled-bg: #f2f2f2;
+  --border: rgba(0, 0, 0, 0.1);
+  --placeholder: #595959;
+  --table-bg: #ffffff;
+  --table-row-alt-bg: #d8ecf3;
+  --table-border: #777777;
+  --dialog-bg: #ffffff;
+  --dialog-fg: #212529;
+}
+
+[data-theme="dark"] {
+  --bg: #121212;
+  --fg: #e8e8e8;
+  --sidebar-bg: #1f1f1f;
+  --sidebar-hover-bg: #2a2a2a;
+  --header-bg: #0e0a0e;
+  --header-fg: #f5f5f5;
+  --footer-bg: #1a1a1a;
+  --footer-fg: #e8e8e8;
+  --footer-link: #c09580;
+  --nav-link: #8ab4f8;
+  --nav-link-hover: #c8d8ff;
+  --button-hover-bg: #2f4a2f;
+  --button-disabled-bg: #2a2a2a;
+  --border: rgba(255, 255, 255, 0.15);
+  --placeholder: #a0a0a0;
+  --table-bg: #1c1c1c;
+  --table-row-alt-bg: #232f33;
+  --table-border: #3a3a3a;
+  --dialog-bg: #1f1f1f;
+  --dialog-fg: #e8e8e8;
+}

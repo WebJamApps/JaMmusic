@@ -1,4 +1,5 @@
 
+@use 'theme';
 @use 'menu';
 @use  'footer';
 @use  'home';
@@ -20,7 +21,8 @@ body {
   font-size: 1rem;
   font-weight: 400;
   line-height: 1.5;
-  color: #212529;
+  color: var(--fg);
+  background-color: var(--bg);
   text-align: left;
 }
 
@@ -28,7 +30,7 @@ hr {
   margin-top: 1rem;
   margin-bottom: 1rem;
   border: 0;
-  border-top: 1px solid rgba(0, 0, 0, .1);
+  border-top: 1px solid var(--border);
 }
 
 #content {
@@ -117,7 +119,7 @@ label {
   padding-bottom: 0;
   display: block;
   width: 100%;
-  color: #212529 !important;
+  color: var(--fg) !important;
 }
 
 .input-field {
@@ -127,7 +129,7 @@ label {
 
 /* Required for accessibility purposes. */
 ::placeholder {
-  color: #595959 !important;
+  color: var(--placeholder) !important;
 }
 
 /* Tables Generic */
@@ -142,20 +144,20 @@ tr {
 }
 
 tbody tr:nth-child(odd) {
-  background-color: #d8ecf3;
+  background-color: var(--table-row-alt-bg);
 }
 
 tbody .white-background {
-  background-color: white !important;
+  background-color: var(--table-bg) !important;
 }
 
 tbody.regformtbody tr:nth-child(odd) {
-  background-color: white;
+  background-color: var(--table-bg);
 }
 
 th, td {
   border-collapse: collapse;
-  border: 1px solid #777;
+  border: 1px solid var(--table-border);
   padding: 8px;
   text-align: left;
 }
@@ -195,7 +197,7 @@ tbody.regformtbody td {
 }
 
 .header-text {
-  color: white;
+  color: var(--header-fg);
   font-size: 24px;
 }
 
@@ -206,11 +208,11 @@ tbody.regformtbody td {
 }
 
 .home-sidebar {
-  background-color: #c0c0c0;
+  background-color: var(--sidebar-bg);
 }
 
 .home-header {
-  background-color: #2a222a;
+  background-color: var(--header-bg);
   height: 91px;
 }
 
@@ -260,7 +262,7 @@ a {
 }
 
 a:hover {
-  color: #0056b3;
+  color: var(--nav-link-hover);
 }
 
 // .dropdown-content li > a, .dropdown-content li > span {
@@ -269,12 +271,12 @@ a:hover {
 
 a:not([href]):not([tabindex]) {
   text-decoration: underline;
-  color: #007bff;
+  color: var(--nav-link);
 }
 
 a:not([href]):not([tabindex]):hover {
   text-decoration: underline;
-  color: #0056b3;
+  color: var(--nav-link-hover);
 }
 
 
@@ -289,12 +291,12 @@ button {
 }
 
 button:hover {
-  background-color: #ddffcc;
+  background-color: var(--button-hover-bg);
 
 }
 
 button:disabled {
-  background-color: #f2f2f2;
+  background-color: var(--button-disabled-bg);
   cursor: none
 }
 

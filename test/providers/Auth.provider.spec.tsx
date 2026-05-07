@@ -1,10 +1,12 @@
 import { render } from '@testing-library/react';
 
 import {
-  Iauth, defaultSetAuth, AuthProvider, setInitValue,
-  handleValueChange, handleNameChange,
+  Iauth, defaultSetAuth, AuthProvider,
   configAuth,
 } from 'src/providers/Auth.provider';
+import {
+  setInitValue, handleValueChange, handleNameChange,
+} from 'src/lib/usePersistedState';
 
 describe('AuthProvider', () => {
   let ls:any, store = {} as Record<string, unknown>;

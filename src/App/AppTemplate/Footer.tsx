@@ -1,6 +1,6 @@
 
 const footerLinks = () => {
-  const color = '#c09580';
+  const color = 'var(--footer-link)';
   const links = [
     { href: 'https://github.com/WebJamApps', name: 'github' },
     { href: 'https://www.linkedin.com/company/webjam/', name: 'linkedin' },
@@ -18,7 +18,7 @@ const footerLinks = () => {
           </a>
         ))
       }
-      <p style={{ color: 'white', fontSize: '9pt', marginBottom: 0 }}>
+      <p style={{ color: 'var(--footer-fg)', fontSize: '9pt', marginBottom: 0 }}>
         Powered by
         {' '}
         <a className="wjllc" target="_blank" rel="noopener noreferrer" href="https://www.web-jam.com">Web Jam LLC</a>
@@ -33,7 +33,7 @@ export function Footer(): JSX.Element {
       id="wjfooter"
       className="footer"
       style={{
-        backgroundColor: '#565656', paddingTop: '20px', paddingBottom: '20px', bottom: '0',
+        backgroundColor: 'var(--footer-bg)', paddingTop: '20px', paddingBottom: '20px', bottom: '0',
       }}
     >
       {footerLinks()}
