@@ -46,7 +46,7 @@
 
 .MuiDataGrid-root .MuiDataGrid-cell {
   white-space: normal !important;
-  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
   border-color: var(--table-border) !important;
 }
 
