@@ -23,6 +23,31 @@
   background-color: var(--table-row-alt-bg);
 }
 
+/* MUI DataGrid v5 sets cell/header/pagination text via the MUI theme,
+   not our CSS tokens — explicitly inherit --fg so the table is readable
+   in dark mode. */
+.MuiDataGrid-root .MuiDataGrid-cell,
+.MuiDataGrid-root .MuiDataGrid-columnHeader,
+.MuiDataGrid-root .MuiDataGrid-columnHeaderTitle,
+.MuiDataGrid-root .MuiTablePagination-root,
+.MuiDataGrid-root .MuiTablePagination-toolbar,
+.MuiDataGrid-root .MuiTablePagination-selectLabel,
+.MuiDataGrid-root .MuiTablePagination-displayedRows,
+.MuiDataGrid-root .MuiTablePagination-actions,
+.MuiDataGrid-root .MuiIconButton-root,
+.MuiDataGrid-root .MuiSelect-icon,
+.MuiDataGrid-root .MuiSvgIcon-root {
+  color: var(--fg);
+}
+
+.MuiDataGrid-root .MuiDataGrid-row:hover {
+  background-color: var(--sidebar-hover-bg);
+}
+
+.MuiDataGrid-root .MuiDataGrid-iconSeparator {
+  color: var(--table-border);
+}
+
 .ourPastPerformances {
   background-color: var(--table-bg);
   color: var(--fg);
