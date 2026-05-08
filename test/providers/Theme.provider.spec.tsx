@@ -51,32 +51,35 @@ describe('Theme.provider', () => {
   });
 
   it('ThemeProvider defaults to light, persists toggle, and updates data-theme', () => {
-    let ctx: { theme: string, toggleTheme: () => void, setTheme: (t: any) => void } | null = null;
+    type Ctx = { theme: string, toggleTheme: () => void, setTheme: (t: any) => void };
+    const captured: { current: Ctx | null } = { current: null };
     function Probe() {
-      ctx = useContext(ThemeContext);
+      captured.current = useContext(ThemeContext);
       return null;
     }
     render(<ThemeProvider><Probe /></ThemeProvider>);
+    const ctx = captured.current;
     if (!ctx) throw new Error('Probe did not capture context');
-    const captured = ctx;
-    expect(captured.theme).toBe('light');
+    expect(ctx.theme).toBe('light');
     expect(document.documentElement.getAttribute('data-theme')).toBe('light');
-    act(() => { captured.toggleTheme(); });
+    act(() => { ctx.toggleTheme(); });
     expect(window.localStorage.getItem('theme')).toBe('dark');
     expect(document.documentElement.getAttribute('data-theme')).toBe('dark');
-    act(() => { captured.setTheme('light'); });
+    act(() => { ctx.setTheme('light'); });
     expect(window.localStorage.getItem('theme')).toBe('light');
     expect(document.documentElement.getAttribute('data-theme')).toBe('light');
   });
 
   it('ThemeProvider falls back to default when stored value is invalid', () => {
     window.localStorage.setItem('theme', 'banana');
-    let ctx: { theme: string } | null = null;
+    const captured: { current: { theme: string } | null } = { current: null };
     function Probe() {
-      ctx = useContext(ThemeContext);
+      captured.current = useContext(ThemeContext);
       return null;
     }
     render(<ThemeProvider><Probe /></ThemeProvider>);
-    expect(ctx && ctx.theme).toBe('light');
+    const ctx = captured.current;
+    if (!ctx) throw new Error('Probe did not capture context');
+    expect(ctx.theme).toBe('light');
   });
 });
