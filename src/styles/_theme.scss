@@ -31,8 +31,8 @@
 [data-theme="dark"] {
   --bg: #121212;
   --fg: #e8e8e8;
-  --sidebar-bg: #1f1f1f;
-  --sidebar-hover-bg: #2a2a2a;
+  --sidebar-bg: #000000;
+  --sidebar-hover-bg: #1f1f1f;
   --header-bg: #0e0a0e;
   --header-fg: #f5f5f5;
   --footer-bg: #1a1a1a;
@@ -40,20 +40,20 @@
   --footer-link: #c09580;
   --nav-link: #bbdefb;
   --nav-link-hover: #ffffff;
-  --sidebar-fg: #f5f5f5;
+  --sidebar-fg: #ffffff;
   --sidebar-fg-hover: #ffffff;
   --button-hover-bg: #2f4a2f;
   --button-disabled-bg: #2a2a2a;
   --border: rgba(255, 255, 255, 0.15);
-  --placeholder: #a0a0a0;
+  --placeholder: #e8e8e8;
   --table-bg: #1c1c1c;
   --table-row-alt-bg: #232f33;
   --table-border: #3a3a3a;
   --dialog-bg: #1f1f1f;
   --dialog-fg: #e8e8e8;
-  --input-bg: #2a2a2a;
-  --input-fg: #f5f5f5;
-  --input-border: #5a5a5a;
+  --input-bg: #1a1a1a;
+  --input-fg: #ffffff;
+  --input-border: #888888;
 }
 
 /* MUI form-control overrides — MUI doesn't read CSS vars by default,
@@ -86,5 +86,15 @@
 
   input {
     color: var(--input-fg);
+  }
+
+  /* Placeholder text ("* First Name", etc.). Browsers default placeholder
+     opacity to ~0.42 which crushes contrast — pin to opacity: 1 and use
+     the high-contrast --placeholder token. */
+  .MuiInputBase-input::placeholder,
+  textarea::placeholder,
+  input::placeholder {
+    color: var(--placeholder) !important;
+    opacity: 1 !important;
   }
 }
