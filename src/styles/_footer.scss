@@ -3,30 +3,32 @@
 }
 
 .footerIcon:hover {
-  color: white;
+  color: var(--footer-fg);
 }
 
 .footer {
   flex-shrink: 0;
-  background-color: #2a222a !important;
+  background-color: var(--footer-bg) !important;
 }
 
+/* Let the icon inherit color from its parent <a>, which sets
+   var(--footer-link) inline. Hardcoding a span color here was masking
+   the link color and yielding ~1.2:1 contrast on the gray footer. */
 .footer span {
-  color: #367aff;
   cursor: pointer;
 }
 
 .footer span:hover {
-  color: #ffffff;
+  color: var(--footer-fg);
   cursor: pointer;
 }
 
 .wjllc {
-  color: white;
+  color: var(--footer-fg);
   font-size: 9pt;
   font-weight: bold;
 }
 
 .wjllc:hover {
-  color: black;
+  color: var(--nav-link-hover);
 }

@@ -5,6 +5,7 @@ import { AuthContext, Iauth } from 'src/providers/Auth.provider';
 import commonUtils from '../../lib/utils';
 import type { ImenuItem } from './menuConfig';
 import { GoogleButtons } from './GoogleButtons';
+import { ThemeToggle } from './ThemeToggle';
 
 export function IconAndText({ menu }: { menu: ImenuItem }): JSX.Element {
   return (
@@ -60,6 +61,9 @@ export const ContinueMenuItem = (props:IcontinueMenuItemProps): JSX.Element | nu
   }
   if (menu.type === 'googleLogout' && auth.isAuthenticated) {
     return <GoogleButtons key="googleLogout" type="logout" index={index} />;
+  }
+  if (menu.type === 'themeToggle') {
+    return <ThemeToggle key={`themeToggle-${index}`} />;
   }
   return null;
 };

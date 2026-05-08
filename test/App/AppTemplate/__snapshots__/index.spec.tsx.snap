@@ -16,7 +16,7 @@ exports[`AppTemplate > renders the component 1`] = `
       className="drawer"
       style={
         {
-          "backgroundColor": "#c0c0c0",
+          "backgroundColor": "var(--sidebar-bg)",
           "position": "relative",
           "zIndex": -1,
         }
@@ -135,6 +135,50 @@ exports[`AppTemplate > renders the component 1`] = `
             Login
           </button>
         </div>
+        <div
+          className="menu-item theme-toggle"
+        >
+          <button
+            aria-checked={false}
+            aria-label="Switch to dark mode"
+            className="theme-switch is-light"
+            onClick={[Function]}
+            onKeyPress={[Function]}
+            role="switch"
+            type="button"
+          >
+            <span
+              className="theme-switch-side theme-switch-light"
+            >
+              <i
+                aria-hidden="true"
+                className="fas fa-sun"
+              />
+              <span
+                className="theme-switch-side-label"
+              >
+                Light
+              </span>
+            </span>
+            <span
+              className="theme-switch-side theme-switch-dark"
+            >
+              <i
+                aria-hidden="true"
+                className="fas fa-moon"
+              />
+              <span
+                className="theme-switch-side-label"
+              >
+                Dark
+              </span>
+            </span>
+            <span
+              aria-hidden="true"
+              className="theme-switch-thumb"
+            />
+          </button>
+        </div>
         <p
           style={
             {
@@ -220,7 +264,7 @@ exports[`AppTemplate > renders the component 1`] = `
           id="wjfooter"
           style={
             {
-              "backgroundColor": "#565656",
+              "backgroundColor": "var(--footer-bg)",
               "bottom": "0",
               "paddingBottom": "20px",
               "paddingTop": "20px",
@@ -240,7 +284,7 @@ exports[`AppTemplate > renders the component 1`] = `
               rel="noopener noreferrer"
               style={
                 {
-                  "color": "#c09580",
+                  "color": "var(--footer-link)",
                   "paddingRight": "5px",
                 }
               }
@@ -257,7 +301,7 @@ exports[`AppTemplate > renders the component 1`] = `
               rel="noopener noreferrer"
               style={
                 {
-                  "color": "#c09580",
+                  "color": "var(--footer-link)",
                   "paddingRight": "5px",
                 }
               }
@@ -274,7 +318,7 @@ exports[`AppTemplate > renders the component 1`] = `
               rel="noopener noreferrer"
               style={
                 {
-                  "color": "#c09580",
+                  "color": "var(--footer-link)",
                   "paddingRight": "5px",
                 }
               }
@@ -291,7 +335,7 @@ exports[`AppTemplate > renders the component 1`] = `
               rel="noopener noreferrer"
               style={
                 {
-                  "color": "#c09580",
+                  "color": "var(--footer-link)",
                   "paddingRight": "5px",
                 }
               }
@@ -308,7 +352,7 @@ exports[`AppTemplate > renders the component 1`] = `
               rel="noopener noreferrer"
               style={
                 {
-                  "color": "#c09580",
+                  "color": "var(--footer-link)",
                   "paddingRight": "5px",
                 }
               }
@@ -325,7 +369,7 @@ exports[`AppTemplate > renders the component 1`] = `
               rel="noopener noreferrer"
               style={
                 {
-                  "color": "#c09580",
+                  "color": "var(--footer-link)",
                   "paddingRight": "5px",
                 }
               }
@@ -340,7 +384,7 @@ exports[`AppTemplate > renders the component 1`] = `
             <p
               style={
                 {
-                  "color": "white",
+                  "color": "var(--footer-fg)",
                   "fontSize": "9pt",
                   "marginBottom": 0,
                 }

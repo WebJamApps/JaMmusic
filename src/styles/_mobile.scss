@@ -176,7 +176,7 @@
 }
 @media screen and (max-width: 900px) {
   .drawer {
-    background-color: rgb(192, 192, 192);
+    background-color: var(--sidebar-bg);
     float           : right;
     height          : 100%;
   }
@@ -255,13 +255,13 @@
   right           : 0;
   height          : 100%;
   z-index         : 90000;
-  background-color: rgb(192, 192, 192);
+  background-color: var(--sidebar-bg);
 }
 
 .navImage {
   top             : 0;
   right           : 0;
-  background-color: #2a222a;
+  background-color: var(--header-bg);
 }
 
 ::-webkit-scrollbar {

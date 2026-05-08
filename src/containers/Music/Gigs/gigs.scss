@@ -8,9 +8,49 @@
   }
 }
 
+.MuiDataGrid-root {
+  background-color: var(--table-bg);
+  color: var(--fg);
+  border-color: var(--table-border) !important;
+}
+
+.MuiDataGrid-root .MuiDataGrid-columnHeaders,
+.MuiDataGrid-root .MuiDataGrid-footerContainer {
+  border-color: var(--table-border) !important;
+}
+
+.MuiDataGrid-root .MuiDataGrid-row:nth-of-type(odd) {
+  background-color: var(--table-row-alt-bg);
+}
+
+/* MUI DataGrid v5 sets cell/header/pagination text via the MUI theme,
+   not our CSS tokens — explicitly inherit --fg so the table is readable
+   in dark mode. */
+.MuiDataGrid-root .MuiDataGrid-cell,
+.MuiDataGrid-root .MuiDataGrid-columnHeader,
+.MuiDataGrid-root .MuiDataGrid-columnHeaderTitle,
+.MuiDataGrid-root .MuiTablePagination-root,
+.MuiDataGrid-root .MuiTablePagination-toolbar,
+.MuiDataGrid-root .MuiTablePagination-selectLabel,
+.MuiDataGrid-root .MuiTablePagination-displayedRows,
+.MuiDataGrid-root .MuiTablePagination-actions,
+.MuiDataGrid-root .MuiIconButton-root,
+.MuiDataGrid-root .MuiSelect-icon,
+.MuiDataGrid-root .MuiSvgIcon-root {
+  color: var(--fg);
+}
+
+.MuiDataGrid-root .MuiDataGrid-row:hover {
+  background-color: var(--sidebar-hover-bg);
+}
+
+.MuiDataGrid-root .MuiDataGrid-iconSeparator {
+  color: var(--table-border);
+}
+
 .ourPastPerformances {
-  background-color:white;
-  color:black;
+  background-color: var(--table-bg);
+  color: var(--fg);
   font-weight:bold;
   font-style:italic;
   font-size:14pt !important;
@@ -31,9 +71,21 @@
 
 .MuiDataGrid-root .MuiDataGrid-cell {
   white-space: normal !important;
-  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+  border-color: var(--table-border) !important;
 }
 
 .bookUsButton{
   margin-left:20px !important;
+}
+
+.MuiDialog-paper {
+  background-color: var(--dialog-bg) !important;
+  color: var(--dialog-fg) !important;
+}
+
+.MuiDialog-paper .MuiDialogTitle-root,
+.MuiDialog-paper .MuiDialogContent-root,
+.MuiDialog-paper .MuiDialogActions-root {
+  color: var(--dialog-fg);
 }

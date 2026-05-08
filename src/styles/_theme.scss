@@ -1,0 +1,90 @@
+/* Theme tokens — light defaults on :root, dark overrides under [data-theme="dark"] */
+
+:root {
+  --bg: #ffffff;
+  --fg: #212529;
+  --sidebar-bg: #c0c0c0;
+  --sidebar-hover-bg: #ffffff;
+  --header-bg: #2a222a;
+  --header-fg: #ffffff;
+  --footer-bg: #565656;
+  --footer-fg: #ffffff;
+  --footer-link: #edd0b8;
+  --nav-link: #23527c;
+  --nav-link-hover: #0056b3;
+  --sidebar-fg: #1c4878;
+  --sidebar-fg-hover: #0056b3;
+  --button-hover-bg: #ddffcc;
+  --button-disabled-bg: #f2f2f2;
+  --border: rgba(0, 0, 0, 0.1);
+  --placeholder: #595959;
+  --table-bg: #ffffff;
+  --table-row-alt-bg: #d8ecf3;
+  --table-border: #777777;
+  --dialog-bg: #ffffff;
+  --dialog-fg: #212529;
+  --input-bg: #ffffff;
+  --input-fg: #212529;
+  --input-border: #767676;
+}
+
+[data-theme="dark"] {
+  --bg: #121212;
+  --fg: #e8e8e8;
+  --sidebar-bg: #000000;
+  --sidebar-hover-bg: #1f1f1f;
+  --header-bg: #0e0a0e;
+  --header-fg: #f5f5f5;
+  --footer-bg: #1a1a1a;
+  --footer-fg: #e8e8e8;
+  --footer-link: #c09580;
+  --nav-link: #bbdefb;
+  --nav-link-hover: #ffffff;
+  --sidebar-fg: #ffffff;
+  --sidebar-fg-hover: #ffffff;
+  --button-hover-bg: #2f4a2f;
+  --button-disabled-bg: #2a2a2a;
+  --border: rgba(255, 255, 255, 0.15);
+  --placeholder: #e8e8e8;
+  --table-bg: #1c1c1c;
+  --table-row-alt-bg: #232f33;
+  --table-border: #6b6b6b;
+  --dialog-bg: #1f1f1f;
+  --dialog-fg: #e8e8e8;
+  --input-bg: #1a1a1a;
+  --input-fg: #ffffff;
+  --input-border: #888888;
+}
+
+/* MUI form-control overrides — MUI doesn't read CSS vars by default,
+   so spell out colors for inputs/labels/textareas in dark mode. */
+[data-theme="dark"] {
+  .MuiInputBase-input,
+  .MuiInputLabel-root,
+  .MuiSelect-select,
+  .MuiFormLabel-root,
+  .MuiFormHelperText-root {
+    color: var(--input-fg) !important;
+  }
+
+  .MuiInputBase-root {
+    background-color: var(--input-bg);
+  }
+
+  .MuiOutlinedInput-notchedOutline,
+  .MuiInput-underline::before,
+  .MuiInput-underline::after {
+    border-color: var(--input-border) !important;
+  }
+
+  textarea,
+  textarea.comments {
+    background-color: var(--input-bg);
+    color: var(--input-fg);
+    border: 1px solid var(--input-border);
+  }
+
+  input {
+    color: var(--input-fg);
+  }
+}
