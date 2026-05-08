@@ -1,5 +1,6 @@
 import menuConfig from './menuConfig';
 import { MakeLink, SideMenuItem } from './SideMenuItem';
+import { ThemeToggle } from './ThemeToggle';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function ActiveUsers({ heartBeat, userCount }: { heartBeat?: string, userCount?: number }) {
@@ -63,7 +64,9 @@ export function NavLinks(props: InavLinksProps) {
           />
         ),
       )
-        : menuConfig.jamNav.map((menu, index) => <MakeLink menu={menu} key={index} index={index} type="a" handleClose={handleClose} />)}
+        : menuConfig.jamNav.map((menu, index) => (menu.type === 'themeToggle'
+          ? <ThemeToggle key={`themeToggle-${index}`} />
+          : <MakeLink menu={menu} key={index} index={index} type="a" handleClose={handleClose} />))}
       <p style={{ margin: 0, padding: 0, fontSize: '6pt' }}>&nbsp;</p>
       {process.env.APP_NAME !== 'joshandmariamusic.com' ? <ActiveUsers heartBeat={heartBeat} userCount={userCount} /> : null}
     </div>

@@ -11,6 +11,7 @@ import { App } from './App/index';
 import store from './redux/store/index';
 import { DataProvider } from './providers/Data.provider';
 import { AuthProvider } from './providers/Auth.provider';
+import { ThemeProvider } from './providers/Theme.provider';
 import './styles/styles.scss';
 
 export const client = new ApolloClient({
@@ -22,17 +23,19 @@ const root = createRoot(document.getElementById('root') as HTMLElement);
 function Main() {
   return (
     <GoogleOAuthProvider clientId={process.env.GoogleClientId || ''}>
-      <AuthProvider>
-        <DataProvider>
-          <Provider store={store.store}>
-            <PersistGate loading={null} persistor={store.persistor}>
-              <ApolloProvider client={client}>
-                <App />
-              </ApolloProvider>
-            </PersistGate>
-          </Provider>
-        </DataProvider>
-      </AuthProvider>
+      <ThemeProvider>
+        <AuthProvider>
+          <DataProvider>
+            <Provider store={store.store}>
+              <PersistGate loading={null} persistor={store.persistor}>
+                <ApolloProvider client={client}>
+                  <App />
+                </ApolloProvider>
+              </PersistGate>
+            </Provider>
+          </DataProvider>
+        </AuthProvider>
+      </ThemeProvider>
     </GoogleOAuthProvider>
   );
 }

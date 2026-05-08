@@ -10,7 +10,7 @@ export function DrawerContainer(props:IdrawerContainerProps) {
   } = props;
   return (
     <div tabIndex={0} role="button" id="sidebar" onClick={handleClose} onKeyPress={handleKeyPress} className={className}>
-      <div className="drawer" style={{ backgroundColor: '#c0c0c0', zIndex: -1, position: 'relative' }}>
+      <div className="drawer" style={{ backgroundColor: 'var(--sidebar-bg)', zIndex: -1, position: 'relative' }}>
         <div className="navImage">
           <img
             alt="wjsidelogo"

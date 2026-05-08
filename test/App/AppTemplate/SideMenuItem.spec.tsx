@@ -56,6 +56,17 @@ describe('SideMenuItem', () => {
     const result: any = renderer.create(<BrowserRouter><ContinueMenuItem {...props} /></BrowserRouter>).toJSON();
     expect(result.children[0].props.href).toBe('/music');
   });
+  it('ContinueMenuItem returns ThemeToggle for themeToggle type', () => {
+    const props = {
+      menu: { type: 'themeToggle' } as ImenuItem,
+      index: 1,
+      auth: { isAuthenticated: false } as any,
+      pathname: '/',
+      handleClose: jest.fn(),
+    };
+    const result: any = renderer.create(<ContinueMenuItem {...props} />).toJSON();
+    expect(result.props.className.includes('theme-toggle')).toBe(true);
+  });
   it('checkIsAllowed return false if item requires auth and userType is not allowed', () => {
     const menu: any = { auth: true };
     const auth: any = { isAuthenticated: true, user: { userType: 'tester' } };

@@ -29,6 +29,9 @@ const jamNav = [
   {
     nav: 'jam', className: '', type: 'link', iconClass: 'fas fa-home', link: 'https://web-jam.com', name: 'Web Jam LLC',
   },
+  {
+    nav: 'jam', className: 'theme', type: 'themeToggle', iconClass: '', link: '', name: 'Dark Mode',
+  },
 
 ];
 
@@ -62,6 +65,9 @@ const wjNav = [
   },
   {
     nav: 'wj', className: 'logout', type: 'googleLogout', iconClass: 'fas fa-logout', link: '', name: 'Logout', auth: true,
+  },
+  {
+    nav: 'wj', className: 'theme', type: 'themeToggle', iconClass: '', link: '', name: 'Dark Mode',
   },
 ];
 export default { wjNav, jamNav };
