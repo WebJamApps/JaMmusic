@@ -1,8 +1,12 @@
 .nav-link {
   padding-left: 0;
   display: block !important;
-  color: var(--nav-link);
+  color: var(--sidebar-fg);
   outline: none !important;
+}
+
+.nav-link:hover {
+  color: var(--sidebar-fg-hover);
 }
 
 button.nav-link {
@@ -20,7 +24,7 @@ button.nav-link:hover {
 }
 
 .nav-item {
-  color: var(--nav-link);
+  color: var(--sidebar-fg);
   text-decoration: underline;
   padding-right: 0;
   margin-right: 0;
