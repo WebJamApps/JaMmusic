@@ -127,9 +127,13 @@ label {
   margin-bottom: 4px !important;
 }
 
-/* Required for accessibility purposes. */
-::placeholder {
+/* Required for accessibility purposes. Browsers/MUI default placeholder
+   opacity to ~0.42, which crushes contrast even when the color is set —
+   pin to 1 in both themes. */
+::placeholder,
+.MuiInputBase-input::placeholder {
   color: var(--placeholder) !important;
+  opacity: 1 !important;
 }
 
 /* Tables Generic */

@@ -87,14 +87,4 @@
   input {
     color: var(--input-fg);
   }
-
-  /* Placeholder text ("* First Name", etc.). Browsers default placeholder
-     opacity to ~0.42 which crushes contrast — pin to opacity: 1 and use
-     the high-contrast --placeholder token. */
-  .MuiInputBase-input::placeholder,
-  textarea::placeholder,
-  input::placeholder {
-    color: var(--placeholder) !important;
-    opacity: 1 !important;
-  }
 }

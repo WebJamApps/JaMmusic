@@ -14,34 +14,49 @@ const renderWithTheme = (theme: 'light' | 'dark') => {
 };
 
 describe('ThemeToggle', () => {
-  it('renders the dark-mode label and moon icon when theme is light', () => {
+  it('renders both Light and Dark sides regardless of current theme', () => {
     const { container } = renderWithTheme('light');
-    expect(container.textContent).toContain('Dark Mode');
-    expect(container.querySelector('.fa-moon')).not.toBeNull();
-    expect(container.querySelector('.fa-sun')).toBeNull();
-  });
-  it('renders the light-mode label and sun icon when theme is dark', () => {
-    const { container } = renderWithTheme('dark');
-    expect(container.textContent).toContain('Light Mode');
     expect(container.querySelector('.fa-sun')).not.toBeNull();
-    expect(container.querySelector('.fa-moon')).toBeNull();
+    expect(container.querySelector('.fa-moon')).not.toBeNull();
+    expect(container.textContent).toContain('Light');
+    expect(container.textContent).toContain('Dark');
+  });
+  it('marks the switch as unchecked and applies is-light when theme is light', () => {
+    const { container } = renderWithTheme('light');
+    const sw = container.querySelector('.theme-switch') as HTMLElement;
+    expect(sw.getAttribute('aria-checked')).toBe('false');
+    expect(sw.className).toContain('is-light');
+    expect(sw.getAttribute('aria-label')).toBe('Switch to dark mode');
+  });
+  it('marks the switch as checked and applies is-dark when theme is dark', () => {
+    const { container } = renderWithTheme('dark');
+    const sw = container.querySelector('.theme-switch') as HTMLElement;
+    expect(sw.getAttribute('aria-checked')).toBe('true');
+    expect(sw.className).toContain('is-dark');
+    expect(sw.getAttribute('aria-label')).toBe('Switch to light mode');
   });
   it('calls toggleTheme on click', () => {
     const { container, toggleTheme } = renderWithTheme('light');
-    const btn = container.querySelector('.theme-toggle-button') as HTMLElement;
-    fireEvent.click(btn);
+    const sw = container.querySelector('.theme-switch') as HTMLElement;
+    fireEvent.click(sw);
     expect(toggleTheme).toHaveBeenCalled();
   });
   it('toggles when Enter is pressed', () => {
     const { container, toggleTheme } = renderWithTheme('light');
-    const btn = container.querySelector('.theme-toggle-button') as HTMLElement;
-    fireEvent.keyPress(btn, { key: 'Enter', code: 'Enter', charCode: 13 });
+    const sw = container.querySelector('.theme-switch') as HTMLElement;
+    fireEvent.keyPress(sw, { key: 'Enter', code: 'Enter', charCode: 13 });
+    expect(toggleTheme).toHaveBeenCalled();
+  });
+  it('toggles when Space is pressed', () => {
+    const { container, toggleTheme } = renderWithTheme('dark');
+    const sw = container.querySelector('.theme-switch') as HTMLElement;
+    fireEvent.keyPress(sw, { key: ' ', code: 'Space', charCode: 32 });
     expect(toggleTheme).toHaveBeenCalled();
   });
   it('does not toggle for unrelated keys', () => {
     const { container, toggleTheme } = renderWithTheme('light');
-    const btn = container.querySelector('.theme-toggle-button') as HTMLElement;
-    fireEvent.keyPress(btn, { key: 'a', code: 'KeyA', charCode: 97 });
+    const sw = container.querySelector('.theme-switch') as HTMLElement;
+    fireEvent.keyPress(sw, { key: 'a', code: 'KeyA', charCode: 97 });
     expect(toggleTheme).not.toHaveBeenCalled();
   });
 });

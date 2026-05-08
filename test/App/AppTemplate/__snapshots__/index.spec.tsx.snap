@@ -138,37 +138,46 @@ exports[`AppTemplate > renders the component 1`] = `
         <div
           className="menu-item theme-toggle"
         >
-          <div
-            aria-label="Dark Mode"
-            aria-pressed={false}
-            className="nav-link theme-toggle-button"
+          <button
+            aria-checked={false}
+            aria-label="Switch to dark mode"
+            className="theme-switch is-light"
             onClick={[Function]}
             onKeyPress={[Function]}
-            role="button"
-            tabIndex={0}
+            role="switch"
+            type="button"
           >
-            <div
-              style={
-                {
-                  "display": "inline",
-                }
-              }
+            <span
+              className="theme-switch-side theme-switch-light"
             >
               <i
-                className="fas fa-moon"
-                style={
-                  {
-                    "marginRight": "8px",
-                  }
-                }
+                aria-hidden="true"
+                className="fas fa-sun"
               />
               <span
-                className="nav-item"
+                className="theme-switch-side-label"
               >
-                Dark Mode
+                Light
               </span>
-            </div>
-          </div>
+            </span>
+            <span
+              className="theme-switch-side theme-switch-dark"
+            >
+              <i
+                aria-hidden="true"
+                className="fas fa-moon"
+              />
+              <span
+                className="theme-switch-side-label"
+              >
+                Dark
+              </span>
+            </span>
+            <span
+              aria-hidden="true"
+              className="theme-switch-thumb"
+            />
+          </button>
         </div>
         <p
           style={
