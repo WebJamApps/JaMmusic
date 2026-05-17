@@ -3,14 +3,10 @@ import Instruments from './instruments';
 
 const BioText = () => (
   <p className="bioText" style={{ paddingLeft: 10, paddingRight: 10 }}>
-    Maria started her singing career at the age of 4 when she performed at the JaMar Rec
-    Center in St. Petersburg, Florida. Maria continued adding to her musical repertoire
-    by learning piano, alto saxophone, tenor saxophone, bassoon, and marching tenors.
-    She earned a minor in voice at Roanoke College and did a variety of chorus, musical theatre,
-    and solo performances while teaching in the Roanoke County Schools. Although classically
-    trained, Maria loves singing rock and Christian music with Josh. She is currently playing bass
-    guitar and plays accordian. Josh is the most wonderful husband and is the driving
-    force for the couple; Maria is a fabulous wife and is the organization behind the duo.
+    Maria sings lead, plays bass and accordion, and is the duo&rsquo;s organizer-in-chief. Classically trained &mdash;
+    voice minor at Roanoke College, with piano, alto and tenor sax, and bassoon from her school years. She taught in
+    Roanoke County Schools and now works remotely. Although her training is classical, her favorite stage is next to
+    Josh playing rock, Americana, and Christian music.
   </p>
 );
 

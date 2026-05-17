@@ -65,8 +65,9 @@ export function Intro(props:IintroProps): JSX.Element {
       <h5 style={{ marginTop: '10px', marginBottom: '6px', fontWeight: 'normal' }}>
         <strong>Josh and Maria</strong>
         {' '}
-        have been performing their music together for over 11 years now!
-        Whether it is at church, charity events, public venues, or outdoor festivals, this couple will blow your socks off.
+        &mdash; acoustic husband-and-wife duo from Salem, Virginia. Originals plus a wide-ranging cover set across folk,
+        rock, country, Christian, and Americana. We play churches, taprooms, festivals, weddings, and private events across
+        the East Coast &mdash; Virginia, North Carolina, and South Carolina.
       </h5>
     </div>
   );
