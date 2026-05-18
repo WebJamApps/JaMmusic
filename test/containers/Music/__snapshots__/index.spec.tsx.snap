@@ -52,12 +52,25 @@ exports[`/music > renders the component 1`] = `
           }
         }
       >
+        We’re
+         
         <strong>
-          Josh and Maria
+          Josh and Maria Sherman
         </strong>
          
-        have been performing their music together for over 11 years now! Whether it is at church, charity events, public venues, or outdoor festivals, this couple will blow your socks off.
+        — an acoustic husband-and-wife duo based in Salem, Virginia. Our music blends original songs with an eclectic mix of folk, rock, country, Christian, and Americana favorites. Whether we’re playing a church service, taproom, festival, farmer’s market, or private event, our goal is simple: to create a warm, memorable experience that feels personal and genuine.
       </h5>
+      <p
+        style={
+          {
+            "marginBottom": "6px",
+            "marginTop": 0,
+            "textAlign": "center",
+          }
+        }
+      >
+        We perform throughout Virginia, North Carolina, and South Carolina, bringing a mix of strong harmonies, acoustic energy, and songs people love to sing along with.
+      </p>
     </div>
     <div
       className="createNewPicDialog"
@@ -1061,7 +1074,7 @@ exports[`/music > renders the component 1`] = `
             }
           }
         >
-          Josh Sherman
+          Meet Josh
         </h4>
         <div>
           <img
@@ -1078,7 +1091,7 @@ exports[`/music > renders the component 1`] = `
             width="288px"
           />
         </div>
-        <p
+        <div
           className="bioText"
           style={
             {
@@ -1087,8 +1100,13 @@ exports[`/music > renders the component 1`] = `
             }
           }
         >
-          Josh began playing the trumpet when he was in third grade. He became skilled with the trumpet, continuing with his musical stylings through high school where he was first chair and regular soloist on the marching field. In college Josh studied music and picked up the guitar. He was primarily self-taught on the guitar, although he received help from his many musical relatives, especially his Uncle Mike. Josh went on to found several bands while living in central Florida. He recorded two cds and was played on the local radio stations. Josh also played in many venues including the Sun Cruise casino ship and the Battle of the Bands. His career took a different turn when he moved to Virginia. Leaving his band behind, Josh performed at the annual Bent Mountain pig roast every year since. He joined the College Lutheran Church choir and was a member of the Salem Choral Society. He also performed solo acoustic at local coffee shops. Josh started singing with Maria in the fall of 2011. They fell in love and were married in July of 2012. Vive l’amore!
-        </p>
+          <p>
+            On stage, Josh plays guitar and harmonica, and sings vocals. Off stage, he writes most of our original music and handles the behind-the-scenes tech side of the duo. His musical journey started with trumpet in third grade, but when he picked up guitar in college, he never looked back.
+          </p>
+          <p>
+            Before moving to Virginia, Josh led several bands in central Florida, recording two CDs and performing everywhere from cozy coffee shops to the SunCruz casino ship. Since settling in Virginia, he’s become a familiar face around Salem and continues to share his love of music throughout the area.
+          </p>
+        </div>
         <blockquote
           style={
             {
@@ -1156,7 +1174,7 @@ exports[`/music > renders the component 1`] = `
             }
           }
         >
-          Maria Sherman
+          Meet Maria
         </h4>
         <div>
           <img
@@ -1173,7 +1191,7 @@ exports[`/music > renders the component 1`] = `
             width="288px"
           />
         </div>
-        <p
+        <div
           className="bioText"
           style={
             {
@@ -1182,8 +1200,16 @@ exports[`/music > renders the component 1`] = `
             }
           }
         >
-          Maria started her singing career at the age of 4 when she performed at the JaMar Rec Center in St. Petersburg, Florida. Maria continued adding to her musical repertoire by learning piano, alto saxophone, tenor saxophone, bassoon, and marching tenors. She earned a minor in voice at Roanoke College and did a variety of chorus, musical theatre, and solo performances while teaching in the Roanoke County Schools. Although classically trained, Maria loves singing rock and Christian music with Josh. She is currently playing bass guitar and plays accordian. Josh is the most wonderful husband and is the driving force for the couple; Maria is a fabulous wife and is the organization behind the duo.
-        </p>
+          <p>
+            Maria sings and plays bass and also contributes to the songwriting process. She studied voice at Roanoke College and spent years playing piano, alto and tenor saxophone, drums, and bassoon, developing a diverse musical background that still influences her music today.
+          </p>
+          <p>
+            After teaching math and science in Roanoke County Schools, she transitioned to remote work, but music has always remained close to her heart. Maria’s favorite place to perform is onstage with Josh, singing and playing rock, Americana, and Christian music for live audiences.
+          </p>
+          <p>
+            Known for her warm stage presence and strong vocals, Maria loves connecting with audiences and helping create performances that feel relaxed, personal, and fun.
+          </p>
+        </div>
         <blockquote
           style={
             {

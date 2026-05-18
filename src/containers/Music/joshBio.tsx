@@ -2,27 +2,25 @@
 import Instruments from './instruments';
 
 const BioText = () => (
-  <p className="bioText" style={{ paddingLeft: 10, paddingRight: 5 }}>
-    Josh began playing the trumpet when he was in third grade. He became skilled with the trumpet,
-    continuing with his musical stylings through high school where he was first chair and regular
-    soloist on the marching field. In college Josh studied music and picked up the guitar. He was
-    primarily self-taught on the guitar, although he received help from his many musical relatives,
-    especially his Uncle Mike. Josh went on to found several bands while living in central Florida.
-    He recorded two cds and was played on the local radio stations. Josh also played in many
-    venues including the Sun Cruise casino ship and the Battle of the Bands. His career took a
-    different turn when he moved to Virginia. Leaving his band behind, Josh performed at the annual Bent Mountain pig
-    roast every year since. He joined the College Lutheran Church choir and was a member of the Salem Choral Society.
-    He also performed solo acoustic at local coffee shops.
-    Josh started singing with Maria in the fall of 2011. They fell in love and were married
-    in July of 2012. Vive l’amore!
-  </p>
+  <div className="bioText" style={{ paddingLeft: 10, paddingRight: 5 }}>
+    <p>
+      On stage, Josh plays guitar and harmonica, and sings vocals. Off stage, he writes most of our original music and
+      handles the behind-the-scenes tech side of the duo. His musical journey started with trumpet in third grade, but
+      when he picked up guitar in college, he never looked back.
+    </p>
+    <p>
+      Before moving to Virginia, Josh led several bands in central Florida, recording two CDs and performing everywhere
+      from cozy coffee shops to the SunCruz casino ship. Since settling in Virginia, he&rsquo;s become a familiar face
+      around Salem and continues to share his love of music throughout the area.
+    </p>
+  </div>
 );
 
 function JoshBio(): JSX.Element {
   return (
     <div className="joshBio">
       <div style={{ height: '10px' }}><p>{' '}</p></div>
-      <h4 id="joshbio" style={{ marginBottom: '4px', marginTop: '8px', textAlign: 'center' }}>Josh Sherman</h4>
+      <h4 id="joshbio" style={{ marginBottom: '4px', marginTop: '8px', textAlign: 'center' }}>Meet Josh</h4>
       <div>
         <img
           style={{ paddingLeft: 10, paddingRight: 10, float: 'left' }}

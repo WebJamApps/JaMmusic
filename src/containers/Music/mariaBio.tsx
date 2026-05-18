@@ -2,22 +2,28 @@
 import Instruments from './instruments';
 
 const BioText = () => (
-  <p className="bioText" style={{ paddingLeft: 10, paddingRight: 10 }}>
-    Maria started her singing career at the age of 4 when she performed at the JaMar Rec
-    Center in St. Petersburg, Florida. Maria continued adding to her musical repertoire
-    by learning piano, alto saxophone, tenor saxophone, bassoon, and marching tenors.
-    She earned a minor in voice at Roanoke College and did a variety of chorus, musical theatre,
-    and solo performances while teaching in the Roanoke County Schools. Although classically
-    trained, Maria loves singing rock and Christian music with Josh. She is currently playing bass
-    guitar and plays accordian. Josh is the most wonderful husband and is the driving
-    force for the couple; Maria is a fabulous wife and is the organization behind the duo.
-  </p>
+  <div className="bioText" style={{ paddingLeft: 10, paddingRight: 10 }}>
+    <p>
+      Maria sings and plays bass and also contributes to the songwriting process. She studied voice at Roanoke College
+      and spent years playing piano, alto and tenor saxophone, drums, and bassoon, developing a diverse musical
+      background that still influences her music today.
+    </p>
+    <p>
+      After teaching math and science in Roanoke County Schools, she transitioned to remote work, but music has always
+      remained close to her heart. Maria&rsquo;s favorite place to perform is onstage with Josh, singing and playing
+      rock, Americana, and Christian music for live audiences.
+    </p>
+    <p>
+      Known for her warm stage presence and strong vocals, Maria loves connecting with audiences and helping create
+      performances that feel relaxed, personal, and fun.
+    </p>
+  </div>
 );
 
 function MariaBio(): JSX.Element {
   return (
     <div className="mariaBio">
-      <h4 id="mariabio" style={{ marginBottom: '4px', marginTop: '8px', textAlign: 'center' }}>Maria Sherman</h4>
+      <h4 id="mariabio" style={{ marginBottom: '4px', marginTop: '8px', textAlign: 'center' }}>Meet Maria</h4>
       <div>
         <img
           style={{ paddingLeft: 10, paddingRight: 10, float: 'left' }}
