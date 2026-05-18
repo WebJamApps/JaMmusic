@@ -2,20 +2,25 @@
 import Instruments from './instruments';
 
 const BioText = () => (
-  <p className="bioText" style={{ paddingLeft: 10, paddingRight: 5 }}>
-    Josh plays guitar and trumpet, writes most of the originals, and runs the duo&rsquo;s tech side. He started on
-    trumpet in third grade, picked up guitar in college, and led several bands in central Florida &mdash; recording two
-    CDs and playing venues from local coffee shops to the Sun Cruise casino ship &mdash; before moving to Virginia.
-    Since the move he&rsquo;s been a fixture at the Bent Mountain Pig Roast and a member of the College Lutheran choir
-    and Salem Choral Society.
-  </p>
+  <div className="bioText" style={{ paddingLeft: 10, paddingRight: 5 }}>
+    <p>
+      On stage, Josh plays guitar and harmonica, and sings vocals. Off stage, he writes most of our original music and
+      handles the behind-the-scenes tech side of the duo. His musical journey started with trumpet in third grade, but
+      when he picked up guitar in college, he never looked back.
+    </p>
+    <p>
+      Before moving to Virginia, Josh led several bands in central Florida, recording two CDs and performing everywhere
+      from cozy coffee shops to the SunCruz casino ship. Since settling in Virginia, he&rsquo;s become a familiar face
+      around Salem and continues to share his love of music throughout the area.
+    </p>
+  </div>
 );
 
 function JoshBio(): JSX.Element {
   return (
     <div className="joshBio">
       <div style={{ height: '10px' }}><p>{' '}</p></div>
-      <h4 id="joshbio" style={{ marginBottom: '4px', marginTop: '8px', textAlign: 'center' }}>Josh Sherman</h4>
+      <h4 id="joshbio" style={{ marginBottom: '4px', marginTop: '8px', textAlign: 'center' }}>Meet Josh</h4>
       <div>
         <img
           style={{ paddingLeft: 10, paddingRight: 10, float: 'left' }}

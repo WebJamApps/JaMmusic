@@ -63,12 +63,19 @@ export function Intro(props:IintroProps): JSX.Element {
         setShowEditPic={setShowEditPic}
       />
       <h5 style={{ marginTop: '10px', marginBottom: '6px', fontWeight: 'normal' }}>
-        <strong>Josh and Maria</strong>
+        We&rsquo;re
         {' '}
-        &mdash; acoustic husband-and-wife duo from Salem, Virginia. Originals plus a wide-ranging cover set across folk,
-        rock, country, Christian, and Americana. We play churches, taprooms, festivals, weddings, and private events across
-        the East Coast &mdash; Virginia, North Carolina, and South Carolina.
+        <strong>Josh and Maria Sherman</strong>
+        {' '}
+        &mdash; an acoustic husband-and-wife duo based in Salem, Virginia. Our music blends original songs with an
+        eclectic mix of folk, rock, country, Christian, and Americana favorites. Whether we&rsquo;re playing a church
+        service, taproom, festival, farmer&rsquo;s market, or private event, our goal is simple: to create a warm,
+        memorable experience that feels personal and genuine.
       </h5>
+      <p style={{ marginTop: 0, marginBottom: '6px', textAlign: 'center' }}>
+        We perform throughout Virginia, North Carolina, and South Carolina, bringing a mix of strong harmonies,
+        acoustic energy, and songs people love to sing along with.
+      </p>
     </div>
   );
 }
