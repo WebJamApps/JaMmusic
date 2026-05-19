@@ -39,10 +39,11 @@ export function CommentsSection(props: IcommentsSectionProps) {
 
 interface IformActionsProps {
   setHasSubmitted: (arg0: boolean) => void,
+  setSubmitError: (arg0: boolean) => void,
   formData: IinquiryFormData,
 }
 export function FormActions(props: IformActionsProps) {
-  const { setHasSubmitted, formData } = props;
+  const { setHasSubmitted, setSubmitError, formData } = props;
   return (
     <div className="inquiryValidation input-field col" style={{ marginBottom: '12px' }}>
       <span className="inquiryValidation">* Required</span>
@@ -52,7 +53,7 @@ export function FormActions(props: IformActionsProps) {
         id="sendEmailButton"
         disabled={utils.validateForm(formData)}
         onClick={(evt) => {
-          utils.handleSubmit(evt, formData, setHasSubmitted);
+          utils.handleSubmit(evt, formData, setHasSubmitted, setSubmitError);
         }}
       >
         Submit
@@ -137,13 +138,14 @@ export function TableSection(props: ItableSectionProps): JSX.Element {
 
 interface IinquiryFormProps {
   setHasSubmitted: (arg0: boolean) => void,
+  setSubmitError: (arg0: boolean) => void,
   setFormData: (arg0: IinquiryFormData) => void,
   formData: IinquiryFormData,
   staticCountry?:string
 }
 export function InquiryForm(props: IinquiryFormProps): JSX.Element {
   // eslint-disable-next-line object-curly-newline
-  const { formData, setFormData, setHasSubmitted, staticCountry } = props;
+  const { formData, setFormData, setHasSubmitted, setSubmitError, staticCountry } = props;
   const { country, uSAstate, zipcode } = formData;
   return (
     <form id="new-contact" className="col">
@@ -189,10 +191,26 @@ export function InquiryForm(props: IinquiryFormProps): JSX.Element {
       />
       <p style={{ margin: 0 }}>&nbsp;</p>
       <CommentsSection formData={formData} setFormData={setFormData} />
-      <FormActions setHasSubmitted={setHasSubmitted} formData={formData} />
+      <FormActions setHasSubmitted={setHasSubmitted} setSubmitError={setSubmitError} formData={formData} />
     </form>
   );
 }
+
+export const InquiryError = () => (
+  <p
+    className="inquiryError"
+    role="alert"
+    style={{
+      color: '#b00020', textAlign: 'center', margin: '14px', paddingBottom: '4px', fontWeight: 'bold',
+    }}
+  >
+    Sorry &mdash; we couldn&rsquo;t deliver your inquiry. Please try again, or email
+    {' '}
+    <a href="mailto:joshua.v.sherman@gmail.com">joshua.v.sherman@gmail.com</a>
+    {' '}
+    directly.
+  </p>
+);
 
 export const ContactRequest = () => (
   <div className="page-content contacted">
@@ -205,16 +223,18 @@ export const ContactRequest = () => (
 );
 interface IcontactFormProps {
   hasSubmitted: boolean,
+  submitError: boolean,
   hideTitle?: boolean,
   country?: string,
   setHasSubmitted: (arg0: boolean) => void
+  setSubmitError: (arg0: boolean) => void
   formData: IinquiryFormData,
   setFormData: (arg0: IinquiryFormData) => void
 }
 
 export function ContactForm(props: IcontactFormProps) {
   const {
-    hasSubmitted, hideTitle, country, setHasSubmitted, formData, setFormData,
+    hasSubmitted, submitError, hideTitle, country, setHasSubmitted, setSubmitError, formData, setFormData,
   } = props;
   return (
     <div
@@ -231,7 +251,14 @@ export function ContactForm(props: IcontactFormProps) {
           >
             {hideTitle ? '' : 'Contact Us'}
           </h4>
-          <InquiryForm staticCountry={country} setHasSubmitted={setHasSubmitted} formData={formData} setFormData={setFormData} />
+          {submitError ? <InquiryError /> : null}
+          <InquiryForm
+            staticCountry={country}
+            setHasSubmitted={setHasSubmitted}
+            setSubmitError={setSubmitError}
+            formData={formData}
+            setFormData={setFormData}
+          />
         </div>
       ) : (
         <ContactRequest />
@@ -241,9 +268,10 @@ export function ContactForm(props: IcontactFormProps) {
 }
 export function Inquiry({ country, hideTitle }:{ country?:string, hideTitle?:boolean }): JSX.Element {
   const [hasSubmitted, setHasSubmitted] = useState(false);
+  const [submitError, setSubmitError] = useState(false);
   const [formData, setFormData] = useState({} as IinquiryFormData);
   const props = {
-    hasSubmitted, hideTitle, country, setHasSubmitted, formData, setFormData,
+    hasSubmitted, submitError, hideTitle, country, setHasSubmitted, setSubmitError, formData, setFormData,
   };
   return (
     <ContactForm {...props} />

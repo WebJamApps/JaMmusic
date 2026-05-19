@@ -12,19 +12,24 @@ function handleCountryChange(
 async function createEmailApi(
   emailForm: IinquiryFormData,
   setHasSubmitted:(arg0:boolean)=>void,
+  setSubmitError:(arg0:boolean)=>void,
 ): Promise<void> {
   try {
     await superagent.post(`${process.env.BackendUrl}/inquiry`)
       .set('Content-Type', 'application/json')
       .send(emailForm);
     setHasSubmitted(true);
-  } catch (e) { console.log((e as Error).message); }
+  } catch (e) {
+    console.log((e as Error).message);
+    setSubmitError(true);
+  }
 }
 
 async function handleSubmit(
   evt: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   formData:IinquiryFormData,
   setHasSubmitted:(arg0:boolean)=>void,
+  setSubmitError:(arg0:boolean)=>void,
 ): Promise<void> {
   const {
     firstname, lastname, emailaddress, uSAstate, country, phonenumber, zipcode, comments,
@@ -39,7 +44,7 @@ async function handleSubmit(
     zipcode,
     comments: (comments).trim(),
   };
-  await createEmailApi(emailForm, setHasSubmitted);
+  await createEmailApi(emailForm, setHasSubmitted, setSubmitError);
 }
 
 function handleInputChange(
