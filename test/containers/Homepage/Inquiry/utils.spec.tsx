@@ -34,10 +34,12 @@ describe('Inquiry utils', () => {
       comments: 'none',
     };
     const setHasSubmitted = jest.fn();
+    const setSubmitError = jest.fn();
     const mockPost = jest.fn().mockResolvedValueOnce({});
     (superagent.post as jest.Mock).mockReturnValueOnce({ set: jest.fn().mockReturnValueOnce({ send: mockPost }) });
-    await utils.createEmailApi(emailForm, setHasSubmitted);
+    await utils.createEmailApi(emailForm, setHasSubmitted, setSubmitError);
     expect(setHasSubmitted).toHaveBeenCalledWith(true);
+    expect(setSubmitError).toHaveBeenCalledTimes(0);
   });
   it('catches error for createEmailApi', async () => {
     const emailForm = {
@@ -51,11 +53,13 @@ describe('Inquiry utils', () => {
       comments: 'none',
     };
     const setHasSubmitted = jest.fn();
+    const setSubmitError = jest.fn();
     const err = 'error';
     const mockPost = jest.fn().mockRejectedValueOnce(new Error(err));
     (superagent.post as jest.Mock).mockReturnValueOnce({ set: jest.fn().mockReturnValueOnce({ send: mockPost }) });
-    await utils.createEmailApi(emailForm, setHasSubmitted);
+    await utils.createEmailApi(emailForm, setHasSubmitted, setSubmitError);
     expect(setHasSubmitted).toHaveBeenCalledTimes(0);
+    expect(setSubmitError).toHaveBeenCalledWith(true);
   });
   it('handleSubmit', async () => {
     const evt: any = { target: { value: 'mouse' } };
@@ -70,9 +74,10 @@ describe('Inquiry utils', () => {
       comments: 'none',
     };
     const setHasSubmitted = jest.fn();
+    const setSubmitError = jest.fn();
     const mockPost = jest.fn().mockResolvedValueOnce({});
     const createEmailApi = (superagent.post as jest.Mock).mockReturnValueOnce({ set: jest.fn().mockReturnValueOnce({ send: mockPost }) });
-    await utils.handleSubmit(evt, emailForm, setHasSubmitted);
+    await utils.handleSubmit(evt, emailForm, setHasSubmitted, setSubmitError);
     expect(createEmailApi).toHaveBeenCalled();
   });
   it('handleInputChange', () => {

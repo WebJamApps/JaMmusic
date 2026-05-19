@@ -1,6 +1,6 @@
 import renderer from 'react-test-renderer';
 import {
-  CommentsSection, ContactForm, ContactRequest, EmailPhoneRow, FormActions, Inquiry, InquiryForm, TableSection,
+  CommentsSection, ContactForm, ContactRequest, EmailPhoneRow, FormActions, Inquiry, InquiryError, InquiryForm, TableSection,
 } from 'src/containers/Homepage/Inquiry';
 
 describe('Inquiry', () => {
@@ -33,7 +33,10 @@ describe('Inquiry', () => {
       comments: '',
     };
     const setHasSubmitted = jest.fn();
-    const result = renderer.create(<FormActions formData={formData} setHasSubmitted={setHasSubmitted} />).root;
+    const setSubmitError = jest.fn();
+    const result = renderer.create(
+      <FormActions formData={formData} setHasSubmitted={setHasSubmitted} setSubmitError={setSubmitError} />,
+    ).root;
     const tree = result.findByProps({ id: 'sendEmailButton' }).props.onClick();
     console.log(tree);
     expect(true).toBe(true);
@@ -120,6 +123,7 @@ describe('Inquiry', () => {
       },
       setFormData: jest.fn(),
       setHasSubmitted: jest.fn(),
+      setSubmitError: jest.fn(),
     };
     const evt = { target: { value: 'country' } };
     const result = renderer.create(<InquiryForm {...props} />).root;
@@ -140,6 +144,7 @@ describe('Inquiry', () => {
       },
       setFormData: jest.fn(),
       setHasSubmitted: jest.fn(),
+      setSubmitError: jest.fn(),
     };
     const evt = { target: { value: 'state' } };
     const result = renderer.create(<InquiryForm {...props} />).root;
@@ -160,6 +165,7 @@ describe('Inquiry', () => {
       },
       setFormData: jest.fn(),
       setHasSubmitted: jest.fn(),
+      setSubmitError: jest.fn(),
     };
     const evt = { target: { value: 'zip' } };
     const result = renderer.create(<InquiryForm {...props} />).root;
@@ -182,7 +188,14 @@ describe('Inquiry', () => {
       comments: '',
     };
     const props = {
-      hasSubmitted: false, hideTitle: true, country: '', setHasSubmitted: jest.fn(), formData, setFormData: jest.fn(),
+      hasSubmitted: false,
+      submitError: false,
+      hideTitle: true,
+      country: '',
+      setHasSubmitted: jest.fn(),
+      setSubmitError: jest.fn(),
+      formData,
+      setFormData: jest.fn(),
     };
     const result: any = renderer.create(<ContactForm {...props} />).toJSON();
     expect(result.type).toBe('div');
@@ -199,7 +212,14 @@ describe('Inquiry', () => {
       comments: '',
     };
     const props = {
-      hasSubmitted: true, hideTitle: false, country: '', setHasSubmitted: jest.fn(), formData, setFormData: jest.fn(),
+      hasSubmitted: true,
+      submitError: false,
+      hideTitle: false,
+      country: '',
+      setHasSubmitted: jest.fn(),
+      setSubmitError: jest.fn(),
+      formData,
+      setFormData: jest.fn(),
     };
     const result: any = renderer.create(<ContactForm {...props} />).toJSON();
     expect(result.children[0].props.className).toBe('page-content contacted');
@@ -221,10 +241,72 @@ describe('Inquiry', () => {
       comments: '',
     };
     const props = {
-      hasSubmitted: false, hideTitle: false, country: '', setHasSubmitted: jest.fn(), formData, setFormData: jest.fn(),
+      hasSubmitted: false,
+      submitError: false,
+      hideTitle: false,
+      country: '',
+      setHasSubmitted: jest.fn(),
+      setSubmitError: jest.fn(),
+      formData,
+      setFormData: jest.fn(),
     };
     const result: any = renderer.create(<ContactForm {...props} />).toJSON();
     expect(result.children[0].children[0].children[0]).toBe('Contact Us');
+  });
+  it('renders InquiryError standalone', () => {
+    const result: any = renderer.create(<InquiryError />).toJSON();
+    expect(result.type).toBe('p');
+    expect(result.props.className).toBe('inquiryError');
+    expect(result.props.role).toBe('alert');
+  });
+  it('ContactForm renders InquiryError when submitError is true', () => {
+    const formData = {
+      firstname: '',
+      lastname: '',
+      emailaddress: '',
+      uSAstate: '',
+      country: '',
+      phonenumber: '',
+      zipcode: '',
+      comments: '',
+    };
+    const props = {
+      hasSubmitted: false,
+      submitError: true,
+      hideTitle: true,
+      country: '',
+      setHasSubmitted: jest.fn(),
+      setSubmitError: jest.fn(),
+      formData,
+      setFormData: jest.fn(),
+    };
+    const root = renderer.create(<ContactForm {...props} />).root;
+    const error = root.findByProps({ className: 'inquiryError' });
+    expect(error).toBeTruthy();
+  });
+  it('ContactForm does NOT render InquiryError when submitError is false', () => {
+    const formData = {
+      firstname: '',
+      lastname: '',
+      emailaddress: '',
+      uSAstate: '',
+      country: '',
+      phonenumber: '',
+      zipcode: '',
+      comments: '',
+    };
+    const props = {
+      hasSubmitted: false,
+      submitError: false,
+      hideTitle: true,
+      country: '',
+      setHasSubmitted: jest.fn(),
+      setSubmitError: jest.fn(),
+      formData,
+      setFormData: jest.fn(),
+    };
+    const root = renderer.create(<ContactForm {...props} />).root;
+    expect(root.findAllByProps({ className: 'inquiryError' })).toHaveLength(0);
   });
 });
 
