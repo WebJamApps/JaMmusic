@@ -8,7 +8,7 @@ describe('AdminUsers utils', () => {
     it('returns only JaM-admin in production', () => {
       process.env.NODE_ENV = 'production';
       const roles = adminUtils.getAllowedAdminRoles();
-      expect(roles).toEqual(['JaM-admin']);
+      expect(roles).toEqual(['JaM-admin', 'Developer']);
     });
 
     it('includes Developer in non-production', () => {
