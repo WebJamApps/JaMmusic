@@ -44,7 +44,7 @@ async function deleteUser(token: string, userId: string): Promise<void> {
 
 export function getAllowedAdminRoles(): string[] {
   return process.env.NODE_ENV === 'production'
-    ? ['JaM-admin']
+    ? ['JaM-admin', 'Developer']
     : ['JaM-admin', 'Developer'];
 }
 
