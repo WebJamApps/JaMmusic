@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import {
-  Dialog, DialogTitle, DialogContent, DialogActions, Button, Box, Typography, FormGroup, FormControlLabel, Checkbox, FormControl, InputLabel, Select, MenuItem,
+  Dialog, DialogTitle, DialogContent, DialogActions,
+  Button, Box, Typography, FormGroup, FormControlLabel, Checkbox, FormControl, InputLabel, Select, MenuItem,
 } from '@mui/material';
 import { CAPABILITY_GROUPS, USER_ROLES, type Capability } from './capabilities';
 import adminUtils, { type IadminUser } from './admin-users.utils';
@@ -61,6 +62,7 @@ export function EditPrivilegesDialog({
             onChange={(e) => setUserType(e.target.value)}
             data-testid="edit-user-role"
           >
+            <MenuItem value="">None</MenuItem>
             {USER_ROLES.filter((r) => (user?.userStatus === 'ai-agent' ? r === 'web-jam-llm' : r !== 'web-jam-llm')).map((r) => (
               <MenuItem key={r} value={r}>{r}</MenuItem>
             ))}
@@ -68,24 +70,34 @@ export function EditPrivilegesDialog({
         </FormControl>
         <Typography variant="subtitle2" sx={{ marginBottom: 1 }}>Privileges</Typography>
         {CAPABILITY_GROUPS.map((group) => (
-          <Box key={group.label} sx={{ marginBottom: 1, display: 'flex', alignItems: 'center', gap: 2 }}>
-            <Typography variant="body2" sx={{ fontWeight: 'bold', minWidth: '70px' }}>{group.label}</Typography>
-            <FormGroup row>
-              {group.items.map((cap) => (
-                <FormControlLabel
-                  key={cap}
-                  control={(
-                    <Checkbox
-                      checked={privileges.includes(cap)}
-                      onChange={() => toggleCapability(cap)}
-                      aria-label={cap}
-                      data-testid={`edit-cap-${cap}`}
+          <Box key={group.label} sx={{ width: '100%', borderBottom: '1px solid #ccc' }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, minHeight: '44px' }}>
+              <Typography variant="body2"
+                sx={{ fontWeight: 'bold', minWidth: '110px', m: 0, mt: '20px', lineHeight: '44px' }}>{group.label}</Typography>
+              <FormGroup row sx={{ flexWrap: 'nowrap', margin: 0 }}>
+                {(['read', 'create', 'edit', 'delete'] as const).map((action) => {
+                  const cap = group.items.find((item) => item.endsWith(`:${action}`));
+                  return cap ? (
+                    <FormControlLabel
+                      key={cap}
+                      sx={{ minWidth: '100px', m: 0 }}
+                      control={(
+                        <Checkbox
+                          size="small"
+                          checked={privileges.includes(cap)}
+                          onChange={() => toggleCapability(cap)}
+                          aria-label={cap}
+                          data-testid={`edit-cap-${cap}`}
+                        />
+                      )}
+                      label={cap.split(':')[1]}
                     />
-                  )}
-                  label={cap.split(':')[1]}
-                />
-              ))}
-            </FormGroup>
+                  ) : (
+                    <Box key={action} sx={{ minWidth: '100px' }} />
+                  );
+                })}
+              </FormGroup>
+            </Box>
           </Box>
         ))}
         {error && <Typography color="error" sx={{ marginTop: 1 }}>{error}</Typography>}

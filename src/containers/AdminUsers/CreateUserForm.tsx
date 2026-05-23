@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import {
-  TextField, Button, FormControl, InputLabel, Select, MenuItem, FormGroup, FormControlLabel, Checkbox, Box, Typography,
+  TextField, Button, FormControl, InputLabel, Select, MenuItem, FormGroup, FormControlLabel, Checkbox, Box, Typography, Divider,
 } from '@mui/material';
 import { CAPABILITY_GROUPS, USER_STATUS_OPTIONS, USER_ROLES, type Capability } from './capabilities';
 import adminUtils from './admin-users.utils';
@@ -14,7 +14,7 @@ export function CreateUserForm({ token, onCreated }: IcreateUserFormProps): JSX.
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [userStatus, setUserStatus] = useState<string>('human');
-  const [userType, setUserType] = useState<string>('JaM-admin');
+  const [userType, setUserType] = useState<string>('');
   const [privileges, setPrivileges] = useState<Capability[]>([]);
   const [notes, setNotes] = useState('');
   const [error, setError] = useState('');
@@ -38,7 +38,7 @@ export function CreateUserForm({ token, onCreated }: IcreateUserFormProps): JSX.
         privileges,
         userDetails: notes,
       });
-      setName(''); setEmail(''); setUserStatus('human'); setUserType('JaM-admin'); setPrivileges([]); setNotes('');
+      setName(''); setEmail(''); setUserStatus('human'); setUserType(''); setPrivileges([]); setNotes('');
       onCreated();
     } catch (e) {
       const err = e as { response?: { body?: { message?: string } }; message?: string };
@@ -73,33 +73,63 @@ export function CreateUserForm({ token, onCreated }: IcreateUserFormProps): JSX.
           labelId="user-status-label"
           value={userStatus}
           label="Type"
-          onChange={(e) => setUserStatus(e.target.value)}
+          onChange={(e) => {
+            const val = e.target.value;
+            setUserStatus(val);
+            if (val === 'ai-agent') setUserType('web-jam-llm');
+            else if (userType === 'web-jam-llm') setUserType('');
+          }}
           data-testid="create-user-status"
         >
           {USER_STATUS_OPTIONS.map((s) => <MenuItem key={s} value={s}>{s}</MenuItem>)}
         </Select>
       </FormControl>
+      <FormControl fullWidth sx={{ marginBottom: 2 }}>
+        <InputLabel id="create-user-role-label">Role</InputLabel>
+        <Select
+          labelId="create-user-role-label"
+          value={userType}
+          label="Role"
+          onChange={(e) => setUserType(e.target.value)}
+          data-testid="create-user-role"
+        >
+          <MenuItem value="">None</MenuItem>
+          {USER_ROLES.filter((r) => (userStatus === 'ai-agent' ? r === 'web-jam-llm' : r !== 'web-jam-llm')).map((r) => (
+            <MenuItem key={r} value={r}>{r}</MenuItem>
+          ))}
+        </Select>
+      </FormControl>
       <Box sx={{ marginBottom: 2 }}>
         <Typography variant="subtitle2" sx={{ marginBottom: 1 }}>Privileges</Typography>
         {CAPABILITY_GROUPS.map((group) => (
-          <Box key={group.label} sx={{ marginBottom: 1, display: 'flex', alignItems: 'center', gap: 2 }}>
-            <Typography variant="body2" sx={{ fontWeight: 'bold', minWidth: '70px' }}>{group.label}</Typography>
-            <FormGroup row>
-              {group.items.map((cap) => (
-                <FormControlLabel
-                  key={cap}
-                  control={(
-                    <Checkbox
-                      checked={privileges.includes(cap)}
-                      onChange={() => toggleCapability(cap)}
-                      aria-label={cap}
-                      data-testid={`cap-${cap}`}
+          <Box key={group.label} sx={{ width: '100%', borderBottom: '1px solid #ccc' }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, minHeight: '44px' }}>
+              <Typography variant="body2"
+                sx={{ fontWeight: 'bold', minWidth: '110px', m: 0, mt: '20px', lineHeight: '44px' }}>{group.label}</Typography>
+              <FormGroup row sx={{ flexWrap: 'nowrap', margin: 0 }}>
+                {(['read', 'create', 'edit', 'delete'] as const).map((action) => {
+                  const cap = group.items.find((item) => item.endsWith(`:${action}`));
+                  return cap ? (
+                    <FormControlLabel
+                      key={cap}
+                      sx={{ minWidth: '100px', m: 0 }}
+                      control={(
+                        <Checkbox
+                          size="small"
+                          checked={privileges.includes(cap)}
+                          onChange={() => toggleCapability(cap)}
+                          aria-label={cap}
+                          data-testid={`cap-${cap}`}
+                        />
+                      )}
+                      label={cap.split(':')[1]}
                     />
-                  )}
-                  label={cap.split(':')[1]}
-                />
-              ))}
-            </FormGroup>
+                  ) : (
+                    <Box key={action} sx={{ minWidth: '100px' }} />
+                  );
+                })}
+              </FormGroup>
+            </Box>
           </Box>
         ))}
       </Box>
