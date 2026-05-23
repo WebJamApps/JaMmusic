@@ -8,7 +8,7 @@ describe('AdminUsers utils', () => {
     it('returns only JaM-admin in production', () => {
       process.env.NODE_ENV = 'production';
       const roles = adminUtils.getAllowedAdminRoles();
-      expect(roles).toEqual(['JaM-admin', 'Developer']);
+      expect(roles).toEqual(['JaM-admin', 'Developer', 'clc-admin']);
     });
 
     it('includes Developer in non-production', () => {
@@ -22,7 +22,7 @@ describe('AdminUsers utils', () => {
   it('exports all expected API functions', () => {
     expect(typeof adminUtils.listUsers).toBe('function');
     expect(typeof adminUtils.createUser).toBe('function');
-    expect(typeof adminUtils.updatePrivileges).toBe('function');
+    expect(typeof adminUtils.updateUser).toBe('function');
     expect(typeof adminUtils.mintToken).toBe('function');
     expect(typeof adminUtils.deleteUser).toBe('function');
   });

@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import {
-  Dialog, DialogTitle, DialogContent, DialogActions, Button, Box, Typography, FormGroup, FormControlLabel, Checkbox,
+  Dialog, DialogTitle, DialogContent, DialogActions,
+  Button, Box, Typography, FormGroup, FormControlLabel, Checkbox, FormControl, InputLabel, Select, MenuItem,
 } from '@mui/material';
-import { CAPABILITY_GROUPS, type Capability } from './capabilities';
+import { CAPABILITY_GROUPS, USER_ROLES, type Capability } from './capabilities';
 import adminUtils, { type IadminUser } from './admin-users.utils';
 
 interface IeditPrivilegesDialogProps {
@@ -17,11 +18,15 @@ export function EditPrivilegesDialog({
   open, user, token, onClose, onSaved,
 }: IeditPrivilegesDialogProps): JSX.Element {
   const [privileges, setPrivileges] = useState<Capability[]>([]);
+  const [userType, setUserType] = useState<string>('');
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
-    if (user) setPrivileges((user.privileges || []) as Capability[]);
+    if (user) {
+      setPrivileges((user.privileges || []) as Capability[]);
+      setUserType(user.userType || '');
+    }
     setError('');
   }, [user]);
 
@@ -34,7 +39,7 @@ export function EditPrivilegesDialog({
     setSubmitting(true);
     setError('');
     try {
-      await adminUtils.updatePrivileges(token, user._id, privileges);
+      await adminUtils.updateUser(token, user._id, { privileges, userType });
       onSaved();
     } catch (e) {
       const err = e as { response?: { body?: { message?: string } }; message?: string };
@@ -45,28 +50,54 @@ export function EditPrivilegesDialog({
   };
 
   return (
-    <Dialog open={open} onClose={onClose} fullWidth maxWidth="md">
-      <DialogTitle>Edit Privileges{user ? ` — ${user.name}` : ''}</DialogTitle>
+    <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
+      <DialogTitle>Edit User{user ? ` — ${user.name}` : ''}</DialogTitle>
       <DialogContent>
+        <FormControl fullWidth sx={{ marginTop: 1, marginBottom: 3 }}>
+          <InputLabel id="edit-user-role-label">Role</InputLabel>
+          <Select
+            labelId="edit-user-role-label"
+            value={userType}
+            label="Role"
+            onChange={(e) => setUserType(e.target.value)}
+            data-testid="edit-user-role"
+          >
+            <MenuItem value="">None</MenuItem>
+            {USER_ROLES.filter((r) => (user?.userStatus === 'ai-agent' ? r === 'web-jam-llm' : r !== 'web-jam-llm')).map((r) => (
+              <MenuItem key={r} value={r}>{r}</MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <Typography variant="subtitle2" sx={{ marginBottom: 1 }}>Privileges</Typography>
         {CAPABILITY_GROUPS.map((group) => (
-          <Box key={group.label} sx={{ marginBottom: 1 }}>
-            <Typography variant="body2" sx={{ fontWeight: 'bold' }}>{group.label}</Typography>
-            <FormGroup row>
-              {group.items.map((cap) => (
-                <FormControlLabel
-                  key={cap}
-                  control={(
-                    <Checkbox
-                      checked={privileges.includes(cap)}
-                      onChange={() => toggleCapability(cap)}
-                      aria-label={cap}
-                      data-testid={`edit-cap-${cap}`}
+          <Box key={group.label} sx={{ width: '100%', borderBottom: '1px solid #ccc' }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, minHeight: '44px' }}>
+              <Typography variant="body2"
+                sx={{ fontWeight: 'bold', minWidth: '110px', m: 0, mt: '20px', lineHeight: '44px' }}>{group.label}</Typography>
+              <FormGroup row sx={{ flexWrap: 'nowrap', margin: 0 }}>
+                {(['read', 'create', 'edit', 'delete'] as const).map((action) => {
+                  const cap = group.items.find((item) => item.endsWith(`:${action}`));
+                  return cap ? (
+                    <FormControlLabel
+                      key={cap}
+                      sx={{ minWidth: '100px', m: 0 }}
+                      control={(
+                        <Checkbox
+                          size="small"
+                          checked={privileges.includes(cap)}
+                          onChange={() => toggleCapability(cap)}
+                          aria-label={cap}
+                          data-testid={`edit-cap-${cap}`}
+                        />
+                      )}
+                      label={cap.split(':')[1]}
                     />
-                  )}
-                  label={cap.split(':')[1]}
-                />
-              ))}
-            </FormGroup>
+                  ) : (
+                    <Box key={action} sx={{ minWidth: '100px' }} />
+                  );
+                })}
+              </FormGroup>
+            </Box>
           </Box>
         ))}
         {error && <Typography color="error" sx={{ marginTop: 1 }}>{error}</Typography>}
