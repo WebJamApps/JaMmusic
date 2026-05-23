@@ -56,6 +56,7 @@ export function UsersTable({
         <TableRow>
           <TableCell>Name</TableCell>
           <TableCell>Email</TableCell>
+          <TableCell>Role</TableCell>
           <TableCell>Type</TableCell>
           <TableCell>Privileges</TableCell>
           <TableCell>Actions</TableCell>
@@ -66,6 +67,9 @@ export function UsersTable({
           <TableRow key={u._id} data-testid={`user-row-${u._id}`}>
             <TableCell>{u.name}</TableCell>
             <TableCell>{u.email}</TableCell>
+            <TableCell>
+              <Chip label={u.userType || 'N/A'} color="primary" variant="outlined" size="small" />
+            </TableCell>
             <TableCell>
               <Chip label={u.userStatus || 'human'} size="small" />
             </TableCell>

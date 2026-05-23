@@ -9,8 +9,7 @@
   },
   "author": "https://github.com/orgs/WebJamApps/teams/handlersandkickers",
   "engines": {
-    "node": "24.15.0",
-    "npm": "11.12.1"
+    "node": "24.16.0"
   },
   "files": [
     "vite.config.ts",
@@ -75,7 +74,7 @@
     "decode-uri-component": "^0.4.1",
     "dotenv": "^17.4.2",
     "events": "^3.3.0",
-    "express": "^4.22.2",
+    "express": "^4.22.1",
     "express-sslify": "^1.2.0",
     "graphql": "^16.13.2",
     "html-react-parser": "^3.0.16",

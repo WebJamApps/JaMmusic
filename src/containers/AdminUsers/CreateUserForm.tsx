@@ -2,7 +2,7 @@ import { useState } from 'react';
 import {
   TextField, Button, FormControl, InputLabel, Select, MenuItem, FormGroup, FormControlLabel, Checkbox, Box, Typography,
 } from '@mui/material';
-import { CAPABILITY_GROUPS, USER_STATUS_OPTIONS, type Capability } from './capabilities';
+import { CAPABILITY_GROUPS, USER_STATUS_OPTIONS, USER_ROLES, type Capability } from './capabilities';
 import adminUtils from './admin-users.utils';
 
 interface IcreateUserFormProps {
@@ -14,6 +14,7 @@ export function CreateUserForm({ token, onCreated }: IcreateUserFormProps): JSX.
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [userStatus, setUserStatus] = useState<string>('human');
+  const [userType, setUserType] = useState<string>('JaM-admin');
   const [privileges, setPrivileges] = useState<Capability[]>([]);
   const [notes, setNotes] = useState('');
   const [error, setError] = useState('');
@@ -32,11 +33,12 @@ export function CreateUserForm({ token, onCreated }: IcreateUserFormProps): JSX.
       await adminUtils.createUser(token, {
         name: name.trim(),
         email: email.trim(),
+        userType,
         userStatus,
         privileges,
         userDetails: notes,
       });
-      setName(''); setEmail(''); setUserStatus('human'); setPrivileges([]); setNotes('');
+      setName(''); setEmail(''); setUserStatus('human'); setUserType('JaM-admin'); setPrivileges([]); setNotes('');
       onCreated();
     } catch (e) {
       const err = e as { response?: { body?: { message?: string } }; message?: string };
@@ -80,8 +82,8 @@ export function CreateUserForm({ token, onCreated }: IcreateUserFormProps): JSX.
       <Box sx={{ marginBottom: 2 }}>
         <Typography variant="subtitle2" sx={{ marginBottom: 1 }}>Privileges</Typography>
         {CAPABILITY_GROUPS.map((group) => (
-          <Box key={group.label} sx={{ marginBottom: 1 }}>
-            <Typography variant="body2" sx={{ fontWeight: 'bold' }}>{group.label}</Typography>
+          <Box key={group.label} sx={{ marginBottom: 1, display: 'flex', alignItems: 'center', gap: 2 }}>
+            <Typography variant="body2" sx={{ fontWeight: 'bold', minWidth: '70px' }}>{group.label}</Typography>
             <FormGroup row>
               {group.items.map((cap) => (
                 <FormControlLabel
