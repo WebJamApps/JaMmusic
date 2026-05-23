@@ -23,5 +23,5 @@ export const CAPABILITY_GROUPS: { label: string; items: Capability[] }[] = [
 export const USER_STATUS_OPTIONS = ['human', 'ai-agent'] as const;
 export type UserStatus = (typeof USER_STATUS_OPTIONS)[number];
 
-export const USER_ROLES = ['JaM-admin', 'Developer', 'clc-admin'] as const;
+export const USER_ROLES = ['JaM-admin', 'Developer', 'clc-admin', 'web-jam-llm'] as const;
 export type UserRole = (typeof USER_ROLES)[number];

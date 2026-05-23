@@ -61,7 +61,9 @@ export function EditPrivilegesDialog({
             onChange={(e) => setUserType(e.target.value)}
             data-testid="edit-user-role"
           >
-            {USER_ROLES.map((r) => <MenuItem key={r} value={r}>{r}</MenuItem>)}
+            {USER_ROLES.filter((r) => (user?.userStatus === 'ai-agent' ? r === 'web-jam-llm' : r !== 'web-jam-llm')).map((r) => (
+              <MenuItem key={r} value={r}>{r}</MenuItem>
+            ))}
           </Select>
         </FormControl>
         <Typography variant="subtitle2" sx={{ marginBottom: 1 }}>Privileges</Typography>
