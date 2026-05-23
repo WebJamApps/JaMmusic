@@ -58,6 +58,9 @@ const wjNav = [
     nav: 'wj', className: '', type: 'link', iconClass: 'fas fa-sort', link: '/sort', name: 'Sort', auth: true,
   },
   {
+    nav: 'wj', className: '', type: 'link', iconClass: 'fas fa-users-cog', link: '/admin/users', name: 'Admin Users', auth: true,
+  },
+  {
     nav: 'wj', className: 'home', type: 'link', iconClass: 'fas fa-home', link: '/', name: 'Web Jam LLC',
   },
   {

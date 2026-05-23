@@ -3,6 +3,7 @@ import {
   BrowserRouter, Navigate, Route, Routes,
 } from 'react-router-dom';
 import { Homepage } from 'src/containers/Homepage';
+import { AdminUsers } from '../containers/AdminUsers';
 import { SortContainer } from '../containers/SortContainer';
 import BuyMusic from '../containers/BuyMusic';
 import { Music } from '../containers/Music';
@@ -28,6 +29,7 @@ export function App(): JSX.Element {
               element={checkAppName()}
             />
             <Route path="/sort" element={<SortContainer />} />
+            <Route path="/admin/users" element={<AdminUsers />} />
             <Route path="/new-homepage" element={<Homepage />} />
             <Route path="/music" element={<Music />} />
             <Route path="/music/buymusic" element={<BuyMusic />} />

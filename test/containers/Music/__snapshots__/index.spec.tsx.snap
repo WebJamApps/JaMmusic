@@ -131,7 +131,12 @@ exports[`/music > renders the component 1`] = `
               />
             }
             label="Show Title In Caption"
-          />
+          >
+            <input
+              checked={false}
+              onClick={[Function]}
+            />
+          </div>
         </div>
       </div>
       <div>
