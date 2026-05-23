@@ -65,8 +65,8 @@ export function FormGroup(props:any) {
 }
 
 export function FormControlLabel(props:any) {
-  const { children } = props;
-  return <div {...props}>{children}</div>;
+  const { children, control } = props;
+  return <div {...props}>{control}{children}</div>;
 }
 
 export function Select(props:any) {
@@ -96,4 +96,38 @@ export function Box(props:any) {
 export function Grid(props:any) {
   const { children } = props;
   return <div {...props}>{children}</div>;
+}
+
+export function Typography(props:any) {
+  const { children } = props;
+  return <div {...props}>{children}</div>;
+}
+
+export function Chip(props:any) {
+  return <span {...props} />;
+}
+
+export function Table(props:any) {
+  const { children } = props;
+  return <table {...props}>{children}</table>;
+}
+
+export function TableHead(props:any) {
+  const { children } = props;
+  return <thead {...props}>{children}</thead>;
+}
+
+export function TableBody(props:any) {
+  const { children } = props;
+  return <tbody {...props}>{children}</tbody>;
+}
+
+export function TableRow(props:any) {
+  const { children } = props;
+  return <tr {...props}>{children}</tr>;
+}
+
+export function TableCell(props:any) {
+  const { children } = props;
+  return <td {...props}>{children}</td>;
 }
