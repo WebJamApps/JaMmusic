@@ -26,9 +26,9 @@ async function createUser(
   return res.body as IadminUser;
 }
 
-async function updatePrivileges(token: string, userId: string, privileges: string[]): Promise<IadminUser> {
+async function updateUser(token: string, userId: string, payload: { privileges?: string[]; userType?: string }): Promise<IadminUser> {
   const res = await superagent.put(`${baseUrl}/${userId}`).set('Accept', 'application/json')
-    .set('Authorization', `Bearer ${token}`).send({ privileges });
+    .set('Authorization', `Bearer ${token}`).send(payload);
   return res.body as IadminUser;
 }
 
@@ -44,10 +44,10 @@ async function deleteUser(token: string, userId: string): Promise<void> {
 
 export function getAllowedAdminRoles(): string[] {
   return process.env.NODE_ENV === 'production'
-    ? ['JaM-admin', 'Developer']
-    : ['JaM-admin', 'Developer'];
+    ? ['JaM-admin', 'Developer', 'clc-admin']
+    : ['JaM-admin', 'Developer', 'clc-admin'];
 }
 
 export default {
-  listUsers, createUser, updatePrivileges, mintToken, deleteUser, getAllowedAdminRoles,
+  listUsers, createUser, updateUser, mintToken, deleteUser, getAllowedAdminRoles,
 };

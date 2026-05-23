@@ -9,7 +9,7 @@ const user: IadminUser = {
 
 describe('EditPrivilegesDialog', () => {
   beforeEach(() => {
-    adminUtils.updatePrivileges = vi.fn(() => Promise.resolve({} as IadminUser)) as any;
+    adminUtils.updateUser = vi.fn(() => Promise.resolve({} as IadminUser)) as any;
   });
 
   it('initializes with the user privileges', async () => {
@@ -36,7 +36,10 @@ describe('EditPrivilegesDialog', () => {
     await act(async () => {
       tree.findByProps({ 'data-testid': 'edit-priv-save' }).props.onClick();
     });
-    expect(adminUtils.updatePrivileges).toHaveBeenCalledWith('tk', 'u1', ['tour:create']);
+    expect(adminUtils.updateUser).toHaveBeenCalledWith('tk', 'u1', {
+      privileges: ['tour:create'],
+      userType: '',
+    });
     expect(onSaved).toHaveBeenCalled();
   });
 
@@ -65,6 +68,6 @@ describe('EditPrivilegesDialog', () => {
     await act(async () => {
       tree.findByProps({ 'data-testid': 'edit-priv-save' }).props.onClick();
     });
-    expect(adminUtils.updatePrivileges).not.toHaveBeenCalled();
+    expect(adminUtils.updateUser).not.toHaveBeenCalled();
   });
 });
