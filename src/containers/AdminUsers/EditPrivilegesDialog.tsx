@@ -16,7 +16,7 @@ interface IeditPrivilegesDialogProps {
 
 export function EditPrivilegesDialog({
   open, user, token, onClose, onSaved,
-}: IeditPrivilegesDialogProps): JSX.Element {
+}: IeditPrivilegesDialogProps) {
   const [privileges, setPrivileges] = useState<Capability[]>([]);
   const [userType, setUserType] = useState<string>('');
   const [error, setError] = useState('');

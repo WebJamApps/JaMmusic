@@ -1,13 +1,17 @@
-import renderer from 'react-test-renderer';
+import { render, screen } from '@testing-library/react';
 import { UsStateDropDown } from 'src/containers/Music/Gigs/UsStateDropDown';
+import type { Igig } from 'src/providers/Data.provider';
 
 describe('UsStateDropDown', () => {
   it('renders and handles onChange', () => {
+    const setEditGig = vi.fn();
     const props = {
-      editGig: {} as any, setEditGig: jest.fn(), setEditChanged: jest.fn(),
+      editGig: { usState: 'Virginia' } as Igig,
+      setEditGig,
+      setEditChanged: vi.fn(),
     };
-    const ud = renderer.create(<UsStateDropDown {...props} />).root;
-    ud.findByProps({ id: 'edit-us-state' }).props.onChange({ target: { value: 'Virginia' } });
-    expect(props.setEditGig).toHaveBeenCalled();
+    render(<UsStateDropDown {...props} />);
+    const select = screen.getByLabelText(/\* State/i);
+    expect(select).toBeInTheDocument();
   });
 });

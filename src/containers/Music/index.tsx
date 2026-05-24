@@ -9,7 +9,7 @@ import MariaBio from './mariaBio';
 import { CreatePicDialog } from './Pictures/CreatePicDialog';
 import { EditPicTable } from './Pictures/EditPicTable';
 
-export function Musicians(): JSX.Element {
+export function Musicians() {
   return (
     <div className="elevation3" style={{ maxWidth: '1000px', margin: 'auto' }}>
       <section>
@@ -54,7 +54,7 @@ export function checkIsAdmin(auth: Iauth, setIsAdmin: (arg0: boolean) => void) {
   setIsAdmin(isAdmin);
 }
 
-export function Music(): JSX.Element {
+export function Music() {
   const { auth } = useContext(AuthContext);
   const [isAdmin, setIsAdmin] = useState(false);
   const [showCreatePic, setShowCreatePic] = useState(false);

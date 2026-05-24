@@ -1,11 +1,11 @@
-import { createContext, useEffect, useState } from 'react';
+import React, { createContext, useEffect, useState } from 'react';
 import fetchGigs, { defaultGig } from './fetchGigs';
 import fetchPics from './fetchPics';
 import fetchSongs from './fetchSongs';
 import { MakeProvider } from './MakeProvider';
 
 export interface Igig {
-  modify?: JSX.Element,
+  modify?: React.JSX.Element,
   datetime: Date | null;
   more?: string;
   date?: string;
@@ -30,7 +30,7 @@ export interface Isong {
   title: string;
   url: string;
   _id?: string;
-  modify?: JSX.Element
+  modify?: React.JSX.Element
 }
 
 export interface Ipic {
@@ -41,7 +41,7 @@ export interface Ipic {
   'caption': string;
   'thumbnail': string | undefined;
   'link': string;
-  'modify': JSX.Element | undefined;
+  'modify': React.JSX.Element | undefined;
   'comments': string;
   'created_at'?: string;
   'updated_at'?: string;
@@ -78,7 +78,7 @@ export const makeGetGigs = (setGigs: (arg0: Igig[] | null) => void) => () => fet
 
 export const makeGetPics = (setPics: (arg0: Ipic[] | null) => void) => () => fetchPics.getPics(setPics);
 
-export function DataProvider({ children }:any): JSX.Element {
+export function DataProvider({ children }: { children: React.ReactNode }): React.JSX.Element {
   const [gigs, setGigs] = useState([defaultGig] as Igig[] | null);
   const [songs, setSongs] = useState(null as Isong[] | null);
   const [pics, setPics] = useState(null as Ipic[] | null);

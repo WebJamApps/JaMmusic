@@ -15,7 +15,7 @@ export default class BuyMusic extends Component {
 
   componentDidMount(): void { this.commonUtils.setTitleAndScroll('Buy Music', window.screen.width); }
 
-  render(): JSX.Element {
+  render() {
     return (
       <div
         className="page-content"

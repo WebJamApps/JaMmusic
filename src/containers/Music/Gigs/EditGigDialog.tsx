@@ -148,7 +148,8 @@ export function EditGigDialog(props: IeditGigDialogProps) {
               setEditChanged(true);
               setEditGig({ ...editGig, datetime: newValue }); return newValue;
             }}
-            renderInput={(params) => <TextField className="dateTimeInput" {...params} />}
+            slots={{ textField: TextField }}
+            slotProps={{ textField: { className: 'dateTimeInput' } }}
           />
         </LocalizationProvider>
         <p className="venueLabel">* Venue</p>

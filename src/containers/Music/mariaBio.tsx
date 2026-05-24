@@ -20,7 +20,7 @@ const BioText = () => (
   </div>
 );
 
-function MariaBio(): JSX.Element {
+function MariaBio() {
   return (
     <div className="mariaBio">
       <h4 id="mariabio" style={{ marginBottom: '4px', marginTop: '8px', textAlign: 'center' }}>Meet Maria</h4>

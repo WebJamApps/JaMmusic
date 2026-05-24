@@ -1,16 +1,25 @@
+import { render, screen, fireEvent } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
-import renderer from 'react-test-renderer';
 import { ClickToListen } from 'src/containers/Music/intro';
 
 describe('Intro', () => {
   it('renders ClickToListen when isAdmin and handles events', () => {
+    const setShowCreatePic = vi.fn();
+    const setShowEditPic = vi.fn();
     const props = {
-      appName: 'app', isAdmin: true, setShowCreatePic: jest.fn(), setShowEditPic: jest.fn(),
+      appName: 'app',
+      isAdmin: true,
+      setShowCreatePic,
+      setShowEditPic,
     };
-    const ctl = renderer.create(<BrowserRouter><ClickToListen {...props} /></BrowserRouter>).root;
-    ctl.findByProps({ className: 'createPicButton' }).props.onClick();
-    expect(props.setShowCreatePic).toHaveBeenCalledWith(true);
-    ctl.findByProps({ className: 'editPicButton' }).props.onClick();
-    expect(props.setShowEditPic).toHaveBeenCalledWith(true);
+    render(<BrowserRouter><ClickToListen {...props} /></BrowserRouter>);
+
+    const createButton = screen.getByText(/Add Pic/i);
+    const editButton = screen.getByText(/Edit Pic/i);
+
+    fireEvent.click(createButton);
+    expect(setShowCreatePic).toHaveBeenCalledWith(true);
+    fireEvent.click(editButton);
+    expect(setShowEditPic).toHaveBeenCalledWith(true);
   });
 });

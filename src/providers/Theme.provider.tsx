@@ -1,4 +1,4 @@
-import {
+import React, {
   createContext, useEffect, useMemo,
 } from 'react';
 import { usePersistedState } from 'src/lib/usePersistedState';
@@ -29,7 +29,7 @@ export const defaultThemeContext: IthemeContext = {
 
 export const ThemeContext = createContext<IthemeContext>(defaultThemeContext);
 
-export function ThemeProvider({ children }: { children?: React.ReactNode }): JSX.Element {
+export function ThemeProvider({ children }: { children?: React.ReactNode }): React.JSX.Element {
   const [stored, setStored] = usePersistedState(THEME_STORAGE_KEY, DEFAULT_THEME);
   const theme: Theme = isTheme(stored) ? stored : DEFAULT_THEME;
 

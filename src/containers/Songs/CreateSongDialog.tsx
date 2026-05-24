@@ -2,7 +2,7 @@ import {
   Button, Dialog, DialogActions, DialogContent,
   DialogContentText, DialogTitle, TextField,
 } from '@mui/material';
-import { useState, useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import { AuthContext } from 'src/providers/Auth.provider';
 import { DataContext, Isong } from 'src/providers/Data.provider';
 import { CategorySelect } from 'src/components/CategorySelect';
@@ -10,11 +10,11 @@ import { YearField } from 'src/components/YearField';
 import utils, { defaultSong } from './songs.utils';
 
 interface IsongFieldProps {
-  label:string,
-  value:string,
-  onChange:(arg0:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>)=>string
+  label: string,
+  value: string,
+  onChange: (arg0: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => string
 }
-function SongField(props:IsongFieldProps):JSX.Element {
+function SongField(props: IsongFieldProps): React.JSX.Element {
   const { label, value, onChange } = props;
   return (
     <TextField

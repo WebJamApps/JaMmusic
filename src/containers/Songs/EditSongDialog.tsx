@@ -2,7 +2,7 @@ import {
   Button, Dialog, DialogActions, DialogContent,
   DialogContentText, DialogTitle, TextField,
 } from '@mui/material';
-import { useContext, useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { AuthContext } from 'src/providers/Auth.provider';
 import { DataContext, Isong } from 'src/providers/Data.provider';
 import { CategorySelect } from 'src/components/CategorySelect';
@@ -14,7 +14,7 @@ interface IsongFieldProps {
   value: string,
   onChange: (arg0: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => string
 }
-function SongField(props: IsongFieldProps): JSX.Element {
+function SongField(props: IsongFieldProps): React.JSX.Element {
   const { label, value, onChange } = props;
   return (
     <TextField
@@ -30,7 +30,7 @@ function SongField(props: IsongFieldProps): JSX.Element {
 
 interface IeditSongDialogProps {
   editDialogState: { showEditDialog: boolean, setShowEditDialog: (arg0: boolean) => void },
-  editSongState: { editSong: Isong, setEditSong: (arg0: Isong) => void },
+  editSongState: { editSong: Isong, setEditSong: React.Dispatch<React.SetStateAction<Isong>> },
   currentSong: Isong
 }
 export function EditSongDialog({ editDialogState, editSongState, currentSong }: IeditSongDialogProps) {

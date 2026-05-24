@@ -7,7 +7,7 @@ import { ShowTokenDialog } from './ShowTokenDialog';
 import { EditPrivilegesDialog } from './EditPrivilegesDialog';
 import adminUtils, { type IadminUser } from './admin-users.utils';
 
-export function AdminUsers(): JSX.Element {
+export function AdminUsers() {
   const { auth } = useContext(AuthContext);
   const allowed = adminUtils.getAllowedAdminRoles();
   const isAuthorized = auth.isAuthenticated && allowed.indexOf(auth.user.userType) !== -1;

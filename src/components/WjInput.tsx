@@ -6,9 +6,9 @@ interface IwjinputProps {
   type?: string,
   isRequired?: boolean,
   value?: string,
-  style?:Record<string, unknown>,
+  style?: Record<string, unknown>,
 }
-export const WjInput = (props:IwjinputProps): JSX.Element => {
+export const WjInput = (props: IwjinputProps) => {
   const {
     label, style, isRequired, type, onChange, value,
   } = props;

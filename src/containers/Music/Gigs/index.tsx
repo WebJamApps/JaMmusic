@@ -2,7 +2,7 @@ import {
   useContext, useEffect, useState,
 } from 'react';
 import {
-  DataGrid, GridColumns, GridRenderCellParams,
+  DataGrid, type GridColDef, type GridRenderCellParams,
 } from '@mui/x-data-grid';
 import { Button, IconButton, Tooltip } from '@mui/material';
 import { Add as AddIcon } from '@mui/icons-material';
@@ -16,7 +16,7 @@ import { EditGigDialog } from './EditGigDialog';
 import { CreateGigDialog } from './CreateGigDialog';
 import './gigs.scss';
 
-export const columns: GridColumns = [
+export const columns: GridColDef[] = [
   {
     field: 'date',
     headerName: 'Date',
@@ -82,11 +82,12 @@ export const ShowCreateGigButton = (
 interface IgigsDivProps {
   isAdmin: boolean, showDialog: boolean, setShowDialog: (arg0: boolean) => void,
   gigsInOrder: Igig[] | null, pageSize: number, editGig: Igig, setEditGig: (arg0: Igig) => void,
-  editChanged: boolean, setEditChanged: (arg0: boolean) => void, getGigs: () => boolean, auth: Iauth
+  editChanged: boolean, setEditChanged: (arg0: boolean) => void, getGigs: () => boolean, auth: Iauth,
+  setPageSize: (arg0: number) => void
 }
 export const GigsDiv = (props: IgigsDivProps) => {
   const {
-    isAdmin, setShowDialog, setEditGig, editGig, gigsInOrder = [], pageSize, showDialog, editChanged, setEditChanged, getGigs, auth,
+    isAdmin, setShowDialog, setEditGig, editGig, gigsInOrder = [], pageSize, showDialog, editChanged, setEditChanged, getGigs, auth, setPageSize,
   } = props;
   const navigate = useNavigate();
   const handleClick = () => {
@@ -113,9 +114,10 @@ export const GigsDiv = (props: IgigsDivProps) => {
           }}
           rows={gigsInOrder || []}
           columns={columns}
-          pageSize={pageSize}
-          rowsPerPageOptions={[pageSize]}
-          disableSelectionOnClick
+          paginationModel={{ page: 0, pageSize }}
+          onPaginationModelChange={(model) => setPageSize(model.pageSize)}
+          pageSizeOptions={[pageSize]}
+          disableRowSelectionOnClick
         />
       </div>
       <CreateGigDialog showDialog={showDialog} setShowDialog={setShowDialog} />
@@ -132,7 +134,7 @@ export const GigsDiv = (props: IgigsDivProps) => {
   );
 };
 
-export function Gigs({ isAdmin }: { isAdmin: boolean }): JSX.Element {
+export function Gigs({ isAdmin }: { isAdmin: boolean }) {
   const { auth } = useContext(AuthContext);
   const { gigs, getGigs } = useContext(DataContext);
   const [showDialog, setShowDialog] = useState(false);
@@ -147,6 +149,7 @@ export function Gigs({ isAdmin }: { isAdmin: boolean }): JSX.Element {
     setEditGig,
     gigsInOrder,
     pageSize,
+    setPageSize,
     showDialog,
     editGig,
     setEditChanged,
@@ -156,4 +159,3 @@ export function Gigs({ isAdmin }: { isAdmin: boolean }): JSX.Element {
   };
   return <GigsDiv {...props} />;
 }
-

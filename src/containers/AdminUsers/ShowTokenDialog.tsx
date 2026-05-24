@@ -8,7 +8,7 @@ interface IshowTokenDialogProps {
   onClose: () => void;
 }
 
-export function ShowTokenDialog({ open, token, onClose }: IshowTokenDialogProps): JSX.Element {
+export function ShowTokenDialog({ open, token, onClose }: IshowTokenDialogProps) {
   const copyToClipboard = async () => {
     try { await navigator.clipboard.writeText(token); } catch (_e) { /* ignore */ }
   };

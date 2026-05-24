@@ -1,7 +1,6 @@
-import {
+import React, {
   createContext, useEffect,
 } from 'react';
-import superagent from 'superagent';
 import jwt from 'jwt-simple';
 import { usePersistedState } from 'src/lib/usePersistedState';
 
@@ -46,8 +45,14 @@ export const setUserAuth = async (
   type: 'setAuth' | 'setAuthString',
 ) => {
   try {
-    const { body } = await superagent.get(`${process.env.BackendUrl}/user/${userId}`)
-      .set('Accept', 'application/json').set('Authorization', `Bearer ${token}`);
+    const res = await fetch(`${process.env.BackendUrl}/user/${userId}`, {
+      headers: {
+        Accept: 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+    const body = await res.json();
     if (type === 'setAuthString') {
       setAuthType(JSON.stringify({
         error: '', isAuthenticated: true, token, user: body,
@@ -64,7 +69,7 @@ export const setUserAuth = async (
   }
 };
 
-export function AuthProvider({ children }: any): JSX.Element {
+export function AuthProvider({ children }: { children: React.ReactNode }): React.JSX.Element {
   const { Provider } = AuthContext;
   const [authString, setAuthString] = usePersistedState('auth', JSON.stringify(defaultAuth));
   useEffect(() => {
@@ -74,7 +79,7 @@ export function AuthProvider({ children }: any): JSX.Element {
           const auth = JSON.parse(authString);
           const { token } = auth;
           const { sub } = jwt.decode(token, process.env.HashString as string);
-          await setUserAuth(token, sub, setAuthString as (arg0: any) => void, 'setAuthString');
+          await setUserAuth(token, sub, setAuthString as (arg0: string | Iauth) => void, 'setAuthString');
         } catch (err) { (setAuthString as React.Dispatch<React.SetStateAction<string>>)(JSON.stringify(defaultAuth)); }
       }
     })();

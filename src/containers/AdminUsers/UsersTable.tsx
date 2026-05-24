@@ -14,7 +14,7 @@ interface IusersTableProps {
 
 export function UsersTable({
   users, token, onShowToken, onEditPrivileges, onChange,
-}: IusersTableProps): JSX.Element {
+}: IusersTableProps) {
   const [busy, setBusy] = useState<string>('');
 
   const handleShowToken = async (userId: string) => {

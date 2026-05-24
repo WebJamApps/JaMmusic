@@ -1,4 +1,4 @@
-function FacebookFeed(): JSX.Element {
+function FacebookFeed() {
   return (
     <div
       style={{

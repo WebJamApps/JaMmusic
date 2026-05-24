@@ -7,7 +7,7 @@ interface WjDropdownProps {
   style?: Record<string, unknown>,
   disabled?: boolean
 }
-export const WjDropdown = (props: WjDropdownProps): JSX.Element => {
+export const WjDropdown = (props: WjDropdownProps) => {
   const {
     style, htmlFor, onChange, value, options, disabled,
   } = props;

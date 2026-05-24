@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ReactPlayer from 'react-player';
 import { Button } from '@mui/material';
 import { Share } from '@mui/icons-material';
@@ -17,7 +17,7 @@ interface ImyReactPlayerProps {
   playing: boolean,
   index: number, songsState: Isong[], setIndex: (arg0: number) => void
 }
-export function MyReactPlayer(props: ImyReactPlayerProps): JSX.Element {
+export function MyReactPlayer(props: ImyReactPlayerProps): React.JSX.Element {
   const {
     playing, index, songsState, setIndex,
   } = props;
@@ -48,7 +48,7 @@ interface ImyButtonsProps {
   playing: boolean, setPlaying: (arg0: boolean) => void, index: number,
   songsState: Isong[], setIndex: (arg0: number) => void, isSingle: boolean
 }
-export function MyButtons(props: ImyButtonsProps): JSX.Element {
+export function MyButtons(props: ImyButtonsProps): React.JSX.Element {
   const {
     playing, setPlaying, index, songsState, setIndex, isSingle,
   } = props;
@@ -100,7 +100,7 @@ export function MyButtons(props: ImyButtonsProps): JSX.Element {
   );
 }
 
-function CopyRight(): JSX.Element {
+function CopyRight(): React.JSX.Element {
   const year = new Date().getFullYear();
   return (
     <span>
@@ -115,7 +115,7 @@ function CopyRight(): JSX.Element {
 
 export function TextUnderPlayer(
   { songsState, index }: { songsState: Isong[], index: number },
-): JSX.Element {
+): React.JSX.Element {
   // eslint-disable-next-line security/detect-object-injection
   const song = songsState[index];
   if (!song) return <> </>;
@@ -156,7 +156,7 @@ export function TextUnderPlayer(
 interface IcategoryButtonsProps {
   category: string, setCategory: (arg0: string) => void, isSingle: boolean, setIndex: (arg0: number) => void
 }
-export function CategoryButtons(props: IcategoryButtonsProps): JSX.Element {
+export function CategoryButtons(props: IcategoryButtonsProps): React.JSX.Element {
   const {
     category, setCategory, isSingle, setIndex,
   } = props;
@@ -178,7 +178,7 @@ export function CategoryButtons(props: IcategoryButtonsProps): JSX.Element {
 
 export function ShareButton(
   { showCopyUrl, setShowCopyUrl }: { showCopyUrl: boolean, setShowCopyUrl: (arg0: boolean) => void },
-): JSX.Element {
+): React.JSX.Element {
   if (showCopyUrl) return <> </>;
   return (
     <Button size="small" onClick={() => setShowCopyUrl(true)} variant="contained" endIcon={<Share />}>
@@ -189,7 +189,7 @@ export function ShareButton(
 
 export function CopyUrlButtons(
   { showCopyUrl, setShowCopyUrl, songUrl }: { songUrl: string, showCopyUrl: boolean, setShowCopyUrl: (arg0: boolean) => void },
-): JSX.Element {
+): React.JSX.Element {
   if (!showCopyUrl) return <> </>;
   return (
     <>
@@ -210,7 +210,7 @@ export function CopyUrlButtons(
 interface IcopyInputProps {
   index: number, songsState: Isong[], isSingle: boolean
 }
-export function CopyShare(props: IcopyInputProps): JSX.Element {
+export function CopyShare(props: IcopyInputProps): React.JSX.Element {
   const { index, songsState, isSingle } = props;
   const [showCopyUrl, setShowCopyUrl] = useState(false);
   // eslint-disable-next-line security/detect-object-injection
@@ -286,4 +286,3 @@ export function MusicPlayer({ songs, filterBy, editDialogState }: ImusicPlayerPr
     </div>
   );
 }
-
