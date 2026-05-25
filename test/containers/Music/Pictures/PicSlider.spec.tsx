@@ -1,7 +1,8 @@
-import renderer from 'react-test-renderer';
+import { render } from '@testing-library/react';
+import '@testing-library/jest-dom';
 import { Isettings, PicSlider, SliderContent } from 'src/containers/Music/Pictures/PicSlider';
 
-const data:any = [
+const data: any = [
   { _id: 1, url: '../static/imgs/ohaf/slideshow2.png', comments: 'showCaption' },
   { _id: 2, url: '../static/imgs/ohaf/slideshow3.png' },
   { _id: 3, url: '../static/imgs/ohaf/slideshow4.png' },
@@ -25,7 +26,7 @@ describe('picture slider component test', () => {
     expect(PicSlider).toBeDefined();
   });
   it('renders SliderContent when having pics', () => {
-    const slider:any = renderer.create(<SliderContent pics={data} settings={settings} />).toJSON();
-    expect(slider.children[0].children[0].props.className).toBe('slick-list');
+    const { container } = render(<SliderContent pics={data} settings={settings} />);
+    expect(container.querySelector('.slick-list')).toBeInTheDocument();
   });
 });

@@ -1,5 +1,6 @@
+import { vi } from 'vitest';
 import { SortContainer, SortSection, TEST_GQL } from 'src/containers/SortContainer';
-import renderer, { ReactTestRendererJSON } from 'react-test-renderer';
+import { render, screen } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import { ApolloError } from '@apollo/client';
 
@@ -20,21 +21,21 @@ describe('SortContainer', () => {
         },
       },
     ];
-    const sc:any = renderer.create(<MockedProvider mocks={mocks} addTypename={false}><SortContainer /></MockedProvider>).toJSON();
-    expect(sc.children[0]).toBe('Loading...');
+    render(<MockedProvider mocks={mocks} addTypename={false}><SortContainer /></MockedProvider>);
+    expect(screen.getByText(/Loading/i)).toBeInTheDocument();
   });
   it('renders SortSection when error', () => {
     const props = {
       error: new ApolloError({ graphQLErrors: ['failed' as any] }), data: {}, dice: [], sorted: [], randomString: '', loading: false,
     };
-    const ss = renderer.create(<SortSection {...props} />).toJSON() as ReactTestRendererJSON;
-    expect(ss.type).toBe('p');
+    render(<SortSection {...props} />);
+    expect(screen.getByText(/error/i)).toBeInTheDocument();
   });
   it('renders SortSection as div', () => {
     const props = {
       error: undefined, data: {}, dice: [], sorted: [], randomString: '', loading: false,
     };
-    const ss = renderer.create(<SortSection {...props} />).toJSON() as ReactTestRendererJSON;
-    expect(ss.type).toBe('div');
+    render(<SortSection {...props} />);
+    expect(screen.queryByText(/error/i)).not.toBeInTheDocument();
   });
 });

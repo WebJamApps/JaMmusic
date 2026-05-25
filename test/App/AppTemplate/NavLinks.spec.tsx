@@ -1,4 +1,6 @@
+import { vi } from 'vitest';
 import { render } from '@testing-library/react';
+import '@testing-library/jest-dom';
 import { NavLinks } from 'src/App/AppTemplate/NavLinks';
 import { BrowserRouter } from 'react-router-dom';
 

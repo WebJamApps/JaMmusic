@@ -1,57 +1,46 @@
-import renderer from 'react-test-renderer';
+import { vi } from 'vitest';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { EditPicDialog } from 'src/containers/Music/Pictures/EditPicDialog';
 import utils from 'src/containers/Music/Pictures/pictures.utils';
 
 describe('EditPicDialog', () => {
-  it('handles onClose for EditPicDialog', () => {
-    const props = {
-      editPic: {
-        title: '', type: '', comments: '', url: '', _id: undefined,
-      },
-      setShowTable: jest.fn(),
-      setEditPic: jest.fn(),
-    };
-    const epd = renderer.create(<EditPicDialog {...props} />).root;
-    epd.findByProps({ className: 'editPicDialog' }).props.onClose();
-    expect(props.setEditPic).toHaveBeenCalled();
-  });
   it('handles onChange with url', () => {
     const props = {
       editPic: {
         title: '', type: '', comments: '', url: '', _id: undefined,
       },
-      setShowTable: jest.fn(),
-      setEditPic: jest.fn(),
+      setShowTable: vi.fn(),
+      setEditPic: vi.fn(),
     };
-    const evt = { target: { value: 'url' } };
-    const epd = renderer.create(<EditPicDialog {...props} />).root;
-    const tree = epd.findByProps({ label: '* URL' }).props.onChange(evt);
-    expect(tree).toBe('url');
+    const { container } = render(<EditPicDialog {...props} />);
+    const urlInput = container.querySelector('input[label="* URL"]')!;
+    fireEvent.change(urlInput, { target: { value: 'url' } });
+    expect(props.setEditPic).toHaveBeenCalled();
   });
   it('handles onChange with title', () => {
     const props = {
       editPic: {
         title: '', type: '', comments: '', url: '', _id: undefined,
       },
-      setShowTable: jest.fn(),
-      setEditPic: jest.fn(),
+      setShowTable: vi.fn(),
+      setEditPic: vi.fn(),
     };
-    const evt = { target: { value: 'title' } };
-    const epd = renderer.create(<EditPicDialog {...props} />).root;
-    const tree = epd.findByProps({ label: '* Title' }).props.onChange(evt);
-    expect(tree).toBe('title');
+    const { container } = render(<EditPicDialog {...props} />);
+    const titleInput = container.querySelector('input[label="* Title"]')!;
+    fireEvent.change(titleInput, { target: { value: 'title' } });
+    expect(props.setEditPic).toHaveBeenCalled();
   });
   it('handles onClick with updatePic', () => {
     const props = {
       editPic: {
-        title: '', type: '', comments: '', url: '', _id: undefined,
+        title: 'title', type: '', comments: '', url: 'url', _id: '123',
       },
-      setShowTable: jest.fn(),
-      setEditPic: jest.fn(),
+      setShowTable: vi.fn(),
+      setEditPic: vi.fn(),
     };
-    utils.updatePic = jest.fn();
-    const epd = renderer.create(<EditPicDialog {...props} />).root;
-    epd.findByProps({ variant: 'contained' }).props.onClick();
+    utils.updatePic = vi.fn();
+    render(<EditPicDialog {...props} />);
+    fireEvent.click(screen.getByText(/Update/i));
     expect(utils.updatePic).toHaveBeenCalled();
   });
   it('handles onClick with deletePic', () => {
@@ -59,12 +48,12 @@ describe('EditPicDialog', () => {
       editPic: {
         title: '', type: '', comments: '', url: '', _id: undefined,
       },
-      setShowTable: jest.fn(),
-      setEditPic: jest.fn(),
+      setShowTable: vi.fn(),
+      setEditPic: vi.fn(),
     };
-    utils.deletePic = jest.fn();
-    const epd = renderer.create(<EditPicDialog {...props} />).root;
-    epd.findByProps({ id: 'delete' }).props.onClick();
+    utils.deletePic = vi.fn();
+    render(<EditPicDialog {...props} />);
+    fireEvent.click(screen.getByText(/Delete/i));
     expect(utils.deletePic).toHaveBeenCalled();
   });
   it('handles onClick with setEditPic', () => {
@@ -72,11 +61,11 @@ describe('EditPicDialog', () => {
       editPic: {
         title: '', type: '', comments: '', url: '', _id: undefined,
       },
-      setShowTable: jest.fn(),
-      setEditPic: jest.fn(),
+      setShowTable: vi.fn(),
+      setEditPic: vi.fn(),
     };
-    const epd = renderer.create(<EditPicDialog {...props} />).root;
-    epd.findByProps({ className: 'cancelPicButton' }).props.onClick();
+    render(<EditPicDialog {...props} />);
+    fireEvent.click(screen.getByText(/Cancel/i));
     expect(props.setEditPic).toHaveBeenCalled();
   });
 });

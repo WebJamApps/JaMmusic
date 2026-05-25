@@ -1,4 +1,5 @@
 import { render, screen, fireEvent } from '@testing-library/react';
+import '@testing-library/jest-dom';
 import { GoogleButtons, loginConfig } from 'src/App/AppTemplate/GoogleButtons';
 import utils from 'src/App/AppTemplate/GoogleButtons/utils';
 import { AuthContext, defaultAuth } from 'src/providers/Auth.provider';
@@ -50,5 +51,4 @@ describe('GoogleButtons', () => {
     fireEvent.click(logoutButton);
     expect(utils.responseGoogleLogout).toHaveBeenCalled();
   });
-});
 });

@@ -1,15 +1,17 @@
 import { vi } from 'vitest';
-import axios from 'axios';
 import commonUtils from 'src/lib/utils';
 import utils from 'src/containers/Songs/songs.utils';
 
-vi.mock('axios');
-
 describe('songs utils', () => {
+  const axiosMock = { post: vi.fn() };
+  beforeEach(() => {
+    vi.spyOn(commonUtils, 'notify').mockImplementation(() => { });
+  });
+
   it('createSong', async () => {
-    const getSongs = jest.fn();
-    const setShowDialog = jest.fn();
-    const setSong = jest.fn();
+    const getSongs = vi.fn();
+    const setShowDialog = vi.fn();
+    const setSong = vi.fn();
     const song = {
       artist: '',
       category: '1',
@@ -20,16 +22,17 @@ describe('songs utils', () => {
     const auth = {
       isAuthenticated: false, user: { userType: 'joker', email: '' }, error: '', token: '',
     };
-    (axios.post as jest.Mock).mockResolvedValueOnce({});
+    axiosMock.post.mockResolvedValueOnce({});
+    vi.stubGlobal('axios', axiosMock);
     await utils.createSong(getSongs, setShowDialog, song, setSong, auth);
     expect(setShowDialog).toHaveBeenCalledWith(false);
     expect(getSongs).toHaveBeenCalled();
   });
   it('catches error', async () => {
-    commonUtils.notify = jest.fn();
-    const getSongs = jest.fn();
-    const setShowDialog = jest.fn();
-    const setSong = jest.fn();
+    commonUtils.notify = vi.fn();
+    const getSongs = vi.fn();
+    const setShowDialog = vi.fn();
+    const setSong = vi.fn();
     const song = {
       artist: '',
       category: '1',
@@ -41,7 +44,8 @@ describe('songs utils', () => {
       isAuthenticated: false, user: { userType: 'joker', email: '' }, error: '', token: '',
     };
     const err = new Error('error');
-    (axios.post as jest.Mock).mockRejectedValueOnce(err);
+    axiosMock.post.mockRejectedValueOnce(err);
+    vi.stubGlobal('axios', axiosMock);
     await utils.createSong(getSongs, setShowDialog, song, setSong, auth);
     expect(commonUtils.notify).toHaveBeenCalled();
   });
