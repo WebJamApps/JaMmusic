@@ -1,4 +1,3 @@
-import axios from 'axios';
 import FetchSongs from 'src/providers/fetchSongs';
 
 describe('fetchSongs', () => {
@@ -14,8 +13,7 @@ describe('fetchSongs', () => {
     }, {
       category: '', title: '', url: '', _id: '', year: 1986,
     }];
-    const get:any = jest.fn(() => Promise.resolve({ data: songs }));
-    axios.get = get;
+    const get: any = jest.fn(() => Promise.resolve({ data: songs }));
     const newSongs = await FetchSongs.getSongs(jest.fn());
     expect(newSongs.length).toBe(3);
   });

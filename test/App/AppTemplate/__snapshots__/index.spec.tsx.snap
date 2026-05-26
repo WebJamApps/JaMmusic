@@ -1,3 +1,301 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`AppTemplate > renders the component 1`] = `null`;
+exports[`AppTemplate > renders the component 1`] = `
+<div>
+  <div
+    class="page-host"
+  >
+    <div
+      class="home-sidebar close drawer-container"
+      id="sidebar"
+      role="button"
+      tabindex="0"
+    >
+      <div
+        class="drawer"
+        style="background-color: var(--sidebar-bg); z-index: -1; position: relative;"
+      >
+        <div
+          class="navImage"
+        >
+          <img
+            alt="wjsidelogo"
+            id="webjamwidelogo"
+            src="../static/imgs/webjamlogo1.png"
+            style="width: 182px; margin-right: 0px; margin-left: 0px;"
+          />
+        </div>
+        <div
+          class="nav-list"
+          style="width: 180px;"
+        >
+          <div
+            id="musTT"
+            style="display: none; position: absolute; top: 305px; right: 68px; background-color: white; padding: 3px;"
+          >
+            Music
+          </div>
+          <div
+            class="menu-item"
+          >
+            <a
+              class="nav-link"
+              data-discover="true"
+              href="/music"
+            >
+              <div
+                style="display: inline;"
+              >
+                <i
+                  class="fas fa-music"
+                  style="margin-right: 8px;"
+                />
+                <span
+                  class="nav-item"
+                >
+                  Music
+                </span>
+              </div>
+            </a>
+          </div>
+          <div
+            class="menu-item"
+          >
+            <a
+              class="nav-link"
+              data-discover="true"
+              href="/"
+            >
+              <div
+                style="display: inline;"
+              >
+                <i
+                  class="fas fa-home"
+                  style="margin-right: 8px;"
+                />
+                <span
+                  class="nav-item"
+                >
+                  Web Jam LLC
+                </span>
+              </div>
+            </a>
+          </div>
+          <div
+            class="menu-item googleLogin"
+          >
+            <button
+              class="loginButton"
+              variant="contained"
+            >
+              Login
+            </button>
+          </div>
+          <div
+            class="menu-item theme-toggle"
+          >
+            <button
+              aria-checked="false"
+              aria-label="Switch to dark mode"
+              class="theme-switch is-light"
+              role="switch"
+              type="button"
+            >
+              <span
+                class="theme-switch-side theme-switch-light"
+              >
+                <i
+                  aria-hidden="true"
+                  class="fas fa-sun"
+                />
+                <span
+                  class="theme-switch-side-label"
+                >
+                  Light
+                </span>
+              </span>
+              <span
+                class="theme-switch-side theme-switch-dark"
+              >
+                <i
+                  aria-hidden="true"
+                  class="fas fa-moon"
+                />
+                <span
+                  class="theme-switch-side-label"
+                >
+                  Dark
+                </span>
+              </span>
+              <span
+                aria-hidden="true"
+                class="theme-switch-thumb"
+              />
+            </button>
+          </div>
+          <p
+            style="margin: 0px; padding: 0px; font-size: 6pt;"
+          >
+             
+          </p>
+          <div
+            class="active-users"
+          >
+            <div />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="main-panel"
+    >
+      <span
+        id="mobilemenutoggle"
+        role="button"
+        tabindex="0"
+      >
+        <i
+          class="fas fa-bars"
+        />
+      </span>
+      <div
+        class="mainPanel"
+      >
+        <div
+          class="swipe-area"
+        />
+        <div
+          class="material-header home-header"
+          id="header"
+        >
+          <div
+            class="headercontent"
+            id="ohaflogo"
+          >
+            <img
+              alt="ohaflogo"
+              class="home-header-image"
+              src="../static/imgs/webjamicon7.png"
+            />
+          </div>
+          <div
+            class="headercontent header-text-card"
+          >
+            <h3
+              class="header-text"
+              style="margin-top: 0px;"
+            >
+              Web Jam LLC
+            </h3>
+          </div>
+        </div>
+        <div
+          class="content-block"
+          id="contentBlock"
+          style="width: auto;"
+        >
+          <div
+            id="test-page"
+          />
+          <div
+            class="footer"
+            id="wjfooter"
+            style="background-color: var(--footer-bg); padding-top: 20px; padding-bottom: 20px; bottom: 0px;"
+          >
+            <div
+              style="text-align: center; padding: 6px;"
+            >
+              <a
+                href="https://github.com/WebJamApps"
+                rel="noopener noreferrer"
+                style="color: var(--footer-link); padding-right: 5px;"
+                target="_blank"
+              >
+                <span>
+                  <i
+                    class="fab fa-github"
+                  />
+                </span>
+              </a>
+              <a
+                href="https://www.linkedin.com/company/webjam/"
+                rel="noopener noreferrer"
+                style="color: var(--footer-link); padding-right: 5px;"
+                target="_blank"
+              >
+                <span>
+                  <i
+                    class="fab fa-linkedin"
+                  />
+                </span>
+              </a>
+              <a
+                href="https://www.instagram.com/joshua.v.sherman/"
+                rel="noopener noreferrer"
+                style="color: var(--footer-link); padding-right: 5px;"
+                target="_blank"
+              >
+                <span>
+                  <i
+                    class="fab fa-instagram"
+                  />
+                </span>
+              </a>
+              <a
+                href="https://twitter.com/JoshuaVSherman"
+                rel="noopener noreferrer"
+                style="color: var(--footer-link); padding-right: 5px;"
+                target="_blank"
+              >
+                <span>
+                  <i
+                    class="fab fa-twitter"
+                  />
+                </span>
+              </a>
+              <a
+                href="https://www.facebook.com/WebJamLLC/"
+                rel="noopener noreferrer"
+                style="color: var(--footer-link); padding-right: 5px;"
+                target="_blank"
+              >
+                <span>
+                  <i
+                    class="fab fa-facebook"
+                  />
+                </span>
+              </a>
+              <a
+                href="https://joshuavsherman.tumblr.com/"
+                rel="noopener noreferrer"
+                style="color: var(--footer-link); padding-right: 5px;"
+                target="_blank"
+              >
+                <span>
+                  <i
+                    class="fab fa-tumblr"
+                  />
+                </span>
+              </a>
+              <p
+                style="color: var(--footer-fg); font-size: 9pt; margin-bottom: 0px;"
+              >
+                Powered by
+                 
+                <a
+                  class="wjllc"
+                  href="https://www.web-jam.com"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
+                  Web Jam LLC
+                </a>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

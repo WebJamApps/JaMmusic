@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import renderer, { act } from 'react-test-renderer';
+import { render, screen, fireEvent, act } from '@testing-library/react';
+import '@testing-library/jest-dom';
 import { EditPrivilegesDialog } from 'src/containers/AdminUsers/EditPrivilegesDialog';
 import adminUtils, { type IadminUser } from 'src/containers/AdminUsers/admin-users.utils';
 
@@ -13,60 +14,50 @@ describe('EditPrivilegesDialog', () => {
   });
 
   it('initializes with the user privileges', async () => {
-    let component: renderer.ReactTestRenderer | null = null;
     await act(async () => {
-      component = renderer.create(
+      render(
         <EditPrivilegesDialog open user={user} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />,
       );
     });
-    const tree = component!.root;
-    expect(tree.findByProps({ 'data-testid': 'edit-cap-tour:create' }).props.checked).toBe(true);
-    expect(tree.findByProps({ 'data-testid': 'edit-cap-song:read' }).props.checked).toBe(false);
+    expect(screen.getByTestId('edit-cap-tour:create')).toBeChecked();
+    expect(screen.getByTestId('edit-cap-song:read')).not.toBeChecked();
   });
 
   it('saves and calls onSaved', async () => {
     const onSaved = vi.fn();
-    let component: renderer.ReactTestRenderer | null = null;
     await act(async () => {
-      component = renderer.create(
+      render(
         <EditPrivilegesDialog open user={user} token="tk" onClose={vi.fn()} onSaved={onSaved} />,
       );
     });
-    const tree = component!.root;
     await act(async () => {
-      tree.findByProps({ 'data-testid': 'edit-priv-save' }).props.onClick();
+      fireEvent.click(screen.getByTestId('edit-priv-save'));
     });
     expect(adminUtils.updateUser).toHaveBeenCalledWith('tk', 'u1', {
       privileges: ['tour:create'],
-      userType: '',
+      userType: undefined,
     });
     expect(onSaved).toHaveBeenCalled();
   });
 
   it('calls onClose when Cancel clicked', () => {
     const onClose = vi.fn();
-    const tree = renderer.create(
-      <EditPrivilegesDialog open user={user} token="tk" onClose={onClose} onSaved={vi.fn()} />,
-    ).root;
-    tree.findByProps({ 'data-testid': 'edit-priv-cancel' }).props.onClick();
+    render(<EditPrivilegesDialog open user={user} token="tk" onClose={onClose} onSaved={vi.fn()} />);
+    fireEvent.click(screen.getByTestId('edit-priv-cancel'));
     expect(onClose).toHaveBeenCalled();
   });
 
   it('toggles a capability checkbox', async () => {
-    const tree = renderer.create(
-      <EditPrivilegesDialog open user={user} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />,
-    ).root;
-    const cap = tree.findByProps({ 'data-testid': 'edit-cap-song:read' });
-    await act(async () => { cap.props.onChange(); });
-    expect(tree.findByProps({ 'data-testid': 'edit-cap-song:read' }).props.checked).toBe(true);
+    render(<EditPrivilegesDialog open user={user} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />);
+    const cap = screen.getByTestId('edit-cap-song:read');
+    await act(async () => { fireEvent.click(cap); });
+    expect(cap).toBeChecked();
   });
 
   it('handles null user gracefully on save', async () => {
-    const tree = renderer.create(
-      <EditPrivilegesDialog open user={null} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />,
-    ).root;
+    render(<EditPrivilegesDialog open user={null} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />);
     await act(async () => {
-      tree.findByProps({ 'data-testid': 'edit-priv-save' }).props.onClick();
+      fireEvent.click(screen.getByTestId('edit-priv-save'));
     });
     expect(adminUtils.updateUser).not.toHaveBeenCalled();
   });

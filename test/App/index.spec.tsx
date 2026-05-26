@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import env from 'dotenv';
 import { App, checkAppName } from 'src/App';
-import renderer from 'react-test-renderer';
+import { render } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import store from 'src/redux/store/index';
 import { BrowserRouter } from 'react-router-dom';
@@ -17,15 +17,15 @@ describe('App component', () => {
       ...window.location,
       href: 'https://web-jam.com',
       origin: 'https://web-jam.com',
-      reload: jest.fn(),
-      assign: jest.fn(),
+      reload: vi.fn(),
+      assign: vi.fn(),
     } as any;
-    const app:any = renderer.create(<Provider store={store.store}><App /></Provider>).toJSON();
-    expect(app.props.className).toBe('App');
+    const { container } = render(<Provider store={store.store}><App /></Provider>);
+    expect(container.firstChild).toHaveClass('App');
   });
   it('checkAppName and return <Music />', () => {
     process.env.APP_NAME = 'joshandmariamusic.com';
-    const music:any = renderer.create(<BrowserRouter>{checkAppName()}</BrowserRouter>).toJSON();
-    expect(music.props.className.includes('music')).toBe(true);
+    const { container } = render(<BrowserRouter>{checkAppName()}</BrowserRouter>);
+    expect(container.firstChild).toHaveClass('music');
   });
 });

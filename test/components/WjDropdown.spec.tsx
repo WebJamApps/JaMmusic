@@ -1,11 +1,11 @@
+import { render, fireEvent } from '@testing-library/react';
 import { WjDropdown } from 'src/components/WjDropdown';
-import renderer from 'react-test-renderer';
 
 describe('WjDropdown', () => {
   it('renders without htmlfor and handles onChange', () => {
-    const props = { onChange: jest.fn(), options: [] };
-    const wjd = renderer.create(<WjDropdown {...props} />).root;
-    wjd.findByProps({ multiple: false }).props.onChange();
+    const props = { onChange: vi.fn(), options: [] };
+    const { getByRole } = render(<WjDropdown {...props} />);
+    fireEvent.change(getByRole('combobox'));
     expect(props.onChange).toHaveBeenCalled();
   });
 });

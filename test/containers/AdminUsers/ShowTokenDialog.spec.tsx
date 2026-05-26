@@ -1,26 +1,26 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import renderer, { act } from 'react-test-renderer';
+import { render, screen, fireEvent, act } from '@testing-library/react';
 import { ShowTokenDialog } from 'src/containers/AdminUsers/ShowTokenDialog';
 
 describe('ShowTokenDialog', () => {
   it('renders the token value', () => {
-    const tree = renderer.create(<ShowTokenDialog open token="my-jwt" onClose={vi.fn()} />).root;
-    expect(tree.findByProps({ 'data-testid': 'token-value' })).toBeDefined();
+    render(<ShowTokenDialog open token="my-jwt" onClose={vi.fn()} />);
+    expect(screen.getByTestId('token-value')).toBeDefined();
   });
 
   it('calls onClose when Done clicked', () => {
     const onClose = vi.fn();
-    const tree = renderer.create(<ShowTokenDialog open token="x" onClose={onClose} />).root;
-    tree.findByProps({ 'data-testid': 'close-token' }).props.onClick();
+    render(<ShowTokenDialog open token="x" onClose={onClose} />);
+    fireEvent.click(screen.getByTestId('close-token'));
     expect(onClose).toHaveBeenCalled();
   });
 
   it('writes to clipboard when copy clicked', async () => {
     const write = vi.fn(() => Promise.resolve());
     Object.defineProperty(window.navigator, 'clipboard', { value: { writeText: write }, configurable: true });
-    const tree = renderer.create(<ShowTokenDialog open token="copy-me" onClose={vi.fn()} />).root;
+    render(<ShowTokenDialog open token="copy-me" onClose={vi.fn()} />);
     await act(async () => {
-      tree.findByProps({ 'data-testid': 'copy-token' }).props.onClick();
+      fireEvent.click(screen.getByTestId('copy-token'));
     });
     expect(write).toHaveBeenCalledWith('copy-me');
   });
@@ -28,9 +28,9 @@ describe('ShowTokenDialog', () => {
   it('tolerates clipboard write failure silently', async () => {
     const write = vi.fn(() => Promise.reject(new Error('blocked')));
     Object.defineProperty(window.navigator, 'clipboard', { value: { writeText: write }, configurable: true });
-    const tree = renderer.create(<ShowTokenDialog open token="x" onClose={vi.fn()} />).root;
+    render(<ShowTokenDialog open token="x" onClose={vi.fn()} />);
     await act(async () => {
-      tree.findByProps({ 'data-testid': 'copy-token' }).props.onClick();
+      fireEvent.click(screen.getByTestId('copy-token'));
     });
     expect(write).toHaveBeenCalled();
   });

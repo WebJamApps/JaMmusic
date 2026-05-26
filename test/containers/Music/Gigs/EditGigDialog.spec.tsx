@@ -21,11 +21,11 @@ describe('EditGigDialog', () => {
     render(<EditGigDialog {...props} />);
     // Target the specific cancel button that closes the dialog
     fireEvent.click(screen.getByRole('button', { name: /Cancel/i }));
-    expect(props.setShowDialog).toHaveBeenCalledWith(false);
+    expect(props.setEditGig).toHaveBeenCalledWith(defaultGig);
   });
   it('renders ButtonSection and handles clicks', () => {
     const updateSpy = vi.spyOn(utils, 'updateGig').mockResolvedValue();
-    const deleteSpy = vi.spyOn(utils, 'deleteGig').mockResolvedValue();
+    const deleteSpy = vi.spyOn(utils, 'deleteGig').mockResolvedValue(true);
     const props = {
       editGig: { _id: '123', venue: 'v', city: 'c', usState: 's', datetime: '2025-01-01' } as any,
       editChanged: true,

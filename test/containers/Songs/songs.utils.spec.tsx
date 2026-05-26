@@ -3,32 +3,9 @@ import commonUtils from 'src/lib/utils';
 import utils from 'src/containers/Songs/songs.utils';
 
 describe('songs utils', () => {
-  const axiosMock = { post: vi.fn() };
-  beforeEach(() => {
-    vi.spyOn(commonUtils, 'notify').mockImplementation(() => { });
-  });
 
   it('createSong', async () => {
-    const getSongs = vi.fn();
-    const setShowDialog = vi.fn();
-    const setSong = vi.fn();
-    const song = {
-      artist: '',
-      category: '1',
-      title: 'a',
-      year: 12,
-      url: 'https://test1.com',
-    };
-    const auth = {
-      isAuthenticated: false, user: { userType: 'joker', email: '' }, error: '', token: '',
-    };
-    axiosMock.post.mockResolvedValueOnce({});
-    vi.stubGlobal('axios', axiosMock);
-    await utils.createSong(getSongs, setShowDialog, song, setSong, auth);
-    expect(setShowDialog).toHaveBeenCalledWith(false);
-    expect(getSongs).toHaveBeenCalled();
-  });
-  it('catches error', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: true, json: vi.fn().mockResolvedValue({}) }));
     commonUtils.notify = vi.fn();
     const getSongs = vi.fn();
     const setShowDialog = vi.fn();
@@ -41,11 +18,29 @@ describe('songs utils', () => {
       url: 'https://test1.com',
     };
     const auth = {
-      isAuthenticated: false, user: { userType: 'joker', email: '' }, error: '', token: '',
+      isAuthenticated: true, user: { userType: 'admin', email: 'test@example.com' }, error: '', token: 'mock-token',
+    };
+    await utils.createSong(getSongs, setShowDialog, song, setSong, auth);
+    expect(setShowDialog).toHaveBeenCalledWith(false);
+    expect(getSongs).toHaveBeenCalled();
+  });
+  it('catches error', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('error')));
+    commonUtils.notify = vi.fn();
+    const getSongs = vi.fn();
+    const setShowDialog = vi.fn();
+    const setSong = vi.fn();
+    const song = {
+      artist: '',
+      category: '1',
+      title: 'a',
+      year: 12,
+      url: 'https://test1.com',
+    };
+    const auth = {
+      isAuthenticated: true, user: { userType: 'admin', email: 'test@example.com' }, error: '', token: 'mock-token',
     };
     const err = new Error('error');
-    axiosMock.post.mockRejectedValueOnce(err);
-    vi.stubGlobal('axios', axiosMock);
     await utils.createSong(getSongs, setShowDialog, song, setSong, auth);
     expect(commonUtils.notify).toHaveBeenCalled();
   });

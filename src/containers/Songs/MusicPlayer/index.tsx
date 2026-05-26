@@ -25,12 +25,13 @@ export function MyReactPlayer(props: ImyReactPlayerProps): React.JSX.Element {
   const song = songsState[index];
   if (!song) return <> </>;
   const handleEnded = makeHandleEnded(index, songsState, setIndex);
+  const Player = ReactPlayer as any;
   return (
-    <ReactPlayer
+    <Player
       onError={utils.handlePlayerError}
       onReady={utils.handlePlayerReady}
       muted={!playing}
-      style={utils.setPlayerStyle(song)}
+      style={utils.setPlayerStyle(song) as React.CSSProperties}
       url={song.url}
       playing={playing}
       controls
@@ -39,7 +40,12 @@ export function MyReactPlayer(props: ImyReactPlayerProps): React.JSX.Element {
       height="40vh"
       id="mainPlayer"
       className="audio"
-      config={{ youtube: { playerVars: { controls: 0 } }, file: { attributes: { controlsList: 'nodownload' } } }}
+      config={{
+        youtube: {
+          playerVars: { controls: 0 },
+        },
+        file: { attributes: { controlsList: 'nodownload' } },
+      }}
     />
   );
 }

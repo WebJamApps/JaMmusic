@@ -1,3 +1,204 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`BuyMusic > renders correctly 1`] = `null`;
+exports[`BuyMusic > renders correctly 1`] = `
+<div>
+  <div
+    class="page-content"
+    style="padding-right: 15px; max-width: 800px; margin: auto; border-right: medium;"
+  >
+    <h2
+      style="text-align: center; font-weight: bold; margin: 20px 20px 10px;"
+    >
+      Buy from CD Baby
+    </h2>
+    <div
+      class="row top-row-style"
+    >
+      <div
+        class="col"
+      >
+        <div
+          class="material-content elevation2"
+          style="max-width: 3in; margin: auto; height: 3in;"
+        >
+          <h5
+            style="text-align: center;"
+          >
+            Josh Sherman Band
+          </h5>
+          <div
+            style="text-align: center;"
+          >
+            <a
+              href="https://www.amazon.com/Live-Central-Florida-2001-Explicit/dp/B0015HGSEO/ref=ntt_mus_dp_dpt_1"
+              rel="noopener noreferrer"
+              style="display: inline-block; background: url("https://m.media-amazon.com/images/I/81hDicJieTL._SS500_.jpg") no-repeat, url("http://content.cdbaby.com/img/links/link-artwork-cart-dark-buy-now.png") no-repeat; height: 233px; width: 211px;"
+              target="_blank"
+              title="Josh Sherman Band: live from central Florida, 2001 - 2005"
+            >
+              <span
+                style="display: none;"
+              >
+                Buy Josh Sherman Band
+              </span>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div
+        class="col"
+      >
+        <div
+          class="material-content elevation2"
+          style="margin: auto; max-width: 3in; height: 3in;"
+        >
+          <h5
+            style="text-align: center;"
+          >
+            Solo Acoustic
+          </h5>
+          <div
+            style="text-align: center;"
+          >
+            <a
+              href="https://www.amazon.com/Solo-Acoustic-Explicit-Josh-Sherman/dp/B0013XP8MI/ref=ntt_mus_dp_dpt_2"
+              rel="noopener noreferrer"
+              style="text-align: center; display: inline-block; background: url("https://m.media-amazon.com/images/I/81PLWgAmBEL._SS500_.jpg") no-repeat, url("http://content.cdbaby.com/img/links/link-artwork-cart-light-buy-now.png") no-repeat; height: 233px; width: 211px;"
+              target="_blank"
+              title="Josh Sherman: Solo Acoustic"
+            >
+              <span
+                style="display: none;"
+              >
+                Buy Solo Acoustic
+              </span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="col"
+      style="flex-basis: 0px; flex-grow: 1; max-width: 100%;"
+    >
+      <div
+        style="text-align: center; margin: 50px auto auto;"
+      >
+        <div
+          class="spotify"
+        >
+          <h4
+            style="margin-bottom: 0px;"
+          >
+            Also On Spotify
+          </h4>
+          <div
+            class="row"
+            style="margin-left: -15px; margin-right: -15px; display: flex; flex-wrap: wrap;"
+          >
+            <div
+              class="col"
+              style="flex-basis: 0px; flex-grow: 1; max-width: 100%;"
+            >
+              <iframe
+                height="436"
+                src="https://open.spotify.com/embed/artist/5IvBs06z4RksIE1WvqLULs"
+                title="soloAcoustic"
+                width="312"
+              />
+            </div>
+            <p
+              style="font-size: 1pt;"
+            >
+               
+            </p>
+            <div
+              class="col"
+              style="flex-basis: 0px; flex-grow: 1; max-width: 100%;"
+            >
+              <iframe
+                height="436"
+                src="https://open.spotify.com/embed/artist/4XGcA7sSHYypVflLH48KCx"
+                title="soloAcoustic"
+                width="312"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="col"
+    >
+      <div
+        style="text-align: center;"
+      >
+        <h4
+          style="margin-top: 30px; margin-bottom: 2px;"
+        >
+          Also on
+           
+          Apple Music
+        </h4>
+        <div
+          class="elevation3 top-row-style"
+          style="text-align: center; margin-bottom: 50px;"
+        >
+          <a
+            class="fab fa-apple fa-2x"
+            href="https://music.apple.com/nz/artist/josh-sherman-band/id80070957"
+            style="color: rgb(51, 51, 51); margin: 20px 20px 20px 5%;"
+          >
+             
+            Josh Sherman Band
+          </a>
+          <a
+            class="fab fa-apple fa-2x"
+            href="https://music.apple.com/us/album/solo-acoustic/80925503"
+            style="color: rgb(51, 51, 51); margin: 20px 20px 20px 5%;"
+          >
+             
+            Josh Solo Acoustic
+          </a>
+        </div>
+      </div>
+    </div>
+    <div
+      class="col"
+    >
+      <div
+        style="text-align: center;"
+      >
+        <h4
+          style="margin-top: 30px; margin-bottom: 2px;"
+        >
+          Also on
+           
+          YouTube
+        </h4>
+        <div
+          class="elevation3 top-row-style"
+          style="text-align: center; margin-bottom: 50px;"
+        >
+          <a
+            class="fab fa-youtube fa-2x"
+            href=""https://youtube.com/playlist?list=OLAK5uy_mtLf1U_oKuSgkFRcXYpo5E0OJWnvRt1TI""
+            style="color: rgb(51, 51, 51); margin: 20px 20px 20px 5%;"
+          >
+             
+            Josh Sherman Band
+          </a>
+          <a
+            class="fab fa-youtube fa-2x"
+            href="https://youtube.com/playlist?list=OLAK5uy_nmxiOsu9BvdnwfHZ2w4ix3AG0POpsJPKA"
+            style="color: rgb(51, 51, 51); margin: 20px 20px 20px 5%;"
+          >
+             
+            Josh Solo Acoustic
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
