@@ -24,12 +24,12 @@ describe('Songs', () => {
   });
   it('renders Player', async () => {
     const songs: any = [{
-      category: 'original', title: 'a', year: 12, url: 'https://test1.com',
+      category: 'original', title: 'a', year: 12, url: 'https://test1.com', artist: 'Artist A',
     }, {
-      category: 'original', title: 'b', year: 13, url: 'https://test2.com',
+      category: 'original', title: 'b', year: 13, url: 'https://test2.com', artist: 'Artist B',
     }] as Isong[];
     const editDialogState = { setShowEditDialog: vi.fn(), showEditDialog: false };
     render(<BrowserRouter><Player songs={songs} editDialogState={editDialogState} /></BrowserRouter>);
-    expect(await screen.findByText((content) => content.includes('a'))).toBeInTheDocument();
+    expect(await screen.findByText('a - Artist A', { selector: 'strong' })).toBeInTheDocument();
   });
 });

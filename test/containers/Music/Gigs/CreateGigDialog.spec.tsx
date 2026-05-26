@@ -7,14 +7,13 @@ describe('CreateGigDialog', () => {
   it('renders and handles events', async () => {
     const spy = vi.spyOn(utils, 'createGig').mockResolvedValue();
     const setShowDialog = vi.fn();
-    render(<CreateGigDialog showDialog setShowDialog={setShowDialog} />);
+    const { container } = render(<CreateGigDialog showDialog setShowDialog={setShowDialog} />);
 
-    fireEvent.change(screen.getByLabelText(/\* City/i), { target: { value: 'city' } });
-    fireEvent.change(screen.getByLabelText(/\* Venue/i), { target: { value: 'Venue Name' } });
-    fireEvent.change(screen.getByLabelText(/\* State/i), { target: { value: 'Virginia' } });
+    fireEvent.change(container.querySelector('input[label="* City"]')!, { target: { value: 'city' } });
+    fireEvent.change(container.querySelector('#create-venue')!, { target: { value: 'Venue Name' } });
+    fireEvent.change(container.querySelector('#create-us-state')!, { target: { value: 'Virginia' } });
 
-    const dateInput = screen.getByLabelText(/Date/i);
-    fireEvent.change(dateInput, { target: { value: '2025-01-01T12:00' } });
+    fireEvent.change(container.querySelector('.createDatetime')!, { target: { value: '2025-01-01T12:00' } });
 
     fireEvent.click(screen.getByRole('button', { name: /create/i }));
     await waitFor(() => expect(spy).toHaveBeenCalled());

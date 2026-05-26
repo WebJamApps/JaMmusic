@@ -78,7 +78,7 @@ describe('CreateSongDialog', () => {
     const showDialog = true;
     const setShowDialog = vi.fn();
     render(<CreateSongDialog showDialog={showDialog} setShowDialog={setShowDialog} />);
-    const input = screen.getByLabelText(/Order/i);
+    const input = screen.getByPlaceholderText(/Order/i);
     fireEvent.change(input, { target: { value: '2' } });
     expect(input).toBeDefined();
   });
