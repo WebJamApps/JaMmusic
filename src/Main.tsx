@@ -1,8 +1,7 @@
 import './polyfills';
 import { StrictMode } from 'react';
-import {
-  ApolloClient, InMemoryCache, ApolloProvider,
-} from '@apollo/client';
+import { ApolloClient, InMemoryCache, HttpLink } from '@apollo/client';
+import { ApolloProvider } from '@apollo/client/react';
 import { Provider } from 'react-redux';
 import { createRoot } from 'react-dom/client';
 import { GoogleOAuthProvider } from '@react-oauth/google';
@@ -15,7 +14,7 @@ import { ThemeProvider } from './providers/Theme.provider';
 import './styles/styles.scss';
 
 export const client = new ApolloClient({
-  uri: `${process.env.BackendUrl}/graphql`,
+  link: new HttpLink({ uri: `${process.env.BackendUrl}/graphql` }),
   cache: new InMemoryCache(),
 });
 

@@ -9,7 +9,7 @@ describe('Bookus', () => {
   it('renders and handles click', () => {
     vi.spyOn(window, 'open').mockImplementation(() => ({} as any));
     render(<BookUs />);
-    fireEvent.click(screen.getByText(/book us/i));
+    fireEvent.click(screen.getByRole('button', { name: /current songlist/i }));
     expect(window.open).toHaveBeenCalled();
   });
 });

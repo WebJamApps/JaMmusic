@@ -1,6 +1,6 @@
 import { CodeResponse, googleLogout } from '@react-oauth/google';
 import { defaultAuth, Iauth, setUserAuth } from 'src/providers/Auth.provider';
-import 'react-notifications-component/dist/theme.css';
+import 'react-toastify/dist/ReactToastify.css';
 import jwt from 'jwt-simple';
 import commonUtils from 'src/lib/utils';
 

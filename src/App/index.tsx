@@ -1,4 +1,4 @@
-import { ReactNotifications } from 'react-notifications-component';
+import { ToastContainer } from 'react-toastify';
 import {
   BrowserRouter, Navigate, Route, Routes,
 } from 'react-router-dom';
@@ -19,7 +19,7 @@ export function checkAppName() {
 export function App() {
   return (
     <div id="App" className="App">
-      <ReactNotifications />
+      <ToastContainer position="top-right" autoClose={5000} />
       <BrowserRouter>        <AppTemplate>
         <Routes>
           <Route

@@ -73,7 +73,9 @@ exports[`/music > renders the component 1`] = `
               control="[object Object]"
               label="Show Title In Caption"
             >
-              <input />
+              <input
+                type="checkbox"
+              />
             </div>
           </div>
         </div>
@@ -145,8 +147,8 @@ exports[`/music > renders the component 1`] = `
               * Venue
             </p>
             <textarea
+              data-testid="create-venue"
               id="create-venue"
-              style="visibility: hidden;"
             />
             <input
               label="* City"

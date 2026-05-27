@@ -1,6 +1,7 @@
 import { vi } from 'vitest';
 import utils from 'src/containers/Songs/MusicPlayer/utils';
 import commonUtils from 'src/lib/utils';
+import type { Isong } from 'src/providers/Data.provider';
 import TestSongs from '../../../testSongs';
 
 describe('MusicPlayer/utils', () => {

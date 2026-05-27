@@ -16,7 +16,7 @@ describe('SideMenuItem', () => {
       index: 1,
       auth: { isAuthenticated: false, user: { userType: 'joker' } } as any,
       location: { pathname: '/' },
-      menu: { auth: false, link: '/music', name: 'Music' } as ImenuItem,
+      menu: { auth: false, link: '/music', name: 'Music', type: 'link' } as ImenuItem,
       handleClose: vi.fn(),
     };
     render(<BrowserRouter><SideMenuItem {...props} /></BrowserRouter>);

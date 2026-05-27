@@ -39,7 +39,7 @@ export function EditPrivilegesDialog({
     setSubmitting(true);
     setError('');
     try {
-      await adminUtils.updateUser(token, user._id, { privileges, userType });
+      await adminUtils.updateUser(token, user._id, { privileges, userType: userType || undefined });
       onSaved();
     } catch (e) {
       const err = e as { response?: { body?: { message?: string } }; message?: string };

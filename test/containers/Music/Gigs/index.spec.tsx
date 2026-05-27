@@ -28,6 +28,7 @@ describe('Gigs', () => {
       setEditChanged: vi.fn(),
       getGigs: vi.fn(),
       auth: {} as any,
+      setPageSize: vi.fn(),
     };
     render(<BrowserRouter><GigsDiv {...props} /></BrowserRouter>);
 
