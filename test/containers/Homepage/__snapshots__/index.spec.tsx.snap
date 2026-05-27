@@ -27,12 +27,7 @@ exports[`Homepage > renders correctly 1`] = `
                 columnspacing="1"
               >
                 <div
-                  lg="6"
-                  md="12"
-                  order="[object Object]"
-                  sm="12"
-                  xl="6"
-                  xs="12"
+                  sx="[object Object]"
                 >
                   <div
                     class="MuiBox-root css-otmogo"
@@ -81,7 +76,7 @@ exports[`Homepage > renders correctly 1`] = `
                                 type="button"
                               >
                                 <span
-                                  class="MuiAccordionSummary-content MuiAccordionSummary-contentGutters css-yfrx4k-MuiAccordionSummary-content"
+                                  class="MuiAccordionSummary-content css-yfrx4k-MuiAccordionSummary-content"
                                 >
                                   <p
                                     class="MuiTypography-root MuiTypography-body1 css-rizt0-MuiTypography-root"
@@ -120,7 +115,7 @@ exports[`Homepage > renders correctly 1`] = `
                                   class="MuiCollapse-wrapperInner MuiCollapse-vertical css-1i4ywhz-MuiCollapse-wrapperInner"
                                 >
                                   <div
-                                    class="MuiAccordion-region"
+                                    class="MuiAccordion-region css-at4ued-MuiAccordion-region"
                                     role="region"
                                   >
                                     <div
@@ -168,7 +163,7 @@ exports[`Homepage > renders correctly 1`] = `
                                 type="button"
                               >
                                 <span
-                                  class="MuiAccordionSummary-content MuiAccordionSummary-contentGutters css-yfrx4k-MuiAccordionSummary-content"
+                                  class="MuiAccordionSummary-content css-yfrx4k-MuiAccordionSummary-content"
                                 >
                                   <p
                                     class="MuiTypography-root MuiTypography-body1 css-rizt0-MuiTypography-root"
@@ -207,7 +202,7 @@ exports[`Homepage > renders correctly 1`] = `
                                   class="MuiCollapse-wrapperInner MuiCollapse-vertical css-1i4ywhz-MuiCollapse-wrapperInner"
                                 >
                                   <div
-                                    class="MuiAccordion-region"
+                                    class="MuiAccordion-region css-at4ued-MuiAccordion-region"
                                     role="region"
                                   >
                                     <div
@@ -239,7 +234,7 @@ exports[`Homepage > renders correctly 1`] = `
                                 type="button"
                               >
                                 <span
-                                  class="MuiAccordionSummary-content MuiAccordionSummary-contentGutters css-yfrx4k-MuiAccordionSummary-content"
+                                  class="MuiAccordionSummary-content css-yfrx4k-MuiAccordionSummary-content"
                                 >
                                   <p
                                     class="MuiTypography-root MuiTypography-body1 css-rizt0-MuiTypography-root"
@@ -278,7 +273,7 @@ exports[`Homepage > renders correctly 1`] = `
                                   class="MuiCollapse-wrapperInner MuiCollapse-vertical css-1i4ywhz-MuiCollapse-wrapperInner"
                                 >
                                   <div
-                                    class="MuiAccordion-region"
+                                    class="MuiAccordion-region css-at4ued-MuiAccordion-region"
                                     role="region"
                                   >
                                     <div
@@ -302,12 +297,7 @@ exports[`Homepage > renders correctly 1`] = `
                   </div>
                 </div>
                 <div
-                  lg="6"
-                  md="12"
-                  order="[object Object]"
-                  sm="12"
-                  xl="6"
-                  xs="12"
+                  sx="[object Object]"
                 >
                   <div
                     class="MuiBox-root css-otmogo"
@@ -348,10 +338,10 @@ exports[`Homepage > renders correctly 1`] = `
           class="MuiBox-root css-i9gxme"
         >
           <div
-            class="MuiGrid2-root MuiGrid2-container MuiGrid2-direction-xs-row css-b00obg-MuiGrid2-root"
+            class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-row css-5jhqyn-MuiGrid-root"
           >
             <div
-              class="MuiGrid2-root MuiGrid2-direction-xs-row MuiGrid2-grid-xs-12 MuiGrid2-grid-sm-6 MuiGrid2-grid-md-6 MuiGrid2-grid-lg-3.625 MuiGrid2-grid-xl-2.75 css-bfvbsa-MuiGrid2-root"
+              class="MuiGrid-root MuiGrid-direction-xs-row MuiGrid-grid-xs-12 MuiGrid-grid-sm-6 MuiGrid-grid-md-6 MuiGrid-grid-lg-3.625 MuiGrid-grid-xl-2.75 css-qcc5qm-MuiGrid-root"
             >
               <div
                 class="MuiBox-root css-otmogo"
@@ -376,7 +366,7 @@ exports[`Homepage > renders correctly 1`] = `
               </div>
             </div>
             <div
-              class="MuiGrid2-root MuiGrid2-direction-xs-row MuiGrid2-grid-xs-12 MuiGrid2-grid-sm-6 MuiGrid2-grid-md-6 MuiGrid2-grid-lg-3.625 MuiGrid2-grid-xl-2.75 css-bfvbsa-MuiGrid2-root"
+              class="MuiGrid-root MuiGrid-direction-xs-row MuiGrid-grid-xs-12 MuiGrid-grid-sm-6 MuiGrid-grid-md-6 MuiGrid-grid-lg-3.625 MuiGrid-grid-xl-2.75 css-qcc5qm-MuiGrid-root"
             >
               <div
                 class="MuiBox-root css-otmogo"
@@ -403,7 +393,7 @@ exports[`Homepage > renders correctly 1`] = `
               </div>
             </div>
             <div
-              class="MuiGrid2-root MuiGrid2-direction-xs-row MuiGrid2-grid-xs-12 MuiGrid2-grid-sm-6.5 MuiGrid2-grid-md-6.5 MuiGrid2-grid-lg-4.75 MuiGrid2-grid-xl-3.75 css-1vbwi8b-MuiGrid2-root"
+              class="MuiGrid-root MuiGrid-direction-xs-row MuiGrid-grid-xs-12 MuiGrid-grid-sm-6.5 MuiGrid-grid-md-6.5 MuiGrid-grid-lg-4.75 MuiGrid-grid-xl-3.75 css-1umftrw-MuiGrid-root"
             >
               <div
                 class="MuiBox-root css-otmogo"
@@ -421,7 +411,7 @@ exports[`Homepage > renders correctly 1`] = `
               </div>
             </div>
             <div
-              class="MuiGrid2-root MuiGrid2-direction-xs-row MuiGrid2-grid-xs-12 MuiGrid2-grid-sm-5.5 MuiGrid2-grid-md-5.5 MuiGrid2-grid-lg-12 MuiGrid2-grid-xl-2.75 css-o59sm-MuiGrid2-root"
+              class="MuiGrid-root MuiGrid-direction-xs-row MuiGrid-grid-xs-12 MuiGrid-grid-sm-5.5 MuiGrid-grid-md-5.5 MuiGrid-grid-lg-12 MuiGrid-grid-xl-2.75 css-1k6rsle-MuiGrid-root"
             >
               <div
                 class="MuiBox-root css-otmogo"

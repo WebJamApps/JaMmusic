@@ -7,10 +7,8 @@ export function YearField({ song, setSong }: { song: Isong, setSong: (arg0: Ison
       sx={{ marginBottom: '12px' }}
       label="* Year"
       type="number"
-      InputProps={{
-        inputProps: {
-          max: new Date().getFullYear(), min: 2000,
-        },
+      slotProps={{
+        htmlInput: { max: new Date().getFullYear(), min: 2000 },
       }}
       fullWidth
       value={song.year}

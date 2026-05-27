@@ -70,13 +70,10 @@ interface GridItemProps {
 function AboutUs() {
   const GridItem: React.FC<GridItemProps> = ({ children, order }) => (
     <Grid
-      item
-      xs={12}
-      sm={12}
-      md={12}
-      lg={6}
-      xl={6}
-      order={order}
+      size={{
+        xs: 12, sm: 12, md: 12, lg: 6, xl: 6,
+      }}
+      sx={{ order }}
     >
       <Item>{children}</Item>
     </Grid>

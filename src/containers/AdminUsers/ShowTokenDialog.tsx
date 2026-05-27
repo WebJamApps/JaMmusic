@@ -26,7 +26,7 @@ export function ShowTokenDialog({ open, token, onClose }: IshowTokenDialogProps)
             fullWidth
             multiline
             rows={4}
-            InputProps={{ readOnly: true }}
+            slotProps={{ input: { readOnly: true } }}
             data-testid="token-value"
           />
         </Box>

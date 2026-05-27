@@ -1,6 +1,6 @@
 import React from 'react';
 import Box, { type BoxProps } from '@mui/material/Box';
-import Grid from '@mui/material/Grid2';
+import Grid from '@mui/material/Grid';
 import AppersonAutomotive from './AppersonAutomotive';
 import CollegeLutheran from './CollegeLutheran';
 import FacebookFeed from './FacebookFeed';
