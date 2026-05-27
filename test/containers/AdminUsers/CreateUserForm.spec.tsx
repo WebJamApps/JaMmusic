@@ -35,7 +35,7 @@ describe('CreateUserForm', () => {
 
   it('toggles a privilege checkbox', async () => {
     render(<CreateUserForm token="tk" onCreated={vi.fn()} />);
-    const cap = screen.getByTestId('cap-tour:create');
+    const cap = screen.getByRole('checkbox', { name: /tour:create/i });
     await act(async () => { fireEvent.click(cap); });
     expect(cap).toBeChecked();
     await act(async () => { fireEvent.click(cap); });

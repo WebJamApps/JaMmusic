@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { render, screen, fireEvent } from '@testing-library/react';
+import '@testing-library/jest-dom';
 import { BrowserRouter } from 'react-router-dom';
 import type { ImenuItem } from 'src/App/AppTemplate/menuConfig';
 import { checkIsAllowed, ContinueMenuItem, SideMenuItem } from 'src/App/AppTemplate/SideMenuItem';
@@ -14,11 +15,12 @@ describe('SideMenuItem', () => {
     const props = {
       index: 1,
       auth: { isAuthenticated: false, user: { userType: 'joker' } } as any,
-      menu: { auth: false, link: '/music' } as ImenuItem,
+      location: { pathname: '/' },
+      menu: { auth: false, link: '/music', name: 'Music' } as ImenuItem,
       handleClose: vi.fn(),
     };
     render(<BrowserRouter><SideMenuItem {...props} /></BrowserRouter>);
-    expect(screen.getByRole('link')).toBeDefined();
+    expect(screen.getByRole('link', { name: /music/i })).toBeInTheDocument();
   });
   it('returns MakeLink for /music when Web Jam LLC', () => {
     commonUtils.getUserRoles = vi.fn(() => ['tester']);

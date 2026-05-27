@@ -1,4 +1,5 @@
 import { render } from '@testing-library/react';
+import '@testing-library/jest-dom';
 import { WjInput } from 'src/components/WjInput';
 
 describe('WjDropdown', () => {

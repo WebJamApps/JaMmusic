@@ -2,6 +2,7 @@
 import env from 'dotenv';
 import { App, checkAppName } from 'src/App';
 import { render } from '@testing-library/react';
+import '@testing-library/jest-dom';
 import { Provider } from 'react-redux';
 import store from 'src/redux/store/index';
 import { BrowserRouter } from 'react-router-dom';

@@ -7,7 +7,7 @@ describe('Bookus', () => {
     expect(container).toMatchSnapshot();
   });
   it('renders and handles click', () => {
-    window.open = vi.fn();
+    vi.spyOn(window, 'open').mockImplementation(() => ({} as any));
     render(<BookUs />);
     fireEvent.click(screen.getByText(/book us/i));
     expect(window.open).toHaveBeenCalled();

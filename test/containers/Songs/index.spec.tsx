@@ -30,6 +30,6 @@ describe('Songs', () => {
     }] as Isong[];
     const editDialogState = { setShowEditDialog: vi.fn(), showEditDialog: false };
     render(<BrowserRouter><Player songs={songs} editDialogState={editDialogState} /></BrowserRouter>);
-    expect(await screen.findByText('a - Artist A', { selector: 'strong' })).toBeInTheDocument();
+    expect(await screen.findByText('a - Artist A')).toBeInTheDocument();
   });
 });

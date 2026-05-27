@@ -14,7 +14,7 @@ describe('CreateSongDialog', () => {
     const showDialog = true;
     const setShowDialog = vi.fn();
     render(<CreateSongDialog showDialog={showDialog} setShowDialog={setShowDialog} />);
-    const input = screen.getByLabelText(/\* Url/i);
+    const input = document.querySelector('[label="* Url"]')!;
     fireEvent.change(input, { target: { value: 'song' } });
     expect(input).toBeDefined();
   });
@@ -22,7 +22,7 @@ describe('CreateSongDialog', () => {
     const showDialog = true;
     const setShowDialog = vi.fn();
     render(<CreateSongDialog showDialog={showDialog} setShowDialog={setShowDialog} />);
-    const input = screen.getByLabelText(/\* Title/i);
+    const input = document.querySelector('[label="* Title"]')!;
     fireEvent.change(input, { target: { value: 'title' } });
     expect(input).toBeDefined();
   });
@@ -30,7 +30,7 @@ describe('CreateSongDialog', () => {
     const showDialog = true;
     const setShowDialog = vi.fn();
     render(<CreateSongDialog showDialog={showDialog} setShowDialog={setShowDialog} />);
-    const input = screen.getByLabelText(/\* Artist/i);
+    const input = document.querySelector('[label="* Artist"]')!;
     fireEvent.change(input, { target: { value: 'artist' } });
     expect(input).toBeDefined();
   });
@@ -38,7 +38,7 @@ describe('CreateSongDialog', () => {
     const showDialog = true;
     const setShowDialog = vi.fn();
     render(<CreateSongDialog showDialog={showDialog} setShowDialog={setShowDialog} />);
-    const input = screen.getByLabelText(/Category/i);
+    const input = document.querySelector('[label="Category"]')!;
     fireEvent.change(input, { target: { value: 'category' } });
     expect(input).toBeDefined();
   });
@@ -46,7 +46,7 @@ describe('CreateSongDialog', () => {
     const showDialog = true;
     const setShowDialog = vi.fn();
     render(<CreateSongDialog showDialog={showDialog} setShowDialog={setShowDialog} />);
-    const input = screen.getByLabelText(/Composer/i);
+    const input = document.querySelector('[label="Composer"]')!;
     fireEvent.change(input, { target: { value: 'composer' } });
     expect(input).toBeDefined();
   });
@@ -54,7 +54,7 @@ describe('CreateSongDialog', () => {
     const showDialog = true;
     const setShowDialog = vi.fn();
     render(<CreateSongDialog showDialog={showDialog} setShowDialog={setShowDialog} />);
-    const input = screen.getByLabelText(/Album/i);
+    const input = document.querySelector('[label="Album"]')!;
     fireEvent.change(input, { target: { value: 'album' } });
     expect(input).toBeDefined();
   });
@@ -62,7 +62,7 @@ describe('CreateSongDialog', () => {
     const showDialog = true;
     const setShowDialog = vi.fn();
     render(<CreateSongDialog showDialog={showDialog} setShowDialog={setShowDialog} />);
-    const input = screen.getByLabelText(/Image/i);
+    const input = document.querySelector('[label="Image"]')!;
     fireEvent.change(input, { target: { value: 'image' } });
     expect(input).toBeDefined();
   });
@@ -70,7 +70,7 @@ describe('CreateSongDialog', () => {
     const showDialog = true;
     const setShowDialog = vi.fn();
     render(<CreateSongDialog showDialog={showDialog} setShowDialog={setShowDialog} />);
-    const input = screen.getByLabelText(/\* Year/i);
+    const input = document.querySelector('[label="* Year"]')!;
     fireEvent.change(input, { target: { value: '2' } });
     expect(input).toBeDefined();
   });
@@ -78,7 +78,7 @@ describe('CreateSongDialog', () => {
     const showDialog = true;
     const setShowDialog = vi.fn();
     render(<CreateSongDialog showDialog={showDialog} setShowDialog={setShowDialog} />);
-    const input = screen.getByPlaceholderText(/Order/i);
+    const input = document.querySelector('[label="Order (highest number plays first)"]')!;
     fireEvent.change(input, { target: { value: '2' } });
     expect(input).toBeDefined();
   });

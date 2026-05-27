@@ -19,8 +19,8 @@ describe('EditPrivilegesDialog', () => {
         <EditPrivilegesDialog open user={user} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />,
       );
     });
-    expect(screen.getByTestId('edit-cap-tour:create')).toBeChecked();
-    expect(screen.getByTestId('edit-cap-song:read')).not.toBeChecked();
+    expect(screen.getByRole('checkbox', { name: /tour:create/i })).toBeChecked();
+    expect(screen.getByRole('checkbox', { name: /song:read/i })).not.toBeChecked();
   });
 
   it('saves and calls onSaved', async () => {
@@ -49,7 +49,7 @@ describe('EditPrivilegesDialog', () => {
 
   it('toggles a capability checkbox', async () => {
     render(<EditPrivilegesDialog open user={user} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />);
-    const cap = screen.getByTestId('edit-cap-song:read');
+    const cap = screen.getByRole('checkbox', { name: /song:read/i });
     await act(async () => { fireEvent.click(cap); });
     expect(cap).toBeChecked();
   });
