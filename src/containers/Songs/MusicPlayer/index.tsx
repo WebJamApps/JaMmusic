@@ -193,7 +193,7 @@ export function CopyUrlButtons(
   if (!showCopyUrl) return <> </>;
   return (
     <>
-      <input type="text" id="copyUrl" value={songUrl} disabled />
+      <input type="text" id="copyUrl" aria-label="Song URL" value={songUrl} disabled />
       <Button
         size="small"
         variant="contained"
