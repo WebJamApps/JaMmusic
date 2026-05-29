@@ -1,6 +1,6 @@
 {
   "name": "jammusic",
-  "version": "2.7.0",
+  "version": "2.7.1",
   "description": "joshandmariamusic.com",
   "main": "dist/index.html",
   "repository": {
@@ -34,9 +34,9 @@
     "test:lint-fix": "npm run test:stylelint && npm run lint:fix",
     "test:lint": "npm run test:stylelint && eslint .",
     "test": "npm run test:lint && npm run test:unit",
-    "test:unit": "vitest run",
-    "test:watch": "vitest",
-    "test:unit-u": "vitest run -u",
+    "test:unit": "TZ=UTC vitest run",
+    "test:watch": "TZ=UTC vitest",
+    "test:unit-u": "TZ=UTC vitest run -u",
     "cleanup": "rm -rf yarn.lock && rm -rf package-lock.json && rm -rf node_modules",
     "cleaninstall": "npm install -g npm@latest && npm run cleanup && npm install",
     "smoketest": "npm run cleanup && npm install --omit=dev && npm run build",
