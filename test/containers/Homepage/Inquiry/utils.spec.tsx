@@ -1,10 +1,8 @@
 import { vi } from 'vitest';
 import utils from 'src/containers/Homepage/Inquiry/utils';
-import superagent from 'superagent';
-
-vi.mock('superagent');
 
 describe('Inquiry utils', () => {
+
   it('handleCountryChange', () => {
     const value = 'any';
     const evt: any = { target: { value } };
@@ -18,7 +16,7 @@ describe('Inquiry utils', () => {
       zipcode: '',
       comments: '',
     };
-    const setFormData = jest.fn();
+    const setFormData = vi.fn();
     utils.handleCountryChange(evt, formData, setFormData);
     expect(setFormData).toHaveBeenCalledWith({ ...formData, country: 'any' });
   });
@@ -33,52 +31,53 @@ describe('Inquiry utils', () => {
       zipcode: '90210',
       comments: 'none',
     };
-    const setHasSubmitted = jest.fn();
-    const setSubmitError = jest.fn();
-    const mockPost = jest.fn().mockResolvedValueOnce({});
-    (superagent.post as jest.Mock).mockReturnValueOnce({ set: jest.fn().mockReturnValueOnce({ send: mockPost }) });
+    const setHasSubmitted = vi.fn();
+    const setSubmitError = vi.fn();
+    global.fetch = vi.fn().mockResolvedValueOnce({ ok: true, json: async () => ({}) });
+
     await utils.createEmailApi(emailForm, setHasSubmitted, setSubmitError);
+
     expect(setHasSubmitted).toHaveBeenCalledWith(true);
-    expect(setSubmitError).toHaveBeenCalledTimes(0);
+    expect(setSubmitError).not.toHaveBeenCalled();
   });
   it('catches error for createEmailApi', async () => {
     const emailForm = {
       firstname: 'Snoop',
       lastname: 'Dogg',
-      emailaddress: 'snoop@yahoo',
+      emailaddress: 'snoop@yahoo.com',
       uSAstate: 'CA',
       country: 'USA',
       phonenumber: '0000000000',
       zipcode: '90210',
       comments: 'none',
     };
-    const setHasSubmitted = jest.fn();
-    const setSubmitError = jest.fn();
+    const setHasSubmitted = vi.fn();
+    const setSubmitError = vi.fn();
     const err = 'error';
-    const mockPost = jest.fn().mockRejectedValueOnce(new Error(err));
-    (superagent.post as jest.Mock).mockReturnValueOnce({ set: jest.fn().mockReturnValueOnce({ send: mockPost }) });
+    global.fetch = vi.fn().mockRejectedValueOnce(new Error(err));
+
     await utils.createEmailApi(emailForm, setHasSubmitted, setSubmitError);
+
     expect(setHasSubmitted).toHaveBeenCalledTimes(0);
     expect(setSubmitError).toHaveBeenCalledWith(true);
   });
   it('handleSubmit', async () => {
-    const evt: any = { target: { value: 'mouse' } };
+    const evt: any = { preventDefault: vi.fn(), target: { value: 'mouse' } };
     const emailForm = {
       firstname: 'Snoop',
       lastname: 'Dogg',
-      emailaddress: 'snoop@yahoo',
+      emailaddress: 'snoop@yahoo.com',
       uSAstate: 'CA',
       country: 'USA',
       phonenumber: '0000000000',
       zipcode: '90210',
       comments: 'none',
     };
-    const setHasSubmitted = jest.fn();
-    const setSubmitError = jest.fn();
-    const mockPost = jest.fn().mockResolvedValueOnce({});
-    const createEmailApi = (superagent.post as jest.Mock).mockReturnValueOnce({ set: jest.fn().mockReturnValueOnce({ send: mockPost }) });
+    const setHasSubmitted = vi.fn();
+    const setSubmitError = vi.fn();
+    global.fetch = vi.fn().mockResolvedValueOnce({ ok: true, json: async () => ({}) });
     await utils.handleSubmit(evt, emailForm, setHasSubmitted, setSubmitError);
-    expect(createEmailApi).toHaveBeenCalled();
+    expect(setHasSubmitted).toHaveBeenCalled();
   });
   it('handleInputChange', () => {
     const evt: any = { target: { value: 'any', id: '1' } };
@@ -92,7 +91,7 @@ describe('Inquiry utils', () => {
       zipcode: '90210',
       comments: 'none',
     };
-    const setFormData = jest.fn();
+    const setFormData = vi.fn();
     utils.handleInputChange(evt, formData, setFormData);
     expect(setFormData).toHaveBeenCalled();
   });
@@ -109,7 +108,7 @@ describe('Inquiry utils', () => {
       zipcode: '',
       comments: '',
     };
-    const setFormData = jest.fn();
+    const setFormData = vi.fn();
     utils.handleUsStateChange(evt, formData, setFormData);
     expect(setFormData).toHaveBeenCalledWith({ ...formData, uSAstate: 'any' });
   });

@@ -1,5 +1,5 @@
 
-function Caption(props: { caption?: string }): JSX.Element {
+function Caption(props: { caption?: string }) {
   const { caption } = props;
   return (
     <div

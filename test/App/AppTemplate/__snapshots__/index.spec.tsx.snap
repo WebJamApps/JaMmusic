@@ -1,406 +1,304 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`AppTemplate > renders the component 1`] = `
-<div
-  className="page-host"
->
+<div>
   <div
-    className="home-sidebar close drawer-container"
-    id="sidebar"
-    onClick={[Function]}
-    onKeyPress={[Function]}
-    role="button"
-    tabIndex={0}
+    class="page-host"
   >
     <div
-      className="drawer"
-      style={
-        {
-          "backgroundColor": "var(--sidebar-bg)",
-          "position": "relative",
-          "zIndex": -1,
-        }
-      }
-    >
-      <div
-        className="navImage"
-      >
-        <img
-          alt="wjsidelogo"
-          id="webjamwidelogo"
-          src="../static/imgs/webjamlogo1.png"
-          style={
-            {
-              "marginLeft": 0,
-              "marginRight": 0,
-              "width": "182px",
-            }
-          }
-        />
-      </div>
-      <div
-        className="nav-list"
-        style={
-          {
-            "width": "180px",
-          }
-        }
-      >
-        <div
-          id="musTT"
-          style={
-            {
-              "backgroundColor": "white",
-              "display": "none",
-              "padding": "3px",
-              "position": "absolute",
-              "right": "68px",
-              "top": "305px",
-            }
-          }
-        >
-          Music
-        </div>
-        <div
-          className="menu-item"
-        >
-          <a
-            className="nav-link"
-            href="/music"
-            onClick={[Function]}
-          >
-            <div
-              style={
-                {
-                  "display": "inline",
-                }
-              }
-            >
-              <i
-                className="fas fa-music"
-                style={
-                  {
-                    "marginRight": "8px",
-                  }
-                }
-              />
-              <span
-                className="nav-item"
-              >
-                Music
-              </span>
-            </div>
-          </a>
-        </div>
-        <div
-          className="menu-item"
-        >
-          <a
-            className="nav-link"
-            href="/"
-            onClick={[Function]}
-          >
-            <div
-              style={
-                {
-                  "display": "inline",
-                }
-              }
-            >
-              <i
-                className="fas fa-home"
-                style={
-                  {
-                    "marginRight": "8px",
-                  }
-                }
-              />
-              <span
-                className="nav-item"
-              >
-                Web Jam LLC
-              </span>
-            </div>
-          </a>
-        </div>
-        <div
-          className="menu-item googleLogin"
-        >
-          <button
-            className="loginButton"
-            onClick={[Function]}
-            size="small"
-            variant="contained"
-          >
-            Login
-          </button>
-        </div>
-        <div
-          className="menu-item theme-toggle"
-        >
-          <button
-            aria-checked={false}
-            aria-label="Switch to dark mode"
-            className="theme-switch is-light"
-            onClick={[Function]}
-            onKeyPress={[Function]}
-            role="switch"
-            type="button"
-          >
-            <span
-              className="theme-switch-side theme-switch-light"
-            >
-              <i
-                aria-hidden="true"
-                className="fas fa-sun"
-              />
-              <span
-                className="theme-switch-side-label"
-              >
-                Light
-              </span>
-            </span>
-            <span
-              className="theme-switch-side theme-switch-dark"
-            >
-              <i
-                aria-hidden="true"
-                className="fas fa-moon"
-              />
-              <span
-                className="theme-switch-side-label"
-              >
-                Dark
-              </span>
-            </span>
-            <span
-              aria-hidden="true"
-              className="theme-switch-thumb"
-            />
-          </button>
-        </div>
-        <p
-          style={
-            {
-              "fontSize": "6pt",
-              "margin": 0,
-              "padding": 0,
-            }
-          }
-        >
-           
-        </p>
-        <div
-          className="active-users"
-        >
-          <div />
-        </div>
-      </div>
-    </div>
-  </div>
-  <div
-    className="main-panel"
-  >
-    <span
-      id="mobilemenutoggle"
-      onClick={[Function]}
-      onKeyPress={[Function]}
+      class="home-sidebar close drawer-container"
+      id="sidebar"
       role="button"
-      tabIndex={0}
-    >
-      <i
-        className="fas fa-bars"
-      />
-    </span>
-    <div
-      className="mainPanel"
+      tabindex="0"
     >
       <div
-        className="swipe-area"
-      />
-      <div
-        className="material-header home-header"
-        id="header"
+        class="drawer"
+        style="background-color: var(--sidebar-bg); z-index: -1; position: relative;"
       >
         <div
-          className="headercontent"
-          id="ohaflogo"
+          class="navImage"
         >
           <img
-            alt="ohaflogo"
-            className="home-header-image"
-            src="../static/imgs/webjamicon7.png"
+            alt="wjsidelogo"
+            id="webjamwidelogo"
+            src="../static/imgs/webjamlogo1.png"
+            style="width: 182px; margin-right: 0px; margin-left: 0px;"
           />
         </div>
         <div
-          className="headercontent header-text-card"
-        >
-          <h3
-            className="header-text"
-            style={
-              {
-                "marginTop": 0,
-              }
-            }
-          >
-            Web Jam LLC
-          </h3>
-        </div>
-      </div>
-      <div
-        className="content-block"
-        id="contentBlock"
-        style={
-          {
-            "width": "auto",
-          }
-        }
-      >
-        <div
-          id="test-page"
-        />
-        <div
-          className="footer"
-          id="wjfooter"
-          style={
-            {
-              "backgroundColor": "var(--footer-bg)",
-              "bottom": "0",
-              "paddingBottom": "20px",
-              "paddingTop": "20px",
-            }
-          }
+          class="nav-list"
+          style="width: 180px;"
         >
           <div
-            style={
-              {
-                "padding": "6px",
-                "textAlign": "center",
-              }
-            }
+            id="musTT"
+            style="display: none; position: absolute; top: 305px; right: 68px; background-color: white; padding: 3px;"
+          >
+            Music
+          </div>
+          <div
+            class="menu-item"
           >
             <a
-              href="https://github.com/WebJamApps"
-              rel="noopener noreferrer"
-              style={
-                {
-                  "color": "var(--footer-link)",
-                  "paddingRight": "5px",
-                }
-              }
-              target="_blank"
+              class="nav-link"
+              data-discover="true"
+              href="/music"
             >
-              <span>
+              <div
+                style="display: inline;"
+              >
                 <i
-                  className="fab fa-github"
+                  class="fas fa-music"
+                  style="margin-right: 8px;"
                 />
-              </span>
+                <span
+                  class="nav-item"
+                >
+                  Music
+                </span>
+              </div>
             </a>
+          </div>
+          <div
+            class="menu-item"
+          >
             <a
-              href="https://www.linkedin.com/company/webjam/"
-              rel="noopener noreferrer"
-              style={
-                {
-                  "color": "var(--footer-link)",
-                  "paddingRight": "5px",
-                }
-              }
-              target="_blank"
+              class="nav-link"
+              data-discover="true"
+              href="/"
             >
-              <span>
+              <div
+                style="display: inline;"
+              >
                 <i
-                  className="fab fa-linkedin"
+                  class="fas fa-home"
+                  style="margin-right: 8px;"
                 />
-              </span>
+                <span
+                  class="nav-item"
+                >
+                  Web Jam LLC
+                </span>
+              </div>
             </a>
-            <a
-              href="https://www.instagram.com/joshua.v.sherman/"
-              rel="noopener noreferrer"
-              style={
-                {
-                  "color": "var(--footer-link)",
-                  "paddingRight": "5px",
-                }
-              }
-              target="_blank"
+          </div>
+          <div
+            class="menu-item googleLogin"
+          >
+            <button
+              class="loginButton"
+              variant="contained"
             >
-              <span>
+              Login
+            </button>
+          </div>
+          <div
+            class="menu-item theme-toggle"
+          >
+            <button
+              aria-checked="false"
+              aria-label="Switch to dark mode"
+              class="theme-switch is-light"
+              role="switch"
+              type="button"
+            >
+              <span
+                class="theme-switch-side theme-switch-light"
+              >
                 <i
-                  className="fab fa-instagram"
+                  aria-hidden="true"
+                  class="fas fa-sun"
                 />
+                <span
+                  class="theme-switch-side-label"
+                >
+                  Light
+                </span>
               </span>
-            </a>
-            <a
-              href="https://twitter.com/JoshuaVSherman"
-              rel="noopener noreferrer"
-              style={
-                {
-                  "color": "var(--footer-link)",
-                  "paddingRight": "5px",
-                }
-              }
-              target="_blank"
-            >
-              <span>
+              <span
+                class="theme-switch-side theme-switch-dark"
+              >
                 <i
-                  className="fab fa-twitter"
+                  aria-hidden="true"
+                  class="fas fa-moon"
                 />
+                <span
+                  class="theme-switch-side-label"
+                >
+                  Dark
+                </span>
               </span>
-            </a>
-            <a
-              href="https://www.facebook.com/WebJamLLC/"
-              rel="noopener noreferrer"
-              style={
-                {
-                  "color": "var(--footer-link)",
-                  "paddingRight": "5px",
-                }
-              }
-              target="_blank"
+              <span
+                aria-hidden="true"
+                class="theme-switch-thumb"
+              />
+            </button>
+          </div>
+          <p
+            style="margin: 0px; padding: 0px; font-size: 6pt;"
+          >
+             
+          </p>
+          <div
+            class="active-users"
+          >
+            <div />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="main-panel"
+    >
+      <span
+        aria-label="Toggle menu"
+        id="mobilemenutoggle"
+        role="button"
+        tabindex="0"
+      >
+        <i
+          class="fas fa-bars"
+        />
+      </span>
+      <div
+        class="mainPanel"
+      >
+        <div
+          class="swipe-area"
+        />
+        <div
+          class="material-header home-header"
+          id="header"
+        >
+          <div
+            class="headercontent"
+            id="ohaflogo"
+          >
+            <img
+              alt="ohaflogo"
+              class="home-header-image"
+              src="../static/imgs/webjamicon7.png"
+            />
+          </div>
+          <div
+            class="headercontent header-text-card"
+          >
+            <h3
+              class="header-text"
+              style="margin-top: 0px;"
             >
-              <span>
-                <i
-                  className="fab fa-facebook"
-                />
-              </span>
-            </a>
-            <a
-              href="https://joshuavsherman.tumblr.com/"
-              rel="noopener noreferrer"
-              style={
-                {
-                  "color": "var(--footer-link)",
-                  "paddingRight": "5px",
-                }
-              }
-              target="_blank"
+              Web Jam LLC
+            </h3>
+          </div>
+        </div>
+        <div
+          class="content-block"
+          id="contentBlock"
+          style="width: auto;"
+        >
+          <div
+            id="test-page"
+          />
+          <div
+            class="footer"
+            id="wjfooter"
+            style="background-color: var(--footer-bg); padding-top: 20px; padding-bottom: 20px; bottom: 0px;"
+          >
+            <div
+              style="text-align: center; padding: 6px;"
             >
-              <span>
-                <i
-                  className="fab fa-tumblr"
-                />
-              </span>
-            </a>
-            <p
-              style={
-                {
-                  "color": "var(--footer-fg)",
-                  "fontSize": "9pt",
-                  "marginBottom": 0,
-                }
-              }
-            >
-              Powered by
-               
               <a
-                className="wjllc"
-                href="https://www.web-jam.com"
+                aria-label="github"
+                href="https://github.com/WebJamApps"
                 rel="noopener noreferrer"
+                style="color: var(--footer-link); padding-right: 5px;"
                 target="_blank"
               >
-                Web Jam LLC
+                <span>
+                  <i
+                    class="fab fa-github"
+                  />
+                </span>
               </a>
-            </p>
+              <a
+                aria-label="linkedin"
+                href="https://www.linkedin.com/company/webjam/"
+                rel="noopener noreferrer"
+                style="color: var(--footer-link); padding-right: 5px;"
+                target="_blank"
+              >
+                <span>
+                  <i
+                    class="fab fa-linkedin"
+                  />
+                </span>
+              </a>
+              <a
+                aria-label="instagram"
+                href="https://www.instagram.com/joshua.v.sherman/"
+                rel="noopener noreferrer"
+                style="color: var(--footer-link); padding-right: 5px;"
+                target="_blank"
+              >
+                <span>
+                  <i
+                    class="fab fa-instagram"
+                  />
+                </span>
+              </a>
+              <a
+                aria-label="twitter"
+                href="https://twitter.com/JoshuaVSherman"
+                rel="noopener noreferrer"
+                style="color: var(--footer-link); padding-right: 5px;"
+                target="_blank"
+              >
+                <span>
+                  <i
+                    class="fab fa-twitter"
+                  />
+                </span>
+              </a>
+              <a
+                aria-label="facebook"
+                href="https://www.facebook.com/WebJamLLC/"
+                rel="noopener noreferrer"
+                style="color: var(--footer-link); padding-right: 5px;"
+                target="_blank"
+              >
+                <span>
+                  <i
+                    class="fab fa-facebook"
+                  />
+                </span>
+              </a>
+              <a
+                aria-label="tumblr"
+                href="https://joshuavsherman.tumblr.com/"
+                rel="noopener noreferrer"
+                style="color: var(--footer-link); padding-right: 5px;"
+                target="_blank"
+              >
+                <span>
+                  <i
+                    class="fab fa-tumblr"
+                  />
+                </span>
+              </a>
+              <p
+                style="color: var(--footer-fg); font-size: 9pt; margin-bottom: 0px;"
+              >
+                Powered by
+                 
+                <a
+                  class="wjllc"
+                  href="https://www.web-jam.com"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
+                  Web Jam LLC
+                </a>
+              </p>
+            </div>
           </div>
         </div>
       </div>

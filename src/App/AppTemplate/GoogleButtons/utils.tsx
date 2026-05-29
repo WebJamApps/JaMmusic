@@ -1,8 +1,7 @@
 import { CodeResponse, googleLogout } from '@react-oauth/google';
 import { defaultAuth, Iauth, setUserAuth } from 'src/providers/Auth.provider';
-import 'react-notifications-component/dist/theme.css';
+import 'react-toastify/dist/ReactToastify.css';
 import jwt from 'jwt-simple';
-import superagent from 'superagent';
 import commonUtils from 'src/lib/utils';
 
 export interface GoogleBody {
@@ -20,9 +19,16 @@ const setUser = async (auth: Iauth, setAuth: (args0: Iauth) => void, token: stri
 const authenticate = async (
   googleBody: GoogleBody,
 ): Promise<{ token: string, email: string }> => {
-  const { body } = await superagent.post(`${process.env.BackendUrl}/user/auth/google`)
-    .set({ Accept: 'application/json' }).send(googleBody);
-  return body;
+  const res = await fetch(`${process.env.BackendUrl}/user/auth/google`, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(googleBody),
+  });
+  if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+  return res.json();
 };
 
 const makeState = () => () => {

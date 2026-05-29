@@ -6,7 +6,7 @@ export function TextField(props:any) {
 
 export function Checkbox(props:any) {
   const { children } = props;
-  return <input {...props}>{children}</input>;
+  return <input type="checkbox" {...props}>{children}</input>;
 }
 
 export function TextareaAutosize(props:any) {

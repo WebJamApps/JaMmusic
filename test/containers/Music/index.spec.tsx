@@ -1,55 +1,56 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import renderer from 'react-test-renderer';
+import { vi } from 'vitest';
+import { render, screen, fireEvent } from '@testing-library/react';
+import '@testing-library/jest-dom';
 import { Music, checkIsAdmin, PhotosSection } from 'src/containers/Music';
 import { ClickToListen } from 'src/containers/Music/intro';
 import { BrowserRouter } from 'react-router-dom';
 
 describe('/music', () => {
   it('renders the component', () => {
-    const music = renderer.create(<BrowserRouter><Music /></BrowserRouter>).toJSON();
-    expect(music).toMatchSnapshot();
+    const { container } = render(<BrowserRouter><Music /></BrowserRouter>);
+    expect(container).toMatchSnapshot();
   });
   it('renders ClickToListen and handles click when joshandmariamusic.com', () => {
-    window.open = jest.fn();
-    const ctl = renderer.create(
+    window.open = vi.fn();
+    render(
       <BrowserRouter>
         <ClickToListen
           appName="joshandmariamusic.com"
           isAdmin={false}
-          setShowCreatePic={jest.fn()}
-          setShowEditPic={jest.fn()}
+          setShowCreatePic={vi.fn()}
+          setShowEditPic={vi.fn()}
         />
       </BrowserRouter>,
-    ).root;
-    ctl.findByProps({ variant: 'contained' }).props.onClick();
+    );
+    fireEvent.click(screen.getByRole('button', { name: /listen/i }));
     // eslint-disable-next-line security/detect-non-literal-fs-filename
     expect(window.open).toHaveBeenCalled();
   });
   it('renders ClickToListen and handles click when web-jam.com', () => {
-    window.open = jest.fn();
-    const ctl = renderer.create(
+    window.open = vi.fn();
+    render(
       <BrowserRouter>
-        <ClickToListen appName="web-jam.com" isAdmin={false} setShowCreatePic={jest.fn()} setShowEditPic={jest.fn()} />
+        <ClickToListen appName="web-jam.com" isAdmin={false} setShowCreatePic={vi.fn()} setShowEditPic={vi.fn()} />
       </BrowserRouter>,
-    ).root;
-    ctl.findByProps({ variant: 'contained' }).props.onClick();
+    );
+    fireEvent.click(screen.getByRole('button', { name: /listen/i }));
     // eslint-disable-next-line security/detect-non-literal-fs-filename
     expect(window.open).not.toHaveBeenCalled();
   });
   it('renders ClickToListen and handles click when undefined appName', () => {
-    window.open = jest.fn();
-    const ctl = renderer.create(
+    window.open = vi.fn();
+    render(
       <BrowserRouter>
-        <ClickToListen isAdmin={false} setShowCreatePic={jest.fn()} setShowEditPic={jest.fn()} />
+        <ClickToListen isAdmin={false} setShowCreatePic={vi.fn()} setShowEditPic={vi.fn()} />
       </BrowserRouter>,
-    )
-      .root;
-    ctl.findByProps({ variant: 'contained' }).props.onClick();
+    );
+    fireEvent.click(screen.getByRole('button', { name: /listen/i }));
     // eslint-disable-next-line security/detect-non-literal-fs-filename
     expect(window.open).not.toHaveBeenCalled();
   });
   it('checkIsAdmin when true', () => {
-    const setIsAdmin = jest.fn();
+    const setIsAdmin = vi.fn();
     const userRoles = process.env.userRoles || '{}';
     const { roles } = JSON.parse(userRoles);
     const auth: any = { isAuthenticated: true, user: { userType: roles[0] } };
@@ -59,12 +60,12 @@ describe('/music', () => {
   it('renders PhotosSection when showEditPicTable is true', () => {
     const props = {
       showEditPicTable: true,
-      setShowEditPicTable: jest.fn(),
+      setShowEditPicTable: vi.fn(),
       isAdmin: true,
-      setShowCreatePic: jest.fn(),
+      setShowCreatePic: vi.fn(),
       showCreatePic: false,
     };
-    const photosSection:any = renderer.create(<PhotosSection {...props} />).toJSON();
-    expect(photosSection.children[0].children[0].props.className).toBe('editPicTable');
+    const { container } = render(<PhotosSection {...props} />);
+    expect(container.querySelector('.editPicTable')).toBeInTheDocument();
   });
 });

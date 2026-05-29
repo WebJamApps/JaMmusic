@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import utils from 'src/containers/Songs/MusicPlayer/utils';
 import commonUtils from 'src/lib/utils';
 import type { Isong } from 'src/providers/Data.provider';
@@ -5,33 +6,34 @@ import TestSongs from '../../../testSongs';
 
 describe('MusicPlayer/utils', () => {
   it('handlePlayerReady', () => {
-    expect(utils.handlePlayerReady('player' as any)).toBe('player');
+    // Implementation returns undefined now after react-player v3 update
+    expect(utils.handlePlayerReady()).toBeUndefined();
   });
   it('handlePlayerError', () => {
     expect(utils.handlePlayerError('error' as any)).toBe('error');
   });
   it('prev when index is 0', () => {
-    const setIndex = jest.fn();
+    const setIndex = vi.fn();
     utils.prev(0, TestSongs, setIndex);
     expect(setIndex).toHaveBeenCalledWith(3);
   });
   it('prev when index is 3', () => {
-    const setIndex = jest.fn();
+    const setIndex = vi.fn();
     utils.prev(3, TestSongs, setIndex);
     expect(setIndex).toHaveBeenCalledWith(2);
   });
   it('next when index is 0', () => {
-    const setIndex = jest.fn();
+    const setIndex = vi.fn();
     utils.next(0, TestSongs, setIndex);
     expect(setIndex).toHaveBeenCalledWith(1);
   });
   it('next when index is 3', () => {
-    const setIndex = jest.fn();
+    const setIndex = vi.fn();
     utils.next(3, TestSongs, setIndex);
     expect(setIndex).toHaveBeenCalledWith(0);
   });
   it('play', () => {
-    const setPlaying = jest.fn();
+    const setPlaying = vi.fn();
     utils.play(true, setPlaying);
     expect(setPlaying).toHaveBeenCalledWith(false);
   });
@@ -62,8 +64,8 @@ describe('MusicPlayer/utils', () => {
     elemDiv.id = 'copyUrl';
     elemDiv.value = 'https://test.com';
     document.body.appendChild(elemDiv);
-    commonUtils.notify = jest.fn();
-    const writeText = jest.fn();
+    commonUtils.notify = vi.fn();
+    const writeText = vi.fn();
     Object.defineProperty(navigator, 'clipboard', { value: { writeText }, writable: true });
     utils.copyShare();
     expect(commonUtils.notify).toHaveBeenCalled();
@@ -112,7 +114,7 @@ describe('MusicPlayer/utils', () => {
       },
     ] as Isong[];
     const category = '';
-    const setters = { setSongsState: jest.fn(), setIndex: jest.fn(), setIsSingle: jest.fn() };
+    const setters = { setSongsState: vi.fn(), setIndex: vi.fn(), setIsSingle: vi.fn() };
     utils.initSongs(songs, category, search, setters);
     expect(setters.setIsSingle).toHaveBeenCalledWith(true);
   });

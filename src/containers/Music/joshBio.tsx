@@ -16,7 +16,7 @@ const BioText = () => (
   </div>
 );
 
-function JoshBio(): JSX.Element {
+function JoshBio() {
   return (
     <div className="joshBio">
       <div style={{ height: '10px' }}><p>{' '}</p></div>

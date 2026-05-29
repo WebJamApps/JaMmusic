@@ -42,7 +42,7 @@ describe('AuthProvider', () => {
     Object.defineProperty(window, 'localStorage', { value: ls });
   });
   it('AuthProvider renders', () => {
-    render(<AuthProvider />);
+    render(<AuthProvider><div /></AuthProvider>);
     const newRoot = document.getElementById('root') as HTMLElement;
     expect(newRoot.innerHTML.includes('play-buttons')).toBe(true);
   });

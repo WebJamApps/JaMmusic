@@ -1,5 +1,5 @@
 
-function AppersonAutomotive(): JSX.Element {
+function AppersonAutomotive() {
   return (
     <div
       // eslint-disable-next-line max-len

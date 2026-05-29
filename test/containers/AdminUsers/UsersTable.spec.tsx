@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import renderer, { act } from 'react-test-renderer';
+import { render, screen, fireEvent, act } from '@testing-library/react';
 import { UsersTable } from 'src/containers/AdminUsers/UsersTable';
 import adminUtils, { type IadminUser } from 'src/containers/AdminUsers/admin-users.utils';
 
@@ -16,26 +16,20 @@ describe('UsersTable', () => {
   });
 
   it('renders empty state when no users', () => {
-    const tree = renderer.create(
-      <UsersTable users={[]} token="tk" onShowToken={vi.fn()} onEditPrivileges={vi.fn()} onChange={vi.fn()} />,
-    ).root;
-    expect(tree.findByProps({ 'data-testid': 'users-empty' })).toBeDefined();
+    render(<UsersTable users={[]} token="tk" onShowToken={vi.fn()} onEditPrivileges={vi.fn()} onChange={vi.fn()} />);
+    expect(screen.getByTestId('users-empty')).toBeDefined();
   });
 
   it('renders a row per user', () => {
-    const tree = renderer.create(
-      <UsersTable users={users} token="tk" onShowToken={vi.fn()} onEditPrivileges={vi.fn()} onChange={vi.fn()} />,
-    ).root;
-    expect(tree.findByProps({ 'data-testid': 'user-row-u1' })).toBeDefined();
+    render(<UsersTable users={users} token="tk" onShowToken={vi.fn()} onEditPrivileges={vi.fn()} onChange={vi.fn()} />);
+    expect(screen.getByTestId('user-row-u1')).toBeDefined();
   });
 
   it('calls onShowToken after minting succeeds', async () => {
     const onShowToken = vi.fn();
-    const tree = renderer.create(
-      <UsersTable users={users} token="tk" onShowToken={onShowToken} onEditPrivileges={vi.fn()} onChange={vi.fn()} />,
-    ).root;
+    render(<UsersTable users={users} token="tk" onShowToken={onShowToken} onEditPrivileges={vi.fn()} onChange={vi.fn()} />);
     await act(async () => {
-      tree.findByProps({ 'data-testid': 'show-token-u1' }).props.onClick();
+      fireEvent.click(screen.getByTestId('show-token-u1'));
     });
     expect(adminUtils.mintToken).toHaveBeenCalledWith('tk', 'u1');
     expect(onShowToken).toHaveBeenCalledWith('JWT');
@@ -43,21 +37,17 @@ describe('UsersTable', () => {
 
   it('calls onEditPrivileges with the user', () => {
     const onEdit = vi.fn();
-    const tree = renderer.create(
-      <UsersTable users={users} token="tk" onShowToken={vi.fn()} onEditPrivileges={onEdit} onChange={vi.fn()} />,
-    ).root;
-    tree.findByProps({ 'data-testid': 'edit-priv-u1' }).props.onClick();
+    render(<UsersTable users={users} token="tk" onShowToken={vi.fn()} onEditPrivileges={onEdit} onChange={vi.fn()} />);
+    fireEvent.click(screen.getByTestId('edit-priv-u1'));
     expect(onEdit).toHaveBeenCalledWith(users[0]);
   });
 
   it('confirms before delete and calls onChange', async () => {
     window.confirm = vi.fn(() => true);
     const onChange = vi.fn();
-    const tree = renderer.create(
-      <UsersTable users={users} token="tk" onShowToken={vi.fn()} onEditPrivileges={vi.fn()} onChange={onChange} />,
-    ).root;
+    render(<UsersTable users={users} token="tk" onShowToken={vi.fn()} onEditPrivileges={vi.fn()} onChange={onChange} />);
     await act(async () => {
-      tree.findByProps({ 'data-testid': 'delete-u1' }).props.onClick();
+      fireEvent.click(screen.getByTestId('delete-u1'));
     });
     expect(adminUtils.deleteUser).toHaveBeenCalledWith('tk', 'u1');
     expect(onChange).toHaveBeenCalled();
@@ -65,11 +55,9 @@ describe('UsersTable', () => {
 
   it('skips delete when confirm returns false', async () => {
     window.confirm = vi.fn(() => false);
-    const tree = renderer.create(
-      <UsersTable users={users} token="tk" onShowToken={vi.fn()} onEditPrivileges={vi.fn()} onChange={vi.fn()} />,
-    ).root;
+    render(<UsersTable users={users} token="tk" onShowToken={vi.fn()} onEditPrivileges={vi.fn()} onChange={vi.fn()} />);
     await act(async () => {
-      tree.findByProps({ 'data-testid': 'delete-u1' }).props.onClick();
+      fireEvent.click(screen.getByTestId('delete-u1'));
     });
     expect(adminUtils.deleteUser).not.toHaveBeenCalled();
   });

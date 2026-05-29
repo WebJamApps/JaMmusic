@@ -1,14 +1,21 @@
-import renderer from 'react-test-renderer';
+import { vi } from 'vitest';
+import { render } from '@testing-library/react';
+import '@testing-library/jest-dom';
 import { NavLinks } from 'src/App/AppTemplate/NavLinks';
+import { BrowserRouter } from 'react-router-dom';
 
 describe('NavLinks', () => {
   it('renders when joshandmariamusic.com', () => {
     process.env.APP_NAME = 'joshandmariamusic.com';
     const props = {
-      handleClose: jest.fn(), userCount: 1, heartBeat: '', auth: {} as any, location: {}, dispatch: jest.fn(),
+      handleClose: vi.fn(), userCount: 1, heartBeat: '',
     };
-    const nl: any = renderer.create(<NavLinks {...props} />).toJSON();
-    expect(nl.props.className).toBe('nav-list');
-    expect(nl.children[0].props.id).not.toBe('musTT');
+    const { container } = render(
+      <BrowserRouter>
+        <NavLinks {...props} />
+      </BrowserRouter>
+    );
+    expect(container.querySelector('.nav-list')).toBeInTheDocument();
+    expect(container.querySelector('#musTT')).toBeNull();
   });
 });

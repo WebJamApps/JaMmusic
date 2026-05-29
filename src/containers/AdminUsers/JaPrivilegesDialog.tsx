@@ -16,7 +16,7 @@ interface IeditPrivilegesDialogProps {
 
 export function EditPrivilegesDialog({
     open, user, token, onClose, onSaved,
-}: IeditPrivilegesDialogProps): JSX.Element {
+}: IeditPrivilegesDialogProps) {
     const [privileges, setPrivileges] = useState<Capability[]>([]);
     const [userType, setUserType] = useState<string>('');
     const [error, setError] = useState('');
@@ -62,6 +62,7 @@ export function EditPrivilegesDialog({
                         onChange={(e) => setUserType(e.target.value)}
                         data-testid="edit-user-role"
                     >
+                        <MenuItem value="">None</MenuItem>
                         {USER_ROLES.filter((r) => (user?.userStatus === 'ai-agent' ? r === 'web-jam-llm' : r !== 'web-jam-llm')).map((r) => (
                             <MenuItem key={r} value={r}>{r}</MenuItem>
                         ))}

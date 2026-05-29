@@ -1,312 +1,213 @@
-import renderer from 'react-test-renderer';
+import { vi } from 'vitest';
+import { render, screen, fireEvent } from '@testing-library/react';
+import '@testing-library/jest-dom';
 import {
   CommentsSection, ContactForm, ContactRequest, EmailPhoneRow, FormActions, Inquiry, InquiryError, InquiryForm, TableSection,
 } from 'src/containers/Homepage/Inquiry';
+import utils from 'src/containers/Homepage/Inquiry/utils';
 
 describe('Inquiry', () => {
+  const formData = {
+    firstname: '',
+    lastname: '',
+    emailaddress: '',
+    uSAstate: '',
+    country: '',
+    phonenumber: '',
+    zipcode: '',
+    comments: '',
+  };
+
   it('handles onChange for CommentsSection', () => {
-    const formData = {
-      firstname: '',
-      lastname: '',
-      emailaddress: '',
-      uSAstate: '',
-      country: '',
-      phonenumber: '',
-      zipcode: '',
-      comments: '',
-    };
-    const setFormData = jest.fn();
-    const evt = { target: { value: 'comments' } };
-    const result = renderer.create(<CommentsSection formData={formData} setFormData={setFormData} />).root;
-    const tree = result.findByProps({ placeholder: '* Comments' }).props.onChange(evt);
-    expect(tree).toBe('comments');
+    const setFormData = vi.fn();
+    render(<CommentsSection formData={formData} setFormData={setFormData} />);
+    const textarea = screen.getByPlaceholderText('* Comments');
+    fireEvent.change(textarea, { target: { value: 'new comments' } });
+    expect(setFormData).toHaveBeenCalled();
   });
+
   it('handles onClick for FormActions', () => {
-    const formData = {
-      firstname: '',
-      lastname: '',
-      emailaddress: '',
-      uSAstate: '',
-      country: '',
-      phonenumber: '',
-      zipcode: '',
-      comments: '',
-    };
-    const setHasSubmitted = jest.fn();
-    const setSubmitError = jest.fn();
-    const result = renderer.create(
+    const setHasSubmitted = vi.fn();
+    const setSubmitError = vi.fn();
+    vi.spyOn(utils, 'validateForm').mockReturnValue(false);
+    const handleSubmitSpy = vi.spyOn(utils, 'handleSubmit').mockImplementation(() => Promise.resolve());
+
+    render(
       <FormActions formData={formData} setHasSubmitted={setHasSubmitted} setSubmitError={setSubmitError} />,
-    ).root;
-    const tree = result.findByProps({ id: 'sendEmailButton' }).props.onClick();
-    console.log(tree);
-    expect(true).toBe(true);
+    );
+    const submitButton = screen.getByRole('button', { name: /submit/i });
+    fireEvent.click(submitButton);
+    expect(handleSubmitSpy).toHaveBeenCalled();
   });
+
   it('handles emailaddress for EmailPhoneRow', () => {
-    const formData = {
-      firstname: '',
-      lastname: '',
-      emailaddress: 'kaldlk@gmail.com',
-      uSAstate: '',
-      country: '',
-      phonenumber: '5401234567',
-      zipcode: '',
-      comments: '',
-    };
-    const setFormData = jest.fn();
-    const evt = { target: { value: 'email' } };
-    const result = renderer.create(<EmailPhoneRow formData={formData} setFormData={setFormData} />).root;
-    const tree = result.findByProps({ label: 'Email Address' }).props.onChange(evt);
-    expect(tree).toBe('email');
+    const setFormData = vi.fn();
+    const { container } = render(<EmailPhoneRow formData={formData} setFormData={setFormData} />);
+    const emailInput = container.querySelector('#emailaddress')!;
+    fireEvent.change(emailInput, { target: { value: 'email@test.com' } });
+    expect(setFormData).toHaveBeenCalled();
   });
+
   it('handles phone number for EmailPhoneRow', () => {
-    const formData = {
-      firstname: '',
-      lastname: '',
-      emailaddress: 'kaldlk@gmail.com',
-      uSAstate: '',
-      country: '',
-      phonenumber: '5401234567',
-      zipcode: '',
-      comments: '',
-    };
-    const setFormData = jest.fn();
-    const evt = { target: { value: 'phone number' } };
-    const result = renderer.create(<EmailPhoneRow formData={formData} setFormData={setFormData} />).root;
-    const tree = result.findByProps({ label: 'Phone Number' }).props.onChange(evt);
-    expect(tree).toBe('phone number');
+    const setFormData = vi.fn();
+    const { container } = render(<EmailPhoneRow formData={formData} setFormData={setFormData} />);
+    const phoneInput = container.querySelector('#phonenumber')!;
+    fireEvent.change(phoneInput, { target: { value: '1234567890' } });
+    expect(setFormData).toHaveBeenCalled();
   });
+
   it('handles onChange in TableSection for firstname', () => {
-    const formData = {
-      firstname: 'Snoop',
-      lastname: 'Dogg',
-      emailaddress: 'kaldlk@gmail.com',
-      uSAstate: '',
-      country: '',
-      phonenumber: '5401234567',
-      zipcode: '',
-      comments: '',
-    };
-    const setFormData = jest.fn();
-    const evt = { target: { value: 'first' } };
-    const result = renderer.create(<TableSection formData={formData} setFormData={setFormData} />).root;
-    const tree = result.findByProps({ label: 'First Name' }).props.onChange(evt);
-    expect(tree).toBe('first');
+    const setFormData = vi.fn();
+    const { container } = render(<TableSection formData={formData} setFormData={setFormData} />);
+    const firstNameInput = container.querySelector('#firstname')!;
+    fireEvent.change(firstNameInput, { target: { value: 'First' } });
+    expect(setFormData).toHaveBeenCalled();
   });
+
   it('handles onChange in TableSection for lastname', () => {
-    const formData = {
-      firstname: 'Snoop',
-      lastname: 'Dogg',
-      emailaddress: 'kaldlk@gmail.com',
-      uSAstate: '',
-      country: '',
-      phonenumber: '5401234567',
-      zipcode: '',
-      comments: '',
-    };
-    const setFormData = jest.fn();
-    const evt = { target: { value: 'last' } };
-    const result = renderer.create(<TableSection formData={formData} setFormData={setFormData} />).root;
-    const tree = result.findByProps({ label: 'Last Name' }).props.onChange(evt);
-    expect(tree).toBe('last');
+    const setFormData = vi.fn();
+    const { container } = render(<TableSection formData={formData} setFormData={setFormData} />);
+    const lastNameInput = container.querySelector('#lastname')!;
+    fireEvent.change(lastNameInput, { target: { value: 'Last' } });
+    expect(setFormData).toHaveBeenCalled();
   });
+
   it('handles onChange for country in InquiryForm', () => {
-    const props = {
-      formData: {
-        firstname: '',
-        lastname: '',
-        emailaddress: '',
-        uSAstate: 'CA',
-        country: 'United States',
-        phonenumber: '',
-        zipcode: '90210',
-        comments: '',
-      },
-      setFormData: jest.fn(),
-      setHasSubmitted: jest.fn(),
-      setSubmitError: jest.fn(),
-    };
-    const evt = { target: { value: 'country' } };
-    const result = renderer.create(<InquiryForm {...props} />).root;
-    const tree = result.findByProps({ htmlFor: 'country' }).props.onChange(evt);
-    expect(tree).toBe('country');
+    const setFormData = vi.fn();
+    const { container } = render(
+      <InquiryForm
+        formData={formData}
+        setFormData={setFormData}
+        setHasSubmitted={vi.fn()}
+        setSubmitError={vi.fn()}
+      />
+    );
+    const countrySelect = container.querySelector('#country')!;
+    fireEvent.change(countrySelect, { target: { value: 'Albania' } });
+    expect(setFormData).toHaveBeenCalled();
   });
+
   it('handles onChange for state in InquiryForm', () => {
-    const props = {
-      formData: {
-        firstname: '',
-        lastname: '',
-        emailaddress: '',
-        uSAstate: 'CA',
-        country: 'United States',
-        phonenumber: '',
-        zipcode: '90210',
-        comments: '',
-      },
-      setFormData: jest.fn(),
-      setHasSubmitted: jest.fn(),
-      setSubmitError: jest.fn(),
-    };
-    const evt = { target: { value: 'state' } };
-    const result = renderer.create(<InquiryForm {...props} />).root;
-    const tree = result.findByProps({ htmlFor: 'state' }).props.onChange(evt);
-    expect(tree).toBe('state');
+    const localFormData = { ...formData, country: 'United States' };
+    const setFormData = vi.fn();
+    const { container } = render(
+      <InquiryForm
+        formData={localFormData}
+        setFormData={setFormData}
+        setHasSubmitted={vi.fn()}
+        setSubmitError={vi.fn()}
+      />
+    );
+    const stateSelect = container.querySelector('#state')!;
+    fireEvent.change(stateSelect, { target: { value: 'Virginia' } });
+    expect(setFormData).toHaveBeenCalled();
   });
+
   it('handles onChange for zipcode in InquiryForm', () => {
-    const props = {
-      formData: {
-        firstname: '',
-        lastname: '',
-        emailaddress: '',
-        uSAstate: 'CA',
-        country: 'United States',
-        phonenumber: '',
-        zipcode: '90210',
-        comments: '',
-      },
-      setFormData: jest.fn(),
-      setHasSubmitted: jest.fn(),
-      setSubmitError: jest.fn(),
-    };
-    const evt = { target: { value: 'zip' } };
-    const result = renderer.create(<InquiryForm {...props} />).root;
-    const tree = result.findByProps({ label: 'Zipcode' }).props.onChange(evt);
-    expect(tree).toBe('zip');
+    const setFormData = vi.fn();
+    const { container } = render(
+      <InquiryForm
+        formData={formData}
+        setFormData={setFormData}
+        setHasSubmitted={vi.fn()}
+        setSubmitError={vi.fn()}
+      />
+    );
+    const zipInput = container.querySelector('#zipcode')!;
+    fireEvent.change(zipInput, { target: { value: '12345' } });
+    expect(setFormData).toHaveBeenCalled();
   });
+
   it('renders ContactRequest', () => {
-    const result: any = renderer.create(<ContactRequest />).toJSON();
-    expect(result.type).toBe('div');
+    render(<ContactRequest />);
+    expect(screen.getByText(/thank you for contacting us/i)).toBeInTheDocument();
   });
+
   it('renders ContactForm when hasSubmitted is false', () => {
-    const formData = {
-      firstname: '',
-      lastname: '',
-      emailaddress: '',
-      uSAstate: '',
-      country: '',
-      phonenumber: '',
-      zipcode: '',
-      comments: '',
-    };
     const props = {
       hasSubmitted: false,
       submitError: false,
       hideTitle: true,
       country: '',
-      setHasSubmitted: jest.fn(),
-      setSubmitError: jest.fn(),
+      setHasSubmitted: vi.fn(),
+      setSubmitError: vi.fn(),
       formData,
-      setFormData: jest.fn(),
+      setFormData: vi.fn(),
     };
-    const result: any = renderer.create(<ContactForm {...props} />).toJSON();
-    expect(result.type).toBe('div');
+    render(<ContactForm {...props} />);
+    expect(screen.queryByText(/contact us/i)).not.toBeInTheDocument();
   });
+
   it('renders ContactForm when hasSubmitted is true', () => {
-    const formData = {
-      firstname: '',
-      lastname: '',
-      emailaddress: '',
-      uSAstate: '',
-      country: '',
-      phonenumber: '',
-      zipcode: '',
-      comments: '',
-    };
     const props = {
       hasSubmitted: true,
       submitError: false,
       hideTitle: false,
       country: '',
-      setHasSubmitted: jest.fn(),
-      setSubmitError: jest.fn(),
+      setHasSubmitted: vi.fn(),
+      setSubmitError: vi.fn(),
       formData,
-      setFormData: jest.fn(),
+      setFormData: vi.fn(),
     };
-    const result: any = renderer.create(<ContactForm {...props} />).toJSON();
-    expect(result.children[0].props.className).toBe('page-content contacted');
+    render(<ContactForm {...props} />);
+    expect(screen.getByText(/thank you for contacting us/i)).toBeInTheDocument();
   });
+
   it('renders Inquiry', () => {
     const props = { country: '', hideTitle: true };
-    const result: any = renderer.create(<Inquiry {...props} />).toJSON();
-    expect(result.type).toBe('div');
+    render(<Inquiry {...props} />);
+    expect(screen.queryByText(/contact us/i)).not.toBeInTheDocument();
   });
+
   it('renders ContactForm when hasSubmitted and hideTitle are false', () => {
-    const formData = {
-      firstname: '',
-      lastname: '',
-      emailaddress: '',
-      uSAstate: '',
-      country: '',
-      phonenumber: '',
-      zipcode: '',
-      comments: '',
-    };
     const props = {
       hasSubmitted: false,
       submitError: false,
       hideTitle: false,
       country: '',
-      setHasSubmitted: jest.fn(),
-      setSubmitError: jest.fn(),
+      setHasSubmitted: vi.fn(),
+      setSubmitError: vi.fn(),
       formData,
-      setFormData: jest.fn(),
+      setFormData: vi.fn(),
     };
-    const result: any = renderer.create(<ContactForm {...props} />).toJSON();
-    expect(result.children[0].children[0].children[0]).toBe('Contact Us');
+    render(<ContactForm {...props} />);
+    expect(screen.getByText(/contact us/i)).toBeInTheDocument();
   });
+
   it('renders InquiryError standalone', () => {
-    const result: any = renderer.create(<InquiryError />).toJSON();
-    expect(result.type).toBe('p');
-    expect(result.props.className).toBe('inquiryError');
-    expect(result.props.role).toBe('alert');
+    render(<InquiryError />);
+    const errorMsg = screen.getByRole('alert');
+    expect(errorMsg).toHaveClass('inquiryError');
+    expect(errorMsg).toHaveTextContent(/sorry — we couldn’t deliver your inquiry/i);
   });
+
   it('ContactForm renders InquiryError when submitError is true', () => {
-    const formData = {
-      firstname: '',
-      lastname: '',
-      emailaddress: '',
-      uSAstate: '',
-      country: '',
-      phonenumber: '',
-      zipcode: '',
-      comments: '',
-    };
     const props = {
       hasSubmitted: false,
       submitError: true,
       hideTitle: true,
       country: '',
-      setHasSubmitted: jest.fn(),
-      setSubmitError: jest.fn(),
+      setHasSubmitted: vi.fn(),
+      setSubmitError: vi.fn(),
       formData,
-      setFormData: jest.fn(),
+      setFormData: vi.fn(),
     };
-    const root = renderer.create(<ContactForm {...props} />).root;
-    const error = root.findByProps({ className: 'inquiryError' });
-    expect(error).toBeTruthy();
+    render(<ContactForm {...props} />);
+    expect(screen.getByRole('alert')).toBeInTheDocument();
   });
+
   it('ContactForm does NOT render InquiryError when submitError is false', () => {
-    const formData = {
-      firstname: '',
-      lastname: '',
-      emailaddress: '',
-      uSAstate: '',
-      country: '',
-      phonenumber: '',
-      zipcode: '',
-      comments: '',
-    };
     const props = {
       hasSubmitted: false,
       submitError: false,
       hideTitle: true,
       country: '',
-      setHasSubmitted: jest.fn(),
-      setSubmitError: jest.fn(),
+      setHasSubmitted: vi.fn(),
+      setSubmitError: vi.fn(),
       formData,
-      setFormData: jest.fn(),
+      setFormData: vi.fn(),
     };
-    const root = renderer.create(<ContactForm {...props} />).root;
-    expect(root.findAllByProps({ className: 'inquiryError' })).toHaveLength(0);
+    render(<ContactForm {...props} />);
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
   });
 });
-

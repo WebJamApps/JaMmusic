@@ -8,12 +8,7 @@ const initialState = {
   scc: {},
 };
 
-const reducer = (
-  state: ISocketReducer,
-  action: { type: string; scc: Record<string, unknown>;
-    data: string },
-): ISocketReducer => {
-  if (!state) state = initialState;
+const reducer = (state: ISocketReducer = initialState, action: any): ISocketReducer => {
   switch (action.type) {
     case 'SCC': return { ...state, scc: action.scc };
     case 'NUM_USERS': return { ...state, userCount: parseInt(action.data, 10) };

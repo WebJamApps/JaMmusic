@@ -6,7 +6,18 @@ import vitest from '@vitest/eslint-plugin';
 import n from 'eslint-plugin-n';
 import security from 'eslint-plugin-security';
 import json from 'eslint-plugin-json';
+import jsxA11yX from 'eslint-plugin-jsx-a11y-x';
 import globals from 'globals';
+
+// jsx-a11y-x recommended rules, enforced as errors.
+// Defensive: the v0.2.0 recommended preset lists rules it doesn't actually
+// define (e.g. label-has-for), which crashes ESLint — so only enable rules the
+// plugin really exports.
+const a11yRules = Object.fromEntries(
+  Object.keys(jsxA11yX.configs.recommended.rules)
+    .filter((name) => name.replace('jsx-a11y-x/', '') in jsxA11yX.rules)
+    .map((name) => [name, 'error']),
+);
 
 export default [
   {
@@ -61,6 +72,11 @@ export default [
       'max-len': ['error', { code: 150 }],
       'no-multiple-empty-lines': ['error', { max: 1, maxEOF: 1 }],
     },
+  },
+  {
+    files: ['**/*.{jsx,tsx}'],
+    plugins: { 'jsx-a11y-x': jsxA11yX },
+    rules: a11yRules,
   },
   {
     files: ['**/*.{test,spec}.{ts,tsx,js,jsx}', 'test/**/*.{ts,tsx,js,jsx}'],

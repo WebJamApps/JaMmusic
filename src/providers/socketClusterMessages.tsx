@@ -1,13 +1,13 @@
 import scc from 'socketcluster-client';
 
 const validateData = (
-  receiver: IteratorResult<any, any>,
-  setFunc: (_arg0: any[] | null) => void,
+  receiver: IteratorResult<unknown[]>,
+  setFunc: (_arg0: unknown[] | null) => void,
 ) => {
   let dataArr = null;
   if (Array.isArray(receiver.value)) {
     dataArr = receiver.value.map(
-      (g: any, i: number) => ({ ...g, id: i }),
+      (g: Record<string, unknown>, i: number) => ({ ...g, id: i }),
     );
   }
   setFunc(dataArr);
@@ -16,7 +16,7 @@ const validateData = (
 const listenForData = (
   socket: scc.AGClientSocket,
   message: string,
-  setFunc: (_arg0: any[] | null) => void,
+  setFunc: (_arg0: unknown[] | null) => void,
 ): boolean => {
   (async () => {
     const consumer = socket.receiver(message).createConsumer();

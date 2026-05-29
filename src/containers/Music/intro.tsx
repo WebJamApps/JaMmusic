@@ -3,9 +3,9 @@ import { Add, Edit } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 
 interface IclickToListenProps {
-  appName?: string, isAdmin:boolean, setShowCreatePic:(arg0:boolean)=>void, setShowEditPic:(arg0:boolean)=>void
+  appName?: string, isAdmin: boolean, setShowCreatePic: (arg0: boolean) => void, setShowEditPic: (arg0: boolean) => void
 }
-export function ClickToListen(props:IclickToListenProps) {
+export function ClickToListen(props: IclickToListenProps) {
   const {
     appName, isAdmin, setShowCreatePic, setShowEditPic,
   } = props;
@@ -45,9 +45,9 @@ export function ClickToListen(props:IclickToListenProps) {
 }
 
 interface IintroProps {
-  isAdmin:boolean, setShowCreatePic:(arg0:boolean)=>void, setShowEditPic:(arg0:boolean)=>void
+  isAdmin: boolean, setShowCreatePic: (arg0: boolean) => void, setShowEditPic: (arg0: boolean) => void
 }
-export function Intro(props:IintroProps): JSX.Element {
+export function Intro(props: IintroProps) {
   const { isAdmin, setShowCreatePic, setShowEditPic } = props;
   return (
     <div

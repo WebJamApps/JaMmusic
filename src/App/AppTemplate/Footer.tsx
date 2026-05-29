@@ -13,7 +13,14 @@ const footerLinks = () => {
     <div style={{ textAlign: 'center', padding: '6px' }}>
       {
         links.map((link) => (
-          <a key={Math.random().toString()} target="_blank" rel="noopener noreferrer" style={{ color, paddingRight: '5px' }} href={link.href}>
+          <a
+            key={Math.random().toString()}
+            aria-label={link.name}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ color, paddingRight: '5px' }}
+            href={link.href}
+          >
             <span><i className={`fab fa-${link.name}`} /></span>
           </a>
         ))
@@ -27,7 +34,7 @@ const footerLinks = () => {
   );
 };
 
-export function Footer(): JSX.Element {
+export function Footer() {
   return (
     <div
       id="wjfooter"
