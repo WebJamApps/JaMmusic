@@ -1,6 +1,6 @@
 import './links.scss';
 
-export function JoshShermanAppleOrYouTube({ service }: { service: 'Apple Music' | 'YouTube' }): JSX.Element {
+export function JoshShermanAppleOrYouTube({ service }: { service: 'Apple Music' | 'YouTube' }) {
   return (
     <div className="col">
       <div style={{ textAlign: 'center' }}>

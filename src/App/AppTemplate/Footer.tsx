@@ -34,7 +34,7 @@ const footerLinks = () => {
   );
 };
 
-export function Footer(): JSX.Element {
+export function Footer() {
   return (
     <div
       id="wjfooter"

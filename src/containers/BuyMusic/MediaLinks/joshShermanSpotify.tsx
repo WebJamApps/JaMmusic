@@ -1,5 +1,5 @@
 
-function JoshShermanSpotify(): JSX.Element {
+function JoshShermanSpotify() {
   const colStyle = {
     flexBasis: '0',
     msFlexPreferredSize: '0',

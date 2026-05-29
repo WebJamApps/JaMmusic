@@ -1,8 +1,5 @@
 import './polyfills';
 import { StrictMode } from 'react';
-import {
-  ApolloClient, InMemoryCache, ApolloProvider,
-} from '@apollo/client';
 import { Provider } from 'react-redux';
 import { createRoot } from 'react-dom/client';
 import { GoogleOAuthProvider } from '@react-oauth/google';
@@ -14,11 +11,6 @@ import { AuthProvider } from './providers/Auth.provider';
 import { ThemeProvider } from './providers/Theme.provider';
 import './styles/styles.scss';
 
-export const client = new ApolloClient({
-  uri: `${process.env.BackendUrl}/graphql`,
-  cache: new InMemoryCache(),
-});
-
 const root = createRoot(document.getElementById('root') as HTMLElement);
 function Main() {
   return (
@@ -28,9 +20,7 @@ function Main() {
           <DataProvider>
             <Provider store={store.store}>
               <PersistGate loading={null} persistor={store.persistor}>
-                <ApolloProvider client={client}>
-                  <App />
-                </ApolloProvider>
+                <App />
               </PersistGate>
             </Provider>
           </DataProvider>

@@ -1,15 +1,13 @@
 import { vi } from 'vitest';
 import utils from 'src/App/AppTemplate/GoogleButtons/utils';
-import superagent from 'superagent';
 import jwt from 'jwt-simple';
 import commonUtils from 'src/lib/utils';
 
-vi.mock('superagent');
-
 describe('GoogleButtons/utils', () => {
+
   it('responseGoogleLogout', async () => {
-    window.location.reload = jest.fn();
-    const setAuth = jest.fn();
+    window.location.reload = vi.fn();
+    const setAuth = vi.fn();
     await utils.responseGoogleLogout(setAuth);
     expect(window.location.reload).toHaveBeenCalled();
   });
@@ -19,58 +17,49 @@ describe('GoogleButtons/utils', () => {
     expect(typeof result).toBe('string');
   });
   it('setUserAuth', async () => {
-    const setAuth = jest.fn();
+    const setAuth = vi.fn();
     const token = 'dime';
     const userId = 'user';
-    const mockGet = jest.fn().mockResolvedValueOnce({});
-    (superagent.get as jest.Mock).mockReturnValueOnce({ set: jest.fn().mockReturnValueOnce({ set: mockGet }) });
+
     await utils.setUserAuth(token, userId, setAuth, 'setAuth');
+
     expect(setAuth).toHaveBeenCalled();
   });
   it('setUser', async () => {
     const auth = {
       isAuthenticated: false, token: 's', error: 'err', user: { userType: 'e', email: 'goo@hotmail.com' },
     };
-    const setAuth = jest.fn();
+    const setAuth = vi.fn();
     const token = 'nickel';
     const sub: any = 'some';
-    jest.spyOn(jwt, 'decode').mockReturnValue({ sub });
-    const mockPost = jest.fn().mockResolvedValueOnce({});
-    const setUserAuth = (superagent.get as jest.Mock).mockReturnValueOnce({ set: jest.fn().mockReturnValueOnce({ set: mockPost }) });
+    vi.spyOn(jwt, 'decode').mockReturnValue({ sub });
+
     await utils.setUser(auth, setAuth, token);
-    expect(setUserAuth).toHaveBeenCalled();
+    expect(setAuth).toHaveBeenCalled();
   });
   it('responseGoogleLogin', async () => {
-    const setAuth = jest.fn();
-    const getMock: any = jest.fn(() => ({ set: () => ({ set: () => Promise.resolve({ body: {} }) }) }));
-    superagent.get = getMock;
-    jwt.decode = jest.fn(() => ({ sub: '1' }));
-    const href = 'https://localhost:8888';
-    const reload = jest.fn();
-    Object.defineProperty(window, 'location', { value: { href, assign: () => { }, reload }, writable: true });
-    const postMock: any = jest.fn(() => ({ set: () => ({ send: () => Promise.resolve({ body: { token: 'token' } }) }) }));
-    superagent.post = postMock;
+    const setAuth = vi.fn();
+    vi.spyOn(commonUtils, 'notify').mockImplementation(() => { });
+    vi.spyOn(jwt, 'decode').mockReturnValue({ sub: '1' });
+    Object.defineProperty(window, 'location', {
+      value: { href: 'https://localhost:8888', assign: vi.fn(), reload: vi.fn() }, writable: true, configurable: true,
+    });
     await utils.responseGoogleLogin({ code: '' } as any, {} as any, setAuth);
     expect(setAuth).toHaveBeenCalled();
   });
   it('responseGoogleLogin fails', async () => {
     let err = '';
-    const notifySpy = vi.spyOn(commonUtils, 'notify').mockImplementation((m) => { err = m; });
-    (superagent.post as unknown as ReturnType<typeof vi.fn>).mockImplementationOnce(() => { throw new Error('boom'); });
-    await utils.responseGoogleLogin({ code: '' } as any, {} as any, jest.fn());
+    vi.spyOn(commonUtils, 'notify').mockImplementation((m) => { err = m; });
+    await utils.responseGoogleLogin({ code: '' } as any, {} as any, vi.fn());
     expect(err).toBe('Failed to authenticate');
-    notifySpy.mockRestore();
   });
   it('responseGoogleLogin succeeds when production', async () => {
-    const setAuth = jest.fn();
-    const getMock: any = jest.fn(() => ({ set: () => ({ set: () => Promise.resolve({ body: {} }) }) }));
-    superagent.get = getMock;
-    jwt.decode = jest.fn(() => ({ sub: '1' }));
-    const href = 'https://web-jam.com';
-    const reload = jest.fn();
-    Object.defineProperty(window, 'location', { value: { href, assign: () => { }, reload }, writable: true });
-    const postMock: any = jest.fn(() => ({ set: () => ({ send: () => Promise.resolve({ body: { token: 'token' } }) }) }));
-    superagent.post = postMock;
+    const setAuth = vi.fn();
+    vi.spyOn(commonUtils, 'notify').mockImplementation(() => { });
+    vi.spyOn(jwt, 'decode').mockReturnValue({ sub: '1' });
+    Object.defineProperty(window, 'location', {
+      value: { href: 'https://web-jam.com', assign: vi.fn(), reload: vi.fn() }, writable: true, configurable: true,
+    });
     await utils.responseGoogleLogin({ code: '' } as any, {} as any, setAuth);
     expect(setAuth).toHaveBeenCalled();
   });

@@ -62,7 +62,7 @@ const AccA3 = () => (
   </AccordionDetails>
 );
 
-function Faqs(): JSX.Element {
+function Faqs() {
   return (
     <div className="faqs">
       <h3 style={{ textDecoration: 'underline', textAlign: 'center' }}>FAQs</h3>

@@ -17,7 +17,7 @@ export function About() {
   );
 }
 
-export function Homepage(): JSX.Element {
+export function Homepage() {
   useEffect(() => commonUtils.setTitleAndScroll('', window.screen.width), []);
   return (
     <div>

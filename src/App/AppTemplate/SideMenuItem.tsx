@@ -1,4 +1,5 @@
 
+import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useContext } from 'react';
 import { AuthContext, Iauth } from 'src/providers/Auth.provider';
@@ -7,7 +8,7 @@ import type { ImenuItem } from './menuConfig';
 import { GoogleButtons } from './GoogleButtons';
 import { ThemeToggle } from './ThemeToggle';
 
-export function IconAndText({ menu }: { menu: ImenuItem }): JSX.Element {
+export function IconAndText({ menu }: { menu: ImenuItem }) {
   return (
     <div style={{ display: 'inline' }}>
       <i className={`${menu.iconClass}`} style={{ marginRight: '8px' }} />
@@ -17,7 +18,7 @@ export function IconAndText({ menu }: { menu: ImenuItem }): JSX.Element {
 }
 
 interface ImakeLinkProps { menu: ImenuItem, index: number, type: string, handleClose: () => void }
-export function MakeLink(props: ImakeLinkProps): JSX.Element {
+export function MakeLink(props: ImakeLinkProps) {
   const {
     menu, index, type, handleClose,
   } = props;
@@ -46,7 +47,7 @@ interface IcontinueMenuItemProps {
   pathname: string,
   handleClose: () => void,
 }
-export const ContinueMenuItem = (props:IcontinueMenuItemProps): JSX.Element | null => {
+export const ContinueMenuItem = (props: IcontinueMenuItemProps): React.JSX.Element | null => {
   const {
     menu, index, auth, pathname, handleClose,
   } = props;
@@ -77,7 +78,7 @@ interface IsideMenuItemProps {
   menu: ImenuItem, index: number,
   handleClose: () => void,
 }
-export function SideMenuItem(props: IsideMenuItemProps): JSX.Element | null {
+export function SideMenuItem(props: IsideMenuItemProps): React.JSX.Element | null {
   const {
     menu, index, handleClose,
   } = props;
@@ -102,4 +103,3 @@ export function SideMenuItem(props: IsideMenuItemProps): JSX.Element | null {
   };
   return <ContinueMenuItem {...cmiProps} />;
 }
-
