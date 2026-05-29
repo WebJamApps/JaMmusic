@@ -4,6 +4,7 @@ export function Editor(props: any) {
   return (
     <textarea
       id={id}
+      aria-label="rich text editor"
       data-testid={id}
       value={value ?? ''}
       onChange={(e) => onEditorChange && onEditorChange(e.target.value)}

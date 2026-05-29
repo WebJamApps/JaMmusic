@@ -8,6 +8,7 @@ export function MainPanel({ children, onClick, onKeyPress }:any) {
         onClick={onClick}
         onKeyPress={onKeyPress}
         id="mobilemenutoggle"
+        aria-label="Toggle menu"
         tabIndex={0}
         role="button"
       >
