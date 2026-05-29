@@ -137,7 +137,6 @@ exports[`/music > renders the component 1`] = `
                 class="createDatetime"
                 label="* Date and Time"
                 slotprops="[object Object]"
-                slots="[object Object]"
                 value="Sun Jan 01 2017 00:00:00 GMT+0000 (Coordinated Universal Time)"
               />
             </div>
@@ -507,7 +506,6 @@ exports[`/music > renders the component 1`] = `
                 class="editDateTime"
                 label="* Date and Time"
                 slotprops="[object Object]"
-                slots="[object Object]"
               />
             </div>
             <p

@@ -148,7 +148,6 @@ export function EditGigDialog(props: IeditGigDialogProps) {
               setEditChanged(true);
               setEditGig({ ...editGig, datetime: newValue }); return newValue;
             }}
-            slots={{ textField: TextField }}
             slotProps={{ textField: { className: 'dateTimeInput' } }}
           />
         </LocalizationProvider>

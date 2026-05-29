@@ -71,7 +71,7 @@ export const ShowCreateGigButton = (
       <IconButton
         className="showCreateDialog"
         sx={{ marginLeft: '10px', color: 'blue' }}
-        onClick={() => setShowDialog(true)}
+        onClick={(e) => { e.currentTarget.blur(); setShowDialog(true); }}
       >
         <AddIcon />
       </IconButton>
