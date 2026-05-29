@@ -146,6 +146,7 @@ exports[`/music > renders the component 1`] = `
               * Venue
             </p>
             <textarea
+              aria-label="rich text editor"
               data-testid="create-venue"
               id="create-venue"
             />
