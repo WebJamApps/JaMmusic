@@ -1,4 +1,4 @@
-import { Store } from 'react-notifications-component';
+import { toast } from 'react-toastify';
 import commonUtils from 'src/lib/utils';
 
 describe('commonUtils', () => {
@@ -20,8 +20,8 @@ describe('commonUtils', () => {
     expect(commonUtils.getUserRoles().length).toBe(0);
   });
   it('notify', () => {
-    Store.addNotification = jest.fn();
+    const spy = vi.spyOn(toast, 'success').mockImplementation(() => 0 as never);
     commonUtils.notify('title', 'message', 'success');
-    expect(Store.addNotification).toHaveBeenCalled();
+    expect(spy).toHaveBeenCalled();
   });
 });

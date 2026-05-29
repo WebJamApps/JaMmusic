@@ -3,7 +3,7 @@ import { ReactNode } from 'react';
 import Faqs from './FAQs';
 import { Item } from './CurrentProjects';
 
-function WJLogo(): JSX.Element {
+function WJLogo() {
   return (
     <div className="col-md-6 slideshow" style={{ width: '100%', height: '100%' }}>
       <div id="slideshow1">
@@ -21,7 +21,7 @@ function WJLogo(): JSX.Element {
   );
 }
 
-function HomepageIntro(): JSX.Element {
+function HomepageIntro() {
   const col6Style = {
     msFlex: '0 0 50%',
     flex: '0 0 50%',
@@ -67,16 +67,13 @@ interface GridItemProps {
   };
 }
 
-function AboutUs(): JSX.Element {
+function AboutUs() {
   const GridItem: React.FC<GridItemProps> = ({ children, order }) => (
     <Grid
-      item
-      xs={12}
-      sm={12}
-      md={12}
-      lg={6}
-      xl={6}
-      order={order}
+      size={{
+        xs: 12, sm: 12, md: 12, lg: 6, xl: 6,
+      }}
+      sx={{ order }}
     >
       <Item>{children}</Item>
     </Grid>

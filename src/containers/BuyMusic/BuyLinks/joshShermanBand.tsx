@@ -1,5 +1,5 @@
 
-function JoshShermanBand(): JSX.Element {
+function JoshShermanBand() {
   return (
     <div className="col">
       <div className="material-content elevation2" style={{ maxWidth: '3in', margin: 'auto', height: '3in' }}>
@@ -12,7 +12,7 @@ function JoshShermanBand(): JSX.Element {
             style={{
               display: 'inline-block',
               background: 'url(https://m.media-amazon.com/images/I/81hDicJieTL._SS500_.jpg) 18px 2px no-repeat, '
-                  + 'url(http://content.cdbaby.com/img/links/link-artwork-cart-dark-buy-now.png) 0px 0px no-repeat',
+                + 'url(http://content.cdbaby.com/img/links/link-artwork-cart-dark-buy-now.png) 0px 0px no-repeat',
               backgroundSize: '175px, 211px',
               height: '233px',
               width: '211px',

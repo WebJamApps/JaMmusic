@@ -1,36 +1,54 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+import { render, screen, fireEvent } from '@testing-library/react';
+import '@testing-library/jest-dom';
 import { GoogleButtons, loginConfig } from 'src/App/AppTemplate/GoogleButtons';
 import utils from 'src/App/AppTemplate/GoogleButtons/utils';
-import renderer from 'react-test-renderer';
+import { AuthContext, defaultAuth } from 'src/providers/Auth.provider';
+
+vi.mock('@react-oauth/google', () => ({
+  useGoogleLogin: vi.fn(() => vi.fn()),
+  googleLogout: vi.fn(),
+}));
 
 describe('GoogleButtons', () => {
   it('is defined', () => {
     expect(GoogleButtons).toBeDefined();
   });
+
   it('renders GoogleLogin button and runs events', () => {
     const props = {
-      type: 'login', index: 1, dispatch: jest.fn(),
+      type: 'login', index: 1,
     };
-    const gb = renderer.create(<GoogleButtons {...props} />).root;
-    const loginButton: any = gb.findByProps({ className: 'loginButton' });
-    expect(loginButton.props.onClick()).toBe('loginClicked');
+    render(
+      <AuthContext.Provider value={{ auth: defaultAuth, setAuth: vi.fn() }}>
+        <GoogleButtons {...props} />
+      </AuthContext.Provider>
+    );
+    const loginButton = screen.getByRole('button', { name: /login/i });
+    expect(loginButton).toBeInTheDocument();
+    fireEvent.click(loginButton);
   });
+
   it('runs loginConfig onSuccess and onError', () => {
-    const setAuth = jest.fn();
-    utils.responseGoogleLogin = jest.fn();
-    const config = loginConfig({} as any, setAuth);
+    const setAuth = vi.fn();
+    utils.responseGoogleLogin = vi.fn();
+    const config = loginConfig(defaultAuth, setAuth);
     config.onSuccess({ code: 'token', scope: '' });
     expect(utils.responseGoogleLogin).toHaveBeenCalled();
     expect(config.onError()).toBe(false);
   });
+
   it('renders GoogleLogout button and handles click', () => {
-    utils.responseGoogleLogout = jest.fn();
+    utils.responseGoogleLogout = vi.fn();
     const props = {
-      type: 'logout', index: 1, dispatch: jest.fn(),
+      type: 'logout', index: 1,
     };
-    const gb = renderer.create(<GoogleButtons {...props} />).root;
-    const logout: any = gb.findByProps({ className: 'logoutButton' });
-    logout.props.onClick();
+    render(
+      <AuthContext.Provider value={{ auth: defaultAuth, setAuth: vi.fn() }}>
+        <GoogleButtons {...props} />
+      </AuthContext.Provider>
+    );
+    const logoutButton = screen.getByRole('button', { name: /logout/i });
+    fireEvent.click(logoutButton);
     expect(utils.responseGoogleLogout).toHaveBeenCalled();
   });
 });

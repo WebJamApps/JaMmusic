@@ -1,6 +1,6 @@
 import { Add, Edit } from '@mui/icons-material';
 import { Button, CircularProgress } from '@mui/material';
-import { useEffect, useContext, useState } from 'react';
+import React, { useEffect, useContext, useState } from 'react';
 import commonUtils from 'src/lib/utils';
 import { AuthContext } from 'src/providers/Auth.provider';
 import { DataContext, Isong } from 'src/providers/Data.provider';
@@ -11,7 +11,7 @@ import { CreateSongDialog } from './CreateSongDialog';
 interface IplayerProps {
   songs: Isong[] | null, editDialogState: { showEditDialog: boolean, setShowEditDialog: (arg0: boolean) => void }
 }
-export function Player(props: IplayerProps): JSX.Element {
+export function Player(props: IplayerProps): React.JSX.Element {
   const { songs, editDialogState } = props;
   if (!Array.isArray(songs) || songs.length === 0) return <CircularProgress />;
   return (
@@ -24,10 +24,10 @@ export function Player(props: IplayerProps): JSX.Element {
 }
 
 export function SongButtons({ isAdmin, setShowCreateSong, setShowEditDialog }:
-{
-  isAdmin: boolean, setShowCreateSong: React.Dispatch<React.SetStateAction<boolean>>,
-  setShowEditDialog: React.Dispatch<React.SetStateAction<boolean>>
-}) {
+  {
+    isAdmin: boolean, setShowCreateSong: React.Dispatch<React.SetStateAction<boolean>>,
+    setShowEditDialog: React.Dispatch<React.SetStateAction<boolean>>
+  }) {
   if (isAdmin) {
     return (
       <div style={{

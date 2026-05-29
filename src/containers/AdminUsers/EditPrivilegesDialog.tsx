@@ -16,7 +16,7 @@ interface IeditPrivilegesDialogProps {
 
 export function EditPrivilegesDialog({
   open, user, token, onClose, onSaved,
-}: IeditPrivilegesDialogProps): JSX.Element {
+}: IeditPrivilegesDialogProps) {
   const [privileges, setPrivileges] = useState<Capability[]>([]);
   const [userType, setUserType] = useState<string>('');
   const [error, setError] = useState('');
@@ -39,7 +39,7 @@ export function EditPrivilegesDialog({
     setSubmitting(true);
     setError('');
     try {
-      await adminUtils.updateUser(token, user._id, { privileges, userType });
+      await adminUtils.updateUser(token, user._id, { privileges, userType: userType || undefined });
       onSaved();
     } catch (e) {
       const err = e as { response?: { body?: { message?: string } }; message?: string };

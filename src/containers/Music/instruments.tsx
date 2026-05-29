@@ -1,5 +1,5 @@
 
-function Instruments(props: { type: string }): JSX.Element {
+function Instruments(props: { type: string }) {
   const { type } = props;
   return (
     <ol className="instruments">

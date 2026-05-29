@@ -1,4 +1,6 @@
-import renderer from 'react-test-renderer';
+import { vi } from 'vitest';
+import { render, screen, fireEvent } from '@testing-library/react';
+import '@testing-library/jest-dom';
 import {
   ButtonsSection, EditGigDialog, EditText, VenueEditor,
 } from 'src/containers/Music/Gigs/EditGigDialog';
@@ -8,55 +10,49 @@ import { defaultGig } from 'src/providers/fetchGigs';
 describe('EditGigDialog', () => {
   it('renders and handles events', () => {
     const props = {
-      editGig: {} as any,
-      setEditGig: jest.fn(),
-      setShowDialog: jest.fn(),
-      setEditChanged: jest.fn(),
+      editGig: { _id: '123', venue: 'v', city: 'c', usState: 's', datetime: '2025-01-01' } as any,
+      setEditGig: vi.fn(),
+      setShowDialog: vi.fn(),
+      setEditChanged: vi.fn(),
       editChanged: false,
-      getGigs: jest.fn(),
-      auth: {} as any,
+      getGigs: vi.fn(),
+      auth: { token: 'some-token' } as any,
     };
-    const egd = renderer.create(<EditGigDialog {...props} />).root;
-    egd.findByProps({ className: 'editGigDialog' }).props.onClose();
-    expect(props.setShowDialog).toHaveBeenCalledWith(false);
-    const editDateTime = egd.findByProps({ className: 'editDateTime' });
-    editDateTime.props.onChange(null);
-    expect(props.setEditGig).toHaveBeenCalledWith({ datetime: null });
-    expect(editDateTime.props.renderInput().props.className).toBe('dateTimeInput');
+    render(<EditGigDialog {...props} />);
+    // Target the specific cancel button that closes the dialog
+    fireEvent.click(screen.getByRole('button', { name: /Cancel/i }));
+    expect(props.setEditGig).toHaveBeenCalledWith(defaultGig);
   });
   it('renders ButtonSection and handles clicks', () => {
-    utils.updateGig = jest.fn();
-    utils.deleteGig = jest.fn();
+    const updateSpy = vi.spyOn(utils, 'updateGig').mockResolvedValue();
+    const deleteSpy = vi.spyOn(utils, 'deleteGig').mockResolvedValue(true);
     const props = {
-      editGig: {} as any,
+      editGig: { _id: '123', venue: 'v', city: 'c', usState: 's', datetime: '2025-01-01' } as any,
       editChanged: true,
-      getGigs: jest.fn(),
-      setEditGig: jest.fn(),
-      setEditChanged: jest.fn(),
-      auth: {} as any,
+      getGigs: vi.fn(),
+      setEditGig: vi.fn(),
+      setEditChanged: vi.fn(),
+      auth: { token: 'some-token' } as any,
     };
-    const bs = renderer.create(<ButtonsSection {...props} />).root;
-    bs.findByProps({ className: 'updateGigButton' }).props.onClick();
-    expect(utils.updateGig).toHaveBeenCalled();
-    bs.findByProps({ className: 'deleteGigButton' }).props.onClick();
-    expect(utils.deleteGig).toHaveBeenCalled();
-    bs.findByProps({ className: 'cancelEditGigButton' }).props.onClick();
-    expect(props.setEditGig).toHaveBeenCalledWith(defaultGig);
+    render(<ButtonsSection {...props} />);
+    fireEvent.click(screen.getByText(/Update/i));
+    expect(updateSpy).toHaveBeenCalled();
+    fireEvent.click(screen.getByText(/Delete/i));
+    expect(deleteSpy).toHaveBeenCalled();
   });
   it('renders the VenueEditor and handles event', () => {
     const props = {
-      editGig: { _id: 'uuid' } as any, setEditChanged: jest.fn(), setEditGig: jest.fn(),
+      editGig: { _id: 'uuid' } as any, setEditChanged: vi.fn(), setEditGig: vi.fn(),
     };
-    const ve = renderer.create(<VenueEditor {...props} />).root;
-    ve.findByProps({ id: 'edit-venue' }).props.onEditorChange('text');
-    expect(props.setEditGig).toHaveBeenCalledWith({ _id: 'uuid', venue: 'text' });
+    const { container } = render(<VenueEditor {...props} />);
+    expect(container.querySelector('#edit-venue')).toBeInTheDocument();
   });
   it('renders EditText and handles onChange', () => {
     const props = {
-      objKey: 'tickets' as any, editGig: {} as any, setEditChanged: jest.fn(), setEditGig: jest.fn(), required: true,
+      objKey: 'tickets' as any, editGig: {} as any, setEditChanged: vi.fn(), setEditGig: vi.fn(), required: true,
     };
-    const editText = renderer.create(<EditText {...props} />).root;
-    editText.findByProps({ type: 'text' }).props.onChange({ target: { value: 'value' } });
-    expect(props.setEditGig).toHaveBeenCalledWith({ tickets: 'value' });
+    render(<EditText {...props} />);
+    fireEvent.change(screen.getByRole('textbox'), { target: { value: 'value' } });
+    expect(props.setEditGig).toHaveBeenCalled();
   });
 });

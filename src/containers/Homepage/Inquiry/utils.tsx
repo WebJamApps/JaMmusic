@@ -1,23 +1,25 @@
-import superagent from 'superagent';
 import type { IinquiryFormData } from '.';
 
 function handleCountryChange(
   event: React.ChangeEvent<HTMLSelectElement>,
-  formData:IinquiryFormData,
-  setFormData:(arg0:IinquiryFormData)=>void,
+  formData: IinquiryFormData,
+  setFormData: (arg0: IinquiryFormData) => void,
 ): void {
   setFormData({ ...formData, country: event.target.value });
 }
 
 async function createEmailApi(
   emailForm: IinquiryFormData,
-  setHasSubmitted:(arg0:boolean)=>void,
-  setSubmitError:(arg0:boolean)=>void,
+  setHasSubmitted: (arg0: boolean) => void,
+  setSubmitError: (arg0: boolean) => void,
 ): Promise<void> {
   try {
-    await superagent.post(`${process.env.BackendUrl}/inquiry`)
-      .set('Content-Type', 'application/json')
-      .send(emailForm);
+    const res = await fetch(`${process.env.BackendUrl}/inquiry`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(emailForm),
+    });
+    if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
     setHasSubmitted(true);
   } catch (e) {
     console.log((e as Error).message);
@@ -27,9 +29,9 @@ async function createEmailApi(
 
 async function handleSubmit(
   evt: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-  formData:IinquiryFormData,
-  setHasSubmitted:(arg0:boolean)=>void,
-  setSubmitError:(arg0:boolean)=>void,
+  formData: IinquiryFormData,
+  setHasSubmitted: (arg0: boolean) => void,
+  setSubmitError: (arg0: boolean) => void,
 ): Promise<void> {
   const {
     firstname, lastname, emailaddress, uSAstate, country, phonenumber, zipcode, comments,
@@ -49,8 +51,8 @@ async function handleSubmit(
 
 function handleInputChange(
   evt: React.ChangeEvent<HTMLInputElement>,
-  formData:IinquiryFormData,
-  setFormData:(arg0:IinquiryFormData)=>void,
+  formData: IinquiryFormData,
+  setFormData: (arg0: IinquiryFormData) => void,
 ): string {
   const { id, value } = evt.target;
   setFormData({ ...formData, [id]: value });
@@ -60,12 +62,12 @@ function handleInputChange(
 function handleUsStateChange(
   evt: React.ChangeEvent<HTMLSelectElement>,
   formData: IinquiryFormData,
-  setFormData:(arg0:IinquiryFormData)=>void,
+  setFormData: (arg0: IinquiryFormData) => void,
 ): void {
   setFormData({ ...formData, uSAstate: evt.target.value });
 }
 
-function continueValidating(formData:IinquiryFormData): boolean {
+function continueValidating(formData: IinquiryFormData): boolean {
   const {
     country, uSAstate, firstname, lastname, zipcode, comments,
   } = formData;
@@ -79,7 +81,7 @@ function continueValidating(formData:IinquiryFormData): boolean {
   return true;
 }
 
-function validateForm(formData:IinquiryFormData): boolean {
+function validateForm(formData: IinquiryFormData): boolean {
   const {
     emailaddress,
   } = formData;

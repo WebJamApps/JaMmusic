@@ -1,4 +1,3 @@
-import type ReactPlayer from 'react-player';
 import commonUtils from 'src/lib/utils';
 import type { Isong } from 'src/providers/Data.provider';
 
@@ -72,7 +71,8 @@ function initSongs(
 function setSingleDisplays(
   elements: {
     sidebar: any; header: any; footer: any; toggler: any; contentBlock: any;
-    pageContent: any; headerTitle: any; mainPlayer: any; outerWidth: any; },
+    pageContent: any; headerTitle: any; mainPlayer: any; outerWidth: any;
+  },
 ) {
   const {
     sidebar,
@@ -151,7 +151,7 @@ const handlePlayerError = (err: any) => {
   console.log(err); return err;
 };
 
-const handlePlayerReady = (player:ReactPlayer) => { console.log(player); return player; };
+const handlePlayerReady = () => { console.log('Player is ready'); };
 
 export default {
   makeSingleSong,

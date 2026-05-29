@@ -43,7 +43,7 @@ export function CreateGigDialog({
             label="* Date and Time"
             value={dateTime}
             onChange={(newValue: Date | null) => { setDateTime(newValue); return newValue; }}
-            renderInput={(params) => <TextField className="dateTimeInput" {...params} />}
+            slotProps={{ textField: { className: 'dateTimeInput' } }}
           />
         </LocalizationProvider>
         <p className="venueLabel">* Venue</p>

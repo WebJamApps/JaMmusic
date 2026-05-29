@@ -10,7 +10,7 @@ interface IcreateUserFormProps {
   onCreated: () => void;
 }
 
-export function CreateUserForm({ token, onCreated }: IcreateUserFormProps): JSX.Element {
+export function CreateUserForm({ token, onCreated }: IcreateUserFormProps) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [userStatus, setUserStatus] = useState<string>('human');

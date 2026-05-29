@@ -1,5 +1,5 @@
 import { BrowserRouter } from 'react-router-dom';
-import renderer from 'react-test-renderer';
+import { render } from '@testing-library/react';
 import {
   AppTemplate, handleEscapePress, handleKeyMenu, makeDrawerClass,
 } from 'src/App/AppTemplate';
@@ -7,7 +7,7 @@ import {
 describe('AppTemplate', () => {
   it('renders the component', () => {
     const props = {
-      dispatch: jest.fn(),
+      dispatch: vi.fn(),
       auth: {
         isAuthenticated: false, token: '', error: '', user: { userType: '', email: '' },
       },
@@ -17,21 +17,21 @@ describe('AppTemplate', () => {
       location: { pathname: '/' } as any,
       match: {} as any,
     };
-    const at = renderer.create(
+    const { container } = render(
       <BrowserRouter><AppTemplate {...props}><div id="test-page" /></AppTemplate></BrowserRouter>,
-    ).toJSON();
-    expect(at).toMatchSnapshot();
+    );
+    expect(container).toMatchSnapshot();
   });
   it('makeDrawerClass', () => {
     expect(makeDrawerClass(true)).toBe('home-sidebar open drawer-container');
   });
   it('handleEscapePress', () => {
-    const setMenuOpen = jest.fn();
+    const setMenuOpen = vi.fn();
     handleEscapePress({ key: 'Escape' }, setMenuOpen);
     expect(setMenuOpen).toHaveBeenCalledWith(false);
   });
   it('handleKeyMenu', () => {
-    const setMenuOpen = jest.fn();
+    const setMenuOpen = vi.fn();
     handleKeyMenu({ key: 'Enter' }, false, setMenuOpen);
     expect(setMenuOpen).toHaveBeenCalledWith(true);
   });

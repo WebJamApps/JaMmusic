@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { render, screen, fireEvent } from '@testing-library/react';
+import '@testing-library/jest-dom';
 import { BrowserRouter } from 'react-router-dom';
-import renderer from 'react-test-renderer';
 import type { ImenuItem } from 'src/App/AppTemplate/menuConfig';
 import { checkIsAllowed, ContinueMenuItem, SideMenuItem } from 'src/App/AppTemplate/SideMenuItem';
 import commonUtils from 'src/lib/utils';
@@ -10,28 +11,29 @@ describe('SideMenuItem', () => {
     expect(SideMenuItem).toBeDefined();
   });
   it('renders MakeLink for /music', () => {
-    commonUtils.getUserRoles = jest.fn(() => ['tester']);
+    commonUtils.getUserRoles = vi.fn(() => ['tester']);
     const props = {
       index: 1,
       auth: { isAuthenticated: false, user: { userType: 'joker' } } as any,
-      menu: { auth: false, link: '/music' } as ImenuItem,
-      handleClose: jest.fn(),
+      location: { pathname: '/' },
+      menu: { auth: false, link: '/music', name: 'Music', type: 'link' } as ImenuItem,
+      handleClose: vi.fn(),
     };
-    const smi = renderer.create(<BrowserRouter><SideMenuItem {...props} /></BrowserRouter>).root;
-    expect(smi).toBeDefined();
+    render(<BrowserRouter><SideMenuItem {...props} /></BrowserRouter>);
+    expect(screen.getByRole('link', { name: /music/i })).toBeInTheDocument();
   });
   it('returns MakeLink for /music when Web Jam LLC', () => {
-    commonUtils.getUserRoles = jest.fn(() => ['tester']);
+    commonUtils.getUserRoles = vi.fn(() => ['tester']);
     const props = {
       index: 1,
       auth: { isAuthenticated: false, user: { userType: 'joker' } } as any,
       location: { pathname: '/music' },
       menu: { auth: false, link: '/', name: 'Web Jam LLC' } as ImenuItem,
-      handleClose: jest.fn(),
+      handleClose: vi.fn(),
     };
-    const smi: any = renderer.create(<BrowserRouter><SideMenuItem {...props} /></BrowserRouter>);
-    expect(smi.toJSON().props.className).toBe('menu-item');
-    smi.root.findByProps({ type: 'Link' }).props.handleClose();
+    const { container } = render(<BrowserRouter><SideMenuItem {...props} /></BrowserRouter>);
+    expect(container.firstChild).toHaveClass('menu-item');
+    fireEvent.click(screen.getByRole('link'));
     expect(props.handleClose).toHaveBeenCalled();
   });
   it('ContinueMenuItem returns googleLogout', () => {
@@ -40,10 +42,10 @@ describe('SideMenuItem', () => {
       index: 1,
       auth: { isAuthenticated: true } as any,
       pathname: '',
-      handleClose: jest.fn(),
+      handleClose: vi.fn(),
     };
-    const result: any = renderer.create(<ContinueMenuItem {...props} />).toJSON();
-    expect(result.props.className.includes('googleLogout')).toBe(true);
+    const { container } = render(<ContinueMenuItem {...props} />);
+    expect(container.firstChild).toHaveClass('googleLogout');
   });
   it('ContinueMenuItem when music', () => {
     const props = {
@@ -51,10 +53,10 @@ describe('SideMenuItem', () => {
       index: 1,
       auth: { isAuthenticated: true } as any,
       pathname: '/music',
-      handleClose: jest.fn(),
+      handleClose: vi.fn(),
     };
-    const result: any = renderer.create(<BrowserRouter><ContinueMenuItem {...props} /></BrowserRouter>).toJSON();
-    expect(result.children[0].props.href).toBe('/music');
+    render(<BrowserRouter><ContinueMenuItem {...props} /></BrowserRouter>);
+    expect(screen.getByRole('link')).toHaveAttribute('href', '/music');
   });
   it('ContinueMenuItem returns ThemeToggle for themeToggle type', () => {
     const props = {
@@ -62,10 +64,10 @@ describe('SideMenuItem', () => {
       index: 1,
       auth: { isAuthenticated: false } as any,
       pathname: '/',
-      handleClose: jest.fn(),
+      handleClose: vi.fn(),
     };
-    const result: any = renderer.create(<ContinueMenuItem {...props} />).toJSON();
-    expect(result.props.className.includes('theme-toggle')).toBe(true);
+    const { container } = render(<ContinueMenuItem {...props} />);
+    expect(container.firstChild).toHaveClass('theme-toggle');
   });
   it('checkIsAllowed return false if item requires auth and userType is not allowed', () => {
     const menu: any = { auth: true };

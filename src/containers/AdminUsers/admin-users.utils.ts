@@ -1,5 +1,3 @@
-import superagent from 'superagent';
-
 export interface IadminUser {
   _id: string;
   name: string;
@@ -13,33 +11,71 @@ export interface IadminUser {
 const baseUrl = `${process.env.BackendUrl}/admin/user`;
 
 async function listUsers(token: string): Promise<IadminUser[]> {
-  const res = await superagent.get(baseUrl).set('Accept', 'application/json').set('Authorization', `Bearer ${token}`);
-  return res.body as IadminUser[];
+  const res = await fetch(baseUrl, {
+    headers: {
+      Accept: 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+  return await res.json() as IadminUser[];
 }
 
 async function createUser(
   token: string,
   payload: { name: string; email: string; userType?: string; userStatus?: string; privileges?: string[]; userDetails?: string },
 ): Promise<IadminUser> {
-  const res = await superagent.post(baseUrl).set('Accept', 'application/json')
-    .set('Authorization', `Bearer ${token}`).send(payload);
-  return res.body as IadminUser;
+  const res = await fetch(baseUrl, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+  return await res.json() as IadminUser;
 }
 
 async function updateUser(token: string, userId: string, payload: { privileges?: string[]; userType?: string }): Promise<IadminUser> {
-  const res = await superagent.put(`${baseUrl}/${userId}`).set('Accept', 'application/json')
-    .set('Authorization', `Bearer ${token}`).send(payload);
-  return res.body as IadminUser;
+  const res = await fetch(`${baseUrl}/${userId}`, {
+    method: 'PUT',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+  return await res.json() as IadminUser;
 }
 
 async function mintToken(token: string, userId: string): Promise<string> {
-  const res = await superagent.post(`${baseUrl}/${userId}/token`).set('Accept', 'application/json')
-    .set('Authorization', `Bearer ${token}`).send({});
-  return (res.body as { token: string }).token;
+  const res = await fetch(`${baseUrl}/${userId}/token`, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({}),
+  });
+  if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+  const body = await res.json() as { token: string };
+  return body.token;
 }
 
 async function deleteUser(token: string, userId: string): Promise<void> {
-  await superagent.delete(`${baseUrl}/${userId}`).set('Accept', 'application/json').set('Authorization', `Bearer ${token}`);
+  const res = await fetch(`${baseUrl}/${userId}`, {
+    method: 'DELETE',
+    headers: {
+      Accept: 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
 }
 
 export function getAllowedAdminRoles(): string[] {

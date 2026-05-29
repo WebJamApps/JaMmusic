@@ -1,6 +1,10 @@
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 
-interface ImakeProviderProps { Context: any; fetches: any[]; setters: any[]; }
+interface ImakeProviderProps {
+  Context: React.Context<any>;
+  fetches: ((arg: (val: any) => void) => void)[];
+  setters: React.Dispatch<React.SetStateAction<any>>[];
+}
 
 export const MakeProvider = (props: ImakeProviderProps) => {
   const { Context, fetches, setters } = props;
@@ -14,4 +18,3 @@ export const MakeProvider = (props: ImakeProviderProps) => {
 
   return Provider;
 };
-

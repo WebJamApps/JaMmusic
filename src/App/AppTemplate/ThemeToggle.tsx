@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import { ThemeContext } from 'src/providers/Theme.provider';
 
-export function ThemeToggle(): JSX.Element {
+export function ThemeToggle() {
   const { theme, toggleTheme } = useContext(ThemeContext);
   const isDark = theme === 'dark';
   const handleClick = (e: React.MouseEvent | React.KeyboardEvent) => {

@@ -1,4 +1,4 @@
-import type { GridEnrichedColDef, GridRenderCellParams, GridRowParams } from '@mui/x-data-grid';
+import type { GridColDef, GridRenderCellParams, GridRowParams } from '@mui/x-data-grid';
 import HtmlReactParser from 'html-react-parser';
 import scc from 'socketcluster-client';
 import commonUtils from 'src/lib/utils';
@@ -156,7 +156,7 @@ const makeVenueValue = (value: string) => {
   return <div>{parsed}</div>;
 };
 
-const makeVenue = (): GridEnrichedColDef => (
+const makeVenue = (): GridColDef => (
   {
     field: 'venue',
     headerName: 'Venue',

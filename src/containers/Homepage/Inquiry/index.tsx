@@ -98,7 +98,7 @@ export function EmailPhoneRow(props: ItableSectionProps) {
   );
 }
 
-export function TableSection(props: ItableSectionProps): JSX.Element {
+export function TableSection(props: ItableSectionProps) {
   const { formData, setFormData } = props;
   const { firstname, lastname } = formData;
   return (
@@ -141,9 +141,9 @@ interface IinquiryFormProps {
   setSubmitError: (arg0: boolean) => void,
   setFormData: (arg0: IinquiryFormData) => void,
   formData: IinquiryFormData,
-  staticCountry?:string
+  staticCountry?: string
 }
-export function InquiryForm(props: IinquiryFormProps): JSX.Element {
+export function InquiryForm(props: IinquiryFormProps) {
   // eslint-disable-next-line object-curly-newline
   const { formData, setFormData, setHasSubmitted, setSubmitError, staticCountry } = props;
   const { country, uSAstate, zipcode } = formData;
@@ -266,7 +266,7 @@ export function ContactForm(props: IcontactFormProps) {
     </div>
   );
 }
-export function Inquiry({ country, hideTitle }:{ country?:string, hideTitle?:boolean }): JSX.Element {
+export function Inquiry({ country, hideTitle }: { country?: string, hideTitle?: boolean }) {
   const [hasSubmitted, setHasSubmitted] = useState(false);
   const [submitError, setSubmitError] = useState(false);
   const [formData, setFormData] = useState({} as IinquiryFormData);
