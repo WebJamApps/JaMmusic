@@ -166,6 +166,27 @@ th, td {
   text-align: left;
 }
 
+/* MUI <Table> (e.g. Admin Users) — MUI's palette is never switched to dark, so
+   MuiTableCell text defaults to the light-palette near-black color and is
+   illegible on our dark surfaces. Pin the table surface + cell/header text and
+   borders onto the theme tokens so it's correct in both light and dark. */
+.MuiTable-root {
+  background-color: var(--table-bg);
+}
+
+.MuiTableCell-root {
+  color: var(--fg) !important;
+  border-color: var(--table-border) !important;
+}
+
+/* Default (no-color) MUI Chips use a translucent-black fill + dark text — both
+   vanish on dark surfaces (Admin Users "Type"/"Privileges" columns). Outlined
+   coloured chips (e.g. "Role") are fine, so only the default filled chip. */
+.MuiChip-filled.MuiChip-colorDefault {
+  background-color: var(--table-row-alt-bg);
+  color: var(--fg);
+}
+
 tbody.regformtbody td,
 tbody.regformtbody th {
   border: none;
