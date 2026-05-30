@@ -52,12 +52,6 @@ const wjNav = [
     nav: 'wj', className: 'tipjar', type: 'link', iconClass: 'fab fa-gratipay', link: '/music/tipjar', name: 'Tip Jar',
   },
   {
-    nav: 'wj', className: '', type: 'link', iconClass: 'fas fa-map-marker', link: '/map', name: 'Map', auth: true,
-  },
-  {
-    nav: 'wj', className: '', type: 'link', iconClass: 'fas fa-sort', link: '/sort', name: 'Sort', auth: true,
-  },
-  {
     nav: 'wj', className: '', type: 'link', iconClass: 'fas fa-users-cog', link: '/admin/users', name: 'Admin Users', auth: true,
   },
   {

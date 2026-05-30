@@ -19,8 +19,26 @@
   border-color: var(--table-border) !important;
 }
 
+/* MUI X DataGrid v9 paints its own (light-palette) white background on the
+   header, base rows, footer, scroller and filler elements — MUI's theme is
+   never switched to dark, so in our data-theme="dark" mode those surfaces
+   stayed white while the text used the light --fg → illegible. Force every
+   surface onto the table tokens so it's correct in both themes. */
+.MuiDataGrid-root .MuiDataGrid-columnHeaders,
+.MuiDataGrid-root .MuiDataGrid-columnHeader,
+.MuiDataGrid-root .MuiDataGrid-columnHeaderTitleContainer,
+.MuiDataGrid-root .MuiDataGrid-virtualScroller,
+.MuiDataGrid-root .MuiDataGrid-row,
+.MuiDataGrid-root .MuiDataGrid-filler,
+.MuiDataGrid-root .MuiDataGrid-scrollbarFiller,
+.MuiDataGrid-root .MuiDataGrid-footerContainer,
+.MuiDataGrid-root .MuiTablePagination-root,
+.MuiDataGrid-root .MuiTablePagination-toolbar {
+  background-color: var(--table-bg) !important;
+}
+
 .MuiDataGrid-root .MuiDataGrid-row:nth-of-type(odd) {
-  background-color: var(--table-row-alt-bg);
+  background-color: var(--table-row-alt-bg) !important;
 }
 
 /* MUI DataGrid v5 sets cell/header/pagination text via the MUI theme,

@@ -45,7 +45,9 @@ export function AdminUsers() {
   }
 
   return (
-    <Box sx={{ padding: 3, maxWidth: 1200, margin: 'auto' }} data-testid="admin-users-page">
+    <Box sx={{
+      padding: 3, maxWidth: 1200, margin: 'auto', width: '100%', minWidth: 0,
+    }} data-testid="admin-users-page">
       <Typography variant="h5" sx={{ marginBottom: 2 }}>Admin Users</Typography>
       <CreateUserForm token={auth.token} onCreated={refresh} />
       {loading && <Typography data-testid="admin-users-loading">Loading...</Typography>}
