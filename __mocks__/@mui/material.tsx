@@ -131,3 +131,8 @@ export function TableCell(props:any) {
   const { children } = props;
   return <td {...props}>{children}</td>;
 }
+
+// Default to desktop (false) in tests; suites can override per-case.
+export function useMediaQuery() {
+  return false;
+}
