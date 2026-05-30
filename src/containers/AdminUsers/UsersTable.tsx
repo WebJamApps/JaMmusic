@@ -51,61 +51,63 @@ export function UsersTable({
   }
 
   return (
-    <Table data-testid="users-table">
-      <TableHead>
-        <TableRow>
-          <TableCell>Name</TableCell>
-          <TableCell>Email</TableCell>
-          <TableCell>Role</TableCell>
-          <TableCell>Type</TableCell>
-          <TableCell>Privileges</TableCell>
-          <TableCell>Actions</TableCell>
-        </TableRow>
-      </TableHead>
-      <TableBody>
-        {users.map((u) => (
-          <TableRow key={u._id} data-testid={`user-row-${u._id}`}>
-            <TableCell>{u.name}</TableCell>
-            <TableCell>{u.email}</TableCell>
-            <TableCell>
-              <Chip label={u.userType || 'N/A'} color="primary" variant="outlined" size="small" />
-            </TableCell>
-            <TableCell>
-              <Chip label={u.userStatus || 'human'} size="small" />
-            </TableCell>
-            <TableCell>
-              {(u.privileges || []).map((p) => <Chip key={p} label={p} size="small" sx={{ margin: '2px' }} />)}
-            </TableCell>
-            <TableCell>
-              <Button
-                size="small"
-                onClick={() => handleShowToken(u._id)}
-                disabled={busy === u._id}
-                data-testid={`show-token-${u._id}`}
-              >
-                Show token
-              </Button>
-              <Button
-                size="small"
-                onClick={() => onEditPrivileges(u)}
-                disabled={busy === u._id}
-                data-testid={`edit-priv-${u._id}`}
-              >
-                Edit privileges
-              </Button>
-              <Button
-                size="small"
-                color="error"
-                onClick={() => handleDelete(u._id, u.name)}
-                disabled={busy === u._id}
-                data-testid={`delete-${u._id}`}
-              >
-                Delete
-              </Button>
-            </TableCell>
+    <Box sx={{ width: '100%', overflowX: 'auto' }}>
+      <Table data-testid="users-table" size="small" sx={{ minWidth: 720 }}>
+        <TableHead>
+          <TableRow>
+            <TableCell>Name</TableCell>
+            <TableCell>Email</TableCell>
+            <TableCell>Role</TableCell>
+            <TableCell>Type</TableCell>
+            <TableCell>Privileges</TableCell>
+            <TableCell>Actions</TableCell>
           </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+        </TableHead>
+        <TableBody>
+          {users.map((u) => (
+            <TableRow key={u._id} data-testid={`user-row-${u._id}`}>
+              <TableCell>{u.name}</TableCell>
+              <TableCell>{u.email}</TableCell>
+              <TableCell>
+                <Chip label={u.userType || 'N/A'} color="primary" variant="outlined" size="small" />
+              </TableCell>
+              <TableCell>
+                <Chip label={u.userStatus || 'human'} size="small" />
+              </TableCell>
+              <TableCell>
+                {(u.privileges || []).map((p) => <Chip key={p} label={p} size="small" sx={{ margin: '2px' }} />)}
+              </TableCell>
+              <TableCell>
+                <Button
+                  size="small"
+                  onClick={() => handleShowToken(u._id)}
+                  disabled={busy === u._id}
+                  data-testid={`show-token-${u._id}`}
+                >
+                  Show token
+                </Button>
+                <Button
+                  size="small"
+                  onClick={() => onEditPrivileges(u)}
+                  disabled={busy === u._id}
+                  data-testid={`edit-priv-${u._id}`}
+                >
+                  Edit privileges
+                </Button>
+                <Button
+                  size="small"
+                  color="error"
+                  onClick={() => handleDelete(u._id, u.name)}
+                  disabled={busy === u._id}
+                  data-testid={`delete-${u._id}`}
+                >
+                  Delete
+                </Button>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </Box>
   );
 }
