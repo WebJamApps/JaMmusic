@@ -4,7 +4,7 @@ import {
 import {
   DataGrid, type GridColDef, type GridRenderCellParams,
 } from '@mui/x-data-grid';
-import { Button, IconButton, Tooltip } from '@mui/material';
+import { Button, IconButton, Tooltip, useMediaQuery } from '@mui/material';
 import { Add as AddIcon } from '@mui/icons-material';
 import HtmlReactParser from 'html-react-parser';
 import { DataContext, Igig } from 'src/providers/Data.provider';
@@ -16,19 +16,19 @@ import { EditGigDialog } from './EditGigDialog';
 import { CreateGigDialog } from './CreateGigDialog';
 import './gigs.scss';
 
-export const columns: GridColDef[] = [
-  {
+export const makeColumns = (isMobile = false): GridColDef[] => {
+  const dateCol: GridColDef = {
     field: 'date',
     headerName: 'Date',
-    width: 220,
+    width: isMobile ? 92 : 220,
     editable: false,
     renderCell: (params: GridRenderCellParams) => {
       const { row: { datetime } } = params;
       if (!datetime) return '';
-      return utils.makeDateValue(datetime);
+      return isMobile ? utils.makeShortDateValue(datetime) : utils.makeDateValue(datetime);
     },
-  },
-  {
+  };
+  const timeCol: GridColDef = {
     field: 'time',
     headerName: 'Time',
     width: 90,
@@ -38,11 +38,11 @@ export const columns: GridColDef[] = [
       if (!datetime) return '';
       return utils.makeTimeValue(datetime);
     },
-  },
-  {
+  };
+  const locationCol: GridColDef = {
     field: 'location',
     headerName: 'Location',
-    minWidth: 160,
+    minWidth: isMobile ? 90 : 160,
     flex: 1,
     editable: false,
     renderCell: (params: GridRenderCellParams) => {
@@ -51,16 +51,21 @@ export const columns: GridColDef[] = [
       if (city) return `${city}, ${usState}`;
       return '';
     },
-  },
-  utils.makeVenue(),
-  {
+  };
+  const ticketsCol: GridColDef = {
     field: 'tickets',
     headerName: 'Tickets',
     width: 120,
     editable: false,
     renderCell: (params: GridRenderCellParams) => <span>{HtmlReactParser(params.value || 'Free')}</span>,
-  },
-];
+  };
+  // On phones the full table (~990px) overflows; show only Date/Location/Venue.
+  if (isMobile) return [dateCol, locationCol, utils.makeVenue(true)];
+  return [dateCol, timeCol, locationCol, utils.makeVenue(), ticketsCol];
+};
+
+// Backwards-compatible default (desktop) export.
+export const columns: GridColDef[] = makeColumns(false);
 
 export const ShowCreateGigButton = (
   { isAdmin, setShowDialog }: { isAdmin: boolean, setShowDialog: (arg0: boolean) => void },
@@ -90,6 +95,7 @@ export const GigsDiv = (props: IgigsDivProps) => {
     isAdmin, setShowDialog, setEditGig, editGig, gigsInOrder = [], pageSize, showDialog, editChanged, setEditChanged, getGigs, auth, setPageSize,
   } = props;
   const navigate = useNavigate();
+  const isMobile = useMediaQuery('(max-width:600px)');
   const handleClick = () => {
     if (process.env.APP_NAME === 'joshandmariamusic.com') window.open('https://web-jam.com/music/bookus');
     else navigate('/music/bookus');
@@ -109,11 +115,12 @@ export const GigsDiv = (props: IgigsDivProps) => {
       <div style={{ height: '500px', width: '100%' }}>
         <DataGrid
           className={isAdmin ? 'adminGrid' : ''}
+          getRowHeight={() => 'auto'}
           onRowClick={(rowParams) => {
             utils.clickToEdit(setEditGig, isAdmin, rowParams.row);
           }}
           rows={gigsInOrder || []}
-          columns={columns}
+          columns={makeColumns(isMobile)}
           paginationModel={{ page: 0, pageSize }}
           onPaginationModelChange={(model) => setPageSize(model.pageSize)}
           pageSizeOptions={[pageSize]}

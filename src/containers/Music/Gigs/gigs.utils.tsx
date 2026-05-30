@@ -147,6 +147,9 @@ const makeDateValue = (datetime: string) => {
   return localString;
 };
 
+const makeShortDateValue = (datetime: string) => new Date(datetime)
+  .toLocaleString('en-US', { year: '2-digit', month: 'numeric', day: 'numeric' });
+
 const makeTimeValue = (datetime: string) => new Date(datetime)
   .toLocaleString('en-US', { hour: 'numeric', minute: '2-digit' });
 
@@ -156,11 +159,11 @@ const makeVenueValue = (value: string) => {
   return <div>{parsed}</div>;
 };
 
-const makeVenue = (): GridColDef => (
+const makeVenue = (isMobile = false): GridColDef => (
   {
     field: 'venue',
     headerName: 'Venue',
-    minWidth: 400,
+    minWidth: isMobile ? 110 : 400,
     flex: 2,
     editable: false,
     renderCell: (params: GridRenderCellParams) => makeVenueValue(params.value),
@@ -171,6 +174,7 @@ export default {
   makeVenue,
   makeVenueValue,
   makeDateValue,
+  makeShortDateValue,
   makeTimeValue,
   createGig,
   updateGig,
