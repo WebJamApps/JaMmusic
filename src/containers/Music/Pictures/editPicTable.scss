@@ -1,5 +1,10 @@
-.MuiDataGrid-cell, .MuiDataGrid-row {
+/* Scoped to the pictures grid only — CSS imports are global, so an unscoped
+   .MuiDataGrid-cell/.row rule here was forcing every DataGrid on the site
+   (including the gigs table) to a fixed 100px row height. */
+.editPicTable {
+  .MuiDataGrid-cell, .MuiDataGrid-row {
     min-height: 100px !important;
     max-height: 100px !important;
     cursor:pointer;
+  }
 }

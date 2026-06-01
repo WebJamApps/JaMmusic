@@ -87,10 +87,18 @@
   margin-left: 14px;
 }
 
+/* Rows use getRowHeight=auto so long venue/location text can wrap on phones.
+   Auto-height cells top-align their content, which left single-line cells
+   sitting at the top of tall rows (looked misaligned). Center vertically and
+   trim the vertical padding so rows are as short as their content allows. */
 .MuiDataGrid-root .MuiDataGrid-cell {
   white-space: normal !important;
   overflow-wrap: break-word !important;
   border-color: var(--table-border) !important;
+  display: flex;
+  align-items: center;
+  padding-top: 4px !important;
+  padding-bottom: 4px !important;
 }
 
 .bookUsButton{
