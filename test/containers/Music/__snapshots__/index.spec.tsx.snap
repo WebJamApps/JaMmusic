@@ -36,8 +36,13 @@ exports[`/music > renders the component 1`] = `
               <img
                 alt="Phil the Tip Jar"
                 src="../static/imgs/phil-tip-jar.svg"
-                style="height: 72px; width: auto; display: block;"
+                style="height: 120px; width: auto; display: block;"
               />
+              <span
+                style="font-size: 13px; font-weight: 600; margin-top: 2px;"
+              >
+                Leave a tip!
+              </span>
             </button>
           </div>
         </div>
