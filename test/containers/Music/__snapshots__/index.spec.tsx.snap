@@ -16,7 +16,7 @@ exports[`/music > renders the component 1`] = `
         style="margin: auto; max-width: 900px; padding: 6px 6px 0px;"
       >
         <div
-          style="margin: auto; text-align: center;"
+          style="margin: auto; text-align: center; display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 10px;"
         >
           <button
             class="clickToListen"
@@ -24,6 +24,22 @@ exports[`/music > renders the component 1`] = `
           >
             Click To Listen
           </button>
+          <div
+            placement="top"
+            title="Leave us a tip — Phil the Tip Jar"
+          >
+            <button
+              aria-label="Leave a tip with Phil the Tip Jar"
+              class="philTipJar"
+              sx="[object Object]"
+            >
+              <img
+                alt="Phil the Tip Jar"
+                src="../static/imgs/phil-tip-jar.svg"
+                style="height: 72px; width: auto; display: block;"
+              />
+            </button>
+          </div>
         </div>
         <h5
           style="margin-top: 10px; margin-bottom: 6px; font-weight: normal;"
