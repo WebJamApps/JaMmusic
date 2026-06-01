@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 64 240 206" role="img" aria-label="Phil the Tip Jar">
+  <title>Phil the Tip Jar</title>
+  <defs>
+    <linearGradient id="glass" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#eef8f9"/>
+      <stop offset="0.18" stop-color="#ffffff"/>
+      <stop offset="0.5" stop-color="#cfeaec"/>
+      <stop offset="0.82" stop-color="#aedadd"/>
+      <stop offset="1" stop-color="#cfeaec"/>
+    </linearGradient>
+    <linearGradient id="mouth" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#6fa6a9"/>
+      <stop offset="1" stop-color="#bfe2e4"/>
+    </linearGradient>
+    <linearGradient id="coin" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffe187"/>
+      <stop offset="1" stop-color="#d99a30"/>
+    </linearGradient>
+    <radialGradient id="shadow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#000000" stop-opacity="0.28"/>
+      <stop offset="1" stop-color="#000000" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- ground shadow -->
+  <ellipse cx="120" cy="259" rx="76" ry="10" fill="url(#shadow)"/>
+
+  <!-- jar body (shortened) -->
+  <path d="M62 82 L178 82 C190 82 195 96 195 112 L195 222 C195 244 181 252 165 252 L75 252 C59 252 45 244 45 222 L45 112 C45 96 50 82 62 82 Z"
+        fill="url(#glass)" stroke="#5d8b8e" stroke-width="2.5" stroke-opacity="0.65"/>
+
+  <!-- contents: overlapping bills + coins -->
+  <clipPath id="bodyclip">
+    <path d="M62 82 L178 82 C190 82 195 96 195 112 L195 222 C195 244 181 252 165 252 L75 252 C59 252 45 244 45 222 L45 112 C45 96 50 82 62 82 Z"/>
+  </clipPath>
+  <g clip-path="url(#bodyclip)">
+    <g transform="rotate(8 150 224)">
+      <rect x="112" y="202" width="80" height="46" rx="4" fill="#83c193" stroke="#3f7a54" stroke-width="1.8"/>
+      <rect x="117" y="207" width="70" height="36" rx="3" fill="none" stroke="#3f7a54" stroke-width="1" stroke-opacity="0.55"/>
+      <ellipse cx="152" cy="225" rx="9" ry="11" fill="#a6d6b1" stroke="#3f7a54" stroke-width="1"/>
+    </g>
+    <g transform="rotate(-10 90 226)">
+      <rect x="52" y="204" width="78" height="46" rx="4" fill="#7bbb8b" stroke="#3f7a54" stroke-width="1.8"/>
+      <rect x="57" y="209" width="68" height="36" rx="3" fill="none" stroke="#3f7a54" stroke-width="1" stroke-opacity="0.55"/>
+      <ellipse cx="90" cy="227" rx="9" ry="11" fill="#9fd0ab" stroke="#3f7a54" stroke-width="1"/>
+    </g>
+    <g stroke="#b07d1f" stroke-width="1.5">
+      <ellipse cx="78" cy="248" rx="22" ry="8" fill="url(#coin)"/>
+      <ellipse cx="150" cy="249" rx="22" ry="8" fill="url(#coin)"/>
+      <ellipse cx="114" cy="252" rx="20" ry="7.5" fill="url(#coin)"/>
+    </g>
+  </g>
+
+  <!-- glass highlights -->
+  <path d="M56 100 q8 -6 14 0 v120 q-7 6 -14 0 z" fill="#ffffff" opacity="0.5"/>
+  <path d="M78 104 q3 -3 6 0 v112 q-3 3 -6 0 z" fill="#ffffff" opacity="0.3"/>
+  <path d="M178 114 q4 -3 7 0 v98 q-4 3 -7 0 z" fill="#ffffff" opacity="0.18"/>
+
+  <!-- open jar mouth (no lid) -->
+  <ellipse cx="120" cy="82" rx="59" ry="12" fill="url(#glass)" stroke="#5d8b8e" stroke-width="2.5" stroke-opacity="0.7"/>
+  <ellipse cx="120" cy="82" rx="50" ry="8.5" fill="url(#mouth)" stroke="#5d8b8e" stroke-width="1.5" stroke-opacity="0.5"/>
+
+  <!-- paper label (larger, moved up) -->
+  <rect x="48" y="106" width="144" height="94" rx="7" fill="#fbf5e6" stroke="#c4a86a" stroke-width="2.5"/>
+  <rect x="55" y="113" width="130" height="80" rx="5" fill="none" stroke="#c4a86a" stroke-width="1.2" stroke-opacity="0.7"/>
+  <text x="120" y="138" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-weight="bold" font-size="27" fill="#4a3f24">Phil</text>
+  <text x="120" y="165" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-style="italic" font-size="24" fill="#7a6a3a">the</text>
+  <text x="120" y="192" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-weight="bold" font-size="27" letter-spacing="1.5" fill="#4a3f24">TIP JAR</text>
+</svg>

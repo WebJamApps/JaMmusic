@@ -1,4 +1,4 @@
-import { Button } from '@mui/material';
+import { Button, IconButton, Tooltip } from '@mui/material';
 import { Add, Edit } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 
@@ -14,9 +14,36 @@ export function ClickToListen(props: IclickToListenProps) {
     if (appName === 'joshandmariamusic.com') window.open('https://web-jam.com/music/songs');
     else navigate('/music/songs');
   };
+  const handleTipClick = () => {
+    if (appName === 'joshandmariamusic.com') window.open('https://web-jam.com/music/tipjar');
+    else navigate('/music/tipjar');
+  };
   return (
-    <div style={{ margin: 'auto', textAlign: 'center' }}>
+    <div
+      style={{
+        margin: 'auto', textAlign: 'center', display: 'flex', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center', gap: '10px',
+      }}
+    >
       <Button variant="contained" className="clickToListen" onClick={handleClick}>Click To Listen</Button>
+      <Tooltip title="Leave us a tip — Phil the Tip Jar" placement="top">
+        <IconButton
+          className="philTipJar"
+          onClick={handleTipClick}
+          aria-label="Leave a tip with Phil the Tip Jar"
+          sx={{
+            p: '4px',
+            borderRadius: '8px',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            transition: 'transform .15s ease',
+            '&:hover': { transform: 'scale(1.08)', backgroundColor: 'transparent' },
+          }}
+        >
+          <img src="../static/imgs/phil-tip-jar.svg" alt="Phil the Tip Jar" style={{ height: '120px', width: 'auto', display: 'block' }} />
+          <span style={{ fontSize: '13px', fontWeight: 600, marginTop: '2px' }}>Leave a tip!</span>
+        </IconButton>
+      </Tooltip>
       {isAdmin
         ? (
           <>
