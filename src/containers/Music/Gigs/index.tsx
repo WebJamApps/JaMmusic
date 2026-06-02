@@ -20,7 +20,7 @@ export const makeColumns = (isMobile = false): GridColDef[] => {
   const dateCol: GridColDef = {
     field: 'date',
     headerName: 'Date',
-    width: isMobile ? 92 : 220,
+    width: isMobile ? 110 : 220,
     editable: false,
     renderCell: (params: GridRenderCellParams) => {
       const { row: { datetime } } = params;
@@ -42,8 +42,9 @@ export const makeColumns = (isMobile = false): GridColDef[] => {
   const locationCol: GridColDef = {
     field: 'location',
     headerName: 'Location',
-    minWidth: isMobile ? 90 : 160,
-    flex: 1,
+    width: isMobile ? 150 : undefined,
+    minWidth: isMobile ? undefined : 160,
+    flex: isMobile ? 0 : 1,
     editable: false,
     renderCell: (params: GridRenderCellParams) => {
       const { row: { location, city, usState } } = params;
@@ -59,9 +60,8 @@ export const makeColumns = (isMobile = false): GridColDef[] => {
     editable: false,
     renderCell: (params: GridRenderCellParams) => <span>{HtmlReactParser(params.value || 'Free')}</span>,
   };
-  // On phones the full table (~990px) overflows; show only Date/Location/Venue.
-  if (isMobile) return [dateCol, locationCol, utils.makeVenue(true)];
-  return [dateCol, timeCol, locationCol, utils.makeVenue(), ticketsCol];
+  // Apply the requested column order for both mobile and desktop.
+  return [dateCol, timeCol, utils.makeVenue(isMobile), locationCol, ticketsCol];
 };
 
 // Backwards-compatible default (desktop) export.
@@ -104,7 +104,7 @@ export const GigsDiv = (props: IgigsDivProps) => {
     <div
       className="gigsDiv"
       style={{
-        margin: 'auto', padding: '10px', width: '100%',
+        margin: 'auto', padding: '10px 16px', width: '100%',
       }}
     >
       <h4 style={{ textAlign: 'center' }}>
