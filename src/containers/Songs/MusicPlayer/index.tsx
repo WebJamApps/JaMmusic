@@ -30,7 +30,6 @@ export function MyReactPlayer(props: ImyReactPlayerProps): React.JSX.Element {
     <Player
       onError={utils.handlePlayerError}
       onReady={utils.handlePlayerReady}
-      muted={!playing}
       style={utils.setPlayerStyle(song) as React.CSSProperties}
       url={song.url}
       playing={playing}
