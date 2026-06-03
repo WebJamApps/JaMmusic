@@ -9,7 +9,7 @@ function AppersonAutomotive() {
         <img
           style={{ width: '95%', height: '455px' }}
           alt="Apperson Automotive Home Page"
-          src="../static/imgs/AppersonAutomotive.png"
+          src="/imgs/AppersonAutomotive.png"
         />
         <br />
         <a

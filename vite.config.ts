@@ -1,5 +1,6 @@
 /// <reference types="vitest" />
 import { defineConfig, loadEnv, type Plugin } from 'vite';
+import { configDefaults } from 'vitest/config';
 import { fileURLToPath } from 'node:url';
 import react from '@vitejs/plugin-react';
 import checker from 'vite-plugin-checker';
@@ -73,6 +74,8 @@ export default defineConfig(({ mode }) => {
       mockReset: true,
       testTimeout: 40000,
       include: ['test/**/*.{test,spec}.{ts,tsx}'],
+      // Playwright e2e specs live under test/e2e — keep Vitest out of them.
+      exclude: [...configDefaults.exclude, 'test/e2e/**'],
       fakeTimers: {
         now: 1483228800000,
         toFake: ['Date'],

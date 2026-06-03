@@ -25,7 +25,7 @@ function JoshBio() {
         <img
           style={{ paddingLeft: 10, paddingRight: 10, float: 'left' }}
           className="alignnone size-full wp-image-49"
-          src="/static/imgs/josh01.jpg"
+          src="/imgs/josh01.jpg"
           alt="josh01"
           width={isMobile ? '230px' : '288px'}
         />

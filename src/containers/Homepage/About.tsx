@@ -14,7 +14,7 @@ function WJLogo() {
             boxShadow: '0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.4)',
           }}
           alt="Web Jam Banner Large"
-          src="../static/imgs/banner1.jpg"
+          src="/imgs/banner1.jpg"
         />
       </div>
     </div>

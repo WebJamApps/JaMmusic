@@ -84,7 +84,7 @@ exports[`/music > renders the component 1`] = `
             >
               <img
                 alt="Phil the Tip Jar"
-                src="../static/imgs/phil-tip-jar.svg"
+                src="/imgs/phil-tip-jar.svg"
                 style="height: 120px; width: auto; display: block;"
               />
               <span
@@ -957,7 +957,7 @@ exports[`/music > renders the component 1`] = `
             <img
               alt="josh01"
               class="alignnone size-full wp-image-49"
-              src="/static/imgs/josh01.jpg"
+              src="/imgs/josh01.jpg"
               style="padding-left: 10px; padding-right: 10px; float: left;"
               width="288px"
             />
@@ -1032,7 +1032,7 @@ exports[`/music > renders the component 1`] = `
             <img
               alt="maria01"
               class="alignnone size-medium wp-image-50"
-              src="/static/imgs/maria01.jpg"
+              src="/imgs/maria01.jpg"
               style="padding-left: 10px; padding-right: 10px; float: left;"
               width="288px"
             />

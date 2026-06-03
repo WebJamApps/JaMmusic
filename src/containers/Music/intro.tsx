@@ -40,7 +40,7 @@ export function ClickToListen(props: IclickToListenProps) {
             '&:hover': { transform: 'scale(1.08)', backgroundColor: 'transparent' },
           }}
         >
-          <img src="../static/imgs/phil-tip-jar.svg" alt="Phil the Tip Jar" style={{ height: '120px', width: 'auto', display: 'block' }} />
+          <img src="/imgs/phil-tip-jar.svg" alt="Phil the Tip Jar" style={{ height: '120px', width: 'auto', display: 'block' }} />
           <span style={{ fontSize: '13px', fontWeight: 600, marginTop: '2px' }}>Leave a tip!</span>
         </IconButton>
       </Tooltip>

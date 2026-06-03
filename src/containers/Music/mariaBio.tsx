@@ -26,7 +26,7 @@ function MariaBio() {
         <img
           style={{ paddingLeft: 10, paddingRight: 10, float: 'left' }}
           className="alignnone size-medium wp-image-50"
-          src="/static/imgs/maria01.jpg"
+          src="/imgs/maria01.jpg"
           alt="maria01"
           width={isMobile ? '230px' : '288px'}
         />
