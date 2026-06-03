@@ -5,7 +5,7 @@ import { EditPrivilegesDialog } from 'src/containers/AdminUsers/EditPrivilegesDi
 import adminUtils, { type IadminUser } from 'src/containers/AdminUsers/admin-users.utils';
 
 const user: IadminUser = {
-  _id: 'u1', name: 'Bot', email: 'b@x.com', privileges: ['tour:create'],
+  _id: 'u1', name: 'Bot', email: 'b@x.com', privileges: ['gig:create'],
 };
 
 describe('EditPrivilegesDialog', () => {
@@ -19,7 +19,7 @@ describe('EditPrivilegesDialog', () => {
         <EditPrivilegesDialog open user={user} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />,
       );
     });
-    expect(screen.getByRole('checkbox', { name: /tour:create/i })).toBeChecked();
+    expect(screen.getByRole('checkbox', { name: /gig:create/i })).toBeChecked();
     expect(screen.getByRole('checkbox', { name: /song:create/i })).not.toBeChecked();
   });
 
@@ -34,7 +34,7 @@ describe('EditPrivilegesDialog', () => {
       fireEvent.click(screen.getByTestId('edit-priv-save'));
     });
     expect(adminUtils.updateUser).toHaveBeenCalledWith('tk', 'u1', {
-      privileges: ['tour:create'],
+      privileges: ['gig:create'],
       userType: undefined,
     });
     expect(onSaved).toHaveBeenCalled();

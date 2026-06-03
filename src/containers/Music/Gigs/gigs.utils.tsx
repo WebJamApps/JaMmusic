@@ -18,11 +18,13 @@ const createGig = async (
   usState: string,
   tickets: string,
   auth: Iauth,
+  duration: number,
+  promoImageUrl: string,
 ) => {
   try {
     const { token } = auth;
-    const tour = {
-      datetime, venue, tickets, city, usState,
+    const gig = {
+      datetime, venue, tickets, city, usState, duration, promoImageUrl,
     };
     const socket = scc.create({
       hostname: process.env.SCS_HOST,
@@ -30,7 +32,7 @@ const createGig = async (
       autoConnect: true,
       secure: process.env.SOCKETCLUSTER_SECURE !== 'false',
     });
-    socket.transmit('newTour', { tour, token });
+    socket.transmit('newGig', { gig, token });
     setShowDialog(false);
     await commonUtils.delay(2);
     getGigs();
@@ -45,18 +47,18 @@ const updateGig = async (
   token: string,
 ) => {
   try {
-    const tour: Igig = { ...editGig };
-    delete tour.date;
-    delete tour.time;
-    delete tour.location;
-    delete tour._id;
+    const gig: Igig = { ...editGig };
+    delete gig.date;
+    delete gig.time;
+    delete gig.location;
+    delete gig._id;
     const socket = scc.create({
       hostname: process.env.SCS_HOST,
       port: Number(process.env.SCS_PORT),
       autoConnect: true,
       secure: process.env.SOCKETCLUSTER_SECURE !== 'false',
     });
-    socket.transmit('editTour', { tourId: editGig._id, tour, token });
+    socket.transmit('editGig', { gigId: editGig._id, gig, token });
     setEditGig(defaultGig);
     setEditChanged(false);
     await commonUtils.delay(2);
@@ -85,7 +87,7 @@ const checkUpdateDisabled = (editGig: GridRowParams['row'], editChanged: boolean
 };
 
 async function deleteGig(
-  tourId: string,
+  gigId: string,
   getGigs: () => void,
   setEditGig: (arg0: typeof defaultGig) => void,
   setEditChanged: (arg0: boolean) => void,
@@ -100,8 +102,8 @@ async function deleteGig(
         autoConnect: true,
         secure: process.env.SOCKETCLUSTER_SECURE !== 'false',
       });
-      const tour = { tourId };
-      socket.transmit('deleteTour', { tour, token });
+      const gig = { gigId };
+      socket.transmit('deleteGig', { gig, token });
       await commonUtils.delay(2);
       setEditGig(defaultGig);
       setEditChanged(false);
@@ -153,6 +155,15 @@ const makeShortDateValue = (datetime: string) => new Date(datetime)
 const makeTimeValue = (datetime: string) => new Date(datetime)
   .toLocaleString('en-US', { hour: 'numeric', minute: '2-digit' });
 
+// With a duration (hours) the Time column becomes a range "8:00 AM to 5:00 PM";
+// with no duration it stays the start time alone.
+const makeTimeRange = (datetime: string, duration?: number) => {
+  const start = makeTimeValue(datetime);
+  if (!duration || duration <= 0) return start;
+  const end = new Date(new Date(datetime).getTime() + duration * 60 * 60 * 1000);
+  return `${start} to ${makeTimeValue(end.toISOString())}`;
+};
+
 const makeVenueValue = (value: string) => {
   const parsed = HtmlReactParser(value);
   if (value === 'Our Past Performances') return <span className="ourPastPerformances">{parsed}</span>;
@@ -177,6 +188,7 @@ export default {
   makeDateValue,
   makeShortDateValue,
   makeTimeValue,
+  makeTimeRange,
   createGig,
   updateGig,
   clickToEdit,

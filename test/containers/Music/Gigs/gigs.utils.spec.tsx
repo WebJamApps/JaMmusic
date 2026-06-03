@@ -88,13 +88,13 @@ describe('gigs.utils', () => {
   it('createGig successful', async () => {
     commonUtils.delay = vi.fn();
     const getGigs = vi.fn();
-    await utils.createGig(getGigs, vi.fn(), new Date(), 'item', 'item', 'item', 'item', { token: 'token' } as Iauth);
+    await utils.createGig(getGigs, vi.fn(), new Date(), 'item', 'item', 'item', 'item', { token: 'token' } as Iauth, 0, '');
     expect(getGigs).toHaveBeenCalled();
   });
   it('createGig catches error', async () => {
     commonUtils.delay = vi.fn(() => Promise.reject(new Error('failed')));
     const getGigs = vi.fn();
-    await utils.createGig(getGigs, vi.fn(), new Date(), 'item', 'item', 'item', 'item', { token: 'token' } as Iauth);
+    await utils.createGig(getGigs, vi.fn(), new Date(), 'item', 'item', 'item', 'item', { token: 'token' } as Iauth, 0, '');
     expect(getGigs).not.toHaveBeenCalled();
   });
   it('checkUpdateDisabled', () => {
