@@ -11,3 +11,27 @@
 * This is a React frontend project that requires both `web-jam-back` and `WebJamSocketCluster` to fully display applicable data and have interations to backend resourses.
 * Copy the `.env.example` file and paste it as `.env` file in the project root directory. Request variable definitions from the project owner or spin up your own resourses where applicable.
 * More information is available in our [Developer's Guide](https://docs.google.com/document/d/1_QDDbqmBrJuGqBoib59fmgYtls03dAXXuLqRR5roPO4/edit).
+
+## Deployment
+
+JaMmusic is a static SPA with no server of its own. It is built **into** two Heroku apps at build time — each backend's `postinstallJaM.sh` clones JaMmusic and checks out `main` (or `dev` for non-prod builds):
+
+* **`webjamsalem`** (repo `web-jam-back`) → serves <https://web-jam.com>
+* **`webjamsocket`** (repo `WebJamSocketCluster`) → serves <https://joshandmariamusic.com>
+
+Because Heroku only watches each backend's own repo, a JaMmusic merge would **not** redeploy them on its own. A GitHub Actions fan-out closes that gap:
+
+1. **JaMmusic** — `.github/workflows/notify-backends.yml` fires on push to `main` and sends a `repository_dispatch` (`jammusic-main-deploy`) to both backend repos.
+2. **Each backend** — `.github/workflows/redeploy-on-jammusic.yml` receives that event and calls the Heroku Platform API to rebuild its app from the current `main` tarball, which re-runs `postinstallJaM` and re-embeds the latest JaMmusic.
+
+### Required secrets
+
+These power the chain above and must be set as repo secrets (none are committed):
+
+| Repo | Secret | Purpose |
+| --- | --- | --- |
+| JaMmusic | `DISPATCH_TOKEN` | GitHub fine-grained PAT with **Contents: Read & write** on `web-jam-back` + `WebJamSocketCluster`; lets the dispatcher send `repository_dispatch` to them (GitHub → GitHub). |
+| web-jam-back | `HEROKU_API_KEY` | Heroku API token authorized for `webjamsalem`; triggers its rebuild (GitHub → Heroku). |
+| WebJamSocketCluster | `HEROKU_API_KEY` | Heroku API token authorized for `webjamsocket`; triggers its rebuild (GitHub → Heroku). |
+
+Either backend's receiver can also be run by hand from its **Actions** tab (`workflow_dispatch`) to force a redeploy.
