@@ -17,6 +17,8 @@ export interface Igig {
   id?: number;
   city?: string;
   usState?: string;
+  duration?: number;
+  promoImageUrl?: string;
 }
 
 export interface Isong {

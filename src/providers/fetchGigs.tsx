@@ -12,10 +12,12 @@ export const defaultGig: Igig = {
   city: '',
   usState: 'Virginia',
   id: 0,
+  duration: 0,
+  promoImageUrl: '',
 };
 
 const getGigs = (
   setGigs: (_arg0: Igig[] | null) => void,
-): boolean => socketClusterMessages.initialMessage(setGigs, 'allTours');
+): boolean => socketClusterMessages.initialMessage(setGigs, 'allGigs');
 
 export default { getGigs };

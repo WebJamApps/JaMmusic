@@ -6,7 +6,7 @@ import adminUtils, { type IadminUser } from 'src/containers/AdminUsers/admin-use
 describe('UsersTable', () => {
   const users: IadminUser[] = [
     {
-      _id: 'u1', name: 'Bot One', email: 'b1@x.com', userStatus: 'ai-agent', privileges: ['tour:create'],
+      _id: 'u1', name: 'Bot One', email: 'b1@x.com', userStatus: 'ai-agent', privileges: ['gig:create'],
     },
   ];
 

@@ -156,6 +156,22 @@ export function EditGigDialog(props: IeditGigDialogProps) {
         <EditText objKey="city" editGig={editGig} setEditChanged={setEditChanged} setEditGig={setEditGig} required />
         <UsStateDropDown editGig={editGig} setEditChanged={setEditChanged} setEditGig={setEditGig} />
         <EditText objKey="tickets" editGig={editGig} setEditChanged={setEditChanged} setEditGig={setEditGig} required={false} />
+        <TextField
+          label="Duration (hours)"
+          type="number"
+          fullWidth
+          sx={{ marginTop: '20px' }}
+          value={editGig.duration ?? 0}
+          onChange={(evt) => { setEditChanged(true); setEditGig({ ...editGig, duration: Number(evt.target.value) }); }}
+        />
+        <TextField
+          label="Promo image URL"
+          type="text"
+          fullWidth
+          sx={{ marginTop: '20px' }}
+          value={editGig.promoImageUrl ?? ''}
+          onChange={(evt) => { setEditChanged(true); setEditGig({ ...editGig, promoImageUrl: evt.target.value }); }}
+        />
       </DialogContent>
       <ButtonsSection
         editGig={editGig}

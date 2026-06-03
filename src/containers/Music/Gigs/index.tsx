@@ -31,12 +31,12 @@ export const makeColumns = (isMobile = false): GridColDef[] => {
   const timeCol: GridColDef = {
     field: 'time',
     headerName: 'Time',
-    width: 90,
+    width: isMobile ? 140 : 170,
     editable: false,
     renderCell: (params: GridRenderCellParams) => {
-      const { row: { datetime } } = params;
+      const { row: { datetime, duration } } = params;
       if (!datetime) return '';
-      return utils.makeTimeValue(datetime);
+      return utils.makeTimeRange(datetime, duration);
     },
   };
   const locationCol: GridColDef = {
@@ -60,8 +60,30 @@ export const makeColumns = (isMobile = false): GridColDef[] => {
     editable: false,
     renderCell: (params: GridRenderCellParams) => <span>{HtmlReactParser(params.value || 'Free')}</span>,
   };
-  // Apply the requested column order for both mobile and desktop.
-  return [dateCol, timeCol, utils.makeVenue(isMobile), locationCol, ticketsCol];
+  const photoCol: GridColDef = {
+    field: 'promoImageUrl',
+    headerName: 'Photo',
+    width: 90,
+    sortable: false,
+    editable: false,
+    renderCell: (params: GridRenderCellParams) => {
+      const { row: { promoImageUrl } } = params;
+      if (!promoImageUrl) return '';
+      // Static thumbnail; the onClick only stops the click bubbling so it never
+      // opens the row's edit dialog (the thumbnail itself does nothing).
+      return (
+        // eslint-disable-next-line jsx-a11y-x/click-events-have-key-events, jsx-a11y-x/no-noninteractive-element-interactions
+        <img
+          src={promoImageUrl}
+          alt="gig promo"
+          style={{ height: '40px', width: 'auto', objectFit: 'contain' }}
+          onClick={(e) => e.stopPropagation()}
+        />
+      );
+    },
+  };
+  // Apply the requested column order for both mobile and desktop (photo far right).
+  return [dateCol, timeCol, utils.makeVenue(isMobile), locationCol, ticketsCol, photoCol];
 };
 
 // Backwards-compatible default (desktop) export.
