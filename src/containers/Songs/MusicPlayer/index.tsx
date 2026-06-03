@@ -32,20 +32,15 @@ export function MyReactPlayer(props: ImyReactPlayerProps): React.JSX.Element {
       onReady={utils.handlePlayerReady}
       muted={!playing}
       style={utils.setPlayerStyle(song) as React.CSSProperties}
-      url={song.url}
+      src={song.url}
       playing={playing}
       controls
+      controlsList="nodownload"
       onEnded={handleEnded}
       width="100%"
       height="40vh"
       id="mainPlayer"
       className="audio"
-      config={{
-        youtube: {
-          playerVars: { controls: 0 },
-        },
-        file: { attributes: { controlsList: 'nodownload' } },
-      }}
     />
   );
 }
