@@ -1,6 +1,5 @@
 /// <reference types="vitest" />
 import { defineConfig, loadEnv, type Plugin } from 'vite';
-import { configDefaults } from 'vitest/config';
 import { fileURLToPath } from 'node:url';
 import react from '@vitejs/plugin-react';
 import checker from 'vite-plugin-checker';
@@ -37,9 +36,14 @@ function replaceProcessEnv(env: Record<string, string>): Plugin {
   };
 }
 
-export default defineConfig(({ mode }) => {
+export default defineConfig(async ({ mode }) => {
   const env: Record<string, string> = { ...loadEnv(mode, process.cwd(), ''), NODE_ENV: mode };
   const isTest = mode === 'test' || process.env.VITEST;
+  // `vitest/config` is a devDependency — import it lazily so a production
+  // build (npm install --omit=dev) never tries to resolve it.
+  const testExclude = isTest
+    ? [...(await import('vitest/config')).configDefaults.exclude, 'test/e2e/**']
+    : ['test/e2e/**'];
   return {
     plugins: [
       ...(isTest ? [] : [
@@ -75,7 +79,7 @@ export default defineConfig(({ mode }) => {
       testTimeout: 40000,
       include: ['test/**/*.{test,spec}.{ts,tsx}'],
       // Playwright e2e specs live under test/e2e — keep Vitest out of them.
-      exclude: [...configDefaults.exclude, 'test/e2e/**'],
+      exclude: testExclude,
       fakeTimers: {
         now: 1483228800000,
         toFake: ['Date'],
