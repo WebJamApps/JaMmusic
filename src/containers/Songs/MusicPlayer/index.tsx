@@ -9,6 +9,11 @@ import './musicPlayer.scss';
 import { EditSongDialog } from '../EditSongDialog';
 import { defaultSong } from '../songs.utils';
 
+// react-player v3 lazy-loads its non-file players (YouTube, etc.) via dynamic
+// import, which adds a load delay on first play. Warm that chunk at page load so
+// it's ready by the time a YouTube song is selected. Best-effort (swallow errors).
+void import('youtube-video-element/react').catch(() => { /* preload best-effort */ });
+
 export function makeHandleEnded(index: number, songsState: Isong[], setIndex: (arg0: number) => void) {
   return () => utils.next(index, songsState, setIndex);
 }
@@ -36,6 +41,7 @@ export function MyReactPlayer(props: ImyReactPlayerProps): React.JSX.Element {
       playing={playing}
       controls
       controlsList="nodownload"
+      preload="auto"
       onEnded={handleEnded}
       width="100%"
       height="40vh"
