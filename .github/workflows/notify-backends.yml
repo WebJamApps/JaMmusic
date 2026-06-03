@@ -1,0 +1,23 @@
+name: Notify backends on main update
+
+# When JaMmusic merges to main, fan out a repository_dispatch to each Heroku
+# backend so they rebuild and re-embed the latest JaMmusic main (via their
+# postinstallJaM step). Each backend's own workflow does the Heroku redeploy.
+on:
+  push:
+    branches: [main]
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        repo: [web-jam-back, WebJamSocketCluster]
+    steps:
+      - name: repository_dispatch -> ${{ matrix.repo }}
+        run: |
+          curl -fsS -X POST \
+            https://api.github.com/repos/WebJamApps/${{ matrix.repo }}/dispatches \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${{ secrets.DISPATCH_TOKEN }}" \
+            -d '{"event_type":"jammusic-main-deploy","client_payload":{"sha":"${{ github.sha }}"}}'
