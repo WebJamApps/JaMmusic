@@ -3,11 +3,11 @@ import '@testing-library/jest-dom';
 import { Isettings, PicSlider, SliderContent } from 'src/containers/Music/Pictures/PicSlider';
 
 const data: any = [
-  { _id: 1, url: '../static/imgs/ohaf/slideshow2.png', comments: 'showCaption' },
-  { _id: 2, url: '../static/imgs/ohaf/slideshow3.png' },
-  { _id: 3, url: '../static/imgs/ohaf/slideshow4.png' },
-  { _id: 4, url: '../static/imgs/ohaf/slideshow5.png' },
-  { _id: 5, url: '../static/imgs/ohaf/slideshow6.png' },
+  { _id: 1, url: '/imgs/ohaf/slideshow2.png', comments: 'showCaption' },
+  { _id: 2, url: '/imgs/ohaf/slideshow3.png' },
+  { _id: 3, url: '/imgs/ohaf/slideshow4.png' },
+  { _id: 4, url: '/imgs/ohaf/slideshow5.png' },
+  { _id: 5, url: '/imgs/ohaf/slideshow6.png' },
 ];
 
 const settings: Isettings = {

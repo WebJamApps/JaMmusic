@@ -5,13 +5,18 @@ function Caption(props: { caption?: string }) {
     <div
       className="slider-caption"
       style={{
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        boxSizing: 'border-box',
         textAlign: 'center',
         fontWeight: 600,
-        padding: '15px 0',
-        boxShadow: '0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.14)',
-        backgroundColor: 'var(--bg)',
-        color: 'var(--fg)',
-        marginBottom: '10px',
+        padding: '10px 12px',
+        backgroundColor: 'rgba(0, 0, 0, 0.6)',
+        color: '#ffffff',
+        textShadow: '0 1px 2px rgba(0, 0, 0, 0.8)',
+        zIndex: 2,
       }}
     >
       {' '}

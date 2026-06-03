@@ -48,19 +48,19 @@ describe('Gigs', () => {
     expect(props.setShowDialog).toHaveBeenCalledWith(true);
   });
   it('renders the location cell with city, state', () => {
-    const location: any = columns[2];
+    const location: any = columns[3];
     const params: any = { row: { location: '', city: 'Salem', usState: 'Virginia' } };
     const cell: any = location.renderCell(params);
     expect(cell).toBe('Salem, Virginia');
   });
   it('renders the location cell with location', () => {
-    const location: any = columns[2];
+    const location: any = columns[3];
     const params: any = { row: { location: 'location', city: 'Salem', usState: 'Virginia' } };
     const cell: any = location.renderCell(params);
     expect(cell).toBe('location');
   });
   it('renders the location cell when undefined', () => {
-    const location: any = columns[2];
+    const location: any = columns[3];
     const params: any = { row: {} };
     const cell: any = location.renderCell(params);
     expect(cell).toBe('');

@@ -21,7 +21,7 @@ exports[`AppTemplate > renders the component 1`] = `
           <img
             alt="wjsidelogo"
             id="webjamwidelogo"
-            src="../static/imgs/webjamlogo1.png"
+            src="/imgs/webjamlogo1.png"
             style="width: 182px; margin-right: 0px; margin-left: 0px;"
           />
         </div>
@@ -176,7 +176,7 @@ exports[`AppTemplate > renders the component 1`] = `
             <img
               alt="ohaflogo"
               class="home-header-image"
-              src="../static/imgs/webjamicon7.png"
+              src="/imgs/webjamicon7.png"
             />
           </div>
           <div

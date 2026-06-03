@@ -72,7 +72,7 @@ typings/
 yarn.lock
 
 # Playwright
-/test-results
+/test/test-results
 /playwright-report
 /blob-report
 /playwright/.cache

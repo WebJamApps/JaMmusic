@@ -40,7 +40,7 @@ export function ClickToListen(props: IclickToListenProps) {
             '&:hover': { transform: 'scale(1.08)', backgroundColor: 'transparent' },
           }}
         >
-          <img src="../static/imgs/phil-tip-jar.svg" alt="Phil the Tip Jar" style={{ height: '120px', width: 'auto', display: 'block' }} />
+          <img src="/imgs/phil-tip-jar.svg" alt="Phil the Tip Jar" style={{ height: '120px', width: 'auto', display: 'block' }} />
           <span style={{ fontSize: '13px', fontWeight: 600, marginTop: '2px' }}>Leave a tip!</span>
         </IconButton>
       </Tooltip>
@@ -80,7 +80,7 @@ export function Intro(props: IintroProps) {
     <div
       className="intro"
       style={{
-        margin: 'auto', maxWidth: '900px', padding: '6px', paddingBottom: 0,
+        margin: 'auto', maxWidth: '900px', padding: '6px 16px', paddingBottom: 0,
       }}
     >
       <ClickToListen
@@ -89,7 +89,7 @@ export function Intro(props: IintroProps) {
         setShowCreatePic={setShowCreatePic}
         setShowEditPic={setShowEditPic}
       />
-      <h5 style={{ marginTop: '10px', marginBottom: '6px', fontWeight: 'normal' }}>
+      <p style={{ marginTop: '10px', marginBottom: '6px', fontWeight: 'normal', padding: '0 16px' }}>
         We&rsquo;re
         {' '}
         <strong>Josh and Maria Sherman</strong>
@@ -98,8 +98,6 @@ export function Intro(props: IintroProps) {
         eclectic mix of folk, rock, country, Christian, and Americana favorites. Whether we&rsquo;re playing a church
         service, taproom, festival, farmer&rsquo;s market, or private event, our goal is simple: to create a warm,
         memorable experience that feels personal and genuine.
-      </h5>
-      <p style={{ marginTop: 0, marginBottom: '6px', textAlign: 'center' }}>
         We perform throughout Virginia, North Carolina, and South Carolina, bringing a mix of strong harmonies,
         acoustic energy, and songs people love to sing along with.
       </p>

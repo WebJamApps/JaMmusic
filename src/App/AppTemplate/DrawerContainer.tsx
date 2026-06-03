@@ -15,7 +15,7 @@ export function DrawerContainer(props:IdrawerContainerProps) {
           <img
             alt="wjsidelogo"
             id="webjamwidelogo"
-            src="../static/imgs/webjamlogo1.png"
+            src="/imgs/webjamlogo1.png"
             style={{ width: '182px', marginRight: 0, marginLeft: 0 }}
           />
         </div>

@@ -22,7 +22,7 @@ export const SliderContent = ({ pics, settings }: { pics: Ipic[] | null, setting
     <div className="picSlider">
       <Slider {...settings}>
         {pics.map((d) => (
-          <div key={d._id}>
+          <div key={d._id} style={{ position: 'relative', height: '100%' }}>
             {' '}
             <img className="slide-images" src={d.url} alt={d.title} />
             {' '}

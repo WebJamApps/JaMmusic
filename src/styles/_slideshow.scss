@@ -57,9 +57,22 @@
   border: 0;
 }
 
+/* Make react-slick fill the fixed-height slideshow box so images are
+   contained within it and the caption overlay always lands inside the
+   visible (overflow:hidden) area on both desktop and mobile. */
+.picSlider,
+.picSlider .slick-slider,
+.picSlider .slick-list,
+.picSlider .slick-track,
+.picSlider .slick-slide,
+.picSlider .slick-slide > div {
+  height: 100%;
+}
+
 .slide-images {
   width: 100%;
-  max-height:390px;
+  height: 100%;
+  max-height: 100%;
   background-color: black;
   object-fit: contain;
   background-repeat: space;

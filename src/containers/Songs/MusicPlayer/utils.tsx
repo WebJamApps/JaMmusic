@@ -12,7 +12,7 @@ function setPlayerStyle(song: Isong): Record<string, unknown> {
   };
   if (song.image === undefined || song.image === '') {
     playerStyle = {
-      backgroundImage: 'url("/static/imgs/webjamlogo1.png")',
+      backgroundImage: 'url("/imgs/webjamlogo1.png")',
       backgroundColor: '#2a2a2a',
       textAlign: 'center',
       backgroundPosition: 'center',
