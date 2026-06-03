@@ -2,7 +2,7 @@ import { CAPABILITIES, CAPABILITY_GROUPS, USER_STATUS_OPTIONS } from 'src/contai
 
 describe('AdminUsers capabilities registry', () => {
   it('includes tour, song, and book capabilities', () => {
-    expect(CAPABILITIES).toContain('tour:create');
+    expect(CAPABILITIES).toContain('gig:create');
     expect(CAPABILITIES).toContain('song:create');
     expect(CAPABILITIES).toContain('book:delete');
   });

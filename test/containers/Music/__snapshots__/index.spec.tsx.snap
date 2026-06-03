@@ -537,6 +537,18 @@ exports[`/music > renders the component 1`] = `
               type="text"
               value=""
             />
+            <input
+              label="Duration (hours)"
+              sx="[object Object]"
+              type="number"
+              value="0"
+            />
+            <input
+              label="Promo image URL"
+              sx="[object Object]"
+              type="text"
+              value=""
+            />
           </div>
           <div>
             <button
@@ -897,6 +909,18 @@ exports[`/music > renders the component 1`] = `
             </div>
             <input
               label="Tickets"
+              sx="[object Object]"
+              type="text"
+              value=""
+            />
+            <input
+              label="Duration (hours)"
+              sx="[object Object]"
+              type="number"
+              value="0"
+            />
+            <input
+              label="Promo image URL"
               sx="[object Object]"
               type="text"
               value=""

@@ -24,6 +24,8 @@ export function CreateGigDialog({
   const [city, setCity] = useState('');
   const [usState, setUSstate] = useState('Virginia');
   const [tickets, setTickets] = useState('');
+  const [duration, setDuration] = useState(0);
+  const [promoImageUrl, setPromoImageUrl] = useState('');
   return (
     <Dialog
       disableEnforceFocus
@@ -95,6 +97,22 @@ export function CreateGigDialog({
           value={tickets}
           onChange={(evt) => { setTickets(evt.target.value); return evt.target.value; }}
         />
+        <TextField
+          sx={{ marginTop: '20px' }}
+          label="Duration (hours)"
+          type="number"
+          fullWidth
+          value={duration}
+          onChange={(evt) => { setDuration(Number(evt.target.value)); return evt.target.value; }}
+        />
+        <TextField
+          sx={{ marginTop: '20px' }}
+          label="Promo image URL"
+          type="text"
+          fullWidth
+          value={promoImageUrl}
+          onChange={(evt) => { setPromoImageUrl(evt.target.value); return evt.target.value; }}
+        />
       </DialogContent>
       <DialogActions>
         <Button
@@ -102,7 +120,7 @@ export function CreateGigDialog({
           size="small"
           variant="contained"
           className="createGigButton"
-          onClick={() => { utils.createGig(getGigs, setShowDialog, dateTime, venue, city, usState, tickets, auth); }}
+          onClick={() => { utils.createGig(getGigs, setShowDialog, dateTime, venue, city, usState, tickets, auth, duration, promoImageUrl); }}
         >
           Create
         </Button>

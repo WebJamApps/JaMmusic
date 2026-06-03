@@ -1,7 +1,7 @@
 export const CAPABILITIES = [
-  'tour:create',
-  'tour:edit',
-  'tour:delete',
+  'gig:create',
+  'gig:edit',
+  'gig:delete',
   'song:create',
   'song:edit',
   'song:delete',
@@ -13,7 +13,7 @@ export const CAPABILITIES = [
 export type Capability = (typeof CAPABILITIES)[number];
 
 export const CAPABILITY_GROUPS: { label: string; items: Capability[] }[] = [
-  { label: 'Tours', items: ['tour:create', 'tour:edit', 'tour:delete'] },
+  { label: 'Gigs', items: ['gig:create', 'gig:edit', 'gig:delete'] },
   { label: 'Songs', items: ['song:create', 'song:edit', 'song:delete'] },
   { label: 'Books', items: ['book:create', 'book:edit', 'book:delete'] },
 ];
