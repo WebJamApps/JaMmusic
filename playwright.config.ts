@@ -6,7 +6,8 @@ import { defineConfig, devices } from '@playwright/test';
 const baseURL = process.env.BASE_URL || 'https://www.web-jam.com';
 
 export default defineConfig({
-  testDir: './e2e',
+  testDir: './test/e2e',
+  outputDir: './test/test-results',
   timeout: 60_000,
   expect: { timeout: 15_000 },
   fullyParallel: true,

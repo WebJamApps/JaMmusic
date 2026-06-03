@@ -8,12 +8,61 @@ exports[`/music > renders the component 1`] = `
     <div
       style="padding-top: 1px; padding-bottom: 0px; margin-bottom: 0px;"
     >
+      <style>
+        
+            #musicSlide1 img {
+              max-height: 70% !important;
+              max-width: 100% !important;
+              width: auto !important;
+              height: auto !important;
+              display: inline-block !important;
+              object-fit: contain !important;
+            }
+            #musicSlide1 .slick-slider, 
+            #musicSlide1 .slick-list, 
+            #musicSlide1 .slick-track, 
+            #musicSlide1 .slick-slide, 
+            #musicSlide1 .slick-slide &gt; div {
+              height: 100% !important;
+            }
+            #musicSlide1 .slick-slide &gt; div &gt; div {
+              width: 100% !important;
+              height: 100% !important;
+              display: flex !important;
+              flex-direction: column !important;
+              align-items: center !important;
+              justify-content: center !important;
+              background: black !important;
+              outline: none !important;
+              overflow: hidden !important;
+            }
+            #musicSlide1 .legend {
+              background: rgba(0, 0, 0, 0.7) !important;
+              border-radius: 4px !important;
+              opacity: 1 !important;
+              visibility: visible !important;
+              display: block !important;
+              position: relative !important;
+              color: white !important;
+              text-align: center !important;
+              font-size: 17px !important;
+              width: fit-content !important;
+              max-width: 95% !important;
+              padding: 8px 16px !important;
+              margin: 10px auto 0 !important;
+              z-index: 100 !important;
+              pointer-events: none;
+              white-space: normal !important;
+            }
+          
+      </style>
       <div
         id="musicSlide1"
+        style="height: 500px; background-color: black; width: 100%; position: relative; overflow: hidden;"
       />
       <div
         class="intro"
-        style="margin: auto; max-width: 900px; padding: 6px 6px 0px;"
+        style="margin: auto; max-width: 900px; padding: 6px 16px 0px;"
       >
         <div
           style="margin: auto; text-align: center; display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 10px;"
@@ -35,7 +84,7 @@ exports[`/music > renders the component 1`] = `
             >
               <img
                 alt="Phil the Tip Jar"
-                src="../static/imgs/phil-tip-jar.svg"
+                src="/imgs/phil-tip-jar.svg"
                 style="height: 120px; width: auto; display: block;"
               />
               <span
@@ -46,8 +95,8 @@ exports[`/music > renders the component 1`] = `
             </button>
           </div>
         </div>
-        <h5
-          style="margin-top: 10px; margin-bottom: 6px; font-weight: normal;"
+        <p
+          style="margin-top: 10px; margin-bottom: 6px; font-weight: normal; padding: 0px 16px;"
         >
           We’re
            
@@ -55,12 +104,7 @@ exports[`/music > renders the component 1`] = `
             Josh and Maria Sherman
           </strong>
            
-          — an acoustic husband-and-wife duo based in Salem, Virginia. Our music blends original songs with an eclectic mix of folk, rock, country, Christian, and Americana favorites. Whether we’re playing a church service, taproom, festival, farmer’s market, or private event, our goal is simple: to create a warm, memorable experience that feels personal and genuine.
-        </h5>
-        <p
-          style="margin-top: 0px; margin-bottom: 6px; text-align: center;"
-        >
-          We perform throughout Virginia, North Carolina, and South Carolina, bringing a mix of strong harmonies, acoustic energy, and songs people love to sing along with.
+          — an acoustic husband-and-wife duo based in Salem, Virginia. Our music blends original songs with an eclectic mix of folk, rock, country, Christian, and Americana favorites. Whether we’re playing a church service, taproom, festival, farmer’s market, or private event, our goal is simple: to create a warm, memorable experience that feels personal and genuine. We perform throughout Virginia, North Carolina, and South Carolina, bringing a mix of strong harmonies, acoustic energy, and songs people love to sing along with.
         </p>
       </div>
       <div
@@ -117,11 +161,11 @@ exports[`/music > renders the component 1`] = `
     </div>
     <div
       class="search-table-outer"
-      style="position: relative; overflow-x: auto; max-width: 96%; margin: auto; z-index: 0;"
+      style="position: relative; overflow-x: auto; width: 100%; margin: auto; z-index: 0;"
     >
       <div
         class="gigsDiv"
-        style="margin: auto; padding: 10px; width: 100%;"
+        style="margin: auto; padding: 10px 16px; width: 100%;"
       >
         <h4
           style="text-align: center;"
@@ -890,7 +934,7 @@ exports[`/music > renders the component 1`] = `
     </div>
     <div
       class="elevation3"
-      style="max-width: 1000px; margin: auto;"
+      style="max-width: 1000px; margin: auto; padding: 0px 16px; box-sizing: border-box;"
     >
       <section>
         <div
@@ -913,20 +957,19 @@ exports[`/music > renders the component 1`] = `
             <img
               alt="josh01"
               class="alignnone size-full wp-image-49"
-              src="/static/imgs/josh01.jpg"
+              src="/imgs/josh01.jpg"
               style="padding-left: 10px; padding-right: 10px; float: left;"
               width="288px"
             />
           </div>
           <div
             class="bioText"
-            style="padding-left: 10px; padding-right: 5px;"
+            style="padding-left: 16px; padding-right: 16px;"
           >
-            <p>
-              On stage, Josh plays guitar and harmonica, and sings vocals. Off stage, he writes most of our original music and handles the behind-the-scenes tech side of the duo. His musical journey started with trumpet in third grade, but when he picked up guitar in college, he never looked back.
-            </p>
-            <p>
-              Before moving to Virginia, Josh led several bands in central Florida, recording two CDs and performing everywhere from cozy coffee shops to the SunCruz casino ship. Since settling in Virginia, he’s become a familiar face around Salem and continues to share his love of music throughout the area.
+            <p
+              style="margin-top: 0px; padding-top: 0px;"
+            >
+              On stage, Josh plays guitar and harmonica, and sings vocals. Off stage, he writes most of our original music and handles the behind-the-scenes tech side of the duo. His musical journey started with trumpet in third grade, but when he picked up guitar in college, he never looked back. Before moving to Virginia, Josh led several bands in central Florida, recording two CDs and performing everywhere from cozy coffee shops to the SunCruz casino ship. Since settling in Virginia, he’s become a familiar face around Salem and continues to share his love of music throughout the area.
             </p>
           </div>
           <blockquote
@@ -989,23 +1032,19 @@ exports[`/music > renders the component 1`] = `
             <img
               alt="maria01"
               class="alignnone size-medium wp-image-50"
-              src="/static/imgs/maria01.jpg"
+              src="/imgs/maria01.jpg"
               style="padding-left: 10px; padding-right: 10px; float: left;"
               width="288px"
             />
           </div>
           <div
             class="bioText"
-            style="padding-left: 10px; padding-right: 10px;"
+            style="padding-left: 16px; padding-right: 16px;"
           >
-            <p>
-              Maria sings and plays bass and also contributes to the songwriting process. She studied voice at Roanoke College and spent years playing piano, alto and tenor saxophone, drums, and bassoon, developing a diverse musical background that still influences her music today.
-            </p>
-            <p>
-              After teaching math and science in Roanoke County Schools, she transitioned to remote work, but music has always remained close to her heart. Maria’s favorite place to perform is onstage with Josh, singing and playing rock, Americana, and Christian music for live audiences.
-            </p>
-            <p>
-              Known for her warm stage presence and strong vocals, Maria loves connecting with audiences and helping create performances that feel relaxed, personal, and fun.
+            <p
+              style="margin-top: 0px;"
+            >
+              Maria sings and plays bass and also contributes to the songwriting process. She studied voice at Roanoke College and spent years playing piano, alto and tenor saxophone, drums, and bassoon, developing a diverse musical background that still influences her music today. After teaching math and science in Roanoke County Schools, she transitioned to remote work, but music has always remained close to her heart. Maria’s favorite place to perform is onstage with Josh, singing and playing rock, Americana, and Christian music for live audiences. Known for her warm stage presence and strong vocals, Maria loves connecting with audiences and helping create performances that feel relaxed, personal, and fun.
             </p>
           </div>
           <blockquote

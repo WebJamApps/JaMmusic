@@ -163,8 +163,9 @@ const makeVenue = (isMobile = false): GridColDef => (
   {
     field: 'venue',
     headerName: 'Venue',
-    minWidth: isMobile ? 110 : 400,
-    flex: 2,
+    width: isMobile ? 250 : undefined,
+    minWidth: isMobile ? undefined : 400,
+    flex: isMobile ? 0 : 2,
     editable: false,
     renderCell: (params: GridRenderCellParams) => makeVenueValue(params.value),
   }
