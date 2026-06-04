@@ -47,7 +47,9 @@ describe('gigs.utils', () => {
       { datetime: yesterday }, { datetime: future }, { datetime: today }, { datetime: tomorrow },
     ] as Igig[];
     utils.orderGigs(gigs, setGigsInOrder, setPageSize);
-    expect(setPageSize).toHaveBeenCalledWith(12);
+    // Fixed default page size; the grid paginates (separator + past gigs are
+    // reachable via the paginator).
+    expect(setPageSize).toHaveBeenCalledWith(10);
   });
   it('makeVenue', () => {
     const venue: any = utils.makeVenue();
