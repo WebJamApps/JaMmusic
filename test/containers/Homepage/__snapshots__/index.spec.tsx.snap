@@ -47,7 +47,7 @@ exports[`Homepage > renders correctly 1`] = `
                         class="faqs"
                       >
                         <h3
-                          style="text-decoration: underline; text-align: center;"
+                          style="text-align: center;"
                         >
                           FAQs
                         </h3>
