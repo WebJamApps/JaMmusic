@@ -118,6 +118,7 @@ export const GigsDiv = (props: IgigsDivProps) => {
   } = props;
   const navigate = useNavigate();
   const isMobile = useMediaQuery('(max-width:600px)');
+  const [page, setPage] = useState(0);
   const handleClick = () => {
     if (process.env.APP_NAME === 'joshandmariamusic.com') window.open('https://web-jam.com/music/bookus');
     else navigate('/music/bookus');
@@ -143,9 +144,9 @@ export const GigsDiv = (props: IgigsDivProps) => {
           }}
           rows={gigsInOrder || []}
           columns={makeColumns(isMobile)}
-          paginationModel={{ page: 0, pageSize }}
-          onPaginationModelChange={(model) => setPageSize(model.pageSize)}
-          pageSizeOptions={[pageSize]}
+          paginationModel={{ page, pageSize }}
+          onPaginationModelChange={(model) => { setPage(model.page); setPageSize(model.pageSize); }}
+          pageSizeOptions={[5, 10, 25, 50]}
           disableRowSelectionOnClick
         />
       </div>
