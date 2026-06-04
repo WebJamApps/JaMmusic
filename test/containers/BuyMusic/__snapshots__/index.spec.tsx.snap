@@ -9,7 +9,7 @@ exports[`BuyMusic > renders correctly 1`] = `
     <h2
       style="text-align: center; font-weight: bold; margin: 20px 20px 10px;"
     >
-      Buy from CD Baby
+      Buy from Amazon Music
     </h2>
     <div
       class="row top-row-style"
@@ -32,14 +32,24 @@ exports[`BuyMusic > renders correctly 1`] = `
             <a
               href="https://www.amazon.com/Live-Central-Florida-2001-Explicit/dp/B0015HGSEO/ref=ntt_mus_dp_dpt_1"
               rel="noopener noreferrer"
-              style="display: inline-block; background: url("https://m.media-amazon.com/images/I/81hDicJieTL._SS500_.jpg") no-repeat, url("http://content.cdbaby.com/img/links/link-artwork-cart-dark-buy-now.png") no-repeat; height: 233px; width: 211px;"
+              style="text-decoration: none;"
               target="_blank"
               title="Josh Sherman Band: live from central Florida, 2001 - 2005"
             >
+              <img
+                alt="Josh Sherman Band: Live from Central Florida 2001-2005"
+                src="https://m.media-amazon.com/images/I/81hDicJieTL._SS500_.jpg"
+                style="width: 150px; height: 150px; display: block; margin: 0px auto 12px;"
+              />
               <span
-                style="display: none;"
+                style="display: inline-block; background: rgb(255, 153, 0); color: rgb(19, 25, 33); font-weight: 700; padding: 6px 18px; border-radius: 4px; font-size: 13px;"
               >
-                Buy Josh Sherman Band
+                <i
+                  aria-hidden="true"
+                  class="fas fa-shopping-cart"
+                  style="margin-right: 6px;"
+                />
+                Buy on Amazon
               </span>
             </a>
           </div>
@@ -50,7 +60,7 @@ exports[`BuyMusic > renders correctly 1`] = `
       >
         <div
           class="material-content elevation2"
-          style="margin: auto; max-width: 3in; height: 3in;"
+          style="max-width: 3in; margin: auto; height: 3in;"
         >
           <h5
             style="text-align: center;"
@@ -63,14 +73,24 @@ exports[`BuyMusic > renders correctly 1`] = `
             <a
               href="https://www.amazon.com/Solo-Acoustic-Explicit-Josh-Sherman/dp/B0013XP8MI/ref=ntt_mus_dp_dpt_2"
               rel="noopener noreferrer"
-              style="text-align: center; display: inline-block; background: url("https://m.media-amazon.com/images/I/81PLWgAmBEL._SS500_.jpg") no-repeat, url("http://content.cdbaby.com/img/links/link-artwork-cart-light-buy-now.png") no-repeat; height: 233px; width: 211px;"
+              style="text-decoration: none;"
               target="_blank"
               title="Josh Sherman: Solo Acoustic"
             >
+              <img
+                alt="Josh Sherman: Solo Acoustic"
+                src="https://m.media-amazon.com/images/I/81PLWgAmBEL._SS500_.jpg"
+                style="width: 150px; height: 150px; display: block; margin: 0px auto 12px;"
+              />
               <span
-                style="display: none;"
+                style="display: inline-block; background: rgb(255, 153, 0); color: rgb(19, 25, 33); font-weight: 700; padding: 6px 18px; border-radius: 4px; font-size: 13px;"
               >
-                Buy Solo Acoustic
+                <i
+                  aria-hidden="true"
+                  class="fas fa-shopping-cart"
+                  style="margin-right: 6px;"
+                />
+                Buy on Amazon
               </span>
             </a>
           </div>
@@ -182,7 +202,7 @@ exports[`BuyMusic > renders correctly 1`] = `
         >
           <a
             class="fab fa-youtube fa-2x"
-            href=""https://youtube.com/playlist?list=OLAK5uy_mtLf1U_oKuSgkFRcXYpo5E0OJWnvRt1TI""
+            href="https://youtube.com/playlist?list=OLAK5uy_mtLf1U_oKuSgkFRcXYpo5E0OJWnvRt1TI"
             style="color: rgb(51, 51, 51); margin: 20px 20px 20px 5%;"
           >
              

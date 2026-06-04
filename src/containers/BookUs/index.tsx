@@ -1,7 +1,7 @@
 import { Button } from '@mui/material';
 import { Inquiry } from '../Homepage/Inquiry';
 
-const songlistUrl = 'https://docs.google.com/spreadsheets/d/1uePCuHO6qxg2tHTqGist_O4iYXJjy9AgSmXvMgF9NPM/edit?usp=sharing';
+const songlistUrl = '/Josh-Maria-Songlist.pdf';
 export function BookUs() {
   return (
     <div className="bookus" style={{ margin: 'auto', padding: '6px', paddingRight: '12px' }}>
@@ -14,7 +14,7 @@ export function BookUs() {
             style={{ marginLeft: '8px' }}
             size="small"
             variant="contained"
-            onClick={() => window.open(songlistUrl)}
+            onClick={() => window.open(songlistUrl, '_blank', 'noopener,noreferrer')}
           >
             Current Songlist
           </Button>
