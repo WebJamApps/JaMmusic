@@ -136,7 +136,10 @@ export const orderGigs = (
     ...defaultGig, venue: 'Our Past Performances', id: 999, tickets: ' ',
   });
   setGigsInOrder(sortedFuture.concat(pastGigs));
-  setPageSize(futureGigs.length - 1 > 5 ? futureGigs.length - 1 : 5);
+  // Default page size — the grid paginates; the "Our Past Performances" separator
+  // and the (often many) past gigs are reachable via the now-working paginator,
+  // and the user can bump the page size via the grid's options.
+  setPageSize(10);
 };
 
 const makeDateValue = (datetime: string) => {
