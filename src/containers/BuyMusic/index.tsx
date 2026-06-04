@@ -27,7 +27,7 @@ export default class BuyMusic extends Component {
           textAlign: 'center', margin: '20px', fontWeight: 'bold', marginBottom: '10px',
         }}
         >
-          Buy from CD Baby
+          Buy from Amazon Music
         </h2>
         <div className="row top-row-style">
           <Jsb />

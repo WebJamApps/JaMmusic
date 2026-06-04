@@ -246,19 +246,6 @@ exports[`AppTemplate > renders the component 1`] = `
                 </span>
               </a>
               <a
-                aria-label="twitter"
-                href="https://twitter.com/JoshuaVSherman"
-                rel="noopener noreferrer"
-                style="color: var(--footer-link); padding-right: 5px;"
-                target="_blank"
-              >
-                <span>
-                  <i
-                    class="fab fa-twitter"
-                  />
-                </span>
-              </a>
-              <a
                 aria-label="facebook"
                 href="https://www.facebook.com/WebJamLLC/"
                 rel="noopener noreferrer"
