@@ -3,7 +3,7 @@ import {
   Dialog, DialogTitle, DialogContent, DialogActions,
   Button, Box, Typography, FormGroup, FormControlLabel, Checkbox, FormControl, InputLabel, Select, MenuItem,
 } from '@mui/material';
-import { CAPABILITY_GROUPS, USER_ROLES, type Capability } from './capabilities';
+import { CAPABILITY_GROUPS, USER_ROLES, USER_STATUS_OPTIONS, type Capability } from './capabilities';
 import adminUtils, { type IadminUser } from './admin-users.utils';
 
 interface IeditPrivilegesDialogProps {
@@ -19,6 +19,7 @@ export function EditPrivilegesDialog({
 }: IeditPrivilegesDialogProps) {
   const [privileges, setPrivileges] = useState<Capability[]>([]);
   const [userType, setUserType] = useState<string>('');
+  const [userStatus, setUserStatus] = useState<string>('');
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
@@ -26,6 +27,7 @@ export function EditPrivilegesDialog({
     if (user) {
       setPrivileges((user.privileges || []) as Capability[]);
       setUserType(user.userType || '');
+      setUserStatus(user.userStatus || '');
     }
     setError('');
   }, [user]);
@@ -39,7 +41,11 @@ export function EditPrivilegesDialog({
     setSubmitting(true);
     setError('');
     try {
-      await adminUtils.updateUser(token, user._id, { privileges, userType: userType || undefined });
+      await adminUtils.updateUser(token, user._id, {
+        privileges,
+        userType: userType || undefined,
+        userStatus: userStatus || undefined,
+      });
       onSaved();
     } catch (e) {
       const err = e as { response?: { body?: { message?: string } }; message?: string };
@@ -54,6 +60,21 @@ export function EditPrivilegesDialog({
       <DialogTitle>Edit User{user ? ` — ${user.name}` : ''}</DialogTitle>
       <DialogContent>
         <FormControl fullWidth sx={{ marginTop: 1, marginBottom: 3 }}>
+          <InputLabel id="edit-user-status-label">Type</InputLabel>
+          <Select
+            labelId="edit-user-status-label"
+            value={(USER_STATUS_OPTIONS as readonly string[]).includes(userStatus) ? userStatus : ''}
+            label="Type"
+            onChange={(e) => setUserStatus(e.target.value)}
+            data-testid="edit-user-status"
+          >
+            {USER_STATUS_OPTIONS.map((s) => (
+              // ai-agent is only valid for the web-jam-llm role
+              <MenuItem key={s} value={s} disabled={s === 'ai-agent' && userType !== 'web-jam-llm'}>{s}</MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <FormControl fullWidth sx={{ marginBottom: 3 }}>
           <InputLabel id="edit-user-role-label">Role</InputLabel>
           <Select
             labelId="edit-user-role-label"
@@ -63,7 +84,7 @@ export function EditPrivilegesDialog({
             data-testid="edit-user-role"
           >
             <MenuItem value="">None</MenuItem>
-            {USER_ROLES.filter((r) => (user?.userStatus === 'ai-agent' ? r === 'web-jam-llm' : r !== 'web-jam-llm')).map((r) => (
+            {USER_ROLES.filter((r) => (userStatus === 'ai-agent' ? r === 'web-jam-llm' : r !== 'web-jam-llm')).map((r) => (
               <MenuItem key={r} value={r}>{r}</MenuItem>
             ))}
           </Select>
