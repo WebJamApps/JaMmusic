@@ -61,4 +61,25 @@ describe('UsersTable', () => {
     });
     expect(adminUtils.deleteUser).not.toHaveBeenCalled();
   });
+
+  it('renders a Notes column from userDetails', () => {
+    const withNotes: IadminUser[] = [{
+      _id: 'u9', name: 'N', email: 'n@x.com', userDetails: 'the bot account', privileges: [],
+    }];
+    render(<UsersTable users={withNotes} token="tk" onShowToken={vi.fn()} onEditPrivileges={vi.fn()} onChange={vi.fn()} />);
+    expect(screen.getByText('the bot account')).toBeDefined();
+  });
+
+  it('sorts rows when a column header is clicked', () => {
+    const two: IadminUser[] = [
+      { _id: 'a', name: 'Alice', email: 'a@x.com', privileges: [] },
+      { _id: 'b', name: 'Bob', email: 'b@x.com', privileges: [] },
+    ];
+    render(<UsersTable users={two} token="tk" onShowToken={vi.fn()} onEditPrivileges={vi.fn()} onChange={vi.fn()} />);
+    // default sort is name asc -> Alice first
+    expect(document.querySelectorAll('tbody tr')[0].getAttribute('data-testid')).toBe('user-row-a');
+    // clicking the active Name header flips to desc -> Bob first
+    fireEvent.click(screen.getByTestId('sort-name'));
+    expect(document.querySelectorAll('tbody tr')[0].getAttribute('data-testid')).toBe('user-row-b');
+  });
 });

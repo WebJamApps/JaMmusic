@@ -6,7 +6,7 @@ import {
 import { CAPABILITY_GROUPS, USER_ROLES, type Capability } from './capabilities';
 import adminUtils, { type IadminUser } from './admin-users.utils';
 
-interface IeditPrivilegesDialogProps {
+interface IeditUserDialogProps {
     open: boolean;
     user: IadminUser | null;
     token: string;
@@ -14,9 +14,9 @@ interface IeditPrivilegesDialogProps {
     onSaved: () => void;
 }
 
-export function EditPrivilegesDialog({
+export function EditUserDialog({
     open, user, token, onClose, onSaved,
-}: IeditPrivilegesDialogProps) {
+}: IeditUserDialogProps) {
     const [privileges, setPrivileges] = useState<Capability[]>([]);
     const [userType, setUserType] = useState<string>('');
     const [error, setError] = useState('');
