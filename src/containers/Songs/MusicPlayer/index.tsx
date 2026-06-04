@@ -108,7 +108,7 @@ export function MyReactPlayer(props: ImyReactPlayerProps): React.JSX.Element {
           height="166"
           scrolling="no"
           frameBorder="no"
-          allow="autoplay"
+          allow="autoplay; encrypted-media"
           src={buildSoundCloudEmbed(song.url || '')}
         />
       </div>
