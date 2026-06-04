@@ -12,6 +12,11 @@
 * Copy the `.env.example` file and paste it as `.env` file in the project root directory. Request variable definitions from the project owner or spin up your own resourses where applicable.
 * More information is available in our [Developer's Guide](https://docs.google.com/document/d/1_QDDbqmBrJuGqBoib59fmgYtls03dAXXuLqRR5roPO4/edit).
 
+## Static assets
+
+* **`public/Josh-Maria-Songlist.pdf`** — the "Current Songlist" PDF linked from the **Book Us** page (`/music/bookus`). It is served by the app itself (opens inline in a new tab at `/Josh-Maria-Songlist.pdf`) rather than from Dropbox, so it renders reliably and isn't subject to Dropbox's download/redirect behavior.
+  * It is **derived from** the source spreadsheet in Dropbox: `joshandmariamusic/docs/Josh & Maria Songlist with links.xlsx`. The PDF lists each song's Title and Artist; original songs link their title to a working recording (web-jam.com or YouTube). When that spreadsheet changes, regenerate the PDF and re-commit it here (deploy required to publish).
+
 ## Deployment
 
 JaMmusic is a static SPA with no server of its own. It is built **into** two Heroku apps at build time — each backend's `postinstallJaM.sh` clones JaMmusic and checks out `main` (or `dev` for non-prod builds):

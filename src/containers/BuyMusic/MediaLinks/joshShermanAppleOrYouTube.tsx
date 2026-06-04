@@ -12,7 +12,7 @@ export function JoshShermanAppleOrYouTube({ service }: { service: 'Apple Music' 
         <div className="elevation3 top-row-style" style={{ textAlign: 'center', marginBottom: '50px' }}>
           <a
             href={service === 'Apple Music' ? 'https://music.apple.com/nz/artist/josh-sherman-band/id80070957'
-              : '"https://youtube.com/playlist?list=OLAK5uy_mtLf1U_oKuSgkFRcXYpo5E0OJWnvRt1TI"'}
+              : 'https://youtube.com/playlist?list=OLAK5uy_mtLf1U_oKuSgkFRcXYpo5E0OJWnvRt1TI'}
             className={service === 'Apple Music' ? 'fab fa-apple fa-2x' : 'fab fa-youtube fa-2x'}
             style={{ color: '#333333', margin: '20px', marginLeft: '5%' }}
           >
