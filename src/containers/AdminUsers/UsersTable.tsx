@@ -1,8 +1,32 @@
 import { useState } from 'react';
 import {
-  Table, TableBody, TableCell, TableHead, TableRow, Button, Chip, Box,
+  Table, TableBody, TableCell, TableHead, TableRow, TableSortLabel, Button, Chip, Box,
 } from '@mui/material';
 import adminUtils, { type IadminUser } from './admin-users.utils';
+
+type Order = 'asc' | 'desc';
+
+const COLUMNS: { key: string; label: string }[] = [
+  { key: 'name', label: 'Name' },
+  { key: 'email', label: 'Email' },
+  { key: 'role', label: 'Role' },
+  { key: 'type', label: 'Type' },
+  { key: 'privileges', label: 'Privileges' },
+  { key: 'notes', label: 'Notes' },
+];
+
+// The value each column sorts by (also what the row cells display).
+export function sortValue(u: IadminUser, key: string): string {
+  switch (key) {
+    case 'name': return u.name || '';
+    case 'email': return u.email || '';
+    case 'role': return u.userType || '';
+    case 'type': return u.userStatus || '';
+    case 'privileges': return (u.privileges || []).join(', ');
+    case 'notes': return u.userDetails || '';
+    default: return '';
+  }
+}
 
 interface IusersTableProps {
   users: IadminUser[];
@@ -16,6 +40,20 @@ export function UsersTable({
   users, token, onShowToken, onEditPrivileges, onChange,
 }: IusersTableProps) {
   const [busy, setBusy] = useState<string>('');
+  const [orderBy, setOrderBy] = useState<string>('name');
+  const [order, setOrder] = useState<Order>('asc');
+
+  const handleSort = (key: string) => {
+    if (orderBy === key) { setOrder(order === 'asc' ? 'desc' : 'asc'); } else { setOrderBy(key); setOrder('asc'); }
+  };
+
+  const sortedUsers = [...users].sort((a, b) => {
+    const av = sortValue(a, orderBy).toLowerCase();
+    const bv = sortValue(b, orderBy).toLowerCase();
+    if (av < bv) return order === 'asc' ? -1 : 1;
+    if (av > bv) return order === 'asc' ? 1 : -1;
+    return 0;
+  });
 
   const handleShowToken = async (userId: string) => {
     setBusy(userId);
@@ -52,19 +90,26 @@ export function UsersTable({
 
   return (
     <Box sx={{ width: '100%', overflowX: 'auto' }}>
-      <Table data-testid="users-table" size="small" sx={{ minWidth: 720 }}>
+      <Table data-testid="users-table" size="small" sx={{ minWidth: 900 }}>
         <TableHead>
           <TableRow>
-            <TableCell>Name</TableCell>
-            <TableCell>Email</TableCell>
-            <TableCell>Role</TableCell>
-            <TableCell>Type</TableCell>
-            <TableCell>Privileges</TableCell>
+            {COLUMNS.map((col) => (
+              <TableCell key={col.key} sortDirection={orderBy === col.key ? order : false}>
+                <TableSortLabel
+                  active={orderBy === col.key}
+                  direction={orderBy === col.key ? order : 'asc'}
+                  onClick={() => handleSort(col.key)}
+                  data-testid={`sort-${col.key}`}
+                >
+                  {col.label}
+                </TableSortLabel>
+              </TableCell>
+            ))}
             <TableCell>Actions</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {users.map((u) => (
+          {sortedUsers.map((u) => (
             <TableRow key={u._id} data-testid={`user-row-${u._id}`}>
               <TableCell>{u.name}</TableCell>
               <TableCell>{u.email}</TableCell>
@@ -77,6 +122,7 @@ export function UsersTable({
               <TableCell>
                 {(u.privileges || []).map((p) => <Chip key={p} label={p} size="small" sx={{ margin: '2px' }} />)}
               </TableCell>
+              <TableCell sx={{ whiteSpace: 'pre-wrap', maxWidth: 240 }}>{u.userDetails}</TableCell>
               <TableCell>
                 <Button
                   size="small"
@@ -92,7 +138,7 @@ export function UsersTable({
                   disabled={busy === u._id}
                   data-testid={`edit-priv-${u._id}`}
                 >
-                  Edit privileges
+                  Edit User
                 </Button>
                 <Button
                   size="small"

@@ -132,6 +132,11 @@ export function TableCell(props:any) {
   return <td {...props}>{children}</td>;
 }
 
+export function TableSortLabel(props:any) {
+  const { children, active, direction, ...rest } = props;
+  return <span role="button" {...rest}>{children}</span>;
+}
+
 // Default to desktop (false) in tests; suites can override per-case.
 export function useMediaQuery() {
   return false;

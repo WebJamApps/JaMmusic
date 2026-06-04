@@ -41,7 +41,10 @@ async function createUser(
 async function updateUser(
   token: string,
   userId: string,
-  payload: { privileges?: string[]; userType?: string; userStatus?: string },
+  payload: {
+    privileges?: string[]; userType?: string; userStatus?: string;
+    name?: string; email?: string; userDetails?: string;
+  },
 ): Promise<IadminUser> {
   const res = await fetch(`${baseUrl}/${userId}`, {
     method: 'PUT',
