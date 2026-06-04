@@ -62,6 +62,26 @@ const updateSong = async (
   } catch (err) { commonUtils.notify('Error creating song', (err as Error).message, 'danger'); }
 };
 
+const deleteSong = async (
+  getSongs: () => Promise<Isong[]>,
+  setShowDialog: (arg0: boolean) => void,
+  song: Isong,
+  auth: Iauth,
+) => {
+  // eslint-disable-next-line no-restricted-globals, no-alert
+  if (!confirm(`Delete "${song.title}"? This cannot be undone.`)) return;
+  try {
+    const { token } = auth;
+    const res = await fetch(`${process.env.BackendUrl}/song/${song._id}`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+    setShowDialog(false);
+    await getSongs();
+  } catch (err) { commonUtils.notify('Error deleting song', (err as Error).message, 'danger'); }
+};
+
 const checkDisabled = (song: Isong) => {
   if (song.url && song.title && song.artist && song.year) return false;
   return true;
@@ -79,5 +99,5 @@ function handleInputChange(
 }
 
 export default {
-  createSong, checkDisabled, handleInputChange, updateSong,
+  createSong, checkDisabled, handleInputChange, updateSong, deleteSong,
 };
