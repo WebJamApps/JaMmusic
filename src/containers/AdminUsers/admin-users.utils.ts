@@ -38,7 +38,11 @@ async function createUser(
   return await res.json() as IadminUser;
 }
 
-async function updateUser(token: string, userId: string, payload: { privileges?: string[]; userType?: string }): Promise<IadminUser> {
+async function updateUser(
+  token: string,
+  userId: string,
+  payload: { privileges?: string[]; userType?: string; userStatus?: string },
+): Promise<IadminUser> {
   const res = await fetch(`${baseUrl}/${userId}`, {
     method: 'PUT',
     headers: {

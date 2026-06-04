@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { render, screen, fireEvent, act } from '@testing-library/react';
+import {
+  render, screen, fireEvent, act, within,
+} from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { EditPrivilegesDialog } from 'src/containers/AdminUsers/EditPrivilegesDialog';
 import adminUtils, { type IadminUser } from 'src/containers/AdminUsers/admin-users.utils';
@@ -60,5 +62,41 @@ describe('EditPrivilegesDialog', () => {
       fireEvent.click(screen.getByTestId('edit-priv-save'));
     });
     expect(adminUtils.updateUser).not.toHaveBeenCalled();
+  });
+
+  it('lets a legacy Type be corrected to human and saves userStatus', async () => {
+    const legacyUser: IadminUser = {
+      _id: 'u2', name: 'Maria', email: 'm@x.com', userStatus: 'enabled', userType: 'JaM-admin', privileges: [],
+    };
+    await act(async () => {
+      render(<EditPrivilegesDialog open user={legacyUser} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />);
+    });
+    await act(async () => {
+      fireEvent.change(screen.getByTestId('edit-user-status'), { target: { value: 'human' } });
+    });
+    await act(async () => { fireEvent.click(screen.getByTestId('edit-priv-save')); });
+    expect(adminUtils.updateUser).toHaveBeenCalledWith('tk', 'u2', expect.objectContaining({ userStatus: 'human' }));
+  });
+
+  it('disables the ai-agent Type unless the role is web-jam-llm', async () => {
+    const humanUser: IadminUser = {
+      _id: 'u3', name: 'Josh', email: 'j@x.com', userStatus: 'human', userType: 'JaM-admin', privileges: [],
+    };
+    await act(async () => {
+      render(<EditPrivilegesDialog open user={humanUser} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />);
+    });
+    const typeSelect = screen.getByTestId('edit-user-status');
+    expect(within(typeSelect).getByRole('option', { name: 'ai-agent' })).toBeDisabled();
+  });
+
+  it('enables the ai-agent Type for the web-jam-llm role', async () => {
+    const botUser: IadminUser = {
+      _id: 'u4', name: 'Bot', email: 'bot@x.com', userStatus: 'ai-agent', userType: 'web-jam-llm', privileges: [],
+    };
+    await act(async () => {
+      render(<EditPrivilegesDialog open user={botUser} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />);
+    });
+    const typeSelect = screen.getByTestId('edit-user-status');
+    expect(within(typeSelect).getByRole('option', { name: 'ai-agent' })).not.toBeDisabled();
   });
 });
