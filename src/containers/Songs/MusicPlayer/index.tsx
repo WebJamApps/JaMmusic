@@ -98,7 +98,10 @@ export function MyReactPlayer(props: ImyReactPlayerProps): React.JSX.Element {
   if (!song) return <> </>;
   if (isSoundCloud(song.url)) {
     return (
-      <div id="mainPlayer" className="audio soundcloud">
+      // Distinct key from the Plyr branch so React cleanly unmounts the whole
+      // wrapper when crossing the SoundCloud<->Plyr boundary instead of trying to
+      // swap inner nodes that Plyr has restructured (which throws removeChild).
+      <div key="sc-player" id="mainPlayer" className="audio soundcloud">
         <iframe
           title={song.title || 'SoundCloud player'}
           width="100%"
@@ -123,7 +126,11 @@ export function MyReactPlayer(props: ImyReactPlayerProps): React.JSX.Element {
     justifyContent: 'flex-end',
   };
   return (
+    // Stable key across all Plyr songs so audio<->video updates in place
+    // (no remount); it differs from the SoundCloud branch's key so crossing that
+    // boundary forces a clean unmount instead of a removeChild crash.
     <div
+      key="plyr-player"
       id="mainPlayer"
       className={isVideo ? 'video' : 'audio'}
       style={isVideo ? undefined : audioBoxStyle}
