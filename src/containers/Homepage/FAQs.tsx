@@ -65,7 +65,7 @@ const AccA3 = () => (
 function Faqs() {
   return (
     <div className="faqs">
-      <h3 style={{ textDecoration: 'underline', textAlign: 'center' }}>FAQs</h3>
+      <h3 style={{ textAlign: 'center' }}>FAQs</h3>
       <div className="qAnda">
         <Accordion>
           <AccQ1 />
