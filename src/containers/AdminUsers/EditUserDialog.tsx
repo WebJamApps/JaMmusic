@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 import {
   Dialog, DialogTitle, DialogContent, DialogActions,
-  Button, Box, Typography, FormGroup, FormControlLabel, Checkbox, FormControl, InputLabel, Select, MenuItem,
+  Button, Box, Typography, FormGroup, FormControlLabel, Checkbox, FormControl, InputLabel, Select, MenuItem, TextField,
 } from '@mui/material';
 import { CAPABILITY_GROUPS, USER_ROLES, USER_STATUS_OPTIONS, type Capability } from './capabilities';
 import adminUtils, { type IadminUser } from './admin-users.utils';
 
-interface IeditPrivilegesDialogProps {
+interface IeditUserDialogProps {
   open: boolean;
   user: IadminUser | null;
   token: string;
@@ -14,12 +14,15 @@ interface IeditPrivilegesDialogProps {
   onSaved: () => void;
 }
 
-export function EditPrivilegesDialog({
+export function EditUserDialog({
   open, user, token, onClose, onSaved,
-}: IeditPrivilegesDialogProps) {
+}: IeditUserDialogProps) {
   const [privileges, setPrivileges] = useState<Capability[]>([]);
   const [userType, setUserType] = useState<string>('');
   const [userStatus, setUserStatus] = useState<string>('');
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [notes, setNotes] = useState('');
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
@@ -28,6 +31,9 @@ export function EditPrivilegesDialog({
       setPrivileges((user.privileges || []) as Capability[]);
       setUserType(user.userType || '');
       setUserStatus(user.userStatus || '');
+      setName(user.name || '');
+      setEmail(user.email || '');
+      setNotes(user.userDetails || '');
     }
     setError('');
   }, [user]);
@@ -38,6 +44,8 @@ export function EditPrivilegesDialog({
 
   const handleSave = async () => {
     if (!user) return;
+    if (!name.trim()) { setError('Name is required'); return; }
+    if (!email.trim()) { setError('Email is required'); return; }
     setSubmitting(true);
     setError('');
     try {
@@ -45,6 +53,9 @@ export function EditPrivilegesDialog({
         privileges,
         userType: userType || undefined,
         userStatus: userStatus || undefined,
+        name: name.trim(),
+        email: email.trim(),
+        userDetails: notes,
       });
       onSaved();
     } catch (e) {
@@ -59,7 +70,23 @@ export function EditPrivilegesDialog({
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
       <DialogTitle>Edit User{user ? ` — ${user.name}` : ''}</DialogTitle>
       <DialogContent>
-        <FormControl fullWidth sx={{ marginTop: 1, marginBottom: 3 }}>
+        <TextField
+          label="Name"
+          fullWidth
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          sx={{ marginTop: 1, marginBottom: 2 }}
+          data-testid="edit-user-name"
+        />
+        <TextField
+          label="Email"
+          fullWidth
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          sx={{ marginBottom: 2 }}
+          data-testid="edit-user-email"
+        />
+        <FormControl fullWidth sx={{ marginBottom: 3 }}>
           <InputLabel id="edit-user-status-label">Type</InputLabel>
           <Select
             labelId="edit-user-status-label"
@@ -121,6 +148,16 @@ export function EditPrivilegesDialog({
             </Box>
           </Box>
         ))}
+        <TextField
+          label="Notes"
+          fullWidth
+          multiline
+          rows={2}
+          value={notes}
+          onChange={(e) => setNotes(e.target.value)}
+          sx={{ marginTop: 3 }}
+          data-testid="edit-user-notes"
+        />
         {error && <Typography color="error" sx={{ marginTop: 1 }}>{error}</Typography>}
       </DialogContent>
       <DialogActions>

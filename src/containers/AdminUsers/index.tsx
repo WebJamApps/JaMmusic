@@ -4,7 +4,7 @@ import { AuthContext } from 'src/providers/Auth.provider';
 import { CreateUserForm } from './CreateUserForm';
 import { UsersTable } from './UsersTable';
 import { ShowTokenDialog } from './ShowTokenDialog';
-import { EditPrivilegesDialog } from './EditPrivilegesDialog';
+import { EditUserDialog } from './EditUserDialog';
 import adminUtils, { type IadminUser } from './admin-users.utils';
 
 export function AdminUsers() {
@@ -64,7 +64,7 @@ export function AdminUsers() {
         token={tokenShown || ''}
         onClose={() => setTokenShown(null)}
       />
-      <EditPrivilegesDialog
+      <EditUserDialog
         open={editingUser !== null}
         user={editingUser}
         token={auth.token}
