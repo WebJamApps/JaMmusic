@@ -50,7 +50,9 @@
     text-align: center;
 }
 
-#mainPlayer iFrame {
+/* Only the Plyr (YouTube) iframe is non-interactive — the SoundCloud widget
+   iframe must stay clickable so its own play button works. */
+#mainPlayer .plyr iFrame {
   pointer-events: none;
 }
 

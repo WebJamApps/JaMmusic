@@ -8,7 +8,9 @@
 }
 
 
-#mainPlayer iframe { pointer-events: none; }
+/* Disable direct interaction with the Plyr (YouTube) iframe only — the SoundCloud
+   widget iframe needs its own controls clickable. */
+#mainPlayer .plyr iframe { pointer-events: none; }
 
 /* Hide Plyr's own play controls in the normal embedded view so only the buttons
    beneath the player drive playback. They reappear in fullscreen (native via the

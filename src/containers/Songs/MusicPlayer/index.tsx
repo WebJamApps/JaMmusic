@@ -23,6 +23,17 @@ export function normalizeUrl(url: string): string {
   return direct;
 }
 
+// SoundCloud has no Plyr provider, so those songs render the SoundCloud widget
+// iframe (its own controls) instead of the Plyr player.
+export function isSoundCloud(url?: string): boolean {
+  return /soundcloud\.com/i.test(url || '');
+}
+
+export function buildSoundCloudEmbed(url: string): string {
+  const opts = 'auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&visual=false';
+  return `https://w.soundcloud.com/player/?url=${encodeURIComponent(url)}&${opts}`;
+}
+
 // Build a Plyr source from a song URL: YouTube, a self-hosted video file, or an audio file.
 export function buildSource(url: string): PlyrSource {
   const u = (url || '').toLowerCase();
@@ -85,6 +96,24 @@ export function MyReactPlayer(props: ImyReactPlayerProps): React.JSX.Element {
     };
   }, [index, songsState, setIndex, setPlaying, playerRef]);
   if (!song) return <> </>;
+  if (isSoundCloud(song.url)) {
+    return (
+      // Distinct key from the Plyr branch so React cleanly unmounts the whole
+      // wrapper when crossing the SoundCloud<->Plyr boundary instead of trying to
+      // swap inner nodes that Plyr has restructured (which throws removeChild).
+      <div key="sc-player" id="mainPlayer" className="audio soundcloud">
+        <iframe
+          title={song.title || 'SoundCloud player'}
+          width="100%"
+          height="166"
+          scrolling="no"
+          frameBorder="no"
+          allow="autoplay; encrypted-media"
+          src={buildSoundCloudEmbed(song.url || '')}
+        />
+      </div>
+    );
+  }
   const source = buildSource(song.url || '');
   const isVideo = source.type === 'video';
   // Audio shows the album art behind a chrome-less bar (the buttons below drive it);
@@ -97,7 +126,11 @@ export function MyReactPlayer(props: ImyReactPlayerProps): React.JSX.Element {
     justifyContent: 'flex-end',
   };
   return (
+    // Stable key across all Plyr songs so audio<->video updates in place
+    // (no remount); it differs from the SoundCloud branch's key so crossing that
+    // boundary forces a clean unmount instead of a removeChild crash.
     <div
+      key="plyr-player"
       id="mainPlayer"
       className={isVideo ? 'video' : 'audio'}
       style={isVideo ? undefined : audioBoxStyle}
@@ -129,18 +162,25 @@ export function MyButtons(props: ImyButtonsProps): React.JSX.Element {
     if (player && typeof player.togglePlay === 'function') player.togglePlay();
     else utils.play(playing, setPlaying);
   };
+  // eslint-disable-next-line security/detect-object-injection
+  const currentSong = songsState[index];
+  // SoundCloud songs render their own widget (with built-in controls), so hide
+  // our Play/Pause for them; Next/Prev still navigate.
+  const hidePlayPause = isSoundCloud(currentSong?.url);
   return (
     <div style={{ paddingTop: 0, margin: 'auto' }}>
       <div id="play-buttons">
-        <Button
-          size="small"
-          variant="contained"
-          id="play-pause"
-          className={playing ? 'on' : 'off'}
-          onClick={togglePlay}
-        >
-          Play/Pause
-        </Button>
+        {hidePlayPause ? null : (
+          <Button
+            size="small"
+            variant="contained"
+            id="play-pause"
+            className={playing ? 'on' : 'off'}
+            onClick={togglePlay}
+          >
+            Play/Pause
+          </Button>
+        )}
         {!isSingle ? null : (
           <Button
             size="small"
