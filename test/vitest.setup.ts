@@ -14,6 +14,7 @@ vi.mock('@mui/x-date-pickers');
 vi.mock('@react-oauth/google');
 vi.mock('@tinymce/tinymce-react');
 vi.mock('socketcluster-client');
+vi.mock('plyr-react');
 
 global.ResizeObserver = class {
   observe(): void { /* no-op */ }

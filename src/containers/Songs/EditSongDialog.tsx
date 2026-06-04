@@ -2,11 +2,12 @@ import {
   Button, Dialog, DialogActions, DialogContent,
   DialogContentText, DialogTitle, TextField,
 } from '@mui/material';
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { AuthContext } from 'src/providers/Auth.provider';
 import { DataContext, Isong } from 'src/providers/Data.provider';
 import { CategorySelect } from 'src/components/CategorySelect';
 import { YearField } from 'src/components/YearField';
+import { checkIsAdmin } from '../Music';
 import utils from './songs.utils';
 
 interface IsongFieldProps {
@@ -38,6 +39,8 @@ export function EditSongDialog({ editDialogState, editSongState, currentSong }: 
   const { getSongs } = useContext(DataContext);
   const { showEditDialog, setShowEditDialog } = editDialogState;
   const { editSong, setEditSong } = editSongState;
+  const [isAdmin, setIsAdmin] = useState(false);
+  useEffect(() => { checkIsAdmin(auth, setIsAdmin); }, [auth]);
   useEffect(() => {
     setEditSong(currentSong);
   }, [currentSong, setEditSong]);
@@ -136,6 +139,17 @@ export function EditSongDialog({ editDialogState, editSongState, currentSong }: 
         >
           Update
         </Button>
+        {isAdmin ? (
+          <Button
+            size="small"
+            variant="contained"
+            color="error"
+            className="deleteSongButton"
+            onClick={() => { utils.deleteSong(getSongs, setShowEditDialog, editSong, auth); }}
+          >
+            Delete
+          </Button>
+        ) : null}
         <Button
           size="small"
           className="cancelPicButton"

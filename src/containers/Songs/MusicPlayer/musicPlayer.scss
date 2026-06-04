@@ -10,6 +10,17 @@
 
 #mainPlayer iframe { pointer-events: none; }
 
+/* Hide Plyr's own play controls in the normal embedded view so only the buttons
+   beneath the player drive playback. They reappear in fullscreen (native via the
+   :fullscreen pseudo, or the JS fallback class), where those under-player buttons
+   aren't visible. */
+#mainPlayer .plyr:not(:fullscreen):not(.plyr--fullscreen-fallback) {
+    .plyr__control--overlaid,
+    .plyr__control[data-plyr="play"] {
+        display: none;
+    }
+}
+
 #play-pause.on { background-color: red; color: black; }
 
 #play-buttons { margin-bottom:10px;}

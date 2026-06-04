@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import ReactPlayer from 'react-player';
+import React, { useEffect, useRef, useState } from 'react';
+import { Plyr, type APITypes, type PlyrSource } from 'plyr-react';
+import 'plyr-react/plyr.css';
 import { Button } from '@mui/material';
 import { Share } from '@mui/icons-material';
 import { useSearchParams } from 'react-router-dom';
@@ -13,50 +14,121 @@ export function makeHandleEnded(index: number, songsState: Isong[], setIndex: (a
   return () => utils.next(index, songsState, setIndex);
 }
 
+// A Dropbox share link (?dl=0) serves an HTML preview page, not the file itself.
+// Rewrite it to the raw file so an <audio>/<video> element can actually stream it.
+export function normalizeUrl(url: string): string {
+  if (!/dropbox\.com/i.test(url)) return url;
+  let direct = url.replace(/([?&])dl=\d/i, '$1raw=1');
+  if (!/[?&]raw=1/i.test(direct)) direct += `${direct.includes('?') ? '&' : '?'}raw=1`;
+  return direct;
+}
+
+// Build a Plyr source from a song URL: YouTube, a self-hosted video file, or an audio file.
+export function buildSource(url: string): PlyrSource {
+  const u = (url || '').toLowerCase();
+  if (u.includes('youtube') || u.includes('youtu.be')) {
+    return { type: 'video', sources: [{ src: url, provider: 'youtube' }] };
+  }
+  const direct = normalizeUrl(url);
+  if (/\.(mp4|webm|mov|m4v|ogv)(\?|#|$)/.test(u)) {
+    return { type: 'video', sources: [{ src: direct }] };
+  }
+  return { type: 'audio', sources: [{ src: direct }] };
+}
+
+// Audio: no play button — the under-player Play/Pause drives it (no fullscreen for audio).
+const AUDIO_CONTROLS = ['progress', 'current-time', 'mute', 'volume'];
+// Video/YouTube: keep play + play-large + fullscreen so the video stays controllable in
+// fullscreen, where the under-player buttons aren't visible.
+const VIDEO_CONTROLS = ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'];
+
+const tryPlay = (player: any) => {
+  try {
+    const r = player.play();
+    if (r && typeof r.catch === 'function') r.catch(() => { /* autoplay blocked */ });
+  } catch { /* noop */ }
+};
+
 interface ImyReactPlayerProps {
-  playing: boolean,
-  index: number, songsState: Isong[], setIndex: (arg0: number) => void
+  playing: boolean, setPlaying: (arg0: boolean) => void,
+  index: number, songsState: Isong[], setIndex: (arg0: number) => void,
+  playerRef: React.RefObject<APITypes | null>
 }
 export function MyReactPlayer(props: ImyReactPlayerProps): React.JSX.Element {
   const {
-    playing, index, songsState, setIndex,
+    playing, setPlaying, index, songsState, setIndex, playerRef,
   } = props;
+  const playingRef = useRef(playing);
+  playingRef.current = playing;
   // eslint-disable-next-line security/detect-object-injection
   const song = songsState[index];
+  // Keep the under-player buttons' state in sync, auto-advance when a song ends,
+  // and resume playback when the source changes (Next/Prev) while we are playing.
+  useEffect(() => {
+    const player = playerRef.current?.plyr as any;
+    if (!player || typeof player.on !== 'function') return () => { /* noop */ };
+    const onPlay = () => setPlaying(true);
+    const onPause = () => setPlaying(false);
+    const onEnded = () => utils.next(index, songsState, setIndex);
+    const onLoaded = () => { if (playingRef.current) tryPlay(player); };
+    player.on('play', onPlay);
+    player.on('pause', onPause);
+    player.on('ended', onEnded);
+    player.on('ready', onLoaded);
+    player.on('loadeddata', onLoaded);
+    return () => {
+      try {
+        player.off('play', onPlay); player.off('pause', onPause);
+        player.off('ended', onEnded); player.off('ready', onLoaded);
+        player.off('loadeddata', onLoaded);
+      } catch { /* noop */ }
+    };
+  }, [index, songsState, setIndex, setPlaying, playerRef]);
   if (!song) return <> </>;
-  const handleEnded = makeHandleEnded(index, songsState, setIndex);
-  const Player = ReactPlayer as any;
+  const source = buildSource(song.url || '');
+  const isVideo = source.type === 'video';
+  // Audio shows the album art behind a chrome-less bar (the buttons below drive it);
+  // video renders at its natural size so there is no empty box above the picture.
+  const audioBoxStyle: React.CSSProperties = {
+    ...(utils.setPlayerStyle(song) as React.CSSProperties),
+    minHeight: '40vh',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'flex-end',
+  };
   return (
-    <Player
-      onError={utils.handlePlayerError}
-      onReady={utils.handlePlayerReady}
-      style={utils.setPlayerStyle(song) as React.CSSProperties}
-      url={song.url}
-      playing={playing}
-      controls
-      onEnded={handleEnded}
-      width="100%"
-      height="40vh"
+    <div
       id="mainPlayer"
-      className="audio"
-      config={{
-        youtube: {
-          playerVars: { controls: 0 },
-        },
-        file: { attributes: { controlsList: 'nodownload' } },
-      }}
-    />
+      className={isVideo ? 'video' : 'audio'}
+      style={isVideo ? undefined : audioBoxStyle}
+    >
+      <Plyr
+        ref={playerRef}
+        source={source}
+        options={{ controls: isVideo ? VIDEO_CONTROLS : AUDIO_CONTROLS }}
+      />
+    </div>
   );
 }
 
 interface ImyButtonsProps {
   playing: boolean, setPlaying: (arg0: boolean) => void, index: number,
-  songsState: Isong[], setIndex: (arg0: number) => void, isSingle: boolean
+  songsState: Isong[], setIndex: (arg0: number) => void, isSingle: boolean,
+  playerRef: React.RefObject<APITypes | null>
 }
 export function MyButtons(props: ImyButtonsProps): React.JSX.Element {
   const {
-    playing, setPlaying, index, songsState, setIndex, isSingle,
+    playing, setPlaying, index, songsState, setIndex, isSingle, playerRef,
   } = props;
+  // Toggle the player straight from the click so play() runs inside the user
+  // gesture (browsers block play() deferred to an effect). The play/pause events
+  // keep `playing` (and so the button label) in sync; fall back to state if the
+  // player isn't ready yet.
+  const togglePlay = () => {
+    const player = playerRef.current?.plyr as any;
+    if (player && typeof player.togglePlay === 'function') player.togglePlay();
+    else utils.play(playing, setPlaying);
+  };
   return (
     <div style={{ paddingTop: 0, margin: 'auto' }}>
       <div id="play-buttons">
@@ -65,7 +137,7 @@ export function MyButtons(props: ImyButtonsProps): React.JSX.Element {
           variant="contained"
           id="play-pause"
           className={playing ? 'on' : 'off'}
-          onClick={() => utils.play(playing, setPlaying)}
+          onClick={togglePlay}
         >
           Play/Pause
         </Button>
@@ -252,6 +324,8 @@ export function MusicPlayer({ songs, filterBy, editDialogState }: ImusicPlayerPr
   const [playing, setPlaying] = useState(false);
   const [isSingle, setIsSingle] = useState(false);
   const [editSong, setEditSong] = useState({ ...defaultSong, _id: '' } as Isong);
+  // Shared Plyr ref so the under-player buttons drive the (chrome-less) player.
+  const playerRef = useRef<APITypes>(null);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [searchParams, setSearchParams] = useSearchParams();
   useEffect(() => {
@@ -271,8 +345,10 @@ export function MusicPlayer({ songs, filterBy, editDialogState }: ImusicPlayerPr
           <MyReactPlayer
             setIndex={setIndex}
             playing={playing}
+            setPlaying={setPlaying}
             index={index}
             songsState={songsState}
+            playerRef={playerRef}
           />
         </section>
         <MyButtons
@@ -282,6 +358,7 @@ export function MusicPlayer({ songs, filterBy, editDialogState }: ImusicPlayerPr
           index={index}
           songsState={songsState}
           isSingle={isSingle}
+          playerRef={playerRef}
         />
         <TextUnderPlayer songsState={songsState} index={index} />
         <CategoryButtons category={category} setCategory={setCategory} isSingle={isSingle} setIndex={setIndex} />
