@@ -6,7 +6,7 @@ function CollegeLutheran() {
       <img
         style={{ width: '95%', height: '455px' }}
         alt="College Lutheran Church Homepage"
-        src="https://dl.dropboxusercontent.com/s/354maifx0dkzt9s/Screenshot%20from%202019-02-22%2016-01-50.png?dl=0"
+        src="/imgs/clc-mobile-view.png"
       />
       <br />
       <a

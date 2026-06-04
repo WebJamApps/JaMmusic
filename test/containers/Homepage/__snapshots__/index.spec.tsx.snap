@@ -41,15 +41,7 @@ exports[`Homepage > renders correctly 1`] = `
                         style="margin-top: 12px; margin-bottom: 40px; font-size: 12pt; text-align: left;"
                         translate="no"
                       >
-                        Web Jam LLC helps businesses bring their web technologies into the 21st century! Let us help make your website mobile-friendly and grow your business by utilizing the power of online services. More information is available in our 
-                        <a
-                          href="https://www.dropbox.com/s/bzdqp3hr682y9sw/WebJamLLC_FactSheet.pdf?dl=0"
-                          rel="noopener noreferrer"
-                          target="_blank"
-                        >
-                          Fact Sheet
-                        </a>
-                        .
+                        Web Jam LLC helps businesses bring their web technologies into the 21st century! Let us help make your website mobile-friendly and grow your business by utilizing the power of online services.
                       </p>
                       <div
                         class="faqs"
@@ -329,89 +321,79 @@ exports[`Homepage > renders correctly 1`] = `
       <div
         style="width: 100%;"
       >
-        <h3
-          style="margin-top: 0px; padding-top: 0px; text-align: center;"
-        >
-          Our Current Projects
-        </h3>
         <div
           class="MuiBox-root css-i9gxme"
         >
           <div
-            class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-row css-5jhqyn-MuiGrid-root"
+            class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-row css-1d9bju9-MuiGrid-root"
           >
             <div
-              class="MuiGrid-root MuiGrid-direction-xs-row MuiGrid-grid-xs-12 MuiGrid-grid-sm-6 MuiGrid-grid-md-6 MuiGrid-grid-lg-3.625 MuiGrid-grid-xl-2.75 css-qcc5qm-MuiGrid-root"
+              class="MuiGrid-root MuiGrid-direction-xs-row MuiGrid-grid-xs-12 MuiGrid-grid-md-7 MuiGrid-grid-lg-6 MuiGrid-grid-xl-6 css-1gpjxfh-MuiGrid-root"
             >
+              <h3
+                style="margin-top: 0px; padding-top: 0px; text-align: center;"
+              >
+                Our Current Projects
+              </h3>
               <div
-                class="MuiBox-root css-otmogo"
+                class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-row css-5jhqyn-MuiGrid-root"
               >
                 <div
-                  style="box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.4); height: 500px;"
+                  class="MuiGrid-root MuiGrid-direction-xs-row MuiGrid-grid-xs-12 MuiGrid-grid-sm-6 css-13xb3fr-MuiGrid-root"
                 >
-                  <img
-                    alt="College Lutheran Church Homepage"
-                    src="https://dl.dropboxusercontent.com/s/354maifx0dkzt9s/Screenshot%20from%202019-02-22%2016-01-50.png?dl=0"
-                    style="width: 95%; height: 455px;"
-                  />
-                  <br />
-                  <a
-                    href="https://www.collegelutheran.org"
-                    rel="noreferrer noopener"
-                    target="_blank"
+                  <div
+                    class="MuiBox-root css-otmogo"
                   >
-                    Collegelutheran.org
-                  </a>
-                </div>
-              </div>
-            </div>
-            <div
-              class="MuiGrid-root MuiGrid-direction-xs-row MuiGrid-grid-xs-12 MuiGrid-grid-sm-6 MuiGrid-grid-md-6 MuiGrid-grid-lg-3.625 MuiGrid-grid-xl-2.75 css-qcc5qm-MuiGrid-root"
-            >
-              <div
-                class="MuiBox-root css-otmogo"
-              >
-                <div
-                  style="box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.4); height: 500px;"
-                >
-                  <div>
-                    <img
-                      alt="Apperson Automotive Home Page"
-                      src="/imgs/AppersonAutomotive.png"
-                      style="width: 95%; height: 455px;"
-                    />
-                    <br />
-                    <a
-                      href="https://www.appersonautomotive.com"
-                      rel="noreferrer noopener"
-                      target="_blank"
+                    <div
+                      style="box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.4); height: 500px;"
                     >
-                      Appersonautomotive.com
-                    </a>
+                      <img
+                        alt="College Lutheran Church Homepage"
+                        src="/imgs/clc-mobile-view.png"
+                        style="width: 95%; height: 455px;"
+                      />
+                      <br />
+                      <a
+                        href="https://www.collegelutheran.org"
+                        rel="noreferrer noopener"
+                        target="_blank"
+                      >
+                        Collegelutheran.org
+                      </a>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="MuiGrid-root MuiGrid-direction-xs-row MuiGrid-grid-xs-12 MuiGrid-grid-sm-6 css-13xb3fr-MuiGrid-root"
+                >
+                  <div
+                    class="MuiBox-root css-otmogo"
+                  >
+                    <div
+                      style="box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.4); height: 500px;"
+                    >
+                      <div>
+                        <img
+                          alt="Apperson Automotive Home Page"
+                          src="/imgs/AppersonAutomotive.png"
+                          style="width: 95%; height: 455px;"
+                        />
+                        <br />
+                        <a
+                          href="https://www.appersonautomotive.com"
+                          rel="noreferrer noopener"
+                          target="_blank"
+                        >
+                          Appersonautomotive.com
+                        </a>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
             <div
-              class="MuiGrid-root MuiGrid-direction-xs-row MuiGrid-grid-xs-12 MuiGrid-grid-sm-6.5 MuiGrid-grid-md-6.5 MuiGrid-grid-lg-4.75 MuiGrid-grid-xl-3.75 css-1umftrw-MuiGrid-root"
-            >
-              <div
-                class="MuiBox-root css-otmogo"
-              >
-                <div
-                  style="margin: auto; height: 500px; box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.4);"
-                >
-                  <iframe
-                    allow="encrypted-media"
-                    src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2FWebJamLLC%2F&tabs=timeline&width=500&height=500&small_header=true&adapt_container_width=true&hide_cover=false&show_facepile=true&appId=2207148322688942"
-                    style="height: 100%; width: 100%;"
-                    title="facebook ticker"
-                  />
-                </div>
-              </div>
-            </div>
-            <div
-              class="MuiGrid-root MuiGrid-direction-xs-row MuiGrid-grid-xs-12 MuiGrid-grid-sm-5.5 MuiGrid-grid-md-5.5 MuiGrid-grid-lg-12 MuiGrid-grid-xl-2.75 css-1k6rsle-MuiGrid-root"
+              class="MuiGrid-root MuiGrid-direction-xs-row MuiGrid-grid-xs-12 MuiGrid-grid-md-5 MuiGrid-grid-lg-4 MuiGrid-grid-xl-4 css-sxa884-MuiGrid-root"
             >
               <div
                 class="MuiBox-root css-otmogo"
@@ -1752,6 +1734,25 @@ exports[`Homepage > renders correctly 1`] = `
         >
            
         </p>
+      </div>
+      <h3
+        style="text-align: center;"
+      >
+        Find Us on Facebook
+      </h3>
+      <div
+        style="max-width: 500px; margin: 0px auto;"
+      >
+        <div
+          style="margin: auto; height: 500px; box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.4);"
+        >
+          <iframe
+            allow="encrypted-media"
+            src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2FWebJamLLC%2F&tabs=timeline&width=500&height=500&small_header=true&adapt_container_width=true&hide_cover=false&show_facepile=true&appId=2207148322688942"
+            style="height: 100%; width: 100%;"
+            title="facebook ticker"
+          />
+        </div>
       </div>
       <p
         style="font-size: 6pt; margin-bottom: 0px;"

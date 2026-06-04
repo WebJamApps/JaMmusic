@@ -3,7 +3,6 @@ import Box, { type BoxProps } from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import AppersonAutomotive from './AppersonAutomotive';
 import CollegeLutheran from './CollegeLutheran';
-import FacebookFeed from './FacebookFeed';
 import { Inquiry } from './Inquiry';
 
 export function Item(props: BoxProps): React.JSX.Element {
@@ -30,20 +29,21 @@ export function Item(props: BoxProps): React.JSX.Element {
 function CurrentProjects(): React.JSX.Element {
   return (
     <div style={{ width: '100%' }}>
-      <h3 style={{ marginTop: 0, paddingTop: 0, textAlign: 'center' }}>Our Current Projects</h3>
       <Box sx={{ flexGrow: 1 }}>
-        <Grid container columnSpacing={1}>
+        <Grid container columnSpacing={1} sx={{ justifyContent: 'center' }}>
           <>
-            <Grid size={{ xs: 12, sm: 6, md: 6, lg: 3.625, xl: 2.75 }}>
-              <Item><CollegeLutheran /></Item>
+            <Grid size={{ xs: 12, md: 7, lg: 6, xl: 6 }}>
+              <h3 style={{ marginTop: 0, paddingTop: 0, textAlign: 'center' }}>Our Current Projects</h3>
+              <Grid container columnSpacing={1}>
+                <Grid size={{ xs: 12, sm: 6 }}>
+                  <Item><CollegeLutheran /></Item>
+                </Grid>
+                <Grid size={{ xs: 12, sm: 6 }}>
+                  <Item><AppersonAutomotive /></Item>
+                </Grid>
+              </Grid>
             </Grid>
-            <Grid size={{ xs: 12, sm: 6, md: 6, lg: 3.625, xl: 2.75 }}>
-              <Item><AppersonAutomotive /></Item>
-            </Grid>
-            <Grid size={{ xs: 12, sm: 6.5, md: 6.5, lg: 4.75, xl: 3.75 }}>
-              <Item><FacebookFeed /></Item>
-            </Grid>
-            <Grid size={{ xs: 12, sm: 5.5, md: 5.5, lg: 12, xl: 2.75 }}>
+            <Grid size={{ xs: 12, md: 5, lg: 4, xl: 4 }}>
               <Item><Inquiry /></Item>
             </Grid>
 
