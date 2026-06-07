@@ -93,5 +93,5 @@ export default defineConfig(async ({ mode }) => {
         exclude: ['src/Main.tsx', 'src/redux/store/index.ts'],
       },
     },
-  };
+  } as any;
 });
