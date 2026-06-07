@@ -3,6 +3,7 @@ import { defineConfig, loadEnv, type Plugin } from 'vite';
 import { fileURLToPath } from 'node:url';
 import react from '@vitejs/plugin-react';
 import checker from 'vite-plugin-checker';
+import pkg from './package.json';
 
 const srcDir = fileURLToPath(new URL('./src', import.meta.url));
 const testDir = fileURLToPath(new URL('./test', import.meta.url));
@@ -69,6 +70,7 @@ export default defineConfig(async ({ mode }) => {
     },
     define: {
       global: 'globalThis',
+      __APP_VERSION__: JSON.stringify(pkg.version),
     },
     test: {
       globals: true,
@@ -91,5 +93,5 @@ export default defineConfig(async ({ mode }) => {
         exclude: ['src/Main.tsx', 'src/redux/store/index.ts'],
       },
     },
-  };
+  } as any;
 });

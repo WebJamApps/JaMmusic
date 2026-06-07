@@ -67,6 +67,20 @@ export function NavLinks(props: InavLinksProps) {
         : menuConfig.jamNav.map((menu, index) => (menu.type === 'themeToggle'
           ? <ThemeToggle key={`themeToggle-${index}`} />
           : <MakeLink menu={menu} key={index} index={index} type="a" handleClose={handleClose} />))}
+      <div style={{
+        textAlign: 'left',
+        padding: '10px 15px',
+        fontSize: '0.8rem',
+        color: 'inherit',
+        opacity: 0.8,
+        marginTop: '0px',
+      }}
+      ><strong>
+          Version
+          {' '}
+          {__APP_VERSION__}
+        </strong>
+      </div>
       <p style={{ margin: 0, padding: 0, fontSize: '6pt' }}>&nbsp;</p>
       {process.env.APP_NAME !== 'joshandmariamusic.com' ? <ActiveUsers heartBeat={heartBeat} userCount={userCount} /> : null}
     </div>

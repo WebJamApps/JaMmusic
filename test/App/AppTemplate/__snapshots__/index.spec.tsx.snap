@@ -13,7 +13,7 @@ exports[`AppTemplate > renders the component 1`] = `
     >
       <div
         class="drawer"
-        style="background-color: var(--sidebar-bg); z-index: -1; position: relative;"
+        style="background-color: var(--sidebar-bg); position: relative; display: flex; flex-direction: column; height: 100%;"
       >
         <div
           class="navImage"
@@ -132,6 +132,15 @@ exports[`AppTemplate > renders the component 1`] = `
                 class="theme-switch-thumb"
               />
             </button>
+          </div>
+          <div
+            style="text-align: left; padding: 10px 15px; font-size: 0.8rem; color: inherit; opacity: 0.8; margin-top: 0px;"
+          >
+            <strong>
+              Version
+               
+              2.9.8
+            </strong>
           </div>
           <p
             style="margin: 0px; padding: 0px; font-size: 6pt;"
