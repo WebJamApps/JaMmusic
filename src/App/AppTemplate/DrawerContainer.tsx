@@ -1,16 +1,25 @@
 import { NavLinks } from './NavLinks';
 
 interface IdrawerContainerProps {
-  handleKeyPress: (arg0:any)=>void, className:any, userCount?:number,
-  heartBeat?:string, handleClose:()=>void
+  handleKeyPress: (arg0: any) => void, className: any, userCount?: number,
+  heartBeat?: string, handleClose: () => void
 }
-export function DrawerContainer(props:IdrawerContainerProps) {
+export function DrawerContainer(props: IdrawerContainerProps) {
   const {
     userCount, heartBeat, className, handleClose, handleKeyPress,
   } = props;
   return (
     <div tabIndex={0} role="button" id="sidebar" onClick={handleClose} onKeyPress={handleKeyPress} className={className}>
-      <div className="drawer" style={{ backgroundColor: 'var(--sidebar-bg)', zIndex: -1, position: 'relative' }}>
+      <div
+        className="drawer"
+        style={{
+          backgroundColor: 'var(--sidebar-bg)',
+          position: 'relative',
+          display: 'flex',
+          flexDirection: 'column',
+          height: '100%',
+        }}
+      >
         <div className="navImage">
           <img
             alt="wjsidelogo"
