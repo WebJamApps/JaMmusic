@@ -13,7 +13,9 @@ export function About() {
       <br />
       <br />
       <CurrentProjects />
-      <h3 style={{ textAlign: 'center' }}>Find Us on Facebook</h3>
+      <h3 style={{ textAlign: 'center' }}>
+        <a href="https://www.facebook.com/WebJamLLC/" target="_blank" rel="noreferrer">Find Us on Facebook</a>
+      </h3>
       <div style={{ maxWidth: '500px', margin: '0 auto' }}>
         <FacebookFeed />
       </div>

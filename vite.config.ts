@@ -32,6 +32,7 @@ const APP_ENV_KEYS = [
   'SOCKETCLUSTER_SECURE',
   'userRoles',
   'TINY_KEY',
+  'FB_APP_ID',
   'NODE_ENV',
 ] as const;
 
