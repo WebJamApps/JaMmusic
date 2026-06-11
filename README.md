@@ -12,6 +12,34 @@
 * Copy the `.env.example` file and paste it as `.env` file in the project root directory. Request variable definitions from the project owner or spin up your own resourses where applicable.
 * More information is available in our [Developer's Guide](https://docs.google.com/document/d/1_QDDbqmBrJuGqBoib59fmgYtls03dAXXuLqRR5roPO4/edit).
 
+### Local HTTPS (for Facebook `FB.login`)
+
+Most local work runs over plain http (`npm run dev` → `http://localhost:7878`).
+Facebook's JS SDK `FB.login` (used by the page-admin Reconnect flow) refuses to
+run on `http://` pages, so to exercise it locally serve the dev server over https
+with a self-signed cert:
+
+1. **Generate a self-signed cert into `.certs/`** (gitignored) — one time:
+
+   ```sh
+   mkdir -p .certs && openssl req -x509 -newkey rsa:2048 -nodes \
+     -keyout .certs/localhost.key -out .certs/localhost.crt \
+     -days 825 -subj "/CN=localhost" \
+     -addext "subjectAltName=DNS:localhost,IP:127.0.0.1"
+   ```
+
+2. **`npm run dev`** now serves `https://localhost:7878` (the `dev` script sets
+   `DEV_HTTPS=true`). With no certs present it silently falls back to http, so
+   this is safe for anyone who skips the setup. Accept the browser's
+   self-signed-cert warning the first time.
+
+3. **One-time external setup for the https origin:**
+   - **web-jam-back** `AllowUrl` must include `https://localhost:7878` (CORS).
+   - **Google OAuth client** — add `https://localhost:7878` to **both**
+     Authorized JavaScript origins **and** Authorized redirect URIs, or Google
+     login returns a 400 (the token-exchange `redirect_uri` must match the
+     scheme the auth code was issued under).
+
 ## Static assets
 
 * **`public/Josh-Maria-Songlist.pdf`** — the "Current Songlist" PDF linked from the **Book Us** page (`/music/bookus`). It is served by the app itself (opens inline in a new tab at `/Josh-Maria-Songlist.pdf`) rather than from Dropbox, so it renders reliably and isn't subject to Dropbox's download/redirect behavior.
