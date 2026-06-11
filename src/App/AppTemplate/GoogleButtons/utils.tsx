@@ -44,11 +44,15 @@ const responseGoogleLogin = async (
   try {
     const uri = window.location.href;
     const baseUri = uri.split('/')[2];
+    // Match the page's actual scheme. Production is https; local dev is usually
+    // http but can be https (DEV_HTTPS=true). The token-exchange redirect_uri
+    // must match the scheme the auth code was issued under or Google 400s.
+    const { protocol } = window.location;
     const body = {
       clientId: process.env.GoogleClientId,
       redirectUri: !baseUri.includes('localhost')
         && process.env.NODE_ENV === 'production' ? `https://${baseUri}`
-        : `http://${baseUri}`,
+        : `${protocol}//${baseUri}`,
       code: `${response.code}`,
       state: makeState(),
     };

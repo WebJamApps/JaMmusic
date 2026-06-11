@@ -1,12 +1,26 @@
 /// <reference types="vitest" />
 import { defineConfig, loadEnv, type Plugin } from 'vite';
 import { fileURLToPath } from 'node:url';
+import fs from 'node:fs';
 import react from '@vitejs/plugin-react';
 import checker from 'vite-plugin-checker';
 import pkg from './package.json';
 
 const srcDir = fileURLToPath(new URL('./src', import.meta.url));
 const testDir = fileURLToPath(new URL('./test', import.meta.url));
+const certDir = fileURLToPath(new URL('./.certs', import.meta.url));
+
+// Opt-in local HTTPS for the dev server: `DEV_HTTPS=true npm run dev`. Needed to
+// exercise Facebook FB.login (page-admin Reconnect flow) locally, since FB.login
+// refuses to run on http:// pages. Off unless the flag is set AND the self-signed
+// certs exist (.certs is gitignored), so CI and production builds are unaffected.
+function devHttps(env: Record<string, string>) {
+  const enabled = (process.env.DEV_HTTPS ?? env.DEV_HTTPS) === 'true';
+  const key = `${certDir}/localhost.key`;
+  const cert = `${certDir}/localhost.crt`;
+  if (!enabled || !fs.existsSync(key) || !fs.existsSync(cert)) return undefined;
+  return { key: fs.readFileSync(key), cert: fs.readFileSync(cert) };
+}
 
 const APP_ENV_KEYS = [
   'BackendUrl',
@@ -18,6 +32,7 @@ const APP_ENV_KEYS = [
   'SOCKETCLUSTER_SECURE',
   'userRoles',
   'TINY_KEY',
+  'FB_APP_ID',
   'NODE_ENV',
 ] as const;
 
@@ -55,6 +70,7 @@ export default defineConfig(async ({ mode }) => {
     ],
     server: {
       port: Number(env.PORT) || 7878,
+      ...(devHttps(env) ? { https: devHttps(env) } : {}),
     },
     resolve: {
       alias: {

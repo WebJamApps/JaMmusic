@@ -1,6 +1,6 @@
 {
   "name": "jammusic",
-  "version": "2.9.8",
+  "version": "2.9.9",
   "description": "joshandmariamusic.com",
   "main": "dist/index.html",
   "repository": {
@@ -25,7 +25,7 @@
   "license": "MIT",
   "scripts": {
     "install:prod": "npm run cleanup && npm install --only=prod",
-    "dev": "vite",
+    "dev": "DEV_HTTPS=true vite",
     "build": "vite build",
     "preview": "vite preview",
     "test:e2e": "playwright test",
