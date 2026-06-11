@@ -62,6 +62,9 @@ typings/
 .env.bak
 .env.dev
 
+# self-signed certs for local HTTPS dev (DEV_HTTPS=true)
+.certs/
+
 # next.js build output
 .next
 
