@@ -1738,22 +1738,17 @@ exports[`Homepage > renders correctly 1`] = `
       <h3
         style="text-align: center;"
       >
-        Find Us on Facebook
+        <a
+          href="https://www.facebook.com/WebJamLLC/"
+          rel="noreferrer"
+          target="_blank"
+        >
+          Find Us on Facebook
+        </a>
       </h3>
       <div
         style="max-width: 500px; margin: 0px auto;"
-      >
-        <div
-          style="margin: auto; height: 500px; box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.4);"
-        >
-          <iframe
-            allow="encrypted-media"
-            src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2FWebJamLLC%2F&tabs=timeline&width=500&height=500&small_header=true&adapt_container_width=true&hide_cover=false&show_facepile=true&appId=2207148322688942"
-            style="height: 100%; width: 100%;"
-            title="facebook ticker"
-          />
-        </div>
-      </div>
+      />
       <p
         style="font-size: 6pt; margin-bottom: 0px;"
       >

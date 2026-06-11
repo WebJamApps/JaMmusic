@@ -40,6 +40,31 @@ with a self-signed cert:
      login returns a 400 (the token-exchange `redirect_uri` must match the
      scheme the auth code was issued under).
 
+### Homepage Facebook feed
+
+The homepage shows the **WebJamLLC** Facebook posts as cards fetched from web-jam-back
+(`GET /facebook/feed?pageId=365007513885497`), replacing the old page-plugin iframe
+(JaMmusic#1107 / web-jam-back#799). The card markup mirrors CollegeLutheran's.
+
+- **`FB_APP_ID`** (`2207148322688942`, the public "Web Jam LLC" Meta app id) is the only
+  Facebook env var JaMmusic needs. It is build-injected by Vite (see `APP_ENV_KEYS` in
+  `vite.config.ts`) and used solely to open the Facebook login popup for Reconnect — no
+  app secret ever reaches the frontend. In production it must be present on the
+  web-jam-back app that **builds** JaMmusic.
+- **Reconnect Facebook button** — appears on the homepage **only when the feed is stalled**
+  (empty / failed / not refreshed in 7 days) **and** a recognized admin is signed in. It
+  runs `FB.login` → short-lived user token → `PUT /facebook/token` with the WebJamLLC
+  `pageId`. Exercising it locally requires the https dev server (see above), since
+  `FB.login` refuses to run over http.
+
+> **When you log into Facebook to Reconnect, keep BOTH the WebJamLLC and CollegeLutheran
+> pages checked.** The consent dialog's page selection is a *replace* — unchecking a page
+> revokes the app's access to it and kills that page's stored token. (Forgetting to check
+> the page you're reconnecting just fails harmlessly.)
+
+The full Facebook env-var reference (backend tokens, `FB_PAGES`, roles, how to find a page
+id) lives in **web-jam-back's README**.
+
 ## Static assets
 
 * **`public/Josh-Maria-Songlist.pdf`** — the "Current Songlist" PDF linked from the **Book Us** page (`/music/bookus`). It is served by the app itself (opens inline in a new tab at `/Josh-Maria-Songlist.pdf`) rather than from Dropbox, so it renders reliably and isn't subject to Dropbox's download/redirect behavior.
