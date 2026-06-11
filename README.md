@@ -39,6 +39,11 @@ with a self-signed cert:
      Authorized JavaScript origins **and** Authorized redirect URIs, or Google
      login returns a 400 (the token-exchange `redirect_uri` must match the
      scheme the auth code was issued under).
+   - **Meta app (Facebook)** — add `localhost` to **Allowed Domains for the
+     JavaScript SDK** (and **App Domains**) in the Web Jam LLC app, or `FB.login`
+     fails with *"JSSDK Unknown Host domain"*. The full domain list for every
+     environment (including the production `web-jam.com` host) is in
+     **web-jam-back's README**.
 
 ### Homepage Facebook feed
 
