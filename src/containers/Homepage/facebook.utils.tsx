@@ -22,7 +22,7 @@ export function isJamAdmin(auth: Iauth): boolean {
 interface FbLoginResponse { authResponse?: { accessToken?: string } }
 interface FbSdk {
   init: (opts: Record<string, unknown>) => void;
-  login: (cb: (res: FbLoginResponse) => void, opts: { scope: string }) => void;
+  login: (cb: (res: FbLoginResponse) => void, opts: { scope: string; auth_type?: string }) => void;
 }
 interface FbWindow extends Window { FB?: FbSdk; fbAsyncInit?: () => void }
 
@@ -59,7 +59,10 @@ async function sendPageToken(userToken: string, auth: Iauth, pageId: string): Pr
       },
       body: JSON.stringify({ userToken, pageId }),
     });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({})) as { message?: string };
+      throw new Error(body.message || `HTTP ${res.status}`);
+    }
     commonUtils.notify('Facebook', 'Reconnected — the feed will refresh shortly', 'success');
   } catch (e) {
     commonUtils.notify('Facebook', `Reconnect failed, ${(e as Error).message}`, 'warning');
@@ -67,9 +70,12 @@ async function sendPageToken(userToken: string, auth: Iauth, pageId: string): Pr
 }
 
 // "Reconnect Facebook": admin logs in as the page admin → short-lived user token
-// → sendPageToken to web-jam-back for the given pageId. NOTE: in the Facebook
-// consent dialog, keep BOTH the WebJamLLC and CollegeLutheran pages checked —
-// deselecting a page revokes the app's access to it (see README).
+// → sendPageToken to web-jam-back for the given pageId. `auth_type: 'rerequest'`
+// forces Facebook to re-show the page picker every time instead of silently
+// reusing the last grant ("continue with previous settings") — otherwise a prior
+// reconnect of the OTHER page leaves this page ungranted and the exchange 400s.
+// NOTE: in the consent dialog, keep BOTH the WebJamLLC and CollegeLutheran pages
+// checked — deselecting a page revokes the app's access to it (see README).
 async function reconnectFacebookAPI(auth: Iauth, pageId: string): Promise<void> {
   const w = window as unknown as FbWindow;
   if (!w.FB) {
@@ -85,7 +91,7 @@ async function reconnectFacebookAPI(auth: Iauth, pageId: string): Promise<void> 
         return;
       }
       void sendPageToken(userToken, auth, pageId).finally(resolve);
-    }, { scope: 'pages_show_list,pages_read_engagement' });
+    }, { scope: 'pages_show_list,pages_read_engagement', auth_type: 'rerequest' });
   });
 }
 

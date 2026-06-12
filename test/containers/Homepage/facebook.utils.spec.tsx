@@ -63,15 +63,17 @@ describe('facebook.utils', () => {
       expect(commonUtils.notify).toHaveBeenCalledWith('Facebook', expect.stringMatching(/still loading/), 'warning');
     });
 
-    it('PUTs the user token + pageId and notifies success', async () => {
+    it('PUTs the user token + pageId (rerequesting the page picker) and notifies success', async () => {
       commonUtils.notify = vi.fn();
-      (window as any).FB = {
-        init: vi.fn(),
-        login: (cb: (r: any) => void) => cb({ authResponse: { accessToken: 'USER-TOKEN' } }),
-      };
+      const loginMock = vi.fn((cb: (r: any) => void) => cb({ authResponse: { accessToken: 'USER-TOKEN' } }));
+      (window as any).FB = { init: vi.fn(), login: loginMock };
       const fetchMock = vi.fn(() => Promise.resolve({ ok: true, status: 200 }));
       vi.stubGlobal('fetch', fetchMock);
       await facebookUtils.reconnectFacebookAPI(auth as any, WEBJAMLLC_PAGE_ID);
+      expect(loginMock).toHaveBeenCalledWith(
+        expect.any(Function),
+        expect.objectContaining({ auth_type: 'rerequest' }),
+      );
       expect(fetchMock).toHaveBeenCalledWith(
         `${process.env.BackendUrl}/facebook/token`,
         {
@@ -90,15 +92,19 @@ describe('facebook.utils', () => {
       expect(commonUtils.notify).toHaveBeenCalledWith('Facebook', expect.stringMatching(/cancelled/), 'warning');
     });
 
-    it('warns when the backend PUT fails', async () => {
+    it('surfaces the backend error message when the PUT fails', async () => {
       commonUtils.notify = vi.fn();
       (window as any).FB = {
         init: vi.fn(),
         login: (cb: (r: any) => void) => cb({ authResponse: { accessToken: 'USER-TOKEN' } }),
       };
-      vi.stubGlobal('fetch', vi.fn(() => Promise.resolve({ ok: false, status: 400 })));
+      vi.stubGlobal('fetch', vi.fn(() => Promise.resolve({
+        ok: false, status: 400, json: () => Promise.resolve({ message: 'WebJamLLC page not found in /me/accounts' }),
+      })));
       await facebookUtils.reconnectFacebookAPI(auth as any, WEBJAMLLC_PAGE_ID);
-      expect(commonUtils.notify).toHaveBeenCalledWith('Facebook', expect.stringMatching(/Reconnect failed/), 'warning');
+      expect(commonUtils.notify).toHaveBeenCalledWith(
+        'Facebook', expect.stringMatching(/Reconnect failed.*page not found/), 'warning',
+      );
     });
   });
 });
