@@ -1,6 +1,6 @@
 {
   "name": "jammusic",
-  "version": "2.9.9",
+  "version": "2.9.11",
   "description": "joshandmariamusic.com",
   "main": "dist/index.html",
   "repository": {
@@ -9,7 +9,7 @@
   },
   "author": "https://github.com/orgs/WebJamApps/teams/handlersandkickers",
   "engines": {
-    "node": "24.16.0"
+    "node": "24.17.0"
   },
   "files": [
     "vite.config.ts",
@@ -87,8 +87,8 @@
     "stream-browserify": "^3.0.0",
     "typescript": "^6.0.3",
     "util": "^0.12.5",
-    "vite": "^8.0.14",
-    "vite-plugin-checker": "^0.14.1",
+    "vite": "^8.0.16",
+    "vite-plugin-checker": "0.14.1",
     "vm-browserify": "^1.1.2"
   },
   "devDependencies": {

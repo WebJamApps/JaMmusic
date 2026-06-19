@@ -1,10 +1,11 @@
 import { CAPABILITIES, CAPABILITY_GROUPS, USER_STATUS_OPTIONS } from 'src/containers/AdminUsers/capabilities';
 
 describe('AdminUsers capabilities registry', () => {
-  it('includes tour, song, and book capabilities', () => {
+  it('includes tour, song, book, and venue capabilities', () => {
     expect(CAPABILITIES).toContain('gig:create');
     expect(CAPABILITIES).toContain('song:create');
     expect(CAPABILITIES).toContain('book:delete');
+    expect(CAPABILITIES).toContain('venue:create');
   });
 
   it('does not include user:* capabilities', () => {
