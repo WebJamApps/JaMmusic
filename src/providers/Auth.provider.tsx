@@ -3,6 +3,7 @@ import React, {
 } from 'react';
 import jwt from 'jwt-simple';
 import { usePersistedState } from 'src/lib/usePersistedState';
+import { isTokenExpired } from 'src/lib/tokenExpiry';
 
 export interface Iauth {
   isAuthenticated: boolean,
@@ -69,6 +70,16 @@ export const setUserAuth = async (
   }
 };
 
+// Given the persisted auth string, return the reset auth-string to store when
+// the token has expired, or null when no logout is needed (JaMmusic#1121).
+export function expiredAuthReset(authString: string): string | null {
+  try {
+    const { token } = JSON.parse(authString);
+    if (token && isTokenExpired(token)) return JSON.stringify(defaultAuth);
+  } catch { /* no / unparseable auth — nothing to expire */ }
+  return null;
+}
+
 export function AuthProvider({ children }: { children: React.ReactNode }): React.JSX.Element {
   const { Provider } = AuthContext;
   const [authString, setAuthString] = usePersistedState('auth', JSON.stringify(defaultAuth));
@@ -85,6 +96,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }): React
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  // Proactively log out the moment the token's exp passes — not only on reload
+  // (JaMmusic#1121). Runs immediately and every minute while the app is open.
+  useEffect(() => {
+    const checkExpiry = () => {
+      const reset = expiredAuthReset(authString as string);
+      if (reset) (setAuthString as React.Dispatch<React.SetStateAction<string>>)(reset);
+    };
+    checkExpiry();
+    const id = window.setInterval(checkExpiry, 60000);
+    return () => window.clearInterval(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [authString]);
   const { auth, setAuth } = configAuth(
     authString as string,
     setAuthString as React.Dispatch<React.SetStateAction<string>>,

@@ -1,8 +1,9 @@
 import { render } from '@testing-library/react';
+import jwt from 'jwt-simple';
 
 import {
   Iauth, defaultSetAuth, AuthProvider,
-  configAuth,
+  configAuth, expiredAuthReset,
 } from 'src/providers/Auth.provider';
 import {
   setInitValue, handleValueChange, handleNameChange,
@@ -92,5 +93,22 @@ describe('AuthProvider', () => {
     const result = configAuth(JSON.stringify({}), setAuthString);
     result.setAuth({} as any);
     expect(setAuthString).toHaveBeenCalled();
+  });
+  describe('expiredAuthReset (auto-logout decision)', () => {
+    const now = () => Math.floor(Date.now() / 1000);
+    it('resets to logged-out when the token is expired', () => {
+      const token = jwt.encode({ sub: 'u', iat: now() - 200, exp: now() - 100 }, 'secret');
+      const reset = expiredAuthReset(JSON.stringify({ token, isAuthenticated: true }));
+      expect(reset).not.toBeNull();
+      expect(JSON.parse(reset as string).isAuthenticated).toBe(false);
+    });
+    it('returns null for a still-valid token', () => {
+      const token = jwt.encode({ sub: 'u', iat: now(), exp: now() + 24 * 60 * 60 }, 'secret');
+      expect(expiredAuthReset(JSON.stringify({ token, isAuthenticated: true }))).toBeNull();
+    });
+    it('returns null when there is no token or the value is garbage', () => {
+      expect(expiredAuthReset(JSON.stringify({ token: '' }))).toBeNull();
+      expect(expiredAuthReset('not-json')).toBeNull();
+    });
   });
 });
