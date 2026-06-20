@@ -1,9 +1,8 @@
 import React, {
   createContext, useEffect,
 } from 'react';
-import jwt from 'jwt-simple';
 import { usePersistedState } from 'src/lib/usePersistedState';
-import { isTokenExpired } from 'src/lib/tokenExpiry';
+import { isTokenExpired, getTokenSub } from 'src/lib/tokenExpiry';
 
 export interface Iauth {
   isAuthenticated: boolean,
@@ -89,7 +88,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }): React
         try {
           const auth = JSON.parse(authString);
           const { token } = auth;
-          const { sub } = jwt.decode(token, process.env.HashString as string);
+          const sub = getTokenSub(token);
+          if (!sub) throw new Error('token has no subject');
           await setUserAuth(token, sub, setAuthString as (arg0: string | Iauth) => void, 'setAuthString');
         } catch (err) { (setAuthString as React.Dispatch<React.SetStateAction<string>>)(JSON.stringify(defaultAuth)); }
       }
