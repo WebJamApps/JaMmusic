@@ -45,14 +45,7 @@ export function handleEscapePress(e: { key: string; }, setMenuOpen: (arg0: boole
 export const makeHandleKeyPress = (
   setMenuOpen: (value: SetStateAction<boolean>) => void,
 ) => (evt: { key: string; }) => handleEscapePress(evt, setMenuOpen);
-// TODO logout user if token has expired
-// export async function checkIfTokenExpired(auth:Iauth) {
-//   console.log(auth);
-//   try {
-//     const user = await jwtVerify(auth.token);
-//     console.log(user);
-//   } catch (err) { console.log(err); }
-// }
+// Token-expiry auto-logout is handled app-wide in AuthProvider (JaMmusic#1121).
 
 interface IpageHostProps {
   userCount?: number, heartBeat?: string,
