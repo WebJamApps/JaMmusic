@@ -25,7 +25,6 @@ function devHttps(env: Record<string, string>) {
 const APP_ENV_KEYS = [
   'BackendUrl',
   'GoogleClientId',
-  'HashString',
   'APP_NAME',
   'SCS_HOST',
   'SCS_PORT',
