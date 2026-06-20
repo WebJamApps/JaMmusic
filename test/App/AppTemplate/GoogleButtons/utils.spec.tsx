@@ -30,9 +30,7 @@ describe('GoogleButtons/utils', () => {
       isAuthenticated: false, token: 's', error: 'err', user: { userType: 'e', email: 'goo@hotmail.com' },
     };
     const setAuth = vi.fn();
-    const token = 'nickel';
-    const sub: any = 'some';
-    vi.spyOn(jwt, 'decode').mockReturnValue({ sub });
+    const token = jwt.encode({ sub: 'some' }, 'secret');
 
     await utils.setUser(auth, setAuth, token);
     expect(setAuth).toHaveBeenCalled();
@@ -40,7 +38,6 @@ describe('GoogleButtons/utils', () => {
   it('responseGoogleLogin', async () => {
     const setAuth = vi.fn();
     vi.spyOn(commonUtils, 'notify').mockImplementation(() => { });
-    vi.spyOn(jwt, 'decode').mockReturnValue({ sub: '1' });
     Object.defineProperty(window, 'location', {
       value: { href: 'https://localhost:8888', assign: vi.fn(), reload: vi.fn() }, writable: true, configurable: true,
     });
@@ -56,7 +53,6 @@ describe('GoogleButtons/utils', () => {
   it('responseGoogleLogin succeeds when production', async () => {
     const setAuth = vi.fn();
     vi.spyOn(commonUtils, 'notify').mockImplementation(() => { });
-    vi.spyOn(jwt, 'decode').mockReturnValue({ sub: '1' });
     Object.defineProperty(window, 'location', {
       value: { href: 'https://web-jam.com', assign: vi.fn(), reload: vi.fn() }, writable: true, configurable: true,
     });

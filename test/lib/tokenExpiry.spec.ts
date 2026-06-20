@@ -1,5 +1,5 @@
 import jwt from 'jwt-simple';
-import { getTokenExp, isTokenExpired } from 'src/lib/tokenExpiry';
+import { getTokenExp, getTokenSub, isTokenExpired } from 'src/lib/tokenExpiry';
 
 const SECRET = 'test-secret';
 const nowSec = () => Math.floor(Date.now() / 1000);
@@ -18,6 +18,21 @@ describe('tokenExpiry', () => {
     it('returns null for empty / garbage input', () => {
       expect(getTokenExp('')).toBeNull();
       expect(getTokenExp('not-a-jwt')).toBeNull();
+    });
+  });
+
+  describe('getTokenSub', () => {
+    it('reads the sub claim from a token', () => {
+      const token = jwt.encode({ sub: 'user-123', iat: nowSec() }, SECRET);
+      expect(getTokenSub(token)).toBe('user-123');
+    });
+    it('returns null when there is no string sub', () => {
+      const token = jwt.encode({ iat: nowSec() }, SECRET);
+      expect(getTokenSub(token)).toBeNull();
+    });
+    it('returns null for empty / garbage input', () => {
+      expect(getTokenSub('')).toBeNull();
+      expect(getTokenSub('not-a-jwt')).toBeNull();
     });
   });
 

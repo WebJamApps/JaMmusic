@@ -1,7 +1,7 @@
 import { CodeResponse, googleLogout } from '@react-oauth/google';
 import { defaultAuth, Iauth, setUserAuth } from 'src/providers/Auth.provider';
 import 'react-toastify/dist/ReactToastify.css';
-import jwt from 'jwt-simple';
+import { getTokenSub } from 'src/lib/tokenExpiry';
 import commonUtils from 'src/lib/utils';
 
 export interface GoogleBody {
@@ -12,7 +12,7 @@ export interface GoogleBody {
 }
 
 const setUser = async (auth: Iauth, setAuth: (args0: Iauth) => void, token: string): Promise<void> => {
-  const { sub } = jwt.decode(token, process.env.HashString as string);
+  const sub = getTokenSub(token) ?? undefined;
   await setUserAuth(token, sub, setAuth as (arg0: any) => void, 'setAuth');
 };
 
