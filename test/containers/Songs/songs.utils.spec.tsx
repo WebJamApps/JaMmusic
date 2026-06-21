@@ -44,6 +44,34 @@ describe('songs utils', () => {
     await utils.createSong(getSongs, setShowDialog, song, setSong, auth);
     expect(commonUtils.notify).toHaveBeenCalled();
   });
+  const editSong = {
+    _id: 'song1', artist: 'A', category: '1', title: 'a', year: 12, url: 'https://test1.com',
+  };
+  const editAuth = {
+    isAuthenticated: true, user: { userType: 'admin', email: 'test@example.com' }, error: '', token: 'mock-token',
+  };
+  it('updateSong PUTs and refreshes on success', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: true, json: vi.fn().mockResolvedValue({}) }));
+    commonUtils.notify = vi.fn();
+    const getSongs = vi.fn();
+    const setShowDialog = vi.fn();
+    const setSong = vi.fn();
+    await utils.updateSong(getSongs, setShowDialog, editSong, setSong, editAuth);
+    expect(setShowDialog).toHaveBeenCalledWith(false);
+    expect(getSongs).toHaveBeenCalled();
+  });
+  it('updateSong notifies on error', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: false, status: 500, statusText: 'fail' }));
+    commonUtils.notify = vi.fn();
+    await utils.updateSong(vi.fn(), vi.fn(), editSong, vi.fn(), editAuth);
+    expect(commonUtils.notify).toHaveBeenCalled();
+  });
+  it('handleInputChange updates the song and returns the value', () => {
+    const setSong = vi.fn();
+    const out = utils.handleInputChange({ target: { value: 'New' } }, setSong, editSong, 'title');
+    expect(out).toBe('New');
+    expect(setSong).toHaveBeenCalledWith(expect.objectContaining({ title: 'New' }));
+  });
   it('checkDisabled', () => {
     const song = {
       category: '1', title: 'a', year: 12, url: 'https://test1.com', artist: 'joe',
