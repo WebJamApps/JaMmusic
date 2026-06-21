@@ -1,7 +1,7 @@
 # JaMmusic
 
 [![CircleCI](https://circleci.com/gh/WebJamApps/JaMmusic.svg?style=svg)](https://circleci.com/gh/WebJamApps/JaMmusic)
-[![tested with jest](https://img.shields.io/badge/tested_with-jest-99424f.svg)](https://github.com/facebook/jest)
+[![coverage](https://img.shields.io/badge/coverage-92%25-brightgreen)](https://circleci.com/gh/WebJamApps/JaMmusic)
 [![Known Vulnerabilities](https://snyk.io/test/github/WebJamApps/JaMmusic/badge.svg)](https://snyk.io/test/github/WebJamApps/JaMmusic)
 
 <https://joshandmariamusic.com>

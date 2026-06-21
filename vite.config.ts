@@ -106,6 +106,16 @@ export default defineConfig(async ({ mode }) => {
         reporter: ['text', 'html', 'lcov'],
         include: ['src/**/*.{ts,tsx}'],
         exclude: ['src/Main.tsx', 'src/redux/store/index.ts'],
+        // CI gate: `npm test` (which runs vitest with --coverage) fails when
+        // total coverage drops below these floors. Statements + lines held at
+        // 90%; branches + functions floored at 80% (some MUI dialogs/providers
+        // are only partially exercised). Raise as coverage grows.
+        thresholds: {
+          statements: 90,
+          lines: 90,
+          branches: 80,
+          functions: 80,
+        },
       },
     },
   } as any;
