@@ -5,6 +5,7 @@ import importX from 'eslint-plugin-import-x';
 import vitest from '@vitest/eslint-plugin';
 import n from 'eslint-plugin-n';
 import security from 'eslint-plugin-security';
+import sonarjs from 'eslint-plugin-sonarjs';
 import json from 'eslint-plugin-json';
 import jsxA11yX from 'eslint-plugin-jsx-a11y-x';
 import globals from 'globals';
@@ -17,6 +18,14 @@ const a11yRules = Object.fromEntries(
   Object.keys(jsxA11yX.configs.recommended.rules)
     .filter((name) => name.replace('jsx-a11y-x/', '') in jsxA11yX.rules)
     .map((name) => [name, 'error']),
+);
+
+// Take the SonarJS recommended ruleset but downgrade every rule to 'warn'
+// (preserving any per-rule options) so it surfaces issues without failing CI.
+const sonarjsWarn = Object.fromEntries(
+  Object.entries(sonarjs.configs.recommended.rules).map(([name, val]) => [
+    name, Array.isArray(val) ? ['warn', ...val.slice(1)] : 'warn',
+  ]),
 );
 
 export default [
@@ -37,6 +46,14 @@ export default [
   },
   js.configs.recommended,
   ...tseslint.configs.recommended,
+  // SonarJS code-quality rules. Enabled as WARNINGS for now: the recommended
+  // preset flags pre-existing issues across the codebase, so surface them
+  // without breaking CI. A follow-up can fix those and promote sonarjs to error.
+  {
+    files: ['**/*.{ts,tsx}'],
+    plugins: { sonarjs },
+    rules: sonarjsWarn,
+  },
   {
     files: ['**/*.{ts,tsx}'],
     languageOptions: {
