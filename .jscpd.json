@@ -1,0 +1,16 @@
+{
+  "threshold": 5,
+  "reporters": ["console"],
+  "absolute": true,
+  "gitignore": true,
+  "format": ["typescript", "tsx", "javascript", "jsx"],
+  "ignore": [
+    "**/*.spec.tsx",
+    "**/*.spec.ts",
+    "**/*.test.*",
+    "**/node_modules/**",
+    "**/build/**",
+    "**/coverage/**",
+    "**/__mocks__/**"
+  ]
+}

@@ -9,6 +9,15 @@ export function Checkbox(props:any) {
   return <input type="checkbox" {...props}>{children}</input>;
 }
 
+export function Switch(props:any) {
+  const { children } = props;
+  return <input type="checkbox" {...props}>{children}</input>;
+}
+
+export function Divider(props:any) {
+  return <hr {...props} />;
+}
+
 export function TextareaAutosize(props:any) {
   const { children } = props;
   return <input {...props}>{children}</input>;
