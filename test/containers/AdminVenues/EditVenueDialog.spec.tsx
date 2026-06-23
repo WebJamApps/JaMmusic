@@ -24,6 +24,16 @@ describe('EditVenueDialog', () => {
     expect(onSaved).toHaveBeenCalled();
   });
 
+  it('saves the relationshipStage + templateOverride selections (#1136)', async () => {
+    await act(async () => { render(<EditVenueDialog open venue={venue} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />); });
+    await act(async () => { fireEvent.change(screen.getByTestId('edit-venue-stage'), { target: { value: 'returning' } }); });
+    await act(async () => { fireEvent.change(screen.getByTestId('edit-venue-override'), { target: { value: 'MidRangeCafeBar' } }); });
+    await act(async () => { fireEvent.click(screen.getByTestId('edit-venue-save')); });
+    expect(adminVenuesUtils.updateVenue).toHaveBeenCalledWith('tk', 'v1', expect.objectContaining({
+      relationshipStage: 'returning', templateOverride: 'MidRangeCafeBar',
+    }));
+  });
+
   it('propagates a toggled checkbox into the saved payload', async () => {
     await act(async () => { render(<EditVenueDialog open venue={venue} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />); });
     await act(async () => { fireEvent.click(screen.getByRole('checkbox', { name: /outreach eligible/i })); });
