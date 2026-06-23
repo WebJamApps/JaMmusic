@@ -4,7 +4,7 @@ import {
   Button, Typography, FormGroup, FormControlLabel, Checkbox, FormControl, InputLabel, Select, MenuItem, TextField,
 } from '@mui/material';
 import adminVenuesUtils, {
-  VENUE_TYPES, BOOKING_STATUSES, type Ivenue, type IvenueUpdate,
+  VENUE_TYPES, BOOKING_STATUSES, RELATIONSHIP_STAGES, type Ivenue, type IvenueUpdate,
 } from './admin-venues.utils';
 
 interface IeditVenueDialogProps {
@@ -40,6 +40,8 @@ export function EditVenueDialog({
         payTier: venue.payTier || '',
         contactVerified: !!venue.contactVerified,
         notes: venue.notes || '',
+        relationshipStage: venue.relationshipStage || '',
+        templateOverride: venue.templateOverride || '',
       });
     }
     setError('');
@@ -90,6 +92,22 @@ export function EditVenueDialog({
           <Select labelId="edit-venue-booking-label" label="Booking Status" value={form.bookingStatus || 'booking'}
             onChange={(e) => set('bookingStatus', e.target.value)} data-testid="edit-venue-booking">
             {BOOKING_STATUSES.map((s) => (<MenuItem key={s} value={s}>{s}</MenuItem>))}
+          </Select>
+        </FormControl>
+        <FormControl fullWidth sx={{ marginBottom: 2 }}>
+          <InputLabel id="edit-venue-stage-label">Relationship Stage</InputLabel>
+          <Select labelId="edit-venue-stage-label" label="Relationship Stage" value={form.relationshipStage || ''}
+            onChange={(e) => set('relationshipStage', e.target.value)} data-testid="edit-venue-stage">
+            <MenuItem value="">Auto (derive from history)</MenuItem>
+            {RELATIONSHIP_STAGES.map((s) => (<MenuItem key={s} value={s}>{s}</MenuItem>))}
+          </Select>
+        </FormControl>
+        <FormControl fullWidth sx={{ marginBottom: 2 }}>
+          <InputLabel id="edit-venue-override-label">Template Override</InputLabel>
+          <Select labelId="edit-venue-override-label" label="Template Override" value={form.templateOverride || ''}
+            onChange={(e) => set('templateOverride', e.target.value)} data-testid="edit-venue-override">
+            <MenuItem value="">None (use venue type)</MenuItem>
+            {VENUE_TYPES.map((t) => (<MenuItem key={t} value={t}>{t}</MenuItem>))}
           </Select>
         </FormControl>
         <TextField label="Contact Name" fullWidth value={form.contactName || ''} onChange={(e) => set('contactName', e.target.value)}
