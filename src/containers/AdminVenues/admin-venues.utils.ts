@@ -21,6 +21,8 @@ export interface Ivenue {
   payTier?: string;
   contactVerified?: boolean;
   notes?: string;
+  relationshipStage?: string;
+  templateOverride?: string;
 }
 
 export interface IvenueUpdate {
@@ -39,6 +41,8 @@ export interface IvenueUpdate {
   payTier?: string;
   contactVerified?: boolean;
   notes?: string;
+  relationshipStage?: string;
+  templateOverride?: string;
 }
 
 export interface Icandidate {
@@ -114,6 +118,7 @@ async function setConfig(token: string, autoApprove: boolean): Promise<{ autoApp
 
 export const VENUE_TYPES = ['Originals', 'PubFestivalBrewery', 'MidRangeCafeBar'] as const;
 export const BOOKING_STATUSES = ['booking', 'not-booking', 'booked'] as const;
+export const RELATIONSHIP_STAGES = ['cold', 'returning'] as const;
 
 export default {
   listVenues, updateVenue, getCandidates, sendBatch, getConfig, setConfig, getAllowedAdminRoles,
