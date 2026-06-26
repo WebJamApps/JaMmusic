@@ -1,7 +1,9 @@
 import {
   useCallback, useContext, useEffect, useState,
 } from 'react';
-import { Box, Typography } from '@mui/material';
+import {
+  Box, Typography, TextField, Button,
+} from '@mui/material';
 import { AuthContext } from 'src/providers/Auth.provider';
 import { VenuesTable } from './VenuesTable';
 import { EditVenueDialog } from './EditVenueDialog';
@@ -17,22 +19,37 @@ export function AdminVenues() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [editing, setEditing] = useState<Ivenue | null>(null);
+  // The target-weekend filter: a date the venue must be free for (no gig within
+  // its ±2-month clear window). Empty = show all venues.
+  const [targetDate, setTargetDate] = useState('');
 
   const refresh = useCallback(async () => {
     if (!isAuthorized) return;
     setLoading(true);
     setError('');
     try {
-      const data = await adminVenuesUtils.listVenues(auth.token);
+      const data = targetDate
+        ? await adminVenuesUtils.listVenues(auth.token, targetDate)
+        : await adminVenuesUtils.listVenues(auth.token);
       setVenues(data);
     } catch (e) {
       setError((e as { message?: string }).message || 'Failed to load venues');
     } finally {
       setLoading(false);
     }
-  }, [auth.token, isAuthorized]);
+  }, [auth.token, isAuthorized, targetDate]);
 
   useEffect(() => { void refresh(); }, [refresh]);
+
+  const handleDelete = useCallback(async (venue: Ivenue) => {
+    setError('');
+    try {
+      await adminVenuesUtils.deleteVenue(auth.token, venue._id);
+      await refresh();
+    } catch (e) {
+      setError((e as { message?: string }).message || 'Failed to archive venue');
+    }
+  }, [auth.token, refresh]);
 
   if (!isAuthorized) {
     return (
@@ -48,9 +65,28 @@ export function AdminVenues() {
       padding: 3, maxWidth: 1200, margin: 'auto', width: '100%', minWidth: 0,
     }} data-testid="admin-venues-page">
       <Typography variant="h5" sx={{ marginBottom: 2 }}>Admin Venues</Typography>
+      <Box sx={{
+        display: 'flex', alignItems: 'center', gap: 2, marginBottom: 2, flexWrap: 'wrap',
+      }}>
+        <TextField
+          type="date"
+          size="small"
+          label="Free for weekend"
+          slotProps={{ inputLabel: { shrink: true } }}
+          value={targetDate}
+          onChange={(e) => setTargetDate(e.target.value)}
+          data-testid="venues-target-date"
+        />
+        {targetDate && (
+          <Button size="small" onClick={() => setTargetDate('')} data-testid="venues-clear-date">Clear</Button>
+        )}
+        <Typography variant="caption" color="text.secondary">
+          Pick a target weekend to show only venues with no conflicting gig in the ±2-month window.
+        </Typography>
+      </Box>
       {loading && <Typography data-testid="admin-venues-loading">Loading...</Typography>}
       {error && <Typography color="error" data-testid="admin-venues-error">{error}</Typography>}
-      <VenuesTable venues={venues} onEdit={(v) => setEditing(v)} />
+      <VenuesTable venues={venues} onEdit={(v) => setEditing(v)} onDelete={handleDelete} />
       <EditVenueDialog
         open={editing !== null}
         venue={editing}

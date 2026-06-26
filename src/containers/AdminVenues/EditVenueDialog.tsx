@@ -4,8 +4,19 @@ import {
   Button, Typography, FormGroup, FormControlLabel, Checkbox, FormControl, InputLabel, Select, MenuItem, TextField,
 } from '@mui/material';
 import adminVenuesUtils, {
-  VENUE_TYPES, BOOKING_STATUSES, RELATIONSHIP_STAGES, type Ivenue, type IvenueUpdate,
+  VENUE_TYPES, BOOKING_STATUSES, RELATIONSHIP_STAGES, ORIGINALS_FITS, TRAVEL_BANDS, FIELD_HELP,
+  type Ivenue, type IvenueUpdate,
 } from './admin-venues.utils';
+
+// Inline consequence help shown under a field, so a manual edit can't quietly
+// make the data worse (#1139 §4/§8). `field` is a FIELD_HELP key.
+function Help({ field }: { field: string }) {
+  return (
+    <Typography variant="caption" color="text.secondary" sx={{ display: 'block', marginTop: -1.5, marginBottom: 2 }}>
+      {FIELD_HELP[field]}
+    </Typography>
+  );
+}
 
 interface IeditVenueDialogProps {
   open: boolean;
@@ -42,6 +53,9 @@ export function EditVenueDialog({
         notes: venue.notes || '',
         relationshipStage: venue.relationshipStage || '',
         templateOverride: venue.templateOverride || '',
+        originalsFit: venue.originalsFit || '',
+        travelBand: venue.travelBand || '',
+        priority: venue.priority ?? undefined,
       });
     }
     setError('');
@@ -87,6 +101,7 @@ export function EditVenueDialog({
             {VENUE_TYPES.map((t) => (<MenuItem key={t} value={t}>{t}</MenuItem>))}
           </Select>
         </FormControl>
+        <Help field="venueType" />
         <FormControl fullWidth sx={{ marginBottom: 2 }}>
           <InputLabel id="edit-venue-booking-label">Booking Status</InputLabel>
           <Select labelId="edit-venue-booking-label" label="Booking Status" value={form.bookingStatus || 'booking'}
@@ -94,6 +109,7 @@ export function EditVenueDialog({
             {BOOKING_STATUSES.map((s) => (<MenuItem key={s} value={s}>{s}</MenuItem>))}
           </Select>
         </FormControl>
+        <Help field="bookingStatus" />
         <FormControl fullWidth sx={{ marginBottom: 2 }}>
           <InputLabel id="edit-venue-stage-label">Relationship Stage</InputLabel>
           <Select labelId="edit-venue-stage-label" label="Relationship Stage" value={form.relationshipStage || ''}
@@ -102,6 +118,7 @@ export function EditVenueDialog({
             {RELATIONSHIP_STAGES.map((s) => (<MenuItem key={s} value={s}>{s}</MenuItem>))}
           </Select>
         </FormControl>
+        <Help field="relationshipStage" />
         <FormControl fullWidth sx={{ marginBottom: 2 }}>
           <InputLabel id="edit-venue-override-label">Template Override</InputLabel>
           <Select labelId="edit-venue-override-label" label="Template Override" value={form.templateOverride || ''}
@@ -110,6 +127,25 @@ export function EditVenueDialog({
             {VENUE_TYPES.map((t) => (<MenuItem key={t} value={t}>{t}</MenuItem>))}
           </Select>
         </FormControl>
+        <Help field="templateOverride" />
+        <FormControl fullWidth sx={{ marginBottom: 2 }}>
+          <InputLabel id="edit-venue-originals-label">Originals Fit</InputLabel>
+          <Select labelId="edit-venue-originals-label" label="Originals Fit" value={form.originalsFit || ''}
+            onChange={(e) => set('originalsFit', e.target.value)} data-testid="edit-venue-originals">
+            <MenuItem value="">Unset</MenuItem>
+            {ORIGINALS_FITS.map((o) => (<MenuItem key={o} value={o}>{o}</MenuItem>))}
+          </Select>
+        </FormControl>
+        <Help field="originalsFit" />
+        <FormControl fullWidth sx={{ marginBottom: 2 }}>
+          <InputLabel id="edit-venue-travel-label">Travel Band</InputLabel>
+          <Select labelId="edit-venue-travel-label" label="Travel Band" value={form.travelBand || ''}
+            onChange={(e) => set('travelBand', e.target.value)} data-testid="edit-venue-travel">
+            <MenuItem value="">Unset</MenuItem>
+            {TRAVEL_BANDS.map((t) => (<MenuItem key={t} value={t}>{t}</MenuItem>))}
+          </Select>
+        </FormControl>
+        <Help field="travelBand" />
         <TextField label="Contact Name" fullWidth value={form.contactName || ''} onChange={(e) => set('contactName', e.target.value)}
           sx={{ marginBottom: 2 }} data-testid="edit-venue-contact" />
         <TextField label="Email" fullWidth value={form.email || ''} onChange={(e) => set('email', e.target.value)}
@@ -119,7 +155,19 @@ export function EditVenueDialog({
         <TextField label="Website" fullWidth value={form.website || ''} onChange={(e) => set('website', e.target.value)}
           sx={{ marginBottom: 2 }} data-testid="edit-venue-website" />
         <TextField label="Pay Tier" fullWidth value={form.payTier || ''} onChange={(e) => set('payTier', e.target.value)}
-          sx={{ marginBottom: 2 }} data-testid="edit-venue-pay" />
+          sx={{ marginBottom: 1 }} data-testid="edit-venue-pay" />
+        <Help field="payTier" />
+        <TextField
+          label="Priority (0–5)"
+          type="number"
+          fullWidth
+          slotProps={{ htmlInput: { min: 0, max: 5 } }}
+          value={form.priority ?? ''}
+          onChange={(e) => set('priority', e.target.value === '' ? undefined : Number(e.target.value))}
+          sx={{ marginBottom: 1 }}
+          data-testid="edit-venue-priority"
+        />
+        <Help field="priority" />
         <FormGroup>
           <FormControlLabel
             control={(
@@ -127,12 +175,14 @@ export function EditVenueDialog({
                 aria-label="outreach eligible" data-testid="edit-venue-eligible" />
             )}
             label="Outreach eligible (vetted — can be pitched)" />
+          <Help field="outreachEligible" />
           <FormControlLabel
             control={(
               <Checkbox checked={form.inScope !== false} onChange={(e) => set('inScope', e.target.checked)}
                 aria-label="in scope" data-testid="edit-venue-inscope" />
             )}
             label="In scope (a gig-booking venue)" />
+          <Help field="inScope" />
           <FormControlLabel
             control={(
               <Checkbox
@@ -142,12 +192,14 @@ export function EditVenueDialog({
                 data-testid="edit-venue-interested" />
             )}
             label="Interested (worth pursuing)" />
+          <Help field="interested" />
           <FormControlLabel
             control={(
               <Checkbox checked={!!form.contactVerified} onChange={(e) => set('contactVerified', e.target.checked)}
                 aria-label="contact verified" data-testid="edit-venue-contactverified" />
             )}
             label="Contact verified" />
+          <Help field="contactVerified" />
         </FormGroup>
         <TextField label="Notes" fullWidth multiline rows={2} value={form.notes || ''} onChange={(e) => set('notes', e.target.value)}
           sx={{ marginTop: 2 }} data-testid="edit-venue-notes" />
