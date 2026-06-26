@@ -1,6 +1,6 @@
 {
   "name": "jammusic",
-  "version": "2.9.20",
+  "version": "2.9.23",
   "description": "joshandmariamusic.com",
   "main": "dist/index.html",
   "repository": {
@@ -36,7 +36,7 @@
     "test:lint-fix": "npm run test:stylelint && npm run lint:fix",
     "test:lint": "npm run test:stylelint && eslint .",
     "jscpd": "jscpd src",
-    "test": "npm run test:lint && npm run jscpd && npm run test:unit",
+    "test": "npm run test:lint && npm run typecheck && npm run jscpd && npm run test:unit",
     "test:unit": "TZ=UTC vitest run --coverage",
     "test:watch": "TZ=UTC vitest",
     "test:unit-u": "TZ=UTC vitest run -u",
