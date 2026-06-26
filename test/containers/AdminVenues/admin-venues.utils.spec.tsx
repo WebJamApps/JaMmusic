@@ -1,4 +1,7 @@
-import adminVenuesUtils, { VENUE_TYPES, BOOKING_STATUSES } from 'src/containers/AdminVenues/admin-venues.utils';
+import adminVenuesUtils, {
+  VENUE_TYPES, BOOKING_STATUSES, ORIGINALS_FITS, TRAVEL_BANDS, FIELD_HELP, prospectScore,
+  type Ivenue,
+} from 'src/containers/AdminVenues/admin-venues.utils';
 
 const okJson = (data: unknown) => Promise.resolve({ ok: true, json: () => Promise.resolve(data) } as Response);
 const failed = () => Promise.resolve({ ok: false, status: 500, statusText: 'Server Error' } as Response);
@@ -24,6 +27,21 @@ describe('AdminVenues utils', () => {
     expect(url).toContain('/venue/v2');
     expect((opts as RequestInit).method).toBe('PUT');
     expect(JSON.parse((opts as RequestInit).body as string)).toMatchObject({ bookingStatus: 'booked' });
+  });
+
+  it('listVenues adds the eligibleFor query when a target date is given', async () => {
+    fetchMock.mockReturnValue(okJson([]));
+    await adminVenuesUtils.listVenues('tok', '2026-08-15');
+    expect(fetchMock.mock.calls[0][0]).toContain('/venue?eligibleFor=2026-08-15');
+  });
+
+  it('deleteVenue DELETEs the venue id', async () => {
+    fetchMock.mockReturnValue(Promise.resolve({ ok: true, json: () => Promise.resolve({}) } as Response));
+    await adminVenuesUtils.deleteVenue('tok', 'v9');
+    const [url, opts] = fetchMock.mock.calls[0];
+    expect(url).toContain('/venue/v9');
+    expect((opts as RequestInit).method).toBe('DELETE');
+    expect((opts as RequestInit).headers).toMatchObject({ Authorization: 'Bearer tok' });
   });
 
   it('getCandidates GETs /outreach/candidates with the targetDates query', async () => {
@@ -66,6 +84,7 @@ describe('AdminVenues utils', () => {
   it.each([
     ['listVenues', () => adminVenuesUtils.listVenues('t')],
     ['updateVenue', () => adminVenuesUtils.updateVenue('t', '1', {})],
+    ['deleteVenue', () => adminVenuesUtils.deleteVenue('t', '1')],
     ['getCandidates', () => adminVenuesUtils.getCandidates('t', 'd')],
     ['sendBatch', () => adminVenuesUtils.sendBatch('t', { venueIds: ['a'], targetDates: 'd' })],
     ['getConfig', () => adminVenuesUtils.getConfig('t')],
@@ -78,6 +97,42 @@ describe('AdminVenues utils', () => {
   it('exports the venue-type and booking-status option lists', () => {
     expect(VENUE_TYPES).toContain('Originals');
     expect(BOOKING_STATUSES).toContain('booked');
+    expect(ORIGINALS_FITS).toEqual(['none', 'some', 'loves']);
+    expect(TRAVEL_BANDS).toEqual(['local', 'regional', 'far']);
+    expect(FIELD_HELP.outreachEligible).toContain('SAFETY GATE');
     expect(typeof adminVenuesUtils.getAllowedAdminRoles).toBe('function');
+  });
+
+  describe('prospectScore', () => {
+    it('sums originalsFit (heaviest), value (pay − travel), warmth, and priority', () => {
+      const v: Ivenue = {
+        _id: 'x',
+        name: 'X',
+        originalsFit: 'loves', // +6
+        payTier: '$$$', // +3
+        travelBand: 'far', // −2 → value = 1
+        interested: true, // +2
+        relationshipStage: 'returning', // +1
+        contactVerified: true, // +1 → warmth = 4
+        priority: 5, // +5
+      };
+      expect(prospectScore(v)).toBe(6 + 1 + 4 + 5);
+    });
+
+    it('treats unset fit/travel/pay as zero and counts $ signs for pay', () => {
+      expect(prospectScore({ _id: 'a', name: 'A' })).toBe(0);
+      expect(prospectScore({ _id: 'b', name: 'B', payTier: '$$' })).toBe(2);
+      expect(prospectScore({ _id: 'c', name: 'C', payTier: 'free' })).toBe(0);
+    });
+
+    it('ranks a strong-fit far venue above a no-fit local high-pay one', () => {
+      const passion: Ivenue = {
+        _id: 'p', name: 'P', originalsFit: 'loves', payTier: '$', travelBand: 'far', interested: true, priority: 5,
+      };
+      const covers: Ivenue = {
+        _id: 'q', name: 'Q', originalsFit: 'none', payTier: '$$$', travelBand: 'local', interested: true, priority: 0,
+      };
+      expect(prospectScore(passion)).toBeGreaterThan(prospectScore(covers));
+    });
   });
 });
