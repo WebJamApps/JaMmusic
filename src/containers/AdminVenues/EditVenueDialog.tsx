@@ -161,7 +161,7 @@ export function EditVenueDialog({
           label="Priority (0–5)"
           type="number"
           fullWidth
-          inputProps={{ min: 0, max: 5 }}
+          slotProps={{ htmlInput: { min: 0, max: 5 } }}
           value={form.priority ?? ''}
           onChange={(e) => set('priority', e.target.value === '' ? undefined : Number(e.target.value))}
           sx={{ marginBottom: 1 }}

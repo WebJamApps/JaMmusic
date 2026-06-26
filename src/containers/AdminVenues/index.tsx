@@ -72,7 +72,7 @@ export function AdminVenues() {
           type="date"
           size="small"
           label="Free for weekend"
-          InputLabelProps={{ shrink: true }}
+          slotProps={{ inputLabel: { shrink: true } }}
           value={targetDate}
           onChange={(e) => setTargetDate(e.target.value)}
           data-testid="venues-target-date"
