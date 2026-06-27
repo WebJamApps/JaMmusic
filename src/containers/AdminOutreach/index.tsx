@@ -1,10 +1,11 @@
 import {
   useCallback, useContext, useEffect, useState,
 } from 'react';
-import {
   Box, Typography, TextField, Button, Checkbox, FormControlLabel,
   Switch, Divider,
 } from '@mui/material';
+import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { AuthContext } from 'src/providers/Auth.provider';
 import outreachUtils, { type Icandidate, type IbatchResult, type IpitchPreview } from './outreach.utils';
 import { OutreachDialog } from './OutreachDialog';
@@ -27,7 +28,21 @@ function deriveDisplayDate(dateStr: string): string {
   if (!dateStr) return '';
   const date = new Date(`${dateStr}T00:00:00`);
   if (Number.isNaN(date.getTime())) return '';
-  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  
+  // Assume the picked date is the start of the weekend (e.g., Friday).
+  // We'll automatically build a 3-day range (Friday to Sunday).
+  const endDate = new Date(date);
+  endDate.setDate(date.getDate() + 2);
+  
+  const startMonth = date.toLocaleDateString('en-US', { month: 'short' });
+  const startDay = date.getDate();
+  const endMonth = endDate.toLocaleDateString('en-US', { month: 'short' });
+  const endDay = endDate.getDate();
+  
+  if (startMonth === endMonth) {
+    return `${startMonth} ${startDay}-${endDay}`;
+  }
+  return `${startMonth} ${startDay} to ${endMonth} ${endDay}`;
 }
 
 function candidateLabel(c: Icandidate): string {
@@ -143,10 +158,11 @@ export function AdminOutreach() {
   }
 
   return (
-    <Box sx={{
-      padding: 3, maxWidth: 1200, margin: 'auto', width: '100%', minWidth: 0,
-    }} data-testid="admin-outreach-page">
-      <Typography variant="h5" sx={{ marginBottom: 2 }}>Batch Outreach</Typography>
+    <LocalizationProvider dateAdapter={AdapterDateFns}>
+      <Box sx={{
+        padding: 3, maxWidth: 1200, margin: 'auto', width: '100%', minWidth: 0,
+      }} data-testid="admin-outreach-page">
+        <Typography variant="h5" sx={{ marginBottom: 2 }}>Batch Outreach</Typography>
 
       <FormControlLabel
         control={(
@@ -158,19 +174,31 @@ export function AdminOutreach() {
       <Box sx={{
         display: 'flex', gap: 2, flexWrap: 'wrap', marginTop: 2, alignItems: 'flex-end',
       }}>
-        <TextField
-          type="date"
-          size="small"
+        <DatePicker
           label="Weekend (eligibility)"
-          slotProps={{ inputLabel: { shrink: true } }}
-          value={structuredDate}
-          onChange={(e) => {
-            const val = e.target.value;
+          value={structuredDate ? new Date(`${structuredDate}T00:00:00`) : null}
+          onChange={(newDate: Date | null) => {
+            if (!newDate) {
+              setStructuredDate('');
+              setBookingPeriod('');
+              setTargetDates('');
+              return;
+            }
+            // Ensure local timezone formatting
+            const year = newDate.getFullYear();
+            const month = String(newDate.getMonth() + 1).padStart(2, '0');
+            const day = String(newDate.getDate()).padStart(2, '0');
+            const val = `${year}-${month}-${day}`;
             setStructuredDate(val);
             setBookingPeriod(deriveSeason(val));
             setTargetDates(deriveDisplayDate(val));
           }}
-          data-testid="outreach-structured-date"
+          slotProps={{
+            textField: {
+              size: 'small',
+              'data-testid': 'outreach-structured-date',
+            }
+          }}
         />
         <TextField
           size="small"
@@ -242,5 +270,6 @@ export function AdminOutreach() {
         onClose={() => setDialogOpen(false)}
       />
     </Box>
+    </LocalizationProvider>
   );
 }
