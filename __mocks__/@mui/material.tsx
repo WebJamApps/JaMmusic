@@ -1,7 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export function TextField(props:any) {
-  const { children } = props;
-  return <input {...props}>{children}</input>;
+  const { children, slotProps, inputProps, inputRef, ...rest } = props;
+  const testId = slotProps?.htmlInput?.['data-testid'] || inputProps?.['data-testid'] || rest['data-testid'];
+  const style = slotProps?.htmlInput?.style || inputProps?.style || rest.style;
+  return <input ref={inputRef} data-testid={testId} style={style} {...rest}>{children}</input>;
 }
 
 export function Checkbox(props:any) {
@@ -144,6 +146,54 @@ export function TableCell(props:any) {
 export function TableSortLabel(props:any) {
   const { children, active, direction, ...rest } = props;
   return <span role="button" {...rest}>{children}</span>;
+}
+
+export function Card(props:any) {
+  const { children } = props;
+  return <div {...props}>{children}</div>;
+}
+
+export function CardContent(props:any) {
+  const { children } = props;
+  return <div {...props}>{children}</div>;
+}
+
+import * as React from 'react';
+
+export function Tabs(props:any) {
+  const { children, value, onChange, ...rest } = props;
+  const childrenWithProps = React.Children.map(children, child => {
+    if (React.isValidElement(child)) {
+      return React.cloneElement(child as React.ReactElement<any>, {
+        active: child.props.value === value,
+        onClick: (e: any) => {
+          if (onChange) {
+            onChange(e, child.props.value);
+          }
+          if (child.props.onClick) {
+            child.props.onClick(e);
+          }
+        }
+      });
+    }
+    return child;
+  });
+  return <div {...rest}>{childrenWithProps}</div>;
+}
+
+export function Tab(props:any) {
+  const { label, active, ...rest } = props;
+  return <button type="button" {...rest}>{label}</button>;
+}
+
+export function Alert(props:any) {
+  const { children } = props;
+  return <div {...props}>{children}</div>;
+}
+
+export function Paper(props:any) {
+  const { children } = props;
+  return <div {...props}>{children}</div>;
 }
 
 // Default to desktop (false) in tests; suites can override per-case.

@@ -61,6 +61,9 @@ const wjNav = [
     nav: 'wj', className: '', type: 'link', iconClass: 'fas fa-paper-plane', link: '/admin/outreach', name: 'Batch Outreach', auth: true,
   },
   {
+    nav: 'wj', className: '', type: 'link', iconClass: 'fas fa-envelope-open-text', link: '/admin/templates', name: 'Admin Templates', auth: true,
+  },
+  {
     nav: 'wj', className: 'home', type: 'link', iconClass: 'fas fa-home', link: '/', name: 'Web Jam LLC',
   },
   {
