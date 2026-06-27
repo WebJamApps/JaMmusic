@@ -9,8 +9,7 @@ import { DrawerContainer } from './DrawerContainer';
 import { MainPanel } from './MainPanel';
 
 export const makeDrawerClass = (menuOpen: boolean) => {
-  const className = `home-sidebar ${menuOpen ? 'open' : 'close'} drawer-container`;
-  return className;
+  return `home-sidebar ${menuOpen ? 'open' : 'close'} drawer-container`;
 };
 
 export const makeHandleClose = (setMenuOpen: (value: SetStateAction<boolean>) => void) => () => setMenuOpen(false);

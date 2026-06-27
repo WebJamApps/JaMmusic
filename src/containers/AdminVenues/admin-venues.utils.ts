@@ -53,24 +53,7 @@ export interface IvenueUpdate {
   priority?: number;
 }
 
-export interface Icandidate {
-  _id: string;
-  name: string;
-  city?: string;
-  venueType?: string;
-  email?: string;
-}
-
-export interface IbatchSkip { venueId: string; reason: string }
-export interface IbatchResult {
-  requested: number;
-  sent: number;
-  skipped: IbatchSkip[];
-  records: unknown[];
-}
-
 const venueUrl = `${process.env.BackendUrl}/venue`;
-const outreachUrl = `${process.env.BackendUrl}/outreach`;
 
 function headers(token: string, json = false): Record<string, string> {
   const h: Record<string, string> = { Accept: 'application/json', Authorization: `Bearer ${token}` };
@@ -102,38 +85,6 @@ async function updateVenue(token: string, venueId: string, payload: IvenueUpdate
   });
   if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
   return await res.json() as Ivenue;
-}
-
-async function getCandidates(token: string, targetDates?: string): Promise<Icandidate[]> {
-  const qs = targetDates ? `?targetDates=${encodeURIComponent(targetDates)}` : '';
-  const res = await fetch(`${outreachUrl}/candidates${qs}`, { headers: headers(token) });
-  if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
-  return await res.json() as Icandidate[];
-}
-
-async function sendBatch(
-  token: string,
-  payload: { venueIds: string[]; targetDates: string; bookingPeriod?: string },
-): Promise<IbatchResult> {
-  const res = await fetch(`${outreachUrl}/batch`, {
-    method: 'POST', headers: headers(token, true), body: JSON.stringify(payload),
-  });
-  if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
-  return await res.json() as IbatchResult;
-}
-
-async function getConfig(token: string): Promise<{ autoApprove: boolean }> {
-  const res = await fetch(`${outreachUrl}/config`, { headers: headers(token) });
-  if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
-  return await res.json() as { autoApprove: boolean };
-}
-
-async function setConfig(token: string, autoApprove: boolean): Promise<{ autoApprove: boolean }> {
-  const res = await fetch(`${outreachUrl}/config`, {
-    method: 'PUT', headers: headers(token, true), body: JSON.stringify({ autoApprove }),
-  });
-  if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
-  return await res.json() as { autoApprove: boolean };
 }
 
 export const VENUE_TYPES = ['Originals', 'PubFestivalBrewery', 'MidRangeCafeBar'] as const;
@@ -183,5 +134,5 @@ export function prospectScore(v: Ivenue): number {
 }
 
 export default {
-  listVenues, updateVenue, deleteVenue, getCandidates, sendBatch, getConfig, setConfig, getAllowedAdminRoles, prospectScore,
+  listVenues, updateVenue, deleteVenue, getAllowedAdminRoles, prospectScore,
 };
