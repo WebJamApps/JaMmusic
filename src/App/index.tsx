@@ -5,6 +5,7 @@ import {
 import { Homepage } from 'src/containers/Homepage';
 import { AdminUsers } from '../containers/AdminUsers';
 import { AdminVenues } from '../containers/AdminVenues';
+import { AdminOutreach } from '../containers/AdminOutreach';
 import BuyMusic from '../containers/BuyMusic';
 import { Music } from '../containers/Music';
 import { AppTemplate } from './AppTemplate';
@@ -29,6 +30,7 @@ export function App() {
           />
           <Route path="/admin/users" element={<AdminUsers />} />
           <Route path="/admin/venues" element={<AdminVenues />} />
+          <Route path="/admin/outreach" element={<AdminOutreach />} />
           <Route path="/new-homepage" element={<Homepage />} />
           <Route path="/music" element={<Music />} />
           <Route path="/music/buymusic" element={<BuyMusic />} />

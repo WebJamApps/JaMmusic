@@ -20,7 +20,6 @@ const wrap = (auth: Iauth) => (
 describe('AdminVenues page', () => {
   beforeEach(() => {
     adminVenuesUtils.listVenues = vi.fn(() => Promise.resolve([])) as any;
-    adminVenuesUtils.getConfig = vi.fn(() => Promise.resolve({ autoApprove: false })) as any;
     adminVenuesUtils.getAllowedAdminRoles = vi.fn(() => ['JaM-admin', 'Developer']) as any;
   });
 
