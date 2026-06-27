@@ -9,6 +9,27 @@ import { AuthContext } from 'src/providers/Auth.provider';
 import outreachUtils, { type Icandidate, type IbatchResult, type IpitchPreview } from './outreach.utils';
 import { OutreachDialog } from './OutreachDialog';
 
+function deriveSeason(dateStr: string): string {
+  if (!dateStr) return '';
+  const date = new Date(`${dateStr}T00:00:00`);
+  if (Number.isNaN(date.getTime())) return '';
+  const month = date.getMonth();
+  const year = date.getFullYear();
+  let season = '';
+  if (month === 11 || month === 0 || month === 1) season = 'winter';
+  else if (month >= 2 && month <= 4) season = 'spring';
+  else if (month >= 5 && month <= 7) season = 'summer';
+  else season = 'fall';
+  return `${season} ${year}`;
+}
+
+function deriveDisplayDate(dateStr: string): string {
+  if (!dateStr) return '';
+  const date = new Date(`${dateStr}T00:00:00`);
+  if (Number.isNaN(date.getTime())) return '';
+  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
 function candidateLabel(c: Icandidate): string {
   const city = c.city ? ` (${c.city})` : '';
   const type = c.venueType ? ` — ${c.venueType}` : '';
@@ -20,6 +41,7 @@ export function AdminOutreach() {
   const allowed = outreachUtils.getAllowedAdminRoles();
   const isAuthorized = auth.isAuthenticated && allowed.indexOf(auth.user.userType) !== -1;
 
+  const [structuredDate, setStructuredDate] = useState('');
   const [targetDates, setTargetDates] = useState('');
   const [bookingPeriod, setBookingPeriod] = useState('');
   const [candidates, setCandidates] = useState<Icandidate[]>([]);
@@ -44,12 +66,13 @@ export function AdminOutreach() {
   useEffect(() => { if (isAuthorized) void loadConfig(); }, [isAuthorized, loadConfig]);
 
   const loadCandidates = async () => {
+    if (!structuredDate.trim()) { setError('Select a weekend date first'); return; }
     if (!targetDates.trim()) { setError('Enter target dates first'); return; }
     setLoading(true);
     setError('');
     setResult(null);
     try {
-      const data = await outreachUtils.getCandidates(auth.token, targetDates.trim());
+      const data = await outreachUtils.getCandidates(auth.token, targetDates.trim(), structuredDate);
       setCandidates(data);
       setSelected(new Set(data.map((c) => c._id)));
     } catch (e) {
@@ -138,15 +161,28 @@ export function AdminOutreach() {
         <TextField
           type="date"
           size="small"
-          label="Target weekend"
+          label="Weekend (eligibility)"
           slotProps={{ inputLabel: { shrink: true } }}
+          value={structuredDate}
+          onChange={(e) => {
+            const val = e.target.value;
+            setStructuredDate(val);
+            setBookingPeriod(deriveSeason(val));
+            setTargetDates(deriveDisplayDate(val));
+          }}
+          data-testid="outreach-structured-date"
+        />
+        <TextField
+          size="small"
+          label="Target dates (display)"
           value={targetDates}
           onChange={(e) => setTargetDates(e.target.value)}
+          placeholder="e.g. Sept 25-27"
           data-testid="outreach-target-dates"
         />
         <TextField label="Booking period" size="small" value={bookingPeriod}
           onChange={(e) => setBookingPeriod(e.target.value)}
-          placeholder="e.g. August" data-testid="outreach-booking-period" />
+          placeholder="e.g. fall 2026" data-testid="outreach-booking-period" />
         <Button variant="outlined" onClick={loadCandidates} disabled={loading} data-testid="outreach-load">
           {loading ? 'Loading...' : 'Find eligible venues'}
         </Button>

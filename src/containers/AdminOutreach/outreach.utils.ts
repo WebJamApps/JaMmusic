@@ -35,9 +35,12 @@ function headers(token: string, json = false): Record<string, string> {
   return h;
 }
 
-async function getCandidates(token: string, targetDates?: string): Promise<Icandidate[]> {
-  const qs = targetDates ? `?targetDates=${encodeURIComponent(targetDates)}` : '';
-  const res = await fetch(`${outreachUrl}/candidates${qs}`, { headers: headers(token) });
+async function getCandidates(token: string, targetDates?: string, eligibleFor?: string): Promise<Icandidate[]> {
+  const qs = [];
+  if (targetDates) qs.push(`targetDates=${encodeURIComponent(targetDates)}`);
+  if (eligibleFor) qs.push(`eligibleFor=${encodeURIComponent(eligibleFor)}`);
+  const query = qs.length > 0 ? `?${qs.join('&')}` : '';
+  const res = await fetch(`${outreachUrl}/candidates${query}`, { headers: headers(token) });
   if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
   return await res.json() as Icandidate[];
 }

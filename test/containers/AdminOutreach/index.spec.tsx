@@ -29,7 +29,7 @@ const wrap = (auth: Iauth) => (
 );
 
 const renderPage = async () => { await act(async () => { render(wrap(adminAuth)); }); };
-const typeDates = () => fireEvent.change(screen.getByTestId('outreach-target-dates'), { target: { value: '2026-08-15' } });
+const typeDates = () => fireEvent.change(screen.getByTestId('outreach-structured-date'), { target: { value: '2026-08-15' } });
 
 describe('AdminOutreach', () => {
   beforeEach(() => {
@@ -69,7 +69,7 @@ describe('AdminOutreach', () => {
     await renderPage();
     typeDates();
     await act(async () => { fireEvent.click(screen.getByTestId('outreach-load')); });
-    expect(outreachUtils.getCandidates).toHaveBeenCalledWith('tk', '2026-08-15');
+    expect(outreachUtils.getCandidates).toHaveBeenCalledWith('tk', 'Aug 15, 2026', '2026-08-15');
     expect(screen.getByTestId('outreach-candidates').textContent).toContain('2 of 2');
   });
 
@@ -86,7 +86,7 @@ describe('AdminOutreach', () => {
     typeDates();
     await act(async () => { fireEvent.click(screen.getByTestId('outreach-load')); });
     await act(async () => { fireEvent.click(screen.getByTestId('outreach-open-dialog')); });
-    expect(outreachUtils.getPreview).toHaveBeenCalledWith('tk', ['c1', 'c2'], '2026-08-15');
+    expect(outreachUtils.getPreview).toHaveBeenCalledWith('tk', ['c1', 'c2'], 'Aug 15, 2026');
     expect(screen.getByTestId('outreach-dialog')).toBeDefined();
     expect(screen.getByTestId('preview-c1')).toBeDefined();
   });
@@ -98,7 +98,7 @@ describe('AdminOutreach', () => {
     await act(async () => { fireEvent.click(screen.getByTestId('outreach-open-dialog')); });
     await act(async () => { fireEvent.click(screen.getByTestId('outreach-dialog-send')); });
     expect(outreachUtils.sendBatch).toHaveBeenCalledWith('tk', expect.objectContaining({
-      venueIds: ['c1', 'c2'], targetDates: '2026-08-15',
+      venueIds: ['c1', 'c2'], targetDates: 'Aug 15, 2026', bookingPeriod: 'summer 2026',
     }));
     expect(screen.getByTestId('outreach-result').textContent).toContain('Sent 2 of 2');
   });

@@ -8,10 +8,10 @@ describe('Outreach utils', () => {
   beforeEach(() => { fetchMock = vi.fn(); global.fetch = fetchMock as unknown as typeof fetch; });
   afterEach(() => { vi.restoreAllMocks(); });
 
-  it('getCandidates GETs /outreach/candidates with the targetDates query', async () => {
+  it('getCandidates GETs /outreach/candidates with targetDates and eligibleFor query', async () => {
     fetchMock.mockReturnValue(okJson([{ _id: 'v1', name: 'A' }]));
-    await outreachUtils.getCandidates('tok', 'Aug 14-16');
-    expect(fetchMock.mock.calls[0][0]).toContain('/outreach/candidates?targetDates=Aug%2014-16');
+    await outreachUtils.getCandidates('tok', 'Aug 14-16', '2026-08-14');
+    expect(fetchMock.mock.calls[0][0]).toContain('/outreach/candidates?targetDates=Aug%2014-16&eligibleFor=2026-08-14');
   });
 
   it('getCandidates omits the query when no targetDates given', async () => {
