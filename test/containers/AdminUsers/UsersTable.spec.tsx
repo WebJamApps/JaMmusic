@@ -82,4 +82,19 @@ describe('UsersTable', () => {
     fireEvent.click(screen.getByTestId('sort-name'));
     expect(document.querySelectorAll('tbody tr')[0].getAttribute('data-testid')).toBe('user-row-b');
   });
+
+  it('sorts rows by type correctly when userStatus is missing and defaults to human', () => {
+    const mixed: IadminUser[] = [
+      { _id: 'u1', name: 'Alice', email: 'a@x.com', userStatus: 'ai-agent', privileges: [] },
+      { _id: 'u2', name: 'Bob', email: 'b@x.com', privileges: [] },
+    ];
+    render(<UsersTable users={mixed} token="tk" onShowToken={vi.fn()} onEditPrivileges={vi.fn()} onChange={vi.fn()} />);
+    // Click sort-type to sort by type asc: 'ai-agent' < 'human', so Alice ('u1') first
+    fireEvent.click(screen.getByTestId('sort-type'));
+    expect(document.querySelectorAll('tbody tr')[0].getAttribute('data-testid')).toBe('user-row-u1');
+
+    // Click sort-type again to sort by type desc: 'human' > 'ai-agent', so Bob ('u2') first
+    fireEvent.click(screen.getByTestId('sort-type'));
+    expect(document.querySelectorAll('tbody tr')[0].getAttribute('data-testid')).toBe('user-row-u2');
+  });
 });

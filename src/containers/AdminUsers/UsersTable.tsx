@@ -20,8 +20,8 @@ export function sortValue(u: IadminUser, key: string): string {
   switch (key) {
     case 'name': return u.name || '';
     case 'email': return u.email || '';
-    case 'role': return u.userType || '';
-    case 'type': return u.userStatus || '';
+    case 'role': return u.userType || 'N/A';
+    case 'type': return u.userStatus || 'human';
     case 'privileges': return (u.privileges || []).join(', ');
     case 'notes': return u.userDetails || '';
     default: return '';
