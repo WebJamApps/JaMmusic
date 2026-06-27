@@ -7,7 +7,6 @@ import {
 import { AuthContext } from 'src/providers/Auth.provider';
 import { VenuesTable } from './VenuesTable';
 import { EditVenueDialog } from './EditVenueDialog';
-import { BatchApproval } from './BatchApproval';
 import adminVenuesUtils, { type Ivenue } from './admin-venues.utils';
 
 export function AdminVenues() {
@@ -94,7 +93,6 @@ export function AdminVenues() {
         onClose={() => setEditing(null)}
         onSaved={() => { setEditing(null); void refresh(); }}
       />
-      <BatchApproval token={auth.token} />
     </Box>
   );
 }

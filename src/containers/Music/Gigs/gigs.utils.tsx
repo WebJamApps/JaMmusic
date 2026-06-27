@@ -143,13 +143,12 @@ export const orderGigs = (
 };
 
 const makeDateValue = (datetime: string) => {
-  const localString = new Date(datetime).toLocaleString('en-US', {
+  return new Date(datetime).toLocaleString('en-US', {
     weekday: 'long',
     year: 'numeric',
     month: 'long',
     day: 'numeric',
   });
-  return localString;
 };
 
 const makeShortDateValue = (datetime: string) => new Date(datetime)

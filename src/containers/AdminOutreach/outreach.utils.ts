@@ -1,0 +1,81 @@
+import { getAllowedAdminRoles } from '../AdminUsers/admin-users.utils';
+
+// Outreach-specific API helpers (extracted from admin-venues.utils.ts per #1140).
+// Thin client over the existing web-jam-back endpoints: GET /outreach/candidates,
+// POST /outreach/batch, GET /outreach/preview, GET/PUT /outreach/config.
+
+export interface Icandidate {
+  _id: string;
+  name: string;
+  city?: string;
+  venueType?: string;
+  email?: string;
+}
+
+export interface IbatchSkip { venueId: string; reason: string }
+export interface IbatchResult {
+  requested: number;
+  sent: number;
+  skipped: IbatchSkip[];
+  records: unknown[];
+}
+
+export interface IpitchPreview {
+  venueId: string;
+  venueName: string;
+  subject: string;
+  body: string;
+}
+
+const outreachUrl = `${process.env.BackendUrl}/outreach`;
+
+function headers(token: string, json = false): Record<string, string> {
+  const h: Record<string, string> = { Accept: 'application/json', Authorization: `Bearer ${token}` };
+  if (json) h['Content-Type'] = 'application/json';
+  return h;
+}
+
+async function getCandidates(token: string, targetDates?: string): Promise<Icandidate[]> {
+  const qs = targetDates ? `?targetDates=${encodeURIComponent(targetDates)}` : '';
+  const res = await fetch(`${outreachUrl}/candidates${qs}`, { headers: headers(token) });
+  if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+  return await res.json() as Icandidate[];
+}
+
+async function sendBatch(
+  token: string,
+  payload: { venueIds: string[]; targetDates: string; bookingPeriod?: string },
+): Promise<IbatchResult> {
+  const res = await fetch(`${outreachUrl}/batch`, {
+    method: 'POST', headers: headers(token, true), body: JSON.stringify(payload),
+  });
+  if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+  return await res.json() as IbatchResult;
+}
+
+async function getConfig(token: string): Promise<{ autoApprove: boolean }> {
+  const res = await fetch(`${outreachUrl}/config`, { headers: headers(token) });
+  if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+  return await res.json() as { autoApprove: boolean };
+}
+
+async function setConfig(token: string, autoApprove: boolean): Promise<{ autoApprove: boolean }> {
+  const res = await fetch(`${outreachUrl}/config`, {
+    method: 'PUT', headers: headers(token, true), body: JSON.stringify({ autoApprove }),
+  });
+  if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+  return await res.json() as { autoApprove: boolean };
+}
+
+async function getPreview(
+  token: string, venueIds: string[], targetDates: string,
+): Promise<IpitchPreview[]> {
+  const qs = `?venueIds=${venueIds.join(',')}&targetDates=${encodeURIComponent(targetDates)}`;
+  const res = await fetch(`${outreachUrl}/preview${qs}`, { headers: headers(token) });
+  if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+  return await res.json() as IpitchPreview[];
+}
+
+export default {
+  getCandidates, sendBatch, getConfig, setConfig, getPreview, getAllowedAdminRoles,
+};

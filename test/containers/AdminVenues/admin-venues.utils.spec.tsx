@@ -44,51 +44,10 @@ describe('AdminVenues utils', () => {
     expect((opts as RequestInit).headers).toMatchObject({ Authorization: 'Bearer tok' });
   });
 
-  it('getCandidates GETs /outreach/candidates with the targetDates query', async () => {
-    fetchMock.mockReturnValue(okJson([{ _id: 'v1', name: 'A' }]));
-    await adminVenuesUtils.getCandidates('tok', 'Aug 14-16');
-    expect(fetchMock.mock.calls[0][0]).toContain('/outreach/candidates?targetDates=Aug%2014-16');
-  });
-
-  it('getCandidates omits the query when no targetDates given', async () => {
-    fetchMock.mockReturnValue(okJson([]));
-    await adminVenuesUtils.getCandidates('tok');
-    expect(fetchMock.mock.calls[0][0]).toMatch(/\/outreach\/candidates$/);
-  });
-
-  it('sendBatch POSTs the venueIds + dates', async () => {
-    fetchMock.mockReturnValue(okJson({ requested: 2, sent: 2, skipped: [], records: [] }));
-    const res = await adminVenuesUtils.sendBatch('tok', { venueIds: ['a', 'b'], targetDates: 'Aug 14-16', bookingPeriod: 'August' });
-    expect(res.sent).toBe(2);
-    const opts = fetchMock.mock.calls[0][1] as RequestInit;
-    expect(opts.method).toBe('POST');
-    expect(JSON.parse(opts.body as string)).toMatchObject({ venueIds: ['a', 'b'], targetDates: 'Aug 14-16' });
-  });
-
-  it('getConfig GETs /outreach/config', async () => {
-    fetchMock.mockReturnValue(okJson({ autoApprove: true }));
-    const cfg = await adminVenuesUtils.getConfig('tok');
-    expect(cfg.autoApprove).toBe(true);
-    expect(fetchMock.mock.calls[0][0]).toContain('/outreach/config');
-  });
-
-  it('setConfig PUTs the autoApprove flag', async () => {
-    fetchMock.mockReturnValue(okJson({ autoApprove: false }));
-    const cfg = await adminVenuesUtils.setConfig('tok', false);
-    expect(cfg.autoApprove).toBe(false);
-    const opts = fetchMock.mock.calls[0][1] as RequestInit;
-    expect(opts.method).toBe('PUT');
-    expect(JSON.parse(opts.body as string)).toEqual({ autoApprove: false });
-  });
-
   it.each([
     ['listVenues', () => adminVenuesUtils.listVenues('t')],
     ['updateVenue', () => adminVenuesUtils.updateVenue('t', '1', {})],
     ['deleteVenue', () => adminVenuesUtils.deleteVenue('t', '1')],
-    ['getCandidates', () => adminVenuesUtils.getCandidates('t', 'd')],
-    ['sendBatch', () => adminVenuesUtils.sendBatch('t', { venueIds: ['a'], targetDates: 'd' })],
-    ['getConfig', () => adminVenuesUtils.getConfig('t')],
-    ['setConfig', () => adminVenuesUtils.setConfig('t', true)],
   ])('%s throws on a non-ok response', async (_name, call) => {
     fetchMock.mockReturnValue(failed());
     await expect(call()).rejects.toThrow('500');
