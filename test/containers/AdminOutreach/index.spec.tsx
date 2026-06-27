@@ -29,7 +29,7 @@ const wrap = (auth: Iauth) => (
 );
 
 const renderPage = async () => { await act(async () => { render(wrap(adminAuth)); }); };
-const typeDates = () => fireEvent.change(screen.getByTestId('outreach-structured-date'), { target: { value: '2026-08-15' } });
+const typeDates = () => fireEvent.change(screen.getByLabelText('Weekend (eligibility)'), { target: { value: '2026-08-15' } });
 
 describe('AdminOutreach', () => {
   beforeEach(() => {

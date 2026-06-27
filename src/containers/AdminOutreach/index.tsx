@@ -1,6 +1,7 @@
 import {
   useCallback, useContext, useEffect, useState,
 } from 'react';
+import {
   Box, Typography, TextField, Button, Checkbox, FormControlLabel,
   Switch, Divider,
 } from '@mui/material';
@@ -193,10 +194,10 @@ export function AdminOutreach() {
             setBookingPeriod(deriveSeason(val));
             setTargetDates(deriveDisplayDate(val));
           }}
+          data-testid="outreach-structured-date"
           slotProps={{
             textField: {
               size: 'small',
-              'data-testid': 'outreach-structured-date',
             }
           }}
         />
