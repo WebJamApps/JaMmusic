@@ -9,9 +9,10 @@ import { GoogleButtons } from './GoogleButtons';
 import { ThemeToggle } from './ThemeToggle';
 
 export function IconAndText({ menu }: { menu: ImenuItem }) {
+  const iconClass = menu.iconClass ? `${menu.iconClass} fa-fw` : '';
   return (
     <div style={{ display: 'inline' }}>
-      <i className={`${menu.iconClass}`} style={{ marginRight: '8px' }} />
+      {iconClass && <i className={iconClass} style={{ marginRight: '8px' }} />}
       <span className="nav-item">{menu.name}</span>
     </div>
   );
