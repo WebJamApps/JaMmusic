@@ -1,6 +1,6 @@
 {
   "name": "jammusic",
-  "version": "2.9.25",
+  "version": "2.9.26",
   "description": "joshandmariamusic.com",
   "main": "dist/index.html",
   "repository": {
@@ -119,5 +119,9 @@
   },
   "overrides": {
     "uuid": "^11.1.1"
+  },
+  "allowScripts": {
+    "@parcel/watcher@2.5.6": true,
+    "unrs-resolver@1.11.1": true
   }
 }
