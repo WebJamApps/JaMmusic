@@ -11,8 +11,8 @@ import { ThemeToggle } from './ThemeToggle';
 export function IconAndText({ menu }: { menu: ImenuItem }) {
   const iconClass = menu.iconClass ? `${menu.iconClass} fa-fw` : '';
   return (
-    <div style={{ display: 'inline' }}>
-      {iconClass && <i className={iconClass} style={{ marginRight: '8px' }} />}
+    <div className="nav-link-content">
+      {iconClass && <i className={iconClass} />}
       <span className="nav-item">{menu.name}</span>
     </div>
   );

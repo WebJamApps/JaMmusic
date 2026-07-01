@@ -44,11 +44,10 @@ exports[`AppTemplate > renders the component 1`] = `
               href="/music"
             >
               <div
-                style="display: inline;"
+                class="nav-link-content"
               >
                 <i
                   class="fas fa-music fa-fw"
-                  style="margin-right: 8px;"
                 />
                 <span
                   class="nav-item"
@@ -67,11 +66,10 @@ exports[`AppTemplate > renders the component 1`] = `
               href="/"
             >
               <div
-                style="display: inline;"
+                class="nav-link-content"
               >
                 <i
                   class="fas fa-home fa-fw"
-                  style="margin-right: 8px;"
                 />
                 <span
                   class="nav-item"

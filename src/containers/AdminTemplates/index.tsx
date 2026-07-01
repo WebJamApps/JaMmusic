@@ -381,7 +381,7 @@ export function AdminTemplates() {
           {/* Sidebar selector */}
           <Grid size={{ xs: 12, md: 4 }}>
             <Card sx={{ height: '100%' }}>
-              <CardContent sx={{ padding: 2 }}>
+              <CardContent sx={{ padding: 3 }}>
                 <Typography variant="subtitle2" sx={{ marginBottom: 1, fontWeight: 'bold' }}>
                   1. RELATIONSHIP STAGE
                 </Typography>
