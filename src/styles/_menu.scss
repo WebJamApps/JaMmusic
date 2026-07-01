@@ -3,15 +3,27 @@
   display: block !important;
   color: var(--sidebar-fg);
   outline: none !important;
+  text-align: left;
 }
 
 .nav-link:hover {
   color: var(--sidebar-fg-hover);
 }
 
+.nav-link-content {
+  display: flex;
+  align-items: center;
+  text-align: left;
+
+  i {
+    margin-right: 8px;
+    flex-shrink: 0;
+  }
+}
+
 button.nav-link {
   background-color: var(--sidebar-bg);
-  font-size: 16px;
+  font-size: 13px;
   border: none;
   padding-top: 14px;
   padding-bottom: 14px;
@@ -28,6 +40,7 @@ button.nav-link:hover {
   text-decoration: underline;
   padding-right: 0;
   margin-right: 0;
+  white-space: nowrap;
 }
 
 .menu-item {
@@ -37,7 +50,7 @@ button.nav-link:hover {
   align-items: center;
   font-family: 'Roboto', 'Noto', sans-serif;
   -webkit-font-smoothing: antialiased;
-  font-size: 16px;
+  font-size: 13px;
   font-weight: 400;
   line-height: 24px;
   position: relative;
