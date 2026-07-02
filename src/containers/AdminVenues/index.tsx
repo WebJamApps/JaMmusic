@@ -63,29 +63,19 @@ export function AdminVenues() {
     <Box sx={{
       padding: 3, maxWidth: 1200, margin: 'auto', width: '100%', minWidth: 0,
     }} data-testid="admin-venues-page">
-      <Typography variant="h5" sx={{ marginBottom: 2 }}>Admin Venues</Typography>
-      <Box sx={{
-        display: 'flex', alignItems: 'center', gap: 2, marginBottom: 2, flexWrap: 'wrap',
-      }}>
-        <TextField
-          type="date"
-          size="small"
-          label="Free for weekend"
-          slotProps={{ inputLabel: { shrink: true } }}
-          value={targetDate}
-          onChange={(e) => setTargetDate(e.target.value)}
-          data-testid="venues-target-date"
-        />
-        {targetDate && (
-          <Button size="small" onClick={() => setTargetDate('')} data-testid="venues-clear-date">Clear</Button>
-        )}
-        <Typography variant="caption" color="text.secondary">
-          Pick a target weekend to show only venues with no conflicting gig in the ±2-month window.
-        </Typography>
-      </Box>
+      <Typography variant="h5" sx={{ marginBottom: 0.5 }}>Admin Venues</Typography>
+      <Typography variant="body2" color="text.secondary" sx={{ marginBottom: 2.5 }}>
+        Manage and vet venues. Pick a target weekend to filter by availability (no conflicting gigs in the ±2-month window).
+      </Typography>
       {loading && <Typography data-testid="admin-venues-loading">Loading...</Typography>}
       {error && <Typography color="error" data-testid="admin-venues-error">{error}</Typography>}
-      <VenuesTable venues={venues} onEdit={(v) => setEditing(v)} onDelete={handleDelete} />
+      <VenuesTable
+        venues={venues}
+        onEdit={(v) => setEditing(v)}
+        onDelete={handleDelete}
+        targetDate={targetDate}
+        setTargetDate={setTargetDate}
+      />
       <EditVenueDialog
         open={editing !== null}
         venue={editing}

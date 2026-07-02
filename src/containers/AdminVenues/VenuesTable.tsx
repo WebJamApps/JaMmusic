@@ -14,6 +14,8 @@ interface IvenuesTableProps {
   venues: Ivenue[];
   onEdit: (venue: Ivenue) => void;
   onDelete?: (venue: Ivenue) => void;
+  targetDate?: string;
+  setTargetDate?: (val: string) => void;
 }
 
 type Order = 'asc' | 'desc';
@@ -80,7 +82,7 @@ function sortVenues(venues: Ivenue[], orderBy: string, order: Order): Ivenue[] {
   });
 }
 
-export function VenuesTable({ venues, onEdit, onDelete }: IvenuesTableProps) {
+export function VenuesTable({ venues, onEdit, onDelete, targetDate, setTargetDate }: IvenuesTableProps) {
   const [orderBy, setOrderBy] = useState('prospect');
   const [order, setOrder] = useState<Order>('desc');
   const [page, setPage] = useState(0);
@@ -144,17 +146,8 @@ export function VenuesTable({ venues, onEdit, onDelete }: IvenuesTableProps) {
     }
   }, [page, pageCount]);
 
-  // Hook rules require returning early after all hooks have run
-  if (venues.length === 0) {
-    return <Box data-testid="venues-empty" sx={{ marginY: 2 }}>No venues.</Box>;
-  }
-
-  const start = page * rowsPerPage;
-  const pageRows = sorted.slice(start, start + rowsPerPage);
-
-  return (
-    <Box sx={{ width: '100%' }}>
-      {/* Search and Vetting Toolbar */}
+  const renderToolbar = () => {
+    return (
       <Box sx={{
         display: 'flex',
         alignItems: 'center',
@@ -168,7 +161,7 @@ export function VenuesTable({ venues, onEdit, onDelete }: IvenuesTableProps) {
         border: '1px solid',
         borderColor: 'divider',
       }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flexWrap: 'wrap', flexGrow: 1 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flexWrap: 'wrap' }}>
           <TextField
             size="small"
             placeholder="Search name or city..."
@@ -183,10 +176,37 @@ export function VenuesTable({ venues, onEdit, onDelete }: IvenuesTableProps) {
                 ),
               }
             }}
-            sx={{ minWidth: 260, backgroundColor: 'background.paper', borderRadius: 1 }}
+            sx={{ width: 220, backgroundColor: 'background.paper', borderRadius: 1 }}
             data-testid="venues-search-box"
           />
-          
+
+          {setTargetDate && (
+            <Tooltip title="Pick a target weekend to filter by availability" arrow>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <TextField
+                  type="date"
+                  size="small"
+                  label="Free for weekend"
+                  slotProps={{ inputLabel: { shrink: true } }}
+                  value={targetDate || ''}
+                  onChange={(e) => setTargetDate(e.target.value)}
+                  sx={{ width: 170, backgroundColor: 'background.paper', borderRadius: 1 }}
+                  data-testid="venues-target-date"
+                />
+                {targetDate && (
+                  <Button
+                    size="small"
+                    onClick={() => setTargetDate('')}
+                    data-testid="venues-clear-date"
+                    sx={{ minWidth: 'auto', px: 1 }}
+                  >
+                    Clear
+                  </Button>
+                )}
+              </Box>
+            </Tooltip>
+          )}
+
           <FormControlLabel
             control={
               <Switch
@@ -207,29 +227,49 @@ export function VenuesTable({ venues, onEdit, onDelete }: IvenuesTableProps) {
                 />
               </Box>
             }
+            sx={{ margin: 0 }}
           />
         </Box>
         
         {/* Progress Counter & Stats */}
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, flexWrap: 'wrap' }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, flexWrap: 'wrap', marginLeft: 'auto' }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
             <Typography variant="body2" sx={{ fontWeight: 'bold' }} color="primary.main" data-testid="venues-vetted-counter">
               Vetted {vettedCount} of {venues.length}
             </Typography>
             <Typography variant="caption" color="text.secondary">
-              ({Math.round((vettedCount / venues.length) * 100) || 0}%)
+              ({Math.round((vettedCount / (venues.length || 1)) * 100) || 0}%)
             </Typography>
           </Box>
-          <Box sx={{ width: 120, display: 'flex', alignItems: 'center' }}>
+          <Box sx={{ width: 100, display: 'flex', alignItems: 'center' }}>
             <LinearProgress 
               variant="determinate" 
-              value={(vettedCount / venues.length) * 100 || 0} 
+              value={(vettedCount / (venues.length || 1)) * 100 || 0} 
               color="success"
               sx={{ height: 6, borderRadius: 3, width: '100%' }}
             />
           </Box>
         </Box>
       </Box>
+    );
+  };
+
+  // Hook rules require returning early after all hooks have run
+  if (venues.length === 0) {
+    return (
+      <Box sx={{ width: '100%' }}>
+        {renderToolbar()}
+        <Box data-testid="venues-empty" sx={{ marginY: 2 }}>No venues.</Box>
+      </Box>
+    );
+  }
+
+  const start = page * rowsPerPage;
+  const pageRows = sorted.slice(start, start + rowsPerPage);
+
+  return (
+    <Box sx={{ width: '100%' }}>
+      {renderToolbar()}
 
       {/* Table responsive scroll container with sticky header */}
       <Box sx={{
