@@ -166,7 +166,7 @@ export function VenuesTable({ venues, onEdit, onDelete, targetDate, setTargetDat
           display: 'flex', 
           alignItems: 'flex-start', 
           gap: 2.5, 
-          flexWrap: { xs: 'wrap', sm: 'nowrap' } 
+          flexWrap: { xs: 'wrap', md: 'nowrap' } 
         }}>
           {/* Search box with perfect sizing */}
           <TextField
