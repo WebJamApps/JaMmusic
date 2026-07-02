@@ -328,7 +328,8 @@ export function VenuesTable({ venues, onEdit, onDelete, targetDate, setTargetDat
       <Box sx={{
         width: '100%',
         maxHeight: 'calc(100vh - 280px)',
-        overflow: 'auto',
+        overflowX: 'auto',
+        overflowY: pageRows.length <= 10 ? 'hidden' : 'auto',
         border: '1px solid',
         borderColor: 'divider',
         borderRadius: 1,
@@ -345,6 +346,7 @@ export function VenuesTable({ venues, onEdit, onDelete, targetDate, setTargetDat
               <TableRow>
                 {/* Sticky Actions Header */}
                 <TableCell
+                  align="center"
                   sx={{
                     position: 'sticky',
                     left: 0,
@@ -416,6 +418,7 @@ export function VenuesTable({ venues, onEdit, onDelete, targetDate, setTargetDat
                       cursor: 'pointer',
                       userSelect: 'none',
                       fontWeight: 'bold',
+                      whiteSpace: 'nowrap',
                       '&:hover': {
                         backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.04)',
                       },
@@ -466,6 +469,7 @@ export function VenuesTable({ venues, onEdit, onDelete, targetDate, setTargetDat
                   >
                     {/* Sticky Actions Column */}
                     <TableCell
+                      align="center"
                       sx={{
                         position: 'sticky',
                         left: 0,
@@ -481,12 +485,14 @@ export function VenuesTable({ venues, onEdit, onDelete, targetDate, setTargetDat
                         whiteSpace: 'nowrap',
                       }}
                     >
-                      <Button size="small" onClick={() => onEdit(v)} data-testid={`venue-edit-${v._id}`}>Edit</Button>
-                      {onDelete && (
-                        <Button size="small" color="error" onClick={() => handleDelete(v)} data-testid={`venue-delete-${v._id}`}>
-                          Archive
-                        </Button>
-                      )}
+                      <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1 }}>
+                        <Button size="small" onClick={() => onEdit(v)} data-testid={`venue-edit-${v._id}`}>Edit</Button>
+                        {onDelete && (
+                          <Button size="small" color="error" onClick={() => handleDelete(v)} data-testid={`venue-delete-${v._id}`}>
+                            Archive
+                          </Button>
+                        )}
+                      </Box>
                     </TableCell>
 
                     {/* Sticky Name Column */}

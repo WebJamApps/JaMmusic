@@ -63,7 +63,6 @@ export function AdminVenues() {
     <Box sx={{
       padding: 3, maxWidth: 1200, margin: 'auto', width: '100%', minWidth: 0,
     }} data-testid="admin-venues-page">
-      <Typography variant="h5" sx={{ marginBottom: 2 }}>Admin Venues</Typography>
       {loading && <Typography data-testid="admin-venues-loading">Loading...</Typography>}
       {error && <Typography color="error" data-testid="admin-venues-error">{error}</Typography>}
       <VenuesTable
