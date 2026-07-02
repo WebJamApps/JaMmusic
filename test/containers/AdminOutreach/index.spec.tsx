@@ -3,6 +3,7 @@ import { render, screen, fireEvent, act } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { AuthContext, defaultAuth, type Iauth } from 'src/providers/Auth.provider';
 import { AdminOutreach } from 'src/containers/AdminOutreach';
+import adminVenuesUtils from 'src/containers/AdminVenues/admin-venues.utils';
 import outreachUtils, { type Icandidate, type IbatchResult, type IpitchPreview } from 'src/containers/AdminOutreach/outreach.utils';
 
 const candidates: Icandidate[] = [
@@ -39,6 +40,9 @@ describe('AdminOutreach', () => {
     outreachUtils.sendBatch = vi.fn(() => Promise.resolve(okResult)) as any;
     outreachUtils.setConfig = vi.fn((_t: string, v: boolean) => Promise.resolve({ autoApprove: v })) as any;
     outreachUtils.getPreview = vi.fn(() => Promise.resolve(previews)) as any;
+    outreachUtils.getPendingReplies = vi.fn(() => Promise.resolve([])) as any;
+    outreachUtils.applySuggestion = vi.fn(() => Promise.resolve({})) as any;
+    adminVenuesUtils.listVenues = vi.fn(() => Promise.resolve([])) as any;
   });
 
   it('renders not-authorized when not authenticated', () => {
@@ -154,4 +158,230 @@ describe('AdminOutreach', () => {
     await act(async () => { fireEvent.click(screen.getByRole('checkbox', { name: /auto-approve/i })); });
     expect(screen.getByTestId('outreach-error').textContent).toBe('cfg fail');
   });
+
+  describe('Replies to Review', () => {
+    const mockPendingReplies = [
+      {
+        _id: 'r1',
+        venueId: 'v1',
+        status: 'replied',
+        targetDates: 'Sept 25-27',
+        bookingPeriod: 'fall 2026',
+        repliedAt: '2026-07-02T10:00:00Z',
+        replySnippet: 'We would love to book you!',
+        suggestion: {
+          sentiment: 'positive',
+          proposedBookingStatus: 'booking',
+          proposedInterested: true,
+          rationale: 'Positive booking interest.',
+          model: 'gemini-3.5-flash',
+        },
+      },
+      {
+        _id: 'r2',
+        venueId: 'v2',
+        status: 'replied',
+        replyKind: 'bounce',
+      },
+      {
+        _id: 'r3',
+        venueId: 'v3',
+        status: 'replied',
+        suggestion: {
+          sentiment: 'negative',
+          proposedBookingStatus: 'not-booking',
+          proposedInterested: false,
+          rationale: 'Negative sentiment.',
+        },
+      },
+      {
+        _id: 'r4',
+        venueId: 'v4',
+        status: 'replied',
+        suggestion: {
+          sentiment: 'needs-info',
+          proposedBookingStatus: 'booking',
+          proposedInterested: false,
+          rationale: 'Needs more info.',
+        },
+      },
+      {
+        _id: 'r5',
+        venueId: 'v_unknown',
+        status: 'replied',
+      },
+      {
+        _id: 'r6',
+        venueId: '',
+        status: 'replied',
+      }
+    ];
+
+    const mockVenuesList = [
+      { _id: 'v1', name: 'Boston Hall', city: 'Boston', usState: 'MA', email: 'v1@boston.com' },
+      { _id: 'v2', name: 'Cambridge Club', city: 'Cambridge', usState: 'MA', email: 'v2@cambridge.com' },
+      { _id: 'v3', name: 'Worcester Space', city: 'Worcester', usState: 'MA', email: 'v3@worcester.com' },
+      { _id: 'v4', name: 'Lowell Theatre', city: 'Lowell', usState: 'MA', email: 'v4@lowell.com' },
+    ];
+
+    it('renders empty replies section when there are no pending replies', async () => {
+      outreachUtils.getPendingReplies = vi.fn().mockResolvedValue([]);
+      adminVenuesUtils.listVenues = vi.fn().mockResolvedValue(mockVenuesList);
+      await renderPage();
+      expect(screen.getByTestId('replies-empty')).toBeInTheDocument();
+      expect(screen.queryByTestId('replies-badge')).toBeNull();
+    });
+
+    it('renders error message when getPendingReplies fails', async () => {
+      outreachUtils.getPendingReplies = vi.fn().mockRejectedValue(new Error('Replies failed'));
+      adminVenuesUtils.listVenues = vi.fn().mockResolvedValue(mockVenuesList);
+      await renderPage();
+      expect(screen.getByTestId('replies-error')).toBeInTheDocument();
+      expect(screen.getByTestId('replies-error').textContent).toContain('Replies failed');
+    });
+
+    it('renders the list of pending replies with positive/negative/needs-info sentiment and fallback venue names', async () => {
+      outreachUtils.getPendingReplies = vi.fn().mockResolvedValue(mockPendingReplies);
+      adminVenuesUtils.listVenues = vi.fn().mockResolvedValue(mockVenuesList);
+      await renderPage();
+
+      // Badge displays correct number of total pending replies
+      expect(screen.getByTestId('replies-badge').textContent).toBe('6');
+
+      // v1 - positive
+      expect(screen.getByTestId('reply-venue-r1').textContent).toBe('Boston Hall');
+      expect(screen.getByTestId('reply-sentiment-r1')).toHaveAttribute('label', 'Positive Reply');
+      expect(screen.getByTestId('reply-snippet-r1').textContent).toContain('We would love to book you!');
+      expect(screen.getByTestId('reply-rationale-r1').textContent).toContain('Positive booking interest.');
+
+      // v2 - bounce
+      expect(screen.getByTestId('reply-venue-r2').textContent).toBe('Cambridge Club');
+      expect(screen.getByTestId('bounce-badge-r2')).toBeInTheDocument();
+      expect(screen.getByTestId('bounce-badge-r2').textContent).toContain('Bounced — needs new email');
+      expect(screen.getByTestId('bounce-email-r2').textContent).toContain('Dead Email: v2@cambridge.com');
+      // No action buttons on bounce card
+      expect(screen.queryByTestId('reply-apply-btn-r2')).toBeNull();
+      expect(screen.queryByTestId('reply-reopen-btn-r2')).toBeNull();
+      expect(screen.queryByTestId('reply-dismiss-btn-r2')).toBeNull();
+
+      // v3 - negative
+      expect(screen.getByTestId('reply-venue-r3').textContent).toBe('Worcester Space');
+      expect(screen.getByTestId('reply-sentiment-r3')).toHaveAttribute('label', 'Negative Reply');
+
+      // v4 - needs-info
+      expect(screen.getByTestId('reply-venue-r4').textContent).toBe('Lowell Theatre');
+      expect(screen.getByTestId('reply-sentiment-r4')).toHaveAttribute('label', 'Needs Info');
+
+      // v_unknown - venue mapping fallback to venueId
+      expect(screen.getByTestId('reply-venue-r5').textContent).toBe('v_unknown');
+
+      // empty venueId - fallback to 'Unknown Venue'
+      expect(screen.getByTestId('reply-venue-r6').textContent).toBe('Unknown Venue');
+    });
+
+    it('supports changing status and checkbox value and applying suggestion', async () => {
+      outreachUtils.getPendingReplies = vi.fn().mockResolvedValue(mockPendingReplies);
+      adminVenuesUtils.listVenues = vi.fn().mockResolvedValue(mockVenuesList);
+      await renderPage();
+
+      // Find select and checkbox for r1
+      const selectElement = screen.getByTestId('reply-status-select-r1');
+      expect(selectElement).toBeDefined();
+
+      // Simulate status select change
+      fireEvent.change(selectElement, { target: { value: 'not-booking' } });
+
+      // Toggle interest checkbox
+      const checkboxInput = screen.getByTestId('reply-interested-checkbox-r1');
+      expect(checkboxInput).toBeDefined();
+      fireEvent.click(checkboxInput);
+
+      // Apply suggestion
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('reply-apply-btn-r1'));
+      });
+
+      expect(outreachUtils.applySuggestion).toHaveBeenCalledWith('tk', 'r1', {
+        bookingStatus: 'not-booking',
+        interested: false,
+      });
+      // Should reload the pending replies
+      expect(outreachUtils.getPendingReplies).toHaveBeenCalledTimes(2);
+    });
+
+    it('supports reopening outreach', async () => {
+      outreachUtils.getPendingReplies = vi.fn().mockResolvedValue(mockPendingReplies);
+      adminVenuesUtils.listVenues = vi.fn().mockResolvedValue(mockVenuesList);
+      await renderPage();
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('reply-reopen-btn-r1'));
+      });
+
+      expect(outreachUtils.applySuggestion).toHaveBeenCalledWith('tk', 'r1', {
+        reopen: true,
+      });
+      // Should reload the pending replies
+      expect(outreachUtils.getPendingReplies).toHaveBeenCalledTimes(2);
+    });
+
+    it('supports dismissing suggestion', async () => {
+      outreachUtils.getPendingReplies = vi.fn().mockResolvedValue(mockPendingReplies);
+      adminVenuesUtils.listVenues = vi.fn().mockResolvedValue(mockVenuesList);
+      await renderPage();
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('reply-dismiss-btn-r1'));
+      });
+
+      expect(outreachUtils.applySuggestion).toHaveBeenCalledWith('tk', 'r1', {
+        dismiss: true,
+      });
+      // Should reload the pending replies
+      expect(outreachUtils.getPendingReplies).toHaveBeenCalledTimes(2);
+    });
+
+    it('handles error when applySuggestion fails on apply', async () => {
+      outreachUtils.getPendingReplies = vi.fn().mockResolvedValue(mockPendingReplies);
+      adminVenuesUtils.listVenues = vi.fn().mockResolvedValue(mockVenuesList);
+      outreachUtils.applySuggestion = vi.fn().mockRejectedValue(new Error('Apply failed'));
+      await renderPage();
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('reply-apply-btn-r1'));
+      });
+
+      expect(screen.getByTestId('replies-error')).toBeInTheDocument();
+      expect(screen.getByTestId('replies-error').textContent).toContain('Apply failed');
+    });
+
+    it('handles error when applySuggestion fails on reopen', async () => {
+      outreachUtils.getPendingReplies = vi.fn().mockResolvedValue(mockPendingReplies);
+      adminVenuesUtils.listVenues = vi.fn().mockResolvedValue(mockVenuesList);
+      outreachUtils.applySuggestion = vi.fn().mockRejectedValue(new Error('Reopen failed'));
+      await renderPage();
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('reply-reopen-btn-r1'));
+      });
+
+      expect(screen.getByTestId('replies-error')).toBeInTheDocument();
+      expect(screen.getByTestId('replies-error').textContent).toContain('Reopen failed');
+    });
+
+    it('handles error when applySuggestion fails on dismiss', async () => {
+      outreachUtils.getPendingReplies = vi.fn().mockResolvedValue(mockPendingReplies);
+      adminVenuesUtils.listVenues = vi.fn().mockResolvedValue(mockVenuesList);
+      outreachUtils.applySuggestion = vi.fn().mockRejectedValue(new Error('Dismiss failed'));
+      await renderPage();
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('reply-dismiss-btn-r1'));
+      });
+
+      expect(screen.getByTestId('replies-error')).toBeInTheDocument();
+      expect(screen.getByTestId('replies-error').textContent).toContain('Dismiss failed');
+    });
+  });
 });
+

@@ -52,12 +52,40 @@ describe('Outreach utils', () => {
     expect(fetchMock.mock.calls[0][0]).toContain('/outreach/preview?venueIds=c1,c2&targetDates=Aug%2014');
   });
 
+  it('getPendingReplies GETs /outreach/replies/pending', async () => {
+    fetchMock.mockReturnValue(okJson([{ _id: 'o1', status: 'replied' }]));
+    const replies = await outreachUtils.getPendingReplies('tok');
+    expect(replies).toHaveLength(1);
+    expect(fetchMock.mock.calls[0][0]).toContain('/outreach/replies/pending');
+  });
+
+  it('applySuggestion POSTs the suggestion update payload', async () => {
+    fetchMock.mockReturnValue(okJson({ _id: 'o1', status: 'replied' }));
+    const res = await outreachUtils.applySuggestion('tok', 'id1', { bookingStatus: 'booking', interested: true });
+    expect(res).toBeDefined();
+    const opts = fetchMock.mock.calls[0][1] as RequestInit;
+    expect(opts.method).toBe('POST');
+    expect(JSON.parse(opts.body as string)).toEqual({ bookingStatus: 'booking', interested: true });
+    expect(fetchMock.mock.calls[0][0]).toContain('/outreach/id1/apply-suggestion');
+  });
+
+  it('deleteOutreach DELETEs /outreach/:id', async () => {
+    fetchMock.mockReturnValue(okJson({}));
+    await outreachUtils.deleteOutreach('tok', 'id1');
+    const opts = fetchMock.mock.calls[0][1] as RequestInit;
+    expect(opts.method).toBe('DELETE');
+    expect(fetchMock.mock.calls[0][0]).toContain('/outreach/id1');
+  });
+
   it.each([
     ['getCandidates', () => outreachUtils.getCandidates('t', 'd')],
     ['sendBatch', () => outreachUtils.sendBatch('t', { venueIds: ['a'], targetDates: 'd' })],
     ['getConfig', () => outreachUtils.getConfig('t')],
     ['setConfig', () => outreachUtils.setConfig('t', true)],
     ['getPreview', () => outreachUtils.getPreview('t', ['a'], 'd')],
+    ['getPendingReplies', () => outreachUtils.getPendingReplies('t')],
+    ['applySuggestion', () => outreachUtils.applySuggestion('t', 'id', {})],
+    ['deleteOutreach', () => outreachUtils.deleteOutreach('t', 'id')],
   ])('%s throws on a non-ok response', async (_name, call) => {
     fetchMock.mockReturnValue(failed());
     await expect(call()).rejects.toThrow('500');

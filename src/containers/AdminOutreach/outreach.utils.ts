@@ -27,6 +27,34 @@ export interface IpitchPreview {
   body: string;
 }
 
+export interface Isuggestion {
+  sentiment?: 'positive' | 'negative' | 'needs-info';
+  proposedBookingStatus?: 'booking' | 'not-booking' | 'booked';
+  proposedInterested?: boolean;
+  rationale?: string;
+  model?: string;
+  reviewed?: boolean;
+}
+
+export interface IpendingReply {
+  _id: string;
+  venueId: string;
+  templateUsed?: string;
+  targetDates?: string;
+  bookingPeriod?: string;
+  sentAt?: string;
+  status: 'sent' | 'replied' | 'declined' | 'booked' | 'no-response';
+  messageId?: string;
+  gmailThreadId?: string;
+  repliedAt?: string;
+  replySnippet?: string;
+  suggestion?: Isuggestion;
+  replyKind?: 'bounce';
+  sentBy?: string;
+  step?: number;
+  nextTouchDue?: string;
+}
+
 const outreachUrl = `${process.env.BackendUrl}/outreach`;
 
 function headers(token: string, json = false): Record<string, string> {
@@ -79,6 +107,37 @@ async function getPreview(
   return await res.json() as IpitchPreview[];
 }
 
+async function getPendingReplies(token: string): Promise<IpendingReply[]> {
+  const res = await fetch(`${outreachUrl}/replies/pending`, { headers: headers(token) });
+  if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+  return await res.json() as IpendingReply[];
+}
+
+async function applySuggestion(
+  token: string,
+  id: string,
+  payload: { bookingStatus?: string; interested?: boolean; dismiss?: boolean; reopen?: boolean },
+): Promise<unknown> {
+  const res = await fetch(`${outreachUrl}/${id}/apply-suggestion`, {
+    method: 'POST', headers: headers(token, true), body: JSON.stringify(payload),
+  });
+  if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+  return await res.json();
+}
+
+async function deleteOutreach(token: string, id: string): Promise<void> {
+  const res = await fetch(`${outreachUrl}/${id}`, { method: 'DELETE', headers: headers(token) });
+  if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+}
+
 export default {
-  getCandidates, sendBatch, getConfig, setConfig, getPreview, getAllowedAdminRoles,
+  getCandidates,
+  sendBatch,
+  getConfig,
+  setConfig,
+  getPreview,
+  getAllowedAdminRoles,
+  getPendingReplies,
+  applySuggestion,
+  deleteOutreach,
 };
