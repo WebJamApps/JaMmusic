@@ -153,16 +153,16 @@ export function VenuesTable({ venues, onEdit, onDelete, targetDate, setTargetDat
         alignItems: 'flex-start',
         justifyContent: 'space-between',
         gap: 2.5,
-        marginBottom: 0.75,
+        marginBottom: 0.5,
         flexWrap: 'wrap',
         backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.015)',
-        padding: '12px 20px',
+        padding: '8px 16px',
         borderRadius: '12px',
         border: '1px solid',
         borderColor: 'divider',
         boxShadow: '0 2px 8px rgba(0,0,0,0.01)',
       }}>
-        <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2.5, flexWrap: 'wrap' }}>
+        <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2.5, flexWrap: 'nowrap' }}>
           {/* Search box with perfect sizing */}
           <TextField
             size="small"
@@ -192,7 +192,7 @@ export function VenuesTable({ venues, onEdit, onDelete, targetDate, setTargetDat
 
           {/* Date picker with matching height and no separate text label */}
           {setTargetDate && (
-            <Tooltip title="Pick a target weekend to filter by availability" arrow>
+            <Tooltip title="Pick a target weekend to filter by availability (no conflicting gigs in the ±2-month window)." arrow>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, height: 38 }}>
                 <TextField
                   type="date"
@@ -231,7 +231,7 @@ export function VenuesTable({ venues, onEdit, onDelete, targetDate, setTargetDat
             </Tooltip>
           )}
 
-          {/* Needs Vetting switch with matching vertical alignment and height */}
+          {/* Needs Vetting switch aligned to the top edge */}
           <FormControlLabel
             control={
               <Switch
@@ -240,11 +240,15 @@ export function VenuesTable({ venues, onEdit, onDelete, targetDate, setTargetDat
                 color="warning"
                 size="small"
                 data-testid="venues-needs-vetting-filter"
+                sx={{ 
+                  margin: 0,
+                  alignSelf: 'flex-start'
+                }}
               />
             }
             label={
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                <Typography variant="body2" sx={{ fontWeight: 'medium', color: 'text.primary' }}>Needs Vetting</Typography>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, pt: 0.25, whiteSpace: 'nowrap' }}>
+                <Typography variant="body2" sx={{ fontWeight: 'medium', color: 'text.primary', whiteSpace: 'nowrap' }}>Needs Vetting</Typography>
                 <Chip 
                   label={unvettedCount} 
                   size="small" 
@@ -253,18 +257,24 @@ export function VenuesTable({ venues, onEdit, onDelete, targetDate, setTargetDat
                 />
               </Box>
             }
-            sx={{ margin: 0, height: 38, display: 'flex', alignItems: 'center' }}
+            sx={{ 
+              margin: 0, 
+              display: 'flex', 
+              alignItems: 'flex-start', 
+              alignSelf: 'flex-start',
+              pt: 0.5
+            }}
           />
         </Box>
         
         {/* Progress Counter & Stats styled as a premium green pill aligned to top */}
-        <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2, flexWrap: 'wrap', marginLeft: 'auto', height: 38, pt: 0.25 }}>
+        <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2, flexWrap: 'wrap', marginLeft: 'auto', pt: 0.5 }}>
           <Box sx={{ 
             display: 'flex', 
             alignItems: 'center', 
             gap: 1, 
             backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(76, 175, 80, 0.12)' : 'rgba(76, 175, 80, 0.06)', 
-            padding: '6px 14px', 
+            padding: '4px 12px', 
             borderRadius: '20px', 
             border: '1px solid rgba(76, 175, 80, 0.18)' 
           }}>
@@ -275,7 +285,7 @@ export function VenuesTable({ venues, onEdit, onDelete, targetDate, setTargetDat
               ({Math.round((vettedCount / (venues.length || 1)) * 100) || 0}%)
             </Typography>
           </Box>
-          <Box sx={{ width: 100, display: 'flex', alignItems: 'center', height: 32 }}>
+          <Box sx={{ width: 100, display: 'flex', alignItems: 'center', height: 26 }}>
             <LinearProgress 
               variant="determinate" 
               value={(vettedCount / (venues.length || 1)) * 100 || 0} 
@@ -317,7 +327,7 @@ export function VenuesTable({ venues, onEdit, onDelete, targetDate, setTargetDat
       {/* Table responsive scroll container with sticky header */}
       <Box sx={{
         width: '100%',
-        maxHeight: 'calc(100vh - 380px)',
+        maxHeight: 'calc(100vh - 280px)',
         overflow: 'auto',
         border: '1px solid',
         borderColor: 'divider',
