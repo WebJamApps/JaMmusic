@@ -211,8 +211,8 @@ export function VenuesTable({ venues, onEdit, onDelete }: IvenuesTableProps) {
         </Box>
         
         {/* Progress Counter & Stats */}
-        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 0.5, minWidth: 180 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, flexWrap: 'wrap' }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
             <Typography variant="body2" sx={{ fontWeight: 'bold' }} color="primary.main" data-testid="venues-vetted-counter">
               Vetted {vettedCount} of {venues.length}
             </Typography>
@@ -220,12 +220,12 @@ export function VenuesTable({ venues, onEdit, onDelete }: IvenuesTableProps) {
               ({Math.round((vettedCount / venues.length) * 100) || 0}%)
             </Typography>
           </Box>
-          <Box sx={{ width: '100%', minWidth: 150 }}>
+          <Box sx={{ width: 120, display: 'flex', alignItems: 'center' }}>
             <LinearProgress 
               variant="determinate" 
               value={(vettedCount / venues.length) * 100 || 0} 
               color="success"
-              sx={{ height: 6, borderRadius: 3 }}
+              sx={{ height: 6, borderRadius: 3, width: '100%' }}
             />
           </Box>
         </Box>
@@ -258,9 +258,9 @@ export function VenuesTable({ venues, onEdit, onDelete }: IvenuesTableProps) {
                     top: 0,
                     zIndex: 11,
                     backgroundColor: 'background.paper',
-                    width: 130,
-                    minWidth: 130,
-                    maxWidth: 130,
+                    width: 150,
+                    minWidth: 150,
+                    maxWidth: 150,
                     borderRight: '1px solid',
                     borderColor: 'divider',
                     fontWeight: 'bold',
@@ -276,7 +276,7 @@ export function VenuesTable({ venues, onEdit, onDelete }: IvenuesTableProps) {
                   onClick={() => handleSort('name')}
                   sx={{
                     position: 'sticky',
-                    left: 130,
+                    left: 150,
                     top: 0,
                     zIndex: 11,
                     backgroundColor: 'background.paper',
@@ -380,9 +380,9 @@ export function VenuesTable({ venues, onEdit, onDelete }: IvenuesTableProps) {
                         backgroundColor: (theme) => noType 
                           ? (theme.palette.mode === 'dark' ? 'rgba(255, 167, 38, 0.18)' : '#fff3e0') 
                           : theme.palette.background.paper,
-                        width: 130,
-                        minWidth: 130,
-                        maxWidth: 130,
+                        width: 150,
+                        minWidth: 150,
+                        maxWidth: 150,
                         borderRight: '1px solid',
                         borderColor: 'divider',
                         whiteSpace: 'nowrap',
@@ -400,7 +400,7 @@ export function VenuesTable({ venues, onEdit, onDelete }: IvenuesTableProps) {
                     <TableCell
                       sx={{
                         position: 'sticky',
-                        left: 130,
+                        left: 150,
                         zIndex: 9,
                         backgroundColor: (theme) => noType 
                           ? (theme.palette.mode === 'dark' ? 'rgba(255, 167, 38, 0.18)' : '#fff3e0') 
