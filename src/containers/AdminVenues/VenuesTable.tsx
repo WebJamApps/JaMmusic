@@ -152,16 +152,18 @@ export function VenuesTable({ venues, onEdit, onDelete, targetDate, setTargetDat
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        gap: 2,
-        marginBottom: 2,
+        gap: 2.5,
+        marginBottom: 2.5,
         flexWrap: 'wrap',
-        backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.02)' : 'rgba(0,0,0,0.02)',
-        padding: 1.5,
-        borderRadius: 2,
+        backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.015)',
+        padding: '12px 20px',
+        borderRadius: '12px',
         border: '1px solid',
         borderColor: 'divider',
+        boxShadow: '0 2px 8px rgba(0,0,0,0.01)',
       }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flexWrap: 'wrap' }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2.5, flexWrap: 'wrap' }}>
+          {/* Search box with perfect sizing */}
           <TextField
             size="small"
             placeholder="Search name or city..."
@@ -176,29 +178,54 @@ export function VenuesTable({ venues, onEdit, onDelete, targetDate, setTargetDat
                 ),
               }
             }}
-            sx={{ width: 220, backgroundColor: 'background.paper', borderRadius: 1 }}
+            sx={{ 
+              width: 220, 
+              backgroundColor: 'background.paper', 
+              borderRadius: 1.5,
+              '& .MuiOutlinedInput-root': {
+                borderRadius: '6px',
+                height: 38,
+              }
+            }}
             data-testid="venues-search-box"
           />
 
+          {/* Date picker with matching height & external label to prevent alignment offset */}
           {setTargetDate && (
             <Tooltip title="Pick a target weekend to filter by availability" arrow>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, height: 38 }}>
+                <Typography variant="body2" sx={{ fontWeight: 'medium', color: 'text.secondary', whiteSpace: 'nowrap' }}>
+                  Free for weekend:
+                </Typography>
                 <TextField
                   type="date"
                   size="small"
-                  label="Free for weekend"
-                  slotProps={{ inputLabel: { shrink: true } }}
                   value={targetDate || ''}
                   onChange={(e) => setTargetDate(e.target.value)}
-                  sx={{ width: 170, backgroundColor: 'background.paper', borderRadius: 1 }}
+                  sx={{ 
+                    width: 155, 
+                    backgroundColor: 'background.paper', 
+                    '& .MuiOutlinedInput-root': {
+                      borderRadius: '6px',
+                      height: 38,
+                    }
+                  }}
                   data-testid="venues-target-date"
                 />
                 {targetDate && (
                   <Button
                     size="small"
+                    variant="text"
                     onClick={() => setTargetDate('')}
                     data-testid="venues-clear-date"
-                    sx={{ minWidth: 'auto', px: 1 }}
+                    sx={{ 
+                      minWidth: 'auto', 
+                      px: 1.5, 
+                      height: 32, 
+                      borderRadius: '6px',
+                      textTransform: 'none',
+                      fontWeight: 'bold',
+                    }}
                   >
                     Clear
                   </Button>
@@ -207,37 +234,47 @@ export function VenuesTable({ venues, onEdit, onDelete, targetDate, setTargetDat
             </Tooltip>
           )}
 
+          {/* Needs Vetting switch with matching vertical alignment and height */}
           <FormControlLabel
             control={
               <Switch
                 checked={needsVettingFilter}
                 onChange={(e) => handleNeedsVettingToggle(e.target.checked)}
                 color="warning"
+                size="small"
                 data-testid="venues-needs-vetting-filter"
               />
             }
             label={
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                <Typography variant="body2" sx={{ fontWeight: 'medium' }}>Needs Vetting</Typography>
+                <Typography variant="body2" sx={{ fontWeight: 'medium', color: 'text.primary' }}>Needs Vetting</Typography>
                 <Chip 
                   label={unvettedCount} 
                   size="small" 
                   color={needsVettingFilter ? "warning" : "default"}
-                  sx={{ height: 20, fontSize: '0.75rem', fontWeight: 'bold' }}
+                  sx={{ height: 20, fontSize: '0.75rem', fontWeight: 'bold', borderRadius: '6px' }}
                 />
               </Box>
             }
-            sx={{ margin: 0 }}
+            sx={{ margin: 0, height: 38, display: 'flex', alignItems: 'center' }}
           />
         </Box>
         
-        {/* Progress Counter & Stats */}
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, flexWrap: 'wrap', marginLeft: 'auto' }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-            <Typography variant="body2" sx={{ fontWeight: 'bold' }} color="primary.main" data-testid="venues-vetted-counter">
+        {/* Progress Counter & Stats styled as a premium green pill */}
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flexWrap: 'wrap', marginLeft: 'auto' }}>
+          <Box sx={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            gap: 1, 
+            backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(76, 175, 80, 0.12)' : 'rgba(76, 175, 80, 0.06)', 
+            padding: '6px 14px', 
+            borderRadius: '20px', 
+            border: '1px solid rgba(76, 175, 80, 0.18)' 
+          }}>
+            <Typography variant="body2" sx={{ fontWeight: 'bold' }} color="success.main" data-testid="venues-vetted-counter">
               Vetted {vettedCount} of {venues.length}
             </Typography>
-            <Typography variant="caption" color="text.secondary">
+            <Typography variant="caption" sx={{ fontWeight: 'bold' }} color="success.dark">
               ({Math.round((vettedCount / (venues.length || 1)) * 100) || 0}%)
             </Typography>
           </Box>
@@ -246,7 +283,16 @@ export function VenuesTable({ venues, onEdit, onDelete, targetDate, setTargetDat
               variant="determinate" 
               value={(vettedCount / (venues.length || 1)) * 100 || 0} 
               color="success"
-              sx={{ height: 6, borderRadius: 3, width: '100%' }}
+              sx={{
+                height: 6,
+                borderRadius: 3,
+                width: '100%',
+                backgroundColor: (theme) => (
+                  theme.palette.mode === 'dark'
+                    ? 'rgba(255,255,255,0.05)'
+                    : 'rgba(0,0,0,0.05)'
+                ),
+              }}
             />
           </Box>
         </Box>
