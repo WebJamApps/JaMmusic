@@ -162,7 +162,7 @@ export function VenuesTable({ venues, onEdit, onDelete, targetDate, setTargetDat
         borderColor: 'divider',
         boxShadow: '0 2px 8px rgba(0,0,0,0.01)',
       }}>
-        <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2.5, flexWrap: 'nowrap' }}>
+        <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2.5, flexWrap: 'wrap' }}>
           {/* Search box with perfect sizing */}
           <TextField
             size="small"
@@ -179,7 +179,8 @@ export function VenuesTable({ venues, onEdit, onDelete, targetDate, setTargetDat
               }
             }}
             sx={{ 
-              width: 220, 
+              width: 300, 
+              flexShrink: 0,
               backgroundColor: 'background.paper', 
               borderRadius: 1.5,
               '& .MuiOutlinedInput-root': {
@@ -193,7 +194,7 @@ export function VenuesTable({ venues, onEdit, onDelete, targetDate, setTargetDat
           {/* Date picker with matching height and no separate text label */}
           {setTargetDate && (
             <Tooltip title="Pick a target weekend to filter by availability (no conflicting gigs in the ±2-month window)." arrow>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, height: 38 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, height: 38, flexShrink: 0 }}>
                 <TextField
                   type="date"
                   size="small"
@@ -201,6 +202,7 @@ export function VenuesTable({ venues, onEdit, onDelete, targetDate, setTargetDat
                   onChange={(e) => setTargetDate(e.target.value)}
                   sx={{ 
                     width: 155, 
+                    flexShrink: 0,
                     backgroundColor: 'background.paper', 
                     '& .MuiOutlinedInput-root': {
                       borderRadius: '6px',
@@ -262,7 +264,8 @@ export function VenuesTable({ venues, onEdit, onDelete, targetDate, setTargetDat
               display: 'flex', 
               alignItems: 'flex-start', 
               alignSelf: 'flex-start',
-              pt: 0.5
+              pt: 0.5,
+              flexShrink: 0
             }}
           />
         </Box>
