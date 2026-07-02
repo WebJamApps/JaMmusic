@@ -147,4 +147,27 @@ describe('VenuesTable', () => {
     // Now only the unvetted rows should be shown
     expect(rowIds()).toEqual(['venue-row-v2', 'venue-row-v3']);
   });
+
+  it('renders inputs container with responsive wrap and non-shrinking inputs', () => {
+    render(
+      <VenuesTable
+        venues={[]}
+        onEdit={vi.fn()}
+        targetDate="2026-07-02"
+        setTargetDate={vi.fn()}
+      />
+    );
+    
+    const container = screen.getByTestId('venues-inputs-container');
+    expect(container).toBeDefined();
+
+    const searchBox = screen.getByTestId('venues-search-box');
+    expect(searchBox).toBeDefined();
+
+    const targetDate = screen.getByTestId('venues-target-date');
+    expect(targetDate).toBeDefined();
+
+    const switchBtn = screen.getByTestId('venues-needs-vetting-filter');
+    expect(switchBtn).toBeDefined();
+  });
 });

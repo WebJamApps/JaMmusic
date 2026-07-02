@@ -162,12 +162,15 @@ export function VenuesTable({ venues, onEdit, onDelete, targetDate, setTargetDat
         borderColor: 'divider',
         boxShadow: '0 2px 8px rgba(0,0,0,0.01)',
       }}>
-        <Box sx={{ 
-          display: 'flex', 
-          alignItems: 'flex-start', 
-          gap: 2.5, 
-          flexWrap: { xs: 'wrap', md: 'nowrap' } 
-        }}>
+        <Box 
+          data-testid="venues-inputs-container"
+          sx={{ 
+            display: 'flex', 
+            alignItems: 'flex-start', 
+            gap: 2.5, 
+            flexWrap: { xs: 'wrap', md: 'nowrap' } 
+          }}
+        >
           {/* Search box with perfect sizing */}
           <TextField
             size="small"
