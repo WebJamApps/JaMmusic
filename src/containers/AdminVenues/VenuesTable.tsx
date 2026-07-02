@@ -150,10 +150,10 @@ export function VenuesTable({ venues, onEdit, onDelete, targetDate, setTargetDat
     return (
       <Box sx={{
         display: 'flex',
-        alignItems: 'center',
+        alignItems: 'flex-start',
         justifyContent: 'space-between',
         gap: 2.5,
-        marginBottom: 2.5,
+        marginBottom: 0.75,
         flexWrap: 'wrap',
         backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.015)',
         padding: '12px 20px',
@@ -162,7 +162,7 @@ export function VenuesTable({ venues, onEdit, onDelete, targetDate, setTargetDat
         borderColor: 'divider',
         boxShadow: '0 2px 8px rgba(0,0,0,0.01)',
       }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2.5, flexWrap: 'wrap' }}>
+        <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2.5, flexWrap: 'wrap' }}>
           {/* Search box with perfect sizing */}
           <TextField
             size="small"
@@ -190,13 +190,10 @@ export function VenuesTable({ venues, onEdit, onDelete, targetDate, setTargetDat
             data-testid="venues-search-box"
           />
 
-          {/* Date picker with matching height & external label to prevent alignment offset */}
+          {/* Date picker with matching height and no separate text label */}
           {setTargetDate && (
             <Tooltip title="Pick a target weekend to filter by availability" arrow>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, height: 38 }}>
-                <Typography variant="body2" sx={{ fontWeight: 'medium', color: 'text.secondary', whiteSpace: 'nowrap' }}>
-                  Free for weekend:
-                </Typography>
                 <TextField
                   type="date"
                   size="small"
@@ -260,8 +257,8 @@ export function VenuesTable({ venues, onEdit, onDelete, targetDate, setTargetDat
           />
         </Box>
         
-        {/* Progress Counter & Stats styled as a premium green pill */}
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flexWrap: 'wrap', marginLeft: 'auto' }}>
+        {/* Progress Counter & Stats styled as a premium green pill aligned to top */}
+        <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2, flexWrap: 'wrap', marginLeft: 'auto', height: 38, pt: 0.25 }}>
           <Box sx={{ 
             display: 'flex', 
             alignItems: 'center', 
@@ -278,7 +275,7 @@ export function VenuesTable({ venues, onEdit, onDelete, targetDate, setTargetDat
               ({Math.round((vettedCount / (venues.length || 1)) * 100) || 0}%)
             </Typography>
           </Box>
-          <Box sx={{ width: 100, display: 'flex', alignItems: 'center' }}>
+          <Box sx={{ width: 100, display: 'flex', alignItems: 'center', height: 32 }}>
             <LinearProgress 
               variant="determinate" 
               value={(vettedCount / (venues.length || 1)) * 100 || 0} 
