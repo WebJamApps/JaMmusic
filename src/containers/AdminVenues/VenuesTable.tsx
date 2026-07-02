@@ -234,7 +234,7 @@ export function VenuesTable({ venues, onEdit, onDelete }: IvenuesTableProps) {
       {/* Table responsive scroll container with sticky header */}
       <Box sx={{
         width: '100%',
-        maxHeight: 'calc(100vh - 280px)',
+        maxHeight: 'calc(100vh - 380px)',
         overflow: 'auto',
         border: '1px solid',
         borderColor: 'divider',
