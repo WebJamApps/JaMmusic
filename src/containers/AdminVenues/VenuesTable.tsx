@@ -14,6 +14,8 @@ interface IvenuesTableProps {
   venues: Ivenue[];
   onEdit: (venue: Ivenue) => void;
   onDelete?: (venue: Ivenue) => void;
+  targetDate?: string;
+  setTargetDate?: (val: string) => void;
 }
 
 type Order = 'asc' | 'desc';
@@ -80,7 +82,7 @@ function sortVenues(venues: Ivenue[], orderBy: string, order: Order): Ivenue[] {
   });
 }
 
-export function VenuesTable({ venues, onEdit, onDelete }: IvenuesTableProps) {
+export function VenuesTable({ venues, onEdit, onDelete, targetDate, setTargetDate }: IvenuesTableProps) {
   const [orderBy, setOrderBy] = useState('prospect');
   const [order, setOrder] = useState<Order>('desc');
   const [page, setPage] = useState(0);
@@ -144,31 +146,32 @@ export function VenuesTable({ venues, onEdit, onDelete }: IvenuesTableProps) {
     }
   }, [page, pageCount]);
 
-  // Hook rules require returning early after all hooks have run
-  if (venues.length === 0) {
-    return <Box data-testid="venues-empty" sx={{ marginY: 2 }}>No venues.</Box>;
-  }
-
-  const start = page * rowsPerPage;
-  const pageRows = sorted.slice(start, start + rowsPerPage);
-
-  return (
-    <Box sx={{ width: '100%' }}>
-      {/* Search and Vetting Toolbar */}
+  const renderToolbar = () => {
+    return (
       <Box sx={{
         display: 'flex',
-        alignItems: 'center',
+        alignItems: 'flex-start',
         justifyContent: 'space-between',
-        gap: 2,
-        marginBottom: 2,
+        gap: 2.5,
+        marginBottom: 0.5,
         flexWrap: 'wrap',
-        backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.02)' : 'rgba(0,0,0,0.02)',
-        padding: 1.5,
-        borderRadius: 2,
+        backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.015)',
+        padding: '8px 16px',
+        borderRadius: '12px',
         border: '1px solid',
         borderColor: 'divider',
+        boxShadow: '0 2px 8px rgba(0,0,0,0.01)',
       }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flexWrap: 'wrap', flexGrow: 1 }}>
+        <Box 
+          data-testid="venues-inputs-container"
+          sx={{ 
+            display: 'flex', 
+            alignItems: 'flex-start', 
+            gap: 2.5, 
+            flexWrap: { xs: 'wrap', md: 'nowrap' } 
+          }}
+        >
+          {/* Search box with perfect sizing */}
           <TextField
             size="small"
             placeholder="Search name or city..."
@@ -183,59 +186,161 @@ export function VenuesTable({ venues, onEdit, onDelete }: IvenuesTableProps) {
                 ),
               }
             }}
-            sx={{ minWidth: 260, backgroundColor: 'background.paper', borderRadius: 1 }}
+            sx={{ 
+              width: 300, 
+              flexShrink: 0,
+              backgroundColor: 'background.paper', 
+              borderRadius: 1.5,
+              '& .MuiOutlinedInput-root': {
+                borderRadius: '6px',
+                height: 38,
+              }
+            }}
             data-testid="venues-search-box"
           />
-          
+
+          {/* Date picker with matching height and no separate text label */}
+          {setTargetDate && (
+            <Tooltip title="Pick a target weekend to filter by availability (no conflicting gigs in the ±2-month window)." arrow>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, height: 38, flexShrink: 0 }}>
+                <TextField
+                  type="date"
+                  size="small"
+                  value={targetDate || ''}
+                  onChange={(e) => setTargetDate(e.target.value)}
+                  sx={{ 
+                    width: 155, 
+                    flexShrink: 0,
+                    backgroundColor: 'background.paper', 
+                    '& .MuiOutlinedInput-root': {
+                      borderRadius: '6px',
+                      height: 38,
+                    }
+                  }}
+                  data-testid="venues-target-date"
+                />
+                {targetDate && (
+                  <Button
+                    size="small"
+                    variant="text"
+                    onClick={() => setTargetDate('')}
+                    data-testid="venues-clear-date"
+                    sx={{ 
+                      minWidth: 'auto', 
+                      px: 1.5, 
+                      height: 32, 
+                      borderRadius: '6px',
+                      textTransform: 'none',
+                      fontWeight: 'bold',
+                    }}
+                  >
+                    Clear
+                  </Button>
+                )}
+              </Box>
+            </Tooltip>
+          )}
+
+          {/* Needs Vetting switch aligned to the top edge */}
           <FormControlLabel
             control={
               <Switch
                 checked={needsVettingFilter}
                 onChange={(e) => handleNeedsVettingToggle(e.target.checked)}
                 color="warning"
+                size="small"
                 data-testid="venues-needs-vetting-filter"
+                sx={{ 
+                  margin: 0,
+                  alignSelf: 'flex-start'
+                }}
               />
             }
             label={
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                <Typography variant="body2" sx={{ fontWeight: 'medium' }}>Needs Vetting</Typography>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, pt: 0.25, whiteSpace: 'nowrap' }}>
+                <Typography variant="body2" sx={{ fontWeight: 'medium', color: 'text.primary', whiteSpace: 'nowrap' }}>Needs Vetting</Typography>
                 <Chip 
                   label={unvettedCount} 
                   size="small" 
                   color={needsVettingFilter ? "warning" : "default"}
-                  sx={{ height: 20, fontSize: '0.75rem', fontWeight: 'bold' }}
+                  sx={{ height: 20, fontSize: '0.75rem', fontWeight: 'bold', borderRadius: '6px' }}
                 />
               </Box>
             }
+            sx={{ 
+              margin: 0, 
+              display: 'flex', 
+              alignItems: 'flex-start', 
+              alignSelf: 'flex-start',
+              pt: 0.5,
+              flexShrink: 0
+            }}
           />
         </Box>
         
-        {/* Progress Counter & Stats */}
-        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 0.5, minWidth: 180 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <Typography variant="body2" sx={{ fontWeight: 'bold' }} color="primary.main" data-testid="venues-vetted-counter">
+        {/* Progress Counter & Stats styled as a premium green pill aligned to top */}
+        <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2, flexWrap: 'wrap', marginLeft: 'auto', pt: 0.5 }}>
+          <Box sx={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            gap: 1, 
+            backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(76, 175, 80, 0.12)' : 'rgba(76, 175, 80, 0.06)', 
+            padding: '4px 12px', 
+            borderRadius: '20px', 
+            border: '1px solid rgba(76, 175, 80, 0.18)' 
+          }}>
+            <Typography variant="body2" sx={{ fontWeight: 'bold' }} color="success.main" data-testid="venues-vetted-counter">
               Vetted {vettedCount} of {venues.length}
             </Typography>
-            <Typography variant="caption" color="text.secondary">
-              ({Math.round((vettedCount / venues.length) * 100) || 0}%)
+            <Typography variant="caption" sx={{ fontWeight: 'bold' }} color="success.dark">
+              ({Math.round((vettedCount / (venues.length || 1)) * 100) || 0}%)
             </Typography>
           </Box>
-          <Box sx={{ width: '100%', minWidth: 150 }}>
+          <Box sx={{ width: 100, display: 'flex', alignItems: 'center', height: 26 }}>
             <LinearProgress 
               variant="determinate" 
-              value={(vettedCount / venues.length) * 100 || 0} 
+              value={(vettedCount / (venues.length || 1)) * 100 || 0} 
               color="success"
-              sx={{ height: 6, borderRadius: 3 }}
+              sx={{
+                height: 6,
+                borderRadius: 3,
+                width: '100%',
+                backgroundColor: (theme) => (
+                  theme.palette.mode === 'dark'
+                    ? 'rgba(255,255,255,0.05)'
+                    : 'rgba(0,0,0,0.05)'
+                ),
+              }}
             />
           </Box>
         </Box>
       </Box>
+    );
+  };
+
+  // Hook rules require returning early after all hooks have run
+  if (venues.length === 0) {
+    return (
+      <Box sx={{ width: '100%' }}>
+        {renderToolbar()}
+        <Box data-testid="venues-empty" sx={{ marginY: 2 }}>No venues.</Box>
+      </Box>
+    );
+  }
+
+  const start = page * rowsPerPage;
+  const pageRows = sorted.slice(start, start + rowsPerPage);
+
+  return (
+    <Box sx={{ width: '100%' }}>
+      {renderToolbar()}
 
       {/* Table responsive scroll container with sticky header */}
       <Box sx={{
         width: '100%',
         maxHeight: 'calc(100vh - 280px)',
-        overflow: 'auto',
+        overflowX: 'auto',
+        overflowY: pageRows.length <= 10 ? 'hidden' : 'auto',
         border: '1px solid',
         borderColor: 'divider',
         borderRadius: 1,
@@ -252,15 +357,16 @@ export function VenuesTable({ venues, onEdit, onDelete }: IvenuesTableProps) {
               <TableRow>
                 {/* Sticky Actions Header */}
                 <TableCell
+                  align="center"
                   sx={{
                     position: 'sticky',
                     left: 0,
                     top: 0,
                     zIndex: 11,
                     backgroundColor: 'background.paper',
-                    width: 130,
-                    minWidth: 130,
-                    maxWidth: 130,
+                    width: 150,
+                    minWidth: 150,
+                    maxWidth: 150,
                     borderRight: '1px solid',
                     borderColor: 'divider',
                     fontWeight: 'bold',
@@ -276,7 +382,7 @@ export function VenuesTable({ venues, onEdit, onDelete }: IvenuesTableProps) {
                   onClick={() => handleSort('name')}
                   sx={{
                     position: 'sticky',
-                    left: 130,
+                    left: 150,
                     top: 0,
                     zIndex: 11,
                     backgroundColor: 'background.paper',
@@ -323,6 +429,7 @@ export function VenuesTable({ venues, onEdit, onDelete }: IvenuesTableProps) {
                       cursor: 'pointer',
                       userSelect: 'none',
                       fontWeight: 'bold',
+                      whiteSpace: 'nowrap',
                       '&:hover': {
                         backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.04)',
                       },
@@ -373,6 +480,7 @@ export function VenuesTable({ venues, onEdit, onDelete }: IvenuesTableProps) {
                   >
                     {/* Sticky Actions Column */}
                     <TableCell
+                      align="center"
                       sx={{
                         position: 'sticky',
                         left: 0,
@@ -380,27 +488,29 @@ export function VenuesTable({ venues, onEdit, onDelete }: IvenuesTableProps) {
                         backgroundColor: (theme) => noType 
                           ? (theme.palette.mode === 'dark' ? 'rgba(255, 167, 38, 0.18)' : '#fff3e0') 
                           : theme.palette.background.paper,
-                        width: 130,
-                        minWidth: 130,
-                        maxWidth: 130,
+                        width: 150,
+                        minWidth: 150,
+                        maxWidth: 150,
                         borderRight: '1px solid',
                         borderColor: 'divider',
                         whiteSpace: 'nowrap',
                       }}
                     >
-                      <Button size="small" onClick={() => onEdit(v)} data-testid={`venue-edit-${v._id}`}>Edit</Button>
-                      {onDelete && (
-                        <Button size="small" color="error" onClick={() => handleDelete(v)} data-testid={`venue-delete-${v._id}`}>
-                          Archive
-                        </Button>
-                      )}
+                      <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1 }}>
+                        <Button size="small" onClick={() => onEdit(v)} data-testid={`venue-edit-${v._id}`}>Edit</Button>
+                        {onDelete && (
+                          <Button size="small" color="error" onClick={() => handleDelete(v)} data-testid={`venue-delete-${v._id}`}>
+                            Archive
+                          </Button>
+                        )}
+                      </Box>
                     </TableCell>
 
                     {/* Sticky Name Column */}
                     <TableCell
                       sx={{
                         position: 'sticky',
-                        left: 130,
+                        left: 150,
                         zIndex: 9,
                         backgroundColor: (theme) => noType 
                           ? (theme.palette.mode === 'dark' ? 'rgba(255, 167, 38, 0.18)' : '#fff3e0') 
