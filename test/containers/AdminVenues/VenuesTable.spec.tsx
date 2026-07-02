@@ -97,18 +97,54 @@ describe('VenuesTable', () => {
     expect(onDelete).not.toHaveBeenCalled();
     confirmSpy.mockRestore();
   });
-
-  it('paginates at 25 rows/page', () => {
-    const many: Ivenue[] = Array.from({ length: 30 }, (_, i) => ({
+  it('paginates at 10 rows/page by default', () => {
+    const many: Ivenue[] = Array.from({ length: 15 }, (_, i) => ({
       _id: `m${i}`, name: `V${i}`, outreachEligible: true,
     }));
     render(<VenuesTable venues={many} onEdit={vi.fn()} />);
-    expect(screen.getByTestId('venues-page-info').innerHTML).toBe('1–25 of 30');
-    expect(screen.getAllByTestId(/^venue-row-/)).toHaveLength(25);
+    expect(screen.getByTestId('venues-page-info').innerHTML).toBe('1–10 of 15');
+    expect(screen.getAllByTestId(/^venue-row-/)).toHaveLength(10);
     fireEvent.click(screen.getByTestId('venues-next-page'));
-    expect(screen.getByTestId('venues-page-info').innerHTML).toBe('26–30 of 30');
+    expect(screen.getByTestId('venues-page-info').innerHTML).toBe('11–15 of 15');
     expect(screen.getAllByTestId(/^venue-row-/)).toHaveLength(5);
     fireEvent.click(screen.getByTestId('venues-prev-page'));
-    expect(screen.getByTestId('venues-page-info').innerHTML).toBe('1–25 of 30');
+    expect(screen.getByTestId('venues-page-info').innerHTML).toBe('1–10 of 15');
+  });
+
+  it('filters live on name and city', () => {
+    const list: Ivenue[] = [
+      { _id: 'va', name: 'Roanoke Lounge', city: 'Roanoke' },
+      { _id: 'vb', name: 'Salem Pub', city: 'Salem' },
+      { _id: 'vc', name: 'Random', city: 'Roanoke' },
+    ];
+    render(<VenuesTable venues={list} onEdit={vi.fn()} />);
+    const searchBox = screen.getByPlaceholderText('Search name or city...');
+    
+    // search for "salem"
+    fireEvent.change(searchBox, { target: { value: 'salem' } });
+    expect(rowIds()).toEqual(['venue-row-vb']);
+
+    // search for "roanoke"
+    fireEvent.change(searchBox, { target: { value: 'roanoke' } });
+    expect(rowIds()).toEqual(['venue-row-va', 'venue-row-vc']);
+  });
+
+  it('filters un-vetted venues and displays progress stats', () => {
+    const list: Ivenue[] = [
+      { _id: 'v1', name: 'Vetted 1', venueType: 'MidRangeCafeBar', contactVerified: true },
+      { _id: 'v2', name: 'Unvetted 1', venueType: undefined, contactVerified: true }, // needs vetting
+      { _id: 'v3', name: 'Unvetted 2', venueType: 'MidRangeCafeBar', contactVerified: undefined }, // needs vetting
+    ];
+    render(<VenuesTable venues={list} onEdit={vi.fn()} />);
+    
+    // Vetted stats should show: Vetted 1 of 3 (unvetted is v2, v3)
+    expect(screen.getByTestId('venues-vetted-counter').innerHTML).toContain('Vetted 1 of 3');
+
+    // Click Needs Vetting toggle
+    const toggle = screen.getByRole('checkbox');
+    fireEvent.click(toggle);
+
+    // Now only the unvetted rows should be shown
+    expect(rowIds()).toEqual(['venue-row-v2', 'venue-row-v3']);
   });
 });

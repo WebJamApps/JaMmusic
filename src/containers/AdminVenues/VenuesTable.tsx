@@ -1,7 +1,11 @@
 import { useEffect, useState } from 'react';
 import {
   Table, TableHead, TableBody, TableRow, TableCell, TableSortLabel, Tooltip, Button, Chip, Box, Typography,
+  TextField, FormControlLabel, Switch, Select, MenuItem,
 } from '@mui/material';
+import LinearProgress from '@mui/material/LinearProgress';
+import InputAdornment from '@mui/material/InputAdornment';
+import { Search } from '@mui/icons-material';
 import {
   FIELD_HELP, prospectScore, type Ivenue,
 } from './admin-venues.utils';
@@ -13,7 +17,6 @@ interface IvenuesTableProps {
 }
 
 type Order = 'asc' | 'desc';
-const ROWS_PER_PAGE = 25;
 
 // Columns: `key` drives sorting (via sortValue), `help` (a FIELD_HELP key) adds a
 // consequence tooltip on the header. 'prospect' is the computed default-sort column.
@@ -81,17 +84,19 @@ export function VenuesTable({ venues, onEdit, onDelete }: IvenuesTableProps) {
   const [orderBy, setOrderBy] = useState('prospect');
   const [order, setOrder] = useState<Order>('desc');
   const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [needsVettingFilter, setNeedsVettingFilter] = useState(false);
 
-  // Keep the page in range as the data or sort changes (e.g. after a filter).
-  const pageCount = Math.max(1, Math.ceil(venues.length / ROWS_PER_PAGE));
-  useEffect(() => { if (page >= pageCount) setPage(0); }, [page, pageCount]);
-
-  if (venues.length === 0) {
-    return <Box data-testid="venues-empty" sx={{ marginY: 2 }}>No venues.</Box>;
-  }
+  // Un-vetted definition: no venueType set OR contactVerified is falsy.
+  // This is Josh's vetting work queue.
+  const unvettedCount = venues.filter((v) => !v.venueType || !v.contactVerified).length;
+  const vettedCount = venues.length - unvettedCount;
 
   const handleSort = (key: string) => {
-    if (orderBy === key) { setOrder(order === 'asc' ? 'desc' : 'asc'); } else {
+    if (orderBy === key) {
+      setOrder(order === 'asc' ? 'desc' : 'asc');
+    } else {
       setOrderBy(key);
       setOrder(key === 'prospect' ? 'desc' : 'asc');
     }
@@ -104,93 +109,383 @@ export function VenuesTable({ venues, onEdit, onDelete }: IvenuesTableProps) {
     if (onDelete) onDelete(v);
   };
 
-  const sorted = sortVenues(venues, orderBy, order);
-  const start = page * ROWS_PER_PAGE;
-  const pageRows = sorted.slice(start, start + ROWS_PER_PAGE);
+  const handleSearchChange = (val: string) => {
+    setSearchTerm(val);
+    setPage(0);
+  };
+
+  const handleNeedsVettingToggle = (checked: boolean) => {
+    setNeedsVettingFilter(checked);
+    setPage(0);
+  };
+
+  // Perform filtering live on venue name + city, and needs-vetting state
+  const filtered = venues.filter((v) => {
+    if (searchTerm) {
+      const term = searchTerm.toLowerCase();
+      const nameMatch = (v.name || '').toLowerCase().includes(term);
+      const cityMatch = (v.city || '').toLowerCase().includes(term);
+      if (!nameMatch && !cityMatch) return false;
+    }
+    if (needsVettingFilter) {
+      const needsVetting = !v.venueType || !v.contactVerified;
+      if (!needsVetting) return false;
+    }
+    return true;
+  });
+
+  const sorted = sortVenues(filtered, orderBy, order);
+  const pageCount = Math.max(1, Math.ceil(filtered.length / rowsPerPage));
+
+  // Keep the page in range as the data or sort changes (e.g. after a filter).
+  useEffect(() => {
+    if (page >= pageCount) {
+      setPage(0);
+    }
+  }, [page, pageCount]);
+
+  // Hook rules require returning early after all hooks have run
+  if (venues.length === 0) {
+    return <Box data-testid="venues-empty" sx={{ marginY: 2 }}>No venues.</Box>;
+  }
+
+  const start = page * rowsPerPage;
+  const pageRows = sorted.slice(start, start + rowsPerPage);
 
   return (
-    <Box sx={{ width: '100%', overflowX: 'auto' }}>
-      <Table size="small" data-testid="venues-table" sx={{ minWidth: 1100 }}>
-        <TableHead>
-          <TableRow>
-            {COLUMNS.map((col) => (
-              <TableCell key={col.key} sortDirection={orderBy === col.key ? order : false}>
-                <Tooltip title={col.help ? FIELD_HELP[col.help] : ''} arrow>
-                  <TableSortLabel
-                    active={orderBy === col.key}
-                    direction={orderBy === col.key ? order : 'asc'}
-                    onClick={() => handleSort(col.key)}
-                    data-testid={`sort-${col.key}`}
-                  >
-                    {col.label}
-                  </TableSortLabel>
-                </Tooltip>
-              </TableCell>
-            ))}
-            <TableCell>Actions</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {pageRows.map((v) => {
-            const noType = !v.venueType;
-            return (
-              <TableRow
-                key={v._id}
-                data-testid={`venue-row-${v._id}`}
-                sx={noType ? { backgroundColor: 'rgba(255,167,38,0.18)' } : undefined}
-              >
-                <TableCell>{v.name}</TableCell>
-                <TableCell>{dash(v.city)}</TableCell>
-                <TableCell>{dash(v.usState)}</TableCell>
-                <TableCell>
-                  {noType
-                    ? <Chip label="no type" color="warning" size="small" data-testid={`venue-notype-${v._id}`} />
-                    : v.venueType}
-                </TableCell>
-                <TableCell>{yn(v.inScope !== false)}</TableCell>
-                <TableCell>{dash(v.bookingStatus)}</TableCell>
-                <TableCell>{yn(v.interested !== false)}</TableCell>
-                <TableCell data-testid={`venue-eligible-${v._id}`}>{yn(v.outreachEligible)}</TableCell>
-                <TableCell>{dash(v.originalsFit)}</TableCell>
-                <TableCell>{dash(v.payTier)}</TableCell>
-                <TableCell>{dash(v.travelBand)}</TableCell>
-                <TableCell>{dash(v.priority)}</TableCell>
-                <TableCell data-testid={`venue-score-${v._id}`}>{prospectScore(v)}</TableCell>
-                <TableCell sx={{ whiteSpace: 'nowrap' }}>
-                  <Button size="small" onClick={() => onEdit(v)} data-testid={`venue-edit-${v._id}`}>Edit</Button>
-                  {onDelete && (
-                    <Button size="small" color="error" onClick={() => handleDelete(v)} data-testid={`venue-delete-${v._id}`}>
-                      Archive
-                    </Button>
-                  )}
-                </TableCell>
-              </TableRow>
-            );
-          })}
-        </TableBody>
-      </Table>
+    <Box sx={{ width: '100%' }}>
+      {/* Search and Vetting Toolbar */}
       <Box sx={{
-        display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 2, marginTop: 1,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        gap: 2,
+        marginBottom: 2,
+        flexWrap: 'wrap',
+        backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.02)' : 'rgba(0,0,0,0.02)',
+        padding: 1.5,
+        borderRadius: 2,
+        border: '1px solid',
+        borderColor: 'divider',
       }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flexWrap: 'wrap', flexGrow: 1 }}>
+          <TextField
+            size="small"
+            placeholder="Search name or city..."
+            value={searchTerm}
+            onChange={(e) => handleSearchChange(e.target.value)}
+            slotProps={{
+              input: {
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Search fontSize="small" color="action" />
+                  </InputAdornment>
+                ),
+              }
+            }}
+            sx={{ minWidth: 260, backgroundColor: 'background.paper', borderRadius: 1 }}
+            data-testid="venues-search-box"
+          />
+          
+          <FormControlLabel
+            control={
+              <Switch
+                checked={needsVettingFilter}
+                onChange={(e) => handleNeedsVettingToggle(e.target.checked)}
+                color="warning"
+                data-testid="venues-needs-vetting-filter"
+              />
+            }
+            label={
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Typography variant="body2" sx={{ fontWeight: 'medium' }}>Needs Vetting</Typography>
+                <Chip 
+                  label={unvettedCount} 
+                  size="small" 
+                  color={needsVettingFilter ? "warning" : "default"}
+                  sx={{ height: 20, fontSize: '0.75rem', fontWeight: 'bold' }}
+                />
+              </Box>
+            }
+          />
+        </Box>
+        
+        {/* Progress Counter & Stats */}
+        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 0.5, minWidth: 180 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Typography variant="body2" sx={{ fontWeight: 'bold' }} color="primary.main" data-testid="venues-vetted-counter">
+              Vetted {vettedCount} of {venues.length}
+            </Typography>
+            <Typography variant="caption" color="text.secondary">
+              ({Math.round((vettedCount / venues.length) * 100) || 0}%)
+            </Typography>
+          </Box>
+          <Box sx={{ width: '100%', minWidth: 150 }}>
+            <LinearProgress 
+              variant="determinate" 
+              value={(vettedCount / venues.length) * 100 || 0} 
+              color="success"
+              sx={{ height: 6, borderRadius: 3 }}
+            />
+          </Box>
+        </Box>
+      </Box>
+
+      {/* Table responsive scroll container with sticky header */}
+      <Box sx={{
+        width: '100%',
+        maxHeight: 'calc(100vh - 280px)',
+        overflow: 'auto',
+        border: '1px solid',
+        borderColor: 'divider',
+        borderRadius: 1,
+        boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
+        backgroundColor: 'background.paper',
+      }}>
+        {filtered.length === 0 ? (
+          <Box sx={{ p: 4, textAlign: 'center' }} data-testid="venues-search-empty">
+            <Typography color="text.secondary">No venues match your search or filters.</Typography>
+          </Box>
+        ) : (
+          <Table size="small" stickyHeader data-testid="venues-table" sx={{ minWidth: 1100 }}>
+            <TableHead>
+              <TableRow>
+                {/* Sticky Actions Header */}
+                <TableCell
+                  sx={{
+                    position: 'sticky',
+                    left: 0,
+                    top: 0,
+                    zIndex: 11,
+                    backgroundColor: 'background.paper',
+                    width: 130,
+                    minWidth: 130,
+                    maxWidth: 130,
+                    borderRight: '1px solid',
+                    borderColor: 'divider',
+                    fontWeight: 'bold',
+                  }}
+                >
+                  Actions
+                </TableCell>
+
+                {/* Sticky Name Header */}
+                <TableCell
+                  key="name"
+                  sortDirection={orderBy === 'name' ? order : false}
+                  onClick={() => handleSort('name')}
+                  sx={{
+                    position: 'sticky',
+                    left: 130,
+                    top: 0,
+                    zIndex: 11,
+                    backgroundColor: 'background.paper',
+                    width: 170,
+                    minWidth: 170,
+                    maxWidth: 170,
+                    borderRight: '1px solid',
+                    borderColor: 'divider',
+                    boxShadow: '3px 0 5px -2px rgba(0,0,0,0.15)',
+                    cursor: 'pointer',
+                    userSelect: 'none',
+                    fontWeight: 'bold',
+                    '&:hover': {
+                      backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.04)',
+                    },
+                  }}
+                >
+                  <Tooltip title={FIELD_HELP.name ? FIELD_HELP.name : ''} arrow>
+                    <TableSortLabel
+                      active={orderBy === 'name'}
+                      direction={orderBy === 'name' ? order : 'asc'}
+                      data-testid="sort-name"
+                      sx={{
+                        '& .MuiTableSortLabel-icon': {
+                          opacity: orderBy === 'name' ? 1 : 0.3,
+                        },
+                        '&:hover .MuiTableSortLabel-icon': {
+                          opacity: 0.8,
+                        },
+                      }}
+                    >
+                      Name
+                    </TableSortLabel>
+                  </Tooltip>
+                </TableCell>
+
+                {/* Standard headers (City, State, etc.) */}
+                {COLUMNS.slice(1).map((col) => (
+                  <TableCell
+                    key={col.key}
+                    sortDirection={orderBy === col.key ? order : false}
+                    onClick={() => handleSort(col.key)}
+                    sx={{
+                      cursor: 'pointer',
+                      userSelect: 'none',
+                      fontWeight: 'bold',
+                      '&:hover': {
+                        backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.04)',
+                      },
+                      backgroundColor: orderBy === col.key 
+                        ? (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.02)' : 'rgba(0,0,0,0.01)'
+                        : undefined,
+                    }}
+                  >
+                    <Tooltip title={col.help ? FIELD_HELP[col.help] : ''} arrow>
+                      <TableSortLabel
+                        active={orderBy === col.key}
+                        direction={orderBy === col.key ? order : 'asc'}
+                        data-testid={`sort-${col.key}`}
+                        sx={{
+                          '& .MuiTableSortLabel-icon': {
+                            opacity: orderBy === col.key ? 1 : 0.3,
+                          },
+                          '&:hover .MuiTableSortLabel-icon': {
+                            opacity: 0.8,
+                          },
+                        }}
+                      >
+                        {col.label}
+                      </TableSortLabel>
+                    </Tooltip>
+                  </TableCell>
+                ))}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {pageRows.map((v) => {
+                const noType = !v.venueType;
+                return (
+                  <TableRow
+                    key={v._id}
+                    data-testid={`venue-row-${v._id}`}
+                    sx={{
+                      backgroundColor: noType ? 'rgba(255, 167, 38, 0.12)' : undefined,
+                      '&:hover': {
+                        backgroundColor: (theme) => theme.palette.action.hover,
+                      },
+                      '&:hover .MuiTableCell-root': {
+                        backgroundColor: (theme) => noType 
+                          ? 'rgba(255, 167, 38, 0.22)' 
+                          : theme.palette.action.hover,
+                      }
+                    }}
+                  >
+                    {/* Sticky Actions Column */}
+                    <TableCell
+                      sx={{
+                        position: 'sticky',
+                        left: 0,
+                        zIndex: 9,
+                        backgroundColor: (theme) => noType 
+                          ? (theme.palette.mode === 'dark' ? 'rgba(255, 167, 38, 0.18)' : '#fff3e0') 
+                          : theme.palette.background.paper,
+                        width: 130,
+                        minWidth: 130,
+                        maxWidth: 130,
+                        borderRight: '1px solid',
+                        borderColor: 'divider',
+                        whiteSpace: 'nowrap',
+                      }}
+                    >
+                      <Button size="small" onClick={() => onEdit(v)} data-testid={`venue-edit-${v._id}`}>Edit</Button>
+                      {onDelete && (
+                        <Button size="small" color="error" onClick={() => handleDelete(v)} data-testid={`venue-delete-${v._id}`}>
+                          Archive
+                        </Button>
+                      )}
+                    </TableCell>
+
+                    {/* Sticky Name Column */}
+                    <TableCell
+                      sx={{
+                        position: 'sticky',
+                        left: 130,
+                        zIndex: 9,
+                        backgroundColor: (theme) => noType 
+                          ? (theme.palette.mode === 'dark' ? 'rgba(255, 167, 38, 0.18)' : '#fff3e0') 
+                          : theme.palette.background.paper,
+                        width: 170,
+                        minWidth: 170,
+                        maxWidth: 170,
+                        borderRight: '1px solid',
+                        borderColor: 'divider',
+                        boxShadow: '3px 0 5px -2px rgba(0,0,0,0.15)',
+                        fontWeight: 'medium',
+                      }}
+                    >
+                      {v.name}
+                    </TableCell>
+
+                    {/* Other standard columns */}
+                    <TableCell>{dash(v.city)}</TableCell>
+                    <TableCell>{dash(v.usState)}</TableCell>
+                    <TableCell>
+                      {noType
+                        ? <Chip label="no type" color="warning" size="small" data-testid={`venue-notype-${v._id}`} />
+                        : v.venueType}
+                    </TableCell>
+                    <TableCell>{yn(v.inScope !== false)}</TableCell>
+                    <TableCell>{dash(v.bookingStatus)}</TableCell>
+                    <TableCell>{yn(v.interested !== false)}</TableCell>
+                    <TableCell data-testid={`venue-eligible-${v._id}`}>{yn(v.outreachEligible)}</TableCell>
+                    <TableCell>{dash(v.originalsFit)}</TableCell>
+                    <TableCell>{dash(v.payTier)}</TableCell>
+                    <TableCell>{dash(v.travelBand)}</TableCell>
+                    <TableCell>{dash(v.priority)}</TableCell>
+                    <TableCell data-testid={`venue-score-${v._id}`}>{prospectScore(v)}</TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        )}
+      </Box>
+
+      {/* Pagination & Rows-per-page */}
+      <Box sx={{
+        display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 3, marginTop: 1.5, flexWrap: 'wrap',
+      }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <Typography variant="body2" color="text.secondary">Rows per page:</Typography>
+          <Select
+            size="small"
+            value={rowsPerPage}
+            onChange={(e) => {
+              setRowsPerPage(Number(e.target.value));
+              setPage(0);
+            }}
+            variant="standard"
+            sx={{ fontSize: '0.875rem' }}
+            inputProps={{ 'data-testid': 'venues-rows-per-page' }}
+          >
+            <MenuItem value={10}>10</MenuItem>
+            <MenuItem value={25}>25</MenuItem>
+            <MenuItem value={50}>50</MenuItem>
+          </Select>
+        </Box>
+
         <Typography variant="body2" data-testid="venues-page-info">
-          {`${start + 1}–${Math.min(start + ROWS_PER_PAGE, venues.length)} of ${venues.length}`}
+          {filtered.length === 0 ? '0–0 of 0' : `${start + 1}–${Math.min(start + rowsPerPage, filtered.length)} of ${filtered.length}`}
         </Typography>
-        <Button
-          size="small"
-          disabled={page === 0}
-          onClick={() => setPage((p) => Math.max(0, p - 1))}
-          data-testid="venues-prev-page"
-        >
-          Prev
-        </Button>
-        <Button
-          size="small"
-          disabled={page >= pageCount - 1}
-          onClick={() => setPage((p) => Math.min(pageCount - 1, p + 1))}
-          data-testid="venues-next-page"
-        >
-          Next
-        </Button>
+        <Box sx={{ display: 'flex', gap: 1 }}>
+          <Button
+            size="small"
+            disabled={page === 0}
+            onClick={() => setPage((p) => Math.max(0, p - 1))}
+            data-testid="venues-prev-page"
+          >
+            Prev
+          </Button>
+          <Button
+            size="small"
+            disabled={page >= pageCount - 1}
+            onClick={() => setPage((p) => Math.min(pageCount - 1, p + 1))}
+            data-testid="venues-next-page"
+          >
+            Next
+          </Button>
+        </Box>
       </Box>
     </Box>
   );
