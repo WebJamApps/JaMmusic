@@ -1,6 +1,7 @@
 import {
   useCallback, useContext, useEffect, useState,
 } from 'react';
+import { createPortal } from 'react-dom';
 import {
   Box, Typography, Button, Switch, FormControlLabel,
 } from '@mui/material';
@@ -23,6 +24,11 @@ export function AdminVenues() {
   // The target-weekend filter: a date the venue must be free for (no gig within
   // its ±2-month clear window). Empty = show all venues.
   const [targetDate, setTargetDate] = useState('');
+  const [portalTarget, setPortalTarget] = useState<HTMLElement | null>(null);
+
+  useEffect(() => {
+    setPortalTarget(document.getElementById('header-controls-portal'));
+  }, []);
 
   const refresh = useCallback(async () => {
     if (!isAuthorized) return;
@@ -83,15 +89,7 @@ export function AdminVenues() {
       {loading && <Typography data-testid="admin-venues-loading">Loading...</Typography>}
       {error && <Typography color="error" data-testid="admin-venues-error">{error}</Typography>}
 
-      <Box sx={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: 2,
-        flexWrap: 'wrap',
-        gap: 2,
-      }}>
-        <Typography variant="h5" sx={{ fontWeight: 'bold' }}>Admin Venues</Typography>
+      {portalTarget && createPortal(
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
           <FormControlLabel
             control={
@@ -106,6 +104,15 @@ export function AdminVenues() {
               />
             }
             label="Show archived"
+            sx={{
+              color: 'var(--header-fg)',
+              margin: 0,
+              '& .MuiFormControlLabel-label': {
+                color: 'var(--header-fg) !important',
+                fontFamily: "'PT Sans Caption', sans-serif",
+                fontSize: '14px',
+              }
+            }}
           />
           <Button
             variant="contained"
@@ -114,10 +121,11 @@ export function AdminVenues() {
             data-testid="admin-venues-add-button"
             sx={{ borderRadius: '6px', textTransform: 'none', fontWeight: 'bold' }}
           >
-            Add Venue
+            Create
           </Button>
-        </Box>
-      </Box>
+        </Box>,
+        portalTarget
+      )}
 
       <VenuesTable
         venues={venues}

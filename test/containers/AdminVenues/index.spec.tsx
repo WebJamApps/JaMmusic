@@ -21,6 +21,18 @@ describe('AdminVenues page', () => {
   beforeEach(() => {
     adminVenuesUtils.listVenues = vi.fn(() => Promise.resolve([])) as any;
     adminVenuesUtils.getAllowedAdminRoles = vi.fn(() => ['JaM-admin', 'Developer']) as any;
+
+    // Create the portal target div so that the portal in AdminVenues has a target
+    const portal = document.createElement('div');
+    portal.setAttribute('id', 'header-controls-portal');
+    document.body.appendChild(portal);
+  });
+
+  afterEach(() => {
+    const portal = document.getElementById('header-controls-portal');
+    if (portal) {
+      portal.remove();
+    }
   });
 
   it('renders not-authorized when not authenticated', () => {
@@ -84,7 +96,7 @@ describe('AdminVenues page', () => {
     confirmSpy.mockRestore();
   });
 
-  it('opens the create dialog when Add Venue is clicked', async () => {
+  it('opens the create dialog when Create is clicked', async () => {
     await act(async () => { render(wrap(adminAuth)); });
     const addButton = screen.getByTestId('admin-venues-add-button');
     await act(async () => { fireEvent.click(addButton); });
