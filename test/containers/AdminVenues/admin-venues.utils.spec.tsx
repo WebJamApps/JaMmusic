@@ -3,12 +3,68 @@ import adminVenuesUtils, {
   type Ivenue,
 } from 'src/containers/AdminVenues/admin-venues.utils';
 
+const mockRowGetCell = {
+  value: '' as any,
+  font: {} as any,
+};
+
+const mockRow = {
+  height: 20,
+  getCell: vi.fn(),
+};
+
+const mockWorksheet = {
+  columns: [] as any[],
+  getRow: vi.fn(),
+  addRow: vi.fn(),
+};
+
+const mockAddWorksheet = vi.fn();
+const mockWriteBuffer = vi.fn();
+
+const mockWorkbook = {
+  addWorksheet: mockAddWorksheet,
+  xlsx: {
+    writeBuffer: mockWriteBuffer,
+  },
+};
+
+vi.mock('exceljs', () => {
+  const WorkbookClass = class {
+    addWorksheet(...args: any[]) {
+      return mockAddWorksheet(...args);
+    }
+    get xlsx() {
+      return { writeBuffer: mockWriteBuffer };
+    }
+  };
+  return {
+    Workbook: WorkbookClass,
+    default: { Workbook: WorkbookClass },
+  };
+});
+
 const okJson = (data: unknown) => Promise.resolve({ ok: true, json: () => Promise.resolve(data) } as Response);
 const failed = () => Promise.resolve({ ok: false, status: 500, statusText: 'Server Error' } as Response);
 
 describe('AdminVenues utils', () => {
   let fetchMock: ReturnType<typeof vi.fn>;
-  beforeEach(() => { fetchMock = vi.fn(); global.fetch = fetchMock as unknown as typeof fetch; });
+  beforeEach(() => {
+    fetchMock = vi.fn();
+    global.fetch = fetchMock as unknown as typeof fetch;
+
+    mockRow.getCell.mockReturnValue(mockRowGetCell);
+    mockWorksheet.getRow.mockReturnValue({
+      font: {} as any,
+      eachCell: vi.fn().mockImplementation((cb: any) => {
+        cb({ fill: {}, alignment: {} }, 1);
+      }),
+      height: 25,
+    });
+    mockWorksheet.addRow.mockReturnValue(mockRow);
+    mockAddWorksheet.mockReturnValue(mockWorksheet);
+    mockWriteBuffer.mockResolvedValue(new ArrayBuffer(8));
+  });
   afterEach(() => { vi.restoreAllMocks(); });
 
   it('listVenues GETs with a bearer token', async () => {
@@ -94,4 +150,69 @@ describe('AdminVenues utils', () => {
       expect(prospectScore(passion)).toBeGreaterThan(prospectScore(covers));
     });
   });
+
+  describe('exportVenuesToExcel', () => {
+    const originalCreateObjectURL = global.URL.createObjectURL;
+    const originalRevokeObjectURL = global.URL.revokeObjectURL;
+
+    beforeEach(() => {
+      global.URL.createObjectURL = vi.fn().mockReturnValue('blob:url');
+      global.URL.revokeObjectURL = vi.fn();
+    });
+
+    afterEach(() => {
+      global.URL.createObjectURL = originalCreateObjectURL;
+      global.URL.revokeObjectURL = originalRevokeObjectURL;
+    });
+
+    it('creates workbook, adds worksheet, adds rows, and downloads the excel file', async () => {
+      const mockClick = vi.fn();
+      const mockAnchor = {
+        href: '',
+        download: '',
+        click: mockClick,
+      };
+      const createElementSpy = vi.spyOn(document, 'createElement').mockImplementation((tag) => {
+        if (tag === 'a') return mockAnchor as any;
+        return document.createElement(tag);
+      });
+
+      const venues: Ivenue[] = [
+        {
+          _id: '1',
+          name: 'The Spot',
+          city: 'Salem',
+          usState: 'VA',
+          venueType: 'Originals',
+          contactName: 'John',
+          email: 'john@thespot.com',
+          phone: '123-456-7890',
+          website: 'www.thespot.com',
+          outreachEligible: true,
+          inScope: true,
+          bookingStatus: 'booking',
+          interested: true,
+          payTier: '$$',
+          contactVerified: true,
+          originalsFit: 'loves',
+          travelBand: 'local',
+          priority: 3,
+          relationshipStage: 'cold',
+          templateOverride: 'Originals',
+          notes: 'Great venue with a booking link at http://thespot.com/booking',
+        },
+      ];
+
+      await adminVenuesUtils.exportVenuesToExcel(venues);
+
+      expect(mockWorkbook.addWorksheet).toHaveBeenCalledWith('Venues');
+      expect(mockWorksheet.addRow).toHaveBeenCalled();
+      expect(mockClick).toHaveBeenCalled();
+      expect(mockAnchor.download).toBe('venues_export.xlsx');
+      expect(mockAnchor.href).toBe('blob:url');
+
+      createElementSpy.mockRestore();
+    });
+  });
 });
+

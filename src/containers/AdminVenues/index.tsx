@@ -129,6 +129,27 @@ export function AdminVenues() {
             </Typography>
           </Box>
           <Button
+            variant="outlined"
+            color="primary"
+            onClick={() => void adminVenuesUtils.exportVenuesToExcel(venues)}
+            disabled={venues.length === 0}
+            data-testid="admin-venues-export-button"
+            sx={{
+              borderRadius: '6px',
+              textTransform: 'none',
+              fontWeight: 'bold',
+              height: '32px',
+              fontSize: '13px',
+              padding: '4px 16px',
+              backgroundColor: 'background.paper',
+              '&:hover': {
+                backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.04)',
+              },
+            }}
+          >
+            Export
+          </Button>
+          <Button
             variant="contained"
             color="primary"
             onClick={() => setIsCreating(true)}
