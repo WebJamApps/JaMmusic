@@ -14,6 +14,8 @@ interface IvenuesTableProps {
   venues: Ivenue[];
   onEdit: (venue: Ivenue) => void;
   onDelete?: (venue: Ivenue) => void;
+  onRestore?: (venue: Ivenue) => void;
+  showArchived?: boolean;
   targetDate?: string;
   setTargetDate?: (val: string) => void;
 }
@@ -82,7 +84,9 @@ function sortVenues(venues: Ivenue[], orderBy: string, order: Order): Ivenue[] {
   });
 }
 
-export function VenuesTable({ venues, onEdit, onDelete, targetDate, setTargetDate }: IvenuesTableProps) {
+export function VenuesTable({
+  venues, onEdit, onDelete, onRestore, showArchived, targetDate, setTargetDate,
+}: IvenuesTableProps) {
   const [orderBy, setOrderBy] = useState('prospect');
   const [order, setOrder] = useState<Order>('desc');
   const [page, setPage] = useState(0);
@@ -359,10 +363,10 @@ export function VenuesTable({ venues, onEdit, onDelete, targetDate, setTargetDat
                 <TableCell
                   align="center"
                   sx={{
-                    position: 'sticky',
+                    position: { xs: 'static', sm: 'sticky' },
                     left: 0,
                     top: 0,
-                    zIndex: 11,
+                    zIndex: { xs: 'auto', sm: 11 },
                     backgroundColor: 'background.paper',
                     width: 150,
                     minWidth: 150,
@@ -381,17 +385,17 @@ export function VenuesTable({ venues, onEdit, onDelete, targetDate, setTargetDat
                   sortDirection={orderBy === 'name' ? order : false}
                   onClick={() => handleSort('name')}
                   sx={{
-                    position: 'sticky',
+                    position: { xs: 'static', sm: 'sticky' },
                     left: 150,
                     top: 0,
-                    zIndex: 11,
+                    zIndex: { xs: 'auto', sm: 11 },
                     backgroundColor: 'background.paper',
                     width: 170,
                     minWidth: 170,
                     maxWidth: 170,
                     borderRight: '1px solid',
                     borderColor: 'divider',
-                    boxShadow: '3px 0 5px -2px rgba(0,0,0,0.15)',
+                    boxShadow: { xs: 'none', sm: '3px 0 5px -2px rgba(0,0,0,0.15)' },
                     cursor: 'pointer',
                     userSelect: 'none',
                     fontWeight: 'bold',
@@ -462,19 +466,23 @@ export function VenuesTable({ venues, onEdit, onDelete, targetDate, setTargetDat
             <TableBody>
               {pageRows.map((v) => {
                 const noType = !v.venueType;
+                const isArchived = v.status === 'archived';
                 return (
                   <TableRow
                     key={v._id}
                     data-testid={`venue-row-${v._id}`}
                     sx={{
-                      backgroundColor: noType ? 'rgba(255, 167, 38, 0.12)' : undefined,
+                      backgroundColor: isArchived
+                        ? undefined
+                        : noType ? 'rgba(255, 167, 38, 0.12)' : undefined,
+                      opacity: isArchived ? 0.6 : 1,
                       '&:hover': {
                         backgroundColor: (theme) => theme.palette.action.hover,
                       },
                       '&:hover .MuiTableCell-root': {
-                        backgroundColor: (theme) => noType 
-                          ? 'rgba(255, 167, 38, 0.22)' 
-                          : theme.palette.action.hover,
+                        backgroundColor: (theme) => isArchived
+                          ? theme.palette.action.hover
+                          : noType ? 'rgba(255, 167, 38, 0.22)' : theme.palette.action.hover,
                       }
                     }}
                   >
@@ -482,12 +490,14 @@ export function VenuesTable({ venues, onEdit, onDelete, targetDate, setTargetDat
                     <TableCell
                       align="center"
                       sx={{
-                        position: 'sticky',
+                        position: { xs: 'static', sm: 'sticky' },
                         left: 0,
-                        zIndex: 9,
-                        backgroundColor: (theme) => noType 
-                          ? (theme.palette.mode === 'dark' ? 'rgba(255, 167, 38, 0.18)' : '#fff3e0') 
-                          : theme.palette.background.paper,
+                        zIndex: { xs: 'auto', sm: 9 },
+                        backgroundColor: (theme) => isArchived
+                          ? theme.palette.background.paper
+                          : noType
+                            ? (theme.palette.mode === 'dark' ? 'rgba(255, 167, 38, 0.18)' : '#fff3e0')
+                            : theme.palette.background.paper,
                         width: 150,
                         minWidth: 150,
                         maxWidth: 150,
@@ -497,11 +507,24 @@ export function VenuesTable({ venues, onEdit, onDelete, targetDate, setTargetDat
                       }}
                     >
                       <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1 }}>
-                        <Button size="small" onClick={() => onEdit(v)} data-testid={`venue-edit-${v._id}`}>Edit</Button>
-                        {onDelete && (
-                          <Button size="small" color="error" onClick={() => handleDelete(v)} data-testid={`venue-delete-${v._id}`}>
-                            Archive
+                        {showArchived ? (
+                          <Button
+                            size="small"
+                            color="success"
+                            onClick={() => onRestore && onRestore(v)}
+                            data-testid={`venue-restore-${v._id}`}
+                          >
+                            Restore
                           </Button>
+                        ) : (
+                          <>
+                            <Button size="small" onClick={() => onEdit(v)} data-testid={`venue-edit-${v._id}`}>Edit</Button>
+                            {onDelete && (
+                              <Button size="small" color="error" onClick={() => handleDelete(v)} data-testid={`venue-delete-${v._id}`}>
+                                Archive
+                              </Button>
+                            )}
+                          </>
                         )}
                       </Box>
                     </TableCell>
@@ -509,18 +532,20 @@ export function VenuesTable({ venues, onEdit, onDelete, targetDate, setTargetDat
                     {/* Sticky Name Column */}
                     <TableCell
                       sx={{
-                        position: 'sticky',
+                        position: { xs: 'static', sm: 'sticky' },
                         left: 150,
-                        zIndex: 9,
-                        backgroundColor: (theme) => noType 
-                          ? (theme.palette.mode === 'dark' ? 'rgba(255, 167, 38, 0.18)' : '#fff3e0') 
-                          : theme.palette.background.paper,
+                        zIndex: { xs: 'auto', sm: 9 },
+                        backgroundColor: (theme) => isArchived
+                          ? theme.palette.background.paper
+                          : noType
+                            ? (theme.palette.mode === 'dark' ? 'rgba(255, 167, 38, 0.18)' : '#fff3e0')
+                            : theme.palette.background.paper,
                         width: 170,
                         minWidth: 170,
                         maxWidth: 170,
                         borderRight: '1px solid',
                         borderColor: 'divider',
-                        boxShadow: '3px 0 5px -2px rgba(0,0,0,0.15)',
+                        boxShadow: { xs: 'none', sm: '3px 0 5px -2px rgba(0,0,0,0.15)' },
                         fontWeight: 'medium',
                       }}
                     >

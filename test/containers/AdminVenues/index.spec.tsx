@@ -2,7 +2,7 @@
 import { render, screen, act, fireEvent } from '@testing-library/react';
 import { AuthContext, defaultAuth, type Iauth } from 'src/providers/Auth.provider';
 import { AdminVenues } from 'src/containers/AdminVenues';
-import adminVenuesUtils from 'src/containers/AdminVenues/admin-venues.utils';
+import adminVenuesUtils, { type Ivenue } from 'src/containers/AdminVenues/admin-venues.utils';
 
 const adminAuth: Iauth = {
   isAuthenticated: true,
@@ -21,6 +21,18 @@ describe('AdminVenues page', () => {
   beforeEach(() => {
     adminVenuesUtils.listVenues = vi.fn(() => Promise.resolve([])) as any;
     adminVenuesUtils.getAllowedAdminRoles = vi.fn(() => ['JaM-admin', 'Developer']) as any;
+
+    // Create the portal target div so that the portal in AdminVenues has a target
+    const portal = document.createElement('div');
+    portal.setAttribute('id', 'header-controls-portal');
+    document.body.appendChild(portal);
+  });
+
+  afterEach(() => {
+    const portal = document.getElementById('header-controls-portal');
+    if (portal) {
+      portal.remove();
+    }
   });
 
   it('renders not-authorized when not authenticated', () => {
@@ -83,4 +95,39 @@ describe('AdminVenues page', () => {
     expect(screen.getByTestId('admin-venues-error').innerHTML).toBe('archive failed');
     confirmSpy.mockRestore();
   });
+
+  it('opens the create dialog when Create is clicked', async () => {
+    await act(async () => { render(wrap(adminAuth)); });
+    const addButton = screen.getByTestId('admin-venues-add-button');
+    await act(async () => { fireEvent.click(addButton); });
+    expect(screen.getByTestId('edit-venue-dialog-title').innerHTML).toBe('Add Venue');
+  });
+
+  it('toggles Show archived and loads archived venues', async () => {
+    adminVenuesUtils.listVenues = vi.fn(() => Promise.resolve([])) as any;
+    await act(async () => { render(wrap(adminAuth)); });
+    const toggle = screen.getByTestId('venues-show-archived-toggle');
+    await act(async () => { fireEvent.click(toggle); });
+    expect(adminVenuesUtils.listVenues).toHaveBeenLastCalledWith('tk', undefined, 'archived');
+  });
+
+  it('restores an archived venue', async () => {
+    const archivedVenue: Ivenue = { _id: 'v2', name: 'Archived Mac', status: 'archived' };
+    adminVenuesUtils.listVenues = vi.fn(() => Promise.resolve([archivedVenue])) as any;
+    adminVenuesUtils.updateVenue = vi.fn(() => Promise.resolve({} as Ivenue)) as any;
+
+    await act(async () => { render(wrap(adminAuth)); });
+    
+    // Toggle Show archived to show the archived row and restore button
+    const toggle = screen.getByTestId('venues-show-archived-toggle');
+    await act(async () => { fireEvent.click(toggle); });
+
+    // Click Restore button on the row
+    const restoreBtn = screen.getByTestId('venue-restore-v2');
+    await act(async () => { fireEvent.click(restoreBtn); });
+
+    expect(adminVenuesUtils.updateVenue).toHaveBeenCalledWith('tk', 'v2', { status: 'active' });
+    expect(adminVenuesUtils.listVenues).toHaveBeenCalledTimes(3); // Initial + toggle archived + post-restore refresh
+  });
 });
+

@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('Sidebar navigation alignment regression tests', () => {
-  test.beforeEach(async ({ context }) => {
+  test.beforeEach(async ({ context, page }) => {
     // Seed localStorage to simulate a logged-in Developer/Admin user,
     // which renders the complete list of admin menu links in the sidebar.
     await context.addInitScript(() => {
@@ -9,7 +9,7 @@ test.describe('Sidebar navigation alignment regression tests', () => {
         const authData = {
           isAuthenticated: true,
           error: '',
-          token: 'mock-jwt-token',
+          token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyLTEyMyIsImV4cCI6OTk5OTk5OTk5OX0.signature',
           user: {
             userType: 'Developer',
             email: 'joshua@web-jam.com'
@@ -17,6 +17,51 @@ test.describe('Sidebar navigation alignment regression tests', () => {
         };
         localStorage.setItem('auth', JSON.stringify(authData));
       } catch { /* ignore */ }
+    });
+
+    // Intercept user profile retrieval API call
+    await page.route(/\/user\/user-123/, async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          userType: 'Developer',
+          email: 'joshua@web-jam.com'
+        }),
+      });
+    });
+
+    // Mock API requests for the homepage / music page to prevent loading spinner hang
+    await page.route(/\/tour/, async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify([
+          {
+            _id: 'g1',
+            datetime: new Date().toISOString(),
+            venue: 'Mock Venue',
+            tickets: 'Free',
+            location: 'Mock City, VA',
+          }
+        ]),
+      });
+    });
+
+    await page.route(/\/picture/, async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify([]),
+      });
+    });
+
+    await page.route(/\/song/, async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify([]),
+      });
     });
   });
 
