@@ -118,7 +118,7 @@ export function AdminVenues() {
                 lineHeight: '1',
                 userSelect: 'none',
                 cursor: 'pointer',
-                display: { xs: 'none', md: 'inline' },
+                display: { xs: 'none', lg: 'inline' },
               }}
               onClick={() => {
                 setShowArchived(!showArchived);
