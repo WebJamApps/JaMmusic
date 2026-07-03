@@ -84,42 +84,60 @@ export function AdminVenues() {
 
   return (
     <Box sx={{
-      padding: 3, maxWidth: 1200, margin: 'auto', width: '100%', minWidth: 0,
+      padding: '4px 24px 24px', maxWidth: 1200, margin: 'auto', width: '100%', minWidth: 0,
     }} data-testid="admin-venues-page">
       {loading && <Typography data-testid="admin-venues-loading">Loading...</Typography>}
       {error && <Typography color="error" data-testid="admin-venues-error">{error}</Typography>}
 
       {portalTarget && createPortal(
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          <FormControlLabel
-            control={
-              <Switch
-                checked={showArchived}
-                onChange={(e) => {
-                  setShowArchived(e.target.checked);
-                  if (e.target.checked) setTargetDate('');
-                }}
-                color="secondary"
-                data-testid="venues-show-archived-toggle"
-              />
-            }
-            label="Show archived"
-            sx={{
-              color: 'var(--header-fg)',
-              margin: 0,
-              '& .MuiFormControlLabel-label': {
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2.5 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Switch
+              checked={showArchived}
+              onChange={(e) => {
+                setShowArchived(e.target.checked);
+                if (e.target.checked) setTargetDate('');
+              }}
+              color="secondary"
+              data-testid="venues-show-archived-toggle"
+              size="small"
+              sx={{
+                margin: 0,
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            />
+            <Typography
+              sx={{
                 color: 'var(--header-fg) !important',
                 fontFamily: "'PT Sans Caption', sans-serif",
                 fontSize: '14px',
-              }
-            }}
-          />
+                lineHeight: '1',
+                userSelect: 'none',
+                cursor: 'pointer',
+              }}
+              onClick={() => {
+                setShowArchived(!showArchived);
+                if (!showArchived) setTargetDate('');
+              }}
+            >
+              Show archived
+            </Typography>
+          </Box>
           <Button
             variant="contained"
             color="primary"
             onClick={() => setIsCreating(true)}
             data-testid="admin-venues-add-button"
-            sx={{ borderRadius: '6px', textTransform: 'none', fontWeight: 'bold' }}
+            sx={{
+              borderRadius: '6px',
+              textTransform: 'none',
+              fontWeight: 'bold',
+              height: '32px',
+              fontSize: '13px',
+              padding: '4px 16px',
+            }}
           >
             Create
           </Button>
