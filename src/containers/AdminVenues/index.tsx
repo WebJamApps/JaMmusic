@@ -90,7 +90,7 @@ export function AdminVenues() {
       {error && <Typography color="error" data-testid="admin-venues-error">{error}</Typography>}
 
       {portalTarget && createPortal(
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 1.5, md: 2.5 } }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 0.75, sm: 1.5, md: 2.5 } }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
             <Tooltip title="Show archived venues" arrow>
               <Switch
@@ -139,8 +139,8 @@ export function AdminVenues() {
               textTransform: 'none',
               fontWeight: 'bold',
               height: '32px',
-              fontSize: '13px',
-              padding: '4px 16px',
+              fontSize: { xs: '11px', sm: '13px' },
+              padding: { xs: '4px 8px', sm: '4px 16px' },
               backgroundColor: 'background.paper',
               '&:hover': {
                 backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.04)',
@@ -159,8 +159,8 @@ export function AdminVenues() {
               textTransform: 'none',
               fontWeight: 'bold',
               height: '32px',
-              fontSize: '13px',
-              padding: '4px 16px',
+              fontSize: { xs: '11px', sm: '13px' },
+              padding: { xs: '4px 8px', sm: '4px 16px' },
             }}
           >
             Create
