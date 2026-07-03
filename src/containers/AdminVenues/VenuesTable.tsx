@@ -191,7 +191,8 @@ export function VenuesTable({
               }
             }}
             sx={{ 
-              width: 300, 
+              width: { xs: '100%', sm: 300 }, 
+              maxWidth: '100%',
               flexShrink: 0,
               backgroundColor: 'background.paper', 
               borderRadius: 1.5,
