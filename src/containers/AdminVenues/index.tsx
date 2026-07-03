@@ -142,11 +142,11 @@ export function AdminVenues() {
               textTransform: 'none',
               fontWeight: 'bold',
               height: '32px',
-              fontSize: { xs: '0px', sm: '13px' },
-              padding: { xs: '4px 8px', sm: '4px 16px' },
-              minWidth: { xs: '32px', sm: 'auto' },
+              fontSize: { xs: '0px', md: '13px' },
+              padding: { xs: '4px 8px', md: '4px 16px' },
+              minWidth: { xs: '32px', md: 'auto' },
               '& .MuiButton-startIcon': {
-                margin: { xs: 0, sm: '0 8px 0 -4px' }
+                margin: { xs: 0, md: '0 8px 0 -4px' }
               },
               backgroundColor: 'background.paper',
               '&:hover': {
@@ -154,7 +154,7 @@ export function AdminVenues() {
               },
             }}
           >
-            <Box component="span" sx={{ display: { xs: 'none', sm: 'inline' } }}>Export</Box>
+            <Box component="span" sx={{ display: { xs: 'none', md: 'inline' } }}>Export</Box>
           </Button>
           <Button
             variant="contained"
@@ -167,15 +167,15 @@ export function AdminVenues() {
               textTransform: 'none',
               fontWeight: 'bold',
               height: '32px',
-              fontSize: { xs: '0px', sm: '13px' },
-              padding: { xs: '4px 8px', sm: '4px 16px' },
-              minWidth: { xs: '32px', sm: 'auto' },
+              fontSize: { xs: '0px', md: '13px' },
+              padding: { xs: '4px 8px', md: '4px 16px' },
+              minWidth: { xs: '32px', md: 'auto' },
               '& .MuiButton-startIcon': {
-                margin: { xs: 0, sm: '0 8px 0 -4px' }
+                margin: { xs: 0, md: '0 8px 0 -4px' }
               },
             }}
           >
-            <Box component="span" sx={{ display: { xs: 'none', sm: 'inline' } }}>Create</Box>
+            <Box component="span" sx={{ display: { xs: 'none', md: 'inline' } }}>Create</Box>
           </Button>
         </Box>,
         portalTarget
