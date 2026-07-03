@@ -6,6 +6,8 @@ import {
   Box, Typography, Button, Switch, Tooltip,
 } from '@mui/material';
 import { AuthContext } from 'src/providers/Auth.provider';
+import DownloadIcon from '@mui/icons-material/Download';
+import AddIcon from '@mui/icons-material/Add';
 import { VenuesTable } from './VenuesTable';
 import { EditVenueDialog } from './EditVenueDialog';
 import adminVenuesUtils, { type Ivenue } from './admin-venues.utils';
@@ -134,36 +136,46 @@ export function AdminVenues() {
             onClick={() => void adminVenuesUtils.exportVenuesToExcel(venues)}
             disabled={venues.length === 0}
             data-testid="admin-venues-export-button"
+            startIcon={<DownloadIcon />}
             sx={{
               borderRadius: '6px',
               textTransform: 'none',
               fontWeight: 'bold',
               height: '32px',
-              fontSize: { xs: '11px', sm: '13px' },
+              fontSize: { xs: '0px', sm: '13px' },
               padding: { xs: '4px 8px', sm: '4px 16px' },
+              minWidth: { xs: '32px', sm: 'auto' },
+              '& .MuiButton-startIcon': {
+                margin: { xs: 0, sm: '0 8px 0 -4px' }
+              },
               backgroundColor: 'background.paper',
               '&:hover': {
                 backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.04)',
               },
             }}
           >
-            Export
+            <Box component="span" sx={{ display: { xs: 'none', sm: 'inline' } }}>Export</Box>
           </Button>
           <Button
             variant="contained"
             color="primary"
             onClick={() => setIsCreating(true)}
             data-testid="admin-venues-add-button"
+            startIcon={<AddIcon />}
             sx={{
               borderRadius: '6px',
               textTransform: 'none',
               fontWeight: 'bold',
               height: '32px',
-              fontSize: { xs: '11px', sm: '13px' },
+              fontSize: { xs: '0px', sm: '13px' },
               padding: { xs: '4px 8px', sm: '4px 16px' },
+              minWidth: { xs: '32px', sm: 'auto' },
+              '& .MuiButton-startIcon': {
+                margin: { xs: 0, sm: '0 8px 0 -4px' }
+              },
             }}
           >
-            Create
+            <Box component="span" sx={{ display: { xs: 'none', sm: 'inline' } }}>Create</Box>
           </Button>
         </Box>,
         portalTarget
