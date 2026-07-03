@@ -6,6 +6,8 @@ import {
   Box, Typography, Button, Switch, Tooltip,
 } from '@mui/material';
 import { AuthContext } from 'src/providers/Auth.provider';
+import DownloadIcon from '@mui/icons-material/Download';
+import AddIcon from '@mui/icons-material/Add';
 import { VenuesTable } from './VenuesTable';
 import { EditVenueDialog } from './EditVenueDialog';
 import adminVenuesUtils, { type Ivenue } from './admin-venues.utils';
@@ -90,7 +92,7 @@ export function AdminVenues() {
       {error && <Typography color="error" data-testid="admin-venues-error">{error}</Typography>}
 
       {portalTarget && createPortal(
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 1.5, md: 2.5 } }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 0.75, sm: 1.5, lg: 2.5 } }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
             <Tooltip title="Show archived venues" arrow>
               <Switch
@@ -118,7 +120,7 @@ export function AdminVenues() {
                 lineHeight: '1',
                 userSelect: 'none',
                 cursor: 'pointer',
-                display: { xs: 'none', md: 'inline' },
+                display: { xs: 'none', lg: 'inline' },
               }}
               onClick={() => {
                 setShowArchived(!showArchived);
@@ -129,20 +131,51 @@ export function AdminVenues() {
             </Typography>
           </Box>
           <Button
-            variant="contained"
+            variant="outlined"
             color="primary"
-            onClick={() => setIsCreating(true)}
-            data-testid="admin-venues-add-button"
+            onClick={() => void adminVenuesUtils.exportVenuesToExcel(venues)}
+            disabled={venues.length === 0}
+            data-testid="admin-venues-export-button"
+            startIcon={<DownloadIcon />}
             sx={{
               borderRadius: '6px',
               textTransform: 'none',
               fontWeight: 'bold',
               height: '32px',
-              fontSize: '13px',
-              padding: '4px 16px',
+              fontSize: { xs: '0px', lg: '13px' },
+              padding: { xs: '4px 8px', lg: '4px 16px' },
+              minWidth: { xs: '32px', lg: 'auto' },
+              '& .MuiButton-startIcon': {
+                margin: { xs: 0, lg: '0 8px 0 -4px' }
+              },
+              backgroundColor: 'background.paper',
+              '&:hover': {
+                backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.04)',
+              },
             }}
           >
-            Create
+            <Box component="span" sx={{ display: { xs: 'none', lg: 'inline' } }}>Export</Box>
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => setIsCreating(true)}
+            data-testid="admin-venues-add-button"
+            startIcon={<AddIcon />}
+            sx={{
+              borderRadius: '6px',
+              textTransform: 'none',
+              fontWeight: 'bold',
+              height: '32px',
+              fontSize: { xs: '0px', lg: '13px' },
+              padding: { xs: '4px 8px', lg: '4px 16px' },
+              minWidth: { xs: '32px', lg: 'auto' },
+              '& .MuiButton-startIcon': {
+                margin: { xs: 0, lg: '0 8px 0 -4px' }
+              },
+            }}
+          >
+            <Box component="span" sx={{ display: { xs: 'none', lg: 'inline' } }}>Create</Box>
           </Button>
         </Box>,
         portalTarget

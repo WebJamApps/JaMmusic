@@ -74,7 +74,8 @@ test.describe('Admin Venues page responsiveness and table scrollability', () => 
     });
   });
 
-  test('desktop viewport (1200px) shows all text labels and uses sticky table columns', async ({ page }) => {
+  test('desktop viewport (1200px) shows all text labels and uses sticky table columns', async ({ page, isMobile }) => {
+    test.skip(isMobile, 'Desktop viewport test is not applicable to mobile-emulated browsers');
     await page.setViewportSize({ width: 1200, height: 800 });
     await page.goto('/admin/venues', { waitUntil: 'networkidle' });
 
@@ -105,7 +106,8 @@ test.describe('Admin Venues page responsiveness and table scrollability', () => 
     expect(namePosition).toBe('sticky');
   });
 
-  test('tablet viewport (732px) hides labels and branding to prevent overlapping', async ({ page }) => {
+  test('tablet viewport (732px) hides labels and branding to prevent overlapping', async ({ page, isMobile }) => {
+    test.skip(isMobile, 'Tablet viewport test is not applicable to mobile-emulated browsers');
     await page.setViewportSize({ width: 732, height: 800 });
     await page.goto('/admin/venues', { waitUntil: 'networkidle' });
 
@@ -124,6 +126,50 @@ test.describe('Admin Venues page responsiveness and table scrollability', () => 
     const showArchivedText = page.locator('p:has-text("Show archived")').first();
     const labelDisplay = await showArchivedText.evaluate((el) => window.getComputedStyle(el).display);
     expect(labelDisplay).toBe('none');
+
+    // Check that there is absolutely no overlapping between left logo, centered title, and right portal controls
+    const logoBox = await page.locator('#ohaflogo').boundingBox();
+    const titleBox = await page.locator('[data-testid="header-page-title"]').boundingBox();
+    const portalBox = await page.locator('#header-controls-portal').boundingBox();
+
+    expect(logoBox).not.toBeNull();
+    expect(titleBox).not.toBeNull();
+    expect(portalBox).not.toBeNull();
+
+    if (logoBox && titleBox && portalBox) {
+      // Logo ends before title starts
+      expect(logoBox.x + logoBox.width).toBeLessThan(titleBox.x);
+      // Title ends before portal starts
+      expect(titleBox.x + titleBox.width).toBeLessThan(portalBox.x);
+    }
+  });
+
+  test('905px viewport has no overlap, hides branding text, and shrinks page title font', async ({ page, isMobile }) => {
+    test.skip(isMobile, '905px viewport test is not applicable to mobile-emulated browsers');
+    await page.setViewportSize({ width: 905, height: 800 });
+    await page.goto('/admin/venues', { waitUntil: 'networkidle' });
+
+    // Page title is visible and shrunk to 16px font-size (since 905px <= 1024px)
+    const pageTitle = page.locator('[data-testid="header-page-title"]');
+    await expect(pageTitle).toBeVisible();
+    const titleFontSize = await pageTitle.evaluate((el) => window.getComputedStyle(el).fontSize);
+    expect(titleFontSize).toBe('16px');
+
+    // "Web Jam LLC" branding text is hidden (since 905px <= 1024px)
+    const brandText = page.locator('.header-text-card');
+    const brandDisplay = await brandText.evaluate((el) => window.getComputedStyle(el).display);
+    expect(brandDisplay).toBe('none');
+
+    // "Show archived" text label is hidden below 1200px
+    const showArchivedText = page.locator('p:has-text("Show archived")').first();
+    const labelDisplay = await showArchivedText.evaluate((el) => window.getComputedStyle(el).display);
+    expect(labelDisplay).toBe('none');
+
+    // Buttons are icon-only (text labels hidden) below 1200px
+    const exportButtonText = page.locator('[data-testid="admin-venues-export-button"] span').first();
+    const createButtonText = page.locator('[data-testid="admin-venues-add-button"] span').first();
+    await expect(exportButtonText).toBeHidden();
+    await expect(createButtonText).toBeHidden();
 
     // Check that there is absolutely no overlapping between left logo, centered title, and right portal controls
     const logoBox = await page.locator('#ohaflogo').boundingBox();

@@ -1,6 +1,6 @@
 {
   "name": "jammusic",
-  "version": "2.9.29",
+  "version": "2.9.30",
   "description": "joshandmariamusic.com",
   "main": "dist/index.html",
   "repository": {
@@ -64,6 +64,7 @@
     "date-fns": "^4.3.0",
     "dotenv": "^17.4.2",
     "events": "^3.3.0",
+    "exceljs": "^4.4.0",
     "express": "^5.2.1",
     "express-sslify": "^1.2.0",
     "html-react-parser": "^6.1.2",
@@ -118,7 +119,10 @@
     "vitest": "^4.1.7"
   },
   "overrides": {
-    "uuid": "^11.1.1"
+    "uuid": "^11.1.1",
+    "brace-expansion": "^5.0.7",
+    "archiver": "^7.0.1",
+    "unzipper": "^0.12.3"
   },
   "allowScripts": {
     "@parcel/watcher@2.5.6": true,
