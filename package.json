@@ -120,10 +120,9 @@
   },
   "overrides": {
     "uuid": "^11.1.1",
-    "exceljs": {
-      "archiver": "^7.0.1",
-      "unzipper": "^0.12.3"
-    }
+    "brace-expansion": "^5.0.7",
+    "archiver": "^7.0.1",
+    "unzipper": "^0.12.3"
   },
   "allowScripts": {
     "@parcel/watcher@2.5.6": true,
