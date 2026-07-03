@@ -51,6 +51,7 @@ export interface IvenueUpdate {
   originalsFit?: string;
   travelBand?: string;
   priority?: number;
+  status?: string;
 }
 
 const venueUrl = `${process.env.BackendUrl}/venue`;
@@ -64,8 +65,11 @@ function headers(token: string, json = false): Record<string, string> {
 // `eligibleFor` (a YYYY-MM-DD date) asks the backend for only venues with no
 // conflicting gig within the ±2-month clear window of that target weekend
 // (web-jam-back#819's GET /venue?eligibleFor=<date>). Omit it to list everything.
-async function listVenues(token: string, eligibleFor?: string): Promise<Ivenue[]> {
-  const qs = eligibleFor ? `?eligibleFor=${encodeURIComponent(eligibleFor)}` : '';
+async function listVenues(token: string, eligibleFor?: string, status?: string): Promise<Ivenue[]> {
+  const params = new URLSearchParams();
+  if (eligibleFor) params.append('eligibleFor', eligibleFor);
+  if (status) params.append('status', status);
+  const qs = params.toString() ? `?${params.toString()}` : '';
   const res = await fetch(`${venueUrl}${qs}`, { headers: headers(token) });
   if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
   return await res.json() as Ivenue[];
@@ -82,6 +86,14 @@ async function deleteVenue(token: string, venueId: string): Promise<void> {
 async function updateVenue(token: string, venueId: string, payload: IvenueUpdate): Promise<Ivenue> {
   const res = await fetch(`${venueUrl}/${venueId}`, {
     method: 'PUT', headers: headers(token, true), body: JSON.stringify(payload),
+  });
+  if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+  return await res.json() as Ivenue;
+}
+
+async function createVenue(token: string, payload: IvenueUpdate): Promise<Ivenue> {
+  const res = await fetch(venueUrl, {
+    method: 'POST', headers: headers(token, true), body: JSON.stringify(payload),
   });
   if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
   return await res.json() as Ivenue;
@@ -134,5 +146,5 @@ export function prospectScore(v: Ivenue): number {
 }
 
 export default {
-  listVenues, updateVenue, deleteVenue, getAllowedAdminRoles, prospectScore,
+  listVenues, updateVenue, deleteVenue, createVenue, getAllowedAdminRoles, prospectScore,
 };

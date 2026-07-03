@@ -70,3 +70,54 @@
   text-align: center;
   margin-top: 5px;
 }
+
+.header-controls-portal {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+@media screen and (max-width: 900px) {
+  .header-controls-portal {
+    right: 70px;
+  }
+}
+
+.header-page-title-container {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  pointer-events: none;
+}
+
+.header-page-title {
+  color: var(--header-fg);
+  margin: 0;
+  font-family: 'PT Sans Caption', sans-serif;
+  font-weight: bold;
+  font-size: 20px;
+  white-space: nowrap;
+}
+
+@media screen and (max-width: 768px) {
+  .header-page-title {
+    font-size: 16px;
+  }
+  .header-text-card {
+    display: none !important; /* Hide "Web Jam LLC" brand text on tablets and mobile to free up space for page titles */
+  }
+}
+
+@media screen and (max-width: 500px) {
+  .header-page-title {
+    display: none; /* Hide page title on small mobile screens to prevent any overlaps with logo or controls */
+  }
+}
+
+

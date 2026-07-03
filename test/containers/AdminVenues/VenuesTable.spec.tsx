@@ -170,4 +170,23 @@ describe('VenuesTable', () => {
     const switchBtn = screen.getByTestId('venues-needs-vetting-filter');
     expect(switchBtn).toBeDefined();
   });
+
+  it('renders Restore button and hides Edit/Archive in archived view', () => {
+    const list: Ivenue[] = [{ _id: 'v1', name: 'Archived Mac', status: 'archived' }];
+    const onRestore = vi.fn();
+    render(<VenuesTable venues={list} onEdit={vi.fn()} onRestore={onRestore} showArchived />);
+    
+    // Check restore button is shown
+    const restoreBtn = screen.getByTestId('venue-restore-v1');
+    expect(restoreBtn).toBeDefined();
+
+    // Check edit and archive are NOT shown
+    expect(screen.queryByTestId('venue-edit-v1')).toBeNull();
+    expect(screen.queryByTestId('venue-delete-v1')).toBeNull();
+
+    // Click restore
+    fireEvent.click(restoreBtn);
+    expect(onRestore).toHaveBeenCalledWith(list[0]);
+  });
 });
+

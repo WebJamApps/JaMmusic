@@ -24,60 +24,112 @@ interface IeditVenueDialogProps {
   token: string;
   onClose: () => void;
   onSaved: () => void;
+  existingVenues?: Ivenue[];
 }
 
 export function EditVenueDialog({
-  open, venue, token, onClose, onSaved,
+  open, venue, token, onClose, onSaved, existingVenues,
 }: IeditVenueDialogProps) {
   const [form, setForm] = useState<IvenueUpdate>({});
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
-    if (venue) {
-      setForm({
-        name: venue.name || '',
-        city: venue.city || '',
-        usState: venue.usState || '',
-        venueType: venue.venueType || '',
-        contactName: venue.contactName || '',
-        email: venue.email || '',
-        phone: venue.phone || '',
-        website: venue.website || '',
-        outreachEligible: !!venue.outreachEligible,
-        inScope: venue.inScope !== false,
-        bookingStatus: venue.bookingStatus || 'booking',
-        interested: venue.interested !== false,
-        payTier: venue.payTier || '',
-        contactVerified: !!venue.contactVerified,
-        notes: venue.notes || '',
-        relationshipStage: venue.relationshipStage || '',
-        templateOverride: venue.templateOverride || '',
-        originalsFit: venue.originalsFit || '',
-        travelBand: venue.travelBand || '',
-        priority: venue.priority ?? undefined,
-      });
+    if (open) {
+      if (venue) {
+        setForm({
+          name: venue.name || '',
+          city: venue.city || '',
+          usState: venue.usState || '',
+          venueType: venue.venueType || '',
+          contactName: venue.contactName || '',
+          email: venue.email || '',
+          phone: venue.phone || '',
+          website: venue.website || '',
+          outreachEligible: !!venue.outreachEligible,
+          inScope: venue.inScope !== false,
+          bookingStatus: venue.bookingStatus || 'booking',
+          interested: venue.interested !== false,
+          payTier: venue.payTier || '',
+          contactVerified: !!venue.contactVerified,
+          notes: venue.notes || '',
+          relationshipStage: venue.relationshipStage || '',
+          templateOverride: venue.templateOverride || '',
+          originalsFit: venue.originalsFit || '',
+          travelBand: venue.travelBand || '',
+          priority: venue.priority ?? undefined,
+        });
+      } else {
+        // Safe defaults for hand-added venues
+        setForm({
+          name: '',
+          city: '',
+          usState: '',
+          venueType: '',
+          contactName: '',
+          email: '',
+          phone: '',
+          website: '',
+          outreachEligible: false,
+          inScope: true,
+          bookingStatus: 'booking',
+          interested: true,
+          payTier: '',
+          contactVerified: false,
+          notes: '',
+          relationshipStage: '',
+          templateOverride: '',
+          originalsFit: '',
+          travelBand: '',
+          priority: undefined,
+        });
+      }
+      setError('');
     }
-    setError('');
-  }, [venue]);
+  }, [venue, open]);
 
   const set = <K extends keyof IvenueUpdate>(key: K, value: IvenueUpdate[K]) => setForm((f) => ({ ...f, [key]: value }));
 
   const handleSave = async () => {
-    if (!venue) return;
     if (!form.name || !form.name.trim()) { setError('Name is required'); return; }
+
+    const isCreate = !venue;
+    if (existingVenues) {
+      const isDuplicate = existingVenues.some(
+        (v) => v.name.trim().toLowerCase() === form.name!.trim().toLowerCase() && (isCreate || v._id !== venue?._id)
+      );
+      if (isDuplicate) {
+        const proceed = confirm(
+          `A venue with the name "${form.name.trim()}" already exists. ` +
+            'The existing record will be updated and un-archived instead of creating a duplicate. ' +
+            'Do you want to proceed?'
+        );
+        if (!proceed) return;
+      }
+    }
+
     setSubmitting(true);
     setError('');
     try {
-      await adminVenuesUtils.updateVenue(token, venue._id, {
-        ...form,
-        name: form.name.trim(),
-        venueType: form.venueType || undefined,
-      });
+      if (venue) {
+        // Edit mode
+        await adminVenuesUtils.updateVenue(token, venue._id, {
+          ...form,
+          name: form.name.trim(),
+          venueType: form.venueType || undefined,
+        });
+      } else {
+        // Create mode
+        await adminVenuesUtils.createVenue(token, {
+          ...form,
+          name: form.name.trim(),
+          venueType: form.venueType || undefined,
+        });
+      }
       onSaved();
     } catch (e) {
       const err = e as { message?: string };
-      setError(err.message || 'Update failed');
+      setError(err.message || (venue ? 'Update failed' : 'Create failed'));
     } finally {
       setSubmitting(false);
     }
@@ -85,7 +137,7 @@ export function EditVenueDialog({
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
-      <DialogTitle>Edit Venue{venue ? ` — ${venue.name}` : ''}</DialogTitle>
+      <DialogTitle data-testid="edit-venue-dialog-title">{venue ? `Edit Venue — ${venue.name}` : 'Add Venue'}</DialogTitle>
       <DialogContent>
         <TextField label="Name" fullWidth value={form.name || ''} onChange={(e) => set('name', e.target.value)}
           sx={{ marginTop: 1, marginBottom: 2 }} data-testid="edit-venue-name" />

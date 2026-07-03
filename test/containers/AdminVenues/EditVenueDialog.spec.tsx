@@ -107,9 +107,39 @@ describe('EditVenueDialog', () => {
     expect(onClose).toHaveBeenCalled();
   });
 
-  it('does nothing on save when venue is null', async () => {
-    render(<EditVenueDialog open venue={null} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />);
-    await act(async () => { fireEvent.click(screen.getByTestId('edit-venue-save')); });
-    expect(adminVenuesUtils.updateVenue).not.toHaveBeenCalled();
+  it('creates a new venue when venue is null', async () => {
+    adminVenuesUtils.createVenue = vi.fn(() => Promise.resolve({} as Ivenue)) as any;
+    const onSaved = vi.fn();
+    await act(async () => {
+      render(<EditVenueDialog open venue={null} token="tk" onClose={vi.fn()} onSaved={onSaved} />);
+    });
+    await act(async () => {
+      fireEvent.change(screen.getByTestId('edit-venue-name'), { target: { value: 'New Cafe' } });
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('edit-venue-save'));
+    });
+    expect(adminVenuesUtils.createVenue).toHaveBeenCalledWith('tk', expect.objectContaining({
+      name: 'New Cafe',
+    }));
+    expect(onSaved).toHaveBeenCalled();
+  });
+
+  it('warns on duplicate venue name and cancels save if user rejects confirm', async () => {
+    adminVenuesUtils.createVenue = vi.fn(() => Promise.resolve({} as Ivenue)) as any;
+    const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(false);
+    const existing: Ivenue[] = [{ _id: 'v1', name: 'Existing Venue' }];
+    await act(async () => {
+      render(<EditVenueDialog open venue={null} token="tk" onClose={vi.fn()} onSaved={vi.fn()} existingVenues={existing} />);
+    });
+    await act(async () => {
+      fireEvent.change(screen.getByTestId('edit-venue-name'), { target: { value: 'existing venue' } });
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('edit-venue-save'));
+    });
+    expect(confirmSpy).toHaveBeenCalled();
+    expect(adminVenuesUtils.createVenue).not.toHaveBeenCalled();
+    confirmSpy.mockRestore();
   });
 });
