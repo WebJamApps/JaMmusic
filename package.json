@@ -119,7 +119,11 @@
     "vitest": "^4.1.7"
   },
   "overrides": {
-    "uuid": "^11.1.1"
+    "uuid": "^11.1.1",
+    "exceljs": {
+      "archiver": "^7.0.1",
+      "unzipper": "^0.12.3"
+    }
   },
   "allowScripts": {
     "@parcel/watcher@2.5.6": true,
