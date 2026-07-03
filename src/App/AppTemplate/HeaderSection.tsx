@@ -14,35 +14,14 @@ export function HeaderSection() {
       </div>
       {isAdminVenues && (
         <>
-          <div style={{
-            position: 'absolute',
-            left: '50%',
-            top: '50%',
-            transform: 'translate(-50%, -50%)',
-            textAlign: 'center',
-            pointerEvents: 'none',
-          }}>
-            <h2 style={{
-              color: 'var(--header-fg)',
-              margin: 0,
-              fontFamily: "'PT Sans Caption', sans-serif",
-              fontWeight: 'bold',
-              fontSize: '20px',
-            }} data-testid="header-page-title">
+          <div className="header-page-title-container">
+            <h2 className="header-page-title" data-testid="header-page-title">
               Admin Venues
             </h2>
           </div>
           <div
             id="header-controls-portal"
-            style={{
-              position: 'absolute',
-              right: '20px',
-              top: '50%',
-              transform: 'translateY(-50%)',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '12px',
-            }}
+            className="header-controls-portal"
           />
         </>
       )}

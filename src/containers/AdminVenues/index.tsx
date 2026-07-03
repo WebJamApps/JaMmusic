@@ -3,7 +3,7 @@ import {
 } from 'react';
 import { createPortal } from 'react-dom';
 import {
-  Box, Typography, Button, Switch, FormControlLabel,
+  Box, Typography, Button, Switch, Tooltip,
 } from '@mui/material';
 import { AuthContext } from 'src/providers/Auth.provider';
 import { VenuesTable } from './VenuesTable';
@@ -90,24 +90,26 @@ export function AdminVenues() {
       {error && <Typography color="error" data-testid="admin-venues-error">{error}</Typography>}
 
       {portalTarget && createPortal(
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2.5 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 1.5, md: 2.5 } }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <Switch
-              checked={showArchived}
-              onChange={(e) => {
-                setShowArchived(e.target.checked);
-                if (e.target.checked) setTargetDate('');
-              }}
-              color="secondary"
-              data-testid="venues-show-archived-toggle"
-              size="small"
-              sx={{
-                margin: 0,
-                display: 'inline-flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            />
+            <Tooltip title="Show archived venues" arrow>
+              <Switch
+                checked={showArchived}
+                onChange={(e) => {
+                  setShowArchived(e.target.checked);
+                  if (e.target.checked) setTargetDate('');
+                }}
+                color="secondary"
+                data-testid="venues-show-archived-toggle"
+                size="small"
+                sx={{
+                  margin: 0,
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              />
+            </Tooltip>
             <Typography
               sx={{
                 color: 'var(--header-fg) !important',
@@ -116,6 +118,7 @@ export function AdminVenues() {
                 lineHeight: '1',
                 userSelect: 'none',
                 cursor: 'pointer',
+                display: { xs: 'none', md: 'inline' },
               }}
               onClick={() => {
                 setShowArchived(!showArchived);

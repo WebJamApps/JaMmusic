@@ -3,9 +3,42 @@ import { test, expect } from '@playwright/test';
 // The site stores its theme in localStorage (applied as a data-theme attribute
 // on <html>), NOT via prefers-color-scheme — so seed localStorage before the
 // app boots to exercise the real dark mode.
-test.beforeEach(async ({ context }) => {
+test.beforeEach(async ({ context, page }) => {
   await context.addInitScript(() => {
     try { localStorage.setItem('theme', 'dark'); } catch { /* ignore */ }
+  });
+
+  // Mock API requests for the /music page to prevent loading spinner hang
+  await page.route(/\/tour/, async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify([
+        {
+          _id: 'g1',
+          datetime: new Date().toISOString(),
+          venue: 'Mock Venue',
+          tickets: 'Free',
+          location: 'Mock City, VA',
+        }
+      ]),
+    });
+  });
+
+  await page.route(/\/picture/, async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify([]),
+    });
+  });
+
+  await page.route(/\/song/, async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify([]),
+    });
   });
 });
 

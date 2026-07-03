@@ -363,10 +363,10 @@ export function VenuesTable({
                 <TableCell
                   align="center"
                   sx={{
-                    position: 'sticky',
+                    position: { xs: 'static', sm: 'sticky' },
                     left: 0,
                     top: 0,
-                    zIndex: 11,
+                    zIndex: { xs: 'auto', sm: 11 },
                     backgroundColor: 'background.paper',
                     width: 150,
                     minWidth: 150,
@@ -385,17 +385,17 @@ export function VenuesTable({
                   sortDirection={orderBy === 'name' ? order : false}
                   onClick={() => handleSort('name')}
                   sx={{
-                    position: 'sticky',
+                    position: { xs: 'static', sm: 'sticky' },
                     left: 150,
                     top: 0,
-                    zIndex: 11,
+                    zIndex: { xs: 'auto', sm: 11 },
                     backgroundColor: 'background.paper',
                     width: 170,
                     minWidth: 170,
                     maxWidth: 170,
                     borderRight: '1px solid',
                     borderColor: 'divider',
-                    boxShadow: '3px 0 5px -2px rgba(0,0,0,0.15)',
+                    boxShadow: { xs: 'none', sm: '3px 0 5px -2px rgba(0,0,0,0.15)' },
                     cursor: 'pointer',
                     userSelect: 'none',
                     fontWeight: 'bold',
@@ -490,9 +490,9 @@ export function VenuesTable({
                     <TableCell
                       align="center"
                       sx={{
-                        position: 'sticky',
+                        position: { xs: 'static', sm: 'sticky' },
                         left: 0,
-                        zIndex: 9,
+                        zIndex: { xs: 'auto', sm: 9 },
                         backgroundColor: (theme) => isArchived
                           ? theme.palette.background.paper
                           : noType
@@ -532,9 +532,9 @@ export function VenuesTable({
                     {/* Sticky Name Column */}
                     <TableCell
                       sx={{
-                        position: 'sticky',
+                        position: { xs: 'static', sm: 'sticky' },
                         left: 150,
-                        zIndex: 9,
+                        zIndex: { xs: 'auto', sm: 9 },
                         backgroundColor: (theme) => isArchived
                           ? theme.palette.background.paper
                           : noType
@@ -545,7 +545,7 @@ export function VenuesTable({
                         maxWidth: 170,
                         borderRight: '1px solid',
                         borderColor: 'divider',
-                        boxShadow: '3px 0 5px -2px rgba(0,0,0,0.15)',
+                        boxShadow: { xs: 'none', sm: '3px 0 5px -2px rgba(0,0,0,0.15)' },
                         fontWeight: 'medium',
                       }}
                     >
