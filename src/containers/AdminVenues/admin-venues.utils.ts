@@ -1,4 +1,5 @@
 import { getAllowedAdminRoles } from '../AdminUsers/admin-users.utils';
+import ExcelJS from 'exceljs';
 
 // Booking-outreach venue + batch-approval admin API (web-jam-back #819/#843/#844).
 // Mirrors admin-users.utils: fetch + Bearer token against ${BackendUrl}.
@@ -23,6 +24,7 @@ export interface Ivenue {
   notes?: string;
   relationshipStage?: string;
   templateOverride?: string;
+  lastContacted?: string;
   // Prospect-ranking inputs (web-jam-back#867): originalsFit weighs heaviest in
   // the default sort, travelBand discounts distance, priority is a manual 0-5 boost.
   originalsFit?: string;
@@ -52,6 +54,7 @@ export interface IvenueUpdate {
   travelBand?: string;
   priority?: number;
   status?: string;
+  lastContacted?: string;
 }
 
 const venueUrl = `${process.env.BackendUrl}/venue`;
@@ -145,6 +148,122 @@ export function prospectScore(v: Ivenue): number {
   return fit + value + warmth + (v.priority || 0);
 }
 
+export async function exportVenuesToExcel(venues: Ivenue[]): Promise<void> {
+  const workbook = new ExcelJS.Workbook();
+  const worksheet = workbook.addWorksheet('Venues');
+
+  // Define columns with headers and keys
+  worksheet.columns = [
+    { header: 'Name', key: 'name', width: 25 },
+    { header: 'Contact Name', key: 'contactName', width: 20 },
+    { header: 'Email', key: 'email', width: 25 },
+    { header: 'Phone', key: 'phone', width: 15 },
+    { header: 'City', key: 'city', width: 15 },
+    { header: 'State', key: 'usState', width: 10 },
+    { header: 'Venue Type', key: 'venueType', width: 20 },
+    { header: 'Outreach Eligible', key: 'outreachEligible', width: 18 },
+    { header: 'In Scope', key: 'inScope', width: 12 },
+    { header: 'Booking Status', key: 'bookingStatus', width: 15 },
+    { header: 'Interested', key: 'interested', width: 12 },
+    { header: 'Pay Tier', key: 'payTier', width: 12 },
+    { header: 'Contact Verified', key: 'contactVerified', width: 18 },
+    { header: 'Originals Fit', key: 'originalsFit', width: 15 },
+    { header: 'Travel Band', key: 'travelBand', width: 12 },
+    { header: 'Priority', key: 'priority', width: 10 },
+    { header: 'Relationship Stage', key: 'relationshipStage', width: 20 },
+    { header: 'Template Override', key: 'templateOverride', width: 20 },
+    { header: 'Website', key: 'website', width: 30 },
+    { header: 'Last Contacted', key: 'lastContacted', width: 18 },
+    { header: 'Notes', key: 'notes', width: 40 },
+  ];
+
+  // Make header row bold and stylized
+  const headerRow = worksheet.getRow(1);
+  headerRow.font = { bold: true, color: { argb: 'FFFFFFFF' } };
+  headerRow.eachCell((cell) => {
+    cell.fill = {
+      type: 'pattern',
+      pattern: 'solid',
+      fgColor: { argb: 'FF2E7D32' }, // Sleek green header matching WebJam / venue branding
+    };
+    cell.alignment = { vertical: 'middle', horizontal: 'left' };
+  });
+  headerRow.height = 25;
+
+  const URL_REGEX = /(https?:\/\/[^\s]+|www\.[^\s]+)/gi;
+
+  venues.forEach((v) => {
+    const rowData = {
+      name: v.name || '',
+      contactName: v.contactName || '',
+      email: v.email || '',
+      phone: v.phone || '',
+      city: v.city || '',
+      usState: v.usState || '',
+      venueType: v.venueType || '',
+      outreachEligible: v.outreachEligible ? 'Yes' : 'No',
+      inScope: v.inScope !== false ? 'Yes' : 'No',
+      bookingStatus: v.bookingStatus || '',
+      interested: v.interested !== false ? 'Yes' : 'No',
+      payTier: v.payTier || '',
+      contactVerified: v.contactVerified ? 'Yes' : 'No',
+      originalsFit: v.originalsFit || '',
+      travelBand: v.travelBand || '',
+      priority: v.priority !== undefined ? v.priority : '',
+      relationshipStage: v.relationshipStage || '',
+      templateOverride: v.templateOverride || '',
+      website: v.website || '',
+      lastContacted: v.lastContacted || '',
+      notes: v.notes || '',
+    };
+
+    const row = worksheet.addRow(rowData);
+    row.height = 20;
+
+    // Apply hyperlink formatting to Email cell if email exists
+    if (v.email && v.email.trim()) {
+      const emailCell = row.getCell('email');
+      const emailStr = v.email.trim();
+      if (emailStr.includes('@')) {
+        emailCell.value = { text: emailStr, hyperlink: `mailto:${emailStr}` };
+        emailCell.font = { color: { argb: 'FF0563C1' }, underline: true };
+      }
+    }
+
+    // Apply hyperlink formatting to Website cell if website exists
+    if (v.website && v.website.trim()) {
+      const websiteCell = row.getCell('website');
+      const webStr = v.website.trim();
+      const url = /^www\./i.test(webStr) ? `https://${webStr}` : webStr;
+      websiteCell.value = { text: webStr, hyperlink: url };
+      websiteCell.font = { color: { argb: 'FF0563C1' }, underline: true };
+    }
+
+    // Apply hyperlink formatting to Notes cell if notes contains a URL
+    if (v.notes && v.notes.trim()) {
+      const notesCell = row.getCell('notes');
+      const notesStr = v.notes.trim();
+      const match = notesStr.match(URL_REGEX);
+      if (match) {
+        const firstUrl = match[0];
+        const url = /^www\./i.test(firstUrl) ? `https://${firstUrl}` : firstUrl;
+        notesCell.value = { text: notesStr, hyperlink: url };
+        notesCell.font = { color: { argb: 'FF0563C1' }, underline: true };
+      }
+    }
+  });
+
+  // Write to a buffer and trigger a file download
+  const buffer = await workbook.xlsx.writeBuffer();
+  const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  const url = window.URL.createObjectURL(blob);
+  const anchor = document.createElement('a');
+  anchor.href = url;
+  anchor.download = 'venues_export.xlsx';
+  anchor.click();
+  window.URL.revokeObjectURL(url);
+}
+
 export default {
-  listVenues, updateVenue, deleteVenue, createVenue, getAllowedAdminRoles, prospectScore,
+  listVenues, updateVenue, deleteVenue, createVenue, getAllowedAdminRoles, prospectScore, exportVenuesToExcel,
 };

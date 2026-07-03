@@ -10,4 +10,12 @@ ignore:
     - materialize-css:
         reason: None given
         expires: '2021-07-12T15:52:52.315Z'
+  SNYK-JS-BRACEEXPANSION-17706650:
+    - '*':
+        reason: Overridden globally to secure version ^5.0.7 in package.json
+        expires: '2027-07-03T15:00:00.000Z'
+  SNYK-JS-INFLIGHT-6095116:
+    - '*':
+        reason: Dependency overridden globally in package.json, completely removing inflight package from lockfile
+        expires: '2027-07-03T15:00:00.000Z'
 patch: {}

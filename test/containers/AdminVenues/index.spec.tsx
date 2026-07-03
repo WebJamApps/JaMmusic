@@ -21,6 +21,7 @@ describe('AdminVenues page', () => {
   beforeEach(() => {
     adminVenuesUtils.listVenues = vi.fn(() => Promise.resolve([])) as any;
     adminVenuesUtils.getAllowedAdminRoles = vi.fn(() => ['JaM-admin', 'Developer']) as any;
+    adminVenuesUtils.exportVenuesToExcel = vi.fn() as any;
 
     // Create the portal target div so that the portal in AdminVenues has a target
     const portal = document.createElement('div');
@@ -129,5 +130,25 @@ describe('AdminVenues page', () => {
     expect(adminVenuesUtils.updateVenue).toHaveBeenCalledWith('tk', 'v2', { status: 'active' });
     expect(adminVenuesUtils.listVenues).toHaveBeenCalledTimes(3); // Initial + toggle archived + post-restore refresh
   });
-});
 
+  it('triggers exportVenuesToExcel when Export is clicked', async () => {
+    adminVenuesUtils.listVenues = vi.fn(() => Promise.resolve([{ _id: 'v1', name: 'Venue A' }])) as any;
+
+    await act(async () => { render(wrap(adminAuth)); });
+
+    const exportBtn = screen.getByTestId('admin-venues-export-button');
+    expect(exportBtn).toBeDefined();
+    expect(exportBtn.hasAttribute('disabled')).toBe(false);
+
+    await act(async () => { fireEvent.click(exportBtn); });
+    expect(adminVenuesUtils.exportVenuesToExcel).toHaveBeenCalledWith([{ _id: 'v1', name: 'Venue A' }]);
+  });
+
+  it('disables the Export button when there are no venues', async () => {
+    adminVenuesUtils.listVenues = vi.fn(() => Promise.resolve([])) as any;
+    await act(async () => { render(wrap(adminAuth)); });
+
+    const exportBtn = screen.getByTestId('admin-venues-export-button');
+    expect(exportBtn.hasAttribute('disabled')).toBe(true);
+  });
+});
