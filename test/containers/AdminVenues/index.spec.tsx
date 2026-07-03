@@ -2,7 +2,7 @@
 import { render, screen, act, fireEvent } from '@testing-library/react';
 import { AuthContext, defaultAuth, type Iauth } from 'src/providers/Auth.provider';
 import { AdminVenues } from 'src/containers/AdminVenues';
-import adminVenuesUtils from 'src/containers/AdminVenues/admin-venues.utils';
+import adminVenuesUtils, { type Ivenue } from 'src/containers/AdminVenues/admin-venues.utils';
 
 const adminAuth: Iauth = {
   isAuthenticated: true,
