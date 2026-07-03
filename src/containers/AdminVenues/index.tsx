@@ -92,7 +92,7 @@ export function AdminVenues() {
       {error && <Typography color="error" data-testid="admin-venues-error">{error}</Typography>}
 
       {portalTarget && createPortal(
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 0.75, sm: 1.5, md: 2.5 } }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 0.75, sm: 1.5, lg: 2.5 } }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
             <Tooltip title="Show archived venues" arrow>
               <Switch
@@ -142,11 +142,11 @@ export function AdminVenues() {
               textTransform: 'none',
               fontWeight: 'bold',
               height: '32px',
-              fontSize: { xs: '0px', md: '13px' },
-              padding: { xs: '4px 8px', md: '4px 16px' },
-              minWidth: { xs: '32px', md: 'auto' },
+              fontSize: { xs: '0px', lg: '13px' },
+              padding: { xs: '4px 8px', lg: '4px 16px' },
+              minWidth: { xs: '32px', lg: 'auto' },
               '& .MuiButton-startIcon': {
-                margin: { xs: 0, md: '0 8px 0 -4px' }
+                margin: { xs: 0, lg: '0 8px 0 -4px' }
               },
               backgroundColor: 'background.paper',
               '&:hover': {
@@ -154,7 +154,7 @@ export function AdminVenues() {
               },
             }}
           >
-            <Box component="span" sx={{ display: { xs: 'none', md: 'inline' } }}>Export</Box>
+            <Box component="span" sx={{ display: { xs: 'none', lg: 'inline' } }}>Export</Box>
           </Button>
           <Button
             variant="contained"
@@ -167,15 +167,15 @@ export function AdminVenues() {
               textTransform: 'none',
               fontWeight: 'bold',
               height: '32px',
-              fontSize: { xs: '0px', md: '13px' },
-              padding: { xs: '4px 8px', md: '4px 16px' },
-              minWidth: { xs: '32px', md: 'auto' },
+              fontSize: { xs: '0px', lg: '13px' },
+              padding: { xs: '4px 8px', lg: '4px 16px' },
+              minWidth: { xs: '32px', lg: 'auto' },
               '& .MuiButton-startIcon': {
-                margin: { xs: 0, md: '0 8px 0 -4px' }
+                margin: { xs: 0, lg: '0 8px 0 -4px' }
               },
             }}
           >
-            <Box component="span" sx={{ display: { xs: 'none', md: 'inline' } }}>Create</Box>
+            <Box component="span" sx={{ display: { xs: 'none', lg: 'inline' } }}>Create</Box>
           </Button>
         </Box>,
         portalTarget
