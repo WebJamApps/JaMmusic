@@ -63,6 +63,20 @@ from a `<lane>/<issue#>-<slug>` branch.
 - **Vite Production Builds**: Local environment variables (e.g., `NODE_ENV=development` in `.env`) can bleed into `npm run build` and compile a development-mode bundle containing React development helpers. This causes a critical browser runtime crash with the error: `TypeError: (0, X.jsxDEV) is not a function`. To compile a pure, clean production bundle, always prefix the build command: `NODE_ENV=production npm run build`.
 - **Playwright selectors for Material-UI Typography**: Material-UI's `<Typography>` component compiles to `<p>` tags (or other tags like `<h1>` or `<h6>` based on variants) by default, **never** `<span>` tags. Avoid utilizing tag-locked selectors like `span:has-text("...")` in E2E/Playwright tests, as they will timeout. Instead, use tag-agnostic text selectors like `:text("...")` or `p:has-text("...")`.
 
+## Branch & memory hygiene
+
+- One branch per task: never create or push any branch other than the one
+  created for the current task.
+- Once your PR is merged or closed, its branch is DEAD — never commit to it or
+  push it again. Follow-up work (including afterthoughts like docs or lessons
+  learned) starts on a NEW branch off the latest `dev`, with its own PR.
+- Save lessons BEFORE the merge, not after: anything you learned during the task
+  worth keeping (build quirks, selector gotchas, testing patterns — e.g. the
+  output of a `/learn`-style memory pass) gets committed to this file's
+  Troubleshooting/Memory sections on the SAME task branch while the PR is still
+  open, so it ships inside the PR. A post-merge push to the old branch strands
+  the lesson and forces manual cleanup.
+
 ## Snyk and security audits
 
 - If a task involves resolving Snyk security failures in a PR or build, and you cannot access the Snyk reports locally (e.g., due to local authorization or API limits), always ask the user to provide the exact Snyk failures and vulnerability IDs first. Do not attempt to guess or audit blindly, as this can lead to going down the wrong path.
