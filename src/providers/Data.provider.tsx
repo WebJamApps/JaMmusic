@@ -19,6 +19,7 @@ export interface Igig {
   usState?: string;
   duration?: number;
   promoImageUrl?: string;
+  artist?: string;
 }
 
 export interface Isong {

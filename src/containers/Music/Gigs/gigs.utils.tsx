@@ -24,7 +24,7 @@ const createGig = async (
   try {
     const { token } = auth;
     const gig = {
-      datetime, venue, tickets, city, usState, duration, promoImageUrl,
+      datetime, venue, tickets, city, usState, duration, promoImageUrl, artist: 'josh',
     };
     const socket = scc.create({
       hostname: process.env.SCS_HOST,
@@ -47,7 +47,7 @@ const updateGig = async (
   token: string,
 ) => {
   try {
-    const gig: Igig = { ...editGig };
+    const gig: Igig = { ...editGig, artist: 'josh' };
     delete gig.date;
     delete gig.time;
     delete gig.location;
