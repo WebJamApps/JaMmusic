@@ -494,6 +494,7 @@ exports[`Homepage > renders correctly 1`] = `
                         </tbody>
                       </table>
                       <select
+                        aria-label="Country"
                         id="country"
                         style="width: 100%;"
                       >

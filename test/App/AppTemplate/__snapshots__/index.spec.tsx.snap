@@ -8,8 +8,7 @@ exports[`AppTemplate > renders the component 1`] = `
     <div
       class="home-sidebar close drawer-container"
       id="sidebar"
-      role="button"
-      tabindex="0"
+      role="presentation"
     >
       <div
         class="drawer"
@@ -137,7 +136,7 @@ exports[`AppTemplate > renders the component 1`] = `
             <strong>
               Version
                
-              2.9.31
+              2.10.0
             </strong>
           </div>
           <p
