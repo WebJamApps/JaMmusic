@@ -122,26 +122,26 @@ exports[`/music > renders the component 1`] = `
             Enter all *required fields to create a new picture.
           </div>
           <input
+            aria-label="* URL"
             label="* URL"
             sx="[object Object]"
             type="text"
             value=""
           />
           <input
+            aria-label="* Title"
             label="* Title"
             sx="[object Object]"
             type="text"
             value=""
           />
           <div>
-            <div
-              control="[object Object]"
-              label="Show Title In Caption"
-            >
+            <label>
               <input
                 type="checkbox"
               />
-            </div>
+              Show Title In Caption
+            </label>
           </div>
         </div>
         <div>
@@ -199,8 +199,8 @@ exports[`/music > renders the component 1`] = `
             </div>
             <div>
               <input
+                aria-label="* Date and Time"
                 class="createDatetime"
-                label="* Date and Time"
                 slotprops="[object Object]"
                 value="Sun Jan 01 2017 00:00:00 GMT+0000 (Coordinated Universal Time)"
               />
@@ -216,6 +216,7 @@ exports[`/music > renders the component 1`] = `
               id="create-venue"
             />
             <input
+              aria-label="* City"
               label="* City"
               sx="[object Object]"
               type="text"
@@ -230,9 +231,9 @@ exports[`/music > renders the component 1`] = `
                 * State
               </p>
               <select
+                aria-labelledby="create-us-state-label"
                 id="create-us-state"
                 label="* State"
-                labelid="create-us-state-label"
               >
                 <option
                   value="Alabama"
@@ -532,18 +533,21 @@ exports[`/music > renders the component 1`] = `
               </select>
             </div>
             <input
+              aria-label="Tickets"
               label="Tickets"
               sx="[object Object]"
               type="text"
               value=""
             />
             <input
+              aria-label="Duration (hours)"
               label="Duration (hours)"
               sx="[object Object]"
               type="number"
               value="0"
             />
             <input
+              aria-label="Promo image URL"
               label="Promo image URL"
               sx="[object Object]"
               type="text"
@@ -581,8 +585,8 @@ exports[`/music > renders the component 1`] = `
             </div>
             <div>
               <input
+                aria-label="* Date and Time"
                 class="editDateTime"
-                label="* Date and Time"
                 slotprops="[object Object]"
               />
             </div>
@@ -592,6 +596,7 @@ exports[`/music > renders the component 1`] = `
               * Venue
             </p>
             <input
+              aria-label="* City"
               label="* City"
               sx="[object Object]"
               type="text"
@@ -606,9 +611,9 @@ exports[`/music > renders the component 1`] = `
                 * State
               </p>
               <select
+                aria-labelledby="edit-us-state-label"
                 id="edit-us-state"
                 label="* State"
-                labelid="edit-us-state-label"
               >
                 <option
                   value="Alabama"
@@ -908,18 +913,21 @@ exports[`/music > renders the component 1`] = `
               </select>
             </div>
             <input
+              aria-label="Tickets"
               label="Tickets"
               sx="[object Object]"
               type="text"
               value=""
             />
             <input
+              aria-label="Duration (hours)"
               label="Duration (hours)"
               sx="[object Object]"
               type="number"
               value="0"
             />
             <input
+              aria-label="Promo image URL"
               label="Promo image URL"
               sx="[object Object]"
               type="text"
@@ -1022,23 +1030,21 @@ exports[`/music > renders the component 1`] = `
               <li>
                 Harmony vocals
               </li>
-              <span>
-                <li>
-                  Acoustic guitar
-                </li>
-                <li>
-                  Electric guitar
-                </li>
-                <li>
-                  Harmonica
-                </li>
-                <li>
-                  Trumpet
-                </li>
-                <li>
-                  Kazoo
-                </li>
-              </span>
+              <li>
+                Acoustic guitar
+              </li>
+              <li>
+                Electric guitar
+              </li>
+              <li>
+                Harmonica
+              </li>
+              <li>
+                Trumpet
+              </li>
+              <li>
+                Kazoo
+              </li>
             </ol>
           </aside>
         </div>
@@ -1097,23 +1103,21 @@ exports[`/music > renders the component 1`] = `
               <li>
                 Harmony vocals
               </li>
-              <span>
-                <li>
-                  Bass guitar
-                </li>
-                <li>
-                  Accordion
-                </li>
-                <li>
-                  Bassoon
-                </li>
-                <li>
-                  Saxophone
-                </li>
-                <li>
-                  Tri-tom
-                </li>
-              </span>
+              <li>
+                Bass guitar
+              </li>
+              <li>
+                Accordion
+              </li>
+              <li>
+                Bassoon
+              </li>
+              <li>
+                Saxophone
+              </li>
+              <li>
+                Tri-tom
+              </li>
             </ol>
           </aside>
         </div>

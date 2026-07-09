@@ -21,11 +21,11 @@ exports[`BuyMusic > renders correctly 1`] = `
           class="material-content elevation2"
           style="max-width: 3in; margin: auto; height: 3in;"
         >
-          <h5
-            style="text-align: center;"
+          <h3
+            style="text-align: center; font-size: 0.83em; margin: 1.67em 0px;"
           >
             Josh Sherman Band
-          </h5>
+          </h3>
           <div
             style="text-align: center;"
           >
@@ -62,11 +62,11 @@ exports[`BuyMusic > renders correctly 1`] = `
           class="material-content elevation2"
           style="max-width: 3in; margin: auto; height: 3in;"
         >
-          <h5
-            style="text-align: center;"
+          <h3
+            style="text-align: center; font-size: 0.83em; margin: 1.67em 0px;"
           >
             Solo Acoustic
-          </h5>
+          </h3>
           <div
             style="text-align: center;"
           >

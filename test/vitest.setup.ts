@@ -1,5 +1,10 @@
 import { config } from 'dotenv';
-import { vi } from 'vitest';
+import { expect, vi } from 'vitest';
+// vitest-axe's `extend-expect` entry ships an empty dist file in 0.1.0, so
+// register the matchers explicitly instead of relying on its side effect.
+import * as axeMatchers from 'vitest-axe/matchers.js';
+
+expect.extend(axeMatchers);
 
 config();
 

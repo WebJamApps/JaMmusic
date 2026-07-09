@@ -3,7 +3,9 @@ export function TextField(props:any) {
   const { children, slotProps, inputProps, inputRef, ...rest } = props;
   const testId = slotProps?.htmlInput?.['data-testid'] || inputProps?.['data-testid'] || rest['data-testid'];
   const style = slotProps?.htmlInput?.style || inputProps?.style || rest.style;
-  return <input ref={inputRef} data-testid={testId} style={style} {...rest}>{children}</input>;
+  // real MUI renders `label` as an associated <label>; expose it as the
+  // accessible name here so axe sees what real users get
+  return <input ref={inputRef} data-testid={testId} style={style} aria-label={rest.label} {...rest}>{children}</input>;
 }
 
 export function Checkbox(props:any) {
@@ -76,13 +78,15 @@ export function FormGroup(props:any) {
 }
 
 export function FormControlLabel(props:any) {
-  const { children, control } = props;
-  return <div {...props}>{control}{children}</div>;
+  const { children, control, label, ...rest } = props;
+  // real MUI wraps the control in a <label> with the label text
+  return <label {...rest}>{control}{label}{children}</label>;
 }
 
 export function Select(props:any) {
-  const { children } = props;
-  return <select {...props}>{children}</select>;
+  const { children, labelId, ...rest } = props;
+  // real MUI wires `labelId` to the combobox's accessible name
+  return <select aria-labelledby={labelId} {...rest}>{children}</select>;
 }
 
 export function MenuItem(props:any) {
