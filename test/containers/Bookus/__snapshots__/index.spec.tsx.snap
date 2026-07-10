@@ -37,9 +37,6 @@ exports[`Bookus > renders correctly 1`] = `
         <div
           class="contact-form"
         >
-          <h4
-            style="text-align: center; margin-bottom: 0px; margin-top: 1px; padding-top: 0px; font-weight: bold;"
-          />
           <form
             class="col"
             id="new-contact"
@@ -124,6 +121,7 @@ exports[`Bookus > renders correctly 1`] = `
               </tbody>
             </table>
             <select
+              aria-label="Country"
               disabled=""
               id="country"
               style="width: 100%;"
@@ -1312,6 +1310,7 @@ exports[`Bookus > renders correctly 1`] = `
               </option>
             </select>
             <select
+              aria-label="State"
               id="state"
             >
               <option

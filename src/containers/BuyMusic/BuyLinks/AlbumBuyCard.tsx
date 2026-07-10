@@ -12,7 +12,9 @@ export function AlbumBuyCard({
   return (
     <div className="col">
       <div className="material-content elevation2" style={{ maxWidth: '3in', margin: 'auto', height: '3in' }}>
-        <h5 style={{ textAlign: 'center' }}>{heading}</h5>
+        {/* h3 keeps heading order valid after the page h2 (axe heading-order);
+            font styles pinned to the old h5 look so the card is unchanged */}
+        <h3 style={{ textAlign: 'center', fontSize: '0.83em', margin: '1.67em 0' }}>{heading}</h3>
         <div style={{ textAlign: 'center' }}>
           <a
             href={href}

@@ -154,6 +154,7 @@ export function InquiryForm(props: IinquiryFormProps) {
         disabled={!!staticCountry}
         style={{ width: '100%' }}
         htmlFor="country"
+        label="Country"
         value={staticCountry || country}
         onChange={(evt) => {
           const { target: { value } } = evt;
@@ -166,6 +167,7 @@ export function InquiryForm(props: IinquiryFormProps) {
         ? (
           <WjDropdown
             htmlFor="state"
+            label="State"
             value={uSAstate}
             onChange={(evt) => {
               const { target: { value } } = evt;
@@ -245,12 +247,16 @@ export function ContactForm(props: IcontactFormProps) {
     >
       {!hasSubmitted ? (
         <div className="contact-form">
-          <h4 style={{
-            textAlign: 'center', marginBottom: '0', marginTop: '1px', paddingTop: 0, fontWeight: 'bold',
-          }}
-          >
-            {hideTitle ? '' : 'Contact Us'}
-          </h4>
+          {/* render no heading at all when hidden — an empty <h4> is an axe
+              empty-heading violation */}
+          {hideTitle ? null : (
+            <h4 style={{
+              textAlign: 'center', marginBottom: '0', marginTop: '1px', paddingTop: 0, fontWeight: 'bold',
+            }}
+            >
+              Contact Us
+            </h4>
+          )}
           {submitError ? <InquiryError /> : null}
           <InquiryForm
             staticCountry={country}

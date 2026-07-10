@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export function DateTimePicker(props:any) {
-  const { children } = props;
-  return <input {...props}>{children}</input>;
+  const { children, label, ...rest } = props;
+  // real MUI pickers expose `label` as the field's accessible name
+  return <input aria-label={label} {...rest}>{children}</input>;
 }
 
 export function DatePicker(props:any) {
