@@ -19,10 +19,10 @@ exports[`BuyMusic > renders correctly 1`] = `
       >
         <div
           class="material-content elevation2"
-          style="max-width: 3in; margin: auto; height: 3in;"
+          style="max-width: 360px; width: 100%; margin: auto; height: 380px;"
         >
           <h3
-            style="text-align: center; font-size: 0.83em; margin: 1.67em 0px;"
+            style="text-align: center; font-size: 1.2rem; margin: 12px 0px;"
           >
             Josh Sherman Band
           </h3>
@@ -39,10 +39,10 @@ exports[`BuyMusic > renders correctly 1`] = `
               <img
                 alt="Josh Sherman Band: Live from Central Florida 2001-2005"
                 src="https://m.media-amazon.com/images/I/81hDicJieTL._SS500_.jpg"
-                style="width: 150px; height: 150px; display: block; margin: 0px auto 12px;"
+                style="width: 200px; height: 200px; display: block; margin: 0px auto 16px;"
               />
               <span
-                style="display: inline-block; background: rgb(255, 153, 0); color: rgb(19, 25, 33); font-weight: 700; padding: 6px 18px; border-radius: 4px; font-size: 13px;"
+                style="display: inline-block; background: rgb(255, 153, 0); color: rgb(19, 25, 33); font-weight: 700; padding: 8px 24px; border-radius: 4px; font-size: 15px;"
               >
                 <i
                   aria-hidden="true"
@@ -60,10 +60,10 @@ exports[`BuyMusic > renders correctly 1`] = `
       >
         <div
           class="material-content elevation2"
-          style="max-width: 3in; margin: auto; height: 3in;"
+          style="max-width: 360px; width: 100%; margin: auto; height: 380px;"
         >
           <h3
-            style="text-align: center; font-size: 0.83em; margin: 1.67em 0px;"
+            style="text-align: center; font-size: 1.2rem; margin: 12px 0px;"
           >
             Solo Acoustic
           </h3>
@@ -80,10 +80,10 @@ exports[`BuyMusic > renders correctly 1`] = `
               <img
                 alt="Josh Sherman: Solo Acoustic"
                 src="https://m.media-amazon.com/images/I/81PLWgAmBEL._SS500_.jpg"
-                style="width: 150px; height: 150px; display: block; margin: 0px auto 12px;"
+                style="width: 200px; height: 200px; display: block; margin: 0px auto 16px;"
               />
               <span
-                style="display: inline-block; background: rgb(255, 153, 0); color: rgb(19, 25, 33); font-weight: 700; padding: 6px 18px; border-radius: 4px; font-size: 13px;"
+                style="display: inline-block; background: rgb(255, 153, 0); color: rgb(19, 25, 33); font-weight: 700; padding: 8px 24px; border-radius: 4px; font-size: 15px;"
               >
                 <i
                   aria-hidden="true"
@@ -167,7 +167,7 @@ exports[`BuyMusic > renders correctly 1`] = `
           <a
             class="fab fa-apple fa-2x"
             href="https://music.apple.com/nz/artist/josh-sherman-band/id80070957"
-            style="color: rgb(51, 51, 51); margin: 20px 20px 20px 5%;"
+            style="color: var(--card-fg); margin: 20px 20px 20px 5%;"
           >
              
             Josh Sherman Band
@@ -175,7 +175,7 @@ exports[`BuyMusic > renders correctly 1`] = `
           <a
             class="fab fa-apple fa-2x"
             href="https://music.apple.com/us/album/solo-acoustic/80925503"
-            style="color: rgb(51, 51, 51); margin: 20px 20px 20px 5%;"
+            style="color: var(--card-fg); margin: 20px 20px 20px 5%;"
           >
              
             Josh Solo Acoustic
@@ -203,7 +203,7 @@ exports[`BuyMusic > renders correctly 1`] = `
           <a
             class="fab fa-youtube fa-2x"
             href="https://youtube.com/playlist?list=OLAK5uy_mtLf1U_oKuSgkFRcXYpo5E0OJWnvRt1TI"
-            style="color: rgb(51, 51, 51); margin: 20px 20px 20px 5%;"
+            style="color: var(--card-fg); margin: 20px 20px 20px 5%;"
           >
              
             Josh Sherman Band
@@ -211,7 +211,7 @@ exports[`BuyMusic > renders correctly 1`] = `
           <a
             class="fab fa-youtube fa-2x"
             href="https://youtube.com/playlist?list=OLAK5uy_nmxiOsu9BvdnwfHZ2w4ix3AG0POpsJPKA"
-            style="color: rgb(51, 51, 51); margin: 20px 20px 20px 5%;"
+            style="color: var(--card-fg); margin: 20px 20px 20px 5%;"
           >
              
             Josh Solo Acoustic

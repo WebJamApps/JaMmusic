@@ -26,6 +26,9 @@
   --input-bg: #ffffff;
   --input-fg: #212529;
   --input-border: #767676;
+  --card-bg: whitesmoke;
+  --card-fg: #333333;
+  --card-border: darkgray;
 }
 
 [data-theme="dark"] {
@@ -54,6 +57,9 @@
   --input-bg: #1a1a1a;
   --input-fg: #ffffff;
   --input-border: #888888;
+  --card-bg: #1e1e1e;
+  --card-fg: #e8e8e8;
+  --card-border: #444444;
 }
 
 /* MUI form-control overrides — MUI doesn't read CSS vars by default,
