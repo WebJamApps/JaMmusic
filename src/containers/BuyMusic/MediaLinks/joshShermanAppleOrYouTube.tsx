@@ -14,7 +14,7 @@ export function JoshShermanAppleOrYouTube({ service }: { service: 'Apple Music' 
             href={service === 'Apple Music' ? 'https://music.apple.com/nz/artist/josh-sherman-band/id80070957'
               : 'https://youtube.com/playlist?list=OLAK5uy_mtLf1U_oKuSgkFRcXYpo5E0OJWnvRt1TI'}
             className={service === 'Apple Music' ? 'fab fa-apple fa-2x' : 'fab fa-youtube fa-2x'}
-            style={{ color: '#333333', margin: '20px', marginLeft: '5%' }}
+            style={{ color: 'var(--card-fg)', margin: '20px', marginLeft: '5%' }}
           >
             {' '}
             Josh Sherman Band
@@ -23,7 +23,7 @@ export function JoshShermanAppleOrYouTube({ service }: { service: 'Apple Music' 
             href={service === 'Apple Music' ? 'https://music.apple.com/us/album/solo-acoustic/80925503'
               : 'https://youtube.com/playlist?list=OLAK5uy_nmxiOsu9BvdnwfHZ2w4ix3AG0POpsJPKA'}
             className={service === 'Apple Music' ? 'fab fa-apple fa-2x' : 'fab fa-youtube fa-2x'}
-            style={{ color: '#333333', margin: '20px', marginLeft: '5%' }}
+            style={{ color: 'var(--card-fg)', margin: '20px', marginLeft: '5%' }}
           >
             {' '}
             Josh Solo Acoustic
