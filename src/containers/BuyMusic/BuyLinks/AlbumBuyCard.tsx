@@ -11,10 +11,10 @@ export function AlbumBuyCard({
 }: IalbumBuyCardProps) {
   return (
     <div className="col">
-      <div className="material-content elevation2" style={{ maxWidth: '3in', margin: 'auto', height: '3in' }}>
+      <div className="material-content elevation2" style={{ maxWidth: '360px', width: '100%', margin: 'auto', height: '380px' }}>
         {/* h3 keeps heading order valid after the page h2 (axe heading-order);
             font styles pinned to the old h5 look so the card is unchanged */}
-        <h3 style={{ textAlign: 'center', fontSize: '0.83em', margin: '1.67em 0' }}>{heading}</h3>
+        <h3 style={{ textAlign: 'center', fontSize: '1.2rem', margin: '12px 0' }}>{heading}</h3>
         <div style={{ textAlign: 'center' }}>
           <a
             href={href}
@@ -27,7 +27,7 @@ export function AlbumBuyCard({
               src={img}
               alt={alt}
               style={{
-                width: '150px', height: '150px', display: 'block', margin: '0 auto 12px',
+                width: '200px', height: '200px', display: 'block', margin: '0 auto 16px',
               }}
             />
             <span
@@ -36,9 +36,9 @@ export function AlbumBuyCard({
                 background: '#ff9900',
                 color: '#131921',
                 fontWeight: 700,
-                padding: '6px 18px',
+                padding: '8px 24px',
                 borderRadius: '4px',
-                fontSize: '13px',
+                fontSize: '15px',
               }}
             >
               <i className="fas fa-shopping-cart" style={{ marginRight: '6px' }} aria-hidden="true" />
