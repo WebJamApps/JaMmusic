@@ -269,15 +269,15 @@ exports[`AppTemplate > renders the component 1`] = `
                   </span>
                 </a>
                 <a
-                  aria-label="tumblr"
-                  href="https://joshuavsherman.tumblr.com/"
+                  aria-label="youtube"
+                  href="https://www.youtube.com/@JoshuaShermanMusic"
                   rel="noopener noreferrer"
                   style="color: var(--footer-link); display: inline-flex; align-items: center;"
                   target="_blank"
                 >
                   <span>
                     <i
-                      class="fab fa-tumblr"
+                      class="fab fa-youtube"
                     />
                   </span>
                 </a>
