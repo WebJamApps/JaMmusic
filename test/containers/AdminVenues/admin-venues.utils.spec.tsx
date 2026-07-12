@@ -109,6 +109,17 @@ describe('AdminVenues utils', () => {
     await expect(call()).rejects.toThrow('500');
   });
 
+  it('parses and throws JSON error messages from the backend', async () => {
+    const jsonErrorResponse = Promise.resolve({
+      ok: false,
+      status: 400,
+      statusText: 'Bad Request',
+      json: () => Promise.resolve({ message: 'A valid email is required' }),
+    } as Response);
+    fetchMock.mockReturnValue(jsonErrorResponse);
+    await expect(adminVenuesUtils.updateVenue('t', '1', {})).rejects.toThrow('A valid email is required');
+  });
+
   it('exports the venue-type and booking-status option lists', () => {
     expect(VENUE_TYPES).toContain('Originals');
     expect(BOOKING_STATUSES).toContain('booked');

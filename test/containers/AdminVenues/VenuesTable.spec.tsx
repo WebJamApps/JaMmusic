@@ -1,4 +1,5 @@
 import { render, screen, fireEvent } from '@testing-library/react';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { VenuesTable } from 'src/containers/AdminVenues/VenuesTable';
 import { type Ivenue } from 'src/containers/AdminVenues/admin-venues.utils';
 
@@ -187,6 +188,29 @@ describe('VenuesTable', () => {
     // Click restore
     fireEvent.click(restoreBtn);
     expect(onRestore).toHaveBeenCalledWith(list[0]);
+  });
+
+  it('renders correctly under dark theme for coverage', () => {
+    const darkTheme = createTheme({
+      palette: {
+        mode: 'dark',
+        background: { paper: '#1c1c1c' },
+        action: { hover: 'rgba(255, 255, 255, 0.08)' },
+      },
+    });
+    const list: Ivenue[] = [
+      { _id: 'std', name: 'Standard', venueType: 'MidRangeCafeBar' },
+      { _id: 'nt', name: 'No Type', venueType: undefined },
+      { _id: 'arc', name: 'Archived', status: 'archived' },
+    ];
+    render(
+      <ThemeProvider theme={darkTheme}>
+        <VenuesTable venues={list} onEdit={vi.fn()} showArchived />
+      </ThemeProvider>
+    );
+    expect(screen.getByTestId('venue-row-std')).toBeDefined();
+    expect(screen.getByTestId('venue-row-nt')).toBeDefined();
+    expect(screen.getByTestId('venue-row-arc')).toBeDefined();
   });
 });
 

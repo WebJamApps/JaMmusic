@@ -209,4 +209,53 @@ test.describe('Admin Venues page responsiveness and table scrollability', () => 
     expect(['static', 'initial', 'revert']).toContain(actionsPosition);
     expect(['static', 'initial', 'revert']).toContain(namePosition);
   });
+
+  test('displays detailed backend validation error message in edit dialog', async ({ page }) => {
+    // Intercept PUT requests to /venue/v1 and return 400 Bad Request with JSON error message
+    await page.route(/\/venue\/v1/, async (route) => {
+      if (route.request().method() === 'PUT') {
+        await route.fulfill({
+          status: 400,
+          contentType: 'application/json',
+          body: JSON.stringify({ message: 'A valid email is required' }),
+        });
+      } else {
+        await route.continue();
+      }
+    });
+
+    await page.goto('/admin/venues', { waitUntil: 'networkidle' });
+
+    // Open Edit dialog for venue v1
+    const editButton = page.locator('[data-testid="venue-edit-v1"]');
+    await editButton.click();
+
+    // Edit email to trigger validation
+    const emailInput = page.locator('[data-testid="edit-venue-email"] input');
+    await emailInput.fill('invalid-email');
+
+    // Click Save
+    const saveButton = page.locator('[data-testid="edit-venue-save"]');
+    await saveButton.click();
+
+    // Verify that the specific backend error message is displayed, not just "400"
+    const errorMessage = page.locator('[data-testid="edit-venue-error"]');
+    await expect(errorMessage).toBeVisible();
+    await expect(errorMessage).toHaveText('A valid email is required');
+  });
+
+  test('proves sticky columns have opaque backgrounds to prevent overlap when scrolled', async ({ page, isMobile }) => {
+    test.skip(isMobile, 'Desktop sticky background test is not applicable on mobile');
+    await page.setViewportSize({ width: 1200, height: 800 });
+    await page.goto('/admin/venues', { waitUntil: 'networkidle' });
+
+    // Locate standard sticky Name cell on row v1
+    const stickyNameCell = page.locator('tr[data-testid="venue-row-v1"] td.sticky-cell').first();
+    await expect(stickyNameCell).toBeVisible();
+
+    // The background of the sticky cell must be opaque (not 'transparent' or rgba(0,0,0,0))
+    const background = await stickyNameCell.evaluate((el) => window.getComputedStyle(el).background);
+    expect(background).not.toContain('rgba(0, 0, 0, 0)');
+    expect(background).not.toBe('transparent');
+  });
 });
