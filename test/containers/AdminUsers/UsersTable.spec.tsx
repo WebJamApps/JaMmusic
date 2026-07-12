@@ -83,6 +83,14 @@ describe('UsersTable', () => {
     expect(document.querySelectorAll('tbody tr')[0].getAttribute('data-testid')).toBe('user-row-b');
   });
 
+  it('renders an Artist column for artist-scoped admins', () => {
+    const scoped: IadminUser[] = [{
+      _id: 'u10', name: 'Tim', email: 't@x.com', userType: 'tim-admin', artist: 'tim-sherman', privileges: [],
+    }];
+    render(<UsersTable users={scoped} token="tk" onShowToken={vi.fn()} onEditPrivileges={vi.fn()} onChange={vi.fn()} />);
+    expect(screen.getByText('tim-sherman')).toBeDefined();
+  });
+
   it('sorts rows by type correctly when userStatus is missing and defaults to human', () => {
     const mixed: IadminUser[] = [
       { _id: 'u1', name: 'Alice', email: 'a@x.com', userStatus: 'ai-agent', privileges: [] },
