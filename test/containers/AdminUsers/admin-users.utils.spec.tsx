@@ -66,17 +66,21 @@ describe('AdminUsers utils', () => {
     const originalEnv = process.env.NODE_ENV;
     afterEach(() => { process.env.NODE_ENV = originalEnv; });
 
-    it('returns only JaM-admin in production', () => {
+    it('returns the same fixed list of roles in production', () => {
       process.env.NODE_ENV = 'production';
       const roles = adminUtils.getAllowedAdminRoles();
-      expect(roles).toEqual(['JaM-admin', 'Developer', 'clc-admin']);
+      expect(roles).toEqual(['JaM-admin', 'Developer', 'clc-admin', 'tim-admin']);
     });
 
-    it('includes Developer in non-production', () => {
+    it('returns the same fixed list of roles in non-production (no env branching)', () => {
       process.env.NODE_ENV = 'development';
       const roles = adminUtils.getAllowedAdminRoles();
-      expect(roles).toContain('JaM-admin');
-      expect(roles).toContain('Developer');
+      expect(roles).toEqual(['JaM-admin', 'Developer', 'clc-admin', 'tim-admin']);
+    });
+
+    it('includes the artist-scoped tim-admin role', () => {
+      const roles = adminUtils.getAllowedAdminRoles();
+      expect(roles).toContain('tim-admin');
     });
   });
 

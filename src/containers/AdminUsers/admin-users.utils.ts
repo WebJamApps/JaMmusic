@@ -6,6 +6,9 @@ export interface IadminUser {
   userStatus?: string;
   privileges?: string[];
   userDetails?: string;
+  // Artist slug an artist-scoped admin (e.g. tim-admin) owns (web-jam-back#885).
+  // Absent for super-admins / non-artist-scoped roles.
+  artist?: string;
 }
 
 const baseUrl = `${process.env.BackendUrl}/admin/user`;
@@ -86,9 +89,7 @@ async function deleteUser(token: string, userId: string): Promise<void> {
 }
 
 export function getAllowedAdminRoles(): string[] {
-  return process.env.NODE_ENV === 'production'
-    ? ['JaM-admin', 'Developer', 'clc-admin']
-    : ['JaM-admin', 'Developer', 'clc-admin'];
+  return ['JaM-admin', 'Developer', 'clc-admin', 'tim-admin'];
 }
 
 export default {
