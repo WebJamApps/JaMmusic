@@ -1,4 +1,6 @@
-import { CAPABILITIES, CAPABILITY_GROUPS, USER_STATUS_OPTIONS } from 'src/containers/AdminUsers/capabilities';
+import {
+  CAPABILITIES, CAPABILITY_GROUPS, USER_STATUS_OPTIONS, USER_ROLES,
+} from 'src/containers/AdminUsers/capabilities';
 
 describe('AdminUsers capabilities registry', () => {
   it('includes tour, song, book, venue, template, and outreach capabilities', () => {
@@ -30,5 +32,12 @@ describe('AdminUsers capabilities registry', () => {
   it('USER_STATUS_OPTIONS includes human and ai-agent', () => {
     expect(USER_STATUS_OPTIONS).toContain('human');
     expect(USER_STATUS_OPTIONS).toContain('ai-agent');
+  });
+
+  // The artist-scoped admin role (renamed from the generic artist-admin to
+  // slug-derived tim-admin), so the /admin/users edit form can show and set
+  // it without wiping it on save (TimShermanMusic#34).
+  it('USER_ROLES includes the artist-scoped tim-admin role', () => {
+    expect(USER_ROLES).toContain('tim-admin');
   });
 });

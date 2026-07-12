@@ -10,6 +10,7 @@ const COLUMNS: { key: string; label: string }[] = [
   { key: 'name', label: 'Name' },
   { key: 'email', label: 'Email' },
   { key: 'role', label: 'Role' },
+  { key: 'artist', label: 'Artist' },
   { key: 'type', label: 'Type' },
   { key: 'privileges', label: 'Privileges' },
   { key: 'notes', label: 'Notes' },
@@ -21,6 +22,7 @@ export function sortValue(u: IadminUser, key: string): string {
     case 'name': return u.name || '';
     case 'email': return u.email || '';
     case 'role': return u.userType || 'N/A';
+    case 'artist': return u.artist || '';
     case 'type': return u.userStatus || 'human';
     case 'privileges': return (u.privileges || []).join(', ');
     case 'notes': return u.userDetails || '';
@@ -116,6 +118,7 @@ export function UsersTable({
               <TableCell>
                 <Chip label={u.userType || 'N/A'} color="primary" variant="outlined" size="small" />
               </TableCell>
+              <TableCell>{u.artist || ''}</TableCell>
               <TableCell>
                 <Chip label={u.userStatus || 'human'} size="small" />
               </TableCell>
