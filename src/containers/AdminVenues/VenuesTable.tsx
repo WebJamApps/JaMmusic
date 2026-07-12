@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTheme } from '@mui/material/styles';
 import {
   Table, TableHead, TableBody, TableRow, TableCell, TableSortLabel, Tooltip, Button, Chip, Box, Typography,
   TextField, FormControlLabel, Switch, Select, MenuItem,
@@ -87,6 +88,15 @@ function sortVenues(venues: Ivenue[], orderBy: string, order: Order): Ivenue[] {
 export function VenuesTable({
   venues, onEdit, onDelete, onRestore, showArchived, targetDate, setTargetDate,
 }: IvenuesTableProps) {
+  const theme = useTheme();
+  const isDark = theme.palette.mode === 'dark';
+  const paper = theme.palette.background.paper;
+  const hoverColor = theme.palette.action.hover;
+
+  const headerHoverBg = isDark
+    ? `linear-gradient(rgba(255,255,255,0.08), rgba(255,255,255,0.08)), ${paper}`
+    : `linear-gradient(rgba(0,0,0,0.04), rgba(0,0,0,0.04)), ${paper}`;
+
   const [orderBy, setOrderBy] = useState('prospect');
   const [order, setOrder] = useState<Order>('desc');
   const [page, setPage] = useState(0);
@@ -401,7 +411,7 @@ export function VenuesTable({
                     userSelect: 'none',
                     fontWeight: 'bold',
                     '&:hover': {
-                      backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.04)',
+                      background: headerHoverBg,
                     },
                   }}
                 >
@@ -468,6 +478,23 @@ export function VenuesTable({
               {pageRows.map((v) => {
                 const noType = !v.venueType;
                 const isArchived = v.status === 'archived';
+
+                // Determine base background for sticky cells
+                let stickyBg = paper;
+                if (!isArchived && noType) {
+                  stickyBg = isDark
+                    ? `linear-gradient(rgba(255, 167, 38, 0.18), rgba(255, 167, 38, 0.18)), ${paper}`
+                    : '#fff3e0';
+                }
+
+                // Determine hover background for sticky cells
+                let stickyHoverBg = `linear-gradient(${hoverColor}, ${hoverColor}), ${paper}`;
+                if (!isArchived && noType) {
+                  stickyHoverBg = isDark
+                    ? `linear-gradient(rgba(255, 167, 38, 0.22), rgba(255, 167, 38, 0.22)), ${paper}`
+                    : `linear-gradient(rgba(255, 167, 38, 0.22), rgba(255, 167, 38, 0.22)), #fff3e0`;
+                }
+
                 return (
                   <TableRow
                     key={v._id}
@@ -478,27 +505,27 @@ export function VenuesTable({
                         : noType ? 'rgba(255, 167, 38, 0.12)' : undefined,
                       opacity: isArchived ? 0.6 : 1,
                       '&:hover': {
-                        backgroundColor: (theme) => theme.palette.action.hover,
+                        backgroundColor: hoverColor,
                       },
                       '&:hover .MuiTableCell-root': {
-                        backgroundColor: (theme) => isArchived
-                          ? theme.palette.action.hover
-                          : noType ? 'rgba(255, 167, 38, 0.22)' : theme.palette.action.hover,
+                        backgroundColor: isArchived
+                          ? hoverColor
+                          : noType ? 'rgba(255, 167, 38, 0.22)' : hoverColor,
+                      },
+                      '&:hover .sticky-cell': {
+                        background: stickyHoverBg,
                       }
                     }}
                   >
                     {/* Sticky Actions Column */}
                     <TableCell
                       align="center"
+                      className="sticky-cell"
                       sx={{
                         position: { xs: 'static', sm: 'sticky' },
                         left: 0,
                         zIndex: { xs: 'auto', sm: 9 },
-                        backgroundColor: (theme) => isArchived
-                          ? theme.palette.background.paper
-                          : noType
-                            ? (theme.palette.mode === 'dark' ? 'rgba(255, 167, 38, 0.18)' : '#fff3e0')
-                            : theme.palette.background.paper,
+                        background: stickyBg,
                         width: 150,
                         minWidth: 150,
                         maxWidth: 150,
@@ -532,15 +559,12 @@ export function VenuesTable({
 
                     {/* Sticky Name Column */}
                     <TableCell
+                      className="sticky-cell"
                       sx={{
                         position: { xs: 'static', sm: 'sticky' },
                         left: 150,
                         zIndex: { xs: 'auto', sm: 9 },
-                        backgroundColor: (theme) => isArchived
-                          ? theme.palette.background.paper
-                          : noType
-                            ? (theme.palette.mode === 'dark' ? 'rgba(255, 167, 38, 0.18)' : '#fff3e0')
-                            : theme.palette.background.paper,
+                        background: stickyBg,
                         width: 170,
                         minWidth: 170,
                         maxWidth: 170,

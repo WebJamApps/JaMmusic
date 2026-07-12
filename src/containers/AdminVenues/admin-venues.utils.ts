@@ -67,6 +67,19 @@ function headers(token: string, json = false): Record<string, string> {
 
 // `eligibleFor` (a YYYY-MM-DD date) asks the backend for only venues with no
 // conflicting gig within the ±2-month clear window of that target weekend
+async function handleResponseError(res: Response): Promise<never> {
+  let message = `${res.status} ${res.statusText}`;
+  try {
+    const body = await res.json() as { message?: string };
+    if (body && typeof body.message === 'string') {
+      message = body.message;
+    }
+  } catch {
+    // ignore JSON parsing failure
+  }
+  throw new Error(message);
+}
+
 // (web-jam-back#819's GET /venue?eligibleFor=<date>). Omit it to list everything.
 async function listVenues(token: string, eligibleFor?: string, status?: string): Promise<Ivenue[]> {
   const params = new URLSearchParams();
@@ -74,7 +87,7 @@ async function listVenues(token: string, eligibleFor?: string, status?: string):
   if (status) params.append('status', status);
   const qs = params.toString() ? `?${params.toString()}` : '';
   const res = await fetch(`${venueUrl}${qs}`, { headers: headers(token) });
-  if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+  if (!res.ok) await handleResponseError(res);
   return await res.json() as Ivenue[];
 }
 
@@ -83,14 +96,14 @@ async function listVenues(token: string, eligibleFor?: string, status?: string):
 // clear junk entries out of the way (#1139).
 async function deleteVenue(token: string, venueId: string): Promise<void> {
   const res = await fetch(`${venueUrl}/${venueId}`, { method: 'DELETE', headers: headers(token) });
-  if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+  if (!res.ok) await handleResponseError(res);
 }
 
 async function updateVenue(token: string, venueId: string, payload: IvenueUpdate): Promise<Ivenue> {
   const res = await fetch(`${venueUrl}/${venueId}`, {
     method: 'PUT', headers: headers(token, true), body: JSON.stringify(payload),
   });
-  if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+  if (!res.ok) await handleResponseError(res);
   return await res.json() as Ivenue;
 }
 
@@ -98,7 +111,7 @@ async function createVenue(token: string, payload: IvenueUpdate): Promise<Ivenue
   const res = await fetch(venueUrl, {
     method: 'POST', headers: headers(token, true), body: JSON.stringify(payload),
   });
-  if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+  if (!res.ok) await handleResponseError(res);
   return await res.json() as Ivenue;
 }
 
