@@ -46,16 +46,46 @@ describe('pictures.utils', () => {
     expect(getPics).not.toHaveBeenCalled();
   });
   it('deletes pic successfully', async () => {
+    commonUtils.delay = jest.fn();
     const auth = { token: 'token' } as any;
     const getPics = jest.fn();
     const setters = { setEditPic: jest.fn(), setShowTable: jest.fn(), setIsSubmitting: jest.fn() };
     const transmit = jest.fn();
-    const deleteMock: any = jest.fn(() => ({ transmit }));
+    const disconnect = jest.fn();
+    const next = jest.fn(() => new Promise(() => { /* never resolves: no socketError sent */ }));
+    const receiver = jest.fn(() => ({ createConsumer: () => ({ next }) }));
+    const deleteMock: any = jest.fn(() => ({
+      transmit, receiver, disconnect,
+    }));
     scc.create = deleteMock;
-    await utils.deletePic('', auth, getPics, setters);
+    await utils.deletePic('somePicId', auth, getPics, setters);
     expect(getPics).toHaveBeenCalled();
+    expect(setters.setEditPic).toHaveBeenCalled();
+    expect(setters.setShowTable).toHaveBeenCalledWith(false);
+    expect(disconnect).toHaveBeenCalled();
+  });
+  it('deletePic surfaces a backend socketError instead of silently no-oping (#1199)', async () => {
+    commonUtils.delay = jest.fn(() => new Promise(() => { /* never resolves: the error should win the race */ }));
+    commonUtils.notify = jest.fn();
+    const auth = { token: 'token' } as any;
+    const getPics = jest.fn();
+    const setters = { setEditPic: jest.fn(), setShowTable: jest.fn(), setIsSubmitting: jest.fn() };
+    const transmit = jest.fn();
+    const disconnect = jest.fn();
+    const next = jest.fn(() => Promise.resolve({ value: { deleteImage: 'Delete id not found' }, done: true }));
+    const receiver = jest.fn(() => ({ createConsumer: () => ({ next }) }));
+    const deleteMock: any = jest.fn(() => ({
+      transmit, receiver, disconnect,
+    }));
+    scc.create = deleteMock;
+    await utils.deletePic('somePicId', auth, getPics, setters);
+    expect(commonUtils.notify).toHaveBeenCalledWith('Error deleting picture', 'Delete id not found', 'danger');
+    expect(getPics).not.toHaveBeenCalled();
+    expect(setters.setShowTable).not.toHaveBeenCalledWith(false);
+    expect(disconnect).toHaveBeenCalled();
   });
   it('deletePic catches error', async () => {
+    commonUtils.notify = jest.fn();
     const auth = { token: 'token' } as any;
     const getPics = jest.fn();
     const setters = { setEditPic: jest.fn(), setShowTable: jest.fn(), setIsSubmitting: jest.fn() };
@@ -64,6 +94,7 @@ describe('pictures.utils', () => {
     scc.create = deleteMock;
     await utils.deletePic('', auth, getPics, setters);
     expect(getPics).not.toHaveBeenCalled();
+    expect(commonUtils.notify).toHaveBeenCalledWith('Error deleting picture', 'failed', 'danger');
   });
   it('handles event for makeShowHideCaption', () => {
     const setPic = jest.fn();
