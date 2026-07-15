@@ -228,13 +228,7 @@ export function EditVenueDialog({
             )}
             label="Outreach eligible (vetted — can be pitched)" />
           <Help field="outreachEligible" />
-          <FormControlLabel
-            control={(
-              <Checkbox checked={form.inScope !== false} onChange={(e) => set('inScope', e.target.checked)}
-                aria-label="in scope" data-testid="edit-venue-inscope" />
-            )}
-            label="In scope (a gig-booking venue)" />
-          <Help field="inScope" />
+
           <FormControlLabel
             control={(
               <Checkbox
