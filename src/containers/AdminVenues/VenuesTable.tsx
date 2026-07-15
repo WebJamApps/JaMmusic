@@ -29,11 +29,12 @@ const COLUMNS: { key: string; label: string; help?: string }[] = [
   { key: 'name', label: 'Name' },
   { key: 'city', label: 'City' },
   { key: 'state', label: 'State' },
+  { key: 'contact', label: 'Contact' },
   { key: 'type', label: 'Type', help: 'venueType' },
-  { key: 'inScope', label: 'In scope', help: 'inScope' },
   { key: 'booking', label: 'Booking', help: 'bookingStatus' },
   { key: 'interested', label: 'Interested', help: 'interested' },
   { key: 'eligible', label: 'Eligible', help: 'outreachEligible' },
+  { key: 'lastContacted', label: 'Last pitched' },
   { key: 'originals', label: 'Originals', help: 'originalsFit' },
   { key: 'pay', label: 'Pay', help: 'payTier' },
   { key: 'travel', label: 'Travel', help: 'travelBand' },
@@ -44,6 +45,13 @@ const COLUMNS: { key: string; label: string; help?: string }[] = [
 const yn = (v: boolean | undefined) => (v ? 'yes' : 'no');
 const dash = (v: string | number | undefined) => (v === undefined || v === '' ? '—' : String(v));
 
+// Format ISO string date to YYYY-MM-DD
+function formatLastContacted(lc?: string): string {
+  if (!lc) return '—';
+  if (lc.includes('T')) return lc.split('T')[0];
+  return lc;
+}
+
 // The value a column sorts by. Booleans become 1/0 so yes sorts above no;
 // 'prospect' is the computed score.
 export function sortValue(v: Ivenue, key: string): string | number {
@@ -51,11 +59,12 @@ export function sortValue(v: Ivenue, key: string): string | number {
     case 'name': return v.name || '';
     case 'city': return v.city || '';
     case 'state': return v.usState || '';
+    case 'contact': return v.contactName || '';
     case 'type': return v.venueType || '';
-    case 'inScope': return v.inScope !== false ? 1 : 0;
     case 'booking': return v.bookingStatus || '';
     case 'interested': return v.interested !== false ? 1 : 0;
     case 'eligible': return v.outreachEligible ? 1 : 0;
+    case 'lastContacted': return v.lastContacted || '';
     case 'originals': return v.originalsFit || '';
     case 'pay': return v.payTier || '';
     case 'travel': return v.travelBand || '';
@@ -580,15 +589,95 @@ export function VenuesTable({
                     {/* Other standard columns */}
                     <TableCell>{dash(v.city)}</TableCell>
                     <TableCell>{dash(v.usState)}</TableCell>
+                    <TableCell data-testid={`venue-contact-${v._id}`}>
+                      <Box sx={{ display: 'flex', gap: 1.5, alignItems: 'center' }}>
+                        {/* Contact Name */}
+                        {v.contactName ? (
+                          <Tooltip title={`Contact Name: ${v.contactName}`} arrow>
+                            <Typography
+                              component="span"
+                              data-testid={`venue-contact-name-${v._id}`}
+                              sx={{ fontSize: '1.1rem', cursor: 'help', color: 'primary.main' }}
+                            >
+                              👤
+                            </Typography>
+                          </Tooltip>
+                        ) : (
+                          <Typography
+                            component="span"
+                            data-testid={`venue-contact-name-missing-${v._id}`}
+                            sx={{ fontSize: '1.1rem', opacity: 0.2, color: 'text.secondary', userSelect: 'none' }}
+                          >
+                            👤
+                          </Typography>
+                        )}
+
+                        {/* Email */}
+                        {v.email ? (
+                          <Tooltip title={`Email: ${v.email}`} arrow>
+                            <Box
+                              component="a"
+                              href={`mailto:${v.email}`}
+                              data-testid={`venue-contact-email-${v._id}`}
+                              sx={{
+                                fontSize: '1.1rem',
+                                textDecoration: 'none',
+                                color: 'info.main',
+                                display: 'inline-flex',
+                                '&:hover': { opacity: 0.8 },
+                              }}
+                            >
+                              ✉
+                            </Box>
+                          </Tooltip>
+                        ) : (
+                          <Typography
+                            component="span"
+                            data-testid={`venue-contact-email-missing-${v._id}`}
+                            sx={{ fontSize: '1.1rem', opacity: 0.2, color: 'text.secondary', userSelect: 'none' }}
+                          >
+                            ✉
+                          </Typography>
+                        )}
+
+                        {/* Phone */}
+                        {v.phone ? (
+                          <Tooltip title={`Phone: ${v.phone}`} arrow>
+                            <Box
+                              component="a"
+                              href={`tel:${v.phone}`}
+                              data-testid={`venue-contact-phone-${v._id}`}
+                              sx={{
+                                fontSize: '1.1rem',
+                                textDecoration: 'none',
+                                color: 'success.main',
+                                display: 'inline-flex',
+                                '&:hover': { opacity: 0.8 },
+                              }}
+                            >
+                              ☎
+                            </Box>
+                          </Tooltip>
+                        ) : (
+                          <Typography
+                            component="span"
+                            data-testid={`venue-contact-phone-missing-${v._id}`}
+                            sx={{ fontSize: '1.1rem', opacity: 0.2, color: 'text.secondary', userSelect: 'none' }}
+                          >
+                            ☎
+                          </Typography>
+                        )}
+                      </Box>
+                    </TableCell>
                     <TableCell>
                       {noType
                         ? <Chip label="no type" color="warning" size="small" data-testid={`venue-notype-${v._id}`} />
                         : v.venueType}
                     </TableCell>
-                    <TableCell>{yn(v.inScope !== false)}</TableCell>
                     <TableCell>{dash(v.bookingStatus)}</TableCell>
                     <TableCell>{yn(v.interested !== false)}</TableCell>
                     <TableCell data-testid={`venue-eligible-${v._id}`}>{yn(v.outreachEligible)}</TableCell>
+                    <TableCell data-testid={`venue-lastcontacted-${v._id}`}>{formatLastContacted(v.lastContacted)}</TableCell>
                     <TableCell>{dash(v.originalsFit)}</TableCell>
                     <TableCell>{dash(v.payTier)}</TableCell>
                     <TableCell>{dash(v.travelBand)}</TableCell>

@@ -66,7 +66,6 @@ describe('EditVenueDialog', () => {
       change('edit-venue-pay', '$$$');
       change('edit-venue-notes', 'great room');
     });
-    await act(async () => { fireEvent.click(screen.getByTestId('edit-venue-inscope')); });
     await act(async () => { fireEvent.click(screen.getByTestId('edit-venue-interested')); });
     await act(async () => { fireEvent.click(screen.getByTestId('edit-venue-contactverified')); });
     await act(async () => { fireEvent.click(screen.getByTestId('edit-venue-save')); });
