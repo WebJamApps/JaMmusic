@@ -25,6 +25,36 @@ describe('VenuesTable', () => {
     expect(screen.getByTestId('venue-score-v1')).toBeDefined();
   });
 
+  it('renders contact presence indicators and lastContacted date correctly', () => {
+    const list: Ivenue[] = [
+      {
+        _id: 'full-contact',
+        name: 'Full Contact',
+        contactName: 'Alice',
+        email: 'alice@example.com',
+        phone: '123-456-7890',
+        lastContacted: '2026-07-15T12:00:00.000Z',
+      },
+      {
+        _id: 'no-contact',
+        name: 'No Contact',
+      }
+    ];
+    render(<VenuesTable venues={list} onEdit={vi.fn()} />);
+    
+    // Full contact venue indicators
+    expect(screen.getByTestId('venue-contact-name-full-contact')).toBeDefined();
+    expect(screen.getByTestId('venue-contact-email-full-contact')).toBeDefined();
+    expect(screen.getByTestId('venue-contact-phone-full-contact')).toBeDefined();
+    expect(screen.getByTestId('venue-lastcontacted-full-contact').textContent).toBe('2026-07-15');
+
+    // No contact venue indicators
+    expect(screen.getByTestId('venue-contact-name-missing-no-contact')).toBeDefined();
+    expect(screen.getByTestId('venue-contact-email-missing-no-contact')).toBeDefined();
+    expect(screen.getByTestId('venue-contact-phone-missing-no-contact')).toBeDefined();
+    expect(screen.getByTestId('venue-lastcontacted-no-contact').textContent).toBe('—');
+  });
+
   it('calls onEdit with the venue when Edit is clicked', () => {
     const onEdit = vi.fn();
     render(<VenuesTable venues={venues} onEdit={onEdit} />);
@@ -60,6 +90,7 @@ describe('VenuesTable', () => {
         _id: 'a', name: 'Alpha', city: 'Roanoke', usState: 'VA', venueType: 'Originals',
         bookingStatus: 'booking', outreachEligible: true, inScope: true, interested: true,
         originalsFit: 'loves', payTier: '$$', travelBand: 'local', priority: 2,
+        contactName: 'John', email: 'john@example.com', phone: '555-1234', lastContacted: '2026-07-01',
       },
       {
         _id: 'b', name: 'Beta', city: 'Salem', usState: 'NC', venueType: 'MidRangeCafeBar',
@@ -68,7 +99,7 @@ describe('VenuesTable', () => {
       },
     ];
     render(<VenuesTable venues={list} onEdit={vi.fn()} />);
-    ['city', 'state', 'type', 'inScope', 'booking', 'interested', 'eligible',
+    ['city', 'state', 'contact', 'type', 'booking', 'interested', 'eligible', 'lastContacted',
       'originals', 'pay', 'travel', 'priority', 'prospect'].forEach((key) => {
       fireEvent.click(screen.getByTestId(`sort-${key}`));
       expect(screen.getAllByTestId(/^venue-row-/)).toHaveLength(2);
