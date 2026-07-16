@@ -106,6 +106,16 @@ describe('EditVenueDialog', () => {
     expect(onClose).toHaveBeenCalled();
   });
 
+  it('does not call onClose on backdrop click', async () => {
+    const onClose = vi.fn();
+    const { container } = render(<EditVenueDialog open venue={venue} token="tk" onClose={onClose} onSaved={vi.fn()} />);
+    const backdrop = container.querySelector('.MuiBackdrop-root');
+    if (backdrop) {
+      await act(async () => { fireEvent.click(backdrop); });
+      expect(onClose).not.toHaveBeenCalled();
+    }
+  });
+
   it('creates a new venue when venue is null', async () => {
     adminVenuesUtils.createVenue = vi.fn(() => Promise.resolve({} as Ivenue)) as any;
     const onSaved = vi.fn();

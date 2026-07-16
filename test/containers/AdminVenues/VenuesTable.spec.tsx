@@ -1,4 +1,5 @@
 import { render, screen, fireEvent } from '@testing-library/react';
+import '@testing-library/jest-dom';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { VenuesTable } from 'src/containers/AdminVenues/VenuesTable';
 import { type Ivenue } from 'src/containers/AdminVenues/admin-venues.utils';
@@ -33,6 +34,7 @@ describe('VenuesTable', () => {
         contactName: 'Alice',
         email: 'alice@example.com',
         phone: '123-456-7890',
+        notes: 'Alice notes',
         lastContacted: '2026-07-15T12:00:00.000Z',
       },
       {
@@ -46,12 +48,14 @@ describe('VenuesTable', () => {
     expect(screen.getByTestId('venue-contact-name-full-contact')).toBeDefined();
     expect(screen.getByTestId('venue-contact-email-full-contact')).toBeDefined();
     expect(screen.getByTestId('venue-contact-phone-full-contact')).toBeDefined();
+    expect(screen.getByTestId('venue-contact-notes-full-contact')).toBeDefined();
     expect(screen.getByTestId('venue-lastcontacted-full-contact').textContent).toBe('2026-07-15');
 
     // No contact venue indicators
     expect(screen.getByTestId('venue-contact-name-missing-no-contact')).toBeDefined();
     expect(screen.getByTestId('venue-contact-email-missing-no-contact')).toBeDefined();
     expect(screen.getByTestId('venue-contact-phone-missing-no-contact')).toBeDefined();
+    expect(screen.getByTestId('venue-contact-notes-missing-no-contact')).toBeDefined();
     expect(screen.getByTestId('venue-lastcontacted-no-contact').textContent).toBe('—');
   });
 
@@ -242,6 +246,46 @@ describe('VenuesTable', () => {
     expect(screen.getByTestId('venue-row-std')).toBeDefined();
     expect(screen.getByTestId('venue-row-nt')).toBeDefined();
     expect(screen.getByTestId('venue-row-arc')).toBeDefined();
+  });
+
+  it('opens CopyDialog when clicking contact icons and copies to clipboard', async () => {
+    const list: Ivenue[] = [
+      {
+        _id: 'v-contact',
+        name: 'Contact Venue',
+        contactName: 'Alice',
+        email: 'alice@example.com',
+        phone: '123-456-7890',
+        notes: 'These are some venue notes.',
+      },
+    ];
+
+    const writeTextMock = vi.fn(() => Promise.resolve());
+    Object.assign(navigator, {
+      clipboard: {
+        writeText: writeTextMock,
+      },
+    });
+
+    render(<VenuesTable venues={list} onEdit={vi.fn()} />);
+
+    // Click Notes icon
+    fireEvent.click(screen.getByTestId('venue-contact-notes-v-contact'));
+
+    // Check Dialog opens
+    expect(screen.getByTestId('copy-dialog')).toBeDefined();
+    expect(screen.getByTestId('copy-dialog-title').textContent).toBe('Venue Notes');
+    expect(screen.getByTestId('copy-dialog-content')).toHaveValue('These are some venue notes.');
+
+    // Click Copy button
+    fireEvent.click(screen.getByTestId('copy-dialog-copy'));
+    expect(writeTextMock).toHaveBeenCalledWith('These are some venue notes.');
+
+    // Wait for copied text state
+    expect(await screen.findByText('Copied!')).toBeDefined();
+
+    // Click Close button
+    fireEvent.click(screen.getByTestId('copy-dialog-close'));
   });
 });
 
