@@ -136,7 +136,16 @@ export function EditVenueDialog({
   };
 
   return (
-    <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
+    <Dialog
+      open={open}
+      onClose={(_, reason) => {
+        if (reason !== 'backdropClick') {
+          onClose();
+        }
+      }}
+      fullWidth
+      maxWidth="sm"
+    >
       <DialogTitle data-testid="edit-venue-dialog-title">{venue ? `Edit Venue — ${venue.name}` : 'Add Venue'}</DialogTitle>
       <DialogContent>
         <TextField label="Name" fullWidth value={form.name || ''} onChange={(e) => set('name', e.target.value)}
@@ -247,7 +256,7 @@ export function EditVenueDialog({
             label="Contact verified" />
           <Help field="contactVerified" />
         </FormGroup>
-        <TextField label="Notes" fullWidth multiline rows={2} value={form.notes || ''} onChange={(e) => set('notes', e.target.value)}
+        <TextField label="Notes" fullWidth multiline rows={6} value={form.notes || ''} onChange={(e) => set('notes', e.target.value)}
           sx={{ marginTop: 2 }} data-testid="edit-venue-notes" />
         {error && <Typography color="error" sx={{ marginTop: 1 }} data-testid="edit-venue-error">{error}</Typography>}
       </DialogContent>

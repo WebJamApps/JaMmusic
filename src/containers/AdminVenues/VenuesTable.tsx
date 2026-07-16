@@ -3,6 +3,7 @@ import { useTheme } from '@mui/material/styles';
 import {
   Table, TableHead, TableBody, TableRow, TableCell, TableSortLabel, Tooltip, Button, Chip, Box, Typography,
   TextField, FormControlLabel, Switch, Select, MenuItem,
+  Dialog, DialogTitle, DialogContent, DialogActions,
 } from '@mui/material';
 import LinearProgress from '@mui/material/LinearProgress';
 import InputAdornment from '@mui/material/InputAdornment';
@@ -112,6 +113,16 @@ export function VenuesTable({
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [searchTerm, setSearchTerm] = useState('');
   const [needsVettingFilter, setNeedsVettingFilter] = useState(false);
+
+  const [copyDialogOpen, setCopyDialogOpen] = useState(false);
+  const [copyDialogTitle, setCopyDialogTitle] = useState('');
+  const [copyDialogContent, setCopyDialogContent] = useState('');
+
+  const handleOpenCopyDialog = (title: string, content: string) => {
+    setCopyDialogTitle(title);
+    setCopyDialogContent(content);
+    setCopyDialogOpen(true);
+  };
 
   // Un-vetted definition: no venueType set OR contactVerified is falsy.
   // This is Josh's vetting work queue.
@@ -597,7 +608,8 @@ export function VenuesTable({
                             <Typography
                               component="span"
                               data-testid={`venue-contact-name-${v._id}`}
-                              sx={{ fontSize: '1.1rem', cursor: 'help', color: 'primary.main' }}
+                              onClick={() => handleOpenCopyDialog('Contact Name', v.contactName!)}
+                              sx={{ fontSize: '1.1rem', cursor: 'pointer', color: 'primary.main' }}
                             >
                               👤
                             </Typography>
@@ -616,11 +628,12 @@ export function VenuesTable({
                         {v.email ? (
                           <Tooltip title={`Email: ${v.email}`} arrow>
                             <Box
-                              component="a"
-                              href={`mailto:${v.email}`}
+                              component="span"
+                              onClick={() => handleOpenCopyDialog('Email Address', v.email!)}
                               data-testid={`venue-contact-email-${v._id}`}
                               sx={{
                                 fontSize: '1.1rem',
+                                cursor: 'pointer',
                                 textDecoration: 'none',
                                 color: 'info.main',
                                 display: 'inline-flex',
@@ -644,11 +657,12 @@ export function VenuesTable({
                         {v.phone ? (
                           <Tooltip title={`Phone: ${v.phone}`} arrow>
                             <Box
-                              component="a"
-                              href={`tel:${v.phone}`}
+                              component="span"
+                              onClick={() => handleOpenCopyDialog('Phone Number', v.phone!)}
                               data-testid={`venue-contact-phone-${v._id}`}
                               sx={{
                                 fontSize: '1.1rem',
+                                cursor: 'pointer',
                                 textDecoration: 'none',
                                 color: 'success.main',
                                 display: 'inline-flex',
@@ -665,6 +679,35 @@ export function VenuesTable({
                             sx={{ fontSize: '1.1rem', opacity: 0.2, color: 'text.secondary', userSelect: 'none' }}
                           >
                             ☎
+                          </Typography>
+                        )}
+
+                        {/* Notes */}
+                        {v.notes ? (
+                          <Tooltip title={`Notes: ${v.notes}`} arrow>
+                            <Box
+                              component="span"
+                              onClick={() => handleOpenCopyDialog('Venue Notes', v.notes!)}
+                              data-testid={`venue-contact-notes-${v._id}`}
+                              sx={{
+                                fontSize: '1.1rem',
+                                cursor: 'pointer',
+                                textDecoration: 'none',
+                                color: 'warning.main',
+                                display: 'inline-flex',
+                                '&:hover': { opacity: 0.8 },
+                              }}
+                            >
+                              📝
+                            </Box>
+                          </Tooltip>
+                        ) : (
+                          <Typography
+                            component="span"
+                            data-testid={`venue-contact-notes-missing-${v._id}`}
+                            sx={{ fontSize: '1.1rem', opacity: 0.2, color: 'text.secondary', userSelect: 'none' }}
+                          >
+                            📝
                           </Typography>
                         )}
                       </Box>
@@ -736,6 +779,63 @@ export function VenuesTable({
           </Button>
         </Box>
       </Box>
+
+      <CopyDialog
+        open={copyDialogOpen}
+        title={copyDialogTitle}
+        content={copyDialogContent}
+        onClose={() => setCopyDialogOpen(false)}
+      />
     </Box>
+  );
+}
+
+interface IcopyDialogProps {
+  open: boolean;
+  title: string;
+  content: string;
+  onClose: () => void;
+}
+
+function CopyDialog({ open, title, content, onClose }: IcopyDialogProps) {
+  const [copied, setCopied] = useState(false);
+
+  useEffect(() => {
+    if (open) {
+      setCopied(false);
+    }
+  }, [open]);
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(content);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error('Failed to copy text: ', err);
+    }
+  };
+
+  return (
+    <Dialog open={open} onClose={onClose} fullWidth maxWidth="xs" data-testid="copy-dialog">
+      <DialogTitle data-testid="copy-dialog-title">{title}</DialogTitle>
+      <DialogContent>
+        <TextField
+          fullWidth
+          multiline
+          maxRows={8}
+          value={content}
+          slotProps={{ input: { readOnly: true } }}
+          sx={{ marginTop: 1, backgroundColor: 'action.hover' }}
+          data-testid="copy-dialog-content"
+        />
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={onClose} data-testid="copy-dialog-close">Close</Button>
+        <Button onClick={handleCopy} variant="contained" color="primary" data-testid="copy-dialog-copy">
+          {copied ? 'Copied!' : 'Copy'}
+        </Button>
+      </DialogActions>
+    </Dialog>
   );
 }
