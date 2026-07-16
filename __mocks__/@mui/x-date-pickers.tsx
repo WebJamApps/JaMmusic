@@ -7,7 +7,22 @@ export function DateTimePicker(props:any) {
 
 export function DatePicker(props:any) {
   const { children, slotProps, dateAdapter, onChange, label, ...rest } = props;
-  return <input aria-label={label} onChange={(e) => onChange(new Date(`${e.target.value}T00:00:00`))} {...rest}>{children}</input>;
+  return (
+    <input
+      aria-label={label}
+      onChange={(e) => {
+        const val = e.target.value;
+        if (!val) {
+          onChange(null);
+        } else {
+          onChange(new Date(`${val}T00:00:00`));
+        }
+      }}
+      {...rest}
+    >
+      {children}
+    </input>
+  );
 }
 
 export function LocalizationProvider(props:any) {
