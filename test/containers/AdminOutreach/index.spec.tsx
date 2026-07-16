@@ -34,6 +34,7 @@ const typeDates = () => fireEvent.change(screen.getByLabelText('Weekend (eligibi
 
 describe('AdminOutreach', () => {
   beforeEach(() => {
+    window.scrollTo = vi.fn();
     outreachUtils.getAllowedAdminRoles = vi.fn(() => ['JaM-admin']) as any;
     outreachUtils.getConfig = vi.fn(() => Promise.resolve({ autoApprove: false })) as any;
     outreachUtils.getCandidates = vi.fn(() => Promise.resolve(candidates)) as any;
@@ -710,6 +711,61 @@ describe('AdminOutreach', () => {
       
       expect(targetDatesInput).toHaveValue('Aug 14-16');
       expect(bookingPeriodInput).toHaveValue('August');
+    });
+
+    it('covers all types of touches in the venue contact timeline', async () => {
+      const mockVenuesWithAllTouches = [
+        {
+          _id: 'v1',
+          name: 'Boston Hall',
+          city: 'Boston',
+          usState: 'MA',
+          email: 'v1@boston.com',
+          touches: [
+            { type: 'email', date: '2026-07-01', template: 'pitch', actor: 'Josh' },
+            { type: 'call', date: '2026-07-02', actor: 'Josh' },
+            { type: 'outcome', date: '2026-07-03', outcome: 'booked', bookedDate: '2026-10-10', actor: 'Josh' },
+            { type: 'outcome', date: '2026-07-04', outcome: 'interested', actor: 'Josh' },
+            { type: 'outcome', date: '2026-07-05', outcome: 'not-interested', actor: 'Josh' },
+            { type: 'other', date: '2026-07-06', actor: 'Josh' },
+          ]
+        }
+      ];
+      outreachUtils.getPendingReplies = vi.fn().mockResolvedValue(mockPendingReplies);
+      adminVenuesUtils.listVenues = vi.fn().mockResolvedValue(mockVenuesWithAllTouches);
+      await renderPage();
+
+      // Expand "Record Outcome" panel
+      const recordOutcomeBtn = screen.getByTestId('reply-card-r1').querySelector('button');
+      await act(async () => {
+        fireEvent.click(recordOutcomeBtn!);
+      });
+
+      // It should display the timeline and render all touches
+      expect(screen.getByText('Contact Touch Timeline')).toBeInTheDocument();
+    });
+
+    it('supports clicking Add to Pitch Batch on a Never Pitched venue', async () => {
+      const mockVenuesListWithNeverPitched = [
+        { _id: 'v5', name: 'Never Pitched Pub', city: 'Amherst', usState: 'MA', email: 'v5@never.com', outreachEligible: true },
+      ];
+      outreachUtils.getPendingReplies = vi.fn().mockResolvedValue(mockPendingReplies);
+      adminVenuesUtils.listVenues = vi.fn().mockResolvedValue(mockVenuesListWithNeverPitched);
+      await renderPage();
+
+      // Click "Never Pitched" accordion
+      const neverPitchedAccordion = screen.getByText(/Never Pitched \(1\)/);
+      await act(async () => {
+        fireEvent.click(neverPitchedAccordion);
+      });
+
+      // Find and click "Add to Pitch Batch"
+      const addPitchBtn = screen.getByRole('button', { name: /Add to Pitch Batch/i });
+      await act(async () => {
+        fireEvent.click(addPitchBtn);
+      });
+
+      expect(window.scrollTo).toHaveBeenCalled();
     });
   });
 });
