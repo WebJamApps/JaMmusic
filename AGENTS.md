@@ -58,6 +58,13 @@ with the shared script (`~/WebJamApps/web-jam-tools/scripts/create-draft-pr.sh`)
 never `gh pr create` directly. It always opens a **draft** PR based on **`dev`**
 from a `<lane>/<issue#>-<slug>` branch.
 
+### PR body conventions (violations may be machine-rejected)
+
+- **Summary**: markdown bullet points, one change per bullet — never a run-on paragraph.
+- **Test evidence**: paste the REAL runner output verbatim (the lines showing pass/fail and test counts), inside a ``` fence — never a description like "all tests passed". If the output has scrolled out of view, re-run the test command and paste what it prints.
+- **Test plan**: exact commands and manual steps that exercise the change (start command, route/page, what to click, expected visible result) — a green test suite alone is not a plan.
+- **Attribution**: `--author` names the model actually doing the work. Antigravity/agy sessions are ALWAYS `Antigravity — Gemini 3.5 Flash (Medium)` or `(High)` — never write any other Gemini model name (models misremember their own identity; use this exact string).
+
 ## Troubleshooting & Guardrails
 
 - **Vite Production Builds**: Local environment variables (e.g., `NODE_ENV=development` in `.env`) can bleed into `npm run build` and compile a development-mode bundle containing React development helpers. This causes a critical browser runtime crash with the error: `TypeError: (0, X.jsxDEV) is not a function`. To compile a pure, clean production bundle, always prefix the build command: `NODE_ENV=production npm run build`.
