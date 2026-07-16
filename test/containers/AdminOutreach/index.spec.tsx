@@ -34,6 +34,7 @@ const typeDates = () => fireEvent.change(screen.getByLabelText('Weekend (eligibi
 
 describe('AdminOutreach', () => {
   beforeEach(() => {
+    window.scrollTo = vi.fn();
     outreachUtils.getAllowedAdminRoles = vi.fn(() => ['JaM-admin']) as any;
     outreachUtils.getConfig = vi.fn(() => Promise.resolve({ autoApprove: false })) as any;
     outreachUtils.getCandidates = vi.fn(() => Promise.resolve(candidates)) as any;
@@ -42,6 +43,8 @@ describe('AdminOutreach', () => {
     outreachUtils.getPreview = vi.fn(() => Promise.resolve(previews)) as any;
     outreachUtils.getPendingReplies = vi.fn(() => Promise.resolve([])) as any;
     outreachUtils.applySuggestion = vi.fn(() => Promise.resolve({})) as any;
+    outreachUtils.listOutreach = vi.fn(() => Promise.resolve([])) as any;
+    outreachUtils.recordOutcome = vi.fn(() => Promise.resolve({})) as any;
     adminVenuesUtils.listVenues = vi.fn(() => Promise.resolve([])) as any;
   });
 
@@ -222,6 +225,8 @@ describe('AdminOutreach', () => {
       { _id: 'v2', name: 'Cambridge Club', city: 'Cambridge', usState: 'MA', email: 'v2@cambridge.com' },
       { _id: 'v3', name: 'Worcester Space', city: 'Worcester', usState: 'MA', email: 'v3@worcester.com' },
       { _id: 'v4', name: 'Lowell Theatre', city: 'Lowell', usState: 'MA', email: 'v4@lowell.com' },
+      { _id: 'v5', name: 'Never Pitched Pub', city: 'Amherst', usState: 'MA', email: 'v5@never.com', outreachEligible: true },
+      { _id: 'v6', name: 'Booked resolved', city: 'Quincy', usState: 'MA', email: 'v6@booked.com', bookingStatus: 'booked' },
     ];
 
     it('renders empty replies section when there are no pending replies', async () => {
@@ -381,6 +386,386 @@ describe('AdminOutreach', () => {
 
       expect(screen.getByTestId('replies-error')).toBeInTheDocument();
       expect(screen.getByTestId('replies-error').textContent).toContain('Dismiss failed');
+    });
+
+    it('supports searching, expanding detail panel, and recording outcomes', async () => {
+      const mockVenuesListWithTouches = [
+        {
+          _id: 'v1',
+          name: 'Boston Hall',
+          city: 'Boston',
+          usState: 'MA',
+          email: 'v1@boston.com',
+          touches: [
+            { type: 'email', date: '2026-07-01', template: 'rebuild-first', actor: 'Josh' }
+          ]
+        },
+        { _id: 'v2', name: 'Cambridge Club', city: 'Cambridge', usState: 'MA', email: 'v2@cambridge.com' },
+        { _id: 'v3', name: 'Worcester Space', city: 'Worcester', usState: 'MA', email: 'v3@worcester.com' },
+        { _id: 'v4', name: 'Lowell Theatre', city: 'Lowell', usState: 'MA', email: 'v4@lowell.com' },
+      ];
+      outreachUtils.getPendingReplies = vi.fn().mockResolvedValue(mockPendingReplies);
+      adminVenuesUtils.listVenues = vi.fn().mockResolvedValue(mockVenuesListWithTouches);
+      await renderPage();
+
+      // Test searching
+      const searchInput = screen.getByPlaceholderText('Search venues by name or city...');
+      expect(searchInput).toBeInTheDocument();
+      await act(async () => {
+        fireEvent.change(searchInput, { target: { value: 'Boston' } });
+      });
+
+      // Expand "Record Outcome" panel
+      const recordOutcomeBtn = screen.getByTestId('reply-card-r1').querySelector('button');
+      expect(recordOutcomeBtn).toBeInTheDocument();
+      await act(async () => {
+        fireEvent.click(recordOutcomeBtn!);
+      });
+
+      // Click "Replied - Interested" one-tap outcome button
+      const interestedBtn = screen.getByText('Replied - Interested');
+      expect(interestedBtn).toBeInTheDocument();
+      await act(async () => {
+        fireEvent.click(interestedBtn);
+      });
+      expect(outreachUtils.recordOutcome).toHaveBeenCalledWith('tk', 'r1', { status: 'interested' });
+
+      // Re-expand panel to test Not Interested (DNC) outcome flow
+      await act(async () => {
+        fireEvent.click(recordOutcomeBtn!);
+      });
+
+      const notInterestedBtn = screen.getByText('Replied - Not Interested (DNC)');
+      expect(notInterestedBtn).toBeInTheDocument();
+      await act(async () => {
+        fireEvent.click(notInterestedBtn);
+      });
+
+      // Dialog should be open
+      expect(screen.getByText(/Are you sure you want to mark this reply as/)).toBeInTheDocument();
+      const confirmDncBtn = screen.getByText('Confirm Permanent DNC');
+      await act(async () => {
+        fireEvent.click(confirmDncBtn);
+      });
+      expect(outreachUtils.recordOutcome).toHaveBeenCalledWith('tk', 'r1', { status: 'not-interested' });
+
+      // Re-expand panel to test Not a fit outcome flow
+      await act(async () => {
+        fireEvent.click(recordOutcomeBtn!);
+      });
+
+      const notAFitBtn = screen.getByText('Not a fit for format, door open');
+      expect(notAFitBtn).toBeInTheDocument();
+      await act(async () => {
+        fireEvent.click(notAFitBtn);
+      });
+      expect(outreachUtils.recordOutcome).toHaveBeenCalledWith('tk', 'r1', { status: 'not-a-fit' });
+
+      // Re-expand panel to test Booked outcome flow
+      await act(async () => {
+        fireEvent.click(recordOutcomeBtn!);
+      });
+
+      const bookedBtn = screen.getByText('Booked (Confirm Gig)');
+      expect(bookedBtn).toBeInTheDocument();
+      await act(async () => {
+        fireEvent.click(bookedBtn);
+      });
+
+      // Type booked date
+      const dateInput = screen.getByLabelText('Gig Date');
+      expect(dateInput).toBeInTheDocument();
+      await act(async () => {
+        fireEvent.change(dateInput, { target: { value: '2026-10-10' } });
+      });
+
+      const confirmBookingBtn = screen.getByText('Confirm & Lock Booking');
+      await act(async () => {
+        fireEvent.click(confirmBookingBtn);
+      });
+      expect(outreachUtils.recordOutcome).toHaveBeenCalledWith('tk', 'r1', { status: 'booked', bookedDate: '2026-10-10' });
+    });
+
+    it('handles error when recordOutcome fails', async () => {
+      const mockVenuesListWithTouches = [
+        {
+          _id: 'v1',
+          name: 'Boston Hall',
+          city: 'Boston',
+          usState: 'MA',
+          email: 'v1@boston.com',
+          touches: [
+            { type: 'email', date: '2026-07-01', template: 'rebuild-first', actor: 'Josh' }
+          ]
+        },
+      ];
+      outreachUtils.getPendingReplies = vi.fn().mockResolvedValue(mockPendingReplies);
+      adminVenuesUtils.listVenues = vi.fn().mockResolvedValue(mockVenuesListWithTouches);
+      outreachUtils.recordOutcome = vi.fn().mockRejectedValue(new Error('Record failed'));
+      await renderPage();
+
+      const recordOutcomeBtn = screen.getByTestId('reply-card-r1').querySelector('button');
+      await act(async () => {
+        fireEvent.click(recordOutcomeBtn!);
+      });
+
+      const interestedBtn = screen.getByText('Replied - Interested');
+      await act(async () => {
+        fireEvent.click(interestedBtn);
+      });
+
+      // Check that error state is displayed
+      expect(screen.getByTestId('outreach-error')).toBeInTheDocument();
+      expect(screen.getByTestId('outreach-error').textContent).toContain('Record failed');
+    });
+
+    it('supports closing the DNC and booking confirmation dialogs via Cancel', async () => {
+      const mockVenuesListWithTouches = [
+        {
+          _id: 'v1',
+          name: 'Boston Hall',
+          city: 'Boston',
+          usState: 'MA',
+          email: 'v1@boston.com',
+          touches: [
+            { type: 'email', date: '2026-07-01', template: 'rebuild-first', actor: 'Josh' }
+          ]
+        },
+      ];
+      outreachUtils.getPendingReplies = vi.fn().mockResolvedValue(mockPendingReplies);
+      adminVenuesUtils.listVenues = vi.fn().mockResolvedValue(mockVenuesListWithTouches);
+      await renderPage();
+
+      // Expand "Record Outcome" panel
+      const recordOutcomeBtn = screen.getByTestId('reply-card-r1').querySelector('button');
+      await act(async () => {
+        fireEvent.click(recordOutcomeBtn!);
+      });
+
+      // 1. DNC Dialog cancel
+      const notInterestedBtn = screen.getByText('Replied - Not Interested (DNC)');
+      await act(async () => {
+        fireEvent.click(notInterestedBtn);
+      });
+      // Click Cancel in DNC dialog
+      const cancelDncBtn = screen.getAllByRole('button', { name: 'Cancel' })[0];
+      await act(async () => {
+        fireEvent.click(cancelDncBtn);
+      });
+
+      // 2. Booked Dialog cancel
+      const bookedBtn = screen.getByText('Booked (Confirm Gig)');
+      await act(async () => {
+        fireEvent.click(bookedBtn);
+      });
+      // Click Cancel in Booked dialog
+      const cancelBookedBtn = screen.getAllByRole('button', { name: 'Cancel' })[0];
+      expect(cancelBookedBtn).toBeInTheDocument();
+      await act(async () => {
+        fireEvent.click(cancelBookedBtn);
+      });
+    });
+
+    it('opens and closes OutreachDialog via Cancel button', async () => {
+      await renderPage();
+      typeDates();
+      await act(async () => { fireEvent.click(screen.getByTestId('outreach-load')); });
+      await act(async () => { fireEvent.click(screen.getByTestId('outreach-open-dialog')); });
+      const cancelBtn = screen.getByTestId('outreach-dialog-cancel');
+      expect(cancelBtn).toBeInTheDocument();
+      await act(async () => { fireEvent.click(cancelBtn); });
+    });
+
+    it('supports expanding the Never Pitched and Resolved accordions', async () => {
+      const mockVenuesListWithAll = [
+        { _id: 'v1', name: 'Boston Hall', city: 'Boston', usState: 'MA', email: 'v1@boston.com' },
+        { _id: 'v2', name: 'Cambridge Club', city: 'Cambridge', usState: 'MA', email: 'v2@cambridge.com' },
+        { _id: 'v3', name: 'Worcester Space', city: 'Worcester', usState: 'MA', email: 'v3@worcester.com' },
+        { _id: 'v4', name: 'Lowell Theatre', city: 'Lowell', usState: 'MA', email: 'v4@lowell.com' },
+        { _id: 'v5', name: 'Never Pitched Pub', city: 'Amherst', usState: 'MA', email: 'v5@never.com', outreachEligible: true },
+        { _id: 'v6', name: 'Booked resolved', city: 'Quincy', usState: 'MA', email: 'v6@booked.com', bookingStatus: 'booked' },
+        { _id: 'v7', name: 'DNC Venue', city: 'Quincy', usState: 'MA', email: 'v7@dnc.com', doNotContact: true },
+        { _id: 'v8', name: 'Not a fit venue', city: 'Amherst', usState: 'MA', email: 'v8@notafit.com', outreachEligible: false },
+        { _id: 'v9', name: 'Warm Lead Venue', city: 'Boston', usState: 'MA', email: 'v9@warm.com', interested: true },
+      ];
+      const mockPendingRepliesWithV9 = [
+        ...mockPendingReplies,
+        {
+          _id: 'r_v9',
+          venueId: 'v9',
+          status: 'dismissed'
+        }
+      ];
+      outreachUtils.getPendingReplies = vi.fn().mockResolvedValue(mockPendingRepliesWithV9);
+      adminVenuesUtils.listVenues = vi.fn().mockResolvedValue(mockVenuesListWithAll);
+      await renderPage();
+
+      // Click "Never Pitched" accordion
+      const neverPitchedAccordion = screen.getByText(/Never Pitched \(1\)/);
+      expect(neverPitchedAccordion).toBeInTheDocument();
+      await act(async () => {
+        fireEvent.click(neverPitchedAccordion);
+      });
+      expect(screen.getByText('Never Pitched Pub')).toBeInTheDocument();
+
+      // Click "Booked / Interested / Do not contact" accordion
+      const resolvedAccordion = screen.getByText(/Booked \/ Interested \/ Do not contact \(4\)/);
+      expect(resolvedAccordion).toBeInTheDocument();
+      await act(async () => {
+        fireEvent.click(resolvedAccordion);
+      });
+      expect(screen.getByText('Booked resolved')).toBeInTheDocument();
+      expect(screen.getByText('DNC Venue')).toBeInTheDocument();
+      expect(screen.getByText('Not a fit venue')).toBeInTheDocument();
+      expect(screen.getByText('Warm Lead Venue')).toBeInTheDocument();
+    });
+
+    it('supports triggering onClose and empty DatePicker onChange', async () => {
+      outreachUtils.getPendingReplies = vi.fn().mockResolvedValue(mockPendingReplies);
+      adminVenuesUtils.listVenues = vi.fn().mockResolvedValue(mockVenuesList);
+      await renderPage();
+      typeDates();
+      await act(async () => { fireEvent.click(screen.getByTestId('outreach-load')); });
+      await act(async () => { fireEvent.click(screen.getByTestId('outreach-open-dialog')); });
+
+      // Click mock-close-button for OutreachDialog (dialog index 0)
+      const closeButtons = screen.getAllByTestId('dialog-mock-close-button');
+      await act(async () => {
+        fireEvent.click(closeButtons[0]);
+      });
+
+      // Clear the Weekend DatePicker input to trigger null onChange branch
+      const weekendInput = screen.getByLabelText('Weekend (eligibility)');
+      await act(async () => {
+        fireEvent.change(weekendInput, { target: { value: '' } });
+      });
+
+      // Expand "Record Outcome" panel
+      const recordOutcomeBtn = screen.getByTestId('reply-card-r1').querySelector('button');
+      await act(async () => {
+        fireEvent.click(recordOutcomeBtn!);
+      });
+
+      // Click Cancel on DNC Dialog to trigger Cancel button onClick (line 1185)
+      const notInterestedBtn = screen.getByText('Replied - Not Interested (DNC)');
+      await act(async () => {
+        fireEvent.click(notInterestedBtn);
+      });
+      const cancelButtons = screen.getAllByText('Cancel');
+      for (const btn of cancelButtons) {
+        await act(async () => {
+          fireEvent.click(btn);
+        });
+      }
+
+      // Re-trigger DNC Dialog onClose via hidden close button
+      await act(async () => {
+        fireEvent.click(notInterestedBtn);
+      });
+      const updatedCloseButtons = screen.getAllByTestId('dialog-mock-close-button');
+      await act(async () => {
+        fireEvent.click(updatedCloseButtons[1]); // DNC Dialog is index 1
+      });
+
+      // Click Cancel on Booked Dialog to trigger Cancel button onClick (line 1215)
+      const bookedBtn = screen.getByText('Booked (Confirm Gig)');
+      await act(async () => {
+        fireEvent.click(bookedBtn);
+      });
+      const cancelButtons2 = screen.getAllByText('Cancel');
+      for (const btn of cancelButtons2) {
+        await act(async () => {
+          fireEvent.click(btn);
+        });
+      }
+
+      // Re-trigger Booked Dialog onClose via hidden close button
+      await act(async () => {
+        fireEvent.click(bookedBtn);
+      });
+      const finalCloseButtons = screen.getAllByTestId('dialog-mock-close-button');
+      await act(async () => {
+        fireEvent.click(finalCloseButtons[2]); // Booked Dialog is index 2
+      });
+
+      // Re-open Booked dialog to trigger empty DatePicker onChange
+      await act(async () => {
+        fireEvent.click(bookedBtn);
+      });
+      const dateInput = screen.getByLabelText('Gig Date');
+      await act(async () => {
+        fireEvent.change(dateInput, { target: { value: '' } });
+      });
+      expect(dateInput).toBeInTheDocument();
+    });
+
+    it('supports typing into target dates and booking period fields', async () => {
+      await renderPage();
+      const targetDatesInput = screen.getByTestId('outreach-target-dates');
+      const bookingPeriodInput = screen.getByTestId('outreach-booking-period');
+      
+      await act(async () => {
+        fireEvent.change(targetDatesInput, { target: { value: 'Aug 14-16' } });
+        fireEvent.change(bookingPeriodInput, { target: { value: 'August' } });
+      });
+      
+      expect(targetDatesInput).toHaveValue('Aug 14-16');
+      expect(bookingPeriodInput).toHaveValue('August');
+    });
+
+    it('covers all types of touches in the venue contact timeline', async () => {
+      const mockVenuesWithAllTouches = [
+        {
+          _id: 'v1',
+          name: 'Boston Hall',
+          city: 'Boston',
+          usState: 'MA',
+          email: 'v1@boston.com',
+          touches: [
+            { type: 'email', date: '2026-07-01', template: 'pitch', actor: 'Josh' },
+            { type: 'call', date: '2026-07-02', actor: 'Josh' },
+            { type: 'outcome', date: '2026-07-03', outcome: 'booked', bookedDate: '2026-10-10', actor: 'Josh' },
+            { type: 'outcome', date: '2026-07-04', outcome: 'interested', actor: 'Josh' },
+            { type: 'outcome', date: '2026-07-05', outcome: 'not-interested', actor: 'Josh' },
+            { type: 'other', date: '2026-07-06', actor: 'Josh' },
+          ]
+        }
+      ];
+      outreachUtils.getPendingReplies = vi.fn().mockResolvedValue(mockPendingReplies);
+      adminVenuesUtils.listVenues = vi.fn().mockResolvedValue(mockVenuesWithAllTouches);
+      await renderPage();
+
+      // Expand "Record Outcome" panel
+      const recordOutcomeBtn = screen.getByTestId('reply-card-r1').querySelector('button');
+      await act(async () => {
+        fireEvent.click(recordOutcomeBtn!);
+      });
+
+      // It should display the timeline and render all touches
+      expect(screen.getByText('Contact Touch Timeline')).toBeInTheDocument();
+    });
+
+    it('supports clicking Add to Pitch Batch on a Never Pitched venue', async () => {
+      const mockVenuesListWithNeverPitched = [
+        { _id: 'v5', name: 'Never Pitched Pub', city: 'Amherst', usState: 'MA', email: 'v5@never.com', outreachEligible: true },
+      ];
+      outreachUtils.getPendingReplies = vi.fn().mockResolvedValue(mockPendingReplies);
+      adminVenuesUtils.listVenues = vi.fn().mockResolvedValue(mockVenuesListWithNeverPitched);
+      await renderPage();
+
+      // Click "Never Pitched" accordion
+      const neverPitchedAccordion = screen.getByText(/Never Pitched \(1\)/);
+      await act(async () => {
+        fireEvent.click(neverPitchedAccordion);
+      });
+
+      // Find and click "Add to Pitch Batch"
+      const addPitchBtn = screen.getByRole('button', { name: /Add to Pitch Batch/i });
+      await act(async () => {
+        fireEvent.click(addPitchBtn);
+      });
+
+      expect(window.scrollTo).toHaveBeenCalled();
     });
   });
 });

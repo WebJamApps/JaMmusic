@@ -109,7 +109,14 @@ exports[`/music > renders the component 1`] = `
       </div>
       <div
         class="createNewPicDialog"
+        data-expanded="false"
       >
+        <button
+          data-testid="dialog-mock-close-button"
+          style="display: none;"
+        >
+          Mock Close
+        </button>
         <div>
           Create New Picture
         </div>
@@ -185,7 +192,14 @@ exports[`/music > renders the component 1`] = `
         </div>
         <div
           class="createNewGigDialog"
+          data-expanded="false"
         >
+          <button
+            data-testid="dialog-mock-close-button"
+            style="display: none;"
+          >
+            Mock Close
+          </button>
           <div>
             Create New Gig
           </div>
@@ -571,7 +585,14 @@ exports[`/music > renders the component 1`] = `
         </div>
         <div
           class="editGigDialog"
+          data-expanded="false"
         >
+          <button
+            data-testid="dialog-mock-close-button"
+            style="display: none;"
+          >
+            Mock Close
+          </button>
           <div>
             Edit Gig
           </div>

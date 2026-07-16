@@ -125,6 +125,31 @@ async function applySuggestion(
   return await res.json();
 }
 
+async function recordOutcome(
+  token: string,
+  id: string,
+  payload: { status: 'interested' | 'not-interested' | 'booked' | 'target-filled' | 'not-a-fit'; bookedDate?: string },
+): Promise<unknown> {
+  const res = await fetch(`${outreachUrl}/${id}/outcome`, {
+    method: 'POST', headers: headers(token, true), body: JSON.stringify(payload),
+  });
+  if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+  return await res.json();
+}
+
+async function listOutreach(
+  token: string,
+  query?: { venueId?: string; status?: string },
+): Promise<IpendingReply[]> {
+  const qs = [];
+  if (query?.venueId) qs.push(`venueId=${encodeURIComponent(query.venueId)}`);
+  if (query?.status) qs.push(`status=${encodeURIComponent(query.status)}`);
+  const qStr = qs.length > 0 ? `?${qs.join('&')}` : '';
+  const res = await fetch(`${outreachUrl}${qStr}`, { headers: headers(token) });
+  if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+  return await res.json() as IpendingReply[];
+}
+
 async function deleteOutreach(token: string, id: string): Promise<void> {
   const res = await fetch(`${outreachUrl}/${id}`, { method: 'DELETE', headers: headers(token) });
   if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
@@ -140,4 +165,7 @@ export default {
   getPendingReplies,
   applySuggestion,
   deleteOutreach,
+  recordOutcome,
+  listOutreach,
 };
+

@@ -33,8 +33,17 @@ export function Button(props:any) {
 }
 
 export function Dialog(props:any) {
-  const { children } = props;
-  return <div {...props}>{children}</div>;
+  const { children, onClose, open, ...rest } = props;
+  return (
+    <div data-expanded={open} {...rest}>
+      {onClose && (
+        <button data-testid="dialog-mock-close-button" onClick={() => onClose()} style={{ display: 'none' }}>
+          Mock Close
+        </button>
+      )}
+      {children}
+    </div>
+  );
 }
 
 export function DialogActions(props:any) {
@@ -204,3 +213,19 @@ export function Paper(props:any) {
 export function useMediaQuery() {
   return false;
 }
+
+export function Accordion(props: any) {
+  const { children, expanded, onChange, ...rest } = props;
+  return <div data-expanded={expanded} {...rest}>{children}</div>;
+}
+
+export function AccordionSummary(props: any) {
+  const { children, expandIcon, ...rest } = props;
+  return <div {...rest}>{children}</div>;
+}
+
+export function AccordionDetails(props: any) {
+  const { children, ...rest } = props;
+  return <div {...rest}>{children}</div>;
+}
+

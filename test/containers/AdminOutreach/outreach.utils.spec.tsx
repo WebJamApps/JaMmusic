@@ -77,6 +77,29 @@ describe('Outreach utils', () => {
     expect(fetchMock.mock.calls[0][0]).toContain('/outreach/id1');
   });
 
+  it('recordOutcome POSTs the outcome payload', async () => {
+    fetchMock.mockReturnValue(okJson({}));
+    const res = await outreachUtils.recordOutcome('tok', 'id1', { status: 'interested' });
+    expect(res).toBeDefined();
+    const opts = fetchMock.mock.calls[0][1] as RequestInit;
+    expect(opts.method).toBe('POST');
+    expect(JSON.parse(opts.body as string)).toEqual({ status: 'interested' });
+    expect(fetchMock.mock.calls[0][0]).toContain('/outreach/id1/outcome');
+  });
+
+  it('listOutreach GETs /outreach with optional queries', async () => {
+    fetchMock.mockReturnValue(okJson([{ _id: 'o1' }]));
+    const res = await outreachUtils.listOutreach('tok', { venueId: 'v1', status: 'replied' });
+    expect(res).toHaveLength(1);
+    expect(fetchMock.mock.calls[0][0]).toContain('/outreach?venueId=v1&status=replied');
+  });
+
+  it('listOutreach GETs /outreach without queries', async () => {
+    fetchMock.mockReturnValue(okJson([]));
+    await outreachUtils.listOutreach('tok');
+    expect(fetchMock.mock.calls[0][0]).toMatch(/\/outreach$/);
+  });
+
   it.each([
     ['getCandidates', () => outreachUtils.getCandidates('t', 'd')],
     ['sendBatch', () => outreachUtils.sendBatch('t', { venueIds: ['a'], targetDates: 'd' })],
@@ -86,6 +109,8 @@ describe('Outreach utils', () => {
     ['getPendingReplies', () => outreachUtils.getPendingReplies('t')],
     ['applySuggestion', () => outreachUtils.applySuggestion('t', 'id', {})],
     ['deleteOutreach', () => outreachUtils.deleteOutreach('t', 'id')],
+    ['recordOutcome', () => outreachUtils.recordOutcome('t', 'id', { status: 'interested' })],
+    ['listOutreach', () => outreachUtils.listOutreach('t')],
   ])('%s throws on a non-ok response', async (_name, call) => {
     fetchMock.mockReturnValue(failed());
     await expect(call()).rejects.toThrow('500');
