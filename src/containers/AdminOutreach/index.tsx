@@ -447,10 +447,14 @@ export function AdminOutreach() {
 
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
-      <Box sx={{
-        padding: { xs: 2, sm: 4 }, maxWidth: 1200, margin: 'auto', width: '100%', minWidth: 0,
-        backgroundColor: 'background.default', minHeight: '100vh',
-      }} data-testid="admin-outreach-page">
+      <Box
+        className="page-content"
+        sx={{
+          padding: { xs: 2, sm: 4 }, maxWidth: 1200, margin: 'auto', width: '100%', minWidth: 0,
+          backgroundColor: 'background.default',
+        }}
+        data-testid="admin-outreach-page"
+      >
 
         {/* Pinned Search and Dashboard Header */}
         <Paper elevation={3} sx={{
