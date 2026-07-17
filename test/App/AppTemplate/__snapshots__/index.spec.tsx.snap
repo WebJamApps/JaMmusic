@@ -136,7 +136,7 @@ exports[`AppTemplate > renders the component 1`] = `
             <strong>
               Version
                
-              2.12.3
+              2.13.0
             </strong>
           </div>
           <p

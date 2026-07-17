@@ -25,6 +25,10 @@ export interface Ivenue {
   relationshipStage?: string;
   templateOverride?: string;
   lastContacted?: string;
+  lastVerified?: string;
+  lastGig?: { datetime?: string; city?: string; usState?: string; [key: string]: unknown } | null;
+  nextGig?: { datetime?: string; city?: string; usState?: string; [key: string]: unknown } | null;
+  locationFallback?: { city?: string; usState?: string } | null;
   // Prospect-ranking inputs (web-jam-back#867): originalsFit weighs heaviest in
   // the default sort, travelBand discounts distance, priority is a manual 0-5 boost.
   originalsFit?: string;
@@ -55,6 +59,7 @@ export interface IvenueUpdate {
   priority?: number;
   status?: string;
   lastContacted?: string;
+  lastVerified?: string;
 }
 
 const venueUrl = `${process.env.BackendUrl}/venue`;
@@ -135,6 +140,7 @@ export const FIELD_HELP: Record<string, string> = {
     + 'Only turn ON once vetted: in scope + has a Type + still booking + contact verified.',
   payTier: 'Relative pay (e.g. $/$$/$$$); ranks better-paying venues higher in the default sort. No send effect.',
   contactVerified: 'Is the email/contact confirmed good? Should be true before Eligible.',
+  lastVerified: 'The date this venue\'s details or contact info were last verified.',
   relationshipStage: 'cold (never played) vs returning (played before) — picks the cold vs warm template. Auto = inferred from history.',
   templateOverride: 'Force a specific template regardless of Type. Leave blank normally.',
   originalsFit: 'How much the venue welcomes ORIGINAL music — the heaviest factor in the default Prospect sort (loves > some > none).',

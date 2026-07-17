@@ -104,7 +104,7 @@ describe('VenuesTable', () => {
     ];
     render(<VenuesTable venues={list} onEdit={vi.fn()} />);
     ['city', 'state', 'contact', 'type', 'booking', 'interested', 'eligible', 'lastContacted',
-      'originals', 'pay', 'travel', 'priority', 'prospect'].forEach((key) => {
+      'lastGig', 'nextGig', 'originals', 'pay', 'travel', 'priority', 'prospect'].forEach((key) => {
       fireEvent.click(screen.getByTestId(`sort-${key}`));
       expect(screen.getAllByTestId(/^venue-row-/)).toHaveLength(2);
     });
@@ -286,6 +286,33 @@ describe('VenuesTable', () => {
 
     // Click Close button
     fireEvent.click(screen.getByTestId('copy-dialog-close'));
+  });
+
+  it('renders last/next gig columns and locationFallback for blank city/state', () => {
+    const list: Ivenue[] = [
+      {
+        _id: 'v-gigs',
+        name: 'Gig-linked Venue',
+        city: '',
+        usState: '',
+        lastGig: { datetime: '2026-07-01T19:00:00.000Z' },
+        nextGig: { datetime: '2026-08-01T20:00:00.000Z' },
+        locationFallback: { city: 'Durham', usState: 'NC' },
+      },
+    ];
+    render(<VenuesTable venues={list} onEdit={vi.fn()} />);
+
+    // Gig columns
+    expect(screen.getByTestId('venue-lastgig-v-gigs').textContent).toBe('2026-07-01');
+    expect(screen.getByTestId('venue-nextgig-v-gigs').textContent).toBe('2026-08-01');
+
+    // Fallback location styled as dimmed/italic
+    const fallbackCity = screen.getByTestId('venue-city-fallback-v-gigs');
+    const fallbackState = screen.getByTestId('venue-state-fallback-v-gigs');
+    expect(fallbackCity.textContent).toBe('Durham');
+    expect(fallbackCity).toHaveStyle('font-style: italic');
+    expect(fallbackState.textContent).toBe('NC');
+    expect(fallbackState).toHaveStyle('font-style: italic');
   });
 });
 
