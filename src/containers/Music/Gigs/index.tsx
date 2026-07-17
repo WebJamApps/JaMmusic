@@ -23,9 +23,9 @@ export const makeColumns = (isMobile = false): GridColDef[] => {
     width: isMobile ? 110 : 220,
     editable: false,
     renderCell: (params: GridRenderCellParams) => {
-      const { row: { datetime } } = params;
+      const { row: { datetime, usState } } = params;
       if (!datetime) return '';
-      return isMobile ? utils.makeShortDateValue(datetime) : utils.makeDateValue(datetime);
+      return isMobile ? utils.makeShortDateValue(datetime, usState) : utils.makeDateValue(datetime, usState);
     },
   };
   const timeCol: GridColDef = {
@@ -34,9 +34,9 @@ export const makeColumns = (isMobile = false): GridColDef[] => {
     width: isMobile ? 140 : 170,
     editable: false,
     renderCell: (params: GridRenderCellParams) => {
-      const { row: { datetime, duration } } = params;
+      const { row: { datetime, duration, usState } } = params;
       if (!datetime) return '';
-      return utils.makeTimeRange(datetime, duration);
+      return utils.makeTimeRange(datetime, duration, usState);
     },
   };
   const locationCol: GridColDef = {

@@ -2,6 +2,7 @@ import type { GridColDef, GridRenderCellParams, GridRowParams } from '@mui/x-dat
 import HtmlReactParser from 'html-react-parser';
 import scc from 'socketcluster-client';
 import commonUtils from 'src/lib/utils';
+import { formatInVenueTimeZone } from 'src/lib/venueTimezone';
 import type { Iauth } from 'src/providers/Auth.provider';
 import type { Igig } from 'src/providers/Data.provider';
 import { defaultGig } from 'src/providers/fetchGigs';
@@ -142,28 +143,35 @@ export const orderGigs = (
   setPageSize(10);
 };
 
-const makeDateValue = (datetime: string) => {
-  return new Date(datetime).toLocaleString('en-US', {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  });
-};
+// Rendered in the gig's venue timezone (#1222) rather than the viewer's
+// browser timezone, via the shared `formatInVenueTimeZone` (falls back to the
+// browser's local zone when the gig has no usState — the prior behavior).
+const makeDateValue = (datetime: string, usState?: string) => formatInVenueTimeZone(datetime, {
+  weekday: 'long',
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+}, usState);
 
-const makeShortDateValue = (datetime: string) => new Date(datetime)
-  .toLocaleString('en-US', { year: '2-digit', month: 'numeric', day: 'numeric' });
+const makeShortDateValue = (datetime: string, usState?: string) => formatInVenueTimeZone(
+  datetime,
+  { year: '2-digit', month: 'numeric', day: 'numeric' },
+  usState,
+);
 
-const makeTimeValue = (datetime: string) => new Date(datetime)
-  .toLocaleString('en-US', { hour: 'numeric', minute: '2-digit' });
+const makeTimeValue = (datetime: string, usState?: string) => formatInVenueTimeZone(
+  datetime,
+  { hour: 'numeric', minute: '2-digit' },
+  usState,
+);
 
 // With a duration (hours) the Time column becomes a range "8:00 AM to 5:00 PM";
 // with no duration it stays the start time alone.
-const makeTimeRange = (datetime: string, duration?: number) => {
-  const start = makeTimeValue(datetime);
+const makeTimeRange = (datetime: string, duration?: number, usState?: string) => {
+  const start = makeTimeValue(datetime, usState);
   if (!duration || duration <= 0) return start;
   const end = new Date(new Date(datetime).getTime() + duration * 60 * 60 * 1000);
-  return `${start} to ${makeTimeValue(end.toISOString())}`;
+  return `${start} to ${makeTimeValue(end.toISOString(), usState)}`;
 };
 
 const makeVenueValue = (value: string) => {

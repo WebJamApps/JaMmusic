@@ -8,6 +8,7 @@ import {
 import LinearProgress from '@mui/material/LinearProgress';
 import InputAdornment from '@mui/material/InputAdornment';
 import { Search } from '@mui/icons-material';
+import { formatVenueDateYMD } from 'src/lib/venueTimezone';
 import {
   FIELD_HELP, prospectScore, type Ivenue,
 } from './admin-venues.utils';
@@ -55,12 +56,13 @@ function formatLastContacted(lc?: string): string {
   return lc;
 }
 
-// Format a gig's datetime to YYYY-MM-DD
-function formatGigDate(gig?: { datetime?: string | Date } | null): string {
+// Format a gig's datetime to YYYY-MM-DD in the venue's local timezone (#1222):
+// resolves the gig's own usState first, falling back to the venue's usState,
+// then the browser's local zone. Splitting the raw ISO string (the old
+// behavior) showed the UTC date, which is off by one for evening gigs.
+function formatGigDate(gig?: { datetime?: string | Date; usState?: string } | null, venueUsState?: string): string {
   if (!gig || !gig.datetime) return '—';
-  const dt = typeof gig.datetime === 'string' ? gig.datetime : gig.datetime.toISOString();
-  if (dt.includes('T')) return dt.split('T')[0];
-  return dt;
+  return formatVenueDateYMD(gig.datetime, gig.usState, venueUsState);
 }
 
 // The value a column sorts by. Booleans become 1/0 so yes sorts above no;
@@ -753,8 +755,8 @@ export function VenuesTable({
                     <TableCell>{yn(v.interested !== false)}</TableCell>
                     <TableCell data-testid={`venue-eligible-${v._id}`}>{yn(v.outreachEligible)}</TableCell>
                     <TableCell data-testid={`venue-lastcontacted-${v._id}`}>{formatLastContacted(v.lastContacted)}</TableCell>
-                    <TableCell data-testid={`venue-lastgig-${v._id}`}>{formatGigDate(v.lastGig)}</TableCell>
-                    <TableCell data-testid={`venue-nextgig-${v._id}`}>{formatGigDate(v.nextGig)}</TableCell>
+                    <TableCell data-testid={`venue-lastgig-${v._id}`}>{formatGigDate(v.lastGig, v.usState)}</TableCell>
+                    <TableCell data-testid={`venue-nextgig-${v._id}`}>{formatGigDate(v.nextGig, v.usState)}</TableCell>
                     <TableCell>{dash(v.originalsFit)}</TableCell>
                     <TableCell>{dash(v.payTier)}</TableCell>
                     <TableCell>{dash(v.travelBand)}</TableCell>
