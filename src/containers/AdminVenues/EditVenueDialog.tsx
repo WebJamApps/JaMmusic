@@ -52,6 +52,7 @@ export function EditVenueDialog({
           interested: venue.interested !== false,
           payTier: venue.payTier || '',
           contactVerified: !!venue.contactVerified,
+          lastVerified: venue.lastVerified ? venue.lastVerified.substring(0, 10) : '',
           notes: venue.notes || '',
           relationshipStage: venue.relationshipStage || '',
           templateOverride: venue.templateOverride || '',
@@ -76,6 +77,7 @@ export function EditVenueDialog({
           interested: true,
           payTier: '',
           contactVerified: false,
+          lastVerified: '',
           notes: '',
           relationshipStage: '',
           templateOverride: '',
@@ -232,6 +234,14 @@ export function EditVenueDialog({
         <FormGroup>
           <FormControlLabel
             control={(
+              <Checkbox checked={form.inScope !== false} onChange={(e) => set('inScope', e.target.checked)}
+                aria-label="in scope" data-testid="edit-venue-inscope" />
+            )}
+            label="In scope (realistic fit for outreach)" />
+          <Help field="inScope" />
+
+          <FormControlLabel
+            control={(
               <Checkbox checked={!!form.outreachEligible} onChange={(e) => set('outreachEligible', e.target.checked)}
                 aria-label="outreach eligible" data-testid="edit-venue-eligible" />
             )}
@@ -256,6 +266,17 @@ export function EditVenueDialog({
             label="Contact verified" />
           <Help field="contactVerified" />
         </FormGroup>
+        <TextField
+          label="Last Verified"
+          type="date"
+          fullWidth
+          slotProps={{ inputLabel: { shrink: true } }}
+          value={form.lastVerified || ''}
+          onChange={(e) => set('lastVerified', e.target.value)}
+          sx={{ marginBottom: 1, marginTop: 2 }}
+          data-testid="edit-venue-lastverified"
+        />
+        <Help field="lastVerified" />
         <TextField label="Notes" fullWidth multiline rows={6} value={form.notes || ''} onChange={(e) => set('notes', e.target.value)}
           sx={{ marginTop: 2 }} data-testid="edit-venue-notes" />
         {error && <Typography color="error" sx={{ marginTop: 1 }} data-testid="edit-venue-error">{error}</Typography>}
