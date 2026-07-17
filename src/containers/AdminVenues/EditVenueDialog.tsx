@@ -47,7 +47,6 @@ export function EditVenueDialog({
           phone: venue.phone || '',
           website: venue.website || '',
           outreachEligible: !!venue.outreachEligible,
-          inScope: venue.inScope !== false,
           bookingStatus: venue.bookingStatus || 'booking',
           interested: venue.interested !== false,
           payTier: venue.payTier || '',
@@ -72,7 +71,6 @@ export function EditVenueDialog({
           phone: '',
           website: '',
           outreachEligible: false,
-          inScope: true,
           bookingStatus: 'booking',
           interested: true,
           payTier: '',
@@ -232,14 +230,6 @@ export function EditVenueDialog({
         />
         <Help field="priority" />
         <FormGroup>
-          <FormControlLabel
-            control={(
-              <Checkbox checked={form.inScope !== false} onChange={(e) => set('inScope', e.target.checked)}
-                aria-label="in scope" data-testid="edit-venue-inscope" />
-            )}
-            label="In scope (realistic fit for outreach)" />
-          <Help field="inScope" />
-
           <FormControlLabel
             control={(
               <Checkbox checked={!!form.outreachEligible} onChange={(e) => set('outreachEligible', e.target.checked)}
