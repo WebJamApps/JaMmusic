@@ -103,10 +103,10 @@ describe('gigs.utils', () => {
     const editGig = {
       venue: 'venue', city: 'city', datetime: 'datetime', usState: 'usState',
     };
-    expect(utils.checkUpdateDisabled(editGig, true)).toBe(false);
+    expect(utils.checkUpdateDisabled(editGig, true, 'existing', 'venueId', 'venue', '', '', '')).toBe(false);
   });
   it('checkNewDisabled', () => {
-    expect(utils.checkNewDisabled('city', 'city', new Date(), 'city')).toBe(false);
+    expect(utils.checkNewDisabled(new Date(), 'existing', 'venueId', 'venue', '', '', '')).toBe(false);
   });
   it('clickToEdit when isAdmin', () => {
     const setEditGig = vi.fn();

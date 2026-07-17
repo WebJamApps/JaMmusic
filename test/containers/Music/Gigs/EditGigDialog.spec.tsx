@@ -1,14 +1,12 @@
 import { vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import {
-  ButtonsSection, EditGigDialog, EditText, VenueEditor,
-} from 'src/containers/Music/Gigs/EditGigDialog';
+import { EditGigDialog, EditText } from 'src/containers/Music/Gigs/EditGigDialog';
 import utils from 'src/containers/Music/Gigs/gigs.utils';
 import { defaultGig } from 'src/providers/fetchGigs';
 
 describe('EditGigDialog', () => {
-  it('renders and handles events', () => {
+  it('renders and handles cancel', () => {
     const props = {
       editGig: { _id: '123', venue: 'v', city: 'c', usState: 's', datetime: '2025-01-01' } as any,
       setEditGig: vi.fn(),
@@ -23,30 +21,27 @@ describe('EditGigDialog', () => {
     fireEvent.click(screen.getByRole('button', { name: /Cancel/i }));
     expect(props.setEditGig).toHaveBeenCalledWith(defaultGig);
   });
-  it('renders ButtonSection and handles clicks', () => {
+
+  it('renders and handles update/delete events', () => {
     const updateSpy = vi.spyOn(utils, 'updateGig').mockResolvedValue();
     const deleteSpy = vi.spyOn(utils, 'deleteGig').mockResolvedValue(true);
     const props = {
-      editGig: { _id: '123', venue: 'v', city: 'c', usState: 's', datetime: '2025-01-01' } as any,
+      editGig: { _id: '123', venue: 'v', city: 'c', usState: 's', datetime: '2025-01-01', venueId: 'venue123' } as any,
+      setEditGig: vi.fn(),
+      setShowDialog: vi.fn(),
+      setEditChanged: vi.fn(),
       editChanged: true,
       getGigs: vi.fn(),
-      setEditGig: vi.fn(),
-      setEditChanged: vi.fn(),
       auth: { token: 'some-token' } as any,
     };
-    render(<ButtonsSection {...props} />);
-    fireEvent.click(screen.getByText(/Update/i));
+    render(<EditGigDialog {...props} />);
+    fireEvent.click(screen.getByRole('button', { name: /Update/i }));
     expect(updateSpy).toHaveBeenCalled();
-    fireEvent.click(screen.getByText(/Delete/i));
+
+    fireEvent.click(screen.getByRole('button', { name: /Delete/i }));
     expect(deleteSpy).toHaveBeenCalled();
   });
-  it('renders the VenueEditor and handles event', () => {
-    const props = {
-      editGig: { _id: 'uuid' } as any, setEditChanged: vi.fn(), setEditGig: vi.fn(),
-    };
-    const { container } = render(<VenueEditor {...props} />);
-    expect(container.querySelector('#edit-venue')).toBeInTheDocument();
-  });
+
   it('renders EditText and handles onChange', () => {
     const props = {
       objKey: 'tickets' as any, editGig: {} as any, setEditChanged: vi.fn(), setEditGig: vi.fn(), required: true,

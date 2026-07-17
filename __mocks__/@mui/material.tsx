@@ -87,9 +87,34 @@ export function FormGroup(props:any) {
 }
 
 export function FormControlLabel(props:any) {
-  const { children, control, label, ...rest } = props;
-  // real MUI wraps the control in a <label> with the label text
-  return <label {...rest}>{control}{label}{children}</label>;
+  const { children, control, label, value, onChange, checked, ...rest } = props;
+  const controlWithProps = React.isValidElement(control)
+    ? React.cloneElement(control as React.ReactElement<any>, {
+        value: (control.props as any).value !== undefined ? (control.props as any).value : value,
+        onChange: (control.props as any).onChange !== undefined ? (control.props as any).onChange : onChange,
+        checked: (control.props as any).checked !== undefined ? (control.props as any).checked : checked,
+      })
+    : control;
+  return <label {...rest}>{controlWithProps}{label}{children}</label>;
+}
+
+export function RadioGroup(props: any) {
+  const { children, value, onChange, ...rest } = props;
+  const childrenWithProps = React.Children.map(children, child => {
+    if (React.isValidElement(child)) {
+      return React.cloneElement(child as React.ReactElement<any>, {
+        checked: child.props.checked !== undefined ? child.props.checked : child.props.value === value,
+        onChange: child.props.onChange !== undefined ? child.props.onChange : onChange,
+      });
+    }
+    return child;
+  });
+  return <div role="radiogroup" {...rest}>{childrenWithProps}</div>;
+}
+
+export function Radio(props: any) {
+  const { children, checked, ...rest } = props;
+  return <input type="radio" checked={checked} {...rest}>{children}</input>;
 }
 
 export function Select(props:any) {
@@ -227,5 +252,14 @@ export function AccordionSummary(props: any) {
 export function AccordionDetails(props: any) {
   const { children, ...rest } = props;
   return <div {...rest}>{children}</div>;
+}
+
+export function Autocomplete(props: any) {
+  const { options, value, onChange, renderInput, getOptionLabel, ...rest } = props;
+  return (
+    <div {...rest}>
+      {renderInput({})}
+    </div>
+  );
 }
 

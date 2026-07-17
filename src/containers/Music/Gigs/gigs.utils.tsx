@@ -21,11 +21,12 @@ const createGig = async (
   auth: Iauth,
   duration: number,
   promoImageUrl: string,
+  venueId?: string | null,
 ) => {
   try {
     const { token } = auth;
     const gig = {
-      datetime, venue, tickets, city, usState, duration, promoImageUrl, artist: 'josh',
+      datetime, venue, tickets, city, usState, duration, promoImageUrl, artist: 'josh', venueId: venueId || undefined,
     };
     const socket = scc.create({
       hostname: process.env.SCS_HOST,
@@ -53,6 +54,9 @@ const updateGig = async (
     delete gig.time;
     delete gig.location;
     delete gig._id;
+    if (gig.venueId && typeof gig.venueId === 'object') {
+      gig.venueId = gig.venueId._id;
+    }
     const socket = scc.create({
       hostname: process.env.SCS_HOST,
       port: Number(process.env.SCS_PORT),
@@ -75,16 +79,50 @@ const clickToEdit = (
   if (isAdmin) { setEditGig(rowData); }
 };
 
-const checkNewDisabled = (city: string, usState: string, dateTime: Date | null, venue: string) => {
-  let isDisabled = true;
-  if (city && usState && dateTime && venue) isDisabled = false;
-  return isDisabled;
+const checkNewDisabled = (
+  dateTime: Date | null,
+  path: 'existing' | 'new' | 'none',
+  venueId: string | null,
+  venue: string,
+  inlineName: string,
+  inlineCity: string,
+  inlineState: string,
+) => {
+  if (!dateTime) return true;
+  if (path === 'existing') {
+    return !venueId;
+  }
+  if (path === 'new') {
+    return !inlineName || !inlineCity || !inlineState;
+  }
+  if (path === 'none') {
+    return !venue || venue.trim() === '' || venue.trim() === '<p></p>';
+  }
+  return true;
 };
 
-const checkUpdateDisabled = (editGig: GridRowParams['row'], editChanged: boolean) => {
-  let disabled = true;
-  if (editChanged && editGig.venue && editGig.city && editGig.datetime && editGig.usState) disabled = false;
-  return disabled;
+const checkUpdateDisabled = (
+  editGig: GridRowParams['row'],
+  editChanged: boolean,
+  path: 'existing' | 'new' | 'none',
+  venueId: string | null,
+  venue: string,
+  inlineName: string,
+  inlineCity: string,
+  inlineState: string,
+) => {
+  if (!editChanged) return true;
+  if (!editGig.datetime) return true;
+  if (path === 'existing') {
+    return !venueId;
+  }
+  if (path === 'new') {
+    return !inlineName || !inlineCity || !inlineState;
+  }
+  if (path === 'none') {
+    return !venue || venue.trim() === '' || venue.trim() === '<p></p>';
+  }
+  return true;
 };
 
 async function deleteGig(
@@ -180,6 +218,42 @@ const makeVenueValue = (value: string) => {
   return <div>{parsed}</div>;
 };
 
+const renderVenueCell = (params: GridRenderCellParams) => {
+  const row = params?.row;
+  if (!row) {
+    return makeVenueValue(params?.value || '');
+  }
+  const { venue, venueId } = row;
+  if (venue === 'Our Past Performances') {
+    return <span className="ourPastPerformances">{HtmlReactParser(venue)}</span>;
+  }
+  if (venueId && typeof venueId === 'object') {
+    const { name, city, usState, website } = venueId;
+    const resolvedLink = website ? (
+      <a href={website} target="_blank" rel="noopener" style={{ fontWeight: 'bold', textDecoration: 'underline' }}>
+        {name}
+      </a>
+    ) : (
+      <span style={{ fontWeight: 'bold' }}>{name}</span>
+    );
+    const locationStr = `${city || ''}, ${usState || ''}`.trim().replace(/^,\s*|,\s*$/g, '');
+    return (
+      <div>
+        <div>
+          {resolvedLink}
+          {locationStr ? ` - ${locationStr}` : ''}
+        </div>
+        {venue && venue !== '<p></p>' && venue.trim() !== '' && (
+          <div style={{ fontSize: '0.875rem', marginTop: '4px', opacity: 0.9 }}>
+            {HtmlReactParser(venue)}
+          </div>
+        )}
+      </div>
+    );
+  }
+  return <div>{HtmlReactParser(venue || '')}</div>;
+};
+
 const makeVenue = (isMobile = false): GridColDef => (
   {
     field: 'venue',
@@ -188,7 +262,7 @@ const makeVenue = (isMobile = false): GridColDef => (
     minWidth: isMobile ? undefined : 400,
     flex: isMobile ? 0 : 2,
     editable: false,
-    renderCell: (params: GridRenderCellParams) => makeVenueValue(params.value),
+    renderCell: (params: GridRenderCellParams) => renderVenueCell(params),
   }
 );
 
