@@ -67,14 +67,13 @@ describe('EditVenueDialog', () => {
       change('edit-venue-lastverified', '2026-07-16');
       change('edit-venue-notes', 'great room');
     });
-    await act(async () => { fireEvent.click(screen.getByTestId('edit-venue-inscope')); });
     await act(async () => { fireEvent.click(screen.getByTestId('edit-venue-interested')); });
     await act(async () => { fireEvent.click(screen.getByTestId('edit-venue-contactverified')); });
     await act(async () => { fireEvent.click(screen.getByTestId('edit-venue-save')); });
     expect(adminVenuesUtils.updateVenue).toHaveBeenCalledWith('tk', 'v1', expect.objectContaining({
       city: 'Roanoke', usState: 'VA', venueType: 'Originals', contactName: 'Pat',
       email: 'pat@v.com', phone: '540-555-1212', website: 'https://v.com', payTier: '$$$', notes: 'great room',
-      lastVerified: '2026-07-16', inScope: false,
+      lastVerified: '2026-07-16',
     }));
   });
 
