@@ -36,6 +36,8 @@ const COLUMNS: { key: string; label: string; help?: string }[] = [
   { key: 'interested', label: 'Interested', help: 'interested' },
   { key: 'eligible', label: 'Eligible', help: 'outreachEligible' },
   { key: 'lastContacted', label: 'Last pitched' },
+  { key: 'lastGig', label: 'Last Gig' },
+  { key: 'nextGig', label: 'Next Gig' },
   { key: 'originals', label: 'Originals', help: 'originalsFit' },
   { key: 'pay', label: 'Pay', help: 'payTier' },
   { key: 'travel', label: 'Travel', help: 'travelBand' },
@@ -53,6 +55,14 @@ function formatLastContacted(lc?: string): string {
   return lc;
 }
 
+// Format a gig's datetime to YYYY-MM-DD
+function formatGigDate(gig?: { datetime?: string | Date } | null): string {
+  if (!gig || !gig.datetime) return '—';
+  const dt = typeof gig.datetime === 'string' ? gig.datetime : gig.datetime.toISOString();
+  if (dt.includes('T')) return dt.split('T')[0];
+  return dt;
+}
+
 // The value a column sorts by. Booleans become 1/0 so yes sorts above no;
 // 'prospect' is the computed score.
 export function sortValue(v: Ivenue, key: string): string | number {
@@ -66,6 +76,8 @@ export function sortValue(v: Ivenue, key: string): string | number {
     case 'interested': return v.interested !== false ? 1 : 0;
     case 'eligible': return v.outreachEligible ? 1 : 0;
     case 'lastContacted': return v.lastContacted || '';
+    case 'lastGig': return v.lastGig?.datetime ? String(v.lastGig.datetime) : '';
+    case 'nextGig': return v.nextGig?.datetime ? String(v.nextGig.datetime) : '';
     case 'originals': return v.originalsFit || '';
     case 'pay': return v.payTier || '';
     case 'travel': return v.travelBand || '';
@@ -598,8 +610,28 @@ export function VenuesTable({
                     </TableCell>
 
                     {/* Other standard columns */}
-                    <TableCell>{dash(v.city)}</TableCell>
-                    <TableCell>{dash(v.usState)}</TableCell>
+                    <TableCell data-testid={`venue-city-${v._id}`}>
+                      {v.city ? (
+                        v.city
+                      ) : v.locationFallback?.city ? (
+                        <span style={{ fontStyle: 'italic', opacity: 0.6 }} data-testid={`venue-city-fallback-${v._id}`}>
+                          {v.locationFallback.city}
+                        </span>
+                      ) : (
+                        '—'
+                      )}
+                    </TableCell>
+                    <TableCell data-testid={`venue-state-${v._id}`}>
+                      {v.usState ? (
+                        v.usState
+                      ) : v.locationFallback?.usState ? (
+                        <span style={{ fontStyle: 'italic', opacity: 0.6 }} data-testid={`venue-state-fallback-${v._id}`}>
+                          {v.locationFallback.usState}
+                        </span>
+                      ) : (
+                        '—'
+                      )}
+                    </TableCell>
                     <TableCell data-testid={`venue-contact-${v._id}`}>
                       <Box sx={{ display: 'flex', gap: 1.5, alignItems: 'center' }}>
                         {/* Contact Name */}
@@ -721,6 +753,8 @@ export function VenuesTable({
                     <TableCell>{yn(v.interested !== false)}</TableCell>
                     <TableCell data-testid={`venue-eligible-${v._id}`}>{yn(v.outreachEligible)}</TableCell>
                     <TableCell data-testid={`venue-lastcontacted-${v._id}`}>{formatLastContacted(v.lastContacted)}</TableCell>
+                    <TableCell data-testid={`venue-lastgig-${v._id}`}>{formatGigDate(v.lastGig)}</TableCell>
+                    <TableCell data-testid={`venue-nextgig-${v._id}`}>{formatGigDate(v.nextGig)}</TableCell>
                     <TableCell>{dash(v.originalsFit)}</TableCell>
                     <TableCell>{dash(v.payTier)}</TableCell>
                     <TableCell>{dash(v.travelBand)}</TableCell>
