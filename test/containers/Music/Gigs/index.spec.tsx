@@ -111,8 +111,8 @@ describe('Gigs', () => {
     expect(typeof cell).toBe('string');
   });
   it('renders photoCol column renderCell with and without promoImageUrl', () => {
-    const photoCol = columns[5];
-    const paramsWithPhoto = { row: { promoImageUrl: 'http://example.com/image.jpg' } };
+    const photoCol: any = columns[5];
+    const paramsWithPhoto: any = { row: { promoImageUrl: 'http://example.com/image.jpg' } };
     const cellWithPhoto = photoCol.renderCell(paramsWithPhoto);
     expect(cellWithPhoto.type).toBe('img');
 
@@ -120,7 +120,7 @@ describe('Gigs', () => {
     cellWithPhoto.props.onClick({ stopPropagation });
     expect(stopPropagation).toHaveBeenCalled();
 
-    const paramsWithoutPhoto = { row: { promoImageUrl: '' } };
+    const paramsWithoutPhoto: any = { row: { promoImageUrl: '' } };
     const cellWithoutPhoto = photoCol.renderCell(paramsWithoutPhoto);
     expect(cellWithoutPhoto).toBe('');
   });

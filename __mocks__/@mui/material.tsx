@@ -102,9 +102,10 @@ export function RadioGroup(props: any) {
   const { children, value, onChange, ...rest } = props;
   const childrenWithProps = React.Children.map(children, child => {
     if (React.isValidElement(child)) {
-      return React.cloneElement(child as React.ReactElement<any>, {
-        checked: child.props.checked !== undefined ? child.props.checked : child.props.value === value,
-        onChange: child.props.onChange !== undefined ? child.props.onChange : onChange,
+      const element = child as React.ReactElement<any>;
+      return React.cloneElement(element, {
+        checked: element.props.checked !== undefined ? element.props.checked : element.props.value === value,
+        onChange: element.props.onChange !== undefined ? element.props.onChange : onChange,
       });
     }
     return child;
@@ -202,14 +203,15 @@ export function Tabs(props:any) {
   const { children, value, onChange, ...rest } = props;
   const childrenWithProps = React.Children.map(children, child => {
     if (React.isValidElement(child)) {
-      return React.cloneElement(child as React.ReactElement<any>, {
-        active: child.props.value === value,
+      const element = child as React.ReactElement<any>;
+      return React.cloneElement(element, {
+        active: element.props.value === value,
         onClick: (e: any) => {
           if (onChange) {
-            onChange(e, child.props.value);
+            onChange(e, element.props.value);
           }
-          if (child.props.onClick) {
-            child.props.onClick(e);
+          if (element.props.onClick) {
+            element.props.onClick(e);
           }
         }
       });

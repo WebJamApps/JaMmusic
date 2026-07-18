@@ -129,7 +129,7 @@ describe('gigs.utils', () => {
   });
   it('makeVenue renderCell in various scenarios', () => {
     const makeVenueCol = utils.makeVenue();
-    const renderCell = makeVenueCol.renderCell;
+    const renderCell = makeVenueCol.renderCell as any;
 
     // No row
     const cellNoRow = renderCell({ value: 'Test Venue' } as any);
