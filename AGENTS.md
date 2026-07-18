@@ -15,8 +15,11 @@ JaMmusic itself does not deploy to Heroku directly.
 
 ## Commands (get all green before declaring done)
 
-- **Everything:** `npm test` — runs lint → jscpd (copy-paste detection) → unit
-  tests with coverage. This is the single check to confirm you're green.
+- **Everything:** `npm test` — runs lint → **typecheck (`tsc --noEmit`)** → jscpd
+  (copy-paste detection) → unit tests with coverage. This is the single check to
+  confirm you're green — CI runs exactly this. ALWAYS run the FULL `npm test`
+  before pushing; running the sub-scripts individually (`test:unit`, `test:lint`)
+  skips typecheck/jscpd and lets a break reach CI.
 - **Lint:** `npm run test:lint` (stylelint on `src/styles/**/*.scss` + eslint).
   Auto-fix with `npm run test:lint-fix`.
 - **Unit tests:** `npm run test:unit` (vitest, run mode, with coverage, `TZ=UTC`).
@@ -31,7 +34,11 @@ JaMmusic itself does not deploy to Heroku directly.
   `vitest -u`. Re-run `npm test` afterwards to confirm green (a bare update has
   bitten CI before).
 - **Imports:** prefer the `src/` path alias over deep `../../../` relative chains.
-- **Coverage gate:** vitest is gated at 90/90/80/80; don't let coverage regress.
+- **Coverage gate (CI-BLOCKING):** `npm test` fails and the PR cannot merge if
+  coverage drops below 90/90/80/80 (statements/lines/functions/branches). Any new
+  component/function/branch you add MUST ship with tests in the SAME PR — check the
+  coverage output at the end of `npm test` and get it green BEFORE opening the PR,
+  not after CI flags it.
 - **Tests** live in `test/`, mirroring `src/`; shared mocks in `__mocks__/`. Add
   or update specs alongside the file you change.
 

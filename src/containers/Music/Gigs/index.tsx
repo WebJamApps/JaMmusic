@@ -23,9 +23,10 @@ export const makeColumns = (isMobile = false): GridColDef[] => {
     width: isMobile ? 110 : 220,
     editable: false,
     renderCell: (params: GridRenderCellParams) => {
-      const { row: { datetime, usState } } = params;
+      const { row: { datetime, usState, venueId } } = params;
       if (!datetime) return '';
-      return isMobile ? utils.makeShortDateValue(datetime, usState) : utils.makeDateValue(datetime, usState);
+      const resolvedState = venueId && typeof venueId === 'object' ? venueId.usState : usState;
+      return isMobile ? utils.makeShortDateValue(datetime, resolvedState) : utils.makeDateValue(datetime, resolvedState);
     },
   };
   const timeCol: GridColDef = {
@@ -34,9 +35,10 @@ export const makeColumns = (isMobile = false): GridColDef[] => {
     width: isMobile ? 140 : 170,
     editable: false,
     renderCell: (params: GridRenderCellParams) => {
-      const { row: { datetime, duration, usState } } = params;
+      const { row: { datetime, duration, usState, venueId } } = params;
       if (!datetime) return '';
-      return utils.makeTimeRange(datetime, duration, usState);
+      const resolvedState = venueId && typeof venueId === 'object' ? venueId.usState : usState;
+      return utils.makeTimeRange(datetime, duration, resolvedState);
     },
   };
   const locationCol: GridColDef = {
@@ -47,9 +49,11 @@ export const makeColumns = (isMobile = false): GridColDef[] => {
     flex: isMobile ? 0 : 1,
     editable: false,
     renderCell: (params: GridRenderCellParams) => {
-      const { row: { location, city, usState } } = params;
+      const { row: { location, city, usState, venueId } } = params;
       if (location) return location;
-      if (city) return `${city}, ${usState}`;
+      const resolvedCity = venueId && typeof venueId === 'object' ? venueId.city : city;
+      const resolvedState = venueId && typeof venueId === 'object' ? venueId.usState : usState;
+      if (resolvedCity) return `${resolvedCity}, ${resolvedState}`;
       return '';
     },
   };
