@@ -9,6 +9,8 @@ export interface Ivenue {
   name: string;
   city?: string;
   usState?: string;
+  country?: string;
+  region?: string;
   venueType?: string;
   contactName?: string;
   email?: string;
@@ -40,6 +42,8 @@ export interface IvenueUpdate {
   name?: string;
   city?: string;
   usState?: string;
+  country?: string;
+  region?: string;
   venueType?: string;
   contactName?: string;
   email?: string;

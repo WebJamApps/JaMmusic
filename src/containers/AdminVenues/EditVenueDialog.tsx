@@ -8,6 +8,93 @@ import adminVenuesUtils, {
   type Ivenue, type IvenueUpdate,
 } from './admin-venues.utils';
 
+export const US_STATES = [
+  { code: 'AL', name: 'Alabama' },
+  { code: 'AK', name: 'Alaska' },
+  { code: 'AS', name: 'American Samoa' },
+  { code: 'AZ', name: 'Arizona' },
+  { code: 'AR', name: 'Arkansas' },
+  { code: 'CA', name: 'California' },
+  { code: 'CO', name: 'Colorado' },
+  { code: 'CT', name: 'Connecticut' },
+  { code: 'DE', name: 'Delaware' },
+  { code: 'DC', name: 'District of Columbia' },
+  { code: 'FM', name: 'Federated States of Micronesia' },
+  { code: 'FL', name: 'Florida' },
+  { code: 'GA', name: 'Georgia' },
+  { code: 'GU', name: 'Guam' },
+  { code: 'HI', name: 'Hawaii' },
+  { code: 'ID', name: 'Idaho' },
+  { code: 'IL', name: 'Illinois' },
+  { code: 'IN', name: 'Indiana' },
+  { code: 'IA', name: 'Iowa' },
+  { code: 'KS', name: 'Kansas' },
+  { code: 'KY', name: 'Kentucky' },
+  { code: 'LA', name: 'Louisiana' },
+  { code: 'ME', name: 'Maine' },
+  { code: 'MH', name: 'Marshall Islands' },
+  { code: 'MD', name: 'Maryland' },
+  { code: 'MA', name: 'Massachusetts' },
+  { code: 'MI', name: 'Michigan' },
+  { code: 'MN', name: 'Minnesota' },
+  { code: 'MS', name: 'Mississippi' },
+  { code: 'MO', name: 'Missouri' },
+  { code: 'MT', name: 'Montana' },
+  { code: 'NE', name: 'Nebraska' },
+  { code: 'NV', name: 'Nevada' },
+  { code: 'NH', name: 'New Hampshire' },
+  { code: 'NJ', name: 'New Jersey' },
+  { code: 'NM', name: 'New Mexico' },
+  { code: 'NY', name: 'New York' },
+  { code: 'NC', name: 'North Carolina' },
+  { code: 'ND', name: 'North Dakota' },
+  { code: 'MP', name: 'Northern Mariana Islands' },
+  { code: 'OH', name: 'Ohio' },
+  { code: 'OK', name: 'Oklahoma' },
+  { code: 'OR', name: 'Oregon' },
+  { code: 'PW', name: 'Palau' },
+  { code: 'PA', name: 'Pennsylvania' },
+  { code: 'PR', name: 'Puerto Rico' },
+  { code: 'RI', name: 'Rhode Island' },
+  { code: 'SC', name: 'South Carolina' },
+  { code: 'SD', name: 'South Dakota' },
+  { code: 'TN', name: 'Tennessee' },
+  { code: 'TX', name: 'Texas' },
+  { code: 'UT', name: 'Utah' },
+  { code: 'VT', name: 'Vermont' },
+  { code: 'VI', name: 'Virgin Island' },
+  { code: 'VA', name: 'Virginia' },
+  { code: 'WA', name: 'Washington' },
+  { code: 'WV', name: 'West Virginia' },
+  { code: 'WI', name: 'Wisconsin' },
+  { code: 'WY', name: 'Wyoming' },
+] as const;
+
+export const COUNTRIES = [
+  { code: 'US', name: 'United States (US)' },
+  { code: 'CA', name: 'Canada (CA)' },
+  { code: 'GB', name: 'United Kingdom (GB)' },
+  { code: 'IE', name: 'Ireland (IE)' },
+  { code: 'AU', name: 'Australia (AU)' },
+  { code: 'NZ', name: 'New Zealand (NZ)' },
+  { code: 'DE', name: 'Germany (DE)' },
+  { code: 'FR', name: 'France (FR)' },
+  { code: 'IT', name: 'Italy (IT)' },
+  { code: 'ES', name: 'Spain (ES)' },
+  { code: 'NL', name: 'Netherlands (NL)' },
+  { code: 'BE', name: 'Belgium (BE)' },
+  { code: 'CH', name: 'Switzerland (CH)' },
+  { code: 'AT', name: 'Austria (AT)' },
+  { code: 'SE', name: 'Sweden (SE)' },
+  { code: 'NO', name: 'Norway (NO)' },
+  { code: 'DK', name: 'Denmark (DK)' },
+  { code: 'FI', name: 'Finland (FI)' },
+  { code: 'JP', name: 'Japan (JP)' },
+  { code: 'MX', name: 'Mexico (MX)' },
+  { code: 'BR', name: 'Brazil (BR)' },
+  { code: 'ZA', name: 'South Africa (ZA)' },
+] as const;
+
 // Inline consequence help shown under a field, so a manual edit can't quietly
 // make the data worse (#1139 §4/§8). `field` is a FIELD_HELP key.
 function Help({ field }: { field: string }) {
@@ -41,6 +128,8 @@ export function EditVenueDialog({
           name: venue.name || '',
           city: venue.city || '',
           usState: venue.usState || '',
+          country: venue.country || 'US',
+          region: venue.region || '',
           venueType: venue.venueType || '',
           contactName: venue.contactName || '',
           email: venue.email || '',
@@ -65,6 +154,8 @@ export function EditVenueDialog({
           name: '',
           city: '',
           usState: '',
+          country: 'US',
+          region: '',
           venueType: '',
           contactName: '',
           email: '',
@@ -108,22 +199,55 @@ export function EditVenueDialog({
       }
     }
 
+    // Validate state when country is US
+    const currentCountry = form.country || 'US';
+    if (currentCountry === 'US' && (!form.usState || !form.usState.trim())) {
+      setError('State is required for US venues');
+      return;
+    }
+
+    // Validate and format website URL
+    let websiteUrl = form.website ? form.website.trim() : '';
+    if (websiteUrl) {
+      if (!/^https?:\/\//i.test(websiteUrl)) {
+        websiteUrl = `https://${websiteUrl}`;
+      }
+      try {
+        const parsed = new URL(websiteUrl);
+        if (!parsed.hostname.includes('.')) {
+          throw new Error('Invalid host');
+        }
+      } catch {
+        setError('A valid website URL is required');
+        return;
+      }
+    }
+
+    const finalForm: IvenueUpdate = {
+      ...form,
+      name: form.name.trim(),
+      venueType: form.venueType || undefined,
+      website: websiteUrl,
+      country: currentCountry,
+    };
+    if (currentCountry === 'US') {
+      finalForm.region = '';
+    } else {
+      finalForm.usState = '';
+    }
+
     setSubmitting(true);
     setError('');
     try {
       if (venue) {
         // Edit mode
         await adminVenuesUtils.updateVenue(token, venue._id, {
-          ...form,
-          name: form.name.trim(),
-          venueType: form.venueType || undefined,
+          ...finalForm,
         });
       } else {
         // Create mode
         await adminVenuesUtils.createVenue(token, {
-          ...form,
-          name: form.name.trim(),
-          venueType: form.venueType || undefined,
+          ...finalForm,
         });
       }
       onSaved();
@@ -152,8 +276,60 @@ export function EditVenueDialog({
           sx={{ marginTop: 1, marginBottom: 2 }} data-testid="edit-venue-name" />
         <TextField label="City" fullWidth value={form.city || ''} onChange={(e) => set('city', e.target.value)}
           sx={{ marginBottom: 2 }} data-testid="edit-venue-city" />
-        <TextField label="State" fullWidth value={form.usState || ''} onChange={(e) => set('usState', e.target.value)}
-          sx={{ marginBottom: 2 }} data-testid="edit-venue-state" />
+        <FormControl fullWidth sx={{ marginBottom: 2 }}>
+          <InputLabel id="edit-venue-country-label">Country</InputLabel>
+          <Select
+            labelId="edit-venue-country-label"
+            label="Country"
+            value={form.country || 'US'}
+            onChange={(e) => {
+              const newCountry = e.target.value;
+              setForm((f) => ({
+                ...f,
+                country: newCountry,
+                usState: newCountry === 'US' ? f.usState : '',
+                region: newCountry === 'US' ? '' : f.region,
+              }));
+            }}
+            data-testid="edit-venue-country"
+          >
+            {COUNTRIES.map((c) => (
+              <MenuItem key={c.code} value={c.code}>
+                {c.name}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        {(!form.country || form.country === 'US') ? (
+          <FormControl fullWidth sx={{ marginBottom: 2 }}>
+            <InputLabel id="edit-venue-state-label">State</InputLabel>
+            <Select
+              labelId="edit-venue-state-label"
+              label="State"
+              value={form.usState || ''}
+              onChange={(e) => set('usState', e.target.value)}
+              data-testid="edit-venue-state"
+            >
+              <MenuItem value="">
+                <em>None</em>
+              </MenuItem>
+              {US_STATES.map((s) => (
+                <MenuItem key={s.code} value={s.code}>
+                  {`${s.name} (${s.code})`}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        ) : (
+          <TextField
+            label="State/Province/Region"
+            fullWidth
+            value={form.region || ''}
+            onChange={(e) => set('region', e.target.value)}
+            sx={{ marginBottom: 2 }}
+            data-testid="edit-venue-region"
+          />
+        )}
         <FormControl fullWidth sx={{ marginBottom: 2 }}>
           <InputLabel id="edit-venue-type-label">Venue Type</InputLabel>
           <Select labelId="edit-venue-type-label" label="Venue Type" value={form.venueType || ''}
