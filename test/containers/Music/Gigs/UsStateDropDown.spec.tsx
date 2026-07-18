@@ -1,5 +1,5 @@
 import { vi } from 'vitest';
-import { render } from '@testing-library/react';
+import { render, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { UsStateDropDown } from 'src/containers/Music/Gigs/UsStateDropDown';
 import type { Igig } from 'src/providers/Data.provider';
@@ -15,5 +15,7 @@ describe('UsStateDropDown', () => {
     const { container } = render(<UsStateDropDown {...props} />);
     const select = container.querySelector('#edit-us-state')!;
     expect(select).toBeInTheDocument();
+    fireEvent.change(select, { target: { value: 'Alabama' } });
+    expect(setEditGig).toHaveBeenCalled();
   });
 });

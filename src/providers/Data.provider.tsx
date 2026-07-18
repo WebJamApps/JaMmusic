@@ -20,6 +20,13 @@ export interface Igig {
   duration?: number;
   promoImageUrl?: string;
   artist?: string;
+  venueId?: string | {
+    _id: string;
+    name: string;
+    city?: string;
+    usState?: string;
+    website?: string;
+  };
 }
 
 export interface Isong {

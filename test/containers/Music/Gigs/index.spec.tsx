@@ -8,6 +8,15 @@ import {
 } from 'src/containers/Music/Gigs';
 import utils from 'src/containers/Music/Gigs/gigs.utils';
 
+vi.mock('@mui/x-data-grid', () => ({
+  DataGrid: (props: any) => {
+    if (props.getRowHeight) props.getRowHeight();
+    if (props.onRowClick) props.onRowClick({ row: { _id: '1' } });
+    if (props.onPaginationModelChange) props.onPaginationModelChange({ page: 1, pageSize: 10 });
+    return <div data-testid="mock-data-grid" />;
+  },
+}));
+
 describe('Gigs', () => {
   it('renders correctly when not isAdmin', () => {
     const { container } = render(<BrowserRouter><Gigs isAdmin={false} /></BrowserRouter>);
@@ -100,5 +109,19 @@ describe('Gigs', () => {
     const params: any = { row: { datetime: null } };
     const cell: any = time.renderCell(params);
     expect(typeof cell).toBe('string');
+  });
+  it('renders photoCol column renderCell with and without promoImageUrl', () => {
+    const photoCol: any = columns[5];
+    const paramsWithPhoto: any = { row: { promoImageUrl: 'http://example.com/image.jpg' } };
+    const cellWithPhoto = photoCol.renderCell(paramsWithPhoto);
+    expect(cellWithPhoto.type).toBe('img');
+
+    const stopPropagation = vi.fn();
+    cellWithPhoto.props.onClick({ stopPropagation });
+    expect(stopPropagation).toHaveBeenCalled();
+
+    const paramsWithoutPhoto: any = { row: { promoImageUrl: '' } };
+    const cellWithoutPhoto = photoCol.renderCell(paramsWithoutPhoto);
+    expect(cellWithoutPhoto).toBe('');
   });
 });
