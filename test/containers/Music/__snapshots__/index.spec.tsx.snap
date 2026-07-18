@@ -216,7 +216,7 @@ exports[`/music > renders the component 1`] = `
                 aria-label="* Date and Time"
                 class="createDatetime"
                 slotprops="[object Object]"
-                value="Sat Dec 31 2016 19:00:00 GMT-0500 (Eastern Standard Time)"
+                value="Sun Jan 01 2017 00:00:00 GMT+0000 (Coordinated Universal Time)"
               />
             </div>
             <div
