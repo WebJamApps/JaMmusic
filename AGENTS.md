@@ -15,8 +15,11 @@ JaMmusic itself does not deploy to Heroku directly.
 
 ## Commands (get all green before declaring done)
 
-- **Everything:** `npm test` — runs lint → jscpd (copy-paste detection) → unit
-  tests with coverage. This is the single check to confirm you're green.
+- **Everything:** `npm test` — runs lint → **typecheck (`tsc --noEmit`)** → jscpd
+  (copy-paste detection) → unit tests with coverage. This is the single check to
+  confirm you're green — CI runs exactly this. ALWAYS run the FULL `npm test`
+  before pushing; running the sub-scripts individually (`test:unit`, `test:lint`)
+  skips typecheck/jscpd and lets a break reach CI.
 - **Lint:** `npm run test:lint` (stylelint on `src/styles/**/*.scss` + eslint).
   Auto-fix with `npm run test:lint-fix`.
 - **Unit tests:** `npm run test:unit` (vitest, run mode, with coverage, `TZ=UTC`).
