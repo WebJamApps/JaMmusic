@@ -140,9 +140,9 @@ export function VenuesTable({
     setCopyDialogOpen(true);
   };
 
-  // Un-vetted definition: no venueType set OR contactVerified is falsy.
+  // Un-vetted definition: no venueType set.
   // This is Josh's vetting work queue.
-  const unvettedCount = venues.filter((v) => !v.venueType || !v.contactVerified).length;
+  const unvettedCount = venues.filter((v) => !v.venueType).length;
   const vettedCount = venues.length - unvettedCount;
 
   const handleSort = (key: string) => {
@@ -180,7 +180,7 @@ export function VenuesTable({
       if (!nameMatch && !cityMatch) return false;
     }
     if (needsVettingFilter) {
-      const needsVetting = !v.venueType || !v.contactVerified;
+      const needsVetting = !v.venueType;
       if (!needsVetting) return false;
     }
     return true;
@@ -679,10 +679,10 @@ export function VenuesTable({
 
                         {/* Email */}
                         {v.email ? (
-                          <Tooltip title={`Email: ${v.email}`} arrow>
+                          <Tooltip title={`Primary Email: ${v.email}`} arrow>
                             <Box
                               component="span"
-                              onClick={() => handleOpenCopyDialog('Email Address', v.email!)}
+                              onClick={() => handleOpenCopyDialog('Primary Email Address', v.email!)}
                               data-testid={`venue-contact-email-${v._id}`}
                               sx={{
                                 fontSize: '1.1rem',
@@ -705,6 +705,28 @@ export function VenuesTable({
                             ✉
                           </Typography>
                         )}
+
+                        {/* Secondary Email */}
+                        {v.secondaryEmail ? (
+                          <Tooltip title={`Secondary Email: ${v.secondaryEmail}`} arrow>
+                            <Box
+                              component="span"
+                              onClick={() => handleOpenCopyDialog('Secondary Email Address', v.secondaryEmail!)}
+                              data-testid={`venue-contact-secondary-email-${v._id}`}
+                              sx={{
+                                fontSize: '1.1rem',
+                                cursor: 'pointer',
+                                textDecoration: 'none',
+                                color: 'info.light',
+                                display: 'inline-flex',
+                                ml: 0.5,
+                                '&:hover': { opacity: 0.8 },
+                              }}
+                            >
+                              ✉₂
+                            </Box>
+                          </Tooltip>
+                        ) : null}
 
                         {/* Phone */}
                         {v.phone ? (
