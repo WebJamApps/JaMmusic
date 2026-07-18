@@ -118,4 +118,60 @@ describe('gigs.utils', () => {
     utils.clickToEdit(setEditGig, false, {});
     expect(setEditGig).not.toHaveBeenCalled();
   });
+  it('makeTimeRange with and without duration', () => {
+    const startIso = '2025-01-01T12:00:00.000Z';
+    // Without duration
+    const range1 = utils.makeTimeRange(startIso, 0, 'Virginia');
+    expect(typeof range1).toBe('string');
+    // With duration
+    const range2 = utils.makeTimeRange(startIso, 3, 'Virginia');
+    expect(range2).toContain('to');
+  });
+  it('makeVenue renderCell in various scenarios', () => {
+    const makeVenueCol = utils.makeVenue();
+    const renderCell = makeVenueCol.renderCell;
+
+    // No row
+    const cellNoRow = renderCell({ value: 'Test Venue' } as any);
+    expect(cellNoRow.type).toBe('div');
+
+    // Our Past Performances
+    const cellPast = renderCell({ row: { venue: 'Our Past Performances' } } as any);
+    expect(cellPast.type).toBe('span');
+
+    // venueId with website and venue extra info
+    const cellWithWebsiteAndExtra = renderCell({
+      row: {
+        venue: '<p>Extra gig details</p>',
+        venueId: {
+          name: 'The Durty Bull',
+          city: 'Durham',
+          usState: 'North Carolina',
+          website: 'http://durtybull.com',
+        },
+      },
+    } as any);
+    expect(cellWithWebsiteAndExtra.type).toBe('div');
+
+    // venueId without website and no extra info
+    const cellNoWebsite = renderCell({
+      row: {
+        venue: '',
+        venueId: {
+          name: 'Anonymous Club',
+          city: 'Chicago',
+          usState: 'Illinois',
+        },
+      },
+    } as any);
+    expect(cellNoWebsite.type).toBe('div');
+
+    // Fallback without venueId
+    const cellFallback = renderCell({
+      row: {
+        venue: '<p>Direct Free Text Venue</p>',
+      },
+    } as any);
+    expect(cellFallback.type).toBe('div');
+  });
 });
