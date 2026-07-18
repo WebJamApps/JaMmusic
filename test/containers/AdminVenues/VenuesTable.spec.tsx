@@ -314,5 +314,38 @@ describe('VenuesTable', () => {
     expect(fallbackState.textContent).toBe('NC');
     expect(fallbackState).toHaveStyle('font-style: italic');
   });
+
+  it('renders website column and non-US region in State column', () => {
+    const list: Ivenue[] = [
+      {
+        _id: 'v-intl',
+        name: 'London Club',
+        city: 'London',
+        country: 'GB',
+        region: 'Greater London',
+        website: 'https://londonclub.co.uk',
+      },
+      {
+        _id: 'v-no-website',
+        name: 'Plain Club',
+        city: 'Salem',
+        usState: 'VA',
+      }
+    ];
+    render(<VenuesTable venues={list} onEdit={vi.fn()} />);
+
+    // Website column renders clickable link with target="_blank" and rel="noopener"
+    const link = screen.getByTestId('venue-website-link-v-intl');
+    expect(link).toBeDefined();
+    expect(link.getAttribute('href')).toBe('https://londonclub.co.uk');
+    expect(link.getAttribute('target')).toBe('_blank');
+    expect(link.getAttribute('rel')).toBe('noopener');
+
+    // Missing website shows '—'
+    expect(screen.getByTestId('venue-website-v-no-website').textContent).toBe('—');
+
+    // State column renders non-US region
+    expect(screen.getByTestId('venue-state-v-intl').textContent).toBe('Greater London');
+  });
 });
 
