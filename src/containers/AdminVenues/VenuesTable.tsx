@@ -32,6 +32,7 @@ const COLUMNS: { key: string; label: string; help?: string }[] = [
   { key: 'city', label: 'City' },
   { key: 'state', label: 'State' },
   { key: 'contact', label: 'Contact' },
+  { key: 'website', label: 'Website' },
   { key: 'type', label: 'Type', help: 'venueType' },
   { key: 'booking', label: 'Booking', help: 'bookingStatus' },
   { key: 'interested', label: 'Interested', help: 'interested' },
@@ -71,8 +72,9 @@ export function sortValue(v: Ivenue, key: string): string | number {
   switch (key) {
     case 'name': return v.name || '';
     case 'city': return v.city || '';
-    case 'state': return v.usState || '';
+    case 'state': return v.usState || v.region || '';
     case 'contact': return v.contactName || '';
+    case 'website': return v.website || '';
     case 'type': return v.venueType || '';
     case 'booking': return v.bookingStatus || '';
     case 'interested': return v.interested !== false ? 1 : 0;
@@ -626,10 +628,27 @@ export function VenuesTable({
                     <TableCell data-testid={`venue-state-${v._id}`}>
                       {v.usState ? (
                         v.usState
+                      ) : v.region ? (
+                        v.region
                       ) : v.locationFallback?.usState ? (
                         <span style={{ fontStyle: 'italic', opacity: 0.6 }} data-testid={`venue-state-fallback-${v._id}`}>
                           {v.locationFallback.usState}
                         </span>
+                      ) : (
+                        '—'
+                      )}
+                    </TableCell>
+                    <TableCell data-testid={`venue-website-${v._id}`}>
+                      {v.website ? (
+                        <a
+                          href={v.website}
+                          target="_blank"
+                          rel="noopener"
+                          style={{ fontWeight: 'bold', textDecoration: 'underline' }}
+                          data-testid={`venue-website-link-${v._id}`}
+                        >
+                          {v.website}
+                        </a>
                       ) : (
                         '—'
                       )}

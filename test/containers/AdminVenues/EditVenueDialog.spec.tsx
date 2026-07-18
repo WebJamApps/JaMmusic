@@ -126,14 +126,83 @@ describe('EditVenueDialog', () => {
     });
     await act(async () => {
       fireEvent.change(screen.getByTestId('edit-venue-name'), { target: { value: 'New Cafe' } });
+      fireEvent.change(screen.getByTestId('edit-venue-state'), { target: { value: 'NC' } });
     });
     await act(async () => {
       fireEvent.click(screen.getByTestId('edit-venue-save'));
     });
     expect(adminVenuesUtils.createVenue).toHaveBeenCalledWith('tk', expect.objectContaining({
       name: 'New Cafe',
+      usState: 'NC',
+      country: 'US',
     }));
     expect(onSaved).toHaveBeenCalled();
+  });
+
+  it('validates that state is required for US venues', async () => {
+    adminVenuesUtils.createVenue = vi.fn() as any;
+    await act(async () => {
+      render(<EditVenueDialog open venue={null} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />);
+    });
+    await act(async () => {
+      fireEvent.change(screen.getByTestId('edit-venue-name'), { target: { value: 'New Cafe' } });
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('edit-venue-save'));
+    });
+    expect(screen.getByTestId('edit-venue-error').innerHTML).toBe('State is required for US venues');
+    expect(adminVenuesUtils.createVenue).not.toHaveBeenCalled();
+  });
+
+  it('validates and auto-prefixes website URL', async () => {
+    await act(async () => {
+      render(<EditVenueDialog open venue={venue} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />);
+    });
+    await act(async () => {
+      fireEvent.change(screen.getByTestId('edit-venue-website'), { target: { value: 'google.com' } });
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('edit-venue-save'));
+    });
+    expect(adminVenuesUtils.updateVenue).toHaveBeenCalledWith('tk', 'v1', expect.objectContaining({
+      website: 'https://google.com',
+    }));
+  });
+
+  it('rejects invalid website URLs', async () => {
+    await act(async () => {
+      render(<EditVenueDialog open venue={venue} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />);
+    });
+    await act(async () => {
+      fireEvent.change(screen.getByTestId('edit-venue-website'), { target: { value: 'not-a-url' } });
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('edit-venue-save'));
+    });
+    expect(screen.getByTestId('edit-venue-error').innerHTML).toBe('A valid website URL is required');
+  });
+
+  it('supports non-US countries with free-text region field', async () => {
+    adminVenuesUtils.createVenue = vi.fn(() => Promise.resolve({} as Ivenue)) as any;
+    await act(async () => {
+      render(<EditVenueDialog open venue={null} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />);
+    });
+    await act(async () => {
+      fireEvent.change(screen.getByTestId('edit-venue-name'), { target: { value: 'Global Club' } });
+      fireEvent.change(screen.getByTestId('edit-venue-country'), { target: { value: 'CA' } });
+    });
+    await act(async () => {
+      fireEvent.change(screen.getByTestId('edit-venue-region'), { target: { value: 'Ontario' } });
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('edit-venue-save'));
+    });
+    expect(adminVenuesUtils.createVenue).toHaveBeenCalledWith('tk', expect.objectContaining({
+      name: 'Global Club',
+      country: 'CA',
+      region: 'Ontario',
+      usState: '',
+    }));
   });
 
   it('warns on duplicate venue name and cancels save if user rejects confirm', async () => {
