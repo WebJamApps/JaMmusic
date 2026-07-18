@@ -61,6 +61,7 @@ describe('EditVenueDialog', () => {
       change('edit-venue-type', 'Originals');
       change('edit-venue-contact', 'Pat');
       change('edit-venue-email', 'pat@v.com');
+      change('edit-venue-secondary-email', 'sec@v.com');
       change('edit-venue-phone', '540-555-1212');
       change('edit-venue-website', 'https://v.com');
       change('edit-venue-pay', '$$$');
@@ -68,13 +69,38 @@ describe('EditVenueDialog', () => {
       change('edit-venue-notes', 'great room');
     });
     await act(async () => { fireEvent.click(screen.getByTestId('edit-venue-interested')); });
-    await act(async () => { fireEvent.click(screen.getByTestId('edit-venue-contactverified')); });
     await act(async () => { fireEvent.click(screen.getByTestId('edit-venue-save')); });
     expect(adminVenuesUtils.updateVenue).toHaveBeenCalledWith('tk', 'v1', expect.objectContaining({
       city: 'Roanoke', usState: 'VA', venueType: 'Originals', contactName: 'Pat',
-      email: 'pat@v.com', phone: '540-555-1212', website: 'https://v.com', payTier: '$$$', notes: 'great room',
+      email: 'pat@v.com', secondaryEmail: 'sec@v.com', phone: '540-555-1212', website: 'https://v.com', payTier: '$$$', notes: 'great room',
       lastVerified: '2026-07-16',
     }));
+  });
+
+  it('rejects invalid primary email address', async () => {
+    await act(async () => {
+      render(<EditVenueDialog open venue={venue} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />);
+    });
+    await act(async () => {
+      fireEvent.change(screen.getByTestId('edit-venue-email'), { target: { value: 'not-an-email' } });
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('edit-venue-save'));
+    });
+    expect(screen.getByTestId('edit-venue-error').innerHTML).toBe('Primary Email is invalid');
+  });
+
+  it('rejects invalid secondary email address', async () => {
+    await act(async () => {
+      render(<EditVenueDialog open venue={venue} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />);
+    });
+    await act(async () => {
+      fireEvent.change(screen.getByTestId('edit-venue-secondary-email'), { target: { value: 'not-an-email' } });
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('edit-venue-save'));
+    });
+    expect(screen.getByTestId('edit-venue-error').innerHTML).toBe('Secondary Email is invalid');
   });
 
   it('clears priority back to undefined when emptied', async () => {

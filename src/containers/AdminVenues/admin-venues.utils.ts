@@ -14,6 +14,7 @@ export interface Ivenue {
   venueType?: string;
   contactName?: string;
   email?: string;
+  secondaryEmail?: string;
   phone?: string;
   website?: string;
   status?: string;
@@ -22,7 +23,6 @@ export interface Ivenue {
   bookingStatus?: string;
   interested?: boolean;
   payTier?: string;
-  contactVerified?: boolean;
   notes?: string;
   relationshipStage?: string;
   templateOverride?: string;
@@ -47,6 +47,7 @@ export interface IvenueUpdate {
   venueType?: string;
   contactName?: string;
   email?: string;
+  secondaryEmail?: string;
   phone?: string;
   website?: string;
   outreachEligible?: boolean;
@@ -54,7 +55,6 @@ export interface IvenueUpdate {
   bookingStatus?: string;
   interested?: boolean;
   payTier?: string;
-  contactVerified?: boolean;
   notes?: string;
   relationshipStage?: string;
   templateOverride?: string;
@@ -143,7 +143,6 @@ export const FIELD_HELP: Record<string, string> = {
   outreachEligible: 'MASTER SAFETY GATE. ON = the auto-cron + batch MAY send a pitch email here. OFF = never emailed, period. '
     + 'Only turn ON once vetted: in scope + has a Type + still booking + contact verified.',
   payTier: 'Relative pay (e.g. $/$$/$$$); ranks better-paying venues higher in the default sort. No send effect.',
-  contactVerified: 'Is the email/contact confirmed good? Should be true before Eligible.',
   lastVerified: 'The date this venue\'s details or contact info were last verified.',
   relationshipStage: 'cold (never played) vs returning (played before) — picks the cold vs warm template. Auto = inferred from history.',
   templateOverride: 'Force a specific template regardless of Type. Leave blank normally.',
@@ -167,7 +166,7 @@ export function prospectScore(v: Ivenue): number {
   const fit = { none: 0, some: 3, loves: 6 }[v.originalsFit || 'none'] ?? 0;
   const travel = { local: 0, regional: 1, far: 2 }[v.travelBand || 'local'] ?? 0;
   const value = payTierValue(v.payTier) - travel;
-  const warmth = (v.interested ? 2 : 0) + (v.relationshipStage === 'returning' ? 1 : 0) + (v.contactVerified ? 1 : 0);
+  const warmth = (v.interested ? 2 : 0) + (v.relationshipStage === 'returning' ? 1 : 0);
   return fit + value + warmth + (v.priority || 0);
 }
 
@@ -180,6 +179,7 @@ export async function exportVenuesToExcel(venues: Ivenue[]): Promise<void> {
     { header: 'Name', key: 'name', width: 25 },
     { header: 'Contact Name', key: 'contactName', width: 20 },
     { header: 'Email', key: 'email', width: 25 },
+    { header: 'Secondary Email', key: 'secondaryEmail', width: 25 },
     { header: 'Phone', key: 'phone', width: 15 },
     { header: 'City', key: 'city', width: 15 },
     { header: 'State', key: 'usState', width: 10 },
@@ -189,7 +189,6 @@ export async function exportVenuesToExcel(venues: Ivenue[]): Promise<void> {
     { header: 'Booking Status', key: 'bookingStatus', width: 15 },
     { header: 'Interested', key: 'interested', width: 12 },
     { header: 'Pay Tier', key: 'payTier', width: 12 },
-    { header: 'Contact Verified', key: 'contactVerified', width: 18 },
     { header: 'Originals Fit', key: 'originalsFit', width: 15 },
     { header: 'Travel Band', key: 'travelBand', width: 12 },
     { header: 'Priority', key: 'priority', width: 10 },
@@ -220,6 +219,7 @@ export async function exportVenuesToExcel(venues: Ivenue[]): Promise<void> {
       name: v.name || '',
       contactName: v.contactName || '',
       email: v.email || '',
+      secondaryEmail: v.secondaryEmail || '',
       phone: v.phone || '',
       city: v.city || '',
       usState: v.usState || '',
@@ -229,7 +229,6 @@ export async function exportVenuesToExcel(venues: Ivenue[]): Promise<void> {
       bookingStatus: v.bookingStatus || '',
       interested: v.interested !== false ? 'Yes' : 'No',
       payTier: v.payTier || '',
-      contactVerified: v.contactVerified ? 'Yes' : 'No',
       originalsFit: v.originalsFit || '',
       travelBand: v.travelBand || '',
       priority: v.priority !== undefined ? v.priority : '',
@@ -250,6 +249,16 @@ export async function exportVenuesToExcel(venues: Ivenue[]): Promise<void> {
       if (emailStr.includes('@')) {
         emailCell.value = { text: emailStr, hyperlink: `mailto:${emailStr}` };
         emailCell.font = { color: { argb: 'FF0563C1' }, underline: true };
+      }
+    }
+
+    // Apply hyperlink formatting to Secondary Email cell if secondaryEmail exists
+    if (v.secondaryEmail && v.secondaryEmail.trim()) {
+      const secEmailCell = row.getCell('secondaryEmail');
+      const emailStr = v.secondaryEmail.trim();
+      if (emailStr.includes('@')) {
+        secEmailCell.value = { text: emailStr, hyperlink: `mailto:${emailStr}` };
+        secEmailCell.font = { color: { argb: 'FF0563C1' }, underline: true };
       }
     }
 

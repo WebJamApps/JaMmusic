@@ -133,13 +133,13 @@ export function EditVenueDialog({
           venueType: venue.venueType || '',
           contactName: venue.contactName || '',
           email: venue.email || '',
+          secondaryEmail: venue.secondaryEmail || '',
           phone: venue.phone || '',
           website: venue.website || '',
           outreachEligible: !!venue.outreachEligible,
           bookingStatus: venue.bookingStatus || 'booking',
           interested: venue.interested !== false,
           payTier: venue.payTier || '',
-          contactVerified: !!venue.contactVerified,
           lastVerified: venue.lastVerified ? venue.lastVerified.substring(0, 10) : '',
           notes: venue.notes || '',
           relationshipStage: venue.relationshipStage || '',
@@ -159,13 +159,13 @@ export function EditVenueDialog({
           venueType: '',
           contactName: '',
           email: '',
+          secondaryEmail: '',
           phone: '',
           website: '',
           outreachEligible: false,
           bookingStatus: 'booking',
           interested: true,
           payTier: '',
-          contactVerified: false,
           lastVerified: '',
           notes: '',
           relationshipStage: '',
@@ -223,9 +223,24 @@ export function EditVenueDialog({
       }
     }
 
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const primaryEmail = form.email ? form.email.trim() : '';
+    const secondaryEmail = form.secondaryEmail ? form.secondaryEmail.trim() : '';
+
+    if (primaryEmail && !emailRegex.test(primaryEmail)) {
+      setError('Primary Email is invalid');
+      return;
+    }
+    if (secondaryEmail && !emailRegex.test(secondaryEmail)) {
+      setError('Secondary Email is invalid');
+      return;
+    }
+
     const finalForm: IvenueUpdate = {
       ...form,
       name: form.name.trim(),
+      email: primaryEmail,
+      secondaryEmail: secondaryEmail,
       venueType: form.venueType || undefined,
       website: websiteUrl,
       country: currentCountry,
@@ -385,8 +400,10 @@ export function EditVenueDialog({
         <Help field="travelBand" />
         <TextField label="Contact Name" fullWidth value={form.contactName || ''} onChange={(e) => set('contactName', e.target.value)}
           sx={{ marginBottom: 2 }} data-testid="edit-venue-contact" />
-        <TextField label="Email" fullWidth value={form.email || ''} onChange={(e) => set('email', e.target.value)}
+        <TextField label="Primary Email" fullWidth value={form.email || ''} onChange={(e) => set('email', e.target.value)}
           sx={{ marginBottom: 2 }} data-testid="edit-venue-email" />
+        <TextField label="Secondary Email" fullWidth value={form.secondaryEmail || ''} onChange={(e) => set('secondaryEmail', e.target.value)}
+          sx={{ marginBottom: 2 }} data-testid="edit-venue-secondary-email" />
         <TextField label="Phone" fullWidth value={form.phone || ''} onChange={(e) => set('phone', e.target.value)}
           sx={{ marginBottom: 2 }} data-testid="edit-venue-phone" />
         <TextField label="Website" fullWidth value={form.website || ''} onChange={(e) => set('website', e.target.value)}
@@ -424,13 +441,7 @@ export function EditVenueDialog({
             )}
             label="Interested (worth pursuing)" />
           <Help field="interested" />
-          <FormControlLabel
-            control={(
-              <Checkbox checked={!!form.contactVerified} onChange={(e) => set('contactVerified', e.target.checked)}
-                aria-label="contact verified" data-testid="edit-venue-contactverified" />
-            )}
-            label="Contact verified" />
-          <Help field="contactVerified" />
+
         </FormGroup>
         <TextField
           label="Last Verified"

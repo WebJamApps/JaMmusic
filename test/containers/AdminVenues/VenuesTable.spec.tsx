@@ -167,9 +167,9 @@ describe('VenuesTable', () => {
 
   it('filters un-vetted venues and displays progress stats', () => {
     const list: Ivenue[] = [
-      { _id: 'v1', name: 'Vetted 1', venueType: 'MidRangeCafeBar', contactVerified: true },
-      { _id: 'v2', name: 'Unvetted 1', venueType: undefined, contactVerified: true }, // needs vetting
-      { _id: 'v3', name: 'Unvetted 2', venueType: 'MidRangeCafeBar', contactVerified: undefined }, // needs vetting
+      { _id: 'v1', name: 'Vetted 1', venueType: 'MidRangeCafeBar' },
+      { _id: 'v2', name: 'Unvetted 1', venueType: undefined }, // needs vetting
+      { _id: 'v3', name: 'Unvetted 2', venueType: undefined }, // needs vetting
     ];
     render(<VenuesTable venues={list} onEdit={vi.fn()} />);
     
@@ -182,6 +182,30 @@ describe('VenuesTable', () => {
 
     // Now only the unvetted rows should be shown
     expect(rowIds()).toEqual(['venue-row-v2', 'venue-row-v3']);
+  });
+
+  it('opens CopyDialog when clicking primary and secondary email icons', async () => {
+    const list: Ivenue[] = [
+      {
+        _id: 'v-emails',
+        name: 'Two Email Venue',
+        email: 'pri@example.com',
+        secondaryEmail: 'sec@example.com',
+      },
+    ];
+    render(<VenuesTable venues={list} onEdit={vi.fn()} />);
+
+    // Click Primary Email icon
+    fireEvent.click(screen.getByTestId('venue-contact-email-v-emails'));
+    expect(screen.getByTestId('copy-dialog-title').textContent).toBe('Primary Email Address');
+    expect(screen.getByTestId('copy-dialog-content')).toHaveValue('pri@example.com');
+    fireEvent.click(screen.getByTestId('copy-dialog-close'));
+
+    // Click Secondary Email icon
+    fireEvent.click(screen.getByTestId('venue-contact-secondary-email-v-emails'));
+    expect(screen.getByTestId('copy-dialog-title').textContent).toBe('Secondary Email Address');
+    expect(screen.getByTestId('copy-dialog-content')).toHaveValue('sec@example.com');
+    fireEvent.click(screen.getByTestId('copy-dialog-close'));
   });
 
   it('renders inputs container with responsive wrap and non-shrinking inputs', () => {
