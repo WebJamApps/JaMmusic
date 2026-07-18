@@ -138,11 +138,10 @@ describe('AdminVenues utils', () => {
         payTier: '$$$', // +3
         travelBand: 'far', // −2 → value = 1
         interested: true, // +2
-        relationshipStage: 'returning', // +1
-        contactVerified: true, // +1 → warmth = 4
+        relationshipStage: 'returning', // +1 → warmth = 3
         priority: 5, // +5
       };
-      expect(prospectScore(v)).toBe(6 + 1 + 4 + 5);
+      expect(prospectScore(v)).toBe(6 + 1 + 3 + 5);
     });
 
     it('treats unset fit/travel/pay as zero and counts $ signs for pay', () => {
@@ -197,6 +196,7 @@ describe('AdminVenues utils', () => {
           venueType: 'Originals',
           contactName: 'John',
           email: 'john@thespot.com',
+          secondaryEmail: 'john.sec@thespot.com',
           phone: '123-456-7890',
           website: 'www.thespot.com',
           outreachEligible: true,
@@ -204,7 +204,6 @@ describe('AdminVenues utils', () => {
           bookingStatus: 'booking',
           interested: true,
           payTier: '$$',
-          contactVerified: true,
           originalsFit: 'loves',
           travelBand: 'local',
           priority: 3,
