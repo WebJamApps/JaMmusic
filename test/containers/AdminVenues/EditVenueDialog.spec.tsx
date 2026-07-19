@@ -262,4 +262,166 @@ describe('EditVenueDialog', () => {
     expect(screen.getByTestId('edit-venue-error').innerHTML).toBe('Address is required');
     expect(adminVenuesUtils.updateVenue).not.toHaveBeenCalled();
   });
+
+  describe('Google Places Autocomplete', () => {
+    let mockGetPlacePredictions: any;
+    let mockGetDetails: any;
+
+    beforeEach(() => {
+      mockGetPlacePredictions = vi.fn((options: any, callback: any) => {
+        callback([{ description: '123 Campbell Ave, Roanoke, VA', place_id: 'p1' }], 'OK');
+      });
+
+      mockGetDetails = vi.fn((options: any, callback: any) => {
+        callback({
+          address_components: [
+            { types: ['street_number'], long_name: '123' },
+            { types: ['route'], long_name: 'Campbell Ave' },
+            { types: ['locality'], long_name: 'Roanoke' },
+            { types: ['administrative_area_level_1'], short_name: 'VA' },
+            { types: ['country'], short_name: 'US' },
+          ],
+          geometry: {
+            location: {
+              lat: () => 37.27,
+              lng: () => -79.94,
+            },
+          },
+          formatted_address: '123 Campbell Ave, Roanoke, VA 24011',
+        }, 'OK');
+      });
+
+      const mockAutocompleteService = vi.fn().mockImplementation(() => ({
+        getPlacePredictions: mockGetPlacePredictions,
+      }));
+
+      const mockPlacesService = vi.fn().mockImplementation(() => ({
+        getDetails: mockGetDetails,
+      }));
+
+      const mockAutocompleteSessionToken = vi.fn();
+
+      (window as any).google = {
+        maps: {
+          places: {
+            AutocompleteService: mockAutocompleteService,
+            PlacesService: mockPlacesService,
+            AutocompleteSessionToken: mockAutocompleteSessionToken,
+            PlacesServiceStatus: { OK: 'OK' },
+          },
+        },
+      };
+
+      process.env.GOOGLE_MAPS_API_KEY = 'test-api-key';
+    });
+
+    afterEach(() => {
+      delete (window as any).google;
+      delete process.env.GOOGLE_MAPS_API_KEY;
+    });
+
+    it('loads the Google Maps script and initializes services', async () => {
+      await act(async () => {
+        render(<EditVenueDialog open venue={null} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />);
+      });
+      expect(screen.getByTestId('edit-venue-address')).toBeDefined();
+    });
+
+    it('fetches predictions when address input changes', async () => {
+      vi.useFakeTimers();
+      await act(async () => {
+        render(<EditVenueDialog open venue={null} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />);
+      });
+
+      const input = screen.getByTestId('edit-venue-address').querySelector('input')!;
+      await act(async () => {
+        fireEvent.change(input, { target: { value: '123 Campbell' } });
+      });
+
+      await act(async () => {
+        vi.advanceTimersByTime(350);
+      });
+
+      expect(mockGetPlacePredictions).toHaveBeenCalledWith(
+        expect.objectContaining({ input: '123 Campbell' }),
+        expect.any(Function)
+      );
+      vi.useRealTimers();
+    });
+
+    it('populates address, city, state, country on prediction selection', async () => {
+      vi.useFakeTimers();
+      await act(async () => {
+        render(<EditVenueDialog open venue={null} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />);
+      });
+
+      const input = screen.getByTestId('edit-venue-address').querySelector('input')!;
+      await act(async () => {
+        fireEvent.change(input, { target: { value: '123 Campbell' } });
+      });
+
+      await act(async () => {
+        vi.advanceTimersByTime(350);
+      });
+      vi.useRealTimers();
+
+      const option = await screen.findByText('123 Campbell Ave, Roanoke, VA');
+      await act(async () => {
+        fireEvent.click(option);
+      });
+
+      expect(mockGetDetails).toHaveBeenCalledWith(
+        expect.objectContaining({ placeId: 'p1' }),
+        expect.any(Function)
+      );
+
+      expect(input.value).toBe('123 Campbell Ave');
+      expect((screen.getByTestId('edit-venue-city').querySelector('input') as HTMLInputElement).value).toBe('Roanoke');
+    });
+
+    it('populates non-US countries with free-text region on prediction selection', async () => {
+      mockGetDetails.mockImplementationOnce((options: any, callback: any) => {
+        callback({
+          address_components: [
+            { types: ['street_number'], long_name: '456' },
+            { types: ['route'], long_name: 'Yonge St' },
+            { types: ['locality'], long_name: 'Toronto' },
+            { types: ['administrative_area_level_1'], short_name: 'ON' },
+            { types: ['country'], short_name: 'CA' },
+          ],
+          geometry: {
+            location: {
+              lat: () => 43.65,
+              lng: () => -79.38,
+            },
+          },
+          formatted_address: '456 Yonge St, Toronto, ON, Canada',
+        }, 'OK');
+      });
+
+      vi.useFakeTimers();
+      await act(async () => {
+        render(<EditVenueDialog open venue={null} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />);
+      });
+
+      const input = screen.getByTestId('edit-venue-address').querySelector('input')!;
+      await act(async () => {
+        fireEvent.change(input, { target: { value: '456 Yonge' } });
+      });
+
+      await act(async () => {
+        vi.advanceTimersByTime(350);
+      });
+      vi.useRealTimers();
+
+      const option = await screen.findByText('123 Campbell Ave, Roanoke, VA');
+      await act(async () => {
+        fireEvent.click(option);
+      });
+
+      expect(input.value).toBe('456 Yonge St');
+      expect((screen.getByTestId('edit-venue-city').querySelector('input') as HTMLInputElement).value).toBe('Toronto');
+      expect((screen.getByTestId('edit-venue-region').querySelector('input') as HTMLInputElement).value).toBe('ON');
+    });
+  });
 });
