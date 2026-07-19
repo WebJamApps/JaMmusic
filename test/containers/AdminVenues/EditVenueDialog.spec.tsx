@@ -12,6 +12,7 @@ vi.mock('@mui/material', async () => {
       return (
         <div data-testid="mock-autocomplete">
           {props.renderInput({
+            role: 'combobox',
             slotProps: {
               input: {
                 role: 'combobox',
