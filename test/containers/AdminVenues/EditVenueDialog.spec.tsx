@@ -267,6 +267,11 @@ describe('EditVenueDialog', () => {
     let mockGetPlacePredictions: any;
     let mockGetDetails: any;
 
+    const getFormInput = (testId: string) => {
+      const el = screen.getByTestId(testId);
+      return el.tagName === 'INPUT' ? el : (el.querySelector('input') || el);
+    };
+
     beforeEach(() => {
       mockGetPlacePredictions = vi.fn((options: any, callback: any) => {
         callback([{ description: '123 Campbell Ave, Roanoke, VA', place_id: 'p1' }], 'OK');
@@ -324,7 +329,7 @@ describe('EditVenueDialog', () => {
       await act(async () => {
         render(<EditVenueDialog open venue={null} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />);
       });
-      expect(screen.getByTestId('edit-venue-address')).toBeDefined();
+      expect(getFormInput('edit-venue-address')).toBeDefined();
     });
 
     it('fetches predictions when address input changes', async () => {
@@ -333,7 +338,7 @@ describe('EditVenueDialog', () => {
         render(<EditVenueDialog open venue={null} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />);
       });
 
-      const input = screen.getByTestId('edit-venue-address').querySelector('input')!;
+      const input = getFormInput('edit-venue-address');
       await act(async () => {
         fireEvent.change(input, { target: { value: '123 Campbell' } });
       });
@@ -355,7 +360,7 @@ describe('EditVenueDialog', () => {
         render(<EditVenueDialog open venue={null} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />);
       });
 
-      const input = screen.getByTestId('edit-venue-address').querySelector('input')!;
+      const input = getFormInput('edit-venue-address') as HTMLInputElement;
       await act(async () => {
         fireEvent.change(input, { target: { value: '123 Campbell' } });
       });
@@ -376,7 +381,7 @@ describe('EditVenueDialog', () => {
       );
 
       expect(input.value).toBe('123 Campbell Ave');
-      expect((screen.getByTestId('edit-venue-city').querySelector('input') as HTMLInputElement).value).toBe('Roanoke');
+      expect((getFormInput('edit-venue-city') as HTMLInputElement).value).toBe('Roanoke');
     });
 
     it('populates non-US countries with free-text region on prediction selection', async () => {
@@ -404,7 +409,7 @@ describe('EditVenueDialog', () => {
         render(<EditVenueDialog open venue={null} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />);
       });
 
-      const input = screen.getByTestId('edit-venue-address').querySelector('input')!;
+      const input = getFormInput('edit-venue-address') as HTMLInputElement;
       await act(async () => {
         fireEvent.change(input, { target: { value: '456 Yonge' } });
       });
@@ -420,8 +425,8 @@ describe('EditVenueDialog', () => {
       });
 
       expect(input.value).toBe('456 Yonge St');
-      expect((screen.getByTestId('edit-venue-city').querySelector('input') as HTMLInputElement).value).toBe('Toronto');
-      expect((screen.getByTestId('edit-venue-region').querySelector('input') as HTMLInputElement).value).toBe('ON');
+      expect((getFormInput('edit-venue-city') as HTMLInputElement).value).toBe('Toronto');
+      expect((getFormInput('edit-venue-region') as HTMLInputElement).value).toBe('ON');
     });
   });
 });
