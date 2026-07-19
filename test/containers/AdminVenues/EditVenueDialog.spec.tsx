@@ -4,6 +4,45 @@ import '@testing-library/jest-dom';
 import { EditVenueDialog } from 'src/containers/AdminVenues/EditVenueDialog';
 import adminVenuesUtils, { type Ivenue } from 'src/containers/AdminVenues/admin-venues.utils';
 
+vi.mock('@mui/material', async () => {
+  const mockMui = await import('../../../__mocks__/@mui/material');
+  return {
+    ...mockMui,
+    Autocomplete: (props: any) => {
+      return (
+        <div data-testid="mock-autocomplete">
+          {props.renderInput({
+            slotProps: {
+              input: {
+                role: 'combobox',
+              },
+            },
+          })}
+          {props.options && props.options.length > 0 && (
+            <div data-testid="mock-autocomplete-options">
+              {props.options.map((option: any) => {
+                const label = props.getOptionLabel ? props.getOptionLabel(option) : (option.description || option);
+                return (
+                  <button
+                    key={option.place_id || label}
+                    onClick={(e) => {
+                      if (props.onChange) {
+                        props.onChange(e, option);
+                      }
+                    }}
+                  >
+                    {label}
+                  </button>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      );
+    },
+  };
+});
+
 const venue: Ivenue = {
   _id: 'v1', name: 'Mac n Bob', address: '123 Campbell Ave', city: 'Salem', usState: 'VA', venueType: 'MidRangeCafeBar',
   bookingStatus: 'booking', outreachEligible: false, inScope: true, interested: true,
