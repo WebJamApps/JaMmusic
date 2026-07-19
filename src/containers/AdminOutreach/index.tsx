@@ -356,11 +356,26 @@ export function AdminOutreach() {
   };
 
   const send = async () => {
+    if (!structuredDate) {
+      setError('Select a weekend date first');
+      return;
+    }
     setSending(true);
     setError('');
     try {
+      const startDate = new Date(`${structuredDate}T00:00:00`);
+      const endDate = new Date(startDate);
+      endDate.setDate(startDate.getDate() + 2);
+      const year = endDate.getFullYear();
+      const month = String(endDate.getMonth() + 1).padStart(2, '0');
+      const day = String(endDate.getDate()).padStart(2, '0');
+      const end = `${year}-${month}-${day}`;
+
       const res = await outreachUtils.sendBatch(auth.token, {
-        venueIds: [...selected], targetDates: targetDates.trim(), bookingPeriod: bookingPeriod.trim() || undefined,
+        venueIds: [...selected],
+        targetDates: targetDates.trim(),
+        bookingPeriod: bookingPeriod.trim() || undefined,
+        targetWeekend: { start: structuredDate, end },
       });
       setResult(res);
       setCandidates([]);
