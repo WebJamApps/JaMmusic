@@ -105,7 +105,10 @@ describe('AdminOutreach', () => {
     await act(async () => { fireEvent.click(screen.getByTestId('outreach-open-dialog')); });
     await act(async () => { fireEvent.click(screen.getByTestId('outreach-dialog-send')); });
     expect(outreachUtils.sendBatch).toHaveBeenCalledWith('tk', expect.objectContaining({
-      venueIds: ['c1', 'c2'], targetDates: 'Aug 15-17', bookingPeriod: 'summer 2026',
+      venueIds: ['c1', 'c2'],
+      targetDates: 'Aug 15-17',
+      bookingPeriod: 'summer 2026',
+      targetWeekend: { start: '2026-08-15', end: '2026-08-17' },
     }));
     expect(screen.getByTestId('outreach-result').textContent).toContain('Sent 2 of 2');
   });

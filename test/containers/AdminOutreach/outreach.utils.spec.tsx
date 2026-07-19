@@ -22,11 +22,20 @@ describe('Outreach utils', () => {
 
   it('sendBatch POSTs the venueIds + dates', async () => {
     fetchMock.mockReturnValue(okJson({ requested: 2, sent: 2, skipped: [], records: [] }));
-    const res = await outreachUtils.sendBatch('tok', { venueIds: ['a', 'b'], targetDates: 'Aug 14-16', bookingPeriod: 'August' });
+    const res = await outreachUtils.sendBatch('tok', {
+      venueIds: ['a', 'b'],
+      targetDates: 'Aug 14-16',
+      bookingPeriod: 'August',
+      targetWeekend: { start: '2026-08-14', end: '2026-08-16' },
+    });
     expect(res.sent).toBe(2);
     const opts = fetchMock.mock.calls[0][1] as RequestInit;
     expect(opts.method).toBe('POST');
-    expect(JSON.parse(opts.body as string)).toMatchObject({ venueIds: ['a', 'b'], targetDates: 'Aug 14-16' });
+    expect(JSON.parse(opts.body as string)).toMatchObject({
+      venueIds: ['a', 'b'],
+      targetDates: 'Aug 14-16',
+      targetWeekend: { start: '2026-08-14', end: '2026-08-16' },
+    });
   });
 
   it('getConfig GETs /outreach/config', async () => {
@@ -102,7 +111,7 @@ describe('Outreach utils', () => {
 
   it.each([
     ['getCandidates', () => outreachUtils.getCandidates('t', 'd')],
-    ['sendBatch', () => outreachUtils.sendBatch('t', { venueIds: ['a'], targetDates: 'd' })],
+    ['sendBatch', () => outreachUtils.sendBatch('t', { venueIds: ['a'], targetDates: 'd', targetWeekend: { start: 's', end: 'e' } })],
     ['getConfig', () => outreachUtils.getConfig('t')],
     ['setConfig', () => outreachUtils.setConfig('t', true)],
     ['getPreview', () => outreachUtils.getPreview('t', ['a'], 'd')],
