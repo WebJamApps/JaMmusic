@@ -5,7 +5,7 @@ import { EditVenueDialog } from 'src/containers/AdminVenues/EditVenueDialog';
 import adminVenuesUtils, { type Ivenue } from 'src/containers/AdminVenues/admin-venues.utils';
 
 const venue: Ivenue = {
-  _id: 'v1', name: 'Mac n Bob', city: 'Salem', usState: 'VA', venueType: 'MidRangeCafeBar',
+  _id: 'v1', name: 'Mac n Bob', address: '123 Campbell Ave', city: 'Salem', usState: 'VA', venueType: 'MidRangeCafeBar',
   bookingStatus: 'booking', outreachEligible: false, inScope: true, interested: true,
 };
 
@@ -152,6 +152,7 @@ describe('EditVenueDialog', () => {
     });
     await act(async () => {
       fireEvent.change(screen.getByTestId('edit-venue-name'), { target: { value: 'New Cafe' } });
+      fireEvent.change(screen.getByTestId('edit-venue-address'), { target: { value: '123 Campbell Ave' } });
       fireEvent.change(screen.getByTestId('edit-venue-state'), { target: { value: 'NC' } });
     });
     await act(async () => {
@@ -159,6 +160,7 @@ describe('EditVenueDialog', () => {
     });
     expect(adminVenuesUtils.createVenue).toHaveBeenCalledWith('tk', expect.objectContaining({
       name: 'New Cafe',
+      address: '123 Campbell Ave',
       usState: 'NC',
       country: 'US',
     }));
@@ -172,6 +174,7 @@ describe('EditVenueDialog', () => {
     });
     await act(async () => {
       fireEvent.change(screen.getByTestId('edit-venue-name'), { target: { value: 'New Cafe' } });
+      fireEvent.change(screen.getByTestId('edit-venue-address'), { target: { value: '123 Campbell Ave' } });
     });
     await act(async () => {
       fireEvent.click(screen.getByTestId('edit-venue-save'));
@@ -215,6 +218,7 @@ describe('EditVenueDialog', () => {
     });
     await act(async () => {
       fireEvent.change(screen.getByTestId('edit-venue-name'), { target: { value: 'Global Club' } });
+      fireEvent.change(screen.getByTestId('edit-venue-address'), { target: { value: '123 Campbell Ave' } });
       fireEvent.change(screen.getByTestId('edit-venue-country'), { target: { value: 'CA' } });
     });
     await act(async () => {
@@ -225,6 +229,7 @@ describe('EditVenueDialog', () => {
     });
     expect(adminVenuesUtils.createVenue).toHaveBeenCalledWith('tk', expect.objectContaining({
       name: 'Global Club',
+      address: '123 Campbell Ave',
       country: 'CA',
       region: 'Ontario',
       usState: '',
@@ -240,6 +245,7 @@ describe('EditVenueDialog', () => {
     });
     await act(async () => {
       fireEvent.change(screen.getByTestId('edit-venue-name'), { target: { value: 'existing venue' } });
+      fireEvent.change(screen.getByTestId('edit-venue-address'), { target: { value: '123 Campbell Ave' } });
     });
     await act(async () => {
       fireEvent.click(screen.getByTestId('edit-venue-save'));
@@ -247,5 +253,13 @@ describe('EditVenueDialog', () => {
     expect(confirmSpy).toHaveBeenCalled();
     expect(adminVenuesUtils.createVenue).not.toHaveBeenCalled();
     confirmSpy.mockRestore();
+  });
+
+  it('blocks save and shows an error when the address is empty', async () => {
+    const blankAddress: Ivenue = { ...venue, address: '' };
+    await act(async () => { render(<EditVenueDialog open venue={blankAddress} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />); });
+    await act(async () => { fireEvent.click(screen.getByTestId('edit-venue-save')); });
+    expect(screen.getByTestId('edit-venue-error').innerHTML).toBe('Address is required');
+    expect(adminVenuesUtils.updateVenue).not.toHaveBeenCalled();
   });
 });
