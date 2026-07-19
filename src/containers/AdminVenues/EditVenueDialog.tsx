@@ -467,24 +467,30 @@ export function EditVenueDialog({
                 });
               }
             }}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label="Address"
-                fullWidth
-                sx={{ marginBottom: 2 }}
-                data-testid="edit-venue-address"
-                InputProps={{
-                  ...params.InputProps,
-                  endAdornment: (
-                    <>
-                      {loading ? <CircularProgress color="inherit" size={20} /> : null}
-                      {params.InputProps.endAdornment}
-                    </>
-                  ),
-                }}
-              />
-            )}
+            renderInput={(params) => {
+              const inputProps = (params as any).slotProps?.input || {};
+              return (
+                <TextField
+                  {...params}
+                  label="Address"
+                  fullWidth
+                  sx={{ marginBottom: 2 }}
+                  data-testid="edit-venue-address"
+                  slotProps={{
+                    ...(params as any).slotProps,
+                    input: {
+                      ...inputProps,
+                      endAdornment: (
+                        <>
+                          {loading ? <CircularProgress color="inherit" size={20} /> : null}
+                          {inputProps.endAdornment}
+                        </>
+                      ),
+                    },
+                  }}
+                />
+              );
+            }}
           />
         )}
         <TextField label="City" fullWidth value={form.city || ''} onChange={(e) => set('city', e.target.value)}
