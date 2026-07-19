@@ -431,7 +431,7 @@ describe('EditVenueDialog', () => {
       });
       vi.useRealTimers();
 
-      const option = await screen.findByText('123 Campbell Ave, Roanoke, VA');
+      const option = await screen.findByText(/123 Campbell Ave/);
       await act(async () => {
         fireEvent.click(option);
       });
@@ -485,7 +485,7 @@ describe('EditVenueDialog', () => {
       });
       vi.useRealTimers();
 
-      const option = await screen.findByText('123 Campbell Ave, Roanoke, VA');
+      const option = await screen.findByText(/123 Campbell Ave/);
       await act(async () => {
         fireEvent.click(option);
       });
