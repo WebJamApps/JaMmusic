@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { render, screen, fireEvent, act } from '@testing-library/react';
+import { render, screen, fireEvent, act, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { EditVenueDialog } from 'src/containers/AdminVenues/EditVenueDialog';
 import adminVenuesUtils, { type Ivenue } from 'src/containers/AdminVenues/admin-venues.utils';
@@ -329,15 +329,24 @@ describe('EditVenueDialog', () => {
       await act(async () => {
         render(<EditVenueDialog open venue={null} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />);
       });
+      await waitFor(() => {
+        const input = getFormInput('edit-venue-address');
+        expect(input.getAttribute('role')).toBe('combobox');
+      });
       expect(getFormInput('edit-venue-address')).toBeDefined();
     });
 
     it('fetches predictions when address input changes', async () => {
-      vi.useFakeTimers();
       await act(async () => {
         render(<EditVenueDialog open venue={null} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />);
       });
 
+      await waitFor(() => {
+        const input = getFormInput('edit-venue-address');
+        expect(input.getAttribute('role')).toBe('combobox');
+      });
+
+      vi.useFakeTimers();
       const input = getFormInput('edit-venue-address');
       await act(async () => {
         fireEvent.change(input, { target: { value: '123 Campbell' } });
@@ -355,11 +364,16 @@ describe('EditVenueDialog', () => {
     });
 
     it('populates address, city, state, country on prediction selection', async () => {
-      vi.useFakeTimers();
       await act(async () => {
         render(<EditVenueDialog open venue={null} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />);
       });
 
+      await waitFor(() => {
+        const input = getFormInput('edit-venue-address');
+        expect(input.getAttribute('role')).toBe('combobox');
+      });
+
+      vi.useFakeTimers();
       const input = getFormInput('edit-venue-address') as HTMLInputElement;
       await act(async () => {
         fireEvent.change(input, { target: { value: '123 Campbell' } });
@@ -404,11 +418,16 @@ describe('EditVenueDialog', () => {
         }, 'OK');
       });
 
-      vi.useFakeTimers();
       await act(async () => {
         render(<EditVenueDialog open venue={null} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />);
       });
 
+      await waitFor(() => {
+        const input = getFormInput('edit-venue-address');
+        expect(input.getAttribute('role')).toBe('combobox');
+      });
+
+      vi.useFakeTimers();
       const input = getFormInput('edit-venue-address') as HTMLInputElement;
       await act(async () => {
         fireEvent.change(input, { target: { value: '456 Yonge' } });
