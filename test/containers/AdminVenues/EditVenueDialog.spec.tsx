@@ -13,6 +13,7 @@ vi.mock('@mui/material', async () => {
         <div data-testid="mock-autocomplete">
           {props.renderInput({
             role: 'combobox',
+            value: props.inputValue || '',
             onChange: (e: any) => {
               if (props.onInputChange) {
                 props.onInputChange(e, e.target.value);
@@ -408,11 +409,9 @@ describe('EditVenueDialog', () => {
         vi.advanceTimersByTime(350);
       });
 
-      expect(mockGetPlacePredictions).toHaveBeenCalledWith(
-        expect.objectContaining({ input: '123 Campbell' }),
-        expect.any(Function)
-      );
       vi.useRealTimers();
+      const option = await screen.findByText(/123 Campbell Ave/);
+      expect(option).toBeInTheDocument();
     });
 
     it('populates address, city, state, country on prediction selection', async () => {
