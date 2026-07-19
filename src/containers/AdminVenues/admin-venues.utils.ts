@@ -7,6 +7,7 @@ import ExcelJS from 'exceljs';
 export interface Ivenue {
   _id: string;
   name: string;
+  address?: string;
   city?: string;
   usState?: string;
   country?: string;
@@ -40,6 +41,7 @@ export interface Ivenue {
 
 export interface IvenueUpdate {
   name?: string;
+  address?: string;
   city?: string;
   usState?: string;
   country?: string;
@@ -177,6 +179,7 @@ export async function exportVenuesToExcel(venues: Ivenue[]): Promise<void> {
   // Define columns with headers and keys
   worksheet.columns = [
     { header: 'Name', key: 'name', width: 25 },
+    { header: 'Address', key: 'address', width: 25 },
     { header: 'Contact Name', key: 'contactName', width: 20 },
     { header: 'Email', key: 'email', width: 25 },
     { header: 'Secondary Email', key: 'secondaryEmail', width: 25 },
@@ -217,6 +220,7 @@ export async function exportVenuesToExcel(venues: Ivenue[]): Promise<void> {
   venues.forEach((v) => {
     const rowData = {
       name: v.name || '',
+      address: v.address || '',
       contactName: v.contactName || '',
       email: v.email || '',
       secondaryEmail: v.secondaryEmail || '',
