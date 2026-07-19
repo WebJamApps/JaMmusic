@@ -104,6 +104,7 @@ function Help({ field }: { field: string }) {
       {FIELD_HELP[field]}
     </Typography>
   );
+}
 let googleMapsPromise: Promise<void> | null = null;
 
 function loadGoogleMapsScript(apiKey: string): Promise<void> {
