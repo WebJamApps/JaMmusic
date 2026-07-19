@@ -337,13 +337,17 @@ describe('EditVenueDialog', () => {
         }, 'OK');
       });
 
-      const mockAutocompleteService = vi.fn().mockImplementation(() => ({
-        getPlacePredictions: mockGetPlacePredictions,
-      }));
+      const mockAutocompleteService = vi.fn().mockImplementation(function () {
+        return {
+          getPlacePredictions: mockGetPlacePredictions,
+        };
+      });
 
-      const mockPlacesService = vi.fn().mockImplementation(() => ({
-        getDetails: mockGetDetails,
-      }));
+      const mockPlacesService = vi.fn().mockImplementation(function () {
+        return {
+          getDetails: mockGetDetails,
+        };
+      });
 
       const mockAutocompleteSessionToken = vi.fn();
 
