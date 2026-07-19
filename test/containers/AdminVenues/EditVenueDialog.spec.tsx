@@ -312,6 +312,8 @@ describe('EditVenueDialog', () => {
     };
 
     beforeEach(() => {
+      vi.useRealTimers();
+
       mockGetPlacePredictions = vi.fn((options: any, callback: any) => {
         callback([{ description: '123 Campbell Ave, Roanoke, VA', place_id: 'p1' }], 'OK');
       });
@@ -360,6 +362,7 @@ describe('EditVenueDialog', () => {
     });
 
     afterEach(() => {
+      vi.useRealTimers();
       delete (window as any).google;
       delete process.env.GOOGLE_MAPS_API_KEY;
     });
