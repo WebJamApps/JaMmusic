@@ -75,7 +75,12 @@ async function getCandidates(token: string, targetDates?: string, eligibleFor?: 
 
 async function sendBatch(
   token: string,
-  payload: { venueIds: string[]; targetDates: string; bookingPeriod?: string },
+  payload: {
+    venueIds: string[];
+    targetDates: string;
+    bookingPeriod?: string;
+    targetWeekend: { start: string; end: string };
+  },
 ): Promise<IbatchResult> {
   const res = await fetch(`${outreachUrl}/batch`, {
     method: 'POST', headers: headers(token, true), body: JSON.stringify(payload),

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import {
   Dialog, DialogTitle, DialogContent, DialogActions,
   Button, Typography, FormGroup, FormControlLabel, Checkbox, FormControl, InputLabel, Select, MenuItem, TextField,
+  Autocomplete, CircularProgress,
 } from '@mui/material';
 import adminVenuesUtils, {
   VENUE_TYPES, BOOKING_STATUSES, RELATIONSHIP_STAGES, ORIGINALS_FITS, TRAVEL_BANDS, FIELD_HELP,
@@ -104,6 +105,34 @@ function Help({ field }: { field: string }) {
     </Typography>
   );
 }
+let googleMapsPromise: Promise<void> | null = null;
+
+function loadGoogleMapsScript(apiKey: string): Promise<void> {
+  if (typeof window === 'undefined') return Promise.reject();
+  if ((window as any).google?.maps?.places) return Promise.resolve();
+  if (googleMapsPromise) return googleMapsPromise;
+
+  googleMapsPromise = new Promise((resolve, reject) => {
+    const callbackName = '__googleMapsCallback';
+    (window as any)[callbackName] = () => {
+      resolve();
+      delete (window as any)[callbackName];
+    };
+
+    const script = document.createElement('script');
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places&callback=${callbackName}`;
+    script.async = true;
+    script.defer = true;
+    script.onerror = () => {
+      reject(new Error('Failed to load Google Maps script'));
+      googleMapsPromise = null;
+    };
+
+    document.head.appendChild(script);
+  });
+
+  return googleMapsPromise;
+}
 
 interface IeditVenueDialogProps {
   open: boolean;
@@ -121,11 +150,76 @@ export function EditVenueDialog({
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
+  const [mapsLoaded, setMapsLoaded] = useState(false);
+  const [predictions, setPredictions] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [sessionToken, setSessionToken] = useState<any | null>(null);
+  const [autocompleteService, setAutocompleteService] = useState<any | null>(null);
+  const [placesService, setPlacesService] = useState<any | null>(null);
+
+  useEffect(() => {
+    if (open && process.env.GOOGLE_MAPS_API_KEY) {
+      loadGoogleMapsScript(process.env.GOOGLE_MAPS_API_KEY)
+        .then(() => {
+          setMapsLoaded(true);
+          const maps = (window as any).google?.maps;
+          if (maps?.places) {
+            setAutocompleteService(new maps.places.AutocompleteService());
+            const dummyDiv = document.createElement('div');
+            setPlacesService(new maps.places.PlacesService(dummyDiv));
+          }
+        })
+        .catch((err) => {
+          console.error('Failed to load Google Maps script:', err);
+          setMapsLoaded(false);
+        });
+    }
+  }, [open]);
+
+  useEffect(() => {
+    const maps = (window as any).google?.maps;
+    if (!mapsLoaded || !autocompleteService || !form.address || !form.address.trim() || !maps) {
+      setPredictions([]);
+      return;
+    }
+
+    let currentToken = sessionToken;
+    if (!currentToken && maps.places) {
+      currentToken = new maps.places.AutocompleteSessionToken();
+      setSessionToken(currentToken);
+    }
+
+    const delayDebounceFn = setTimeout(() => {
+      const countryCode = form.country ? form.country.toLowerCase() : 'us';
+      const options: any = {
+        input: form.address || '',
+        sessionToken: currentToken || undefined,
+      };
+
+      if (countryCode && countryCode.length === 2) {
+        options.componentRestrictions = { country: countryCode };
+      }
+
+      setLoading(true);
+      autocompleteService.getPlacePredictions(options, (results: any[], status: any) => {
+        setLoading(false);
+        if (status === maps.places.PlacesServiceStatus.OK && results) {
+          setPredictions(results);
+        } else {
+          setPredictions([]);
+        }
+      });
+    }, 300);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [form.address, mapsLoaded, autocompleteService, form.country]);
+
   useEffect(() => {
     if (open) {
       if (venue) {
         setForm({
           name: venue.name || '',
+          address: venue.address || '',
           city: venue.city || '',
           usState: venue.usState || '',
           country: venue.country || 'US',
@@ -152,6 +246,7 @@ export function EditVenueDialog({
         // Safe defaults for hand-added venues
         setForm({
           name: '',
+          address: '',
           city: '',
           usState: '',
           country: 'US',
@@ -183,6 +278,7 @@ export function EditVenueDialog({
 
   const handleSave = async () => {
     if (!form.name || !form.name.trim()) { setError('Name is required'); return; }
+    if (!form.address || !form.address.trim()) { setError('Address is required'); return; }
 
     const isCreate = !venue;
     if (existingVenues) {
@@ -239,6 +335,7 @@ export function EditVenueDialog({
     const finalForm: IvenueUpdate = {
       ...form,
       name: form.name.trim(),
+      address: form.address.trim(),
       email: primaryEmail,
       secondaryEmail: secondaryEmail,
       venueType: form.venueType || undefined,
@@ -289,6 +386,113 @@ export function EditVenueDialog({
       <DialogContent>
         <TextField label="Name" fullWidth value={form.name || ''} onChange={(e) => set('name', e.target.value)}
           sx={{ marginTop: 1, marginBottom: 2 }} data-testid="edit-venue-name" />
+        {!mapsLoaded ? (
+          <TextField
+            label="Address"
+            fullWidth
+            value={form.address || ''}
+            onChange={(e) => set('address', e.target.value)}
+            sx={{ marginBottom: 2 }}
+            data-testid="edit-venue-address"
+          />
+        ) : (
+          <Autocomplete
+            freeSolo
+            options={predictions}
+            getOptionLabel={(option) => {
+              if (typeof option === 'string') return option;
+              return option.description || '';
+            }}
+            filterOptions={(x) => x}
+            inputValue={form.address || ''}
+            onInputChange={(_, newInputValue) => {
+              set('address', newInputValue);
+            }}
+            onChange={(_, value) => {
+              if (!value || typeof value === 'string') {
+                return;
+              }
+
+              const prediction = value as any;
+              const maps = (window as any).google?.maps;
+              if (placesService && sessionToken && maps) {
+                setLoading(true);
+                placesService.getDetails({
+                  placeId: prediction.place_id,
+                  sessionToken: sessionToken,
+                  fields: ['formatted_address', 'address_components', 'geometry'],
+                }, (place: any, status: any) => {
+                  setLoading(false);
+                  if (status === maps.places.PlacesServiceStatus.OK && place) {
+                    if (place.geometry && place.geometry.location) {
+                      const lat = place.geometry.location.lat();
+                      const lng = place.geometry.location.lng();
+                      console.log(`Captured coordinates for ${prediction.description}: lat=${lat}, lng=${lng}`);
+                    }
+
+                    let streetNumber = '';
+                    let route = '';
+                    let city = '';
+                    let state = '';
+                    let country = '';
+
+                    if (place.address_components) {
+                      place.address_components.forEach((c: any) => {
+                        if (c.types.includes('street_number')) {
+                          streetNumber = c.long_name;
+                        } else if (c.types.includes('route')) {
+                          route = c.long_name;
+                        } else if (c.types.includes('locality')) {
+                          city = c.long_name;
+                        } else if (c.types.includes('administrative_area_level_1')) {
+                          state = c.short_name;
+                        } else if (c.types.includes('country')) {
+                          country = c.short_name;
+                        }
+                      });
+                    }
+
+                    const streetAddress = `${streetNumber} ${route}`.trim() || place.formatted_address || prediction.description;
+
+                    setForm((f) => ({
+                      ...f,
+                      address: streetAddress,
+                      city: city || f.city,
+                      usState: (country === 'US' || !country) ? (state || f.usState) : '',
+                      region: (country !== 'US' && country) ? (state || f.region) : '',
+                      country: country || f.country || 'US',
+                    }));
+                  }
+                  setSessionToken(null);
+                });
+              }
+            }}
+            renderInput={(params) => {
+              const inputProps = (params as any).slotProps?.input || {};
+              return (
+                <TextField
+                  {...params}
+                  label="Address"
+                  fullWidth
+                  sx={{ marginBottom: 2 }}
+                  data-testid="edit-venue-address"
+                  slotProps={{
+                    ...(params as any).slotProps,
+                    input: {
+                      ...inputProps,
+                      endAdornment: (
+                        <>
+                          {loading ? <CircularProgress color="inherit" size={20} /> : null}
+                          {inputProps.endAdornment}
+                        </>
+                      ),
+                    },
+                  }}
+                />
+              );
+            }}
+          />
+        )}
         <TextField label="City" fullWidth value={form.city || ''} onChange={(e) => set('city', e.target.value)}
           sx={{ marginBottom: 2 }} data-testid="edit-venue-city" />
         <FormControl fullWidth sx={{ marginBottom: 2 }}>

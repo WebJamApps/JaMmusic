@@ -1,11 +1,57 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { render, screen, fireEvent, act } from '@testing-library/react';
+import { render, screen, fireEvent, act, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { EditVenueDialog } from 'src/containers/AdminVenues/EditVenueDialog';
 import adminVenuesUtils, { type Ivenue } from 'src/containers/AdminVenues/admin-venues.utils';
 
+vi.mock('@mui/material', async () => {
+  const mockMui = await import('../../../__mocks__/@mui/material');
+  return {
+    ...mockMui,
+    Autocomplete: (props: any) => {
+      return (
+        <div data-testid="mock-autocomplete">
+          {props.renderInput({
+            role: 'combobox',
+            value: props.inputValue || '',
+            onChange: (e: any) => {
+              if (props.onInputChange) {
+                props.onInputChange(e, e.target.value);
+              }
+            },
+            slotProps: {
+              input: {
+                role: 'combobox',
+              },
+            },
+          })}
+          {props.options && props.options.length > 0 && (
+            <div data-testid="mock-autocomplete-options">
+              {props.options.map((option: any) => {
+                const label = props.getOptionLabel ? props.getOptionLabel(option) : (option.description || option);
+                return (
+                  <button
+                    key={option.place_id || label}
+                    onClick={(e) => {
+                      if (props.onChange) {
+                        props.onChange(e, option);
+                      }
+                    }}
+                  >
+                    {label}
+                  </button>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      );
+    },
+  };
+});
+
 const venue: Ivenue = {
-  _id: 'v1', name: 'Mac n Bob', city: 'Salem', usState: 'VA', venueType: 'MidRangeCafeBar',
+  _id: 'v1', name: 'Mac n Bob', address: '123 Campbell Ave', city: 'Salem', usState: 'VA', venueType: 'MidRangeCafeBar',
   bookingStatus: 'booking', outreachEligible: false, inScope: true, interested: true,
 };
 
@@ -152,6 +198,7 @@ describe('EditVenueDialog', () => {
     });
     await act(async () => {
       fireEvent.change(screen.getByTestId('edit-venue-name'), { target: { value: 'New Cafe' } });
+      fireEvent.change(screen.getByTestId('edit-venue-address'), { target: { value: '123 Campbell Ave' } });
       fireEvent.change(screen.getByTestId('edit-venue-state'), { target: { value: 'NC' } });
     });
     await act(async () => {
@@ -159,6 +206,7 @@ describe('EditVenueDialog', () => {
     });
     expect(adminVenuesUtils.createVenue).toHaveBeenCalledWith('tk', expect.objectContaining({
       name: 'New Cafe',
+      address: '123 Campbell Ave',
       usState: 'NC',
       country: 'US',
     }));
@@ -172,6 +220,7 @@ describe('EditVenueDialog', () => {
     });
     await act(async () => {
       fireEvent.change(screen.getByTestId('edit-venue-name'), { target: { value: 'New Cafe' } });
+      fireEvent.change(screen.getByTestId('edit-venue-address'), { target: { value: '123 Campbell Ave' } });
     });
     await act(async () => {
       fireEvent.click(screen.getByTestId('edit-venue-save'));
@@ -215,6 +264,7 @@ describe('EditVenueDialog', () => {
     });
     await act(async () => {
       fireEvent.change(screen.getByTestId('edit-venue-name'), { target: { value: 'Global Club' } });
+      fireEvent.change(screen.getByTestId('edit-venue-address'), { target: { value: '123 Campbell Ave' } });
       fireEvent.change(screen.getByTestId('edit-venue-country'), { target: { value: 'CA' } });
     });
     await act(async () => {
@@ -225,6 +275,7 @@ describe('EditVenueDialog', () => {
     });
     expect(adminVenuesUtils.createVenue).toHaveBeenCalledWith('tk', expect.objectContaining({
       name: 'Global Club',
+      address: '123 Campbell Ave',
       country: 'CA',
       region: 'Ontario',
       usState: '',
@@ -240,6 +291,7 @@ describe('EditVenueDialog', () => {
     });
     await act(async () => {
       fireEvent.change(screen.getByTestId('edit-venue-name'), { target: { value: 'existing venue' } });
+      fireEvent.change(screen.getByTestId('edit-venue-address'), { target: { value: '123 Campbell Ave' } });
     });
     await act(async () => {
       fireEvent.click(screen.getByTestId('edit-venue-save'));
@@ -247,5 +299,204 @@ describe('EditVenueDialog', () => {
     expect(confirmSpy).toHaveBeenCalled();
     expect(adminVenuesUtils.createVenue).not.toHaveBeenCalled();
     confirmSpy.mockRestore();
+  });
+
+  it('blocks save and shows an error when the address is empty', async () => {
+    const blankAddress: Ivenue = { ...venue, address: '' };
+    await act(async () => { render(<EditVenueDialog open venue={blankAddress} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />); });
+    await act(async () => { fireEvent.click(screen.getByTestId('edit-venue-save')); });
+    expect(screen.getByTestId('edit-venue-error').innerHTML).toBe('Address is required');
+    expect(adminVenuesUtils.updateVenue).not.toHaveBeenCalled();
+  });
+
+  describe('Google Places Autocomplete', () => {
+    let mockGetPlacePredictions: any;
+    let mockGetDetails: any;
+
+    const getFormInput = (testId: string) => {
+      const el = screen.getByTestId(testId);
+      return el.tagName === 'INPUT' ? el : (el.querySelector('input') || el);
+    };
+
+    beforeEach(() => {
+      vi.useRealTimers();
+
+      mockGetPlacePredictions = vi.fn((options: any, callback: any) => {
+        callback([{ description: '123 Campbell Ave, Roanoke, VA', place_id: 'p1' }], 'OK');
+      });
+
+      mockGetDetails = vi.fn((options: any, callback: any) => {
+        callback({
+          address_components: [
+            { types: ['street_number'], long_name: '123' },
+            { types: ['route'], long_name: 'Campbell Ave' },
+            { types: ['locality'], long_name: 'Roanoke' },
+            { types: ['administrative_area_level_1'], short_name: 'VA' },
+            { types: ['country'], short_name: 'US' },
+          ],
+          geometry: {
+            location: {
+              lat: () => 37.27,
+              lng: () => -79.94,
+            },
+          },
+          formatted_address: '123 Campbell Ave, Roanoke, VA 24011',
+        }, 'OK');
+      });
+
+      const mockAutocompleteService = vi.fn().mockImplementation(function () {
+        return {
+          getPlacePredictions: mockGetPlacePredictions,
+        };
+      });
+
+      const mockPlacesService = vi.fn().mockImplementation(function () {
+        return {
+          getDetails: mockGetDetails,
+        };
+      });
+
+      const mockAutocompleteSessionToken = vi.fn();
+
+      (window as any).google = {
+        maps: {
+          places: {
+            AutocompleteService: mockAutocompleteService,
+            PlacesService: mockPlacesService,
+            AutocompleteSessionToken: mockAutocompleteSessionToken,
+            PlacesServiceStatus: { OK: 'OK' },
+          },
+        },
+      };
+
+      process.env.GOOGLE_MAPS_API_KEY = 'test-api-key';
+    });
+
+    afterEach(() => {
+      vi.useRealTimers();
+      delete (window as any).google;
+      delete process.env.GOOGLE_MAPS_API_KEY;
+    });
+
+    it('loads the Google Maps script and initializes services', async () => {
+      await act(async () => {
+        render(<EditVenueDialog open venue={null} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />);
+      });
+      await waitFor(() => {
+        const input = getFormInput('edit-venue-address');
+        expect(input.getAttribute('role')).toBe('combobox');
+      });
+      expect(getFormInput('edit-venue-address')).toBeDefined();
+    });
+
+    it('fetches predictions when address input changes', async () => {
+      await act(async () => {
+        render(<EditVenueDialog open venue={null} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />);
+      });
+
+      await waitFor(() => {
+        const input = getFormInput('edit-venue-address');
+        expect(input.getAttribute('role')).toBe('combobox');
+      });
+
+      vi.useFakeTimers();
+      const input = getFormInput('edit-venue-address');
+      await act(async () => {
+        fireEvent.change(input, { target: { value: '123 Campbell' } });
+      });
+
+      await act(async () => {
+        vi.advanceTimersByTime(350);
+      });
+
+      vi.useRealTimers();
+      const option = await screen.findByText(/123 Campbell Ave/);
+      expect(option).toBeInTheDocument();
+    });
+
+    it('populates address, city, state, country on prediction selection', async () => {
+      await act(async () => {
+        render(<EditVenueDialog open venue={null} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />);
+      });
+
+      await waitFor(() => {
+        const input = getFormInput('edit-venue-address');
+        expect(input.getAttribute('role')).toBe('combobox');
+      });
+
+      vi.useFakeTimers();
+      const input = getFormInput('edit-venue-address') as HTMLInputElement;
+      await act(async () => {
+        fireEvent.change(input, { target: { value: '123 Campbell' } });
+      });
+
+      await act(async () => {
+        vi.advanceTimersByTime(350);
+      });
+      vi.useRealTimers();
+
+      const option = await screen.findByText(/123 Campbell Ave/);
+      await act(async () => {
+        fireEvent.click(option);
+      });
+
+      expect(mockGetDetails).toHaveBeenCalledWith(
+        expect.objectContaining({ placeId: 'p1' }),
+        expect.any(Function)
+      );
+
+      expect(input.value).toBe('123 Campbell Ave');
+      expect((getFormInput('edit-venue-city') as HTMLInputElement).value).toBe('Roanoke');
+    });
+
+    it('populates non-US countries with free-text region on prediction selection', async () => {
+      mockGetDetails.mockImplementationOnce((options: any, callback: any) => {
+        callback({
+          address_components: [
+            { types: ['street_number'], long_name: '456' },
+            { types: ['route'], long_name: 'Yonge St' },
+            { types: ['locality'], long_name: 'Toronto' },
+            { types: ['administrative_area_level_1'], short_name: 'ON' },
+            { types: ['country'], short_name: 'CA' },
+          ],
+          geometry: {
+            location: {
+              lat: () => 43.65,
+              lng: () => -79.38,
+            },
+          },
+          formatted_address: '456 Yonge St, Toronto, ON, Canada',
+        }, 'OK');
+      });
+
+      await act(async () => {
+        render(<EditVenueDialog open venue={null} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />);
+      });
+
+      await waitFor(() => {
+        const input = getFormInput('edit-venue-address');
+        expect(input.getAttribute('role')).toBe('combobox');
+      });
+
+      vi.useFakeTimers();
+      const input = getFormInput('edit-venue-address') as HTMLInputElement;
+      await act(async () => {
+        fireEvent.change(input, { target: { value: '456 Yonge' } });
+      });
+
+      await act(async () => {
+        vi.advanceTimersByTime(350);
+      });
+      vi.useRealTimers();
+
+      const option = await screen.findByText(/123 Campbell Ave/);
+      await act(async () => {
+        fireEvent.click(option);
+      });
+
+      expect(input.value).toBe('456 Yonge St');
+      expect((getFormInput('edit-venue-city') as HTMLInputElement).value).toBe('Toronto');
+      expect((getFormInput('edit-venue-region') as HTMLInputElement).value).toBe('ON');
+    });
   });
 });
