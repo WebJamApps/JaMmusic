@@ -59,7 +59,7 @@ describe('EditGigDialog', () => {
 
   it('handles existing venue path (initial match, website rendering, update)', async () => {
     const listVenuesSpy = vi.spyOn(adminVenuesUtils, 'listVenues').mockResolvedValue(activeVenues);
-    const updateSpy = vi.spyOn(utils, 'updateGig').mockResolvedValue();
+    const updateSpy = vi.spyOn(utils, 'updateGig').mockResolvedValue(true);
     const setEditGig = vi.fn();
     const setShowDialog = vi.fn();
 
@@ -115,7 +115,7 @@ describe('EditGigDialog', () => {
   it('handles new inline venue path (creation and update)', async () => {
     vi.spyOn(adminVenuesUtils, 'listVenues').mockResolvedValue(activeVenues);
     const createVenueSpy = vi.spyOn(adminVenuesUtils, 'createVenue').mockResolvedValue({ _id: 'new-venue-123' } as any);
-    const updateSpy = vi.spyOn(utils, 'updateGig').mockResolvedValue();
+    const updateSpy = vi.spyOn(utils, 'updateGig').mockResolvedValue(true);
 
     const editGig = {
       _id: 'gig123',
@@ -171,7 +171,7 @@ describe('EditGigDialog', () => {
 
   it('handles no venue path (one-off selection & clear selected venue)', async () => {
     vi.spyOn(adminVenuesUtils, 'listVenues').mockResolvedValue(activeVenues);
-    const updateSpy = vi.spyOn(utils, 'updateGig').mockResolvedValue();
+    const updateSpy = vi.spyOn(utils, 'updateGig').mockResolvedValue(true);
 
     const editGig = {
       _id: 'gig123',

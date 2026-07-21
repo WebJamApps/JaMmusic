@@ -22,7 +22,7 @@ const createGig = async (
   duration: number,
   promoImageUrl: string,
   venueId?: string | null,
-) => {
+): Promise<boolean> => {
   try {
     const { token } = auth;
     const gig = {
@@ -35,10 +35,26 @@ const createGig = async (
       secure: process.env.SOCKETCLUSTER_SECURE !== 'false',
     });
     socket.transmit('newGig', { gig, token });
+    const waitForError = async (): Promise<string | undefined> => {
+      const { value } = await socket.receiver('socketError').createConsumer().next();
+      return (value as { newGig?: string } | undefined)?.newGig;
+    };
+    const errorMessage = await Promise.race<string | undefined>([
+      waitForError(),
+      commonUtils.delay(2) as Promise<string | undefined>,
+    ]);
+    socket.disconnect();
+    if (errorMessage) {
+      commonUtils.notify('Error creating gig', errorMessage, 'danger');
+      return false;
+    }
     setShowDialog(false);
-    await commonUtils.delay(2);
     getGigs();
-  } catch (err) { console.log((err as Error).message); }
+    return true;
+  } catch (err) {
+    commonUtils.notify('Error creating gig', (err as Error).message, 'danger');
+    return false;
+  }
 };
 
 const updateGig = async (
@@ -47,7 +63,7 @@ const updateGig = async (
   setEditChanged: (arg0: boolean) => void,
   editGig: typeof defaultGig,
   token: string,
-) => {
+): Promise<boolean> => {
   try {
     const gig: Igig = { ...editGig, artist: 'josh' };
     delete gig.date;
@@ -64,11 +80,27 @@ const updateGig = async (
       secure: process.env.SOCKETCLUSTER_SECURE !== 'false',
     });
     socket.transmit('editGig', { gigId: editGig._id, gig, token });
+    const waitForError = async (): Promise<string | undefined> => {
+      const { value } = await socket.receiver('socketError').createConsumer().next();
+      return (value as { editGig?: string } | undefined)?.editGig;
+    };
+    const errorMessage = await Promise.race<string | undefined>([
+      waitForError(),
+      commonUtils.delay(2) as Promise<string | undefined>,
+    ]);
+    socket.disconnect();
+    if (errorMessage) {
+      commonUtils.notify('Error updating gig', errorMessage, 'danger');
+      return false;
+    }
     setEditGig(defaultGig);
     setEditChanged(false);
-    await commonUtils.delay(2);
     getGigs();
-  } catch (err) { console.log((err as Error).message); }
+    return true;
+  } catch (err) {
+    commonUtils.notify('Error updating gig', (err as Error).message, 'danger');
+    return false;
+  }
 };
 
 const clickToEdit = (
@@ -143,12 +175,27 @@ async function deleteGig(
       });
       const gig = { gigId };
       socket.transmit('deleteGig', { gig, token });
-      await commonUtils.delay(2);
+      const waitForError = async (): Promise<string | undefined> => {
+        const { value } = await socket.receiver('socketError').createConsumer().next();
+        return (value as { deleteGig?: string } | undefined)?.deleteGig;
+      };
+      const errorMessage = await Promise.race<string | undefined>([
+        waitForError(),
+        commonUtils.delay(2) as Promise<string | undefined>,
+      ]);
+      socket.disconnect();
+      if (errorMessage) {
+        commonUtils.notify('Error deleting gig', errorMessage, 'danger');
+        return false;
+      }
       setEditGig(defaultGig);
       setEditChanged(false);
       getGigs();
       return true;
-    } catch (err) { console.log((err as Error)); return false; }
+    } catch (err) {
+      commonUtils.notify('Error deleting gig', (err as Error).message, 'danger');
+      return false;
+    }
   } return false;
 }
 

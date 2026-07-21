@@ -62,7 +62,7 @@ export function CreateGigDialog({
         finalVenueId = newVenue._id;
       }
 
-      await utils.createGig(
+      const success = await utils.createGig(
         getGigs,
         setShowDialog,
         dateTime,
@@ -75,13 +75,15 @@ export function CreateGigDialog({
         promoImageUrl,
         finalVenueId,
       );
-      // Reset form states
-      setVenue('');
-      setSelectedVenue(null);
-      setInlineName('');
-      setInlineCity('');
-      setInlineState('Virginia');
-      setPath('existing');
+      if (success) {
+        // Reset form states
+        setVenue('');
+        setSelectedVenue(null);
+        setInlineName('');
+        setInlineCity('');
+        setInlineState('Virginia');
+        setPath('existing');
+      }
     } catch (err) {
       console.error('Failed to create gig:', err);
     }
