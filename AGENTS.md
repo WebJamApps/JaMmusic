@@ -82,6 +82,10 @@ from a `<lane>/<issue#>-<slug>` branch.
   2. Start the local preview server: `npm run preview` (typically runs on `http://localhost:4173`)
   3. Run E2E tests pointing to the preview server: `BASE_URL=http://localhost:4173 npm run test:e2e`
 - **Draft PR Script Requirements**: The workspace `create-draft-pr.sh` script strictly requires the `--author`, `--summary`, `--test-plan`, and `--test-evidence` flags. Leaving any of these empty or as a default placeholder will cause the script to abort and refuse to open the draft PR.
+- **TypeScript Number Comparison in Form States**: In `@mui/material` dialog forms, numeric fields (such as `gigInterval` inside form state) are
+  typed as `number`. Comparing a numeric state variable against string empty (`form.gigInterval !== ''`) will cause a compilation error
+  `TS2367: This comparison appears to be unintentional because the types 'number' and 'string' have no overlap.` Ensure you check
+  `typeof form.field === 'number'` or keep form states properly type-separated.
 
 ## Branch & memory hygiene
 
