@@ -1,3 +1,4 @@
+import scc from 'socketcluster-client';
 import utils from 'src/containers/Music/Gigs/gigs.utils';
 import commonUtils from 'src/lib/utils';
 import type { Iauth } from 'src/providers/Auth.provider';
@@ -59,10 +60,34 @@ describe('gigs.utils', () => {
   it('deleteGig successful', async () => {
     commonUtils.delay = vi.fn();
     global.confirm = vi.fn(() => true);
+    const transmit = vi.fn();
+    const disconnect = vi.fn();
+    const next = vi.fn(() => new Promise(() => { /* never resolves */ }));
+    const receiver = vi.fn(() => ({ createConsumer: () => ({ next }) }));
+    scc.create = vi.fn(() => ({ transmit, receiver, disconnect })) as any;
+
     const result = await utils.deleteGig('id', vi.fn(), vi.fn(), vi.fn(), 'token');
     expect(result).toBe(true);
+    expect(disconnect).toHaveBeenCalled();
   });
-  it('deleteGig returns false', async () => {
+  it('deleteGig surfaces a backend socketError', async () => {
+    commonUtils.delay = vi.fn(() => new Promise(() => { /* never resolves */ }));
+    commonUtils.notify = vi.fn();
+    global.confirm = vi.fn(() => true);
+    const transmit = vi.fn();
+    const disconnect = vi.fn();
+    const next = vi.fn(() => Promise.resolve({ value: { deleteGig: 'Delete failed' }, done: true }));
+    const receiver = vi.fn(() => ({ createConsumer: () => ({ next }) }));
+    scc.create = vi.fn(() => ({ transmit, receiver, disconnect })) as any;
+
+    const getGigs = vi.fn();
+    const result = await utils.deleteGig('id', getGigs, vi.fn(), vi.fn(), 'token');
+    expect(result).toBe(false);
+    expect(commonUtils.notify).toHaveBeenCalledWith('Error deleting gig', 'Delete failed', 'danger');
+    expect(getGigs).not.toHaveBeenCalled();
+    expect(disconnect).toHaveBeenCalled();
+  });
+  it('deleteGig returns false on confirm cancel', async () => {
     commonUtils.delay = vi.fn();
     global.confirm = vi.fn(() => false);
     const result = await utils.deleteGig('id', vi.fn(), vi.fn(), vi.fn(), 'token');
@@ -70,34 +95,91 @@ describe('gigs.utils', () => {
   });
   it('deleteGig catches error', async () => {
     const getGigs = vi.fn();
+    commonUtils.notify = vi.fn();
     commonUtils.delay = vi.fn(() => Promise.reject(new Error('failed')));
     global.confirm = vi.fn(() => true);
-    await utils.deleteGig('id', getGigs, vi.fn(), vi.fn(), 'token');
+    const result = await utils.deleteGig('id', getGigs, vi.fn(), vi.fn(), 'token');
+    expect(result).toBe(false);
     expect(getGigs).not.toHaveBeenCalled();
+    expect(commonUtils.notify).toHaveBeenCalledWith('Error deleting gig', 'failed', 'danger');
   });
   it('updateGig successful', async () => {
     commonUtils.delay = vi.fn();
     const getGigs = vi.fn();
-    await utils.updateGig(getGigs, vi.fn(), vi.fn(), {} as any, 'token');
+    const transmit = vi.fn();
+    const disconnect = vi.fn();
+    const next = vi.fn(() => new Promise(() => { /* never resolves */ }));
+    const receiver = vi.fn(() => ({ createConsumer: () => ({ next }) }));
+    scc.create = vi.fn(() => ({ transmit, receiver, disconnect })) as any;
+
+    const result = await utils.updateGig(getGigs, vi.fn(), vi.fn(), {} as any, 'token');
+    expect(result).toBe(true);
     expect(getGigs).toHaveBeenCalled();
+    expect(disconnect).toHaveBeenCalled();
+  });
+  it('updateGig surfaces a backend socketError', async () => {
+    commonUtils.delay = vi.fn(() => new Promise(() => { /* never resolves */ }));
+    commonUtils.notify = vi.fn();
+    const transmit = vi.fn();
+    const disconnect = vi.fn();
+    const next = vi.fn(() => Promise.resolve({ value: { editGig: 'Update failed' }, done: true }));
+    const receiver = vi.fn(() => ({ createConsumer: () => ({ next }) }));
+    scc.create = vi.fn(() => ({ transmit, receiver, disconnect })) as any;
+
+    const getGigs = vi.fn();
+    const result = await utils.updateGig(getGigs, vi.fn(), vi.fn(), {} as any, 'token');
+    expect(result).toBe(false);
+    expect(commonUtils.notify).toHaveBeenCalledWith('Error updating gig', 'Update failed', 'danger');
+    expect(getGigs).not.toHaveBeenCalled();
+    expect(disconnect).toHaveBeenCalled();
   });
   it('updateGig catches error', async () => {
     commonUtils.delay = vi.fn(() => Promise.reject(new Error('failed')));
+    commonUtils.notify = vi.fn();
     const getGigs = vi.fn();
-    await utils.updateGig(getGigs, vi.fn(), vi.fn(), {} as any, 'token');
+    const result = await utils.updateGig(getGigs, vi.fn(), vi.fn(), {} as any, 'token');
+    expect(result).toBe(false);
     expect(getGigs).not.toHaveBeenCalled();
+    expect(commonUtils.notify).toHaveBeenCalledWith('Error updating gig', 'failed', 'danger');
   });
   it('createGig successful', async () => {
     commonUtils.delay = vi.fn();
     const getGigs = vi.fn();
-    await utils.createGig(getGigs, vi.fn(), new Date(), 'item', 'item', 'item', 'item', { token: 'token' } as Iauth, 0, '');
+    const transmit = vi.fn();
+    const disconnect = vi.fn();
+    const next = vi.fn(() => new Promise(() => { /* never resolves */ }));
+    const receiver = vi.fn(() => ({ createConsumer: () => ({ next }) }));
+    scc.create = vi.fn(() => ({ transmit, receiver, disconnect })) as any;
+
+    const result = await utils.createGig(getGigs, vi.fn(), new Date(), 'item', 'item', 'item', 'item', { token: 'token' } as Iauth, 0, '');
+    expect(result).toBe(true);
     expect(getGigs).toHaveBeenCalled();
+    expect(disconnect).toHaveBeenCalled();
+  });
+  it('createGig surfaces a backend socketError', async () => {
+    commonUtils.delay = vi.fn(() => new Promise(() => { /* never resolves */ }));
+    commonUtils.notify = vi.fn();
+    const transmit = vi.fn();
+    const disconnect = vi.fn();
+    const next = vi.fn(() => Promise.resolve({ value: { newGig: 'Create failed' }, done: true }));
+    const receiver = vi.fn(() => ({ createConsumer: () => ({ next }) }));
+    scc.create = vi.fn(() => ({ transmit, receiver, disconnect })) as any;
+
+    const getGigs = vi.fn();
+    const result = await utils.createGig(getGigs, vi.fn(), new Date(), 'item', 'item', 'item', 'item', { token: 'token' } as Iauth, 0, '');
+    expect(result).toBe(false);
+    expect(commonUtils.notify).toHaveBeenCalledWith('Error creating gig', 'Create failed', 'danger');
+    expect(getGigs).not.toHaveBeenCalled();
+    expect(disconnect).toHaveBeenCalled();
   });
   it('createGig catches error', async () => {
     commonUtils.delay = vi.fn(() => Promise.reject(new Error('failed')));
+    commonUtils.notify = vi.fn();
     const getGigs = vi.fn();
-    await utils.createGig(getGigs, vi.fn(), new Date(), 'item', 'item', 'item', 'item', { token: 'token' } as Iauth, 0, '');
+    const result = await utils.createGig(getGigs, vi.fn(), new Date(), 'item', 'item', 'item', 'item', { token: 'token' } as Iauth, 0, '');
+    expect(result).toBe(false);
     expect(getGigs).not.toHaveBeenCalled();
+    expect(commonUtils.notify).toHaveBeenCalledWith('Error creating gig', 'failed', 'danger');
   });
   it('checkUpdateDisabled', () => {
     const editGig = {
