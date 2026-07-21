@@ -37,6 +37,8 @@ export interface Ivenue {
   originalsFit?: string;
   travelBand?: string;
   priority?: number;
+  gigInterval?: number;
+  resumeBooking?: string | null;
 }
 
 export interface IvenueUpdate {
@@ -66,6 +68,8 @@ export interface IvenueUpdate {
   status?: string;
   lastContacted?: string;
   lastVerified?: string;
+  gigInterval?: number;
+  resumeBooking?: string | null;
 }
 
 const venueUrl = `${process.env.BackendUrl}/venue`;
@@ -151,6 +155,9 @@ export const FIELD_HELP: Record<string, string> = {
   originalsFit: 'How much the venue welcomes ORIGINAL music — the heaviest factor in the default Prospect sort (loves > some > none).',
   travelBand: 'Coarse distance from Salem, VA. Farther venues are discounted in the Prospect sort (local > regional > far).',
   priority: 'Manual 0–5 boost to nudge a venue up or down the default Prospect sort, regardless of the other factors.',
+  gigInterval: 'Minimum gap between gigs at this venue in months (default 0). '
+    + 'Ensures outreach is paused if a gig is already scheduled too close to the target window.',
+  resumeBooking: 'Cooldown date: outreach is paused/cooldown is active until this date passes (null/unset = no cooldown).',
 };
 
 // Map a free-text pay note to a 0–3 value for the Prospect Score: count the
