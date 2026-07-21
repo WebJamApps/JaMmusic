@@ -7,7 +7,19 @@ import adminVenuesUtils from 'src/containers/AdminVenues/admin-venues.utils';
 import outreachUtils, { type Icandidate, type IbatchResult, type IpitchPreview } from 'src/containers/AdminOutreach/outreach.utils';
 
 const candidates: Icandidate[] = [
-  { _id: 'c1', name: 'Venue A', city: 'Salem', venueType: 'Originals' },
+  {
+    _id: 'c1',
+    name: 'Venue A',
+    city: 'Salem',
+    venueType: 'Originals',
+    reason: {
+      lastGigDate: '2025-01-10T12:00:00.000Z',
+      gigIntervalMonths: 2,
+      nearestGigMonthsAway: 4.5,
+      spacingNote: 'clear — nearest gig ~4.5 mo away',
+      resumeBookingExpired: true,
+    },
+  },
   { _id: 'c2', name: 'Venue B' },
 ];
 const okResult: IbatchResult = { requested: 2, sent: 2, skipped: [], records: [] };
@@ -86,6 +98,26 @@ describe('AdminOutreach', () => {
     await act(async () => { fireEvent.click(screen.getByTestId('outreach-load')); });
     await act(async () => { fireEvent.click(screen.getByRole('checkbox', { name: /Venue A/i })); });
     expect(screen.getByTestId('outreach-candidates').textContent).toContain('1 of 2');
+  });
+
+  it('renders qualification reasons next to checkbox when provided', async () => {
+    await renderPage();
+    typeDates();
+    await act(async () => { fireEvent.click(screen.getByTestId('outreach-load')); });
+
+    // Verify c1 (with reason) renders reasons
+    const reasonContainer = screen.getByTestId('outreach-reason-c1');
+    expect(reasonContainer).toBeInTheDocument();
+
+    const chips = reasonContainer.children;
+    const labels = Array.from(chips).map(chip => chip.getAttribute('label') || chip.textContent || '');
+
+    expect(labels.some(l => l.includes('clear — nearest gig ~4.5 mo away'))).toBe(true);
+    expect(labels.some(l => l.includes('Last Gig:'))).toBe(true);
+    expect(labels.some(l => l.includes('Cooldown Expired'))).toBe(true);
+
+    // Verify c2 (without reason) does not render reasons
+    expect(screen.queryByTestId('outreach-reason-c2')).toBeNull();
   });
 
   it('opens dialog and shows previews', async () => {

@@ -1115,18 +1115,56 @@ export function AdminOutreach() {
                         bgcolor: isConflict ? 'rgba(245, 158, 11, 0.05)' : 'background.paper',
                       }}>
                         <FormControlLabel
-                          sx={{ flexGrow: 1 }}
+                          sx={{ flexGrow: 1, alignItems: 'flex-start' }}
                           control={(
                             <Checkbox checked={selected.has(c._id)} onChange={() => toggleCandidate(c._id)}
-                              aria-label={c.name} data-testid={`outreach-cb-${c._id}`} />
+                              aria-label={c.name} data-testid={`outreach-cb-${c._id}`} sx={{ mt: -0.5 }} />
                           )}
                           label={
                             <Box>
                               <Typography variant="body2" sx={{ fontWeight: 'medium' }}>
                                 {candidateLabel(c)}
                               </Typography>
+                              {c.reason && (
+                                <Box
+                                  sx={{ mt: 0.5, display: 'flex', flexWrap: 'wrap', gap: 0.5, alignItems: 'center' }}
+                                  data-testid={`outreach-reason-${c._id}`}
+                                >
+                                  <Chip
+                                    icon={<DateRange sx={{ fontSize: '0.8rem !important' }} />}
+                                    label={c.reason.spacingNote}
+                                    size="small"
+                                    variant="outlined"
+                                    color="success"
+                                    sx={{ fontSize: '0.7rem', height: 20, bgcolor: 'rgba(16, 185, 129, 0.03)' }}
+                                  />
+                                  {c.reason.lastGigDate && (
+                                    <Chip
+                                      icon={<History sx={{ fontSize: '0.8rem !important' }} />}
+                                      label={`Last Gig: ${new Date(c.reason.lastGigDate).toLocaleDateString()}`}
+                                      size="small"
+                                      variant="outlined"
+                                      sx={{ fontSize: '0.7rem', height: 20, bgcolor: 'rgba(0, 0, 0, 0.02)' }}
+                                    />
+                                  )}
+                                  {c.reason.resumeBookingExpired && (
+                                    <Chip
+                                      icon={<CheckCircle sx={{ fontSize: '0.8rem !important' }} />}
+                                      label="Cooldown Expired"
+                                      size="small"
+                                      variant="outlined"
+                                      color="info"
+                                      sx={{ fontSize: '0.7rem', height: 20, bgcolor: 'rgba(2, 132, 199, 0.03)' }}
+                                    />
+                                  )}
+                                </Box>
+                              )}
                               {isConflict && (
-                                <Typography variant="caption" color="warning.main" sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                                <Typography
+                                  variant="caption"
+                                  color="warning.main"
+                                  sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mt: 0.5 }}
+                                >
                                   <Warning fontSize="inherit" /> Overlapping gig exists in the window
                                 </Typography>
                               )}
