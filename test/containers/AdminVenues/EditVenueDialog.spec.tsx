@@ -65,9 +65,19 @@ describe('EditVenueDialog', () => {
     await act(async () => { render(<EditVenueDialog open venue={venue} token="tk" onClose={vi.fn()} onSaved={onSaved} />); });
     await act(async () => { fireEvent.click(screen.getByTestId('edit-venue-save')); });
     expect(adminVenuesUtils.updateVenue).toHaveBeenCalledWith('tk', 'v1', expect.objectContaining({
-      name: 'Mac n Bob', bookingStatus: 'booking',
+      name: 'Mac n Bob',
     }));
     expect(onSaved).toHaveBeenCalled();
+  });
+
+  it('saves gigInterval and resumeBooking inputs', async () => {
+    await act(async () => { render(<EditVenueDialog open venue={venue} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />); });
+    await act(async () => { fireEvent.change(screen.getByTestId('edit-venue-giginterval'), { target: { value: '3' } }); });
+    await act(async () => { fireEvent.change(screen.getByTestId('edit-venue-resumebooking'), { target: { value: '2026-11-20' } }); });
+    await act(async () => { fireEvent.click(screen.getByTestId('edit-venue-save')); });
+    expect(adminVenuesUtils.updateVenue).toHaveBeenCalledWith('tk', 'v1', expect.objectContaining({
+      gigInterval: 3, resumeBooking: '2026-11-20',
+    }));
   });
 
   it('saves the relationshipStage + templateOverride selections (#1136)', async () => {
