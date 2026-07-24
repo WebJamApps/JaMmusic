@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import {
   Dialog, DialogTitle, DialogContent, DialogActions,
   Button, Typography, FormGroup, FormControlLabel, Checkbox, FormControl, InputLabel, Select, MenuItem, TextField,
-  Autocomplete, CircularProgress,
+  Autocomplete, CircularProgress, Box, Chip,
 } from '@mui/material';
 import adminVenuesUtils, {
   VENUE_TYPES, BOOKING_STATUSES, RELATIONSHIP_STAGES, ORIGINALS_FITS, TRAVEL_BANDS, FIELD_HELP,
@@ -241,6 +241,8 @@ export function EditVenueDialog({
           originalsFit: venue.originalsFit || '',
           travelBand: venue.travelBand || '',
           priority: venue.priority ?? undefined,
+          gigInterval: venue.gigInterval ?? 0,
+          resumeBooking: venue.resumeBooking ? venue.resumeBooking.substring(0, 10) : '',
         });
       } else {
         // Safe defaults for hand-added venues
@@ -268,6 +270,8 @@ export function EditVenueDialog({
           originalsFit: '',
           travelBand: '',
           priority: undefined,
+          gigInterval: 0,
+          resumeBooking: '',
         });
       }
       setError('');
@@ -341,7 +345,10 @@ export function EditVenueDialog({
       venueType: form.venueType || undefined,
       website: websiteUrl,
       country: currentCountry,
+      gigInterval: typeof form.gigInterval === 'number' ? form.gigInterval : 0,
+      resumeBooking: form.resumeBooking || null,
     };
+    delete finalForm.bookingStatus;
     if (currentCountry === 'US') {
       finalForm.region = '';
     } else {
@@ -558,14 +565,47 @@ export function EditVenueDialog({
           </Select>
         </FormControl>
         <Help field="venueType" />
-        <FormControl fullWidth sx={{ marginBottom: 2 }}>
-          <InputLabel id="edit-venue-booking-label">Booking Status</InputLabel>
-          <Select labelId="edit-venue-booking-label" label="Booking Status" value={form.bookingStatus || 'booking'}
-            onChange={(e) => set('bookingStatus', e.target.value)} data-testid="edit-venue-booking">
-            {BOOKING_STATUSES.map((s) => (<MenuItem key={s} value={s}>{s}</MenuItem>))}
-          </Select>
-        </FormControl>
+        <Box sx={{ marginBottom: 2, display: 'flex', flexDirection: 'column', gap: 0.5 }}>
+          <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 'bold' }}>
+            Booking Status (Read-Only)
+          </Typography>
+          <Box>
+            <Chip
+              label={form.bookingStatus || 'booking'}
+              color={
+                form.bookingStatus === 'booked' ? 'success' :
+                form.bookingStatus === 'not-booking' ? 'error' : 'default'
+              }
+              variant="outlined"
+              data-testid="edit-venue-booking-readonly"
+            />
+          </Box>
+        </Box>
         <Help field="bookingStatus" />
+
+        <TextField
+          label="Gig Interval (months)"
+          type="number"
+          fullWidth
+          slotProps={{ htmlInput: { min: 0 } }}
+          value={form.gigInterval ?? 0}
+          onChange={(e) => set('gigInterval', e.target.value === '' ? 0 : Number(e.target.value))}
+          sx={{ marginBottom: 2 }}
+          data-testid="edit-venue-giginterval"
+        />
+        <Help field="gigInterval" />
+
+        <TextField
+          label="Resume Booking Date"
+          type="date"
+          fullWidth
+          slotProps={{ inputLabel: { shrink: true } }}
+          value={form.resumeBooking || ''}
+          onChange={(e) => set('resumeBooking', e.target.value || null)}
+          sx={{ marginBottom: 2 }}
+          data-testid="edit-venue-resumebooking"
+        />
+        <Help field="resumeBooking" />
         <FormControl fullWidth sx={{ marginBottom: 2 }}>
           <InputLabel id="edit-venue-stage-label">Relationship Stage</InputLabel>
           <Select labelId="edit-venue-stage-label" label="Relationship Stage" value={form.relationshipStage || ''}
