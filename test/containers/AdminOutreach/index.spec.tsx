@@ -113,6 +113,8 @@ describe('AdminOutreach', () => {
     const labels = Array.from(chips).map(chip => chip.getAttribute('label') || chip.textContent || '');
 
     expect(labels.some(l => l.includes('clear — nearest gig ~4.5 mo away'))).toBe(true);
+    expect(labels.some(l => l.includes('Gig interval: 2 mo'))).toBe(true);
+    expect(labels.some(l => l.includes('Nearest Gig: 4.5 mo'))).toBe(true);
     expect(labels.some(l => l.includes('Last Gig:'))).toBe(true);
     expect(labels.some(l => l.includes('Cooldown Expired'))).toBe(true);
 

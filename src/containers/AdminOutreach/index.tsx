@@ -1138,6 +1138,22 @@ export function AdminOutreach() {
                                     color="success"
                                     sx={{ fontSize: '0.7rem', height: 20, bgcolor: 'rgba(16, 185, 129, 0.03)' }}
                                   />
+                                  <Chip
+                                    icon={<LocalActivity sx={{ fontSize: '0.8rem !important' }} />}
+                                    label={`Gig interval: ${c.reason.gigIntervalMonths} mo`}
+                                    size="small"
+                                    variant="outlined"
+                                    sx={{ fontSize: '0.7rem', height: 20, bgcolor: 'rgba(0, 0, 0, 0.02)' }}
+                                  />
+                                  {c.reason.nearestGigMonthsAway !== null && (
+                                    <Chip
+                                      icon={<Event sx={{ fontSize: '0.8rem !important' }} />}
+                                      label={`Nearest Gig: ${c.reason.nearestGigMonthsAway} mo`}
+                                      size="small"
+                                      variant="outlined"
+                                      sx={{ fontSize: '0.7rem', height: 20, bgcolor: 'rgba(0, 0, 0, 0.02)' }}
+                                    />
+                                  )}
                                   {c.reason.lastGigDate && (
                                     <Chip
                                       icon={<History sx={{ fontSize: '0.8rem !important' }} />}
