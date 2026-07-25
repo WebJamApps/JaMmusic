@@ -49,7 +49,7 @@ describe('CreateGigDialog', () => {
       { _id: 'v2', name: 'Venue 2 NoWebsite', city: 'Raleigh', usState: 'North Carolina', status: 'active' },
       { _id: 'v3', name: 'Archived Venue', status: 'archived' },
     ]);
-    const createGigSpy = vi.spyOn(utils, 'createGig').mockResolvedValue();
+    const createGigSpy = vi.spyOn(utils, 'createGig').mockResolvedValue(true);
     const setShowDialog = vi.fn();
 
     render(
@@ -97,7 +97,7 @@ describe('CreateGigDialog', () => {
   it('handles new venue path (creation)', async () => {
     vi.spyOn(adminVenuesUtils, 'listVenues').mockResolvedValue([]);
     const createVenueSpy = vi.spyOn(adminVenuesUtils, 'createVenue').mockResolvedValue({ _id: 'new-venue-123' } as any);
-    const createGigSpy = vi.spyOn(utils, 'createGig').mockResolvedValue();
+    const createGigSpy = vi.spyOn(utils, 'createGig').mockResolvedValue(true);
     const setShowDialog = vi.fn();
 
     render(
@@ -144,7 +144,7 @@ describe('CreateGigDialog', () => {
 
   it('handles no venue path (one-off)', async () => {
     vi.spyOn(adminVenuesUtils, 'listVenues').mockResolvedValue([]);
-    const createGigSpy = vi.spyOn(utils, 'createGig').mockResolvedValue();
+    const createGigSpy = vi.spyOn(utils, 'createGig').mockResolvedValue(true);
     const setShowDialog = vi.fn();
 
     render(

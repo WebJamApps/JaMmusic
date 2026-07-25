@@ -10,6 +10,13 @@ export interface Icandidate {
   city?: string;
   venueType?: string;
   email?: string;
+  reason?: {
+    lastGigDate: string | null;
+    gigIntervalMonths: number;
+    nearestGigMonthsAway: number | null;
+    spacingNote: string;
+    resumeBookingExpired: boolean;
+  };
 }
 
 export interface IbatchSkip { venueId: string; reason: string }

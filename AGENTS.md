@@ -82,6 +82,8 @@ from a `<lane>/<issue#>-<slug>` branch.
   2. Start the local preview server: `npm run preview` (typically runs on `http://localhost:4173`)
   3. Run E2E tests pointing to the preview server: `BASE_URL=http://localhost:4173 npm run test:e2e`
 - **Draft PR Script Requirements**: The workspace `create-draft-pr.sh` script strictly requires the `--author`, `--summary`, `--test-plan`, and `--test-evidence` flags. Leaving any of these empty or as a default placeholder will cause the script to abort and refuse to open the draft PR.
+- **Vitest Unit Tests and Environment Variables**: Local unit tests depend on `process.env.userRoles` being defined. If `.env` is missing or does not contain `userRoles`, tests like `test/containers/Music/index.spec.tsx` will fail with `TypeError: Cannot read properties of undefined (reading '0')`. Always copy `.env.example` to `.env` in any new worktree before running `npm test`.
+
 
 ## Branch & memory hygiene
 
