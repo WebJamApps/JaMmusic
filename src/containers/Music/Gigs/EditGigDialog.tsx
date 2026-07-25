@@ -106,8 +106,10 @@ export function EditGigDialog(props: IeditGigDialogProps) {
         usState: '',
       };
 
-      await utils.updateGig(getGigs, setEditGig, setEditChanged, updatedGig, auth.token);
-      setShowDialog(false);
+      const success = await utils.updateGig(getGigs, setEditGig, setEditChanged, updatedGig, auth.token);
+      if (success) {
+        setShowDialog(false);
+      }
     } catch (err) {
       console.error('Failed to update gig:', err);
     }
