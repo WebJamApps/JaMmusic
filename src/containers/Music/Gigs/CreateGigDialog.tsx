@@ -62,7 +62,7 @@ export function CreateGigDialog({
         finalVenueId = newVenue._id;
       }
 
-      const success = await utils.createGig(
+      const result = await utils.createGig(
         getGigs,
         setShowDialog,
         dateTime,
@@ -75,7 +75,7 @@ export function CreateGigDialog({
         promoImageUrl,
         finalVenueId,
       );
-      if (success) {
+      if (result === 'success' || result === 'unconfirmed') {
         // Reset form states
         setVenue('');
         setSelectedVenue(null);
