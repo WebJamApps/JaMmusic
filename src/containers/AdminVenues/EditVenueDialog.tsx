@@ -214,8 +214,11 @@ export function EditVenueDialog({
     return () => clearTimeout(delayDebounceFn);
   }, [form.address, mapsLoaded, autocompleteService, form.country]);
 
+  const [notice, setNotice] = useState('');
+
   useEffect(() => {
     if (open) {
+      setNotice('');
       if (venue) {
         setForm({
           name: venue.name || '',
@@ -282,9 +285,20 @@ export function EditVenueDialog({
 
   const handleSave = async () => {
     if (!form.name || !form.name.trim()) { setError('Name is required'); return; }
-    if (!form.address || !form.address.trim()) { setError('Address is required'); return; }
 
     const isCreate = !venue;
+    const hadAddress = !!(venue && venue.address && venue.address.trim());
+    const addressTrimmed = form.address ? form.address.trim() : '';
+
+    if (isCreate && !addressTrimmed) {
+      setError('Street address is required');
+      return;
+    }
+    if (!isCreate && hadAddress && !addressTrimmed) {
+      setError("Address can't be removed — enter the corrected address");
+      return;
+    }
+
     if (existingVenues) {
       const isDuplicate = existingVenues.some(
         (v) => v.name.trim().toLowerCase() === form.name!.trim().toLowerCase() && (isCreate || v._id !== venue?._id)
@@ -339,7 +353,7 @@ export function EditVenueDialog({
     const finalForm: IvenueUpdate = {
       ...form,
       name: form.name.trim(),
-      address: form.address.trim(),
+      address: addressTrimmed,
       email: primaryEmail,
       secondaryEmail: secondaryEmail,
       venueType: form.venueType || undefined,
@@ -357,17 +371,26 @@ export function EditVenueDialog({
 
     setSubmitting(true);
     setError('');
+    setNotice('');
     try {
+      let savedVenue: Ivenue;
       if (venue) {
         // Edit mode
-        await adminVenuesUtils.updateVenue(token, venue._id, {
+        savedVenue = await adminVenuesUtils.updateVenue(token, venue._id, {
           ...finalForm,
         });
       } else {
         // Create mode
-        await adminVenuesUtils.createVenue(token, {
+        savedVenue = await adminVenuesUtils.createVenue(token, {
           ...finalForm,
         });
+      }
+      if (savedVenue && savedVenue.address !== undefined) {
+        setForm((f) => ({ ...f, address: savedVenue.address || '' }));
+      }
+      const rawRes = savedVenue as any;
+      if (rawRes?.notice || rawRes?.emailNotice) {
+        setNotice(rawRes.notice || rawRes.emailNotice);
       }
       onSaved();
     } catch (e) {
@@ -700,6 +723,7 @@ export function EditVenueDialog({
         <Help field="lastVerified" />
         <TextField label="Notes" fullWidth multiline rows={6} value={form.notes || ''} onChange={(e) => set('notes', e.target.value)}
           sx={{ marginTop: 2 }} data-testid="edit-venue-notes" />
+        {notice && <Typography color="info.main" sx={{ marginTop: 1 }} data-testid="edit-venue-notice">{notice}</Typography>}
         {error && <Typography color="error" sx={{ marginTop: 1 }} data-testid="edit-venue-error">{error}</Typography>}
       </DialogContent>
       <DialogActions>

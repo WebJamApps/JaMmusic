@@ -311,12 +311,54 @@ describe('EditVenueDialog', () => {
     confirmSpy.mockRestore();
   });
 
-  it('blocks save and shows an error when the address is empty', async () => {
-    const blankAddress: Ivenue = { ...venue, address: '' };
-    await act(async () => { render(<EditVenueDialog open venue={blankAddress} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />); });
+  it('blocks save and shows an error when creating a venue with empty address', async () => {
+    await act(async () => { render(<EditVenueDialog open venue={null} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />); });
+    await act(async () => { fireEvent.change(screen.getByTestId('edit-venue-name'), { target: { value: 'New Venue' } }); });
     await act(async () => { fireEvent.click(screen.getByTestId('edit-venue-save')); });
-    expect(screen.getByTestId('edit-venue-error').innerHTML).toBe('Address is required');
+    expect(screen.getByTestId('edit-venue-error').innerHTML).toBe('Street address is required');
+    expect(adminVenuesUtils.createVenue).not.toHaveBeenCalled();
+  });
+
+  it('blocks save and shows an error when clearing address on a venue that has one', async () => {
+    await act(async () => { render(<EditVenueDialog open venue={venue} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />); });
+    await act(async () => { fireEvent.change(screen.getByTestId('edit-venue-address'), { target: { value: '' } }); });
+    await act(async () => { fireEvent.click(screen.getByTestId('edit-venue-save')); });
+    expect(screen.getByTestId('edit-venue-error').innerHTML).toBe("Address can't be removed — enter the corrected address");
     expect(adminVenuesUtils.updateVenue).not.toHaveBeenCalled();
+  });
+
+  it('allows saving an existing venue that has no address with an empty address', async () => {
+    const legacyVenue: Ivenue = { ...venue, address: '' };
+    const onSaved = vi.fn();
+    await act(async () => { render(<EditVenueDialog open venue={legacyVenue} token="tk" onClose={vi.fn()} onSaved={onSaved} />); });
+    await act(async () => { fireEvent.click(screen.getByTestId('edit-venue-save')); });
+    expect(adminVenuesUtils.updateVenue).toHaveBeenCalledWith('tk', 'v1', expect.objectContaining({ address: '' }));
+    expect(onSaved).toHaveBeenCalled();
+  });
+
+  it('surfaces backend notice and server-returned normalized address on save', async () => {
+    const onSaved = vi.fn();
+    adminVenuesUtils.createVenue = vi.fn(() => Promise.resolve({
+      _id: 'v2',
+      name: 'Macados',
+      address: '100 N Main St',
+      notice: 'email also used by Macados Roanoke',
+    } as any)) as any;
+
+    await act(async () => { render(<EditVenueDialog open venue={null} token="tk" onClose={vi.fn()} onSaved={onSaved} />); });
+    await act(async () => {
+      fireEvent.change(screen.getByTestId('edit-venue-name'), { target: { value: 'Macados' } });
+      fireEvent.change(screen.getByTestId('edit-venue-address'), { target: { value: '100 North Main Street' } });
+      fireEvent.change(screen.getByTestId('edit-venue-state'), { target: { value: 'VA' } });
+    });
+    await act(async () => { fireEvent.click(screen.getByTestId('edit-venue-save')); });
+
+    expect(adminVenuesUtils.createVenue).toHaveBeenCalledWith('tk', expect.objectContaining({
+      name: 'Macados',
+      address: '100 North Main Street',
+    }));
+    expect(screen.getByTestId('edit-venue-notice').innerHTML).toBe('email also used by Macados Roanoke');
+    expect(onSaved).toHaveBeenCalled();
   });
 
   describe('Google Places Autocomplete', () => {
