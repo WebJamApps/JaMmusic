@@ -100,6 +100,33 @@ describe('AdminOutreach', () => {
     expect(screen.getByTestId('outreach-candidates').textContent).toContain('1 of 2');
   });
 
+  it('loads candidates carrying a +/- 2-month conflict warning as unchecked', async () => {
+    const mockFetch = vi.fn().mockImplementation((url: string) => {
+      if (url.includes('/gig')) {
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve([
+            { datetime: '2026-09-01T20:00:00.000Z', venue: 'Venue A' },
+          ]),
+        });
+      }
+      return Promise.resolve({ ok: true, json: () => Promise.resolve([]) });
+    });
+    vi.stubGlobal('fetch', mockFetch);
+
+    await renderPage();
+    typeDates();
+    await act(async () => { fireEvent.click(screen.getByTestId('outreach-load')); });
+
+    expect(screen.getByTestId('outreach-candidates').textContent).toContain('1 of 2');
+    const cbA = screen.getByRole('checkbox', { name: /Venue A/i });
+    const cbB = screen.getByRole('checkbox', { name: /Venue B/i });
+    expect(cbA).not.toBeChecked();
+    expect(cbB).toBeChecked();
+
+    vi.unstubAllGlobals();
+  });
+
   it('renders qualification reasons next to checkbox when provided', async () => {
     await renderPage();
     typeDates();
