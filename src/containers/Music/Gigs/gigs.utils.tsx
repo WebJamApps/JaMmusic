@@ -7,6 +7,8 @@ import type { Iauth } from 'src/providers/Auth.provider';
 import type { Igig } from 'src/providers/Data.provider';
 import { defaultGig } from 'src/providers/fetchGigs';
 
+export type GigOpResult = 'success' | 'error' | 'unconfirmed';
+
 // eslint-disable-next-line max-len
 const usStateOptions = ['Alabama', 'Alaska', 'American Samoa', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'District of Columbia', 'Federated States of Micronesia', 'Florida', 'Georgia', 'Guam', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Marshall Islands', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Northern Mariana Islands', 'Ohio', 'Oklahoma', 'Oregon', 'Palau', 'Pennsylvania', 'Puerto Rico', 'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virgin Island', 'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'];
 
@@ -22,38 +24,70 @@ const createGig = async (
   duration: number,
   promoImageUrl: string,
   venueId?: string | null,
-): Promise<boolean> => {
+): Promise<GigOpResult> => {
+  let socket: scc.AGClientSocket | undefined;
   try {
     const { token } = auth;
     const gig = {
       datetime, venue, tickets, city, usState, duration, promoImageUrl, artist: 'josh', venueId: venueId || undefined,
     };
-    const socket = scc.create({
+    socket = scc.create({
       hostname: process.env.SCS_HOST,
       port: Number(process.env.SCS_PORT),
       autoConnect: true,
       secure: process.env.SOCKETCLUSTER_SECURE !== 'false',
     });
+
+    const errorConsumer = socket.receiver('socketError').createConsumer();
+    const successConsumer = socket.subscribe('gigCreated').createConsumer();
+
     socket.transmit('newGig', { gig, token });
-    const waitForError = async (): Promise<string | undefined> => {
-      const { value } = await socket.receiver('socketError').createConsumer().next();
-      return (value as { newGig?: string } | undefined)?.newGig;
+
+    const waitForError = async (): Promise<{ kind: 'error'; message: string }> => {
+      const { value } = await errorConsumer.next();
+      const msg = (value as { newGig?: string; message?: string } | undefined)?.newGig
+        || (value as { message?: string } | undefined)?.message;
+      return { kind: 'error', message: msg || 'Unknown error' };
     };
-    const errorMessage = await Promise.race<string | undefined>([
+
+    // Note: Success channels are broadcast and don't include an op correlation ID;
+    // the consumer treats the next broadcast as this op's result.
+    const waitForSuccess = async (): Promise<{ kind: 'success' }> => {
+      await successConsumer.next();
+      return { kind: 'success' };
+    };
+
+    const waitForTimeout = async (): Promise<{ kind: 'timeout' }> => {
+      await commonUtils.delay(5);
+      return { kind: 'timeout' };
+    };
+
+    const result = await Promise.race([
       waitForError(),
-      commonUtils.delay(2) as Promise<string | undefined>,
+      waitForSuccess(),
+      waitForTimeout(),
     ]);
-    socket.disconnect();
-    if (errorMessage) {
-      commonUtils.notify('Error creating gig', errorMessage, 'danger');
-      return false;
+
+    if (result.kind === 'error') {
+      commonUtils.notify('Error creating gig', result.message, 'danger');
+      return 'error';
     }
+
+    if (result.kind === 'success') {
+      setShowDialog(false);
+      getGigs();
+      return 'success';
+    }
+
     setShowDialog(false);
     getGigs();
-    return true;
+    commonUtils.notify('Create gig', "Couldn't confirm — list refreshed", 'info');
+    return 'unconfirmed';
   } catch (err) {
     commonUtils.notify('Error creating gig', (err as Error).message, 'danger');
-    return false;
+    return 'error';
+  } finally {
+    if (socket) socket.disconnect();
   }
 };
 
@@ -63,7 +97,8 @@ const updateGig = async (
   setEditChanged: (arg0: boolean) => void,
   editGig: typeof defaultGig,
   token: string,
-): Promise<boolean> => {
+): Promise<GigOpResult> => {
+  let socket: scc.AGClientSocket | undefined;
   try {
     const gig: Igig = { ...editGig, artist: 'josh' };
     delete gig.date;
@@ -73,33 +108,65 @@ const updateGig = async (
     if (gig.venueId && typeof gig.venueId === 'object') {
       gig.venueId = gig.venueId._id;
     }
-    const socket = scc.create({
+    socket = scc.create({
       hostname: process.env.SCS_HOST,
       port: Number(process.env.SCS_PORT),
       autoConnect: true,
       secure: process.env.SOCKETCLUSTER_SECURE !== 'false',
     });
+
+    const errorConsumer = socket.receiver('socketError').createConsumer();
+    const successConsumer = socket.subscribe('gigUpdated').createConsumer();
+
     socket.transmit('editGig', { gigId: editGig._id, gig, token });
-    const waitForError = async (): Promise<string | undefined> => {
-      const { value } = await socket.receiver('socketError').createConsumer().next();
-      return (value as { editGig?: string } | undefined)?.editGig;
+
+    const waitForError = async (): Promise<{ kind: 'error'; message: string }> => {
+      const { value } = await errorConsumer.next();
+      const msg = (value as { editGig?: string; message?: string } | undefined)?.editGig
+        || (value as { message?: string } | undefined)?.message;
+      return { kind: 'error', message: msg || 'Unknown error' };
     };
-    const errorMessage = await Promise.race<string | undefined>([
+
+    // Note: Success channels are broadcast and don't include an op correlation ID;
+    // the consumer treats the next broadcast as this op's result.
+    const waitForSuccess = async (): Promise<{ kind: 'success' }> => {
+      await successConsumer.next();
+      return { kind: 'success' };
+    };
+
+    const waitForTimeout = async (): Promise<{ kind: 'timeout' }> => {
+      await commonUtils.delay(5);
+      return { kind: 'timeout' };
+    };
+
+    const result = await Promise.race([
       waitForError(),
-      commonUtils.delay(2) as Promise<string | undefined>,
+      waitForSuccess(),
+      waitForTimeout(),
     ]);
-    socket.disconnect();
-    if (errorMessage) {
-      commonUtils.notify('Error updating gig', errorMessage, 'danger');
-      return false;
+
+    if (result.kind === 'error') {
+      commonUtils.notify('Error updating gig', result.message, 'danger');
+      return 'error';
     }
+
+    if (result.kind === 'success') {
+      setEditGig(defaultGig);
+      setEditChanged(false);
+      getGigs();
+      return 'success';
+    }
+
     setEditGig(defaultGig);
     setEditChanged(false);
     getGigs();
-    return true;
+    commonUtils.notify('Update gig', "Couldn't confirm — list refreshed", 'info');
+    return 'unconfirmed';
   } catch (err) {
     commonUtils.notify('Error updating gig', (err as Error).message, 'danger');
-    return false;
+    return 'error';
+  } finally {
+    if (socket) socket.disconnect();
   }
 };
 
@@ -163,40 +230,74 @@ async function deleteGig(
   setEditGig: (arg0: typeof defaultGig) => void,
   setEditChanged: (arg0: boolean) => void,
   token: string,
-): Promise<boolean> { // eslint-disable-next-line no-restricted-globals
+): Promise<GigOpResult> { // eslint-disable-next-line no-restricted-globals
   const result = confirm('Deleting Gig, are you sure?');// eslint-disable-line no-alert
   if (result) {
+    let socket: scc.AGClientSocket | undefined;
     try {
-      const socket = scc.create({
+      socket = scc.create({
         hostname: process.env.SCS_HOST,
         port: Number(process.env.SCS_PORT),
         autoConnect: true,
         secure: process.env.SOCKETCLUSTER_SECURE !== 'false',
       });
       const gig = { gigId };
+
+      const errorConsumer = socket.receiver('socketError').createConsumer();
+      const successConsumer = socket.subscribe('gigDeleted').createConsumer();
+
       socket.transmit('deleteGig', { gig, token });
-      const waitForError = async (): Promise<string | undefined> => {
-        const { value } = await socket.receiver('socketError').createConsumer().next();
-        return (value as { deleteGig?: string } | undefined)?.deleteGig;
+
+      const waitForError = async (): Promise<{ kind: 'error'; message: string }> => {
+        const { value } = await errorConsumer.next();
+        const msg = (value as { deleteGig?: string; message?: string } | undefined)?.deleteGig
+          || (value as { message?: string } | undefined)?.message;
+        return { kind: 'error', message: msg || 'Unknown error' };
       };
-      const errorMessage = await Promise.race<string | undefined>([
+
+      // Note: Success channels are broadcast and don't include an op correlation ID;
+      // the consumer treats the next broadcast as this op's result.
+      const waitForSuccess = async (): Promise<{ kind: 'success' }> => {
+        await successConsumer.next();
+        return { kind: 'success' };
+      };
+
+      const waitForTimeout = async (): Promise<{ kind: 'timeout' }> => {
+        await commonUtils.delay(5);
+        return { kind: 'timeout' };
+      };
+
+      const res = await Promise.race([
         waitForError(),
-        commonUtils.delay(2) as Promise<string | undefined>,
+        waitForSuccess(),
+        waitForTimeout(),
       ]);
-      socket.disconnect();
-      if (errorMessage) {
-        commonUtils.notify('Error deleting gig', errorMessage, 'danger');
-        return false;
+
+      if (res.kind === 'error') {
+        commonUtils.notify('Error deleting gig', res.message, 'danger');
+        return 'error';
       }
+
+      if (res.kind === 'success') {
+        setEditGig(defaultGig);
+        setEditChanged(false);
+        getGigs();
+        return 'success';
+      }
+
       setEditGig(defaultGig);
       setEditChanged(false);
       getGigs();
-      return true;
+      commonUtils.notify('Delete gig', "Couldn't confirm — list refreshed", 'info');
+      return 'unconfirmed';
     } catch (err) {
       commonUtils.notify('Error deleting gig', (err as Error).message, 'danger');
-      return false;
+      return 'error';
+    } finally {
+      if (socket) socket.disconnect();
     }
-  } return false;
+  }
+  return 'error';
 }
 
 export const orderGigs = (

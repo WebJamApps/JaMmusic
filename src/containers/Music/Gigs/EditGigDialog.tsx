@@ -106,8 +106,8 @@ export function EditGigDialog(props: IeditGigDialogProps) {
         usState: '',
       };
 
-      const success = await utils.updateGig(getGigs, setEditGig, setEditChanged, updatedGig, auth.token);
-      if (success) {
+      const result = await utils.updateGig(getGigs, setEditGig, setEditChanged, updatedGig, auth.token);
+      if (result === 'success' || result === 'unconfirmed') {
         setShowDialog(false);
       }
     } catch (err) {
@@ -345,9 +345,12 @@ export function EditGigDialog(props: IeditGigDialogProps) {
           size="small"
           className="deleteGigButton"
           sx={{ color: 'red' }}
-          onClick={() => {
+          onClick={async () => {
             setEditChanged(false);
-            utils.deleteGig(editGig._id || '', getGigs, setEditGig, setEditChanged, auth.token);
+            const result = await utils.deleteGig(editGig._id || '', getGigs, setEditGig, setEditChanged, auth.token);
+            if (result === 'success' || result === 'unconfirmed') {
+              setShowDialog(false);
+            }
           }}
         >
           Delete
