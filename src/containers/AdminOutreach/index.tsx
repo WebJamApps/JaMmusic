@@ -325,7 +325,10 @@ export function AdminOutreach() {
       });
 
       setCandidates(availableCandidates);
-      setSelected(new Set(availableCandidates.map((c) => c._id)));
+      const conflictFreeCandidates = availableCandidates.filter(
+        (c) => checkWeekendGigs(c.name, structuredDate).length === 0,
+      );
+      setSelected(new Set(conflictFreeCandidates.map((c) => c._id)));
     } catch (e) {
       setError((e as { message?: string }).message || 'Failed to load candidates');
     } finally {
