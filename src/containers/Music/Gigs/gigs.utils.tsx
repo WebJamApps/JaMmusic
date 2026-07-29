@@ -366,6 +366,36 @@ const makeVenueValue = (value: string) => {
   return <div>{parsed}</div>;
 };
 
+export const normalizeUrl = (url: string): string => {
+  const trimmed = url.trim();
+  if (!trimmed) return '';
+  if (/^[a-zA-Z][a-zA-Z0-9+.-]*:\/\//.test(trimmed)) {
+    return trimmed;
+  }
+  return `https://${trimmed}`;
+};
+
+export const normalizeTextForComparison = (text?: string): string => {
+  if (!text) return '';
+  return text
+    .replace(/<[^>]*>/g, '')
+    .replace(/&nbsp;/gi, ' ')
+    .replace(/&amp;/gi, '&')
+    .replace(/&quot;/gi, '"')
+    .replace(/&#39;|&apos;/gi, "'")
+    .replace(/\s+/g, ' ')
+    .trim()
+    .toLowerCase();
+};
+
+export const isFreeTextRenderable = (venue?: string, linkedName?: string): boolean => {
+  if (!venue || venue === '<p></p>' || venue.trim() === '') return false;
+  const normalizedFreeText = normalizeTextForComparison(venue);
+  if (!normalizedFreeText) return false;
+  const normalizedVenueName = normalizeTextForComparison(linkedName);
+  return normalizedFreeText !== normalizedVenueName;
+};
+
 const renderVenueCell = (params: GridRenderCellParams) => {
   const row = params?.row;
   if (!row) {
@@ -376,22 +406,21 @@ const renderVenueCell = (params: GridRenderCellParams) => {
     return <span className="ourPastPerformances">{HtmlReactParser(venue)}</span>;
   }
   if (venueId && typeof venueId === 'object') {
-    const { name, city, usState, website } = venueId;
-    const resolvedLink = website ? (
-      <a href={website} target="_blank" rel="noopener" style={{ fontWeight: 'bold', textDecoration: 'underline' }}>
+    const { name, website } = venueId;
+    const hrefUrl = website ? normalizeUrl(website) : '';
+    const resolvedLink = hrefUrl ? (
+      <a href={hrefUrl} target="_blank" rel="noopener" style={{ fontWeight: 'bold', textDecoration: 'underline' }}>
         {name}
       </a>
     ) : (
       <span style={{ fontWeight: 'bold' }}>{name}</span>
     );
-    const locationStr = `${city || ''}, ${usState || ''}`.trim().replace(/^,\s*|,\s*$/g, '');
     return (
       <div>
         <div>
           {resolvedLink}
-          {locationStr ? ` - ${locationStr}` : ''}
         </div>
-        {venue && venue !== '<p></p>' && venue.trim() !== '' && (
+        {isFreeTextRenderable(venue, name) && (
           <div style={{ fontSize: '0.875rem', marginTop: '4px', opacity: 0.9 }}>
             {HtmlReactParser(venue)}
           </div>
@@ -429,4 +458,8 @@ export default {
   deleteGig,
   orderGigs,
   usStateOptions,
+  normalizeUrl,
+  normalizeTextForComparison,
+  isFreeTextRenderable,
+  renderVenueCell,
 };

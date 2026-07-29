@@ -88,6 +88,7 @@ from a `<lane>/<issue#>-<slug>` branch.
   typed as `number`. Comparing a numeric state variable against string empty (`form.gigInterval !== ''`) will cause a compilation error
   `TS2367: This comparison appears to be unintentional because the types 'number' and 'string' have no overlap.` Ensure you check
   `typeof form.field === 'number'` or keep form states properly type-separated.
+- **Testing Library Jest-DOM Import**: In Vitest unit tests using DOM element matchers such as `toHaveAttribute`, `toBeInTheDocument`, or `toHaveTextContent`, always include `import '@testing-library/jest-dom';` at the top of the spec file to extend Vitest's `expect` matchers.
 
 ## Branch & memory hygiene
 
