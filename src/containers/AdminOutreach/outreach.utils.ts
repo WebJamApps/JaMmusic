@@ -19,7 +19,7 @@ export interface Icandidate {
   };
 }
 
-export interface IbatchSkip { venueId: string; reason: string }
+export interface IbatchSkip { venueId: string; venueName: string; reason: string }
 export interface IbatchResult {
   requested: number;
   sent: number;
