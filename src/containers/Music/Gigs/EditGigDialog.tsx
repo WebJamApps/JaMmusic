@@ -102,8 +102,7 @@ export function EditGigDialog(props: IeditGigDialogProps) {
       const updatedGig = {
         ...editGig,
         venueId: finalVenueId,
-        city: '',
-        usState: '',
+        ...(finalVenueId ? { city: '', usState: '' } : {}),
       };
 
       const result = await utils.updateGig(getGigs, setEditGig, setEditChanged, updatedGig, auth.token);
