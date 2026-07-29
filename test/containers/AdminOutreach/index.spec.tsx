@@ -176,14 +176,20 @@ describe('AdminOutreach', () => {
 
   it('renders skip reasons in the result', async () => {
     outreachUtils.sendBatch = vi.fn(() => Promise.resolve({
-      requested: 2, sent: 1, skipped: [{ venueId: 'c2', reason: 'not outreach-eligible' }], records: [],
+      requested: 2,
+      sent: 1,
+      skipped: [{ venueId: 'c2', venueName: 'Venue B', reason: 'not outreach-eligible' }],
+      records: [],
     })) as any;
     await renderPage();
     typeDates();
     await act(async () => { fireEvent.click(screen.getByTestId('outreach-load')); });
     await act(async () => { fireEvent.click(screen.getByTestId('outreach-open-dialog')); });
     await act(async () => { fireEvent.click(screen.getByTestId('outreach-dialog-send')); });
-    expect(screen.getByTestId('outreach-result').textContent).toContain('not outreach-eligible');
+    const resultText = screen.getByTestId('outreach-result').textContent;
+    expect(resultText).toContain('Venue B');
+    expect(resultText).toContain('not outreach-eligible');
+    expect(resultText).toContain('c2');
   });
 
   it('shows an error when loading candidates fails', async () => {

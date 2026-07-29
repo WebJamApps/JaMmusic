@@ -1221,7 +1221,10 @@ export function AdminOutreach() {
               </Typography>
               {result.skipped.map((s) => (
                 <Typography key={s.venueId} variant="caption" sx={{ display: 'block', color: 'text.secondary' }}>
-                  {s.venueId}: {s.reason}
+                  <Box component="span" sx={{ fontWeight: 'bold', color: 'text.primary' }}>{s.venueName}</Box>
+                  {': '}{s.reason}
+                  {' '}
+                  <Box component="span" sx={{ color: 'text.secondary' }}>({s.venueId})</Box>
                 </Typography>
               ))}
             </Box>
