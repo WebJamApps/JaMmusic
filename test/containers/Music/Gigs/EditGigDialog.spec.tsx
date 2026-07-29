@@ -106,6 +106,8 @@ describe('EditGigDialog', () => {
       expect.any(Function),
       expect.objectContaining({
         venueId: 'v2',
+        city: '',
+        usState: '',
       }),
       'tk',
     ));
@@ -164,6 +166,8 @@ describe('EditGigDialog', () => {
       expect.any(Function),
       expect.objectContaining({
         venueId: 'new-venue-123',
+        city: '',
+        usState: '',
       }),
       'tk',
     ));
@@ -206,6 +210,97 @@ describe('EditGigDialog', () => {
       expect.any(Function),
       expect.objectContaining({
         venueId: undefined,
+      }),
+      'tk',
+    ));
+  });
+
+  it('preserves city and usState when saving a one-off (no venueId) gig', async () => {
+    vi.spyOn(adminVenuesUtils, 'listVenues').mockResolvedValue(activeVenues);
+    const updateSpy = vi.spyOn(utils, 'updateGig').mockResolvedValue('success');
+
+    const editGig = {
+      _id: 'gig123',
+      datetime: new Date('2025-01-01T12:00:00Z'),
+      venue: 'Some Venue',
+      city: 'Austin',
+      usState: 'Texas',
+    } as any;
+
+    render(
+      <EditGigDialog
+        editGig={editGig}
+        setEditGig={vi.fn()}
+        setShowDialog={vi.fn()}
+        setEditChanged={vi.fn()}
+        editChanged={true}
+        getGigs={vi.fn()}
+        auth={{ token: 'tk' } as any}
+      />,
+    );
+
+    await waitFor(() => expect(screen.getByLabelText('No Venue (One-off)')).toBeInTheDocument());
+
+    // Click Update directly (starts on No Venue path)
+    fireEvent.click(screen.getByRole('button', { name: /update/i }));
+
+    await waitFor(() => expect(updateSpy).toHaveBeenCalledWith(
+      expect.any(Function),
+      expect.any(Function),
+      expect.any(Function),
+      expect.objectContaining({
+        venueId: undefined,
+        city: 'Austin',
+        usState: 'Texas',
+      }),
+      'tk',
+    ));
+  });
+
+  it('blanks city and usState when switching an existing one-off gig to a real venue during edit', async () => {
+    vi.spyOn(adminVenuesUtils, 'listVenues').mockResolvedValue(activeVenues);
+    const updateSpy = vi.spyOn(utils, 'updateGig').mockResolvedValue('success');
+
+    const editGig = {
+      _id: 'gig123',
+      datetime: new Date('2025-01-01T12:00:00Z'),
+      venue: '',
+      city: 'Austin',
+      usState: 'Texas',
+    } as any;
+
+    render(
+      <EditGigDialog
+        editGig={editGig}
+        setEditGig={vi.fn()}
+        setShowDialog={vi.fn()}
+        setEditChanged={vi.fn()}
+        editChanged={true}
+        getGigs={vi.fn()}
+        auth={{ token: 'tk' } as any}
+      />,
+    );
+
+    await waitFor(() => expect(screen.getByLabelText('Pick Existing Venue')).toBeInTheDocument());
+
+    // Switch path from No Venue to Pick Existing Venue
+    fireEvent.click(screen.getByLabelText('Pick Existing Venue'));
+
+    // Select v1 venue
+    const select = screen.getByTestId('mock-autocomplete');
+    fireEvent.change(select, { target: { value: 'v1' } });
+
+    // Click Update
+    fireEvent.click(screen.getByRole('button', { name: /update/i }));
+
+    await waitFor(() => expect(updateSpy).toHaveBeenCalledWith(
+      expect.any(Function),
+      expect.any(Function),
+      expect.any(Function),
+      expect.objectContaining({
+        venueId: 'v1',
+        city: '',
+        usState: '',
       }),
       'tk',
     ));
