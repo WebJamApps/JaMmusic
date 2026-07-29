@@ -1,3 +1,5 @@
+import { render, screen } from '@testing-library/react';
+import '@testing-library/jest-dom';
 import scc from 'socketcluster-client';
 import utils from 'src/containers/Music/Gigs/gigs.utils';
 import commonUtils from 'src/lib/utils';
@@ -412,5 +414,123 @@ describe('gigs.utils', () => {
       },
     } as any);
     expect(cellFallback.type).toBe('div');
+  });
+
+  describe('normalizeUrl', () => {
+    it('prefixes https:// when URL has no scheme', () => {
+      expect(utils.normalizeUrl('www.petedyerivercourse.com')).toBe('https://www.petedyerivercourse.com');
+      expect(utils.normalizeUrl('petedyerivercourse.com')).toBe('https://petedyerivercourse.com');
+    });
+
+    it('preserves existing http:// and https:// schemes', () => {
+      expect(utils.normalizeUrl('http://www.petedyerivercourse.com')).toBe('http://www.petedyerivercourse.com');
+      expect(utils.normalizeUrl('https://www.petedyerivercourse.com')).toBe('https://www.petedyerivercourse.com');
+    });
+
+    it('handles empty and whitespace strings', () => {
+      expect(utils.normalizeUrl('')).toBe('');
+      expect(utils.normalizeUrl('   ')).toBe('');
+    });
+  });
+
+  describe('isFreeTextRenderable', () => {
+    it('returns false when free-text venue merely restates linked venue name', () => {
+      const freeText = '<a href="http://old.com">Pete Dye River Course</a>';
+      expect(utils.isFreeTextRenderable(freeText, 'Pete Dye River Course')).toBe(false);
+    });
+
+    it('returns false when free-text differs only in whitespace, HTML tags, or case', () => {
+      expect(utils.isFreeTextRenderable('<p>  PETE DYE RIVER COURSE </p>', 'Pete Dye River Course')).toBe(false);
+    });
+
+    it('returns true when free-text holds genuinely different extra info', () => {
+      expect(utils.isFreeTextRenderable('<p>Patio Stage (Outdoors)</p>', 'Pete Dye River Course')).toBe(true);
+    });
+
+    it('returns false for empty, whitespace, or empty HTML paragraph free-text', () => {
+      expect(utils.isFreeTextRenderable('', 'Pete Dye River Course')).toBe(false);
+      expect(utils.isFreeTextRenderable('<p></p>', 'Pete Dye River Course')).toBe(false);
+      expect(utils.isFreeTextRenderable('   ', 'Pete Dye River Course')).toBe(false);
+    });
+  });
+
+  describe('renderVenueCell detailed behavior (Defects 1-4)', () => {
+    it('renders a venue link with normalized https:// href for schemeless website, without trailing city/state (Defects 1 & 3)', () => {
+      const renderCell = utils.makeVenue().renderCell as any;
+      const cell = renderCell({
+        row: {
+          venue: '<a href="http://old.com">Pete Dye River Course</a>',
+          venueId: {
+            name: 'Pete Dye River Course',
+            city: 'Radford',
+            usState: 'VA',
+            website: 'www.petedyerivercourse.com',
+          },
+        },
+      });
+
+      render(cell);
+      const link = screen.getByRole('link', { name: 'Pete Dye River Course' });
+      expect(link).toHaveAttribute('href', 'https://www.petedyerivercourse.com');
+      expect(screen.queryByText(/- Radford, VA/i)).toBeNull();
+    });
+
+    it('renders venue name once when free-text merely restates linked venue name (Defect 4)', () => {
+      const renderCell = utils.makeVenue().renderCell as any;
+      const cell = renderCell({
+        row: {
+          venue: '<a href="http://old.com">Pete Dye River Course</a>',
+          venueId: {
+            name: 'Pete Dye River Course',
+            city: 'Radford',
+            usState: 'VA',
+            website: 'https://www.petedyerivercourse.com',
+          },
+        },
+      });
+
+      render(cell);
+      const links = screen.getAllByRole('link');
+      expect(links).toHaveLength(1);
+      expect(links[0]).toHaveTextContent('Pete Dye River Course');
+    });
+
+    it('renders extra info block when free-text carries genuinely different info (Defect 4)', () => {
+      const renderCell = utils.makeVenue().renderCell as any;
+      const cell = renderCell({
+        row: {
+          venue: 'Side Stage / Patio',
+          venueId: {
+            name: 'Pete Dye River Course',
+            city: 'Radford',
+            usState: 'VA',
+            website: 'https://www.petedyerivercourse.com',
+          },
+        },
+      });
+
+      render(cell);
+      expect(screen.getByRole('link', { name: 'Pete Dye River Course' })).toBeInTheDocument();
+      expect(screen.getByText('Side Stage / Patio')).toBeInTheDocument();
+    });
+
+    it('renders bold name without anchor link when venue has no website (Defect 1 & no website)', () => {
+      const renderCell = utils.makeVenue().renderCell as any;
+      const cell = renderCell({
+        row: {
+          venue: '',
+          venueId: {
+            name: 'Salem Farmers Market',
+            city: 'Salem',
+            usState: 'VA',
+          },
+        },
+      });
+
+      render(cell);
+      expect(screen.queryByRole('link')).toBeNull();
+      expect(screen.getByText('Salem Farmers Market')).toBeInTheDocument();
+      expect(screen.queryByText(/- Salem, VA/i)).toBeNull();
+    });
   });
 });

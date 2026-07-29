@@ -58,6 +58,14 @@
   color: var(--fg);
 }
 
+.MuiDataGrid-root .MuiDataGrid-cell a {
+  color: var(--nav-link);
+
+  &:hover {
+    color: var(--nav-link-hover);
+  }
+}
+
 .MuiDataGrid-root .MuiDataGrid-row:hover {
   background-color: var(--sidebar-hover-bg);
 }
