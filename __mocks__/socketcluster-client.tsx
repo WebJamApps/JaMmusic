@@ -5,6 +5,9 @@ export const create = (options: any): any => {
   return {
     subscribe: () => ({ createConsumer: () => ({ next: () => Promise.resolve({ value: 1, done: true }) }) }),
     receiver: () => ({ createConsumer: () => ({ next: () => Promise.resolve({ value: 'connected', done: true }) }) }),
+    // Default mock never signals a connection failure, so the data path always
+    // wins the race in socketClusterMessages.tsx unless a test overrides this.
+    listener: () => ({ createConsumer: () => ({ next: () => new Promise(() => { /* never resolves */ }) }) }),
     transmit: () => { },
     disconnect: () => {},
   };
