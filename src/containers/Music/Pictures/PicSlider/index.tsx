@@ -17,7 +17,26 @@ export interface Isettings {
 }
 
 export const SliderContent = ({ pics, settings }: { pics: Ipic[] | null, settings:Isettings }) => {
-  if (!Array.isArray(pics)) return null;
+  if (pics === null) {
+    return (
+      <div
+        className="pics-error-message"
+        style={{
+          color: '#ffffff',
+          textAlign: 'center',
+          padding: '40px 20px',
+          background: 'black',
+          height: '100%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        Unable to load photos from the server. Please refresh or try again shortly.
+      </div>
+    );
+  }
+  if (!Array.isArray(pics) || pics.length === 0) return null;
   return (
     <div className="picSlider">
       <Slider {...settings}>

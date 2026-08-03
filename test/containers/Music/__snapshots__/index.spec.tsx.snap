@@ -59,7 +59,14 @@ exports[`/music > renders the component 1`] = `
       <div
         id="musicSlide1"
         style="height: 500px; background-color: black; width: 100%; position: relative; overflow: hidden;"
-      />
+      >
+        <div
+          class="pics-error-message"
+          style="color: rgb(255, 255, 255); text-align: center; padding: 40px 20px; background: black; height: 100%; display: flex; align-items: center; justify-content: center;"
+        >
+          Unable to load photos from the server. Please refresh or try again shortly.
+        </div>
+      </div>
       <div
         class="intro"
         style="margin: auto; max-width: 900px; padding: 6px 16px 0px;"
@@ -186,9 +193,10 @@ exports[`/music > renders the component 1`] = `
           </button>
         </h4>
         <div
-          style="height: 500px; width: 100%;"
+          class="gigs-error-message"
+          style="color: rgb(211, 47, 47); text-align: center; padding: 20px 10px; background-color: rgb(253, 232, 232); border-radius: 4px; margin: 10px 0px;"
         >
-          <table />
+          Unable to load gig schedule from the server. Please refresh or try again shortly.
         </div>
         <div
           class="createNewGigDialog"
