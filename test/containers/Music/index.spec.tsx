@@ -50,12 +50,17 @@ describe('/music', () => {
     expect(window.open).not.toHaveBeenCalled();
   });
   it('checkIsAdmin when true', () => {
-    const setIsAdmin = vi.fn();
-    const userRoles = process.env.userRoles || '{}';
-    const { roles } = JSON.parse(userRoles);
-    const auth: any = { isAuthenticated: true, user: { userType: roles[0] } };
-    checkIsAdmin(auth, setIsAdmin);
-    expect(setIsAdmin).toHaveBeenCalledWith(true);
+    const origUserRoles = process.env.userRoles;
+    process.env.userRoles = process.env.userRoles || JSON.stringify({ roles: ['admin'] });
+    try {
+      const setIsAdmin = vi.fn();
+      const { roles } = JSON.parse(process.env.userRoles);
+      const auth: any = { isAuthenticated: true, user: { userType: roles[0] } };
+      checkIsAdmin(auth, setIsAdmin);
+      expect(setIsAdmin).toHaveBeenCalledWith(true);
+    } finally {
+      process.env.userRoles = origUserRoles;
+    }
   });
   it('renders PhotosSection when showEditPicTable is true', () => {
     const props = {
