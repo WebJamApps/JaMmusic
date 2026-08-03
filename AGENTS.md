@@ -90,6 +90,7 @@ from a `<lane>/<issue#>-<slug>` branch.
   `TS2367: This comparison appears to be unintentional because the types 'number' and 'string' have no overlap.` Ensure you check
   `typeof form.field === 'number'` or keep form states properly type-separated.
 - **Testing Library Jest-DOM Import**: In Vitest unit tests using DOM element matchers such as `toHaveAttribute`, `toBeInTheDocument`, or `toHaveTextContent`, always include `import '@testing-library/jest-dom';` at the top of the spec file to extend Vitest's `expect` matchers.
+- **Date Formatting & Timezone Mismatch in Vitest Snapshots**: React date inputs and localized date string components render local time strings (e.g. `GMT-0500 Eastern Standard Time`) when snapshots are updated locally. On CircleCI Linux runners operating in `UTC` (`GMT+0000`), timezone mismatches break unit test assertions. Always run snapshot updates with `npm run test:unit-u` (or `TZ=UTC npx vitest run -u`) so snapshot outputs align with CI.
 
 ## Branch & memory hygiene
 
