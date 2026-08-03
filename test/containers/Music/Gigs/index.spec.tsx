@@ -49,6 +49,44 @@ describe('Gigs', () => {
     fireEvent.click(bookUsButton);
     expect(window.open).toHaveBeenCalledWith('https://web-jam.com/music/bookus');
   });
+  it('renders error message when gigsInOrder is null', () => {
+    const props = {
+      isAdmin: false,
+      setShowDialog: vi.fn(),
+      setEditGig: vi.fn(),
+      editGig: {} as any,
+      gigsInOrder: null,
+      pageSize: 5,
+      showDialog: false,
+      editChanged: false,
+      setEditChanged: vi.fn(),
+      getGigs: vi.fn(),
+      auth: {} as any,
+      setPageSize: vi.fn(),
+    };
+    const { container } = render(<BrowserRouter><GigsDiv {...props} /></BrowserRouter>);
+    expect(container.querySelector('.gigs-error-message')).toBeInTheDocument();
+    expect(container.querySelector('[data-testid="mock-data-grid"]')).not.toBeInTheDocument();
+  });
+  it('renders DataGrid when gigsInOrder is empty array', () => {
+    const props = {
+      isAdmin: false,
+      setShowDialog: vi.fn(),
+      setEditGig: vi.fn(),
+      editGig: {} as any,
+      gigsInOrder: [],
+      pageSize: 5,
+      showDialog: false,
+      editChanged: false,
+      setEditChanged: vi.fn(),
+      getGigs: vi.fn(),
+      auth: {} as any,
+      setPageSize: vi.fn(),
+    };
+    const { container } = render(<BrowserRouter><GigsDiv {...props} /></BrowserRouter>);
+    expect(container.querySelector('.gigs-error-message')).not.toBeInTheDocument();
+    expect(container.querySelector('[data-testid="mock-data-grid"]')).toBeInTheDocument();
+  });
   it('renders ShowCreateGigButton and handles click', () => {
     const props = { isAdmin: true, setShowDialog: vi.fn() };
     render(<ShowCreateGigButton {...props} />);

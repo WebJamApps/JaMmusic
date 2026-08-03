@@ -29,4 +29,13 @@ describe('picture slider component test', () => {
     const { container } = render(<SliderContent pics={data} settings={settings} />);
     expect(container.querySelector('.slick-list')).toBeInTheDocument();
   });
+  it('renders error message when pics is null', () => {
+    const { container } = render(<SliderContent pics={null} settings={settings} />);
+    expect(container.querySelector('.pics-error-message')).toBeInTheDocument();
+  });
+  it('renders null when pics is empty array', () => {
+    const { container } = render(<SliderContent pics={[]} settings={settings} />);
+    expect(container.querySelector('.pics-error-message')).not.toBeInTheDocument();
+    expect(container.querySelector('.picSlider')).not.toBeInTheDocument();
+  });
 });

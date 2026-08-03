@@ -139,21 +139,37 @@ export const GigsDiv = (props: IgigsDivProps) => {
         <Button variant="contained" className="bookUsButton" onClick={handleClick}>Book Us</Button>
         <ShowCreateGigButton isAdmin={isAdmin} setShowDialog={setShowDialog} />
       </h4>
-      <div style={{ height: '500px', width: '100%' }}>
-        <DataGrid
-          className={isAdmin ? 'adminGrid' : ''}
-          getRowHeight={() => 'auto'}
-          onRowClick={(rowParams) => {
-            utils.clickToEdit(setEditGig, isAdmin, rowParams.row);
+      {gigsInOrder === null ? (
+        <div
+          className="gigs-error-message"
+          style={{
+            color: '#d32f2f',
+            textAlign: 'center',
+            padding: '20px 10px',
+            backgroundColor: '#fde8e8',
+            borderRadius: '4px',
+            margin: '10px 0',
           }}
-          rows={gigsInOrder || []}
-          columns={makeColumns(isMobile)}
-          paginationModel={{ page, pageSize }}
-          onPaginationModelChange={(model) => { setPage(model.page); setPageSize(model.pageSize); }}
-          pageSizeOptions={[5, 10, 25, 50]}
-          disableRowSelectionOnClick
-        />
-      </div>
+        >
+          Unable to load gig schedule from the server. Please refresh or try again shortly.
+        </div>
+      ) : (
+        <div style={{ height: '500px', width: '100%' }}>
+          <DataGrid
+            className={isAdmin ? 'adminGrid' : ''}
+            getRowHeight={() => 'auto'}
+            onRowClick={(rowParams) => {
+              utils.clickToEdit(setEditGig, isAdmin, rowParams.row);
+            }}
+            rows={gigsInOrder || []}
+            columns={makeColumns(isMobile)}
+            paginationModel={{ page, pageSize }}
+            onPaginationModelChange={(model) => { setPage(model.page); setPageSize(model.pageSize); }}
+            pageSizeOptions={[5, 10, 25, 50]}
+            disableRowSelectionOnClick
+          />
+        </div>
+      )}
       <CreateGigDialog showDialog={showDialog} setShowDialog={setShowDialog} />
       <EditGigDialog
         editGig={editGig}
