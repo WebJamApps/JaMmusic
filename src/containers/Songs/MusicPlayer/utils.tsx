@@ -57,7 +57,15 @@ function initSongs(
 ) {
   const { setSongsState, setIndex, setIsSingle } = setters;
   const id = searchParams.get('id');
-  const newSongs = typeof id === 'string' ? songs : songs.filter((song: { category?: string }) => song.category === category);
+  const newSongs = typeof id === 'string' && id.length > 0
+    ? [...songs]
+    : songs.filter((song: { category?: string }) => song.category === category);
+  newSongs.sort((a, b) => {
+    const orderA = typeof a.orderBy === 'number' ? a.orderBy : 0;
+    const orderB = typeof b.orderBy === 'number' ? b.orderBy : 0;
+    if (orderB !== orderA) return orderB - orderA;
+    return (b.year || 0) - (a.year || 0);
+  });
   setSongsState(newSongs);
   if (typeof id === 'string') {
     setIsSingle(true);
