@@ -24,9 +24,9 @@ describe('Songs', () => {
   });
   it('renders Player', async () => {
     const songs: any = [{
-      category: 'original', title: 'a', year: 12, url: 'https://test1.com', artist: 'Artist A',
+      category: 'original', title: 'a', year: 12, url: 'https://test1.com', artist: 'Artist A', orderBy: 2,
     }, {
-      category: 'original', title: 'b', year: 13, url: 'https://test2.com', artist: 'Artist B',
+      category: 'original', title: 'b', year: 13, url: 'https://test2.com', artist: 'Artist B', orderBy: 1,
     }] as Isong[];
     const editDialogState = { setShowEditDialog: vi.fn(), showEditDialog: false };
     render(<BrowserRouter><Player songs={songs} editDialogState={editDialogState} /></BrowserRouter>);

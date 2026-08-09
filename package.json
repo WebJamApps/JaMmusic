@@ -1,6 +1,6 @@
 {
   "name": "jammusic",
-  "version": "2.19.5",
+  "version": "2.19.11",
   "description": "joshandmariamusic.com",
   "main": "dist/index.html",
   "repository": {
@@ -9,7 +9,7 @@
   },
   "author": "https://github.com/orgs/WebJamApps/teams/handlersandkickers",
   "engines": {
-    "node": "24.18.0"
+    "node": "24.18.1"
   },
   "files": [
     "vite.config.ts",
@@ -76,7 +76,7 @@
     "react-dom": "^19.2.6",
     "react-redux": "^9.3.0",
     "react-router": "^8.3.0",
-    "react-router-dom": "^7.18.1",
+    "react-router-dom": "^7.18.2",
     "react-slick": "^0.31.0",
     "react-toastify": "^11.1.0",
     "redux": "^5.0.1",

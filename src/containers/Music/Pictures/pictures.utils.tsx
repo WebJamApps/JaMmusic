@@ -22,10 +22,22 @@ const createPic = async (
       secure: process.env.SOCKETCLUSTER_SECURE !== 'false',
     });
     socket.transmit('newImage', { image, token });
+    const waitForError = async (): Promise<string | undefined> => {
+      const { value } = await socket.receiver('socketError').createConsumer().next();
+      return (value as { newImage?: string } | undefined)?.newImage;
+    };
+    const errorMessage = await Promise.race<string | undefined>([
+      waitForError(),
+      commonUtils.delay(2) as Promise<string | undefined>,
+    ]);
+    socket.disconnect();
+    if (errorMessage) {
+      commonUtils.notify('Error creating picture', errorMessage, 'danger');
+      return;
+    }
     setShowDialog(false);
-    await commonUtils.delay(2);
     getPics();
-  } catch (err) { console.log((err as Error).message); }
+  } catch (err) { commonUtils.notify('Error creating picture', (err as Error).message, 'danger'); }
 };
 
 const updatePic = async (
@@ -46,12 +58,27 @@ const updatePic = async (
       secure: process.env.SOCKETCLUSTER_SECURE !== 'false',
     });
     socket.transmit('editImage', { editPic, token });
-    await commonUtils.delay(2);
+    const waitForError = async (): Promise<string | undefined> => {
+      const { value } = await socket.receiver('socketError').createConsumer().next();
+      return (value as { editImage?: string } | undefined)?.editImage;
+    };
+    const errorMessage = await Promise.race<string | undefined>([
+      waitForError(),
+      commonUtils.delay(2) as Promise<string | undefined>,
+    ]);
+    socket.disconnect();
     setIsSubmitting(false);
+    if (errorMessage) {
+      commonUtils.notify('Error updating picture', errorMessage, 'danger');
+      return;
+    }
     setEditPic(defaultPic);
     getPics();
     setShowTable(false);
-  } catch (err) { console.log((err as Error).message); }
+  } catch (err) {
+    setIsSubmitting(false);
+    commonUtils.notify('Error updating picture', (err as Error).message, 'danger');
+  }
 };
 
 async function deletePic(

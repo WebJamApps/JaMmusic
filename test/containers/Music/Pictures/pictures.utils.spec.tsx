@@ -6,34 +6,87 @@ describe('pictures.utils', () => {
   it('createPic successfully', async () => {
     commonUtils.delay = jest.fn();
     const transmit = jest.fn();
-    const createMock:any = jest.fn(() => ({ transmit }));
+    const disconnect = jest.fn();
+    const next = jest.fn(() => new Promise(() => { /* never resolves: no socketError sent */ }));
+    const receiver = jest.fn(() => ({ createConsumer: () => ({ next }) }));
+    const createMock: any = jest.fn(() => ({ transmit, receiver, disconnect }));
     scc.create = createMock;
     const getPics = jest.fn();
-    await utils.createPic(getPics, jest.fn(), {}, { token: 'token' } as any);
+    const setShowDialog = jest.fn();
+    await utils.createPic(getPics, setShowDialog, {}, { token: 'token' } as any);
     expect(getPics).toHaveBeenCalled();
+    expect(setShowDialog).toHaveBeenCalledWith(false);
+    expect(disconnect).toHaveBeenCalled();
   });
-  it('createPic catches error', async () => {
-    commonUtils.delay = jest.fn();
+  it('createPic surfaces a backend socketError (#643)', async () => {
+    commonUtils.delay = jest.fn(() => new Promise(() => { /* never resolves */ }));
+    commonUtils.notify = jest.fn();
+    const transmit = jest.fn();
+    const disconnect = jest.fn();
+    const next = jest.fn(() => Promise.resolve({ value: { newImage: 'Failed to create image' }, done: true }));
+    const receiver = jest.fn(() => ({ createConsumer: () => ({ next }) }));
+    const createMock: any = jest.fn(() => ({ transmit, receiver, disconnect }));
+    scc.create = createMock;
+    const getPics = jest.fn();
+    const setShowDialog = jest.fn();
+    await utils.createPic(getPics, setShowDialog, {}, { token: 'token' } as any);
+    expect(commonUtils.notify).toHaveBeenCalledWith('Error creating picture', 'Failed to create image', 'danger');
+    expect(getPics).not.toHaveBeenCalled();
+    expect(setShowDialog).not.toHaveBeenCalled();
+    expect(disconnect).toHaveBeenCalled();
+  });
+  it('createPic catches exception', async () => {
+    commonUtils.notify = jest.fn();
     const transmit = jest.fn(() => { throw new Error('failed'); });
-    const createMock:any = jest.fn(() => ({ transmit }));
+    const createMock: any = jest.fn(() => ({ transmit }));
     scc.create = createMock;
     const getPics = jest.fn();
     await utils.createPic(getPics, jest.fn(), {}, { token: 'token' } as any);
     expect(getPics).not.toHaveBeenCalled();
+    expect(commonUtils.notify).toHaveBeenCalledWith('Error creating picture', 'failed', 'danger');
   });
   it('updates pic successfully', async () => {
+    commonUtils.delay = jest.fn();
     const getPics = jest.fn();
     const editPic = {
       title: '', comments: '', url: '', type: '', _id: undefined,
     };
     const setIsSubmitting = jest.fn();
+    const setShowTable = jest.fn();
     const transmit = jest.fn();
-    const updateMock: any = jest.fn(() => ({ transmit }));
+    const disconnect = jest.fn();
+    const next = jest.fn(() => new Promise(() => { /* never resolves */ }));
+    const receiver = jest.fn(() => ({ createConsumer: () => ({ next }) }));
+    const updateMock: any = jest.fn(() => ({ transmit, receiver, disconnect }));
     scc.create = updateMock;
-    await utils.updatePic(editPic, { token: 'token' } as any, getPics, jest.fn(), jest.fn(), setIsSubmitting);
+    await utils.updatePic(editPic, { token: 'token' } as any, getPics, jest.fn(), setShowTable, setIsSubmitting);
     expect(getPics).toHaveBeenCalled();
+    expect(setShowTable).toHaveBeenCalledWith(false);
+    expect(disconnect).toHaveBeenCalled();
   });
-  it('updatePic catches error', async () => {
+  it('updatePic surfaces a backend socketError (#643)', async () => {
+    commonUtils.delay = jest.fn(() => new Promise(() => { /* never resolves */ }));
+    commonUtils.notify = jest.fn();
+    const getPics = jest.fn();
+    const editPic = {
+      title: '', comments: '', url: '', type: '', _id: undefined,
+    };
+    const setIsSubmitting = jest.fn();
+    const setShowTable = jest.fn();
+    const transmit = jest.fn();
+    const disconnect = jest.fn();
+    const next = jest.fn(() => Promise.resolve({ value: { editImage: 'Failed to update image' }, done: true }));
+    const receiver = jest.fn(() => ({ createConsumer: () => ({ next }) }));
+    const updateMock: any = jest.fn(() => ({ transmit, receiver, disconnect }));
+    scc.create = updateMock;
+    await utils.updatePic(editPic, { token: 'token' } as any, getPics, jest.fn(), setShowTable, setIsSubmitting);
+    expect(commonUtils.notify).toHaveBeenCalledWith('Error updating picture', 'Failed to update image', 'danger');
+    expect(getPics).not.toHaveBeenCalled();
+    expect(setShowTable).not.toHaveBeenCalledWith(false);
+    expect(disconnect).toHaveBeenCalled();
+  });
+  it('updatePic catches exception', async () => {
+    commonUtils.notify = jest.fn();
     const transmit = jest.fn(() => { throw new Error('failed'); });
     const updateMock: any = jest.fn(() => ({ transmit }));
     scc.create = updateMock;
@@ -44,6 +97,7 @@ describe('pictures.utils', () => {
     const setIsSubmitting = jest.fn();
     await utils.updatePic(editPic, { token: 'token' } as any, getPics, jest.fn(), jest.fn(), setIsSubmitting);
     expect(getPics).not.toHaveBeenCalled();
+    expect(commonUtils.notify).toHaveBeenCalledWith('Error updating picture', 'failed', 'danger');
   });
   it('deletes pic successfully', async () => {
     commonUtils.delay = jest.fn();

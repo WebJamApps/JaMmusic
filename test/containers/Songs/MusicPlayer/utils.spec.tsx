@@ -118,4 +118,19 @@ describe('MusicPlayer/utils', () => {
     utils.initSongs(songs, category, search, setters);
     expect(setters.setIsSingle).toHaveBeenCalledWith(true);
   });
+  it('sorts songs by orderBy descending in initSongs', () => {
+    const search: any = { get: () => null };
+    const songs = [
+      { category: 'rock', _id: '1', title: 'Low Priority', year: 2020, orderBy: 1, url: 'https://test1.com' },
+      { category: 'rock', _id: '2', title: 'High Priority', year: 2018, orderBy: 10, url: 'https://test2.com' },
+      { category: 'rock', _id: '3', title: 'Medium Priority', year: 2022, orderBy: 5, url: 'https://test3.com' },
+    ] as Isong[];
+    const setters = { setSongsState: vi.fn(), setIndex: vi.fn(), setIsSingle: vi.fn() };
+    utils.initSongs(songs, 'rock', search, setters);
+    expect(setters.setSongsState).toHaveBeenCalledWith([
+      expect.objectContaining({ _id: '2', title: 'High Priority' }),
+      expect.objectContaining({ _id: '3', title: 'Medium Priority' }),
+      expect.objectContaining({ _id: '1', title: 'Low Priority' }),
+    ]);
+  });
 });
