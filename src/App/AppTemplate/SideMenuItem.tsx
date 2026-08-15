@@ -52,10 +52,12 @@ export const ContinueMenuItem = (props: IcontinueMenuItemProps): React.JSX.Eleme
   const {
     menu, index, auth, pathname, handleClose,
   } = props;
-  if (pathname.includes('/music') && (menu.link.includes('/music'))) {
+  const link = menu.link || '';
+  const isMusicPath = pathname.includes('/music') || pathname.includes('/setlist');
+  if (isMusicPath && link.includes('/music')) {
     return <MakeLink menu={menu} index={index} type="Link" handleClose={handleClose} />;
   }
-  if (menu.type === 'link' && !menu.link.includes('/music/') && !pathname.includes('/music')) {
+  if (menu.type === 'link' && !link.includes('/music/') && !isMusicPath) {
     return <MakeLink menu={menu} index={index} type="Link" handleClose={handleClose} />;
   }
   if (menu.type === 'googleLogin' && !auth.isAuthenticated && pathname === '/') {
