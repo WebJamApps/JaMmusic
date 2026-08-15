@@ -17,6 +17,7 @@ import {
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { AuthContext } from 'src/providers/Auth.provider';
+import { customFetch } from 'src/lib/fetch.utils';
 import adminVenuesUtils, { type Ivenue } from 'src/containers/AdminVenues/admin-venues.utils';
 import outreachUtils, {
   type Icandidate, type IbatchResult, type IpitchPreview, type IpendingReply,
@@ -155,7 +156,7 @@ export function AdminOutreach() {
 
   const loadGigs = useCallback(async () => {
     try {
-      const res = await fetch(`${process.env.BackendUrl}/gig?artist=josh`, {
+      const res = await customFetch(`${process.env.BackendUrl}/gig?artist=josh`, {
         headers: { Authorization: `Bearer ${auth.token}` },
       });
       if (res.ok) {

@@ -1,4 +1,5 @@
 import { getAllowedAdminRoles } from '../AdminUsers/admin-users.utils';
+import { customFetch } from 'src/lib/fetch.utils';
 
 export interface Itemplate {
   _id?: string;
@@ -29,19 +30,19 @@ async function listTemplates(token: string, filters?: { type?: string; stage?: s
     if (filters.active !== undefined) params.set('active', String(filters.active));
   }
   const qs = params.toString() ? `?${params.toString()}` : '';
-  const res = await fetch(`${templateBaseUrl}${qs}`, { headers: headers(token) });
+  const res = await customFetch(`${templateBaseUrl}${qs}`, { headers: headers(token) });
   if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
   return await res.json() as Itemplate[];
 }
 
 async function getTemplate(token: string, id: string): Promise<Itemplate> {
-  const res = await fetch(`${templateBaseUrl}/${id}`, { headers: headers(token) });
+  const res = await customFetch(`${templateBaseUrl}/${id}`, { headers: headers(token) });
   if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
   return await res.json() as Itemplate;
 }
 
 async function createTemplate(token: string, payload: Partial<Itemplate> & { photoData?: string }): Promise<Itemplate> {
-  const res = await fetch(templateBaseUrl, {
+  const res = await customFetch(templateBaseUrl, {
     method: 'POST',
     headers: headers(token, true),
     body: JSON.stringify(payload),
@@ -51,7 +52,7 @@ async function createTemplate(token: string, payload: Partial<Itemplate> & { pho
 }
 
 async function updateTemplate(token: string, id: string, payload: Partial<Itemplate> & { photoData?: string }): Promise<Itemplate> {
-  const res = await fetch(`${templateBaseUrl}/${id}`, {
+  const res = await customFetch(`${templateBaseUrl}/${id}`, {
     method: 'PUT',
     headers: headers(token, true),
     body: JSON.stringify(payload),
@@ -61,7 +62,7 @@ async function updateTemplate(token: string, id: string, payload: Partial<Itempl
 }
 
 async function deleteTemplate(token: string, id: string): Promise<void> {
-  const res = await fetch(`${templateBaseUrl}/${id}`, {
+  const res = await customFetch(`${templateBaseUrl}/${id}`, {
     method: 'DELETE',
     headers: headers(token),
   });
@@ -69,7 +70,7 @@ async function deleteTemplate(token: string, id: string): Promise<void> {
 }
 
 async function getTemplateAssetUrl(token: string, ref: string): Promise<string> {
-  const res = await fetch(`${templateBaseUrl}/assets/${ref}`, {
+  const res = await customFetch(`${templateBaseUrl}/assets/${ref}`, {
     headers: headers(token),
   });
   if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);

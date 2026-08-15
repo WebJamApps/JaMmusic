@@ -2,7 +2,7 @@ import { render } from '@testing-library/react';
 import jwt from 'jwt-simple';
 
 import {
-  Iauth, defaultSetAuth, AuthProvider,
+  Iauth, defaultSetAuth, defaultAuth, AuthProvider,
   configAuth, expiredAuthReset,
 } from 'src/providers/Auth.provider';
 import {
@@ -38,6 +38,15 @@ describe('AuthProvider', () => {
     };
 
     Object.defineProperty(window, 'localStorage', { value: localStorageMock });
+  });
+  beforeEach(() => {
+    store = {};
+    window.localStorage.setItem = (key: string, value: string) => {
+      store[key] = value;
+    };
+    window.localStorage.removeItem = (key: string) => {
+      delete store[key];
+    };
   });
   afterAll(() => {
     Object.defineProperty(window, 'localStorage', { value: ls });
@@ -109,6 +118,65 @@ describe('AuthProvider', () => {
     it('returns null when there is no token or the value is garbage', () => {
       expect(expiredAuthReset(JSON.stringify({ token: '' }))).toBeNull();
       expect(expiredAuthReset('not-json')).toBeNull();
+    });
+  });
+
+  describe('global 401 and auth:logout handling', () => {
+    const now = () => Math.floor(Date.now() / 1000);
+
+    it('resets auth when receiving an auth:logout window event', () => {
+      window.localStorage.setItem('auth', JSON.stringify({
+        token: 'xyz', error: '', isAuthenticated: true, user: { userType: 'admin', email: 'a@b.c' },
+      }));
+      const { unmount } = render(<AuthProvider><div data-testid="child" /></AuthProvider>);
+      window.dispatchEvent(new CustomEvent('auth:logout'));
+      expect(window.localStorage.getItem('auth')).toBeDefined();
+      unmount();
+    });
+
+    it('setUserAuth resets to defaultAuth on 401 response with unexpired token', async () => {
+      const token = jwt.encode({ sub: 'user123', iat: now(), exp: now() + 86400 }, 'secret');
+      const setAuthType = jest.fn();
+      global.fetch = vi.fn().mockResolvedValue(new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 }));
+
+      const { setUserAuth } = await import('src/providers/Auth.provider');
+      await setUserAuth(token, 'user123', setAuthType, 'setAuth');
+
+      expect(setAuthType).toHaveBeenCalledWith(defaultAuth);
+    });
+
+    it('setUserAuth sets auth when response is 200 OK', async () => {
+      const token = jwt.encode({ sub: 'user123', iat: now(), exp: now() + 86400 }, 'secret');
+      const setAuthType = jest.fn();
+      const userData = { email: 'test@example.com', userType: 'JaM-admin' };
+      global.fetch = vi.fn().mockResolvedValue(new Response(JSON.stringify(userData), { status: 200 }));
+
+      const { setUserAuth } = await import('src/providers/Auth.provider');
+      await setUserAuth(token, 'user123', setAuthType, 'setAuth');
+
+      expect(setAuthType).toHaveBeenCalledWith({
+        error: '',
+        isAuthenticated: true,
+        token: token,
+        user: userData,
+      });
+    });
+
+    it('setUserAuth sets auth string when type is setAuthString', async () => {
+      const token = jwt.encode({ sub: 'user123', iat: now(), exp: now() + 86400 }, 'secret');
+      const setAuthType = jest.fn();
+      const userData = { email: 'test@example.com', userType: 'JaM-admin' };
+      global.fetch = vi.fn().mockResolvedValue(new Response(JSON.stringify(userData), { status: 200 }));
+
+      const { setUserAuth } = await import('src/providers/Auth.provider');
+      await setUserAuth(token, 'user123', setAuthType, 'setAuthString');
+
+      expect(setAuthType).toHaveBeenCalledWith(JSON.stringify({
+        error: '',
+        isAuthenticated: true,
+        token: token,
+        user: userData,
+      }));
     });
   });
 });

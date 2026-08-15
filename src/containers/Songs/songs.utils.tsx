@@ -2,6 +2,7 @@ import React from 'react';
 import type { Iauth } from 'src/providers/Auth.provider';
 import type { Isong } from 'src/providers/Data.provider';
 import commonUtils from 'src/lib/utils';
+import { customFetch } from 'src/lib/fetch.utils';
 
 export const defaultSong = {
   url: '',
@@ -23,7 +24,7 @@ const createSong = async (
 ) => {
   try {
     const { token } = auth;
-    const res = await fetch(`${process.env.BackendUrl}/song`, {
+    const res = await customFetch(`${process.env.BackendUrl}/song`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -47,7 +48,7 @@ const updateSong = async (
 ) => {
   try {
     const { token } = auth;
-    const res = await fetch(`${process.env.BackendUrl}/song/${song._id}`, {
+    const res = await customFetch(`${process.env.BackendUrl}/song/${song._id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -72,7 +73,7 @@ const deleteSong = async (
   if (!confirm(`Delete "${song.title}"? This cannot be undone.`)) return;
   try {
     const { token } = auth;
-    const res = await fetch(`${process.env.BackendUrl}/song/${song._id}`, {
+    const res = await customFetch(`${process.env.BackendUrl}/song/${song._id}`, {
       method: 'DELETE',
       headers: { Authorization: `Bearer ${token}` },
     });

@@ -109,6 +109,18 @@ describe('AdminVenues utils', () => {
     await expect(call()).rejects.toThrow('500');
   });
 
+  it('triggers auth:logout event on 401 response', async () => {
+    const dispatchSpy = vi.spyOn(window, 'dispatchEvent');
+    fetchMock.mockReturnValue(Promise.resolve({
+      ok: false,
+      status: 401,
+      statusText: 'Unauthorized',
+      json: () => Promise.resolve({ message: 'Token invalid' }),
+    } as Response));
+    await expect(adminVenuesUtils.listVenues('bad-tok')).rejects.toThrow('Token invalid');
+    expect(dispatchSpy).toHaveBeenCalledWith(expect.objectContaining({ type: 'auth:logout' }));
+  });
+
   it('parses and throws JSON error messages from the backend', async () => {
     const jsonErrorResponse = Promise.resolve({
       ok: false,
