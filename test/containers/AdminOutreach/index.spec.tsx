@@ -837,6 +837,13 @@ describe('AdminOutreach', () => {
 
       expect(window.scrollTo).toHaveBeenCalled();
     });
+
+    it('loadGigs handles 401 and errors gracefully', async () => {
+      const dispatchSpy = vi.spyOn(window, 'dispatchEvent');
+      global.fetch = vi.fn().mockResolvedValue(new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 }));
+      await renderPage();
+      expect(dispatchSpy).toHaveBeenCalledWith(expect.objectContaining({ type: 'auth:logout' }));
+    });
   });
 });
 

@@ -1,3 +1,5 @@
+import { customFetch } from 'src/lib/fetch.utils';
+
 export interface IadminUser {
   _id: string;
   name: string;
@@ -14,7 +16,7 @@ export interface IadminUser {
 const baseUrl = `${process.env.BackendUrl}/admin/user`;
 
 async function listUsers(token: string): Promise<IadminUser[]> {
-  const res = await fetch(baseUrl, {
+  const res = await customFetch(baseUrl, {
     headers: {
       Accept: 'application/json',
       Authorization: `Bearer ${token}`,
@@ -28,7 +30,7 @@ async function createUser(
   token: string,
   payload: { name: string; email: string; userType?: string; userStatus?: string; privileges?: string[]; userDetails?: string },
 ): Promise<IadminUser> {
-  const res = await fetch(baseUrl, {
+  const res = await customFetch(baseUrl, {
     method: 'POST',
     headers: {
       Accept: 'application/json',
@@ -49,7 +51,7 @@ async function updateUser(
     name?: string; email?: string; userDetails?: string;
   },
 ): Promise<IadminUser> {
-  const res = await fetch(`${baseUrl}/${userId}`, {
+  const res = await customFetch(`${baseUrl}/${userId}`, {
     method: 'PUT',
     headers: {
       Accept: 'application/json',
@@ -63,7 +65,7 @@ async function updateUser(
 }
 
 async function mintToken(token: string, userId: string): Promise<string> {
-  const res = await fetch(`${baseUrl}/${userId}/token`, {
+  const res = await customFetch(`${baseUrl}/${userId}/token`, {
     method: 'POST',
     headers: {
       Accept: 'application/json',
@@ -78,7 +80,7 @@ async function mintToken(token: string, userId: string): Promise<string> {
 }
 
 async function deleteUser(token: string, userId: string): Promise<void> {
-  const res = await fetch(`${baseUrl}/${userId}`, {
+  const res = await customFetch(`${baseUrl}/${userId}`, {
     method: 'DELETE',
     headers: {
       Accept: 'application/json',

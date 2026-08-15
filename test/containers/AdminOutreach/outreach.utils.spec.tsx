@@ -109,7 +109,7 @@ describe('Outreach utils', () => {
     expect(fetchMock.mock.calls[0][0]).toMatch(/\/outreach$/);
   });
 
-  it.each([
+    it.each([
     ['getCandidates', () => outreachUtils.getCandidates('t', 'd')],
     ['sendBatch', () => outreachUtils.sendBatch('t', { venueIds: ['a'], targetDates: 'd', targetWeekend: { start: 's', end: 'e' } })],
     ['getConfig', () => outreachUtils.getConfig('t')],
@@ -123,5 +123,12 @@ describe('Outreach utils', () => {
   ])('%s throws on a non-ok response', async (_name, call) => {
     fetchMock.mockReturnValue(failed());
     await expect(call()).rejects.toThrow('500');
+  });
+
+  it('triggers auth:logout event on 401 response', async () => {
+    const dispatchSpy = vi.spyOn(window, 'dispatchEvent');
+    fetchMock.mockReturnValue(Promise.resolve({ ok: false, status: 401, statusText: 'Unauthorized' } as Response));
+    await expect(outreachUtils.getCandidates('bad-tok')).rejects.toThrow('401');
+    expect(dispatchSpy).toHaveBeenCalledWith(expect.objectContaining({ type: 'auth:logout' }));
   });
 });

@@ -1,5 +1,6 @@
 import type { Iauth } from 'src/providers/Auth.provider';
 import commonUtils from 'src/lib/utils';
+import { customFetch } from 'src/lib/fetch.utils';
 
 // The WebJamLLC Facebook Page id. web-jam-back serves multiple pages keyed by
 // pageId (web-jam-back#799); JaMmusic always asks for this one.
@@ -50,7 +51,7 @@ function loadFbSdk(): void {
 // function — the Facebook SDK rejects an async callback.
 async function sendPageToken(userToken: string, auth: Iauth, pageId: string): Promise<void> {
   try {
-    const res = await fetch(`${process.env.BackendUrl}/facebook/token`, {
+    const res = await customFetch(`${process.env.BackendUrl}/facebook/token`, {
       method: 'PUT',
       headers: {
         Authorization: `Bearer ${auth.token}`,

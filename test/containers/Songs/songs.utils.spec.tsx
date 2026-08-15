@@ -110,4 +110,11 @@ describe('songs utils', () => {
     await utils.deleteSong(vi.fn(), vi.fn(), delSong, delAuth);
     expect(commonUtils.notify).toHaveBeenCalled();
   });
+  it('triggers auth:logout event on 401 response during createSong', async () => {
+    const dispatchSpy = vi.spyOn(window, 'dispatchEvent');
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: false, status: 401, statusText: 'Unauthorized' }));
+    commonUtils.notify = vi.fn();
+    await utils.createSong(vi.fn(), vi.fn(), { artist: '', category: '1', title: 'a', year: 12, url: 'u' }, vi.fn(), delAuth);
+    expect(dispatchSpy).toHaveBeenCalledWith(expect.objectContaining({ type: 'auth:logout' }));
+  });
 });

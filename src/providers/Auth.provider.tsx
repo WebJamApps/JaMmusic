@@ -3,6 +3,7 @@ import React, {
 } from 'react';
 import { usePersistedState } from 'src/lib/usePersistedState';
 import { isTokenExpired, getTokenSub } from 'src/lib/tokenExpiry';
+import { customFetch } from 'src/lib/fetch.utils';
 
 export interface Iauth {
   isAuthenticated: boolean,
@@ -45,7 +46,7 @@ export const setUserAuth = async (
   type: 'setAuth' | 'setAuthString',
 ) => {
   try {
-    const res = await fetch(`${process.env.BackendUrl}/user/${userId}`, {
+    const res = await customFetch(`${process.env.BackendUrl}/user/${userId}`, {
       headers: {
         Accept: 'application/json',
         Authorization: `Bearer ${token}`,
@@ -96,6 +97,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }): React
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  // Listen for global auth:logout events dispatched on 401 Unauthorized responses (JaMmusic#1296).
+  useEffect(() => {
+    const handleLogout = () => {
+      (setAuthString as React.Dispatch<React.SetStateAction<string>>)(JSON.stringify(defaultAuth));
+    };
+    window.addEventListener('auth:logout', handleLogout);
+    return () => window.removeEventListener('auth:logout', handleLogout);
+  }, [setAuthString]);
   // Proactively log out the moment the token's exp passes — not only on reload
   // (JaMmusic#1121). Runs immediately and every minute while the app is open.
   useEffect(() => {
