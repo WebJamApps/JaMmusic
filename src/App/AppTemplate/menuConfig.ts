@@ -13,6 +13,9 @@ const jamNav = [
     nav: 'jam', className: 'songs', type: 'link', iconClass: 'far fa-lightbulb', link: 'https://web-jam.com/music/songs', name: 'Songs',
   },
   {
+    nav: 'jam', className: 'setlist', type: 'link', iconClass: 'fas fa-list-ol', link: 'https://web-jam.com/music/setlist', name: 'Setlist',
+  },
+  {
     nav: 'jam', className: 'bookus', type: 'link', iconClass: 'far fa-calendar-alt', link: 'https://web-jam.com/music/bookus', name: 'Book Us',
   },
   {
@@ -41,6 +44,9 @@ const wjNav = [
   },
   {
     nav: 'wj', className: 'songs', type: 'link', iconClass: 'far fa-lightbulb', link: '/music/songs', name: 'Songs',
+  },
+  {
+    nav: 'wj', className: 'setlist', type: 'link', iconClass: 'fas fa-list-ol', link: '/music/setlist', name: 'Setlist',
   },
   {
     nav: 'wj', className: 'bookus', type: 'link', iconClass: 'far fa-calendar-alt', link: '/music/bookus', name: 'Book Us',

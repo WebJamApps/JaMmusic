@@ -13,6 +13,7 @@ import { AppTemplate } from './AppTemplate';
 import { Songs } from '../containers/Songs';
 import { BookUs } from '../containers/BookUs';
 import { Tipjar } from '../containers/Tipjar';
+import { Setlist } from '../containers/Setlist';
 
 export function checkAppName() {
   return process.env.APP_NAME === 'web-jam.com'
@@ -39,6 +40,8 @@ export function App() {
           <Route path="/music/songs" element={<Songs />} />
           <Route path="/music/bookus" element={<BookUs />} />
           <Route path="/music/tipjar" element={<Tipjar />} />
+          <Route path="/music/setlist" element={<Setlist />} />
+          <Route path="/setlist" element={<Setlist />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </AppTemplate>

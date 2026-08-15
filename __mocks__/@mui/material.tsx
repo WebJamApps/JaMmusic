@@ -154,7 +154,8 @@ export function Typography(props:any) {
 }
 
 export function Chip(props:any) {
-  return <span {...props} />;
+  const { label, children } = props;
+  return <span {...props}>{label}{children}</span>;
 }
 
 export function Table(props:any) {
