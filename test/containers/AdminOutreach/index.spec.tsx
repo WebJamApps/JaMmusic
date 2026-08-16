@@ -838,6 +838,52 @@ describe('AdminOutreach', () => {
       expect(window.scrollTo).toHaveBeenCalled();
     });
 
+    it('renders Google Maps link for never pitched and ineligible venues when address is present', async () => {
+      const mockVenuesListWithAddress = [
+        {
+          _id: 'v-addr-pitched',
+          name: 'Pitched Place',
+          address: '100 Main St',
+          city: 'Salem',
+          usState: 'VA',
+          outreachEligible: false,
+          bookingStatus: 'booked',
+        },
+        {
+          _id: 'v-addr-never',
+          name: 'Never Pitched Place',
+          address: '200 Market St',
+          city: 'Roanoke',
+          usState: 'VA',
+          email: 'v@never.com',
+          outreachEligible: true,
+        },
+      ];
+      outreachUtils.getPendingReplies = vi.fn().mockResolvedValue([]);
+      adminVenuesUtils.listVenues = vi.fn().mockResolvedValue(mockVenuesListWithAddress);
+      await renderPage();
+
+      // Expand "Never Pitched" accordion
+      const neverPitchedAccordion = screen.getByText(/Never Pitched \(1\)/);
+      await act(async () => {
+        fireEvent.click(neverPitchedAccordion);
+      });
+
+      const mapsLinkNever = screen.getByRole('link', { name: 'Open Never Pitched Place in Google Maps' });
+      expect(mapsLinkNever).toBeInTheDocument();
+      expect(mapsLinkNever).toHaveAttribute('href', 'https://www.google.com/maps/search/?api=1&query=200%20Market%20St%2C%20Roanoke%2C%20VA');
+
+      // Expand "Booked / Interested / Do not contact" accordion
+      const resolvedAccordion = screen.getByText(/Booked \/ Interested \/ Do not contact \(1\)/);
+      await act(async () => {
+        fireEvent.click(resolvedAccordion);
+      });
+
+      const mapsLinkIneligible = screen.getByRole('link', { name: 'Open Pitched Place in Google Maps' });
+      expect(mapsLinkIneligible).toBeInTheDocument();
+      expect(mapsLinkIneligible).toHaveAttribute('href', 'https://www.google.com/maps/search/?api=1&query=100%20Main%20St%2C%20Salem%2C%20VA');
+    });
+
     it('loadGigs handles 401 and errors gracefully', async () => {
       const dispatchSpy = vi.spyOn(window, 'dispatchEvent');
       global.fetch = vi.fn().mockResolvedValue(new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 }));

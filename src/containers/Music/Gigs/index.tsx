@@ -11,6 +11,7 @@ import { DataContext, Igig } from 'src/providers/Data.provider';
 import { AuthContext, Iauth } from 'src/providers/Auth.provider';
 import { defaultGig } from 'src/providers/fetchGigs';
 import { useNavigate } from 'react-router-dom';
+import adminVenuesUtils from 'src/containers/AdminVenues/admin-venues.utils';
 import utils from './gigs.utils';
 import { EditGigDialog } from './EditGigDialog';
 import { CreateGigDialog } from './CreateGigDialog';
@@ -51,10 +52,32 @@ export const makeColumns = (isMobile = false): GridColDef[] => {
     renderCell: (params: GridRenderCellParams) => {
       const { row: { location, city, usState, venueId } } = params;
       if (location) return location;
-      const resolvedCity = venueId && typeof venueId === 'object' ? venueId.city : city;
-      const resolvedState = venueId && typeof venueId === 'object' ? venueId.usState : usState;
-      if (resolvedCity) return `${resolvedCity}, ${resolvedState}`;
-      return '';
+      const isVenueObj = venueId && typeof venueId === 'object';
+      const venueAddress = isVenueObj && venueId.address ? venueId.address.trim() : '';
+      const resolvedCity = isVenueObj ? (venueId.city || '') : (city || '');
+      const resolvedState = isVenueObj ? (venueId.usState || '') : (usState || '');
+      const venueName = isVenueObj ? (venueId.name || '') : '';
+
+      if (isVenueObj && venueAddress) {
+        const mapUrl = adminVenuesUtils.getGoogleMapsUrl(venueAddress, resolvedCity, resolvedState);
+        const line2 = resolvedCity && resolvedState ? `${resolvedCity}, ${resolvedState}` : (resolvedCity || resolvedState || '');
+        return (
+          <a
+            href={mapUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`Open ${venueName || 'venue'} in Google Maps`}
+            style={{ textDecoration: 'underline' }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div>{venueAddress}</div>
+            {line2 ? <div>{line2}</div> : null}
+          </a>
+        );
+      }
+
+      if (resolvedCity) return resolvedState ? `${resolvedCity}, ${resolvedState}` : resolvedCity;
+      return resolvedState || '';
     },
   };
   const ticketsCol: GridColDef = {

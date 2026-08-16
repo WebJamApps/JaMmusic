@@ -942,7 +942,19 @@ export function AdminOutreach() {
                               {venue.name}
                             </Typography>
                             <Typography variant="caption" color="text.secondary">
-                              {venue.city ? `${venue.city}, ${venue.usState || ''}` : 'Location unknown'}
+                              {venue.address && venue.address.trim() ? (
+                                <a
+                                  href={adminVenuesUtils.getGoogleMapsUrl(venue.address, venue.city, venue.usState)}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  aria-label={`Open ${venue.name || 'venue'} in Google Maps`}
+                                  style={{ color: 'inherit', textDecoration: 'underline' }}
+                                >
+                                  {`${venue.address}, ${venue.city ? `${venue.city}, ${venue.usState || ''}` : venue.usState || ''}`}
+                                </a>
+                              ) : (
+                                venue.city ? `${venue.city}, ${venue.usState || ''}` : 'Location unknown'
+                              )}
                               {venue.venueType ? ` · Type: ${venue.venueType}` : ''}
                             </Typography>
                           </Box>
@@ -1013,7 +1025,19 @@ export function AdminOutreach() {
                                 {venue.name}
                               </Typography>
                               <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
-                                {venue.city ? `${venue.city}, ${venue.usState || ''}` : ''}
+                                {venue.address && venue.address.trim() ? (
+                                  <a
+                                    href={adminVenuesUtils.getGoogleMapsUrl(venue.address, venue.city, venue.usState)}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    aria-label={`Open ${venue.name || 'venue'} in Google Maps`}
+                                    style={{ color: 'inherit', textDecoration: 'underline' }}
+                                  >
+                                    {`${venue.address}, ${venue.city ? `${venue.city}, ${venue.usState || ''}` : venue.usState || ''}`}
+                                  </a>
+                                ) : (
+                                  venue.city ? `${venue.city}, ${venue.usState || ''}` : ''
+                                )}
                               </Typography>
                             </Box>
                             <Chip size="small" label={statusText} color={statusColor} />
