@@ -45,7 +45,7 @@ test.beforeEach(async ({ context, page }) => {
 const isWhite = (c: string): boolean => /rgba?\(\s*255,\s*255,\s*255/.test(c);
 
 test('gigs table is legible in dark mode on a phone', async ({ page }) => {
-  await page.goto('/music', { waitUntil: 'networkidle' });
+  await page.goto('/music', { waitUntil: 'domcontentloaded' });
 
   await expect
     .poll(() => page.evaluate(() => document.documentElement.getAttribute('data-theme')))
@@ -70,7 +70,7 @@ test('gigs table is legible in dark mode on a phone', async ({ page }) => {
 });
 
 test('music page has no horizontal overflow on a phone', async ({ page }) => {
-  await page.goto('/music', { waitUntil: 'networkidle' });
+  await page.goto('/music', { waitUntil: 'domcontentloaded' });
   const overflow = await page.evaluate(() => {
     const el = document.scrollingElement || document.documentElement;
     return el.scrollWidth - el.clientWidth;
