@@ -162,9 +162,10 @@ describe('CreateGigDialog', () => {
     expect(setShowDialog).toHaveBeenCalledWith(false);
   });
 
-  it('handles listVenues rejection gracefully', async () => {
-    const listVenuesSpy = vi.spyOn(adminVenuesUtils, 'listVenues').mockRejectedValue(new Error('Fetch failed'));
-    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+  it('renders Google Maps link in preview when selected venue has address', async () => {
+    vi.spyOn(adminVenuesUtils, 'listVenues').mockResolvedValue([
+      { _id: 'v-addr', name: 'Roanoke Hall', address: '789 Main St', city: 'Roanoke', usState: 'Virginia', status: 'active' },
+    ]);
 
     render(
       <AuthContext.Provider value={{ auth, setAuth: vi.fn() }}>
@@ -172,7 +173,34 @@ describe('CreateGigDialog', () => {
       </AuthContext.Provider>,
     );
 
-    await waitFor(() => expect(listVenuesSpy).toHaveBeenCalled());
-    expect(consoleErrorSpy).toHaveBeenCalledWith('Failed to fetch venues:', expect.any(Error));
+    const select = await screen.findByTestId('mock-autocomplete');
+    fireEvent.change(select, { target: { value: 'v-addr' } });
+
+    const mapsLink = screen.getByRole('link', { name: 'Open Roanoke Hall in Google Maps' });
+    expect(mapsLink).toBeInTheDocument();
+    expect(mapsLink).toHaveAttribute('href', 'https://www.google.com/maps/search/?api=1&query=789%20Main%20St%2C%20Roanoke%2C%20Virginia');
+    expect(mapsLink).toHaveAttribute('target', '_blank');
+    expect(mapsLink).toHaveAttribute('rel', 'noopener noreferrer');
+    expect(mapsLink).toHaveTextContent('(789 Main St, Roanoke, Virginia)');
+  });
+
+  it('renders preview without trailing comma when usState is empty', async () => {
+    vi.spyOn(adminVenuesUtils, 'listVenues').mockResolvedValue([
+      { _id: 'v-no-state', name: 'City Hall', address: '123 Main St', city: 'London', status: 'active' },
+    ]);
+
+    render(
+      <AuthContext.Provider value={{ auth, setAuth: vi.fn() }}>
+        <CreateGigDialog showDialog setShowDialog={vi.fn()} />
+      </AuthContext.Provider>,
+    );
+
+    const select = await screen.findByTestId('mock-autocomplete');
+    fireEvent.change(select, { target: { value: 'v-no-state' } });
+
+    const mapsLink = screen.getByRole('link', { name: 'Open City Hall in Google Maps' });
+    expect(mapsLink).toBeInTheDocument();
+    expect(mapsLink).toHaveTextContent('(123 Main St, London)');
   });
 });
+

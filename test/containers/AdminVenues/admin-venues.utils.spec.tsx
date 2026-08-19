@@ -236,5 +236,25 @@ describe('AdminVenues utils', () => {
       createElementSpy.mockRestore();
     });
   });
+
+  describe('getGoogleMapsUrl', () => {
+    it('generates the expected Google Maps URL with full address, city, and state', () => {
+      const url = adminVenuesUtils.getGoogleMapsUrl('123 Main St', 'Salem', 'VA');
+      expect(url).toBe('https://www.google.com/maps/search/?api=1&query=123%20Main%20St%2C%20Salem%2C%20VA');
+    });
+
+    it('handles missing city or state gracefully', () => {
+      const urlAddressOnly = adminVenuesUtils.getGoogleMapsUrl('123 Main St');
+      expect(urlAddressOnly).toBe('https://www.google.com/maps/search/?api=1&query=123%20Main%20St');
+
+      const urlCityState = adminVenuesUtils.getGoogleMapsUrl(undefined, 'Roanoke', 'VA');
+      expect(urlCityState).toBe('https://www.google.com/maps/search/?api=1&query=Roanoke%2C%20VA');
+    });
+
+    it('trims whitespace and handles undefined inputs', () => {
+      const url = adminVenuesUtils.getGoogleMapsUrl('  456 Oak Ave  ', '  Blacksburg  ', '  VA  ');
+      expect(url).toBe('https://www.google.com/maps/search/?api=1&query=456%20Oak%20Ave%2C%20Blacksburg%2C%20VA');
+    });
+  });
 });
 

@@ -359,6 +359,69 @@ describe('EditGigDialog', () => {
     expect(consoleErrorSpy).toHaveBeenCalledWith('Failed to fetch venues:', expect.any(Error));
   });
 
+  it('renders Google Maps link in preview when selected venue has address', async () => {
+    const venuesWithAddr = [
+      { _id: 'v-addr', name: 'Roanoke Hall', address: '789 Main St', city: 'Roanoke', usState: 'Virginia', status: 'active' },
+    ];
+    vi.spyOn(adminVenuesUtils, 'listVenues').mockResolvedValue(venuesWithAddr);
+
+    const editGig = {
+      _id: 'gig123',
+      datetime: new Date('2025-01-01T12:00:00Z'),
+      venue: '',
+      venueId: 'v-addr',
+    } as any;
+
+    render(
+      <EditGigDialog
+        editGig={editGig}
+        setEditGig={vi.fn()}
+        setShowDialog={vi.fn()}
+        setEditChanged={vi.fn()}
+        editChanged={false}
+        getGigs={vi.fn()}
+        auth={{ token: 'tk' } as any}
+      />,
+    );
+
+    const mapsLink = await screen.findByRole('link', { name: 'Open Roanoke Hall in Google Maps' });
+    expect(mapsLink).toBeInTheDocument();
+    expect(mapsLink).toHaveAttribute('href', 'https://www.google.com/maps/search/?api=1&query=789%20Main%20St%2C%20Roanoke%2C%20Virginia');
+    expect(mapsLink).toHaveAttribute('target', '_blank');
+    expect(mapsLink).toHaveAttribute('rel', 'noopener noreferrer');
+    expect(mapsLink).toHaveTextContent('(789 Main St, Roanoke, Virginia)');
+  });
+
+  it('renders preview without trailing comma when usState is empty', async () => {
+    const venuesWithoutState = [
+      { _id: 'v-no-state', name: 'City Hall', address: '123 Main St', city: 'London', status: 'active' },
+    ];
+    vi.spyOn(adminVenuesUtils, 'listVenues').mockResolvedValue(venuesWithoutState);
+
+    const editGig = {
+      _id: 'gig123',
+      datetime: new Date('2025-01-01T12:00:00Z'),
+      venue: '',
+      venueId: 'v-no-state',
+    } as any;
+
+    render(
+      <EditGigDialog
+        editGig={editGig}
+        setEditGig={vi.fn()}
+        setShowDialog={vi.fn()}
+        setEditChanged={vi.fn()}
+        editChanged={false}
+        getGigs={vi.fn()}
+        auth={{ token: 'tk' } as any}
+      />,
+    );
+
+    const mapsLink = await screen.findByRole('link', { name: 'Open City Hall in Google Maps' });
+    expect(mapsLink).toBeInTheDocument();
+    expect(mapsLink).toHaveTextContent('(123 Main St, London)');
+  });
+
   it('renders EditText and handles onChange', () => {
     const props = {
       objKey: 'tickets' as any, editGig: {} as any, setEditChanged: vi.fn(), setEditGig: vi.fn(), required: true,
@@ -368,3 +431,4 @@ describe('EditGigDialog', () => {
     expect(props.setEditGig).toHaveBeenCalled();
   });
 });
+

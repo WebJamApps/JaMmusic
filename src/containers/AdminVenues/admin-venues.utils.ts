@@ -308,6 +308,11 @@ export async function exportVenuesToExcel(venues: Ivenue[]): Promise<void> {
   window.URL.revokeObjectURL(url);
 }
 
+export function getGoogleMapsUrl(address?: string, city?: string, usState?: string): string {
+  const query = [address?.trim(), city?.trim(), usState?.trim()].filter(Boolean).join(', ');
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
+}
+
 export default {
-  listVenues, updateVenue, deleteVenue, createVenue, getAllowedAdminRoles, prospectScore, exportVenuesToExcel,
+  listVenues, updateVenue, deleteVenue, createVenue, getAllowedAdminRoles, prospectScore, exportVenuesToExcel, getGoogleMapsUrl,
 };
