@@ -58,6 +58,9 @@ test.describe('Admin Venues page responsiveness and table scrollability', () => 
             status: 'active',
             outreachEligible: true,
             contactVerified: true,
+            website: 'https://normalactivevenue.com',
+            contactName: 'Jane Doe',
+            email: 'jane@example.com',
           },
           {
             _id: 'v2',
@@ -257,5 +260,55 @@ test.describe('Admin Venues page responsiveness and table scrollability', () => 
     const background = await stickyNameCell.evaluate((el) => window.getComputedStyle(el).background);
     expect(background).not.toContain('rgba(0, 0, 0, 0)');
     expect(background).not.toBe('transparent');
+  });
+
+  test('verifies table header and cell column alignment for Website and Contact', async ({ page, isMobile }) => {
+    test.skip(isMobile, 'Desktop table column verification is not applicable on mobile viewports');
+    await page.setViewportSize({ width: 1200, height: 800 });
+    await page.goto('/admin/venues', { waitUntil: 'domcontentloaded' });
+
+    const table = page.locator('[data-testid="venues-table"]');
+    await expect(table).toBeVisible();
+
+    // Get all column headers
+    const headerRow = table.locator('thead tr');
+    const headers = headerRow.locator('th');
+
+    // Verify "Website" and "Contact" headers are visible
+    const websiteHeader = headers.filter({ hasText: 'Website' }).first();
+    const contactHeader = headers.filter({ hasText: 'Contact' }).first();
+    await expect(websiteHeader).toBeVisible();
+    await expect(contactHeader).toBeVisible();
+
+    const headerTexts = await headers.allTextContents();
+    const cleanHeaders = headerTexts.map((h) => h.trim());
+    const websiteIndex = cleanHeaders.findIndex((h) => h.startsWith('Website'));
+    const contactIndex = cleanHeaders.findIndex((h) => h.startsWith('Contact'));
+
+    expect(websiteIndex).toBeGreaterThan(-1);
+    expect(contactIndex).toBeGreaterThan(-1);
+    expect(websiteIndex).toBe(4);
+    expect(contactIndex).toBe(5);
+    expect(websiteIndex).toBeLessThan(contactIndex);
+
+    // Verify corresponding row cells at those column indices
+    const row = table.locator('[data-testid="venue-row-v1"]');
+    const cells = row.locator('td');
+
+    const websiteCell = cells.nth(websiteIndex);
+    const contactCell = cells.nth(contactIndex);
+
+    // Website column cell corresponds to website link ([data-testid^="venue-website-"])
+    await expect(websiteCell).toHaveAttribute('data-testid', 'venue-website-v1');
+    const websiteLink = websiteCell.locator('[data-testid^="venue-website-link-"]');
+    await expect(websiteLink).toBeVisible();
+    await expect(websiteLink).toHaveAttribute('href', 'https://normalactivevenue.com');
+
+    // Contact column cell corresponds to contact action icons ([data-testid^="venue-contact-"])
+    await expect(contactCell).toHaveAttribute('data-testid', 'venue-contact-v1');
+    const contactNameIcon = contactCell.locator('[data-testid^="venue-contact-name-"]');
+    const contactEmailIcon = contactCell.locator('[data-testid^="venue-contact-email-"]');
+    await expect(contactNameIcon).toBeVisible();
+    await expect(contactEmailIcon).toBeVisible();
   });
 });
