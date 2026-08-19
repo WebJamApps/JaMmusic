@@ -18,7 +18,7 @@ export default defineConfig({
     trace: 'on-first-retry',
   },
   webServer: {
-    command: 'npm run preview -- --port 7878',
+    command: 'npm run build && npm run preview -- --port 7878',
     url: 'http://localhost:7878',
     reuseExistingServer: !process.env.CI,
     stdout: 'ignore',
