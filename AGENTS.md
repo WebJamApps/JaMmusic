@@ -102,6 +102,7 @@ from a `<lane>/<issue#>-<slug>` branch.
   `typeof form.field === 'number'` or keep form states properly type-separated.
 - **Testing Library Jest-DOM Import**: In Vitest unit tests using DOM element matchers such as `toHaveAttribute`, `toBeInTheDocument`, or `toHaveTextContent`, always include `import '@testing-library/jest-dom';` at the top of the spec file to extend Vitest's `expect` matchers.
 - **Date Formatting & Timezone Mismatch in Vitest Snapshots**: React date inputs and localized date string components render local time strings (e.g. `GMT-0500 Eastern Standard Time`) when snapshots are updated locally. On CircleCI Linux runners operating in `UTC` (`GMT+0000`), timezone mismatches break unit test assertions. Always run snapshot updates with `npm run test:unit-u` (or `TZ=UTC npx vitest run -u`) so snapshot outputs align with CI.
+- **E2E & Playwright CI Verification**: When an issue specifies continuous verification or execution in CI for Playwright/E2E tests, ensure `.circleci/config.yml` installs browser dependencies (`npx playwright install --with-deps chromium`) and executes `npm run test:e2e`, and ensure `playwright.config.ts` defines a `webServer` (e.g. `npm run preview -- --port 7878`) with a local default `baseURL` so E2E tests run self-contained in CI without manual external server startup.
 
 ## Branch & memory hygiene
 
