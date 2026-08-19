@@ -67,7 +67,7 @@ test.describe('Sidebar navigation alignment regression tests', () => {
 
   test('all sidebar navigation items are left-aligned and use flex layout', async ({ page }) => {
     // Navigate to homepage where the sidebar renders
-    await page.goto('/', { waitUntil: 'networkidle' });
+    await page.goto('/', { waitUntil: 'domcontentloaded' });
 
     // Open the sidebar if we are in mobile/collapsed view
     const menuToggle = page.locator('#mobilemenutoggle');

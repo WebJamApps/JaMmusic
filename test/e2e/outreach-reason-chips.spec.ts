@@ -31,7 +31,7 @@ test.describe('Find-Eligible-Venues Candidate Reason Chips', () => {
     });
 
     // Intercept outreach config API call
-    await page.route((url) => url.pathname === '/outreach/config', async (route) => {
+    await page.route('http://localhost:7000/outreach/config*', async (route) => {
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -40,7 +40,7 @@ test.describe('Find-Eligible-Venues Candidate Reason Chips', () => {
     });
 
     // Intercept outreach pending replies API call
-    await page.route((url) => url.pathname === '/outreach/replies/pending', async (route) => {
+    await page.route('http://localhost:7000/outreach/replies/pending*', async (route) => {
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -49,7 +49,7 @@ test.describe('Find-Eligible-Venues Candidate Reason Chips', () => {
     });
 
     // Intercept outreach templates API call
-    await page.route((url) => url.pathname === '/outreach/templates', async (route) => {
+    await page.route('http://localhost:7000/outreach/templates*', async (route) => {
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -58,7 +58,7 @@ test.describe('Find-Eligible-Venues Candidate Reason Chips', () => {
     });
 
     // Intercept outreach list API call
-    await page.route((url) => url.pathname === '/outreach', async (route) => {
+    await page.route('http://localhost:7000/outreach', async (route) => {
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -67,7 +67,7 @@ test.describe('Find-Eligible-Venues Candidate Reason Chips', () => {
     });
 
     // Intercept venue listing
-    await page.route((url) => url.pathname === '/venue' || url.pathname.startsWith('/venue/'), async (route) => {
+    await page.route('http://localhost:7000/venue*', async (route) => {
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -76,7 +76,7 @@ test.describe('Find-Eligible-Venues Candidate Reason Chips', () => {
     });
 
     // Intercept gig listing
-    await page.route((url) => url.pathname === '/gig' || url.pathname.startsWith('/gig/'), async (route) => {
+    await page.route('http://localhost:7000/gig*', async (route) => {
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -85,7 +85,7 @@ test.describe('Find-Eligible-Venues Candidate Reason Chips', () => {
     });
 
     // Intercept /outreach/candidates with all representative reason chip configurations
-    await page.route((url) => url.pathname === '/outreach/candidates', async (route) => {
+    await page.route('http://localhost:7000/outreach/candidates*', async (route) => {
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -153,7 +153,7 @@ test.describe('Find-Eligible-Venues Candidate Reason Chips', () => {
 
   test('renders all representative reason chips across candidate venues', async ({ page }) => {
     await page.setViewportSize({ width: 1200, height: 800 });
-    await page.goto('/admin/outreach', { waitUntil: 'networkidle' });
+    await page.goto('/admin/outreach', { waitUntil: 'domcontentloaded' });
 
     // Ensure outreach page is loaded
     const pageTitle = page.locator('[data-testid="admin-outreach-page"]');

@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 test('music player sorts songs by orderBy priority descending', async ({ page }) => {
-  await page.route((url) => url.pathname === '/song', async (route) => {
+  await page.route('http://localhost:7000/song*', async (route) => {
     await route.fulfill({
       status: 200,
       contentType: 'application/json',
@@ -32,5 +32,6 @@ test('music player sorts songs by orderBy priority descending', async ({ page })
 
   // The first song listed should be 'High Priority Song' because orderBy 10 > orderBy 1
   const playerText = page.locator('.textUnderPlayer');
+  await expect(playerText).toBeVisible({ timeout: 15_000 });
   await expect(playerText).toContainText('High Priority Song');
 });
