@@ -872,6 +872,7 @@ describe('AdminOutreach', () => {
       const mapsLinkNever = screen.getByRole('link', { name: 'Open Never Pitched Place in Google Maps' });
       expect(mapsLinkNever).toBeInTheDocument();
       expect(mapsLinkNever).toHaveAttribute('href', 'https://www.google.com/maps/search/?api=1&query=200%20Market%20St%2C%20Roanoke%2C%20VA');
+      expect(mapsLinkNever).toHaveTextContent('200 Market St, Roanoke, VA');
 
       // Expand "Booked / Interested / Do not contact" accordion
       const resolvedAccordion = screen.getByText(/Booked \/ Interested \/ Do not contact \(1\)/);
@@ -882,6 +883,30 @@ describe('AdminOutreach', () => {
       const mapsLinkIneligible = screen.getByRole('link', { name: 'Open Pitched Place in Google Maps' });
       expect(mapsLinkIneligible).toBeInTheDocument();
       expect(mapsLinkIneligible).toHaveAttribute('href', 'https://www.google.com/maps/search/?api=1&query=100%20Main%20St%2C%20Salem%2C%20VA');
+      expect(mapsLinkIneligible).toHaveTextContent('100 Main St, Salem, VA');
+    });
+
+    it('renders location without trailing commas when usState is absent in AdminOutreach', async () => {
+      const mockVenuesNoState = [
+        {
+          _id: 'v-no-state',
+          name: 'London Hall',
+          address: '45 High St',
+          city: 'London',
+          outreachEligible: true,
+        },
+      ];
+      outreachUtils.getPendingReplies = vi.fn().mockResolvedValue([]);
+      adminVenuesUtils.listVenues = vi.fn().mockResolvedValue(mockVenuesNoState);
+      await renderPage();
+
+      const neverPitchedAccordion = screen.getByText(/Never Pitched \(1\)/);
+      await act(async () => {
+        fireEvent.click(neverPitchedAccordion);
+      });
+
+      const mapsLink = screen.getByRole('link', { name: 'Open London Hall in Google Maps' });
+      expect(mapsLink).toHaveTextContent('45 High St, London');
     });
 
     it('loadGigs handles 401 and errors gracefully', async () => {

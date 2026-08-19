@@ -183,5 +183,24 @@ describe('CreateGigDialog', () => {
     expect(mapsLink).toHaveAttribute('rel', 'noopener noreferrer');
     expect(mapsLink).toHaveTextContent('(789 Main St, Roanoke, Virginia)');
   });
+
+  it('renders preview without trailing comma when usState is empty', async () => {
+    vi.spyOn(adminVenuesUtils, 'listVenues').mockResolvedValue([
+      { _id: 'v-no-state', name: 'City Hall', address: '123 Main St', city: 'London', status: 'active' },
+    ]);
+
+    render(
+      <AuthContext.Provider value={{ auth, setAuth: vi.fn() }}>
+        <CreateGigDialog showDialog setShowDialog={vi.fn()} />
+      </AuthContext.Provider>,
+    );
+
+    const select = await screen.findByTestId('mock-autocomplete');
+    fireEvent.change(select, { target: { value: 'v-no-state' } });
+
+    const mapsLink = screen.getByRole('link', { name: 'Open City Hall in Google Maps' });
+    expect(mapsLink).toBeInTheDocument();
+    expect(mapsLink).toHaveTextContent('(123 Main St, London)');
+  });
 });
 
