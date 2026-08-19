@@ -34,6 +34,7 @@ jobs:
           name: Run Playwright e2e tests
           environment:
             BackendUrl: "http://localhost:7000"
+            ALLOW_LOCALHOST_BACKEND: "true"
           command: npm run test:e2e
       - store_artifacts:
           path: coverage

@@ -1,14 +1,14 @@
 /// <reference types="vitest" />
 import { defineConfig, loadEnv, type Plugin } from 'vite';
-import { fileURLToPath } from 'node:url';
+import path from 'node:path';
 import fs from 'node:fs';
 import react from '@vitejs/plugin-react';
 import checker from 'vite-plugin-checker';
 import pkg from './package.json';
 
-const srcDir = fileURLToPath(new URL('./src', import.meta.url));
-const testDir = fileURLToPath(new URL('./test', import.meta.url));
-const certDir = fileURLToPath(new URL('./.certs', import.meta.url));
+const srcDir = path.resolve(process.cwd(), 'src');
+const testDir = path.resolve(process.cwd(), 'test');
+const certDir = path.resolve(process.cwd(), '.certs');
 
 // Opt-in local HTTPS for the dev server: `DEV_HTTPS=true npm run dev`. Needed to
 // exercise Facebook FB.login (page-admin Reconnect flow) locally, since FB.login
@@ -36,13 +36,6 @@ const APP_ENV_KEYS = [
   'GOOGLE_MAPS_API_KEY',
 ] as const;
 
-const DEFAULT_APP_ENV: Record<string, string> = {
-  BackendUrl: 'http://localhost:7000',
-  GoogleClientId: '702173574211-lo764q6i5k1c5brj29g28ltrjcbvq2hn.apps.googleusercontent.com',
-  GOOGLE_MAPS_API_KEY: 'AIzaSyDtwXQPQwJWf3DlW74ZcU-llcaJzZZXCpo',
-  APP_NAME: 'web-jam.com',
-};
-
 function replaceProcessEnv(env: Record<string, string>): Plugin {
   return {
     name: 'replace-process-env',
@@ -51,7 +44,8 @@ function replaceProcessEnv(env: Record<string, string>): Plugin {
       if (!/\.(t|j)sx?$/.test(id)) return null;
       let out = code;
       for (const key of APP_ENV_KEYS) {
-        const val = env[key] || process.env[key] || DEFAULT_APP_ENV[key] || '';
+        // Contract: an empty BackendUrl means same-origin, and that is the production value.
+        const val = env[key] ?? process.env[key] ?? '';
         const re = new RegExp(`process\\.env\\.${key}\\b`, 'g');
         out = out.replace(re, JSON.stringify(val));
       }
@@ -65,7 +59,14 @@ export default defineConfig(async ({ mode, command }) => {
     process.env.NODE_ENV = 'production';
   }
   const env: Record<string, string> = { ...loadEnv(mode, process.cwd(), ''), NODE_ENV: mode };
-  const isTest = mode === 'test' || process.env.VITEST;
+  if (command === 'build' || mode === 'production') {
+    const backendUrl = process.env.BackendUrl ?? env.BackendUrl ?? '';
+    const allowLocalhost = (process.env.ALLOW_LOCALHOST_BACKEND ?? env.ALLOW_LOCALHOST_BACKEND) === 'true';
+    if (/localhost/i.test(backendUrl) && !allowLocalhost) {
+      throw new Error('Refusing production build with localhost BackendUrl. Set ALLOW_LOCALHOST_BACKEND=true to allow.');
+    }
+  }
+  const isTest = mode === 'test' || (command !== 'build' && Boolean(process.env.VITEST));
   // `vitest/config` is a devDependency — import it lazily so a production
   // build (npm install --omit=dev) never tries to resolve it.
   const testExclude = isTest
