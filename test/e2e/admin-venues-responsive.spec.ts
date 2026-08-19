@@ -211,9 +211,9 @@ test.describe('Admin Venues page responsiveness and table scrollability', () => 
   });
 
   test('displays detailed backend validation error message in edit dialog', async ({ page }) => {
-    // Intercept PUT requests to /venue/v1 and return 400 Bad Request with JSON error message
+    // Intercept PATCH requests to /venue/v1 and return 400 Bad Request with JSON error message
     await page.route(/\/venue\/v1/, async (route) => {
-      if (route.request().method() === 'PUT') {
+      if (route.request().method() === 'PATCH') {
         await route.fulfill({
           status: 400,
           contentType: 'application/json',

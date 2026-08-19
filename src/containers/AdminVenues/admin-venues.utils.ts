@@ -117,7 +117,7 @@ async function deleteVenue(token: string, venueId: string): Promise<void> {
 
 async function updateVenue(token: string, venueId: string, payload: IvenueUpdate): Promise<Ivenue> {
   const res = await customFetch(`${venueUrl}/${venueId}`, {
-    method: 'PUT', headers: headers(token, true), body: JSON.stringify(payload),
+    method: 'PATCH', headers: headers(token, true), body: JSON.stringify(payload),
   });
   if (!res.ok) await handleResponseError(res);
   return await res.json() as Ivenue;

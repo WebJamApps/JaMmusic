@@ -76,12 +76,12 @@ describe('AdminVenues utils', () => {
     expect((opts as RequestInit).headers).toMatchObject({ Authorization: 'Bearer tok' });
   });
 
-  it('updateVenue PUTs to the venue id with the payload', async () => {
+  it('updateVenue PATCHes to the venue id with the payload', async () => {
     fetchMock.mockReturnValue(okJson({ _id: 'v2', name: 'B' }));
     await adminVenuesUtils.updateVenue('tok', 'v2', { bookingStatus: 'booked', interested: true });
     const [url, opts] = fetchMock.mock.calls[0];
     expect(url).toContain('/venue/v2');
-    expect((opts as RequestInit).method).toBe('PUT');
+    expect((opts as RequestInit).method).toBe('PATCH');
     expect(JSON.parse((opts as RequestInit).body as string)).toMatchObject({ bookingStatus: 'booked' });
   });
 
