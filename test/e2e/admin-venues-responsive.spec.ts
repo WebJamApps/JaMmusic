@@ -44,7 +44,7 @@ test.describe('Admin Venues page responsiveness and table scrollability', () => 
     });
 
     // Intercept API calls to /venue (ignoring the /admin/venues frontend page route)
-    await page.route((url) => url.pathname === '/venue' || url.pathname.startsWith('/venue/'), async (route) => {
+    await page.route('http://localhost:7000/venue*', async (route) => {
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -58,6 +58,9 @@ test.describe('Admin Venues page responsiveness and table scrollability', () => 
             status: 'active',
             outreachEligible: true,
             contactVerified: true,
+            website: 'https://normalactivevenue.com',
+            contactName: 'Jane Doe',
+            email: 'jane@example.com',
           },
           {
             _id: 'v2',
@@ -77,7 +80,7 @@ test.describe('Admin Venues page responsiveness and table scrollability', () => 
   test('desktop viewport (1200px) shows all text labels and uses sticky table columns', async ({ page, isMobile }) => {
     test.skip(isMobile, 'Desktop viewport test is not applicable to mobile-emulated browsers');
     await page.setViewportSize({ width: 1200, height: 800 });
-    await page.goto('/admin/venues', { waitUntil: 'networkidle' });
+    await page.goto('/admin/venues', { waitUntil: 'domcontentloaded' });
 
     // Page title should be fully visible and centered
     const pageTitle = page.locator('[data-testid="header-page-title"]');
@@ -109,7 +112,7 @@ test.describe('Admin Venues page responsiveness and table scrollability', () => 
   test('tablet viewport (732px) hides labels and branding to prevent overlapping', async ({ page, isMobile }) => {
     test.skip(isMobile, 'Tablet viewport test is not applicable to mobile-emulated browsers');
     await page.setViewportSize({ width: 732, height: 800 });
-    await page.goto('/admin/venues', { waitUntil: 'networkidle' });
+    await page.goto('/admin/venues', { waitUntil: 'domcontentloaded' });
 
     // Page title is visible and shrunk to 16px font-size
     const pageTitle = page.locator('[data-testid="header-page-title"]');
@@ -147,7 +150,7 @@ test.describe('Admin Venues page responsiveness and table scrollability', () => 
   test('905px viewport has no overlap, hides branding text, and shrinks page title font', async ({ page, isMobile }) => {
     test.skip(isMobile, '905px viewport test is not applicable to mobile-emulated browsers');
     await page.setViewportSize({ width: 905, height: 800 });
-    await page.goto('/admin/venues', { waitUntil: 'networkidle' });
+    await page.goto('/admin/venues', { waitUntil: 'domcontentloaded' });
 
     // Page title is visible and shrunk to 16px font-size (since 905px <= 1024px)
     const pageTitle = page.locator('[data-testid="header-page-title"]');
@@ -190,7 +193,7 @@ test.describe('Admin Venues page responsiveness and table scrollability', () => 
 
   test('mobile viewport (320px) hides page title and disables sticky columns for scrolling', async ({ page }) => {
     await page.setViewportSize({ width: 320, height: 800 });
-    await page.goto('/admin/venues', { waitUntil: 'networkidle' });
+    await page.goto('/admin/venues', { waitUntil: 'domcontentloaded' });
 
     // Centered page title should be completely hidden on mobile viewports below 500px to avoid clutter
     const pageTitle = page.locator('[data-testid="header-page-title"]');
@@ -211,9 +214,9 @@ test.describe('Admin Venues page responsiveness and table scrollability', () => 
   });
 
   test('displays detailed backend validation error message in edit dialog', async ({ page }) => {
-    // Intercept PUT requests to /venue/v1 and return 400 Bad Request with JSON error message
+    // Intercept PATCH requests to /venue/v1 and return 400 Bad Request with JSON error message
     await page.route(/\/venue\/v1/, async (route) => {
-      if (route.request().method() === 'PUT') {
+      if (route.request().method() === 'PATCH') {
         await route.fulfill({
           status: 400,
           contentType: 'application/json',
@@ -224,7 +227,7 @@ test.describe('Admin Venues page responsiveness and table scrollability', () => 
       }
     });
 
-    await page.goto('/admin/venues', { waitUntil: 'networkidle' });
+    await page.goto('/admin/venues', { waitUntil: 'domcontentloaded' });
 
     // Open Edit dialog for venue v1
     const editButton = page.locator('[data-testid="venue-edit-v1"]');
@@ -232,7 +235,7 @@ test.describe('Admin Venues page responsiveness and table scrollability', () => 
 
     // Edit email to trigger validation
     const emailInput = page.locator('[data-testid="edit-venue-email"] input');
-    await emailInput.fill('invalid-email');
+    await emailInput.fill('invalid@example.com');
 
     // Click Save
     const saveButton = page.locator('[data-testid="edit-venue-save"]');
@@ -247,7 +250,7 @@ test.describe('Admin Venues page responsiveness and table scrollability', () => 
   test('proves sticky columns have opaque backgrounds to prevent overlap when scrolled', async ({ page, isMobile }) => {
     test.skip(isMobile, 'Desktop sticky background test is not applicable on mobile');
     await page.setViewportSize({ width: 1200, height: 800 });
-    await page.goto('/admin/venues', { waitUntil: 'networkidle' });
+    await page.goto('/admin/venues', { waitUntil: 'domcontentloaded' });
 
     // Locate standard sticky Name cell on row v1
     const stickyNameCell = page.locator('tr[data-testid="venue-row-v1"] td.sticky-cell').first();
@@ -257,5 +260,55 @@ test.describe('Admin Venues page responsiveness and table scrollability', () => 
     const background = await stickyNameCell.evaluate((el) => window.getComputedStyle(el).background);
     expect(background).not.toContain('rgba(0, 0, 0, 0)');
     expect(background).not.toBe('transparent');
+  });
+
+  test('verifies table header and cell column alignment for Website and Contact', async ({ page, isMobile }) => {
+    test.skip(isMobile, 'Desktop table column verification is not applicable on mobile viewports');
+    await page.setViewportSize({ width: 1200, height: 800 });
+    await page.goto('/admin/venues', { waitUntil: 'domcontentloaded' });
+
+    const table = page.locator('[data-testid="venues-table"]');
+    await expect(table).toBeVisible();
+
+    // Get all column headers
+    const headerRow = table.locator('thead tr');
+    const headers = headerRow.locator('th');
+
+    // Verify "Website" and "Contact" headers are visible
+    const websiteHeader = headers.filter({ hasText: 'Website' }).first();
+    const contactHeader = headers.filter({ hasText: 'Contact' }).first();
+    await expect(websiteHeader).toBeVisible();
+    await expect(contactHeader).toBeVisible();
+
+    const headerTexts = await headers.allTextContents();
+    const cleanHeaders = headerTexts.map((h) => h.trim());
+    const websiteIndex = cleanHeaders.findIndex((h) => h.startsWith('Website'));
+    const contactIndex = cleanHeaders.findIndex((h) => h.startsWith('Contact'));
+
+    expect(websiteIndex).toBeGreaterThan(-1);
+    expect(contactIndex).toBeGreaterThan(-1);
+    expect(websiteIndex).toBe(4);
+    expect(contactIndex).toBe(5);
+    expect(websiteIndex).toBeLessThan(contactIndex);
+
+    // Verify corresponding row cells at those column indices
+    const row = table.locator('[data-testid="venue-row-v1"]');
+    const cells = row.locator('td');
+
+    const websiteCell = cells.nth(websiteIndex);
+    const contactCell = cells.nth(contactIndex);
+
+    // Website column cell corresponds to website link ([data-testid^="venue-website-"])
+    await expect(websiteCell).toHaveAttribute('data-testid', 'venue-website-v1');
+    const websiteLink = websiteCell.locator('[data-testid^="venue-website-link-"]');
+    await expect(websiteLink).toBeVisible();
+    await expect(websiteLink).toHaveAttribute('href', 'https://normalactivevenue.com');
+
+    // Contact column cell corresponds to contact action icons ([data-testid^="venue-contact-"])
+    await expect(contactCell).toHaveAttribute('data-testid', 'venue-contact-v1');
+    const contactNameIcon = contactCell.locator('[data-testid^="venue-contact-name-"]');
+    const contactEmailIcon = contactCell.locator('[data-testid^="venue-contact-email-"]');
+    await expect(contactNameIcon).toBeVisible();
+    await expect(contactEmailIcon).toBeVisible();
   });
 });

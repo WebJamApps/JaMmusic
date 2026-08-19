@@ -1,4 +1,5 @@
 import { getAllowedAdminRoles } from '../AdminUsers/admin-users.utils';
+import { customFetch } from 'src/lib/fetch.utils';
 
 // Outreach-specific API helpers (extracted from admin-venues.utils.ts per #1140).
 // Thin client over the existing web-jam-back endpoints: GET /outreach/candidates,
@@ -75,7 +76,7 @@ async function getCandidates(token: string, targetDates?: string, eligibleFor?: 
   if (targetDates) qs.push(`targetDates=${encodeURIComponent(targetDates)}`);
   if (eligibleFor) qs.push(`eligibleFor=${encodeURIComponent(eligibleFor)}`);
   const query = qs.length > 0 ? `?${qs.join('&')}` : '';
-  const res = await fetch(`${outreachUrl}/candidates${query}`, { headers: headers(token) });
+  const res = await customFetch(`${outreachUrl}/candidates${query}`, { headers: headers(token) });
   if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
   return await res.json() as Icandidate[];
 }
@@ -89,7 +90,7 @@ async function sendBatch(
     targetWeekend: { start: string; end: string };
   },
 ): Promise<IbatchResult> {
-  const res = await fetch(`${outreachUrl}/batch`, {
+  const res = await customFetch(`${outreachUrl}/batch`, {
     method: 'POST', headers: headers(token, true), body: JSON.stringify(payload),
   });
   if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
@@ -97,13 +98,13 @@ async function sendBatch(
 }
 
 async function getConfig(token: string): Promise<{ autoApprove: boolean }> {
-  const res = await fetch(`${outreachUrl}/config`, { headers: headers(token) });
+  const res = await customFetch(`${outreachUrl}/config`, { headers: headers(token) });
   if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
   return await res.json() as { autoApprove: boolean };
 }
 
 async function setConfig(token: string, autoApprove: boolean): Promise<{ autoApprove: boolean }> {
-  const res = await fetch(`${outreachUrl}/config`, {
+  const res = await customFetch(`${outreachUrl}/config`, {
     method: 'PUT', headers: headers(token, true), body: JSON.stringify({ autoApprove }),
   });
   if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
@@ -114,13 +115,13 @@ async function getPreview(
   token: string, venueIds: string[], targetDates: string,
 ): Promise<IpitchPreview[]> {
   const qs = `?venueIds=${venueIds.join(',')}&targetDates=${encodeURIComponent(targetDates)}`;
-  const res = await fetch(`${outreachUrl}/preview${qs}`, { headers: headers(token) });
+  const res = await customFetch(`${outreachUrl}/preview${qs}`, { headers: headers(token) });
   if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
   return await res.json() as IpitchPreview[];
 }
 
 async function getPendingReplies(token: string): Promise<IpendingReply[]> {
-  const res = await fetch(`${outreachUrl}/replies/pending`, { headers: headers(token) });
+  const res = await customFetch(`${outreachUrl}/replies/pending`, { headers: headers(token) });
   if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
   return await res.json() as IpendingReply[];
 }
@@ -130,7 +131,7 @@ async function applySuggestion(
   id: string,
   payload: { bookingStatus?: string; interested?: boolean; dismiss?: boolean; reopen?: boolean },
 ): Promise<unknown> {
-  const res = await fetch(`${outreachUrl}/${id}/apply-suggestion`, {
+  const res = await customFetch(`${outreachUrl}/${id}/apply-suggestion`, {
     method: 'POST', headers: headers(token, true), body: JSON.stringify(payload),
   });
   if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
@@ -142,7 +143,7 @@ async function recordOutcome(
   id: string,
   payload: { status: 'interested' | 'not-interested' | 'booked' | 'target-filled' | 'not-a-fit'; bookedDate?: string },
 ): Promise<unknown> {
-  const res = await fetch(`${outreachUrl}/${id}/outcome`, {
+  const res = await customFetch(`${outreachUrl}/${id}/outcome`, {
     method: 'POST', headers: headers(token, true), body: JSON.stringify(payload),
   });
   if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
@@ -157,13 +158,13 @@ async function listOutreach(
   if (query?.venueId) qs.push(`venueId=${encodeURIComponent(query.venueId)}`);
   if (query?.status) qs.push(`status=${encodeURIComponent(query.status)}`);
   const qStr = qs.length > 0 ? `?${qs.join('&')}` : '';
-  const res = await fetch(`${outreachUrl}${qStr}`, { headers: headers(token) });
+  const res = await customFetch(`${outreachUrl}${qStr}`, { headers: headers(token) });
   if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
   return await res.json() as IpendingReply[];
 }
 
 async function deleteOutreach(token: string, id: string): Promise<void> {
-  const res = await fetch(`${outreachUrl}/${id}`, { method: 'DELETE', headers: headers(token) });
+  const res = await customFetch(`${outreachUrl}/${id}`, { method: 'DELETE', headers: headers(token) });
   if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
 }
 

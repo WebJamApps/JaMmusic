@@ -76,12 +76,12 @@ describe('AdminVenues utils', () => {
     expect((opts as RequestInit).headers).toMatchObject({ Authorization: 'Bearer tok' });
   });
 
-  it('updateVenue PUTs to the venue id with the payload', async () => {
+  it('updateVenue PATCHes to the venue id with the payload', async () => {
     fetchMock.mockReturnValue(okJson({ _id: 'v2', name: 'B' }));
     await adminVenuesUtils.updateVenue('tok', 'v2', { bookingStatus: 'booked', interested: true });
     const [url, opts] = fetchMock.mock.calls[0];
     expect(url).toContain('/venue/v2');
-    expect((opts as RequestInit).method).toBe('PUT');
+    expect((opts as RequestInit).method).toBe('PATCH');
     expect(JSON.parse((opts as RequestInit).body as string)).toMatchObject({ bookingStatus: 'booked' });
   });
 
@@ -107,6 +107,18 @@ describe('AdminVenues utils', () => {
   ])('%s throws on a non-ok response', async (_name, call) => {
     fetchMock.mockReturnValue(failed());
     await expect(call()).rejects.toThrow('500');
+  });
+
+  it('triggers auth:logout event on 401 response', async () => {
+    const dispatchSpy = vi.spyOn(window, 'dispatchEvent');
+    fetchMock.mockReturnValue(Promise.resolve({
+      ok: false,
+      status: 401,
+      statusText: 'Unauthorized',
+      json: () => Promise.resolve({ message: 'Token invalid' }),
+    } as Response));
+    await expect(adminVenuesUtils.listVenues('bad-tok')).rejects.toThrow('Token invalid');
+    expect(dispatchSpy).toHaveBeenCalledWith(expect.objectContaining({ type: 'auth:logout' }));
   });
 
   it('parses and throws JSON error messages from the backend', async () => {
@@ -222,6 +234,26 @@ describe('AdminVenues utils', () => {
       expect(mockAnchor.href).toBe('blob:url');
 
       createElementSpy.mockRestore();
+    });
+  });
+
+  describe('getGoogleMapsUrl', () => {
+    it('generates the expected Google Maps URL with full address, city, and state', () => {
+      const url = adminVenuesUtils.getGoogleMapsUrl('123 Main St', 'Salem', 'VA');
+      expect(url).toBe('https://www.google.com/maps/search/?api=1&query=123%20Main%20St%2C%20Salem%2C%20VA');
+    });
+
+    it('handles missing city or state gracefully', () => {
+      const urlAddressOnly = adminVenuesUtils.getGoogleMapsUrl('123 Main St');
+      expect(urlAddressOnly).toBe('https://www.google.com/maps/search/?api=1&query=123%20Main%20St');
+
+      const urlCityState = adminVenuesUtils.getGoogleMapsUrl(undefined, 'Roanoke', 'VA');
+      expect(urlCityState).toBe('https://www.google.com/maps/search/?api=1&query=Roanoke%2C%20VA');
+    });
+
+    it('trims whitespace and handles undefined inputs', () => {
+      const url = adminVenuesUtils.getGoogleMapsUrl('  456 Oak Ave  ', '  Blacksburg  ', '  VA  ');
+      expect(url).toBe('https://www.google.com/maps/search/?api=1&query=456%20Oak%20Ave%2C%20Blacksburg%2C%20VA');
     });
   });
 });

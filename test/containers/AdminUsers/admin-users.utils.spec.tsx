@@ -60,6 +60,13 @@ describe('AdminUsers utils', () => {
       fetchMock.mockReturnValue(failed());
       await expect(call()).rejects.toThrow('500');
     });
+
+    it('triggers auth:logout event on 401 response', async () => {
+      const dispatchSpy = vi.spyOn(window, 'dispatchEvent');
+      fetchMock.mockReturnValue(Promise.resolve({ ok: false, status: 401, statusText: 'Unauthorized' } as Response));
+      await expect(adminUtils.listUsers('bad-tok')).rejects.toThrow('401');
+      expect(dispatchSpy).toHaveBeenCalledWith(expect.objectContaining({ type: 'auth:logout' }));
+    });
   });
 
   describe('getAllowedAdminRoles', () => {

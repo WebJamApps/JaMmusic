@@ -199,9 +199,21 @@ export function CreateGigDialog({
             ) : (
               <span style={{ fontWeight: 'bold' }}>{selectedVenue.name}</span>
             )}
-            <span style={{ fontSize: '0.9rem', color: '#666' }}>
-              {`(${selectedVenue.city || ''}, ${selectedVenue.usState || ''})`}
-            </span>
+            {selectedVenue.address && selectedVenue.address.trim() ? (
+              <a
+                href={adminVenuesUtils.getGoogleMapsUrl(selectedVenue.address, selectedVenue.city, selectedVenue.usState)}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`Open ${selectedVenue.name || 'venue'} in Google Maps`}
+                style={{ fontSize: '0.9rem', color: '#1976d2', textDecoration: 'underline' }}
+              >
+                {`(${[selectedVenue.address, selectedVenue.city, selectedVenue.usState].filter(Boolean).join(', ')})`}
+              </a>
+            ) : (
+              <span style={{ fontSize: '0.9rem', color: '#666' }}>
+                {`(${[selectedVenue.city, selectedVenue.usState].filter(Boolean).join(', ')})`}
+              </span>
+            )}
           </Box>
         )}
 
@@ -221,7 +233,7 @@ export function CreateGigDialog({
             <span style={{ fontSize: '0.9rem', color: '#666', fontWeight: 'bold' }}>VENUE PREVIEW:</span>
             <span style={{ fontWeight: 'bold' }}>{inlineName}</span>
             <span style={{ fontSize: '0.9rem', color: '#666' }}>
-              {`(${inlineCity || ''}, ${inlineState || ''})`}
+              {`(${[inlineCity, inlineState].filter(Boolean).join(', ')})`}
             </span>
           </Box>
         )}

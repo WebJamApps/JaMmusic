@@ -1,5 +1,6 @@
 import { getAllowedAdminRoles } from '../AdminUsers/admin-users.utils';
 import ExcelJS from 'exceljs';
+import { customFetch } from 'src/lib/fetch.utils';
 
 // Booking-outreach venue + batch-approval admin API (web-jam-back #819/#843/#844).
 // Mirrors admin-users.utils: fetch + Bearer token against ${BackendUrl}.
@@ -101,7 +102,7 @@ async function listVenues(token: string, eligibleFor?: string, status?: string):
   if (eligibleFor) params.append('eligibleFor', eligibleFor);
   if (status) params.append('status', status);
   const qs = params.toString() ? `?${params.toString()}` : '';
-  const res = await fetch(`${venueUrl}${qs}`, { headers: headers(token) });
+  const res = await customFetch(`${venueUrl}${qs}`, { headers: headers(token) });
   if (!res.ok) await handleResponseError(res);
   return await res.json() as Ivenue[];
 }
@@ -110,20 +111,20 @@ async function listVenues(token: string, eligibleFor?: string, status?: string):
 // it just drops out of the default list). No hard purge: archiving is enough to
 // clear junk entries out of the way (#1139).
 async function deleteVenue(token: string, venueId: string): Promise<void> {
-  const res = await fetch(`${venueUrl}/${venueId}`, { method: 'DELETE', headers: headers(token) });
+  const res = await customFetch(`${venueUrl}/${venueId}`, { method: 'DELETE', headers: headers(token) });
   if (!res.ok) await handleResponseError(res);
 }
 
 async function updateVenue(token: string, venueId: string, payload: IvenueUpdate): Promise<Ivenue> {
-  const res = await fetch(`${venueUrl}/${venueId}`, {
-    method: 'PUT', headers: headers(token, true), body: JSON.stringify(payload),
+  const res = await customFetch(`${venueUrl}/${venueId}`, {
+    method: 'PATCH', headers: headers(token, true), body: JSON.stringify(payload),
   });
   if (!res.ok) await handleResponseError(res);
   return await res.json() as Ivenue;
 }
 
 async function createVenue(token: string, payload: IvenueUpdate): Promise<Ivenue> {
-  const res = await fetch(venueUrl, {
+  const res = await customFetch(venueUrl, {
     method: 'POST', headers: headers(token, true), body: JSON.stringify(payload),
   });
   if (!res.ok) await handleResponseError(res);
@@ -307,6 +308,11 @@ export async function exportVenuesToExcel(venues: Ivenue[]): Promise<void> {
   window.URL.revokeObjectURL(url);
 }
 
+export function getGoogleMapsUrl(address?: string, city?: string, usState?: string): string {
+  const query = [address?.trim(), city?.trim(), usState?.trim()].filter(Boolean).join(', ');
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
+}
+
 export default {
-  listVenues, updateVenue, deleteVenue, createVenue, getAllowedAdminRoles, prospectScore, exportVenuesToExcel,
+  listVenues, updateVenue, deleteVenue, createVenue, getAllowedAdminRoles, prospectScore, exportVenuesToExcel, getGoogleMapsUrl,
 };

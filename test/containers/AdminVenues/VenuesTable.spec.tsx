@@ -95,19 +95,95 @@ describe('VenuesTable', () => {
         bookingStatus: 'booking', outreachEligible: true, inScope: true, interested: true,
         originalsFit: 'loves', payTier: '$$', travelBand: 'local', priority: 2,
         contactName: 'John', email: 'john@example.com', phone: '555-1234', lastContacted: '2026-07-01',
+        website: 'https://alpha.com',
       },
       {
         _id: 'b', name: 'Beta', city: 'Salem', usState: 'NC', venueType: 'MidRangeCafeBar',
         bookingStatus: 'booked', outreachEligible: false, inScope: false, interested: false,
         originalsFit: 'none', payTier: '$', travelBand: 'far', priority: 0,
+        contactName: 'Adam', email: 'adam@example.com', phone: '555-4321', lastContacted: '2026-06-01',
+        website: 'https://beta.com',
       },
     ];
     render(<VenuesTable venues={list} onEdit={vi.fn()} />);
-    ['city', 'state', 'contact', 'type', 'booking', 'interested', 'eligible', 'lastContacted',
+    ['city', 'state', 'website', 'contact', 'type', 'booking', 'interested', 'eligible', 'lastContacted',
       'lastGig', 'nextGig', 'originals', 'pay', 'travel', 'priority', 'prospect'].forEach((key) => {
       fireEvent.click(screen.getByTestId(`sort-${key}`));
       expect(screen.getAllByTestId(/^venue-row-/)).toHaveLength(2);
     });
+  });
+
+  it('sorts by website and contact column headers properly', () => {
+    const list: Ivenue[] = [
+      { _id: 'v-b', name: 'B Venue', website: 'https://b-site.com', contactName: 'Zach', outreachEligible: true },
+      { _id: 'v-a', name: 'A Venue', website: 'https://a-site.com', contactName: 'Alice', outreachEligible: true },
+    ];
+    render(<VenuesTable venues={list} onEdit={vi.fn()} />);
+    
+    // Sort by Website
+    fireEvent.click(screen.getByTestId('sort-website'));
+    expect(rowIds()).toEqual(['venue-row-v-a', 'venue-row-v-b']);
+    fireEvent.click(screen.getByTestId('sort-website'));
+    expect(rowIds()).toEqual(['venue-row-v-b', 'venue-row-v-a']);
+
+    // Sort by Contact
+    fireEvent.click(screen.getByTestId('sort-contact'));
+    expect(rowIds()).toEqual(['venue-row-v-a', 'venue-row-v-b']);
+    fireEvent.click(screen.getByTestId('sort-contact'));
+    expect(rowIds()).toEqual(['venue-row-v-b', 'venue-row-v-a']);
+  });
+
+  it('matches header column order with cell rendering order', () => {
+    const list: Ivenue[] = [
+      {
+        _id: 'v1',
+        name: 'Venue One',
+        city: 'Roanoke',
+        usState: 'VA',
+        website: 'https://venueone.com',
+        contactName: 'Alice',
+        venueType: 'Originals',
+      },
+    ];
+    const { container } = render(<VenuesTable venues={list} onEdit={vi.fn()} />);
+    const headerCells = Array.from(container.querySelectorAll('thead td, thead th'));
+    const headers = headerCells.map((th) => th.textContent?.trim());
+    expect(headers).toEqual([
+      'Actions',
+      'Name',
+      'City',
+      'State',
+      'Website',
+      'Contact',
+      'Type',
+      'Booking',
+      'Interested',
+      'Eligible',
+      'Last pitched',
+      'Last Gig',
+      'Next Gig',
+      'Originals',
+      'Pay',
+      'Travel',
+      'Priority',
+      'Score',
+    ]);
+
+    const row = screen.getByTestId('venue-row-v1');
+    const cells = Array.from(row.querySelectorAll('tbody td, td'));
+    // Filter only cells from the tbody row
+    const tbodyCells = Array.from(row.children);
+    expect(tbodyCells).toHaveLength(headers.length);
+
+    // Verify each specific cell data-testid / index
+    expect(tbodyCells[0].textContent).toContain('Edit');
+    expect(tbodyCells[1].textContent).toBe('Venue One');
+    expect(tbodyCells[2]).toHaveAttribute('data-testid', 'venue-city-v1');
+    expect(tbodyCells[3]).toHaveAttribute('data-testid', 'venue-state-v1');
+    expect(tbodyCells[4]).toHaveAttribute('data-testid', 'venue-website-v1');
+    expect(tbodyCells[5]).toHaveAttribute('data-testid', 'venue-contact-v1');
+    expect(tbodyCells[4].textContent).toContain('https://venueone.com');
+    expect(tbodyCells[5].textContent).toContain('👤');
   });
 
   it('flags venues with no type', () => {

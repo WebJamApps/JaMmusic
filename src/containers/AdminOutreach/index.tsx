@@ -17,6 +17,7 @@ import {
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { AuthContext } from 'src/providers/Auth.provider';
+import { customFetch } from 'src/lib/fetch.utils';
 import adminVenuesUtils, { type Ivenue } from 'src/containers/AdminVenues/admin-venues.utils';
 import outreachUtils, {
   type Icandidate, type IbatchResult, type IpitchPreview, type IpendingReply,
@@ -155,7 +156,7 @@ export function AdminOutreach() {
 
   const loadGigs = useCallback(async () => {
     try {
-      const res = await fetch(`${process.env.BackendUrl}/gig?artist=josh`, {
+      const res = await customFetch(`${process.env.BackendUrl}/gig?artist=josh`, {
         headers: { Authorization: `Bearer ${auth.token}` },
       });
       if (res.ok) {
@@ -616,7 +617,7 @@ export function AdminOutreach() {
                                     {venueName}
                                   </Typography>
                                   {venue?.city && (
-                                    <Chip label={`${venue.city}, ${venue.usState || ''}`} size="small" variant="outlined" />
+                                    <Chip label={[venue.city, venue.usState].filter(Boolean).join(', ')} size="small" variant="outlined" />
                                   )}
                                   {reply.suggestion?.sentiment && sentimentColors[reply.suggestion.sentiment] && (
                                     <Chip
@@ -941,7 +942,19 @@ export function AdminOutreach() {
                               {venue.name}
                             </Typography>
                             <Typography variant="caption" color="text.secondary">
-                              {venue.city ? `${venue.city}, ${venue.usState || ''}` : 'Location unknown'}
+                              {venue.address && venue.address.trim() ? (
+                                <a
+                                  href={adminVenuesUtils.getGoogleMapsUrl(venue.address, venue.city, venue.usState)}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  aria-label={`Open ${venue.name || 'venue'} in Google Maps`}
+                                  style={{ color: 'inherit', textDecoration: 'underline' }}
+                                >
+                                  {[venue.address, venue.city, venue.usState].filter(Boolean).join(', ')}
+                                </a>
+                              ) : (
+                                [venue.city, venue.usState].filter(Boolean).join(', ') || 'Location unknown'
+                              )}
                               {venue.venueType ? ` · Type: ${venue.venueType}` : ''}
                             </Typography>
                           </Box>
@@ -1012,7 +1025,19 @@ export function AdminOutreach() {
                                 {venue.name}
                               </Typography>
                               <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
-                                {venue.city ? `${venue.city}, ${venue.usState || ''}` : ''}
+                                {venue.address && venue.address.trim() ? (
+                                  <a
+                                    href={adminVenuesUtils.getGoogleMapsUrl(venue.address, venue.city, venue.usState)}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    aria-label={`Open ${venue.name || 'venue'} in Google Maps`}
+                                    style={{ color: 'inherit', textDecoration: 'underline' }}
+                                  >
+                                    {[venue.address, venue.city, venue.usState].filter(Boolean).join(', ')}
+                                  </a>
+                                ) : (
+                                  [venue.city, venue.usState].filter(Boolean).join(', ')
+                                )}
                               </Typography>
                             </Box>
                             <Chip size="small" label={statusText} color={statusColor} />

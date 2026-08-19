@@ -23,6 +23,7 @@ export interface Igig {
   venueId?: string | {
     _id: string;
     name: string;
+    address?: string;
     city?: string;
     usState?: string;
     website?: string;

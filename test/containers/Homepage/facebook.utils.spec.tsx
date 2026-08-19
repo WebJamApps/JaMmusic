@@ -106,5 +106,19 @@ describe('facebook.utils', () => {
         'Facebook', expect.stringMatching(/Reconnect failed.*page not found/), 'warning',
       );
     });
+
+    it('triggers auth:logout event on 401 response', async () => {
+      const dispatchSpy = vi.spyOn(window, 'dispatchEvent');
+      commonUtils.notify = vi.fn();
+      (window as any).FB = {
+        init: vi.fn(),
+        login: (cb: (r: any) => void) => cb({ authResponse: { accessToken: 'USER-TOKEN' } }),
+      };
+      vi.stubGlobal('fetch', vi.fn(() => Promise.resolve({
+        ok: false, status: 401, json: () => Promise.resolve({ message: 'Unauthorized' }),
+      })));
+      await facebookUtils.reconnectFacebookAPI(auth as any, WEBJAMLLC_PAGE_ID);
+      expect(dispatchSpy).toHaveBeenCalledWith(expect.objectContaining({ type: 'auth:logout' }));
+    });
   });
 });

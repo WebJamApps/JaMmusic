@@ -20,7 +20,33 @@ const candidates: Icandidate[] = [
       resumeBookingExpired: true,
     },
   },
-  { _id: 'c2', name: 'Venue B' },
+  {
+    _id: 'c2',
+    name: 'Venue B',
+    city: 'Roanoke',
+    venueType: 'PubFestivalBrewery',
+    reason: {
+      lastGigDate: null,
+      gigIntervalMonths: 3,
+      nearestGigMonthsAway: null,
+      spacingNote: 'no gigs yet',
+      resumeBookingExpired: false,
+    },
+  },
+  {
+    _id: 'c3',
+    name: 'Venue C',
+    city: 'Salem',
+    venueType: 'MidRangeCafeBar',
+    reason: {
+      lastGigDate: null,
+      gigIntervalMonths: 0,
+      nearestGigMonthsAway: null,
+      spacingNote: 'spacing off (gigInterval=0)',
+      resumeBookingExpired: false,
+    },
+  },
+  { _id: 'c4', name: 'Venue D' },
 ];
 const okResult: IbatchResult = { requested: 2, sent: 2, skipped: [], records: [] };
 const previews: IpitchPreview[] = [
@@ -89,7 +115,7 @@ describe('AdminOutreach', () => {
     typeDates();
     await act(async () => { fireEvent.click(screen.getByTestId('outreach-load')); });
     expect(outreachUtils.getCandidates).toHaveBeenCalledWith('tk', 'Aug 15-17', '2026-08-15');
-    expect(screen.getByTestId('outreach-candidates').textContent).toContain('2 of 2');
+    expect(screen.getByTestId('outreach-candidates').textContent).toContain('4 of 4');
   });
 
   it('toggling a candidate reduces the selection count', async () => {
@@ -97,7 +123,7 @@ describe('AdminOutreach', () => {
     typeDates();
     await act(async () => { fireEvent.click(screen.getByTestId('outreach-load')); });
     await act(async () => { fireEvent.click(screen.getByRole('checkbox', { name: /Venue A/i })); });
-    expect(screen.getByTestId('outreach-candidates').textContent).toContain('1 of 2');
+    expect(screen.getByTestId('outreach-candidates').textContent).toContain('3 of 4');
   });
 
   it('loads candidates carrying a +/- 2-month conflict warning as unchecked', async () => {
@@ -118,7 +144,7 @@ describe('AdminOutreach', () => {
     typeDates();
     await act(async () => { fireEvent.click(screen.getByTestId('outreach-load')); });
 
-    expect(screen.getByTestId('outreach-candidates').textContent).toContain('1 of 2');
+    expect(screen.getByTestId('outreach-candidates').textContent).toContain('3 of 4');
     const cbA = screen.getByRole('checkbox', { name: /Venue A/i });
     const cbB = screen.getByRole('checkbox', { name: /Venue B/i });
     expect(cbA).not.toBeChecked();
@@ -132,21 +158,34 @@ describe('AdminOutreach', () => {
     typeDates();
     await act(async () => { fireEvent.click(screen.getByTestId('outreach-load')); });
 
-    // Verify c1 (with reason) renders reasons
-    const reasonContainer = screen.getByTestId('outreach-reason-c1');
-    expect(reasonContainer).toBeInTheDocument();
+    // Verify c1 (with full reason) renders reasons
+    const reasonContainerC1 = screen.getByTestId('outreach-reason-c1');
+    expect(reasonContainerC1).toBeInTheDocument();
 
-    const chips = reasonContainer.children;
-    const labels = Array.from(chips).map(chip => chip.getAttribute('label') || chip.textContent || '');
+    const chipsC1 = reasonContainerC1.children;
+    const labelsC1 = Array.from(chipsC1).map(chip => chip.getAttribute('label') || chip.textContent || '');
 
-    expect(labels.some(l => l.includes('clear — nearest gig ~4.5 mo away'))).toBe(true);
-    expect(labels.some(l => l.includes('Gig interval: 2 mo'))).toBe(true);
-    expect(labels.some(l => l.includes('Nearest Gig: 4.5 mo'))).toBe(true);
-    expect(labels.some(l => l.includes('Last Gig:'))).toBe(true);
-    expect(labels.some(l => l.includes('Cooldown Expired'))).toBe(true);
+    expect(labelsC1.some(l => l.includes('clear — nearest gig ~4.5 mo away'))).toBe(true);
+    expect(labelsC1.some(l => l.includes('Gig interval: 2 mo'))).toBe(true);
+    expect(labelsC1.some(l => l.includes('Nearest Gig: 4.5 mo'))).toBe(true);
+    expect(labelsC1.some(l => l.includes('Last Gig:'))).toBe(true);
+    expect(labelsC1.some(l => l.includes('Cooldown Expired'))).toBe(true);
 
-    // Verify c2 (without reason) does not render reasons
-    expect(screen.queryByTestId('outreach-reason-c2')).toBeNull();
+    // Verify c2 renders "no gigs yet" and interval 3 mo
+    const reasonContainerC2 = screen.getByTestId('outreach-reason-c2');
+    expect(reasonContainerC2).toBeInTheDocument();
+    const labelsC2 = Array.from(reasonContainerC2.children).map(chip => chip.getAttribute('label') || chip.textContent || '');
+    expect(labelsC2.some(l => l.includes('no gigs yet'))).toBe(true);
+    expect(labelsC2.some(l => l.includes('Gig interval: 3 mo'))).toBe(true);
+
+    // Verify c3 renders "spacing off (gigInterval=0)"
+    const reasonContainerC3 = screen.getByTestId('outreach-reason-c3');
+    expect(reasonContainerC3).toBeInTheDocument();
+    const labelsC3 = Array.from(reasonContainerC3.children).map(chip => chip.getAttribute('label') || chip.textContent || '');
+    expect(labelsC3.some(l => l.includes('spacing off (gigInterval=0)'))).toBe(true);
+
+    // Verify c4 (without reason) does not render reasons
+    expect(screen.queryByTestId('outreach-reason-c4')).toBeNull();
   });
 
   it('opens dialog and shows previews', async () => {
@@ -154,7 +193,7 @@ describe('AdminOutreach', () => {
     typeDates();
     await act(async () => { fireEvent.click(screen.getByTestId('outreach-load')); });
     await act(async () => { fireEvent.click(screen.getByTestId('outreach-open-dialog')); });
-    expect(outreachUtils.getPreview).toHaveBeenCalledWith('tk', ['c1', 'c2'], 'Aug 15-17');
+    expect(outreachUtils.getPreview).toHaveBeenCalledWith('tk', ['c1', 'c2', 'c3', 'c4'], 'Aug 15-17');
     expect(screen.getByTestId('outreach-dialog')).toBeDefined();
     expect(screen.getByTestId('preview-c1')).toBeDefined();
   });
@@ -166,7 +205,7 @@ describe('AdminOutreach', () => {
     await act(async () => { fireEvent.click(screen.getByTestId('outreach-open-dialog')); });
     await act(async () => { fireEvent.click(screen.getByTestId('outreach-dialog-send')); });
     expect(outreachUtils.sendBatch).toHaveBeenCalledWith('tk', expect.objectContaining({
-      venueIds: ['c1', 'c2'],
+      venueIds: ['c1', 'c2', 'c3', 'c4'],
       targetDates: 'Aug 15-17',
       bookingPeriod: 'summer 2026',
       targetWeekend: { start: '2026-08-15', end: '2026-08-17' },
@@ -836,6 +875,84 @@ describe('AdminOutreach', () => {
       });
 
       expect(window.scrollTo).toHaveBeenCalled();
+    });
+
+    it('renders Google Maps link for never pitched and ineligible venues when address is present', async () => {
+      const mockVenuesListWithAddress = [
+        {
+          _id: 'v-addr-pitched',
+          name: 'Pitched Place',
+          address: '100 Main St',
+          city: 'Salem',
+          usState: 'VA',
+          outreachEligible: false,
+          bookingStatus: 'booked',
+        },
+        {
+          _id: 'v-addr-never',
+          name: 'Never Pitched Place',
+          address: '200 Market St',
+          city: 'Roanoke',
+          usState: 'VA',
+          email: 'v@never.com',
+          outreachEligible: true,
+        },
+      ];
+      outreachUtils.getPendingReplies = vi.fn().mockResolvedValue([]);
+      adminVenuesUtils.listVenues = vi.fn().mockResolvedValue(mockVenuesListWithAddress);
+      await renderPage();
+
+      // Expand "Never Pitched" accordion
+      const neverPitchedAccordion = screen.getByText(/Never Pitched \(1\)/);
+      await act(async () => {
+        fireEvent.click(neverPitchedAccordion);
+      });
+
+      const mapsLinkNever = screen.getByRole('link', { name: 'Open Never Pitched Place in Google Maps' });
+      expect(mapsLinkNever).toBeInTheDocument();
+      expect(mapsLinkNever).toHaveAttribute('href', 'https://www.google.com/maps/search/?api=1&query=200%20Market%20St%2C%20Roanoke%2C%20VA');
+      expect(mapsLinkNever).toHaveTextContent('200 Market St, Roanoke, VA');
+
+      // Expand "Booked / Interested / Do not contact" accordion
+      const resolvedAccordion = screen.getByText(/Booked \/ Interested \/ Do not contact \(1\)/);
+      await act(async () => {
+        fireEvent.click(resolvedAccordion);
+      });
+
+      const mapsLinkIneligible = screen.getByRole('link', { name: 'Open Pitched Place in Google Maps' });
+      expect(mapsLinkIneligible).toBeInTheDocument();
+      expect(mapsLinkIneligible).toHaveAttribute('href', 'https://www.google.com/maps/search/?api=1&query=100%20Main%20St%2C%20Salem%2C%20VA');
+      expect(mapsLinkIneligible).toHaveTextContent('100 Main St, Salem, VA');
+    });
+
+    it('renders location without trailing commas when usState is absent in AdminOutreach', async () => {
+      const mockVenuesNoState = [
+        {
+          _id: 'v-no-state',
+          name: 'London Hall',
+          address: '45 High St',
+          city: 'London',
+          outreachEligible: true,
+        },
+      ];
+      outreachUtils.getPendingReplies = vi.fn().mockResolvedValue([]);
+      adminVenuesUtils.listVenues = vi.fn().mockResolvedValue(mockVenuesNoState);
+      await renderPage();
+
+      const neverPitchedAccordion = screen.getByText(/Never Pitched \(1\)/);
+      await act(async () => {
+        fireEvent.click(neverPitchedAccordion);
+      });
+
+      const mapsLink = screen.getByRole('link', { name: 'Open London Hall in Google Maps' });
+      expect(mapsLink).toHaveTextContent('45 High St, London');
+    });
+
+    it('loadGigs handles 401 and errors gracefully', async () => {
+      const dispatchSpy = vi.spyOn(window, 'dispatchEvent');
+      global.fetch = vi.fn().mockResolvedValue(new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 }));
+      await renderPage();
+      expect(dispatchSpy).toHaveBeenCalledWith(expect.objectContaining({ type: 'auth:logout' }));
     });
   });
 });
