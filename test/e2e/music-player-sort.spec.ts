@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 test('music player sorts songs by orderBy priority descending', async ({ page }) => {
-  await page.route(/\/song/, async (route) => {
+  await page.route((url) => url.pathname === '/song', async (route) => {
     await route.fulfill({
       status: 200,
       contentType: 'application/json',

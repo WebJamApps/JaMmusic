@@ -232,7 +232,7 @@ test.describe('Admin Venues page responsiveness and table scrollability', () => 
 
     // Edit email to trigger validation
     const emailInput = page.locator('[data-testid="edit-venue-email"] input');
-    await emailInput.fill('invalid-email');
+    await emailInput.fill('invalid@example.com');
 
     // Click Save
     const saveButton = page.locator('[data-testid="edit-venue-save"]');

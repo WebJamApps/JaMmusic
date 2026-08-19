@@ -27,6 +27,12 @@ jobs:
       - run:
           name: run all tests
           command: npm test
+      - run:
+          name: Install Playwright Chromium with dependencies
+          command: npx playwright install --with-deps chromium
+      - run:
+          name: Run Playwright e2e tests
+          command: npm run test:e2e
       - store_artifacts:
           path: coverage
       - run:
