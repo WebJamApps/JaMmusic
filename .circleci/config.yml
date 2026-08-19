@@ -32,6 +32,8 @@ jobs:
           command: npx playwright install --with-deps chromium
       - run:
           name: Run Playwright e2e tests
+          environment:
+            BackendUrl: "http://localhost:7000"
           command: npm run test:e2e
       - store_artifacts:
           path: coverage

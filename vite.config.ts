@@ -36,6 +36,13 @@ const APP_ENV_KEYS = [
   'GOOGLE_MAPS_API_KEY',
 ] as const;
 
+const DEFAULT_APP_ENV: Record<string, string> = {
+  BackendUrl: 'http://localhost:7000',
+  GoogleClientId: '702173574211-lo764q6i5k1c5brj29g28ltrjcbvq2hn.apps.googleusercontent.com',
+  GOOGLE_MAPS_API_KEY: 'AIzaSyDtwXQPQwJWf3DlW74ZcU-llcaJzZZXCpo',
+  APP_NAME: 'web-jam.com',
+};
+
 function replaceProcessEnv(env: Record<string, string>): Plugin {
   return {
     name: 'replace-process-env',
@@ -44,8 +51,9 @@ function replaceProcessEnv(env: Record<string, string>): Plugin {
       if (!/\.(t|j)sx?$/.test(id)) return null;
       let out = code;
       for (const key of APP_ENV_KEYS) {
+        const val = env[key] || process.env[key] || DEFAULT_APP_ENV[key] || '';
         const re = new RegExp(`process\\.env\\.${key}\\b`, 'g');
-        out = out.replace(re, JSON.stringify(env[key] ?? ''));
+        out = out.replace(re, JSON.stringify(val));
       }
       return out === code ? null : { code: out, map: null };
     },

@@ -25,6 +25,9 @@ export default defineConfig({
     timeout: 120_000,
     stdout: 'ignore',
     stderr: 'pipe',
+    env: {
+      BackendUrl: process.env.BackendUrl || 'http://localhost:7000',
+    },
   },
   projects: [
     { name: 'mobile-dark', use: { ...devices['Pixel 5'] } },
