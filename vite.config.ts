@@ -52,7 +52,10 @@ function replaceProcessEnv(env: Record<string, string>): Plugin {
   };
 }
 
-export default defineConfig(async ({ mode }) => {
+export default defineConfig(async ({ mode, command }) => {
+  if (command === 'build' || mode === 'production') {
+    process.env.NODE_ENV = 'production';
+  }
   const env: Record<string, string> = { ...loadEnv(mode, process.cwd(), ''), NODE_ENV: mode };
   const isTest = mode === 'test' || process.env.VITEST;
   // `vitest/config` is a devDependency — import it lazily so a production
@@ -61,6 +64,7 @@ export default defineConfig(async ({ mode }) => {
     ? [...(await import('vitest/config')).configDefaults.exclude, 'test/e2e/**']
     : ['test/e2e/**'];
   return {
+    ...(command === 'build' ? { oxc: { jsx: { development: false } } } : {}),
     plugins: [
       ...(isTest ? [] : [
         replaceProcessEnv(env),
