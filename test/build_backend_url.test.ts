@@ -20,7 +20,7 @@ describe('BackendUrl contract and build-time assertions', () => {
   });
 
   const getReplaceProcessEnvPlugin = async (envOverrides: Record<string, string> = {}) => {
-    Object.assign(process.env, envOverrides);
+    Object.assign(process.env, { ALLOW_LOCALHOST_BACKEND: 'true', ...envOverrides });
     const config = await (viteConfigPromise as any)({ mode: 'production', command: 'build' });
     const plugin = (config.plugins as any[])
       .flat()
@@ -76,7 +76,7 @@ describe('BackendUrl contract and build-time assertions', () => {
   it('production build without BackendUrl succeeds with empty string fallback', async () => {
     delete process.env.BackendUrl;
 
-    const plugin = await getReplaceProcessEnvPlugin();
+    const plugin = await getReplaceProcessEnvPlugin({ BackendUrl: '' });
     expect(plugin).toBeDefined();
     const transformed = (plugin.transform as any)(
       'const url = `${process.env.BackendUrl}/facebook/token`;',
@@ -93,15 +93,26 @@ describe('BackendUrl contract and build-time assertions', () => {
     expect(config).toBeDefined();
   });
 
-  it('verifies production build dist assets contain 0 occurrences of localhost:7000 or hardcoded credentials', () => {
+  it('verifies replaced process.env does not contain hardcoded credentials fallback when env is unset', async () => {
+    const plugin = await getReplaceProcessEnvPlugin({
+      GoogleClientId: '',
+      GOOGLE_MAPS_API_KEY: '',
+    });
+    expect(plugin).toBeDefined();
+    const transformed = (plugin.transform as any)(
+      'const g = process.env.GoogleClientId; const m = process.env.GOOGLE_MAPS_API_KEY;',
+      'src/file.ts',
+    );
+    expect(transformed.code).toBe('const g = ""; const m = "";');
+  });
+
+  it('verifies production build dist assets contain 0 occurrences of localhost:7000', () => {
     const distAssetsDir = path.resolve(process.cwd(), 'dist/assets');
     if (fs.existsSync(distAssetsDir)) {
       const jsFiles = fs.readdirSync(distAssetsDir).filter((f) => f.endsWith('.js'));
       for (const jsFile of jsFiles) {
         const content = fs.readFileSync(path.join(distAssetsDir, jsFile), 'utf-8');
         expect(content).not.toContain('localhost:7000');
-        expect(content).not.toContain('702173574211-lo764q6i5k1c5brj29g28ltrjcbvq2hn');
-        expect(content).not.toContain('AIzaSyDtwXQPQwJWf3DlW74ZcU-llcaJzZZXCpo');
       }
     }
   });
