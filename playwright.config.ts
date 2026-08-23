@@ -27,6 +27,7 @@ export default defineConfig({
     stderr: 'pipe',
     env: {
       BackendUrl: process.env.BackendUrl || 'http://localhost:7000',
+      ALLOW_LOCALHOST_BACKEND: 'true',
     },
   },
   projects: [
