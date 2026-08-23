@@ -1,14 +1,32 @@
-import js from '@eslint/js';
-import tseslint from 'typescript-eslint';
-import reactHooks from 'eslint-plugin-react-hooks';
-import importX from 'eslint-plugin-import-x';
-import vitest from '@vitest/eslint-plugin';
-import n from 'eslint-plugin-n';
-import security from 'eslint-plugin-security';
-import sonarjs from 'eslint-plugin-sonarjs';
-import json from 'eslint-plugin-json';
-import jsxA11yX from 'eslint-plugin-jsx-a11y-x';
-import globals from 'globals';
+import { createRequire } from 'node:module';
+
+// TypeScript 7 Go compiler does not provide the JS programmatic AST API.
+// Forward typescript-eslint, sonarjs, and other ESLint plugins to @typescript/typescript6.
+const require = createRequire(import.meta.url);
+try {
+  const tsPath = require.resolve('typescript');
+  const ts6 = require('@typescript/typescript6');
+  require.cache[tsPath] = {
+    id: tsPath,
+    filename: tsPath,
+    loaded: true,
+    exports: ts6,
+  };
+} catch {
+  // Fallback if @typescript/typescript6 is not present
+}
+
+const js = (await import('@eslint/js')).default;
+const tseslint = (await import('typescript-eslint')).default;
+const reactHooks = (await import('eslint-plugin-react-hooks')).default;
+const importX = (await import('eslint-plugin-import-x')).default;
+const vitest = (await import('@vitest/eslint-plugin')).default;
+const n = (await import('eslint-plugin-n')).default;
+const security = (await import('eslint-plugin-security')).default;
+const sonarjs = (await import('eslint-plugin-sonarjs')).default;
+const json = (await import('eslint-plugin-json')).default;
+const jsxA11yX = (await import('eslint-plugin-jsx-a11y-x')).default;
+const globals = (await import('globals')).default;
 
 // jsx-a11y-x recommended rules, enforced as errors.
 // Defensive: the v0.2.0 recommended preset lists rules it doesn't actually
