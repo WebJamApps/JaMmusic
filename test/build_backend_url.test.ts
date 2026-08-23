@@ -1,8 +1,39 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import fs from 'node:fs';
 import path from 'node:path';
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import type { Plugin, PluginOption, UserConfig } from 'vite';
 import viteConfigPromise from '../vite.config';
+
+type TransformOutput = { code: string; map: null } | null;
+
+interface ReplaceProcessEnvPlugin extends Pick<Plugin, 'name'> {
+  transform: (code: string, id: string) => TransformOutput;
+}
+
+function hasPluginName(plugin: PluginOption): plugin is Plugin | { name: string } {
+  return typeof plugin === 'object' && plugin !== null && !Array.isArray(plugin) && 'name' in plugin;
+}
+
+function isReplaceProcessEnvPlugin(plugin: PluginOption): plugin is ReplaceProcessEnvPlugin {
+  if (!hasPluginName(plugin) || plugin.name !== 'replace-process-env') return false;
+  return 'transform' in plugin && typeof plugin.transform === 'function';
+}
+
+function flattenPlugins(plugins: PluginOption[]): PluginOption[] {
+  const flattened: PluginOption[] = [];
+  for (const entry of plugins) {
+    if (Array.isArray(entry)) {
+      flattened.push(...flattenPlugins(entry));
+    } else {
+      flattened.push(entry);
+    }
+  }
+  return flattened;
+}
+
+async function buildProductionConfig(): Promise<UserConfig> {
+  return viteConfigPromise({ mode: 'production', command: 'build' });
+}
 
 describe('BackendUrl contract and build-time assertions', () => {
   const originalEnv = { ...process.env };
@@ -19,25 +50,28 @@ describe('BackendUrl contract and build-time assertions', () => {
     process.env = { ...originalEnv };
   });
 
-  const getReplaceProcessEnvPlugin = async (envOverrides: Record<string, string> = {}) => {
+  const getReplaceProcessEnvPlugin = async (
+    envOverrides: Record<string, string> = {},
+  ): Promise<ReplaceProcessEnvPlugin> => {
     Object.assign(process.env, { ALLOW_LOCALHOST_BACKEND: 'true', ...envOverrides });
-    const config = await (viteConfigPromise as any)({ mode: 'production', command: 'build' });
-    const plugin = (config.plugins as any[])
-      .flat()
-      .find((p: any) => p && p.name === 'replace-process-env');
+    const config = await buildProductionConfig();
+    const plugin = flattenPlugins(config.plugins ?? []).find(isReplaceProcessEnvPlugin);
+    if (!plugin) {
+      throw new Error('replace-process-env plugin not found in vite config plugins');
+    }
     return plugin;
   };
 
   it('contract: empty BackendUrl means same origin', async () => {
     const plugin = await getReplaceProcessEnvPlugin({ BackendUrl: '' });
     expect(plugin).toBeDefined();
-    const transformed = (plugin.transform as any)(
+    const transformed = plugin.transform(
       'const url = `${process.env.BackendUrl}/user/auth/google`;',
       'src/file.ts',
     );
     expect(transformed).toBeDefined();
     // Replacing process.env.BackendUrl with "" results in a same-origin relative path
-    expect(transformed.code).toBe('const url = `${""}/user/auth/google`;');
+    expect(transformed?.code).toBe('const url = `${""}/user/auth/google`;');
   });
 
   it('preserves configured non-empty BackendUrl in replaceProcessEnv', async () => {
@@ -45,21 +79,19 @@ describe('BackendUrl contract and build-time assertions', () => {
       BackendUrl: 'https://api.joshandmariamusic.com',
     });
     expect(plugin).toBeDefined();
-    const transformed = (plugin.transform as any)(
+    const transformed = plugin.transform(
       'const url = `${process.env.BackendUrl}/song`;',
       'src/file.ts',
     );
     expect(transformed).toBeDefined();
-    expect(transformed.code).toBe('const url = `${"https://api.joshandmariamusic.com"}/song`;');
+    expect(transformed?.code).toBe('const url = `${"https://api.joshandmariamusic.com"}/song`;');
   });
 
   it('build-time assertion: building with BackendUrl=http://localhost:7000 throws when ALLOW_LOCALHOST_BACKEND is not set', async () => {
     process.env.BackendUrl = 'http://localhost:7000';
     delete process.env.ALLOW_LOCALHOST_BACKEND;
 
-    await expect(
-      (viteConfigPromise as any)({ mode: 'production', command: 'build' }),
-    ).rejects.toThrow(
+    await expect(buildProductionConfig()).rejects.toThrow(
       'Refusing production build with localhost BackendUrl. Set ALLOW_LOCALHOST_BACKEND=true to allow.',
     );
   });
@@ -68,7 +100,7 @@ describe('BackendUrl contract and build-time assertions', () => {
     process.env.BackendUrl = 'http://localhost:7000';
     process.env.ALLOW_LOCALHOST_BACKEND = 'true';
 
-    const config = await (viteConfigPromise as any)({ mode: 'production', command: 'build' });
+    const config = await buildProductionConfig();
     expect(config).toBeDefined();
     expect(config.plugins).toBeDefined();
   });
@@ -78,18 +110,18 @@ describe('BackendUrl contract and build-time assertions', () => {
 
     const plugin = await getReplaceProcessEnvPlugin({ BackendUrl: '' });
     expect(plugin).toBeDefined();
-    const transformed = (plugin.transform as any)(
+    const transformed = plugin.transform(
       'const url = `${process.env.BackendUrl}/facebook/token`;',
       'src/file.ts',
     );
-    expect(transformed.code).toBe('const url = `${""}/facebook/token`;');
+    expect(transformed?.code).toBe('const url = `${""}/facebook/token`;');
   });
 
   it('does not refuse localhost BackendUrl during development serve', async () => {
     process.env.BackendUrl = 'http://localhost:7000';
     delete process.env.ALLOW_LOCALHOST_BACKEND;
 
-    const config = await (viteConfigPromise as any)({ mode: 'development', command: 'serve' });
+    const config = await viteConfigPromise({ mode: 'development', command: 'serve' });
     expect(config).toBeDefined();
   });
 
@@ -99,11 +131,11 @@ describe('BackendUrl contract and build-time assertions', () => {
       GOOGLE_MAPS_API_KEY: '',
     });
     expect(plugin).toBeDefined();
-    const transformed = (plugin.transform as any)(
+    const transformed = plugin.transform(
       'const g = process.env.GoogleClientId; const m = process.env.GOOGLE_MAPS_API_KEY;',
       'src/file.ts',
     );
-    expect(transformed.code).toBe('const g = ""; const m = "";');
+    expect(transformed?.code).toBe('const g = ""; const m = "";');
   });
 
   it('verifies production build dist assets contain 0 occurrences of localhost:7000', () => {
