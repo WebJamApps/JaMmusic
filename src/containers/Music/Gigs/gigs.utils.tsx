@@ -29,7 +29,7 @@ const createGig = async (
   try {
     const { token } = auth;
     const gig = {
-      datetime, venue, tickets, city, usState, duration, promoImageUrl, artist: 'josh', venueId: venueId || undefined,
+      datetime, venue, tickets, city, usState, duration, promoImageUrl, artist: 'jammusic', venueId: venueId || undefined,
     };
     socket = scc.create({
       hostname: process.env.SCS_HOST,
@@ -100,7 +100,7 @@ const updateGig = async (
 ): Promise<GigOpResult> => {
   let socket: scc.AGClientSocket | undefined;
   try {
-    const gig: Igig = { ...editGig, artist: 'josh' };
+    const gig: Igig = { ...editGig, artist: 'jammusic' };
     delete gig.date;
     delete gig.time;
     delete gig.location;

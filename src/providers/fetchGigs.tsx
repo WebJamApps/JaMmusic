@@ -14,7 +14,7 @@ export const defaultGig: Igig = {
   id: 0,
   duration: 0,
   promoImageUrl: '',
-  artist: 'josh',
+  artist: 'jammusic',
 };
 
 const getGigs = (
