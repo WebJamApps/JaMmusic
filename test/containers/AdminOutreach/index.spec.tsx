@@ -284,7 +284,6 @@ describe('AdminOutreach', () => {
         suggestion: {
           sentiment: 'positive',
           proposedBookingStatus: 'booking',
-          proposedInterested: true,
           rationale: 'Positive booking interest.',
           model: 'gemini-3.5-flash',
         },
@@ -302,7 +301,6 @@ describe('AdminOutreach', () => {
         suggestion: {
           sentiment: 'negative',
           proposedBookingStatus: 'not-booking',
-          proposedInterested: false,
           rationale: 'Negative sentiment.',
         },
       },
@@ -313,7 +311,6 @@ describe('AdminOutreach', () => {
         suggestion: {
           sentiment: 'needs-info',
           proposedBookingStatus: 'booking',
-          proposedInterested: false,
           rationale: 'Needs more info.',
         },
       },
@@ -393,22 +390,18 @@ describe('AdminOutreach', () => {
       expect(screen.getByTestId('reply-venue-r6').textContent).toBe('Unknown Venue');
     });
 
-    it('supports changing status and checkbox value and applying suggestion', async () => {
+    it('supports changing status and applying suggestion', async () => {
       outreachUtils.getPendingReplies = vi.fn().mockResolvedValue(mockPendingReplies);
       adminVenuesUtils.listVenues = vi.fn().mockResolvedValue(mockVenuesList);
       await renderPage();
 
-      // Find select and checkbox for r1
+      // Find select for r1 and verify interested checkbox is absent
       const selectElement = screen.getByTestId('reply-status-select-r1');
       expect(selectElement).toBeDefined();
+      expect(screen.queryByTestId('reply-interested-checkbox-r1')).toBeNull();
 
       // Simulate status select change
       fireEvent.change(selectElement, { target: { value: 'not-booking' } });
-
-      // Toggle interest checkbox
-      const checkboxInput = screen.getByTestId('reply-interested-checkbox-r1');
-      expect(checkboxInput).toBeDefined();
-      fireEvent.click(checkboxInput);
 
       // Apply suggestion
       await act(async () => {
@@ -417,7 +410,6 @@ describe('AdminOutreach', () => {
 
       expect(outreachUtils.applySuggestion).toHaveBeenCalledWith('tk', 'r1', {
         bookingStatus: 'not-booking',
-        interested: false,
       });
       // Should reload the pending replies
       expect(outreachUtils.getPendingReplies).toHaveBeenCalledTimes(2);
@@ -695,7 +687,7 @@ describe('AdminOutreach', () => {
         { _id: 'v6', name: 'Booked resolved', city: 'Quincy', usState: 'MA', email: 'v6@booked.com', bookingStatus: 'booked' },
         { _id: 'v7', name: 'DNC Venue', city: 'Quincy', usState: 'MA', email: 'v7@dnc.com', doNotContact: true },
         { _id: 'v8', name: 'Not a fit venue', city: 'Amherst', usState: 'MA', email: 'v8@notafit.com', outreachEligible: false },
-        { _id: 'v9', name: 'Warm Lead Venue', city: 'Boston', usState: 'MA', email: 'v9@warm.com', interested: true },
+        { _id: 'v9', name: 'Pool Venue', city: 'Boston', usState: 'MA', email: 'v9@warm.com' },
       ];
       const mockPendingRepliesWithV9 = [
         ...mockPendingReplies,
@@ -726,7 +718,9 @@ describe('AdminOutreach', () => {
       expect(screen.getByText('Booked resolved')).toBeInTheDocument();
       expect(screen.getByText('DNC Venue')).toBeInTheDocument();
       expect(screen.getByText('Not a fit venue')).toBeInTheDocument();
-      expect(screen.getByText('Warm Lead Venue')).toBeInTheDocument();
+      expect(screen.getByText('Pool Venue')).toBeInTheDocument();
+      expect(screen.getByText('Eligible / Pool')).toBeInTheDocument();
+      expect(screen.queryByText('Warm Lead')).toBeNull();
     });
 
     it('supports triggering onClose and empty DatePicker onChange', async () => {

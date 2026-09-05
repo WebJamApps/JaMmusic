@@ -70,11 +70,11 @@ describe('Outreach utils', () => {
 
   it('applySuggestion POSTs the suggestion update payload', async () => {
     fetchMock.mockReturnValue(okJson({ _id: 'o1', status: 'replied' }));
-    const res = await outreachUtils.applySuggestion('tok', 'id1', { bookingStatus: 'booking', interested: true });
+    const res = await outreachUtils.applySuggestion('tok', 'id1', { bookingStatus: 'booking' });
     expect(res).toBeDefined();
     const opts = fetchMock.mock.calls[0][1] as RequestInit;
     expect(opts.method).toBe('POST');
-    expect(JSON.parse(opts.body as string)).toEqual({ bookingStatus: 'booking', interested: true });
+    expect(JSON.parse(opts.body as string)).toEqual({ bookingStatus: 'booking' });
     expect(fetchMock.mock.calls[0][0]).toContain('/outreach/id1/apply-suggestion');
   });
 
