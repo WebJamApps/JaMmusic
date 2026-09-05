@@ -308,7 +308,7 @@ export function EditVenueDialog({
       setError("Zip code can't be removed — enter the corrected zip code");
       return;
     }
-    if (zipTrimmed && !/^\d{5}$/.test(zipTrimmed)) {
+    if (zipTrimmed && !/^\d{5}(?:-\d{4})?$/.test(zipTrimmed)) {
       setError('Zip code must be a valid 5-digit ZIP code');
       return;
     }
@@ -376,9 +376,9 @@ export function EditVenueDialog({
       country: currentCountry,
       gigInterval: typeof form.gigInterval === 'number' ? form.gigInterval : 0,
       resumeBooking: form.resumeBooking || null,
-      familyNearby: !!form.familyNearby,
     };
     delete finalForm.bookingStatus;
+    delete finalForm.familyNearby;
     if (currentCountry === 'US') {
       finalForm.region = '';
     } else {
@@ -723,7 +723,7 @@ export function EditVenueDialog({
             control={(
               <Checkbox
                 checked={!!form.familyNearby}
-                onChange={(e) => set('familyNearby', e.target.checked)}
+                disabled
                 aria-label="family nearby"
                 data-testid="edit-venue-family-nearby"
               />

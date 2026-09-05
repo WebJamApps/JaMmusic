@@ -311,4 +311,67 @@ test.describe('Admin Venues page responsiveness and table scrollability', () => 
     await expect(contactNameIcon).toBeVisible();
     await expect(contactEmailIcon).toBeVisible();
   });
+
+  test(
+    'opens Add Venue, asserts Zip Code is required, asserts familyNearby disabled, and creates venue',
+    async ({ page }) => {
+      await page.goto('/admin/venues', { waitUntil: 'domcontentloaded' });
+
+      // Open Add Venue dialog
+      const addButton = page.locator('[data-testid="admin-venues-add-button"]');
+      await expect(addButton).toBeVisible();
+      await addButton.click();
+
+      // Verify dialog title
+      await expect(page.locator('[data-testid="edit-venue-dialog-title"]')).toHaveText('Add Venue');
+
+      // Verify familyNearby checkbox is rendered as disabled (auto-derived)
+      const familyNearbyCheckbox = page.locator('[data-testid="edit-venue-family-nearby"] input[type="checkbox"]');
+      await expect(familyNearbyCheckbox).toBeDisabled();
+
+      // Fill form without zip code
+      await page.locator('[data-testid="edit-venue-name"] input').fill('Playwright Test Cafe');
+      await page.locator('[data-testid="edit-venue-address"] input').fill('100 Main St');
+      await page.locator('[data-testid="edit-venue-state"] input').fill('VA');
+
+      // Save and verify "Zip code is required" error
+      await page.locator('[data-testid="edit-venue-save"]').click();
+      const errorText = page.locator('[data-testid="edit-venue-error"]');
+      await expect(errorText).toBeVisible();
+      await expect(errorText).toHaveText('Zip code is required');
+
+      // Intercept POST /venue to verify payload includes zipCode and does NOT include familyNearby
+      const captured: { payload: { name?: string; zipCode?: string; familyNearby?: unknown } | null } = { payload: null };
+      await page.route('http://localhost:7000/venue*', async route => {
+        if (route.request().method() === 'POST') {
+          captured.payload = JSON.parse(route.request().postData() || '{}');
+          await route.fulfill({
+            status: 201,
+            contentType: 'application/json',
+            body: JSON.stringify({
+              _id: 'v-new',
+              ...captured.payload,
+              status: 'active',
+            }),
+          });
+        } else {
+          await route.fulfill({
+            status: 200,
+            contentType: 'application/json',
+            body: JSON.stringify([]),
+          });
+        }
+      });
+
+      // Fill valid zip code and save
+      await page.locator('[data-testid="edit-venue-zip"] input').fill('24011');
+      await page.locator('[data-testid="edit-venue-save"]').click();
+
+      // Verify payload captured
+      await expect.poll(() => captured.payload).not.toBeNull();
+      expect(captured.payload?.name).toBe('Playwright Test Cafe');
+      expect(captured.payload?.zipCode).toBe('24011');
+      expect(captured.payload?.familyNearby).toBeUndefined();
+    },
+  );
 });

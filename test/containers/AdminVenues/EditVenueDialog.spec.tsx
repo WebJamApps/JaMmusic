@@ -58,6 +58,7 @@ const venue: Ivenue = {
 describe('EditVenueDialog', () => {
   beforeEach(() => {
     adminVenuesUtils.updateVenue = vi.fn(() => Promise.resolve({} as Ivenue)) as any;
+    adminVenuesUtils.createVenue = vi.fn(() => Promise.resolve({} as Ivenue)) as any;
   });
 
   it('saves the venue and calls onSaved', async () => {
@@ -100,24 +101,19 @@ describe('EditVenueDialog', () => {
     }));
   });
 
-  it('allows toggling familyNearby checkbox and saves into payload', async () => {
+  it('renders familyNearby checkbox as disabled (auto-derived from address) and excludes from save payload', async () => {
     await act(async () => {
-      render(<EditVenueDialog open venue={{ ...venue, familyNearby: false }} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />);
+      render(<EditVenueDialog open venue={{ ...venue, familyNearby: true }} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />);
     });
     const familyCheckbox = screen.getByTestId('edit-venue-family-nearby');
-    expect(familyCheckbox).not.toBeDisabled();
-    expect(familyCheckbox).not.toBeChecked();
-
-    await act(async () => {
-      fireEvent.click(familyCheckbox);
-    });
+    expect(familyCheckbox).toBeDisabled();
     expect(familyCheckbox).toBeChecked();
 
     await act(async () => {
       fireEvent.click(screen.getByTestId('edit-venue-save'));
     });
-    expect(adminVenuesUtils.updateVenue).toHaveBeenCalledWith('tk', 'v1', expect.objectContaining({
-      familyNearby: true,
+    expect(adminVenuesUtils.updateVenue).toHaveBeenCalledWith('tk', 'v1', expect.not.objectContaining({
+      familyNearby: expect.anything(),
     }));
   });
 
@@ -221,7 +217,6 @@ describe('EditVenueDialog', () => {
   });
 
   it('creates a new venue when venue is null', async () => {
-    adminVenuesUtils.createVenue = vi.fn(() => Promise.resolve({} as Ivenue)) as any;
     const onSaved = vi.fn();
     await act(async () => {
       render(<EditVenueDialog open venue={null} token="tk" onClose={vi.fn()} onSaved={onSaved} />);
@@ -246,7 +241,6 @@ describe('EditVenueDialog', () => {
   });
 
   it('validates that zip code is required when creating a venue', async () => {
-    adminVenuesUtils.createVenue = vi.fn() as any;
     await act(async () => {
       render(<EditVenueDialog open venue={null} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />);
     });
@@ -262,7 +256,6 @@ describe('EditVenueDialog', () => {
   });
 
   it('validates that zip code must be a 5-digit code', async () => {
-    adminVenuesUtils.createVenue = vi.fn() as any;
     await act(async () => {
       render(<EditVenueDialog open venue={null} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />);
     });
@@ -278,8 +271,28 @@ describe('EditVenueDialog', () => {
     expect(adminVenuesUtils.createVenue).not.toHaveBeenCalled();
   });
 
+  it('accepts a valid ZIP+4 format when creating a venue', async () => {
+    const onSaved = vi.fn();
+    await act(async () => {
+      render(<EditVenueDialog open venue={null} token="tk" onClose={vi.fn()} onSaved={onSaved} />);
+    });
+    await act(async () => {
+      fireEvent.change(screen.getByTestId('edit-venue-name'), { target: { value: 'New Cafe' } });
+      fireEvent.change(screen.getByTestId('edit-venue-address'), { target: { value: '123 Campbell Ave' } });
+      fireEvent.change(screen.getByTestId('edit-venue-state'), { target: { value: 'VA' } });
+      fireEvent.change(screen.getByTestId('edit-venue-zip'), { target: { value: '24011-1234' } });
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('edit-venue-save'));
+    });
+    expect(adminVenuesUtils.createVenue).toHaveBeenCalledWith('tk', expect.objectContaining({
+      name: 'New Cafe',
+      zipCode: '24011-1234',
+    }));
+    expect(onSaved).toHaveBeenCalled();
+  });
+
   it('validates that state is required for US venues', async () => {
-    adminVenuesUtils.createVenue = vi.fn() as any;
     await act(async () => {
       render(<EditVenueDialog open venue={null} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />);
     });
