@@ -225,6 +225,7 @@ export function EditVenueDialog({
           address: venue.address || '',
           city: venue.city || '',
           usState: venue.usState || '',
+          zipCode: venue.zipCode || '',
           country: venue.country || 'US',
           region: venue.region || '',
           venueType: venue.venueType || '',
@@ -252,6 +253,7 @@ export function EditVenueDialog({
           address: '',
           city: '',
           usState: '',
+          zipCode: '',
           country: 'US',
           region: '',
           venueType: '',
@@ -292,6 +294,22 @@ export function EditVenueDialog({
     }
     if (!isCreate && hadAddress && !addressTrimmed) {
       setError("Address can't be removed — enter the corrected address");
+      return;
+    }
+
+    const hadZip = !!(venue && venue.zipCode && venue.zipCode.trim());
+    const zipTrimmed = form.zipCode ? form.zipCode.trim() : '';
+
+    if (isCreate && !zipTrimmed) {
+      setError('Zip code is required');
+      return;
+    }
+    if (!isCreate && hadZip && !zipTrimmed) {
+      setError("Zip code can't be removed — enter the corrected zip code");
+      return;
+    }
+    if (zipTrimmed && !/^\d{5}$/.test(zipTrimmed)) {
+      setError('Zip code must be a valid 5-digit ZIP code');
       return;
     }
 
@@ -350,6 +368,7 @@ export function EditVenueDialog({
       ...form,
       name: form.name.trim(),
       address: addressTrimmed,
+      zipCode: zipTrimmed || undefined,
       email: primaryEmail,
       secondaryEmail: secondaryEmail,
       venueType: form.venueType || undefined,
@@ -357,6 +376,7 @@ export function EditVenueDialog({
       country: currentCountry,
       gigInterval: typeof form.gigInterval === 'number' ? form.gigInterval : 0,
       resumeBooking: form.resumeBooking || null,
+      familyNearby: !!form.familyNearby,
     };
     delete finalForm.bookingStatus;
     if (currentCountry === 'US') {
@@ -461,6 +481,7 @@ export function EditVenueDialog({
                     let city = '';
                     let state = '';
                     let country = '';
+                    let postalCode = '';
 
                     if (place.address_components) {
                       place.address_components.forEach((c: any) => {
@@ -474,11 +495,14 @@ export function EditVenueDialog({
                           state = c.short_name;
                         } else if (c.types.includes('country')) {
                           country = c.short_name;
+                        } else if (c.types.includes('postal_code')) {
+                          postalCode = c.long_name;
                         }
                       });
                     }
 
                     const streetAddress = `${streetNumber} ${route}`.trim() || place.formatted_address || prediction.description;
+                    const cleanZip = postalCode ? postalCode.split('-')[0].trim() : '';
 
                     setForm((f) => ({
                       ...f,
@@ -487,6 +511,7 @@ export function EditVenueDialog({
                       usState: (country === 'US' || !country) ? (state || f.usState) : '',
                       region: (country !== 'US' && country) ? (state || f.region) : '',
                       country: country || f.country || 'US',
+                      zipCode: cleanZip || f.zipCode,
                     }));
                   }
                   setSessionToken(null);
@@ -575,6 +600,14 @@ export function EditVenueDialog({
             data-testid="edit-venue-region"
           />
         )}
+        <TextField
+          label="Zip Code"
+          fullWidth
+          value={form.zipCode || ''}
+          onChange={(e) => set('zipCode', e.target.value)}
+          sx={{ marginBottom: 2 }}
+          data-testid="edit-venue-zip"
+        />
         <FormControl fullWidth sx={{ marginBottom: 2 }}>
           <InputLabel id="edit-venue-type-label">Venue Type</InputLabel>
           <Select labelId="edit-venue-type-label" label="Venue Type" value={form.venueType || ''}
@@ -690,7 +723,7 @@ export function EditVenueDialog({
             control={(
               <Checkbox
                 checked={!!form.familyNearby}
-                disabled
+                onChange={(e) => set('familyNearby', e.target.checked)}
                 aria-label="family nearby"
                 data-testid="edit-venue-family-nearby"
               />

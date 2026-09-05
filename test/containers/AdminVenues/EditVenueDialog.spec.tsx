@@ -100,13 +100,25 @@ describe('EditVenueDialog', () => {
     }));
   });
 
-  it('renders familyNearby as disabled read-only checkbox', async () => {
+  it('allows toggling familyNearby checkbox and saves into payload', async () => {
     await act(async () => {
-      render(<EditVenueDialog open venue={{ ...venue, familyNearby: true }} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />);
+      render(<EditVenueDialog open venue={{ ...venue, familyNearby: false }} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />);
     });
     const familyCheckbox = screen.getByTestId('edit-venue-family-nearby');
-    expect(familyCheckbox).toBeDisabled();
+    expect(familyCheckbox).not.toBeDisabled();
+    expect(familyCheckbox).not.toBeChecked();
+
+    await act(async () => {
+      fireEvent.click(familyCheckbox);
+    });
     expect(familyCheckbox).toBeChecked();
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('edit-venue-save'));
+    });
+    expect(adminVenuesUtils.updateVenue).toHaveBeenCalledWith('tk', 'v1', expect.objectContaining({
+      familyNearby: true,
+    }));
   });
 
   it('propagates a toggled checkbox into the saved payload', async () => {
@@ -218,6 +230,7 @@ describe('EditVenueDialog', () => {
       fireEvent.change(screen.getByTestId('edit-venue-name'), { target: { value: 'New Cafe' } });
       fireEvent.change(screen.getByTestId('edit-venue-address'), { target: { value: '123 Campbell Ave' } });
       fireEvent.change(screen.getByTestId('edit-venue-state'), { target: { value: 'NC' } });
+      fireEvent.change(screen.getByTestId('edit-venue-zip'), { target: { value: '28202' } });
     });
     await act(async () => {
       fireEvent.click(screen.getByTestId('edit-venue-save'));
@@ -227,8 +240,42 @@ describe('EditVenueDialog', () => {
       address: '123 Campbell Ave',
       usState: 'NC',
       country: 'US',
+      zipCode: '28202',
     }));
     expect(onSaved).toHaveBeenCalled();
+  });
+
+  it('validates that zip code is required when creating a venue', async () => {
+    adminVenuesUtils.createVenue = vi.fn() as any;
+    await act(async () => {
+      render(<EditVenueDialog open venue={null} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />);
+    });
+    await act(async () => {
+      fireEvent.change(screen.getByTestId('edit-venue-name'), { target: { value: 'New Cafe' } });
+      fireEvent.change(screen.getByTestId('edit-venue-address'), { target: { value: '123 Campbell Ave' } });
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('edit-venue-save'));
+    });
+    expect(screen.getByTestId('edit-venue-error').innerHTML).toBe('Zip code is required');
+    expect(adminVenuesUtils.createVenue).not.toHaveBeenCalled();
+  });
+
+  it('validates that zip code must be a 5-digit code', async () => {
+    adminVenuesUtils.createVenue = vi.fn() as any;
+    await act(async () => {
+      render(<EditVenueDialog open venue={null} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />);
+    });
+    await act(async () => {
+      fireEvent.change(screen.getByTestId('edit-venue-name'), { target: { value: 'New Cafe' } });
+      fireEvent.change(screen.getByTestId('edit-venue-address'), { target: { value: '123 Campbell Ave' } });
+      fireEvent.change(screen.getByTestId('edit-venue-zip'), { target: { value: '2820' } });
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('edit-venue-save'));
+    });
+    expect(screen.getByTestId('edit-venue-error').innerHTML).toBe('Zip code must be a valid 5-digit ZIP code');
+    expect(adminVenuesUtils.createVenue).not.toHaveBeenCalled();
   });
 
   it('validates that state is required for US venues', async () => {
@@ -239,6 +286,7 @@ describe('EditVenueDialog', () => {
     await act(async () => {
       fireEvent.change(screen.getByTestId('edit-venue-name'), { target: { value: 'New Cafe' } });
       fireEvent.change(screen.getByTestId('edit-venue-address'), { target: { value: '123 Campbell Ave' } });
+      fireEvent.change(screen.getByTestId('edit-venue-zip'), { target: { value: '28202' } });
     });
     await act(async () => {
       fireEvent.click(screen.getByTestId('edit-venue-save'));
@@ -283,6 +331,7 @@ describe('EditVenueDialog', () => {
     await act(async () => {
       fireEvent.change(screen.getByTestId('edit-venue-name'), { target: { value: 'Global Club' } });
       fireEvent.change(screen.getByTestId('edit-venue-address'), { target: { value: '123 Campbell Ave' } });
+      fireEvent.change(screen.getByTestId('edit-venue-zip'), { target: { value: '12345' } });
       fireEvent.change(screen.getByTestId('edit-venue-country'), { target: { value: 'CA' } });
     });
     await act(async () => {
@@ -297,6 +346,7 @@ describe('EditVenueDialog', () => {
       country: 'CA',
       region: 'Ontario',
       usState: '',
+      zipCode: '12345',
     }));
   });
 
@@ -310,6 +360,7 @@ describe('EditVenueDialog', () => {
     await act(async () => {
       fireEvent.change(screen.getByTestId('edit-venue-name'), { target: { value: 'existing venue' } });
       fireEvent.change(screen.getByTestId('edit-venue-address'), { target: { value: '123 Campbell Ave' } });
+      fireEvent.change(screen.getByTestId('edit-venue-zip'), { target: { value: '24011' } });
     });
     await act(async () => {
       fireEvent.click(screen.getByTestId('edit-venue-save'));
@@ -335,12 +386,38 @@ describe('EditVenueDialog', () => {
     expect(adminVenuesUtils.updateVenue).not.toHaveBeenCalled();
   });
 
+  it('blocks save and shows an error when clearing zip code on a venue that has one', async () => {
+    const venueWithZip: Ivenue = { ...venue, zipCode: '24011' };
+    await act(async () => { render(<EditVenueDialog open venue={venueWithZip} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />); });
+    await act(async () => { fireEvent.change(screen.getByTestId('edit-venue-zip'), { target: { value: '' } }); });
+    await act(async () => { fireEvent.click(screen.getByTestId('edit-venue-save')); });
+    expect(screen.getByTestId('edit-venue-error').innerHTML).toBe("Zip code can't be removed — enter the corrected zip code");
+    expect(adminVenuesUtils.updateVenue).not.toHaveBeenCalled();
+  });
+
   it('allows saving an existing venue that has no address with an empty address', async () => {
     const legacyVenue: Ivenue = { ...venue, address: '' };
     const onSaved = vi.fn();
     await act(async () => { render(<EditVenueDialog open venue={legacyVenue} token="tk" onClose={vi.fn()} onSaved={onSaved} />); });
     await act(async () => { fireEvent.click(screen.getByTestId('edit-venue-save')); });
     expect(adminVenuesUtils.updateVenue).toHaveBeenCalledWith('tk', 'v1', expect.objectContaining({ address: '' }));
+    expect(onSaved).toHaveBeenCalled();
+  });
+
+  it('allows saving an existing venue that has no zip code with an empty zip code', async () => {
+    const onSaved = vi.fn();
+    await act(async () => { render(<EditVenueDialog open venue={venue} token="tk" onClose={vi.fn()} onSaved={onSaved} />); });
+    await act(async () => { fireEvent.click(screen.getByTestId('edit-venue-save')); });
+    expect(adminVenuesUtils.updateVenue).toHaveBeenCalledWith('tk', 'v1', expect.objectContaining({ name: 'Mac n Bob' }));
+    expect(onSaved).toHaveBeenCalled();
+  });
+
+  it('allows saving an updated zip code on existing venue', async () => {
+    const onSaved = vi.fn();
+    await act(async () => { render(<EditVenueDialog open venue={venue} token="tk" onClose={vi.fn()} onSaved={onSaved} />); });
+    await act(async () => { fireEvent.change(screen.getByTestId('edit-venue-zip'), { target: { value: '24153' } }); });
+    await act(async () => { fireEvent.click(screen.getByTestId('edit-venue-save')); });
+    expect(adminVenuesUtils.updateVenue).toHaveBeenCalledWith('tk', 'v1', expect.objectContaining({ zipCode: '24153' }));
     expect(onSaved).toHaveBeenCalled();
   });
 
@@ -358,12 +435,14 @@ describe('EditVenueDialog', () => {
       fireEvent.change(screen.getByTestId('edit-venue-name'), { target: { value: 'Macados' } });
       fireEvent.change(screen.getByTestId('edit-venue-address'), { target: { value: '100 North Main Street' } });
       fireEvent.change(screen.getByTestId('edit-venue-state'), { target: { value: 'VA' } });
+      fireEvent.change(screen.getByTestId('edit-venue-zip'), { target: { value: '24011' } });
     });
     await act(async () => { fireEvent.click(screen.getByTestId('edit-venue-save')); });
 
     expect(adminVenuesUtils.createVenue).toHaveBeenCalledWith('tk', expect.objectContaining({
       name: 'Macados',
       address: '100 North Main Street',
+      zipCode: '24011',
     }));
     expect(screen.getByTestId('edit-venue-notice').innerHTML).toBe('email also used by Macados Roanoke');
     expect(onSaved).toHaveBeenCalled();
@@ -393,6 +472,7 @@ describe('EditVenueDialog', () => {
             { types: ['locality'], long_name: 'Roanoke' },
             { types: ['administrative_area_level_1'], short_name: 'VA' },
             { types: ['country'], short_name: 'US' },
+            { types: ['postal_code'], long_name: '24011' },
           ],
           geometry: {
             location: {
@@ -507,6 +587,7 @@ describe('EditVenueDialog', () => {
 
       expect(input.value).toBe('123 Campbell Ave');
       expect((getFormInput('edit-venue-city') as HTMLInputElement).value).toBe('Roanoke');
+      expect((getFormInput('edit-venue-zip') as HTMLInputElement).value).toBe('24011');
     });
 
     it('populates non-US countries with free-text region on prediction selection', async () => {
