@@ -341,7 +341,10 @@ test.describe('Admin Venues page responsiveness and table scrollability', () => 
       await expect(errorText).toBeVisible();
       await expect(errorText).toHaveText('Zip code is required');
 
-      // Intercept POST /venue to verify payload includes zipCode, familyNearby, and omits empty enums
+      // Intercept POST /venue to verify payload includes zipCode, familyNearby, and omits empty enums.
+      // The stored venue is built from what the client actually sent, and subsequent GET /venue
+      // requests serve it back, so the test proves familyNearby survives the round-trip rather than
+      // only proving it was placed on the wire.
       const captured: {
         payload: {
           name?: string;
@@ -351,23 +354,26 @@ test.describe('Admin Venues page responsiveness and table scrollability', () => 
           audienceAttention?: unknown;
         } | null;
       } = { payload: null };
+      let storedVenue: Record<string, unknown> | null = null;
       await page.route('http://localhost:7000/venue*', async route => {
         if (route.request().method() === 'POST') {
           captured.payload = JSON.parse(route.request().postData() || '{}');
+          storedVenue = {
+            _id: 'v-new',
+            ...captured.payload,
+            city: 'Roanoke',
+            status: 'active',
+          };
           await route.fulfill({
             status: 201,
             contentType: 'application/json',
-            body: JSON.stringify({
-              _id: 'v-new',
-              ...captured.payload,
-              status: 'active',
-            }),
+            body: JSON.stringify(storedVenue),
           });
         } else {
           await route.fulfill({
             status: 200,
             contentType: 'application/json',
-            body: JSON.stringify([]),
+            body: JSON.stringify(storedVenue ? [storedVenue] : []),
           });
         }
       });
@@ -383,6 +389,21 @@ test.describe('Admin Venues page responsiveness and table scrollability', () => 
       expect(captured.payload?.familyNearby).toBe(true);
       expect(captured.payload?.templateOverride).toBeUndefined();
       expect(captured.payload?.audienceAttention).toBeUndefined();
+
+      // The stored venue the backend serves back must carry the user-set value
+      await expect.poll(() => (storedVenue as Record<string, unknown> | null)?.familyNearby).toBe(true);
+
+      // Round-trip: the newly created venue appears in the table, and reopening its
+      // Edit dialog shows familyNearby checked from the persisted value
+      const newVenueEditButton = page.locator('[data-testid="venue-edit-v-new"]');
+      await expect(newVenueEditButton).toBeVisible();
+      await newVenueEditButton.click();
+
+      await expect(page.locator('[data-testid="edit-venue-dialog-title"]'))
+        .toHaveText('Edit Venue — Playwright Test Cafe');
+      const reopenedFamilyNearby = page.locator('[data-testid="edit-venue-family-nearby"] input[type="checkbox"]');
+      await expect(reopenedFamilyNearby).toBeEnabled();
+      await expect(reopenedFamilyNearby).toBeChecked();
     },
   );
 });

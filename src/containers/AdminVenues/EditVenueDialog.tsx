@@ -390,10 +390,11 @@ export function EditVenueDialog({
     if (!finalForm.venueType) {
       delete finalForm.venueType;
     }
-    delete (finalForm as any).relationshipStage;
-    delete (finalForm as any).payTier;
-    delete (finalForm as any).originalsFit;
-    delete (finalForm as any).travelBand;
+    const finalFormRecord = finalForm as Record<string, unknown>;
+    delete finalFormRecord.relationshipStage;
+    delete finalFormRecord.payTier;
+    delete finalFormRecord.originalsFit;
+    delete finalFormRecord.travelBand;
     if (currentCountry === 'US') {
       finalForm.region = '';
     } else {
