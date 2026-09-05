@@ -121,7 +121,7 @@ export function AdminOutreach() {
   };
 
   // Local suggestion edits (mirrors legacy support)
-  const [localEdits, setLocalEdits] = useState<Record<string, { bookingStatus?: string; interested?: boolean }>>({});
+  const [localEdits, setLocalEdits] = useState<Record<string, { bookingStatus?: string }>>({});
 
   const loadConfig = useCallback(async () => {
     try {
@@ -202,13 +202,6 @@ export function AdminOutreach() {
     }));
   };
 
-  const handleInterestedChange = (replyId: string, val: boolean) => {
-    setLocalEdits((prev) => ({
-      ...prev,
-      [replyId]: { ...prev[replyId], interested: val },
-    }));
-  };
-
   const handleApplySuggestion = async (replyId: string) => {
     setError('');
     setRepliesError('');
@@ -216,7 +209,6 @@ export function AdminOutreach() {
       const edits = localEdits[replyId] || {};
       await outreachUtils.applySuggestion(auth.token, replyId, {
         bookingStatus: edits.bookingStatus,
-        interested: edits.interested,
       });
       await loadAllData();
     } catch (e) {
@@ -711,21 +703,6 @@ export function AdminOutreach() {
                                   </Select>
                                 </FormControl>
 
-                                <FormControlLabel
-                                  control={
-                                    <Checkbox
-                                      checked={
-                                        localEdits[reply._id]?.interested !== undefined
-                                          ? localEdits[reply._id].interested
-                                          : (reply.suggestion.proposedInterested || false)
-                                      }
-                                      onChange={(e) => handleInterestedChange(reply._id, e.target.checked)}
-                                      data-testid={`reply-interested-checkbox-${reply._id}`}
-                                    />
-                                  }
-                                  label="Warm Lead"
-                                />
-
                                 <Box sx={{ display: 'flex', gap: 1 }}>
                                   <Button
                                     variant="contained"
@@ -1009,9 +986,6 @@ export function AdminOutreach() {
                       } else if (venue.bookingStatus === 'booked') {
                         statusText = 'Booked';
                         statusColor = 'success';
-                      } else if ((venue as any).interested) {
-                        statusText = 'Warm Lead';
-                        statusColor = 'primary';
                       } else if (venue.outreachEligible === false) {
                         statusText = 'Not Eligible / Not a Fit';
                         statusColor = 'warning';
