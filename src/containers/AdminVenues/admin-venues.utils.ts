@@ -11,6 +11,7 @@ export interface Ivenue {
   address?: string;
   city?: string;
   usState?: string;
+  zipCode?: string;
   country?: string;
   region?: string;
   venueType?: string;
@@ -47,6 +48,7 @@ export interface IvenueUpdate {
   address?: string;
   city?: string;
   usState?: string;
+  zipCode?: string;
   country?: string;
   region?: string;
   venueType?: string;
