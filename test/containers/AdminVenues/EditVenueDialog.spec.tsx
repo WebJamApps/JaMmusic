@@ -57,8 +57,8 @@ const venue: Ivenue = {
 
 describe('EditVenueDialog', () => {
   beforeEach(() => {
-    adminVenuesUtils.updateVenue = vi.fn(() => Promise.resolve({} as Ivenue)) as any;
-    adminVenuesUtils.createVenue = vi.fn(() => Promise.resolve({} as Ivenue)) as any;
+    vi.spyOn(adminVenuesUtils, 'createVenue').mockResolvedValue({} as Ivenue);
+    vi.spyOn(adminVenuesUtils, 'updateVenue').mockResolvedValue({} as Ivenue);
   });
 
   it('saves the venue and calls onSaved', async () => {
@@ -193,7 +193,7 @@ describe('EditVenueDialog', () => {
   });
 
   it('shows an error when the update rejects', async () => {
-    adminVenuesUtils.updateVenue = vi.fn(() => Promise.reject(new Error('nope'))) as any;
+    vi.spyOn(adminVenuesUtils, 'updateVenue').mockRejectedValue(new Error('nope'));
     await act(async () => { render(<EditVenueDialog open venue={venue} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />); });
     await act(async () => { fireEvent.click(screen.getByTestId('edit-venue-save')); });
     expect(screen.getByTestId('edit-venue-error').innerHTML).toBe('nope');
@@ -337,7 +337,7 @@ describe('EditVenueDialog', () => {
   });
 
   it('supports non-US countries with free-text region field', async () => {
-    adminVenuesUtils.createVenue = vi.fn(() => Promise.resolve({} as Ivenue)) as any;
+    vi.spyOn(adminVenuesUtils, 'createVenue').mockResolvedValue({} as Ivenue);
     await act(async () => {
       render(<EditVenueDialog open venue={null} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />);
     });
@@ -364,7 +364,7 @@ describe('EditVenueDialog', () => {
   });
 
   it('warns on duplicate venue name and cancels save if user rejects confirm', async () => {
-    adminVenuesUtils.createVenue = vi.fn(() => Promise.resolve({} as Ivenue)) as any;
+    vi.spyOn(adminVenuesUtils, 'createVenue').mockResolvedValue({} as Ivenue);
     const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(false);
     const existing: Ivenue[] = [{ _id: 'v1', name: 'Existing Venue' }];
     await act(async () => {
@@ -436,12 +436,12 @@ describe('EditVenueDialog', () => {
 
   it('surfaces backend notice and server-returned normalized address on save', async () => {
     const onSaved = vi.fn();
-    adminVenuesUtils.createVenue = vi.fn(() => Promise.resolve({
+    vi.spyOn(adminVenuesUtils, 'createVenue').mockResolvedValue({
       _id: 'v2',
       name: 'Macados',
       address: '100 N Main St',
       notice: 'email also used by Macados Roanoke',
-    } as any)) as any;
+    } as unknown as Ivenue);
 
     await act(async () => { render(<EditVenueDialog open venue={null} token="tk" onClose={vi.fn()} onSaved={onSaved} />); });
     await act(async () => {
