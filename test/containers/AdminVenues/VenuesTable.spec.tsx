@@ -7,7 +7,7 @@ import { type Ivenue } from 'src/containers/AdminVenues/admin-venues.utils';
 const venues: Ivenue[] = [
   {
     _id: 'v1', name: 'Mac n Bob', city: 'Salem', usState: 'VA', venueType: 'MidRangeCafeBar',
-    bookingStatus: 'booking', outreachEligible: true, inScope: true, interested: true,
+    bookingStatus: 'booking', outreachEligible: true, inScope: true, payAmount: 150,
   },
 ];
 
@@ -68,9 +68,12 @@ describe('VenuesTable', () => {
 
   it('default-sorts eligible venues first, then by prospect score', () => {
     const list: Ivenue[] = [
-      { _id: 'low', name: 'Low', outreachEligible: true, originalsFit: 'none' }, // eligible, score 0
-      { _id: 'best', name: 'Best', outreachEligible: true, originalsFit: 'loves', interested: true }, // eligible, score 8
-      { _id: 'inelig', name: 'Inelig', outreachEligible: false, originalsFit: 'loves', priority: 5 }, // not eligible
+      { _id: 'low', name: 'Low', outreachEligible: true, audienceAttention: 'low', distanceKm: 100 }, // eligible, score 0
+      {
+        _id: 'best', name: 'Best', outreachEligible: true, audienceAttention: 'high',
+        payAmount: 150, familyNearby: true, personalFavorite: true, distanceKm: 0,
+      }, // eligible, score 17
+      { _id: 'inelig', name: 'Inelig', outreachEligible: false, audienceAttention: 'high', payAmount: 150 }, // not eligible
     ];
     render(<VenuesTable venues={list} onEdit={vi.fn()} />);
     expect(rowIds()).toEqual(['venue-row-best', 'venue-row-low', 'venue-row-inelig']);
@@ -92,22 +95,22 @@ describe('VenuesTable', () => {
     const list: Ivenue[] = [
       {
         _id: 'a', name: 'Alpha', city: 'Roanoke', usState: 'VA', venueType: 'Originals',
-        bookingStatus: 'booking', outreachEligible: true, inScope: true, interested: true,
-        originalsFit: 'loves', payTier: '$$', travelBand: 'local', priority: 2,
+        bookingStatus: 'booking', outreachEligible: true, inScope: true,
+        audienceAttention: 'high', payAmount: 150, personalFavorite: true, familyNearby: true,
         contactName: 'John', email: 'john@example.com', phone: '555-1234', lastContacted: '2026-07-01',
         website: 'https://alpha.com',
       },
       {
         _id: 'b', name: 'Beta', city: 'Salem', usState: 'NC', venueType: 'MidRangeCafeBar',
-        bookingStatus: 'booked', outreachEligible: false, inScope: false, interested: false,
-        originalsFit: 'none', payTier: '$', travelBand: 'far', priority: 0,
+        bookingStatus: 'booked', outreachEligible: false, inScope: false,
+        audienceAttention: 'low', payAmount: 50, personalFavorite: false, familyNearby: false,
         contactName: 'Adam', email: 'adam@example.com', phone: '555-4321', lastContacted: '2026-06-01',
         website: 'https://beta.com',
       },
     ];
     render(<VenuesTable venues={list} onEdit={vi.fn()} />);
-    ['city', 'state', 'website', 'contact', 'type', 'booking', 'interested', 'eligible', 'lastContacted',
-      'lastGig', 'nextGig', 'originals', 'pay', 'travel', 'priority', 'prospect'].forEach((key) => {
+    ['city', 'state', 'website', 'contact', 'type', 'booking', 'eligible', 'lastContacted',
+      'lastGig', 'nextGig', 'pay', 'prospect'].forEach((key) => {
       fireEvent.click(screen.getByTestId(`sort-${key}`));
       expect(screen.getAllByTestId(/^venue-row-/)).toHaveLength(2);
     });
@@ -131,6 +134,19 @@ describe('VenuesTable', () => {
     expect(rowIds()).toEqual(['venue-row-v-a', 'venue-row-v-b']);
     fireEvent.click(screen.getByTestId('sort-contact'));
     expect(rowIds()).toEqual(['venue-row-v-b', 'venue-row-v-a']);
+  });
+
+  it('sorts by pay column numerically based on payAmount', () => {
+    const list: Ivenue[] = [
+      { _id: 'v-cheap', name: 'Cheap Venue', payAmount: 25 },
+      { _id: 'v-rich', name: 'Rich Venue', payAmount: 200 },
+      { _id: 'v-mid', name: 'Mid Venue', payAmount: 75 },
+    ];
+    render(<VenuesTable venues={list} onEdit={vi.fn()} />);
+    fireEvent.click(screen.getByTestId('sort-pay'));
+    expect(rowIds()).toEqual(['venue-row-v-cheap', 'venue-row-v-mid', 'venue-row-v-rich']);
+    fireEvent.click(screen.getByTestId('sort-pay'));
+    expect(rowIds()).toEqual(['venue-row-v-rich', 'venue-row-v-mid', 'venue-row-v-cheap']);
   });
 
   it('matches header column order with cell rendering order', () => {
@@ -157,15 +173,11 @@ describe('VenuesTable', () => {
       'Contact',
       'Type',
       'Booking',
-      'Interested',
       'Eligible',
       'Last pitched',
       'Last Gig',
       'Next Gig',
-      'Originals',
       'Pay',
-      'Travel',
-      'Priority',
       'Score',
     ]);
 

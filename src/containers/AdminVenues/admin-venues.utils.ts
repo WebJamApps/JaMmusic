@@ -23,21 +23,21 @@ export interface Ivenue {
   outreachEligible?: boolean;
   inScope?: boolean;
   bookingStatus?: string;
-  interested?: boolean;
-  payTier?: string;
   notes?: string;
-  relationshipStage?: string;
   templateOverride?: string;
   lastContacted?: string;
   lastVerified?: string;
   lastGig?: { datetime?: string; city?: string; usState?: string; [key: string]: unknown } | null;
   nextGig?: { datetime?: string; city?: string; usState?: string; [key: string]: unknown } | null;
   locationFallback?: { city?: string; usState?: string } | null;
-  // Prospect-ranking inputs (web-jam-back#867): originalsFit weighs heaviest in
-  // the default sort, travelBand discounts distance, priority is a manual 0-5 boost.
-  originalsFit?: string;
-  travelBand?: string;
-  priority?: number;
+  // Prospect-ranking inputs (WebJamApps/JaMmusic#1332): payAmount, audienceAttention,
+  // personalFavorite, familyNearby, and distanceKm (attached by backend).
+  payAmount?: number;
+  audienceAttention?: 'low' | 'medium' | 'high' | string;
+  personalFavorite?: boolean;
+  familyNearby?: boolean;
+  distanceKm?: number | null;
+  distance?: number | null;
   gigInterval?: number;
   resumeBooking?: string | null;
 }
@@ -58,14 +58,12 @@ export interface IvenueUpdate {
   outreachEligible?: boolean;
   inScope?: boolean;
   bookingStatus?: string;
-  interested?: boolean;
-  payTier?: string;
   notes?: string;
-  relationshipStage?: string;
   templateOverride?: string;
-  originalsFit?: string;
-  travelBand?: string;
-  priority?: number;
+  payAmount?: number;
+  audienceAttention?: 'low' | 'medium' | 'high' | string;
+  personalFavorite?: boolean;
+  familyNearby?: boolean;
   status?: string;
   lastContacted?: string;
   lastVerified?: string;
@@ -133,9 +131,7 @@ async function createVenue(token: string, payload: IvenueUpdate): Promise<Ivenue
 
 export const VENUE_TYPES = ['Originals', 'PubFestivalBrewery', 'MidRangeCafeBar'] as const;
 export const BOOKING_STATUSES = ['booking', 'not-booking', 'booked'] as const;
-export const RELATIONSHIP_STAGES = ['cold', 'returning'] as const;
-export const ORIGINALS_FITS = ['none', 'some', 'loves'] as const;
-export const TRAVEL_BANDS = ['local', 'regional', 'far'] as const;
+export const AUDIENCE_ATTENTIONS = ['low', 'medium', 'high'] as const;
 
 // Per-field help written as the automation CONSEQUENCE of the value (#1139 §4),
 // not just a definition — shown in column-header tooltips AND inline in the Edit
@@ -146,38 +142,41 @@ export const FIELD_HELP: Record<string, string> = {
   inScope: 'Is this a realistic fit for outreach at all? OFF = excluded from outreach entirely.',
   bookingStatus: 'booking = open prospect (will be pitched if Eligible) · booked = confirmed gig (won\'t be pitched) · '
     + 'not-booking = ruled out. "Booked" includes one-off engagements like an anthem.',
-  interested: 'Marks a warm lead — sorts higher and nudges the warm/"returning" template.',
   outreachEligible: 'MASTER SAFETY GATE. ON = the auto-cron + batch MAY send a pitch email here. OFF = never emailed, period. '
     + 'Only turn ON once vetted: in scope + has a Type + still booking + contact verified.',
-  payTier: 'Relative pay (e.g. $/$$/$$$); ranks better-paying venues higher in the default sort. No send effect.',
+  payAmount: 'Dollar amount typically paid per gig. Ranks better-paying venues higher in the Prospect sort '
+    + '(proportional share of $150, capped at +6 points). No send effect.',
+  audienceAttention: 'Room listening level: high (+6) = audience is there for the music; medium (+3) = mixed listening/social; '
+    + 'low/unset (0) = background music. Carries equal top weight with pay in the Prospect sort.',
+  personalFavorite: 'Josh & Maria like going here as patrons (+2 points in Prospect sort). Breaks ties between venues that are otherwise matched.',
+  familyNearby: 'Auto-derived from venue address: true (+3 points in Prospect sort) if within 20 miles of family anchor cities '
+    + '(Salem, Roanoke, Martinsville, Lynchburg, Gastonia, Rock Hill, Harrisonburg). Exactly offsets the max 3-point distance penalty.',
   lastVerified: 'The date this venue\'s details or contact info were last verified.',
-  relationshipStage: 'cold (never played) vs returning (played before) — picks the cold vs warm template. Auto = inferred from history.',
   templateOverride: 'Force a specific template regardless of Type. Leave blank normally.',
-  originalsFit: 'How much the venue welcomes ORIGINAL music — the heaviest factor in the default Prospect sort (loves > some > none).',
-  travelBand: 'Coarse distance from Salem, VA. Farther venues are discounted in the Prospect sort (local > regional > far).',
-  priority: 'Manual 0–5 boost to nudge a venue up or down the default Prospect sort, regardless of the other factors.',
   gigInterval: 'Minimum gap between gigs at this venue in months (default 0). '
     + 'Ensures outreach is paused if a gig is already scheduled too close to the target window.',
   resumeBooking: 'Cooldown date: outreach is paused/cooldown is active until this date passes (null/unset = no cooldown).',
 };
 
-// Map a free-text pay note to a 0–3 value for the Prospect Score: count the
-// `$` signs (capped at 3). Anything without `$` scores 0.
-function payTierValue(payTier?: string): number {
-  if (!payTier) return 0;
-  return Math.min(3, (payTier.match(/\$/g) || []).length);
-}
-
-// Prospect Score (#1139, decided 2026-06-26) — how worth-pitching-now a venue
-// is. Higher = better. Default table sort is eligible-first, then this score
-// desc. Originals-fit dominates; value = pay minus travel distance; warmth and a
-// manual priority boost break ties. Pure + transparent (formula shown in a tooltip).
+// Prospect Score (WebJamApps/JaMmusic#1332, book-gig Phase 2 §11) — how worth-pitching-now
+// a venue is. Higher = better. Default table sort is eligible-first, then this score desc.
+// Sum of:
+// - audienceAttention: high (6), medium (3), low or unrated (0)
+// - payAmount: share of fixed reference $150 capped at 6
+// - familyNearby: 3 flat (offsets max distance penalty)
+// - personalFavorite: 2 flat (breaks ties)
+// - distance: subtracts up to 3 as share of 100 km
+// Floored at 0 and rounded to 1 decimal place.
 export function prospectScore(v: Ivenue): number {
-  const fit = { none: 0, some: 3, loves: 6 }[v.originalsFit || 'none'] ?? 0;
-  const travel = { local: 0, regional: 1, far: 2 }[v.travelBand || 'local'] ?? 0;
-  const value = payTierValue(v.payTier) - travel;
-  const warmth = (v.interested ? 2 : 0) + (v.relationshipStage === 'returning' ? 1 : 0);
-  return fit + value + warmth + (v.priority || 0);
+  const attentionKey = (v.audienceAttention || '').toLowerCase();
+  const attention = { high: 6, medium: 3, low: 0 }[attentionKey] ?? 0;
+  const pay = Math.min(6, (Math.max(0, v.payAmount || 0) / 150) * 6);
+  const family = v.familyNearby ? 3 : 0;
+  const favorite = v.personalFavorite ? 2 : 0;
+  const dist = (v.distanceKm ?? v.distance) || 0;
+  const distancePenalty = Math.min(3, (Math.max(0, dist) / 100) * 3);
+  const total = attention + pay + family + favorite - distancePenalty;
+  return Math.max(0, Math.round(total * 10) / 10);
 }
 
 export async function exportVenuesToExcel(venues: Ivenue[]): Promise<void> {
@@ -198,12 +197,10 @@ export async function exportVenuesToExcel(venues: Ivenue[]): Promise<void> {
     { header: 'Outreach Eligible', key: 'outreachEligible', width: 18 },
     { header: 'In Scope', key: 'inScope', width: 12 },
     { header: 'Booking Status', key: 'bookingStatus', width: 15 },
-    { header: 'Interested', key: 'interested', width: 12 },
-    { header: 'Pay Tier', key: 'payTier', width: 12 },
-    { header: 'Originals Fit', key: 'originalsFit', width: 15 },
-    { header: 'Travel Band', key: 'travelBand', width: 12 },
-    { header: 'Priority', key: 'priority', width: 10 },
-    { header: 'Relationship Stage', key: 'relationshipStage', width: 20 },
+    { header: 'Pay Amount', key: 'payAmount', width: 12 },
+    { header: 'Audience Attention', key: 'audienceAttention', width: 18 },
+    { header: 'Personal Favorite', key: 'personalFavorite', width: 18 },
+    { header: 'Family Nearby', key: 'familyNearby', width: 15 },
     { header: 'Template Override', key: 'templateOverride', width: 20 },
     { header: 'Website', key: 'website', width: 30 },
     { header: 'Last Contacted', key: 'lastContacted', width: 18 },
@@ -239,12 +236,10 @@ export async function exportVenuesToExcel(venues: Ivenue[]): Promise<void> {
       outreachEligible: v.outreachEligible ? 'Yes' : 'No',
       inScope: v.inScope !== false ? 'Yes' : 'No',
       bookingStatus: v.bookingStatus || '',
-      interested: v.interested !== false ? 'Yes' : 'No',
-      payTier: v.payTier || '',
-      originalsFit: v.originalsFit || '',
-      travelBand: v.travelBand || '',
-      priority: v.priority !== undefined ? v.priority : '',
-      relationshipStage: v.relationshipStage || '',
+      payAmount: v.payAmount !== undefined ? v.payAmount : '',
+      audienceAttention: v.audienceAttention || '',
+      personalFavorite: v.personalFavorite ? 'Yes' : 'No',
+      familyNearby: v.familyNearby ? 'Yes' : 'No',
       templateOverride: v.templateOverride || '',
       website: v.website || '',
       lastContacted: v.lastContacted || '',

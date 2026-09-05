@@ -38,7 +38,6 @@ export interface IpitchPreview {
 export interface Isuggestion {
   sentiment?: 'positive' | 'negative' | 'needs-info';
   proposedBookingStatus?: 'booking' | 'not-booking' | 'booked';
-  proposedInterested?: boolean;
   rationale?: string;
   model?: string;
   reviewed?: boolean;
@@ -129,7 +128,7 @@ async function getPendingReplies(token: string): Promise<IpendingReply[]> {
 async function applySuggestion(
   token: string,
   id: string,
-  payload: { bookingStatus?: string; interested?: boolean; dismiss?: boolean; reopen?: boolean },
+  payload: { bookingStatus?: string; dismiss?: boolean; reopen?: boolean },
 ): Promise<unknown> {
   const res = await customFetch(`${outreachUrl}/${id}/apply-suggestion`, {
     method: 'POST', headers: headers(token, true), body: JSON.stringify(payload),

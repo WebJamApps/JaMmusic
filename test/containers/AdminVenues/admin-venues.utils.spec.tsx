@@ -1,5 +1,5 @@
 import adminVenuesUtils, {
-  VENUE_TYPES, BOOKING_STATUSES, ORIGINALS_FITS, TRAVEL_BANDS, FIELD_HELP, prospectScore,
+  VENUE_TYPES, BOOKING_STATUSES, AUDIENCE_ATTENTIONS, FIELD_HELP, prospectScore,
   type Ivenue,
 } from 'src/containers/AdminVenues/admin-venues.utils';
 
@@ -78,7 +78,7 @@ describe('AdminVenues utils', () => {
 
   it('updateVenue PATCHes to the venue id with the payload', async () => {
     fetchMock.mockReturnValue(okJson({ _id: 'v2', name: 'B' }));
-    await adminVenuesUtils.updateVenue('tok', 'v2', { bookingStatus: 'booked', interested: true });
+    await adminVenuesUtils.updateVenue('tok', 'v2', { bookingStatus: 'booked', outreachEligible: true });
     const [url, opts] = fetchMock.mock.calls[0];
     expect(url).toContain('/venue/v2');
     expect((opts as RequestInit).method).toBe('PATCH');
@@ -132,44 +132,72 @@ describe('AdminVenues utils', () => {
     await expect(adminVenuesUtils.updateVenue('t', '1', {})).rejects.toThrow('A valid email is required');
   });
 
-  it('exports the venue-type and booking-status option lists', () => {
+  it('exports the venue-type, booking-status, and audience-attention option lists', () => {
     expect(VENUE_TYPES).toContain('Originals');
     expect(BOOKING_STATUSES).toContain('booked');
-    expect(ORIGINALS_FITS).toEqual(['none', 'some', 'loves']);
-    expect(TRAVEL_BANDS).toEqual(['local', 'regional', 'far']);
+    expect(AUDIENCE_ATTENTIONS).toEqual(['low', 'medium', 'high']);
     expect(FIELD_HELP.outreachEligible).toContain('SAFETY GATE');
+    expect(FIELD_HELP.payAmount).toContain('$150');
+    expect(FIELD_HELP.audienceAttention).toContain('Room listening level');
+    expect(FIELD_HELP.personalFavorite).toContain('patrons');
+    expect(FIELD_HELP.familyNearby).toContain('Auto-derived');
     expect(typeof adminVenuesUtils.getAllowedAdminRoles).toBe('function');
   });
 
   describe('prospectScore', () => {
-    it('sums originalsFit (heaviest), value (pay − travel), warmth, and priority', () => {
-      const v: Ivenue = {
-        _id: 'x',
-        name: 'X',
-        originalsFit: 'loves', // +6
-        payTier: '$$$', // +3
-        travelBand: 'far', // −2 → value = 1
-        interested: true, // +2
-        relationshipStage: 'returning', // +1 → warmth = 3
-        priority: 5, // +5
+    it('sums attention (0/3/6), pay-as-share-of-150 (max 6), family (3), favorite (2), minus distance penalty (max 3)', () => {
+      const maxVenue: Ivenue = {
+        _id: 'top',
+        name: 'Top Venue',
+        audienceAttention: 'high', // +6
+        payAmount: 150, // +6
+        familyNearby: true, // +3
+        personalFavorite: true, // +2
+        distanceKm: 0, // -0
       };
-      expect(prospectScore(v)).toBe(6 + 1 + 3 + 5);
+      expect(prospectScore(maxVenue)).toBe(17);
     });
 
-    it('treats unset fit/travel/pay as zero and counts $ signs for pay', () => {
+    it('floors at 0 when distance penalty exceeds score and handles unset fields', () => {
       expect(prospectScore({ _id: 'a', name: 'A' })).toBe(0);
-      expect(prospectScore({ _id: 'b', name: 'B', payTier: '$$' })).toBe(2);
-      expect(prospectScore({ _id: 'c', name: 'C', payTier: 'free' })).toBe(0);
+      expect(prospectScore({ _id: 'b', name: 'B', distanceKm: 100 })).toBe(0);
+      expect(prospectScore({ _id: 'c', name: 'C', distanceKm: 150 })).toBe(0);
     });
 
-    it('ranks a strong-fit far venue above a no-fit local high-pay one', () => {
-      const passion: Ivenue = {
-        _id: 'p', name: 'P', originalsFit: 'loves', payTier: '$', travelBand: 'far', interested: true, priority: 5,
+    it('scales payAmount proportionally up to 150 capped at 6', () => {
+      expect(prospectScore({ _id: 'p75', name: 'P75', payAmount: 75 })).toBe(3);
+      expect(prospectScore({ _id: 'p30', name: 'P30', payAmount: 30 })).toBe(1.2);
+      expect(prospectScore({ _id: 'p300', name: 'P300', payAmount: 300 })).toBe(6);
+      expect(prospectScore({ _id: 'p0', name: 'P0', payAmount: 0 })).toBe(0);
+    });
+
+    it('rates audienceAttention properly across levels', () => {
+      expect(prospectScore({ _id: 'h', name: 'H', audienceAttention: 'high' })).toBe(6);
+      expect(prospectScore({ _id: 'm', name: 'M', audienceAttention: 'medium' })).toBe(3);
+      expect(prospectScore({ _id: 'l', name: 'L', audienceAttention: 'low' })).toBe(0);
+      expect(prospectScore({ _id: 'u', name: 'U', audienceAttention: '' })).toBe(0);
+    });
+
+    it('applies family nearby and personal favorite flat additions', () => {
+      expect(prospectScore({ _id: 'fam', name: 'Fam', familyNearby: true })).toBe(3);
+      expect(prospectScore({ _id: 'fav', name: 'Fav', personalFavorite: true })).toBe(2);
+    });
+
+    it('exactly cancels max distance penalty with family nearby', () => {
+      // Harrisonburg Farmers Market example from design doc: ~160 km (-3 distance) + 3 family = 0 net adjustment
+      const hburg: Ivenue = {
+        _id: 'hburg',
+        name: 'Harrisonburg Farmers Market',
+        payAmount: 150, // +6
+        audienceAttention: 'high', // +6
+        distanceKm: 160, // -3 (capped)
+        familyNearby: true, // +3
       };
-      const covers: Ivenue = {
-        _id: 'q', name: 'Q', originalsFit: 'none', payTier: '$$$', travelBand: 'local', interested: true, priority: 0,
-      };
-      expect(prospectScore(passion)).toBeGreaterThan(prospectScore(covers));
+      expect(prospectScore(hburg)).toBe(12);
+    });
+
+    it('falls back to distance property if distanceKm is omitted', () => {
+      expect(prospectScore({ _id: 'd', name: 'D', payAmount: 150, distance: 50 })).toBe(4.5);
     });
   });
 
@@ -214,12 +242,10 @@ describe('AdminVenues utils', () => {
           outreachEligible: true,
           inScope: true,
           bookingStatus: 'booking',
-          interested: true,
-          payTier: '$$',
-          originalsFit: 'loves',
-          travelBand: 'local',
-          priority: 3,
-          relationshipStage: 'cold',
+          payAmount: 150,
+          audienceAttention: 'high',
+          personalFavorite: true,
+          familyNearby: true,
           templateOverride: 'Originals',
           notes: 'Great venue with a booking link at http://thespot.com/booking',
         },
@@ -228,7 +254,12 @@ describe('AdminVenues utils', () => {
       await adminVenuesUtils.exportVenuesToExcel(venues);
 
       expect(mockWorkbook.addWorksheet).toHaveBeenCalledWith('Venues');
-      expect(mockWorksheet.addRow).toHaveBeenCalled();
+      expect(mockWorksheet.addRow).toHaveBeenCalledWith(expect.objectContaining({
+        payAmount: 150,
+        audienceAttention: 'high',
+        personalFavorite: 'Yes',
+        familyNearby: 'Yes',
+      }));
       expect(mockClick).toHaveBeenCalled();
       expect(mockAnchor.download).toBe('venues_export.xlsx');
       expect(mockAnchor.href).toBe('blob:url');

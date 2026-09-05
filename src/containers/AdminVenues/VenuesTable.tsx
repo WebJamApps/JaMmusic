@@ -35,15 +35,11 @@ const COLUMNS: { key: string; label: string; help?: string }[] = [
   { key: 'contact', label: 'Contact' },
   { key: 'type', label: 'Type', help: 'venueType' },
   { key: 'booking', label: 'Booking', help: 'bookingStatus' },
-  { key: 'interested', label: 'Interested', help: 'interested' },
   { key: 'eligible', label: 'Eligible', help: 'outreachEligible' },
   { key: 'lastContacted', label: 'Last pitched' },
   { key: 'lastGig', label: 'Last Gig' },
   { key: 'nextGig', label: 'Next Gig' },
-  { key: 'originals', label: 'Originals', help: 'originalsFit' },
-  { key: 'pay', label: 'Pay', help: 'payTier' },
-  { key: 'travel', label: 'Travel', help: 'travelBand' },
-  { key: 'priority', label: 'Priority', help: 'priority' },
+  { key: 'pay', label: 'Pay', help: 'payAmount' },
   { key: 'prospect', label: 'Score', help: 'prospect' },
 ];
 
@@ -77,15 +73,11 @@ export function sortValue(v: Ivenue, key: string): string | number {
     case 'website': return v.website || '';
     case 'type': return v.venueType || '';
     case 'booking': return v.bookingStatus || '';
-    case 'interested': return v.interested !== false ? 1 : 0;
     case 'eligible': return v.outreachEligible ? 1 : 0;
     case 'lastContacted': return v.lastContacted || '';
     case 'lastGig': return v.lastGig?.datetime ? String(v.lastGig.datetime) : '';
     case 'nextGig': return v.nextGig?.datetime ? String(v.nextGig.datetime) : '';
-    case 'originals': return v.originalsFit || '';
-    case 'pay': return v.payTier || '';
-    case 'travel': return v.travelBand || '';
-    case 'priority': return v.priority || 0;
+    case 'pay': return typeof v.payAmount === 'number' ? v.payAmount : -1;
     case 'prospect': return prospectScore(v);
     default: return '';
   }
@@ -793,15 +785,11 @@ export function VenuesTable({
                         : v.venueType}
                     </TableCell>
                     <TableCell>{dash(v.bookingStatus)}</TableCell>
-                    <TableCell>{yn(v.interested !== false)}</TableCell>
                     <TableCell data-testid={`venue-eligible-${v._id}`}>{yn(v.outreachEligible)}</TableCell>
                     <TableCell data-testid={`venue-lastcontacted-${v._id}`}>{formatLastContacted(v.lastContacted)}</TableCell>
                     <TableCell data-testid={`venue-lastgig-${v._id}`}>{formatGigDate(v.lastGig, v.usState)}</TableCell>
                     <TableCell data-testid={`venue-nextgig-${v._id}`}>{formatGigDate(v.nextGig, v.usState)}</TableCell>
-                    <TableCell>{dash(v.originalsFit)}</TableCell>
-                    <TableCell>{dash(v.payTier)}</TableCell>
-                    <TableCell>{dash(v.travelBand)}</TableCell>
-                    <TableCell>{dash(v.priority)}</TableCell>
+                    <TableCell data-testid={`venue-pay-${v._id}`}>{dash(v.payAmount)}</TableCell>
                     <TableCell data-testid={`venue-score-${v._id}`}>{prospectScore(v)}</TableCell>
                   </TableRow>
                 );
