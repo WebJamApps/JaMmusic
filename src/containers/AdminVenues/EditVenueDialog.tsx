@@ -5,7 +5,7 @@ import {
   Autocomplete, CircularProgress, Box, Chip,
 } from '@mui/material';
 import adminVenuesUtils, {
-  VENUE_TYPES, BOOKING_STATUSES, RELATIONSHIP_STAGES, ORIGINALS_FITS, TRAVEL_BANDS, FIELD_HELP,
+  VENUE_TYPES, BOOKING_STATUSES, AUDIENCE_ATTENTIONS, FIELD_HELP,
   type Ivenue, type IvenueUpdate,
 } from './admin-venues.utils';
 
@@ -235,15 +235,13 @@ export function EditVenueDialog({
           website: venue.website || '',
           outreachEligible: !!venue.outreachEligible,
           bookingStatus: venue.bookingStatus || 'booking',
-          interested: venue.interested !== false,
-          payTier: venue.payTier || '',
+          payAmount: venue.payAmount ?? undefined,
+          audienceAttention: venue.audienceAttention || '',
+          personalFavorite: !!venue.personalFavorite,
+          familyNearby: !!venue.familyNearby,
           lastVerified: venue.lastVerified ? venue.lastVerified.substring(0, 10) : '',
           notes: venue.notes || '',
-          relationshipStage: venue.relationshipStage || '',
           templateOverride: venue.templateOverride || '',
-          originalsFit: venue.originalsFit || '',
-          travelBand: venue.travelBand || '',
-          priority: venue.priority ?? undefined,
           gigInterval: venue.gigInterval ?? 0,
           resumeBooking: venue.resumeBooking ? venue.resumeBooking.substring(0, 10) : '',
         });
@@ -264,15 +262,13 @@ export function EditVenueDialog({
           website: '',
           outreachEligible: false,
           bookingStatus: 'booking',
-          interested: true,
-          payTier: '',
+          payAmount: undefined,
+          audienceAttention: '',
+          personalFavorite: false,
+          familyNearby: false,
           lastVerified: '',
           notes: '',
-          relationshipStage: '',
           templateOverride: '',
-          originalsFit: '',
-          travelBand: '',
-          priority: undefined,
           gigInterval: 0,
           resumeBooking: '',
         });
@@ -630,15 +626,6 @@ export function EditVenueDialog({
         />
         <Help field="resumeBooking" />
         <FormControl fullWidth sx={{ marginBottom: 2 }}>
-          <InputLabel id="edit-venue-stage-label">Relationship Stage</InputLabel>
-          <Select labelId="edit-venue-stage-label" label="Relationship Stage" value={form.relationshipStage || ''}
-            onChange={(e) => set('relationshipStage', e.target.value)} data-testid="edit-venue-stage">
-            <MenuItem value="">Auto (derive from history)</MenuItem>
-            {RELATIONSHIP_STAGES.map((s) => (<MenuItem key={s} value={s}>{s}</MenuItem>))}
-          </Select>
-        </FormControl>
-        <Help field="relationshipStage" />
-        <FormControl fullWidth sx={{ marginBottom: 2 }}>
           <InputLabel id="edit-venue-override-label">Template Override</InputLabel>
           <Select labelId="edit-venue-override-label" label="Template Override" value={form.templateOverride || ''}
             onChange={(e) => set('templateOverride', e.target.value)} data-testid="edit-venue-override">
@@ -648,23 +635,14 @@ export function EditVenueDialog({
         </FormControl>
         <Help field="templateOverride" />
         <FormControl fullWidth sx={{ marginBottom: 2 }}>
-          <InputLabel id="edit-venue-originals-label">Originals Fit</InputLabel>
-          <Select labelId="edit-venue-originals-label" label="Originals Fit" value={form.originalsFit || ''}
-            onChange={(e) => set('originalsFit', e.target.value)} data-testid="edit-venue-originals">
+          <InputLabel id="edit-venue-attention-label">Audience Attention</InputLabel>
+          <Select labelId="edit-venue-attention-label" label="Audience Attention" value={form.audienceAttention || ''}
+            onChange={(e) => set('audienceAttention', e.target.value)} data-testid="edit-venue-attention">
             <MenuItem value="">Unset</MenuItem>
-            {ORIGINALS_FITS.map((o) => (<MenuItem key={o} value={o}>{o}</MenuItem>))}
+            {AUDIENCE_ATTENTIONS.map((a) => (<MenuItem key={a} value={a}>{a}</MenuItem>))}
           </Select>
         </FormControl>
-        <Help field="originalsFit" />
-        <FormControl fullWidth sx={{ marginBottom: 2 }}>
-          <InputLabel id="edit-venue-travel-label">Travel Band</InputLabel>
-          <Select labelId="edit-venue-travel-label" label="Travel Band" value={form.travelBand || ''}
-            onChange={(e) => set('travelBand', e.target.value)} data-testid="edit-venue-travel">
-            <MenuItem value="">Unset</MenuItem>
-            {TRAVEL_BANDS.map((t) => (<MenuItem key={t} value={t}>{t}</MenuItem>))}
-          </Select>
-        </FormControl>
-        <Help field="travelBand" />
+        <Help field="audienceAttention" />
         <TextField label="Contact Name" fullWidth value={form.contactName || ''} onChange={(e) => set('contactName', e.target.value)}
           sx={{ marginBottom: 2 }} data-testid="edit-venue-contact" />
         <TextField label="Primary Email" fullWidth value={form.email || ''} onChange={(e) => set('email', e.target.value)}
@@ -675,20 +653,17 @@ export function EditVenueDialog({
           sx={{ marginBottom: 2 }} data-testid="edit-venue-phone" />
         <TextField label="Website" fullWidth value={form.website || ''} onChange={(e) => set('website', e.target.value)}
           sx={{ marginBottom: 2 }} data-testid="edit-venue-website" />
-        <TextField label="Pay Tier" fullWidth value={form.payTier || ''} onChange={(e) => set('payTier', e.target.value)}
-          sx={{ marginBottom: 1 }} data-testid="edit-venue-pay" />
-        <Help field="payTier" />
         <TextField
-          label="Priority (0–5)"
+          label="Pay Amount"
           type="number"
           fullWidth
-          slotProps={{ htmlInput: { min: 0, max: 5 } }}
-          value={form.priority ?? ''}
-          onChange={(e) => set('priority', e.target.value === '' ? undefined : Number(e.target.value))}
+          slotProps={{ htmlInput: { min: 0, step: 'any' } }}
+          value={form.payAmount ?? ''}
+          onChange={(e) => set('payAmount', e.target.value === '' ? undefined : Number(e.target.value))}
           sx={{ marginBottom: 1 }}
-          data-testid="edit-venue-priority"
+          data-testid="edit-venue-pay"
         />
-        <Help field="priority" />
+        <Help field="payAmount" />
         <FormGroup>
           <FormControlLabel
             control={(
@@ -701,14 +676,28 @@ export function EditVenueDialog({
           <FormControlLabel
             control={(
               <Checkbox
-                checked={form.interested !== false}
-                onChange={(e) => set('interested', e.target.checked)}
-                aria-label="interested"
-                data-testid="edit-venue-interested" />
+                checked={!!form.personalFavorite}
+                onChange={(e) => set('personalFavorite', e.target.checked)}
+                aria-label="personal favorite"
+                data-testid="edit-venue-personal-favorite"
+              />
             )}
-            label="Interested (worth pursuing)" />
-          <Help field="interested" />
+            label="Personal favorite (patron favorite — would visit anyway)"
+          />
+          <Help field="personalFavorite" />
 
+          <FormControlLabel
+            control={(
+              <Checkbox
+                checked={!!form.familyNearby}
+                disabled
+                aria-label="family nearby"
+                data-testid="edit-venue-family-nearby"
+              />
+            )}
+            label="Family nearby (auto-derived from address)"
+          />
+          <Help field="familyNearby" />
         </FormGroup>
         <TextField
           label="Last Verified"

@@ -52,7 +52,7 @@ vi.mock('@mui/material', async () => {
 
 const venue: Ivenue = {
   _id: 'v1', name: 'Mac n Bob', address: '123 Campbell Ave', city: 'Salem', usState: 'VA', venueType: 'MidRangeCafeBar',
-  bookingStatus: 'booking', outreachEligible: false, inScope: true, interested: true,
+  bookingStatus: 'booking', outreachEligible: false, inScope: true, payAmount: 150, personalFavorite: true,
 };
 
 describe('EditVenueDialog', () => {
@@ -80,25 +80,33 @@ describe('EditVenueDialog', () => {
     }));
   });
 
-  it('saves the relationshipStage + templateOverride selections (#1136)', async () => {
+  it('saves templateOverride selection', async () => {
     await act(async () => { render(<EditVenueDialog open venue={venue} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />); });
-    await act(async () => { fireEvent.change(screen.getByTestId('edit-venue-stage'), { target: { value: 'returning' } }); });
     await act(async () => { fireEvent.change(screen.getByTestId('edit-venue-override'), { target: { value: 'MidRangeCafeBar' } }); });
     await act(async () => { fireEvent.click(screen.getByTestId('edit-venue-save')); });
     expect(adminVenuesUtils.updateVenue).toHaveBeenCalledWith('tk', 'v1', expect.objectContaining({
-      relationshipStage: 'returning', templateOverride: 'MidRangeCafeBar',
+      templateOverride: 'MidRangeCafeBar',
     }));
   });
 
-  it('saves the originalsFit, travelBand and priority ranking fields', async () => {
+  it('saves audienceAttention, payAmount, and personalFavorite fields', async () => {
     await act(async () => { render(<EditVenueDialog open venue={venue} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />); });
-    await act(async () => { fireEvent.change(screen.getByTestId('edit-venue-originals'), { target: { value: 'loves' } }); });
-    await act(async () => { fireEvent.change(screen.getByTestId('edit-venue-travel'), { target: { value: 'regional' } }); });
-    await act(async () => { fireEvent.change(screen.getByTestId('edit-venue-priority'), { target: { value: '4' } }); });
+    await act(async () => { fireEvent.change(screen.getByTestId('edit-venue-attention'), { target: { value: 'high' } }); });
+    await act(async () => { fireEvent.change(screen.getByTestId('edit-venue-pay'), { target: { value: '175' } }); });
+    await act(async () => { fireEvent.click(screen.getByTestId('edit-venue-personal-favorite')); });
     await act(async () => { fireEvent.click(screen.getByTestId('edit-venue-save')); });
     expect(adminVenuesUtils.updateVenue).toHaveBeenCalledWith('tk', 'v1', expect.objectContaining({
-      originalsFit: 'loves', travelBand: 'regional', priority: 4,
+      audienceAttention: 'high', payAmount: 175, personalFavorite: false,
     }));
+  });
+
+  it('renders familyNearby as disabled read-only checkbox', async () => {
+    await act(async () => {
+      render(<EditVenueDialog open venue={{ ...venue, familyNearby: true }} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />);
+    });
+    const familyCheckbox = screen.getByTestId('edit-venue-family-nearby');
+    expect(familyCheckbox).toBeDisabled();
+    expect(familyCheckbox).toBeChecked();
   });
 
   it('propagates a toggled checkbox into the saved payload', async () => {
@@ -120,15 +128,15 @@ describe('EditVenueDialog', () => {
       change('edit-venue-secondary-email', 'sec@v.com');
       change('edit-venue-phone', '540-555-1212');
       change('edit-venue-website', 'https://v.com');
-      change('edit-venue-pay', '$$$');
+      change('edit-venue-pay', '120');
       change('edit-venue-lastverified', '2026-07-16');
       change('edit-venue-notes', 'great room');
     });
-    await act(async () => { fireEvent.click(screen.getByTestId('edit-venue-interested')); });
+    await act(async () => { fireEvent.click(screen.getByTestId('edit-venue-personal-favorite')); });
     await act(async () => { fireEvent.click(screen.getByTestId('edit-venue-save')); });
     expect(adminVenuesUtils.updateVenue).toHaveBeenCalledWith('tk', 'v1', expect.objectContaining({
       city: 'Roanoke', usState: 'VA', venueType: 'Originals', contactName: 'Pat',
-      email: 'pat@v.com', secondaryEmail: 'sec@v.com', phone: '540-555-1212', website: 'https://v.com', payTier: '$$$', notes: 'great room',
+      email: 'pat@v.com', secondaryEmail: 'sec@v.com', phone: '540-555-1212', website: 'https://v.com', payAmount: 120, notes: 'great room',
       lastVerified: '2026-07-16',
     }));
   });
@@ -159,13 +167,13 @@ describe('EditVenueDialog', () => {
     expect(screen.getByTestId('edit-venue-error').innerHTML).toBe('Secondary Email is invalid');
   });
 
-  it('clears priority back to undefined when emptied', async () => {
+  it('clears payAmount back to undefined when emptied', async () => {
     await act(async () => {
-      render(<EditVenueDialog open venue={{ ...venue, priority: 3 }} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />);
+      render(<EditVenueDialog open venue={{ ...venue, payAmount: 150 }} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />);
     });
-    await act(async () => { fireEvent.change(screen.getByTestId('edit-venue-priority'), { target: { value: '' } }); });
+    await act(async () => { fireEvent.change(screen.getByTestId('edit-venue-pay'), { target: { value: '' } }); });
     await act(async () => { fireEvent.click(screen.getByTestId('edit-venue-save')); });
-    expect(adminVenuesUtils.updateVenue).toHaveBeenCalledWith('tk', 'v1', expect.objectContaining({ priority: undefined }));
+    expect(adminVenuesUtils.updateVenue).toHaveBeenCalledWith('tk', 'v1', expect.objectContaining({ payAmount: undefined }));
   });
 
   it('blocks save and shows an error when the name is empty', async () => {

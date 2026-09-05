@@ -1009,7 +1009,7 @@ export function AdminOutreach() {
                       } else if (venue.bookingStatus === 'booked') {
                         statusText = 'Booked';
                         statusColor = 'success';
-                      } else if (venue.interested) {
+                      } else if ((venue as any).interested) {
                         statusText = 'Warm Lead';
                         statusColor = 'primary';
                       } else if (venue.outreachEligible === false) {
