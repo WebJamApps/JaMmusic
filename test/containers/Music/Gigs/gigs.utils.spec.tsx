@@ -170,9 +170,19 @@ describe('gigs.utils', () => {
       const subscribe = vi.fn(() => ({ createConsumer: () => ({ next: subscribeNext }) }));
       scc.create = vi.fn(() => ({ transmit, receiver, subscribe, disconnect })) as any;
 
-      const result = await utils.updateGig(getGigs, setEditGig, setEditChanged, {} as any, 'token');
+      const editGigInput = {
+        _id: '123',
+        artist: 'josh',
+        venue: 'The Spot',
+      };
+      const result = await utils.updateGig(getGigs, setEditGig, setEditChanged, editGigInput as any, 'token');
       expect(result).toBe('success');
       expect(subscribe).toHaveBeenCalledWith('gigUpdated');
+      expect(transmit).toHaveBeenCalledWith('editGig', {
+        gigId: '123',
+        gig: expect.objectContaining({ artist: 'jammusic', venue: 'The Spot' }),
+        token: 'token',
+      });
       expect(getGigs).toHaveBeenCalled();
       expect(setEditGig).toHaveBeenCalled();
       expect(setEditChanged).toHaveBeenCalledWith(false);
@@ -258,6 +268,10 @@ describe('gigs.utils', () => {
       const result = await utils.createGig(getGigs, setShowDialog, new Date(), 'item', 'item', 'item', 'item', { token: 'token' } as Iauth, 0, '');
       expect(result).toBe('success');
       expect(subscribe).toHaveBeenCalledWith('gigCreated');
+      expect(transmit).toHaveBeenCalledWith('newGig', {
+        gig: expect.objectContaining({ artist: 'jammusic' }),
+        token: 'token',
+      });
       expect(getGigs).toHaveBeenCalled();
       expect(setShowDialog).toHaveBeenCalledWith(false);
       expect(disconnect).toHaveBeenCalled();
