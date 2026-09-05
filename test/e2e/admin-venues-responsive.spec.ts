@@ -313,7 +313,7 @@ test.describe('Admin Venues page responsiveness and table scrollability', () => 
   });
 
   test(
-    'opens Add Venue, asserts Zip Code is required, asserts familyNearby disabled, and creates venue',
+    'opens Add Venue, asserts Zip Code is required, asserts familyNearby selectable, and creates venue',
     async ({ page }) => {
       await page.goto('/admin/venues', { waitUntil: 'domcontentloaded' });
 
@@ -325,9 +325,10 @@ test.describe('Admin Venues page responsiveness and table scrollability', () => 
       // Verify dialog title
       await expect(page.locator('[data-testid="edit-venue-dialog-title"]')).toHaveText('Add Venue');
 
-      // Verify familyNearby checkbox is rendered as disabled (auto-derived)
+      // Verify familyNearby checkbox is rendered as enabled (selectable)
       const familyNearbyCheckbox = page.locator('[data-testid="edit-venue-family-nearby"] input[type="checkbox"]');
-      await expect(familyNearbyCheckbox).toBeDisabled();
+      await expect(familyNearbyCheckbox).toBeEnabled();
+      await familyNearbyCheckbox.check();
 
       // Fill form without zip code
       await page.locator('[data-testid="edit-venue-name"] input').fill('Playwright Test Cafe');
@@ -340,8 +341,16 @@ test.describe('Admin Venues page responsiveness and table scrollability', () => 
       await expect(errorText).toBeVisible();
       await expect(errorText).toHaveText('Zip code is required');
 
-      // Intercept POST /venue to verify payload includes zipCode and does NOT include familyNearby
-      const captured: { payload: { name?: string; zipCode?: string; familyNearby?: unknown } | null } = { payload: null };
+      // Intercept POST /venue to verify payload includes zipCode, familyNearby, and omits empty enums
+      const captured: {
+        payload: {
+          name?: string;
+          zipCode?: string;
+          familyNearby?: unknown;
+          templateOverride?: unknown;
+          audienceAttention?: unknown;
+        } | null;
+      } = { payload: null };
       await page.route('http://localhost:7000/venue*', async route => {
         if (route.request().method() === 'POST') {
           captured.payload = JSON.parse(route.request().postData() || '{}');
@@ -371,7 +380,9 @@ test.describe('Admin Venues page responsiveness and table scrollability', () => 
       await expect.poll(() => captured.payload).not.toBeNull();
       expect(captured.payload?.name).toBe('Playwright Test Cafe');
       expect(captured.payload?.zipCode).toBe('24011');
-      expect(captured.payload?.familyNearby).toBeUndefined();
+      expect(captured.payload?.familyNearby).toBe(true);
+      expect(captured.payload?.templateOverride).toBeUndefined();
+      expect(captured.payload?.audienceAttention).toBeUndefined();
     },
   );
 });

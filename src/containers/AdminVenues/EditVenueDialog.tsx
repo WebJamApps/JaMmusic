@@ -372,13 +372,28 @@ export function EditVenueDialog({
       email: primaryEmail,
       secondaryEmail: secondaryEmail,
       venueType: form.venueType || undefined,
+      templateOverride: form.templateOverride || undefined,
+      audienceAttention: form.audienceAttention || undefined,
       website: websiteUrl,
       country: currentCountry,
+      familyNearby: !!form.familyNearby,
       gigInterval: typeof form.gigInterval === 'number' ? form.gigInterval : 0,
       resumeBooking: form.resumeBooking || null,
     };
     delete finalForm.bookingStatus;
-    delete finalForm.familyNearby;
+    if (!finalForm.templateOverride) {
+      delete finalForm.templateOverride;
+    }
+    if (!finalForm.audienceAttention) {
+      delete finalForm.audienceAttention;
+    }
+    if (!finalForm.venueType) {
+      delete finalForm.venueType;
+    }
+    delete (finalForm as any).relationshipStage;
+    delete (finalForm as any).payTier;
+    delete (finalForm as any).originalsFit;
+    delete (finalForm as any).travelBand;
     if (currentCountry === 'US') {
       finalForm.region = '';
     } else {
@@ -723,12 +738,12 @@ export function EditVenueDialog({
             control={(
               <Checkbox
                 checked={!!form.familyNearby}
-                disabled
+                onChange={(e) => set('familyNearby', e.target.checked)}
                 aria-label="family nearby"
                 data-testid="edit-venue-family-nearby"
               />
             )}
-            label="Family nearby (auto-derived from address)"
+            label="Family nearby (within 20 miles of family)"
           />
           <Help field="familyNearby" />
         </FormGroup>
