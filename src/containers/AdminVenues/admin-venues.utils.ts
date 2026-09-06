@@ -37,6 +37,7 @@ export interface Ivenue {
   audienceAttention?: 'low' | 'medium' | 'high' | string;
   personalFavorite?: boolean;
   familyNearby?: boolean;
+  familyNearbyOverride?: boolean;
   distanceKm?: number | null;
   distance?: number | null;
   gigInterval?: number;
@@ -65,7 +66,7 @@ export interface IvenueUpdate {
   payAmount?: number;
   audienceAttention?: 'low' | 'medium' | 'high' | string;
   personalFavorite?: boolean;
-  familyNearby?: boolean;
+  familyNearby?: boolean | null;
   status?: string;
   lastContacted?: string;
   lastVerified?: string;

@@ -9,8 +9,18 @@ export function TextField(props:any) {
 }
 
 export function Checkbox(props:any) {
-  const { children } = props;
-  return <input type="checkbox" {...props}>{children}</input>;
+  const { children, indeterminate, ...rest } = props;
+  return (
+    <input
+      type="checkbox"
+      ref={(el) => {
+        if (el) el.indeterminate = !!indeterminate;
+      }}
+      {...rest}
+    >
+      {children}
+    </input>
+  );
 }
 
 export function Switch(props:any) {
