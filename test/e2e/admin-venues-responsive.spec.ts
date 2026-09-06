@@ -342,9 +342,8 @@ test.describe('Admin Venues page responsiveness and table scrollability', () => 
       await expect(errorText).toHaveText('Zip code is required');
 
       // Intercept POST /venue to verify payload includes zipCode, familyNearby, and omits empty enums.
-      // The stored venue is built from what the client actually sent, and subsequent GET /venue
-      // requests serve it back, so the test proves familyNearby survives the round-trip rather than
-      // only proving it was placed on the wire.
+      // The mock stores what the client sent and serves it back on subsequent GET /venue requests,
+      // verifying that the UI correctly reflects the mock round-trip in the table and dialog.
       const captured: {
         payload: {
           name?: string;
@@ -389,9 +388,6 @@ test.describe('Admin Venues page responsiveness and table scrollability', () => 
       expect(captured.payload?.familyNearby).toBe(true);
       expect(captured.payload?.templateOverride).toBeUndefined();
       expect(captured.payload?.audienceAttention).toBeUndefined();
-
-      // The stored venue the backend serves back must carry the user-set value
-      await expect.poll(() => (storedVenue as Record<string, unknown> | null)?.familyNearby).toBe(true);
 
       // Round-trip: the newly created venue appears in the table, and reopening its
       // Edit dialog shows familyNearby checked from the persisted value

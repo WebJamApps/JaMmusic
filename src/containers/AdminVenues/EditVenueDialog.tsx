@@ -149,6 +149,7 @@ export function EditVenueDialog({
   const [form, setForm] = useState<IvenueUpdate>({});
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [familyNearbyTouched, setFamilyNearbyTouched] = useState(false);
 
   const [mapsLoaded, setMapsLoaded] = useState(false);
   const [predictions, setPredictions] = useState<any[]>([]);
@@ -218,6 +219,7 @@ export function EditVenueDialog({
 
   useEffect(() => {
     if (open) {
+      setFamilyNearbyTouched(false);
       setNotice('');
       if (venue) {
         setForm({
@@ -376,11 +378,15 @@ export function EditVenueDialog({
       audienceAttention: form.audienceAttention || undefined,
       website: websiteUrl,
       country: currentCountry,
-      familyNearby: !!form.familyNearby,
       gigInterval: typeof form.gigInterval === 'number' ? form.gigInterval : 0,
       resumeBooking: form.resumeBooking || null,
     };
     delete finalForm.bookingStatus;
+    if (familyNearbyTouched) {
+      finalForm.familyNearby = !!form.familyNearby;
+    } else {
+      delete finalForm.familyNearby;
+    }
     if (!finalForm.templateOverride) {
       delete finalForm.templateOverride;
     }
@@ -739,7 +745,10 @@ export function EditVenueDialog({
             control={(
               <Checkbox
                 checked={!!form.familyNearby}
-                onChange={(e) => set('familyNearby', e.target.checked)}
+                onChange={(e) => {
+                  setFamilyNearbyTouched(true);
+                  set('familyNearby', e.target.checked);
+                }}
                 aria-label="family nearby"
                 data-testid="edit-venue-family-nearby"
               />

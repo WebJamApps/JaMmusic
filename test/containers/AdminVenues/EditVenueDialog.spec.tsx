@@ -122,6 +122,37 @@ describe('EditVenueDialog', () => {
     }));
   });
 
+  it('omits familyNearby from payload when checkbox is not touched, preserving backend derived path', async () => {
+    await act(async () => {
+      render(<EditVenueDialog open venue={{ ...venue, familyNearby: true }} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />);
+    });
+    await act(async () => {
+      fireEvent.change(screen.getByTestId('edit-venue-address'), { target: { value: '456 New St' } });
+      fireEvent.click(screen.getByTestId('edit-venue-save'));
+    });
+    expect(adminVenuesUtils.updateVenue).toHaveBeenCalledWith('tk', 'v1', expect.not.objectContaining({
+      familyNearby: expect.anything(),
+    }));
+  });
+
+  it('omits familyNearby from create payload when checkbox is not touched', async () => {
+    const onSaved = vi.fn();
+    await act(async () => {
+      render(<EditVenueDialog open venue={null} token="tk" onClose={vi.fn()} onSaved={onSaved} />);
+    });
+    await act(async () => {
+      fireEvent.change(screen.getByTestId('edit-venue-name'), { target: { value: 'Untouched Family Venue' } });
+      fireEvent.change(screen.getByTestId('edit-venue-address'), { target: { value: '123 Campbell Ave' } });
+      fireEvent.change(screen.getByTestId('edit-venue-state'), { target: { value: 'NC' } });
+      fireEvent.change(screen.getByTestId('edit-venue-zip'), { target: { value: '28202' } });
+      fireEvent.click(screen.getByTestId('edit-venue-save'));
+    });
+    expect(adminVenuesUtils.createVenue).toHaveBeenCalledWith('tk', expect.not.objectContaining({
+      familyNearby: expect.anything(),
+    }));
+    expect(onSaved).toHaveBeenCalled();
+  });
+
   it('omits templateOverride and audienceAttention when empty or unset', async () => {
     await act(async () => {
       render(<EditVenueDialog open venue={venue} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />);
