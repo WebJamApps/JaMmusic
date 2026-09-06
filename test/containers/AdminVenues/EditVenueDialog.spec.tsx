@@ -101,19 +101,205 @@ describe('EditVenueDialog', () => {
     }));
   });
 
-  it('renders familyNearby checkbox as disabled (auto-derived from address) and excludes from save payload', async () => {
+  it('renders familyNearby checkbox as enabled, allows toggling, and includes in save payload', async () => {
     await act(async () => {
       render(<EditVenueDialog open venue={{ ...venue, familyNearby: true }} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />);
     });
     const familyCheckbox = screen.getByTestId('edit-venue-family-nearby');
-    expect(familyCheckbox).toBeDisabled();
+    expect(familyCheckbox).not.toBeDisabled();
     expect(familyCheckbox).toBeChecked();
+
+    await act(async () => {
+      fireEvent.click(familyCheckbox);
+    });
+    expect(familyCheckbox).not.toBeChecked();
 
     await act(async () => {
       fireEvent.click(screen.getByTestId('edit-venue-save'));
     });
+    expect(adminVenuesUtils.updateVenue).toHaveBeenCalledWith('tk', 'v1', expect.objectContaining({
+      familyNearby: false,
+    }));
+  });
+
+  it('omits familyNearby from payload when checkbox is not touched, preserving backend derived path', async () => {
+    await act(async () => {
+      render(<EditVenueDialog open venue={{ ...venue, familyNearby: true }} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />);
+    });
+    await act(async () => {
+      fireEvent.change(screen.getByTestId('edit-venue-address'), { target: { value: '456 New St' } });
+      fireEvent.click(screen.getByTestId('edit-venue-save'));
+    });
     expect(adminVenuesUtils.updateVenue).toHaveBeenCalledWith('tk', 'v1', expect.not.objectContaining({
       familyNearby: expect.anything(),
+    }));
+  });
+
+  it('omits familyNearby from create payload when checkbox is not touched', async () => {
+    const onSaved = vi.fn();
+    await act(async () => {
+      render(<EditVenueDialog open venue={null} token="tk" onClose={vi.fn()} onSaved={onSaved} />);
+    });
+    await act(async () => {
+      fireEvent.change(screen.getByTestId('edit-venue-name'), { target: { value: 'Untouched Family Venue' } });
+      fireEvent.change(screen.getByTestId('edit-venue-address'), { target: { value: '123 Campbell Ave' } });
+      fireEvent.change(screen.getByTestId('edit-venue-state'), { target: { value: 'NC' } });
+      fireEvent.change(screen.getByTestId('edit-venue-zip'), { target: { value: '28202' } });
+      fireEvent.click(screen.getByTestId('edit-venue-save'));
+    });
+    expect(adminVenuesUtils.createVenue).toHaveBeenCalledWith('tk', expect.not.objectContaining({
+      familyNearby: expect.anything(),
+    }));
+    expect(onSaved).toHaveBeenCalled();
+  });
+
+  it('displays Auto-derived status and hides recompute button when venue has no manual override', async () => {
+    await act(async () => {
+      render(
+        <EditVenueDialog
+          open
+          venue={{ ...venue, familyNearby: true, familyNearbyOverride: false }}
+          token="tk"
+          onClose={vi.fn()}
+          onSaved={vi.fn()}
+        />,
+      );
+    });
+    expect(screen.getByTestId('edit-venue-family-nearby-status')).toHaveTextContent('Auto-derived');
+    expect(screen.queryByTestId('edit-venue-family-nearby-recompute')).not.toBeInTheDocument();
+  });
+
+  it('displays Manual override and allows recomputing from address, sending familyNearby: null on save', async () => {
+    const onSaved = vi.fn();
+    await act(async () => {
+      render(
+        <EditVenueDialog
+          open
+          venue={{ ...venue, familyNearby: true, familyNearbyOverride: true }}
+          token="tk"
+          onClose={vi.fn()}
+          onSaved={onSaved}
+        />,
+      );
+    });
+
+    expect(screen.getByTestId('edit-venue-family-nearby-status')).toHaveTextContent('Manual override');
+    const recomputeBtn = screen.getByTestId('edit-venue-family-nearby-recompute');
+    expect(recomputeBtn).toBeInTheDocument();
+
+    await act(async () => {
+      fireEvent.click(recomputeBtn);
+    });
+
+    expect(screen.getByTestId('edit-venue-family-nearby-status')).toHaveTextContent('Auto-derived on save');
+    expect(screen.queryByTestId('edit-venue-family-nearby-recompute')).not.toBeInTheDocument();
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('edit-venue-save'));
+    });
+
+    expect(adminVenuesUtils.updateVenue).toHaveBeenCalledWith('tk', 'v1', expect.objectContaining({
+      familyNearby: null,
+    }));
+    expect(onSaved).toHaveBeenCalled();
+  });
+
+  it('shows recompute affordance after manual checkbox toggle and sends null if recomputed', async () => {
+    await act(async () => {
+      render(<EditVenueDialog open venue={{ ...venue, familyNearby: false }} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />);
+    });
+    expect(screen.getByTestId('edit-venue-family-nearby-status')).toHaveTextContent('Auto-derived');
+    expect(screen.queryByTestId('edit-venue-family-nearby-recompute')).not.toBeInTheDocument();
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('edit-venue-family-nearby'));
+    });
+    expect(screen.getByTestId('edit-venue-family-nearby-status')).toHaveTextContent('Manual override');
+    expect(screen.getByTestId('edit-venue-family-nearby-recompute')).toBeInTheDocument();
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('edit-venue-family-nearby-recompute'));
+    });
+    expect(screen.getByTestId('edit-venue-family-nearby-status')).toHaveTextContent('Auto-derived on save');
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('edit-venue-save'));
+    });
+    expect(adminVenuesUtils.updateVenue).toHaveBeenCalledWith('tk', 'v1', expect.objectContaining({
+      familyNearby: null,
+    }));
+  });
+
+  it('reverts recomputed state back to manual override if user clicks checkbox again', async () => {
+    await act(async () => {
+      render(
+        <EditVenueDialog
+          open
+          venue={{ ...venue, familyNearby: true, familyNearbyOverride: true }}
+          token="tk"
+          onClose={vi.fn()}
+          onSaved={vi.fn()}
+        />,
+      );
+    });
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('edit-venue-family-nearby-recompute'));
+    });
+    expect(screen.getByTestId('edit-venue-family-nearby-status')).toHaveTextContent('Auto-derived on save');
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('edit-venue-family-nearby'));
+    });
+    expect(screen.getByTestId('edit-venue-family-nearby-status')).toHaveTextContent('Manual override');
+    expect(screen.getByTestId('edit-venue-family-nearby-recompute')).toBeInTheDocument();
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('edit-venue-save'));
+    });
+    expect(adminVenuesUtils.updateVenue).toHaveBeenCalledWith('tk', 'v1', expect.objectContaining({
+      familyNearby: false,
+    }));
+  });
+
+  it('omits familyNearby on create if user toggles checkbox then clicks recompute from address', async () => {
+    const onSaved = vi.fn();
+    await act(async () => {
+      render(<EditVenueDialog open venue={null} token="tk" onClose={vi.fn()} onSaved={onSaved} />);
+    });
+    await act(async () => {
+      fireEvent.change(screen.getByTestId('edit-venue-name'), { target: { value: 'Recomputed Venue' } });
+      fireEvent.change(screen.getByTestId('edit-venue-address'), { target: { value: '123 Campbell Ave' } });
+      fireEvent.change(screen.getByTestId('edit-venue-state'), { target: { value: 'NC' } });
+      fireEvent.change(screen.getByTestId('edit-venue-zip'), { target: { value: '28202' } });
+      fireEvent.click(screen.getByTestId('edit-venue-family-nearby'));
+    });
+    expect(screen.getByTestId('edit-venue-family-nearby-status')).toHaveTextContent('Manual override');
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('edit-venue-family-nearby-recompute'));
+    });
+    expect(screen.getByTestId('edit-venue-family-nearby-status')).toHaveTextContent('Auto-derived on save');
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('edit-venue-save'));
+    });
+    expect(adminVenuesUtils.createVenue).toHaveBeenCalledWith('tk', expect.not.objectContaining({
+      familyNearby: expect.anything(),
+    }));
+    expect(onSaved).toHaveBeenCalled();
+  });
+
+  it('omits templateOverride and audienceAttention when empty or unset', async () => {
+    await act(async () => {
+      render(<EditVenueDialog open venue={venue} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />);
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('edit-venue-save'));
+    });
+    expect(adminVenuesUtils.updateVenue).toHaveBeenCalledWith('tk', 'v1', expect.not.objectContaining({
+      templateOverride: expect.anything(),
+      audienceAttention: expect.anything(),
     }));
   });
 
@@ -226,6 +412,7 @@ describe('EditVenueDialog', () => {
       fireEvent.change(screen.getByTestId('edit-venue-address'), { target: { value: '123 Campbell Ave' } });
       fireEvent.change(screen.getByTestId('edit-venue-state'), { target: { value: 'NC' } });
       fireEvent.change(screen.getByTestId('edit-venue-zip'), { target: { value: '28202' } });
+      fireEvent.click(screen.getByTestId('edit-venue-family-nearby'));
     });
     await act(async () => {
       fireEvent.click(screen.getByTestId('edit-venue-save'));
@@ -236,6 +423,11 @@ describe('EditVenueDialog', () => {
       usState: 'NC',
       country: 'US',
       zipCode: '28202',
+      familyNearby: true,
+    }));
+    expect(adminVenuesUtils.createVenue).toHaveBeenCalledWith('tk', expect.not.objectContaining({
+      templateOverride: expect.anything(),
+      audienceAttention: expect.anything(),
     }));
     expect(onSaved).toHaveBeenCalled();
   });

@@ -149,6 +149,8 @@ export function EditVenueDialog({
   const [form, setForm] = useState<IvenueUpdate>({});
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [familyNearbyTouched, setFamilyNearbyTouched] = useState(false);
+  const [familyNearbyReset, setFamilyNearbyReset] = useState(false);
 
   const [mapsLoaded, setMapsLoaded] = useState(false);
   const [predictions, setPredictions] = useState<any[]>([]);
@@ -218,6 +220,8 @@ export function EditVenueDialog({
 
   useEffect(() => {
     if (open) {
+      setFamilyNearbyTouched(false);
+      setFamilyNearbyReset(false);
       setNotice('');
       if (venue) {
         setForm({
@@ -372,13 +376,39 @@ export function EditVenueDialog({
       email: primaryEmail,
       secondaryEmail: secondaryEmail,
       venueType: form.venueType || undefined,
+      templateOverride: form.templateOverride || undefined,
+      audienceAttention: form.audienceAttention || undefined,
       website: websiteUrl,
       country: currentCountry,
       gigInterval: typeof form.gigInterval === 'number' ? form.gigInterval : 0,
       resumeBooking: form.resumeBooking || null,
     };
     delete finalForm.bookingStatus;
-    delete finalForm.familyNearby;
+    if (familyNearbyReset) {
+      if (venue) {
+        finalForm.familyNearby = null;
+      } else {
+        delete finalForm.familyNearby;
+      }
+    } else if (familyNearbyTouched) {
+      finalForm.familyNearby = !!form.familyNearby;
+    } else {
+      delete finalForm.familyNearby;
+    }
+    if (!finalForm.templateOverride) {
+      delete finalForm.templateOverride;
+    }
+    if (!finalForm.audienceAttention) {
+      delete finalForm.audienceAttention;
+    }
+    if (!finalForm.venueType) {
+      delete finalForm.venueType;
+    }
+    const finalFormRecord = finalForm as Record<string, unknown>;
+    delete finalFormRecord.relationshipStage;
+    delete finalFormRecord.payTier;
+    delete finalFormRecord.originalsFit;
+    delete finalFormRecord.travelBand;
     if (currentCountry === 'US') {
       finalForm.region = '';
     } else {
@@ -416,6 +446,19 @@ export function EditVenueDialog({
       setSubmitting(false);
     }
   };
+
+  const isFamilyNearbyOverridden = familyNearbyReset
+    ? false
+    : (familyNearbyTouched || Boolean(venue?.familyNearbyOverride));
+  let familyNearbyStatus = 'Auto-derived';
+  let familyNearbyChipColor: 'default' | 'primary' | 'secondary' = 'default';
+  if (familyNearbyReset) {
+    familyNearbyStatus = 'Auto-derived on save';
+    familyNearbyChipColor = 'primary';
+  } else if (isFamilyNearbyOverridden) {
+    familyNearbyStatus = 'Manual override';
+    familyNearbyChipColor = 'secondary';
+  }
 
   return (
     <Dialog
@@ -719,17 +762,46 @@ export function EditVenueDialog({
           />
           <Help field="personalFavorite" />
 
-          <FormControlLabel
-            control={(
-              <Checkbox
-                checked={!!form.familyNearby}
-                disabled
-                aria-label="family nearby"
-                data-testid="edit-venue-family-nearby"
-              />
+          <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 1 }}>
+            <FormControlLabel
+              control={(
+                <Checkbox
+                  checked={!!form.familyNearby}
+                  indeterminate={familyNearbyReset || undefined}
+                  onChange={(e) => {
+                    setFamilyNearbyTouched(true);
+                    setFamilyNearbyReset(false);
+                    set('familyNearby', e.target.checked);
+                  }}
+                  aria-label="family nearby"
+                  data-testid="edit-venue-family-nearby"
+                />
+              )}
+              label="Family nearby (within 20 miles of family)"
+            />
+            <Chip
+              label={familyNearbyStatus}
+              size="small"
+              variant="outlined"
+              color={familyNearbyChipColor}
+              data-testid="edit-venue-family-nearby-status"
+            />
+            {isFamilyNearbyOverridden && (
+              <Button
+                type="button"
+                size="small"
+                variant="text"
+                onClick={() => {
+                  setFamilyNearbyTouched(false);
+                  setFamilyNearbyReset(true);
+                }}
+                data-testid="edit-venue-family-nearby-recompute"
+                sx={{ textTransform: 'none', py: 0, px: 1, minHeight: 0, fontSize: '0.75rem' }}
+              >
+                Recompute from address
+              </Button>
             )}
-            label="Family nearby (auto-derived from address)"
-          />
+          </Box>
           <Help field="familyNearby" />
         </FormGroup>
         <TextField
