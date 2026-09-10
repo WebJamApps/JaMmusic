@@ -74,10 +74,8 @@ describe('AdminOutreach', () => {
   beforeEach(() => {
     window.scrollTo = vi.fn();
     outreachUtils.getAllowedAdminRoles = vi.fn(() => ['JaM-admin']) as any;
-    outreachUtils.getConfig = vi.fn(() => Promise.resolve({ autoApprove: false })) as any;
     outreachUtils.getCandidates = vi.fn(() => Promise.resolve(candidates)) as any;
     outreachUtils.sendBatch = vi.fn(() => Promise.resolve(okResult)) as any;
-    outreachUtils.setConfig = vi.fn((_t: string, v: boolean) => Promise.resolve({ autoApprove: v })) as any;
     outreachUtils.getPreview = vi.fn(() => Promise.resolve(previews)) as any;
     outreachUtils.getPendingReplies = vi.fn(() => Promise.resolve([])) as any;
     outreachUtils.applySuggestion = vi.fn(() => Promise.resolve({})) as any;
@@ -91,14 +89,7 @@ describe('AdminOutreach', () => {
     expect(screen.getByTestId('admin-outreach-unauthorized')).toBeDefined();
   });
 
-  it('renders the page and loads the auto-approve config on mount', async () => {
-    await renderPage();
-    expect(screen.getByTestId('admin-outreach-page')).toBeDefined();
-    expect(outreachUtils.getConfig).toHaveBeenCalledWith('tk');
-  });
-
-  it('does not crash when the config read fails', async () => {
-    outreachUtils.getConfig = vi.fn(() => Promise.reject(new Error('cfg'))) as any;
+  it('renders the page', async () => {
     await renderPage();
     expect(screen.getByTestId('admin-outreach-page')).toBeDefined();
   });
@@ -256,19 +247,6 @@ describe('AdminOutreach', () => {
     await act(async () => { fireEvent.click(screen.getByTestId('outreach-open-dialog')); });
     await act(async () => { fireEvent.click(screen.getByTestId('outreach-dialog-send')); });
     expect(screen.getByTestId('outreach-error').textContent).toBe('send fail');
-  });
-
-  it('toggles auto-approve via setConfig', async () => {
-    await renderPage();
-    await act(async () => { fireEvent.click(screen.getByRole('checkbox', { name: /auto-approve/i })); });
-    expect(outreachUtils.setConfig).toHaveBeenCalledWith('tk', true);
-  });
-
-  it('shows an error when setConfig fails', async () => {
-    outreachUtils.setConfig = vi.fn(() => Promise.reject(new Error('cfg fail'))) as any;
-    await renderPage();
-    await act(async () => { fireEvent.click(screen.getByRole('checkbox', { name: /auto-approve/i })); });
-    expect(screen.getByTestId('outreach-error').textContent).toBe('cfg fail');
   });
 
   describe('Replies to Review', () => {
