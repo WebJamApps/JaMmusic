@@ -38,22 +38,6 @@ describe('Outreach utils', () => {
     });
   });
 
-  it('getConfig GETs /outreach/config', async () => {
-    fetchMock.mockReturnValue(okJson({ autoApprove: true }));
-    const cfg = await outreachUtils.getConfig('tok');
-    expect(cfg.autoApprove).toBe(true);
-    expect(fetchMock.mock.calls[0][0]).toContain('/outreach/config');
-  });
-
-  it('setConfig PUTs the autoApprove flag', async () => {
-    fetchMock.mockReturnValue(okJson({ autoApprove: false }));
-    const cfg = await outreachUtils.setConfig('tok', false);
-    expect(cfg.autoApprove).toBe(false);
-    const opts = fetchMock.mock.calls[0][1] as RequestInit;
-    expect(opts.method).toBe('PUT');
-    expect(JSON.parse(opts.body as string)).toEqual({ autoApprove: false });
-  });
-
   it('getPreview GETs /outreach/preview', async () => {
     fetchMock.mockReturnValue(okJson([{ venueId: 'c1', venueName: 'Venue A', subject: 'S', body: 'B' }]));
     const previews = await outreachUtils.getPreview('tok', ['c1', 'c2'], 'Aug 14');
@@ -112,8 +96,6 @@ describe('Outreach utils', () => {
     it.each([
     ['getCandidates', () => outreachUtils.getCandidates('t', 'd')],
     ['sendBatch', () => outreachUtils.sendBatch('t', { venueIds: ['a'], targetDates: 'd', targetWeekend: { start: 's', end: 'e' } })],
-    ['getConfig', () => outreachUtils.getConfig('t')],
-    ['setConfig', () => outreachUtils.setConfig('t', true)],
     ['getPreview', () => outreachUtils.getPreview('t', ['a'], 'd')],
     ['getPendingReplies', () => outreachUtils.getPendingReplies('t')],
     ['applySuggestion', () => outreachUtils.applySuggestion('t', 'id', {})],

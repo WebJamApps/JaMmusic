@@ -30,15 +30,6 @@ test.describe('Find-Eligible-Venues Candidate Reason Chips', () => {
       });
     });
 
-    // Intercept outreach config API call
-    await page.route('http://localhost:7000/outreach/config*', async (route) => {
-      await route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify({ autoApprove: false }),
-      });
-    });
-
     // Intercept outreach pending replies API call
     await page.route('http://localhost:7000/outreach/replies/pending*', async (route) => {
       await route.fulfill({
