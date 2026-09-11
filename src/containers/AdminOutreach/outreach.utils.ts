@@ -43,6 +43,19 @@ export interface Isuggestion {
   reviewed?: boolean;
 }
 
+// Stored outreach run reports index (web-jam-back#1084, D-52/D-53). Every
+// record without `htmlContent` — the report itself is served publicly at
+// `https://www.web-jam.com/outreach/report/<weekend>` and must never carry an
+// auth header, since it opens on a device (a phone) with no admin session.
+export interface IreportSummary {
+  _id: string;
+  weekend: string;
+  title: string;
+  candidatesCount: number;
+  dispatchedCount: number;
+  updated_at: string;
+}
+
 export interface IpendingReply {
   _id: string;
   venueId: string;
@@ -153,6 +166,16 @@ async function deleteOutreach(token: string, id: string): Promise<void> {
   if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
 }
 
+// GET /outreach/report — administrator-only index of stored run reports
+// (web-jam-back#1084, D-52/D-53). Reading the index requires the admin
+// token; the report pages themselves are public and are linked directly
+// by the caller, never fetched through this helper.
+async function getReportIndex(token: string): Promise<IreportSummary[]> {
+  const res = await customFetch(`${outreachUrl}/report`, { headers: headers(token) });
+  if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+  return await res.json() as IreportSummary[];
+}
+
 export default {
   getCandidates,
   sendBatch,
@@ -163,5 +186,6 @@ export default {
   deleteOutreach,
   recordOutcome,
   listOutreach,
+  getReportIndex,
 };
 

@@ -93,6 +93,20 @@ describe('Outreach utils', () => {
     expect(fetchMock.mock.calls[0][0]).toMatch(/\/outreach$/);
   });
 
+  it('getReportIndex GETs /outreach/report with the admin token', async () => {
+    const records = [
+      {
+        _id: 'r1', weekend: '2026-10-16-to-2026-10-18', title: 'Fall Run', candidatesCount: 12, dispatchedCount: 9, updated_at: '2026-09-05T00:00:00.000Z',
+      },
+    ];
+    fetchMock.mockReturnValue(okJson(records));
+    const res = await outreachUtils.getReportIndex('tok');
+    expect(res).toEqual(records);
+    expect(fetchMock.mock.calls[0][0]).toMatch(/\/outreach\/report$/);
+    const opts = fetchMock.mock.calls[0][1] as RequestInit;
+    expect((opts.headers as Record<string, string>).Authorization).toBe('Bearer tok');
+  });
+
     it.each([
     ['getCandidates', () => outreachUtils.getCandidates('t', 'd')],
     ['sendBatch', () => outreachUtils.sendBatch('t', { venueIds: ['a'], targetDates: 'd', targetWeekend: { start: 's', end: 'e' } })],
@@ -102,6 +116,7 @@ describe('Outreach utils', () => {
     ['deleteOutreach', () => outreachUtils.deleteOutreach('t', 'id')],
     ['recordOutcome', () => outreachUtils.recordOutcome('t', 'id', { status: 'interested' })],
     ['listOutreach', () => outreachUtils.listOutreach('t')],
+    ['getReportIndex', () => outreachUtils.getReportIndex('t')],
   ])('%s throws on a non-ok response', async (_name, call) => {
     fetchMock.mockReturnValue(failed());
     await expect(call()).rejects.toThrow('500');

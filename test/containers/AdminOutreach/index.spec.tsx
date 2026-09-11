@@ -81,6 +81,7 @@ describe('AdminOutreach', () => {
     outreachUtils.applySuggestion = vi.fn(() => Promise.resolve({})) as any;
     outreachUtils.listOutreach = vi.fn(() => Promise.resolve([])) as any;
     outreachUtils.recordOutcome = vi.fn(() => Promise.resolve({})) as any;
+    outreachUtils.getReportIndex = vi.fn(() => Promise.resolve([])) as any;
     adminVenuesUtils.listVenues = vi.fn(() => Promise.resolve([])) as any;
   });
 
@@ -925,6 +926,51 @@ describe('AdminOutreach', () => {
       global.fetch = vi.fn().mockResolvedValue(new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 }));
       await renderPage();
       expect(dispatchSpy).toHaveBeenCalledWith(expect.objectContaining({ type: 'auth:logout' }));
+    });
+  });
+
+  describe('Stored Run Reports (web-jam-back#1084, D-52/D-53)', () => {
+    it('renders an empty state when the index returns nothing', async () => {
+      outreachUtils.getReportIndex = vi.fn(() => Promise.resolve([])) as any;
+      await renderPage();
+      const accordion = screen.getByText(/Stored Run Reports \(0\)/);
+      await act(async () => { fireEvent.click(accordion); });
+      expect(screen.getByTestId('reports-empty')).toBeInTheDocument();
+    });
+
+    it('lists every stored report newest first with weekend, title, counts, last-written date, and a public report link', async () => {
+      const reports = [
+        {
+          _id: 'r2', weekend: '2026-12-11-to-2026-12-13', title: 'Winter Run', candidatesCount: 8, dispatchedCount: 8, updated_at: '2026-09-05T00:00:00.000Z',
+        },
+        {
+          _id: 'r1', weekend: '2026-10-16-to-2026-10-18', title: 'Fall Run', candidatesCount: 15, dispatchedCount: 10, updated_at: '2026-09-01T00:00:00.000Z',
+        },
+      ];
+      outreachUtils.getReportIndex = vi.fn(() => Promise.resolve(reports)) as any;
+      await renderPage();
+      const accordion = screen.getByText(/Stored Run Reports \(2\)/);
+      await act(async () => { fireEvent.click(accordion); });
+
+      const rowNames = screen.getAllByTestId(/^report-row-/).map((el) => el.getAttribute('data-testid'));
+      expect(rowNames).toEqual(['report-row-2026-12-11-to-2026-12-13', 'report-row-2026-10-16-to-2026-10-18']);
+
+      const row1 = screen.getByTestId('report-row-2026-12-11-to-2026-12-13');
+      expect(row1.textContent).toContain('Winter Run');
+      expect(row1.textContent).toContain('8 candidates');
+      expect(row1.textContent).toContain('8 dispatched');
+
+      const link = screen.getByTestId('report-link-2026-12-11-to-2026-12-13');
+      expect(link).toHaveAttribute('href', 'https://www.web-jam.com/outreach/report/2026-12-11-to-2026-12-13');
+      expect(link).toHaveAttribute('target', '_blank');
+    });
+
+    it('shows an error when the report index fails to load', async () => {
+      outreachUtils.getReportIndex = vi.fn(() => Promise.reject(new Error('index fail'))) as any;
+      await renderPage();
+      const accordion = screen.getByText(/Stored Run Reports \(0\)/);
+      await act(async () => { fireEvent.click(accordion); });
+      expect(screen.getByTestId('reports-error').textContent).toBe('index fail');
     });
   });
 });
