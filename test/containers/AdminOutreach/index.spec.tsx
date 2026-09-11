@@ -941,10 +941,12 @@ describe('AdminOutreach', () => {
     it('lists every stored report newest first with weekend, title, counts, last-written date, and a public report link', async () => {
       const reports = [
         {
-          _id: 'r2', weekend: '2026-12-11-to-2026-12-13', title: 'Winter Run', candidatesCount: 8, dispatchedCount: 8, updated_at: '2026-09-05T00:00:00.000Z',
+          _id: 'r2', weekend: '2026-12-11-to-2026-12-13', title: 'Winter Run',
+          candidatesCount: 8, dispatchedCount: 8, updated_at: '2026-09-05T00:00:00.000Z',
         },
         {
-          _id: 'r1', weekend: '2026-10-16-to-2026-10-18', title: 'Fall Run', candidatesCount: 15, dispatchedCount: 10, updated_at: '2026-09-01T00:00:00.000Z',
+          _id: 'r1', weekend: '2026-10-16-to-2026-10-18', title: 'Fall Run',
+          candidatesCount: 15, dispatchedCount: 10, updated_at: '2026-09-01T00:00:00.000Z',
         },
       ];
       outreachUtils.getReportIndex = vi.fn(() => Promise.resolve(reports)) as any;

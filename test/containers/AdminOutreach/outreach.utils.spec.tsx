@@ -96,7 +96,8 @@ describe('Outreach utils', () => {
   it('getReportIndex GETs /outreach/report with the admin token', async () => {
     const records = [
       {
-        _id: 'r1', weekend: '2026-10-16-to-2026-10-18', title: 'Fall Run', candidatesCount: 12, dispatchedCount: 9, updated_at: '2026-09-05T00:00:00.000Z',
+        _id: 'r1', weekend: '2026-10-16-to-2026-10-18', title: 'Fall Run',
+        candidatesCount: 12, dispatchedCount: 9, updated_at: '2026-09-05T00:00:00.000Z',
       },
     ];
     fetchMock.mockReturnValue(okJson(records));
