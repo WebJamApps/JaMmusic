@@ -12,7 +12,7 @@ import {
   Check, Undo, Warning, Info, ThumbUp, ThumbDown, Search,
   Event, Close, CheckCircle, Block, DateRange, ArrowForward,
   Star, History, Mail, Phone, LocationOn, LocalActivity,
-  PlaylistAdd, AssignmentTurnedIn, ExitToApp,
+  PlaylistAdd, AssignmentTurnedIn, ExitToApp, Description, OpenInNew,
 } from '@mui/icons-material';
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
@@ -20,7 +20,7 @@ import { AuthContext } from 'src/providers/Auth.provider';
 import { customFetch } from 'src/lib/fetch.utils';
 import adminVenuesUtils, { type Ivenue } from 'src/containers/AdminVenues/admin-venues.utils';
 import outreachUtils, {
-  type Icandidate, type IbatchResult, type IpitchPreview, type IpendingReply,
+  type Icandidate, type IbatchResult, type IpitchPreview, type IpendingReply, type IreportSummary,
 } from './outreach.utils';
 import { OutreachDialog } from './OutreachDialog';
 
@@ -89,6 +89,11 @@ export function AdminOutreach() {
   const [globalLoading, setGlobalLoading] = useState(false);
   const [error, setError] = useState('');
   const [repliesError, setRepliesError] = useState('');
+
+  // Stored run reports index (web-jam-back#1084, D-52/D-53).
+  const [reports, setReports] = useState<IreportSummary[]>([]);
+  const [reportsLoading, setReportsLoading] = useState(false);
+  const [reportsError, setReportsError] = useState('');
 
   // UI expand and detail states
   const [expandedVenueId, setExpandedVenueId] = useState<string | null>(null);
@@ -160,12 +165,26 @@ export function AdminOutreach() {
     }
   }, [auth.token]);
 
+  const loadReports = useCallback(async () => {
+    setReportsLoading(true);
+    setReportsError('');
+    try {
+      const data = await outreachUtils.getReportIndex(auth.token);
+      setReports(data);
+    } catch (e) {
+      setReportsError((e as { message?: string }).message || 'Failed to load stored reports');
+    } finally {
+      setReportsLoading(false);
+    }
+  }, [auth.token]);
+
   useEffect(() => {
     if (isAuthorized) {
       void loadAllData();
       void loadGigs();
+      void loadReports();
     }
-  }, [isAuthorized, loadAllData, loadGigs]);
+  }, [isAuthorized, loadAllData, loadGigs, loadReports]);
 
   // Check if venue has conflicting booked gig on the target weekend or +/- 2 months
   const checkWeekendGigs = (venueName: string, dateStr: string) => {
@@ -1000,6 +1019,71 @@ export function AdminOutreach() {
                         </Card>
                       );
                     })}
+                  </Box>
+                )}
+              </AccordionDetails>
+            </Accordion>
+
+            {/* ACCORDION 4: Stored Run Reports (web-jam-back#1084, D-52/D-53) */}
+            <Accordion sx={{ borderRadius: 2, '&:before': { display: 'none' }, boxShadow: 2 }} data-testid="stored-reports-accordion">
+              <AccordionSummary expandIcon={<DateRange />}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                  <Description color="action" />
+                  <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+                    Stored Run Reports ({reports.length})
+                  </Typography>
+                  <Chip size="small" label="History" variant="outlined" />
+                </Box>
+              </AccordionSummary>
+              <AccordionDetails sx={{ p: 2, bgcolor: 'action.hover' }}>
+                {reportsError && (
+                  <Alert severity="error" sx={{ mb: 2 }} data-testid="reports-error">
+                    {reportsError}
+                  </Alert>
+                )}
+                {reportsLoading && (
+                  <Box sx={{ display: 'flex', justifyContent: 'center', my: 2 }} data-testid="reports-loading">
+                    <CircularProgress size={32} />
+                  </Box>
+                )}
+                {!reportsLoading && reports.length === 0 && !reportsError && (
+                  <Box sx={{ p: 3, textAlign: 'center' }} data-testid="reports-empty">
+                    <Typography color="text.secondary">No stored run reports yet.</Typography>
+                  </Box>
+                )}
+                {!reportsLoading && reports.length > 0 && (
+                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                    {reports.map((r) => (
+                      <Card key={r.weekend} sx={{ borderRadius: 2, borderLeft: '4px solid #94a3b8' }} data-testid={`report-row-${r.weekend}`}>
+                        <CardContent sx={{
+                          display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                          flexWrap: 'wrap', gap: 1, py: 2,
+                        }}>
+                          <Box>
+                            <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
+                              {r.title}
+                            </Typography>
+                            <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
+                              {r.weekend}
+                              {` · ${r.candidatesCount} candidates · ${r.dispatchedCount} dispatched`}
+                              {` · last written ${new Date(r.updated_at).toLocaleDateString()}`}
+                            </Typography>
+                          </Box>
+                          <a
+                            href={`https://www.web-jam.com/outreach/report/${r.weekend}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            data-testid={`report-link-${r.weekend}`}
+                            style={{
+                              color: 'inherit', display: 'inline-flex', alignItems: 'center', gap: 4,
+                              textDecoration: 'underline',
+                            }}
+                          >
+                            View report <OpenInNew fontSize="inherit" />
+                          </a>
+                        </CardContent>
+                      </Card>
+                    ))}
                   </Box>
                 )}
               </AccordionDetails>
