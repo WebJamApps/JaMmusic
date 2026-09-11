@@ -3,7 +3,7 @@ import { customFetch } from 'src/lib/fetch.utils';
 
 // Outreach-specific API helpers (extracted from admin-venues.utils.ts per #1140).
 // Thin client over the existing web-jam-back endpoints: GET /outreach/candidates,
-// POST /outreach/batch, GET /outreach/preview, GET/PUT /outreach/config.
+// POST /outreach/batch, GET /outreach/preview.
 
 export interface Icandidate {
   _id: string;
@@ -96,20 +96,6 @@ async function sendBatch(
   return await res.json() as IbatchResult;
 }
 
-async function getConfig(token: string): Promise<{ autoApprove: boolean }> {
-  const res = await customFetch(`${outreachUrl}/config`, { headers: headers(token) });
-  if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
-  return await res.json() as { autoApprove: boolean };
-}
-
-async function setConfig(token: string, autoApprove: boolean): Promise<{ autoApprove: boolean }> {
-  const res = await customFetch(`${outreachUrl}/config`, {
-    method: 'PUT', headers: headers(token, true), body: JSON.stringify({ autoApprove }),
-  });
-  if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
-  return await res.json() as { autoApprove: boolean };
-}
-
 async function getPreview(
   token: string, venueIds: string[], targetDates: string,
 ): Promise<IpitchPreview[]> {
@@ -170,8 +156,6 @@ async function deleteOutreach(token: string, id: string): Promise<void> {
 export default {
   getCandidates,
   sendBatch,
-  getConfig,
-  setConfig,
   getPreview,
   getAllowedAdminRoles,
   getPendingReplies,

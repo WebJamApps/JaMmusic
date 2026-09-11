@@ -3,7 +3,7 @@ import {
 } from 'react';
 import {
   Box, Typography, TextField, Button, Checkbox, FormControlLabel,
-  Switch, Divider, Card, CardContent, Chip, Select, MenuItem,
+  Divider, Card, CardContent, Chip, Select, MenuItem,
   FormControl, InputLabel, CircularProgress, Grid, Paper,
   InputAdornment, Accordion, AccordionSummary, AccordionDetails,
   Dialog, DialogTitle, DialogContent, DialogActions, Alert,
@@ -104,7 +104,6 @@ export function AdminOutreach() {
   const [candidates, setCandidates] = useState<Icandidate[]>([]);
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [result, setResult] = useState<IbatchResult | null>(null);
-  const [autoApprove, setAutoApprove] = useState(false);
   const [batchLoading, setBatchLoading] = useState(false);
   const [sending, setSending] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -122,13 +121,6 @@ export function AdminOutreach() {
 
   // Local suggestion edits (mirrors legacy support)
   const [localEdits, setLocalEdits] = useState<Record<string, { bookingStatus?: string }>>({});
-
-  const loadConfig = useCallback(async () => {
-    try {
-      const cfg = await outreachUtils.getConfig(auth.token);
-      setAutoApprove(cfg.autoApprove);
-    } catch { /* non-blocking */ }
-  }, [auth.token]);
 
   const loadAllData = useCallback(async () => {
     setGlobalLoading(true);
@@ -170,11 +162,10 @@ export function AdminOutreach() {
 
   useEffect(() => {
     if (isAuthorized) {
-      void loadConfig();
       void loadAllData();
       void loadGigs();
     }
-  }, [isAuthorized, loadConfig, loadAllData, loadGigs]);
+  }, [isAuthorized, loadAllData, loadGigs]);
 
   // Check if venue has conflicting booked gig on the target weekend or +/- 2 months
   const checkWeekendGigs = (venueName: string, dateStr: string) => {
@@ -383,16 +374,6 @@ export function AdminOutreach() {
       setDialogOpen(false);
     } finally {
       setSending(false);
-    }
-  };
-
-  const toggleAutoApprove = async (value: boolean) => {
-    setError('');
-    try {
-      const cfg = await outreachUtils.setConfig(auth.token, value);
-      setAutoApprove(cfg.autoApprove);
-    } catch (e) {
-      setError((e as { message?: string }).message || 'Failed to update auto-approve');
     }
   };
 
@@ -1037,15 +1018,6 @@ export function AdminOutreach() {
           <Typography variant="body2" color="text.secondary" sx={{ mb: 4 }}>
             Prepare, customize, and preview outreach campaigns for target weekends.
           </Typography>
-
-          <FormControlLabel
-            control={(
-              <Switch checked={autoApprove} onChange={(e) => toggleAutoApprove(e.target.checked)}
-                aria-label="auto-approve" data-testid="auto-approve-toggle" />
-            )}
-            label="Auto-approve (let the AI agent send batches without review)"
-            sx={{ mb: 3 }}
-          />
 
           <Box sx={{ display: 'flex', gap: 3, flexWrap: 'wrap', alignItems: 'flex-end', mb: 4 }}>
             <DatePicker
