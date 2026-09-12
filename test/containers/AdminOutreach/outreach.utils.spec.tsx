@@ -87,6 +87,18 @@ describe('Outreach utils', () => {
     expect(fetchMock.mock.calls[0][0]).toContain('/outreach?venueId=v1&status=replied');
   });
 
+  it('listOutreach GETs /outreach with status=booked and status=target-filled (D-62)', async () => {
+    fetchMock.mockReturnValue(okJson([{ _id: 'bk1', status: 'booked' }]));
+    const booked = await outreachUtils.listOutreach('tok', { status: 'booked' });
+    expect(booked).toHaveLength(1);
+    expect(fetchMock.mock.calls[0][0]).toContain('/outreach?status=booked');
+
+    fetchMock.mockReturnValue(okJson([{ _id: 'tf1', status: 'target-filled' }]));
+    const filled = await outreachUtils.listOutreach('tok', { status: 'target-filled' });
+    expect(filled).toHaveLength(1);
+    expect(fetchMock.mock.calls[1][0]).toContain('/outreach?status=target-filled');
+  });
+
   it('listOutreach GETs /outreach without queries', async () => {
     fetchMock.mockReturnValue(okJson([]));
     await outreachUtils.listOutreach('tok');
