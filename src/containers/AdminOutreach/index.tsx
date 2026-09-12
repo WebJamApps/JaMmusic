@@ -127,17 +127,23 @@ export function AdminOutreach() {
   // Local suggestion edits (mirrors legacy support)
   const [localEdits, setLocalEdits] = useState<Record<string, { bookingStatus?: string }>>({});
 
+  // Blocked venue-weekends (target-filled and booked records, D-57/D-62)
+  const [filledRecords, setFilledRecords] = useState<IpendingReply[]>([]);
+
   const loadAllData = useCallback(async () => {
     setGlobalLoading(true);
     setError('');
     setRepliesError('');
     try {
-      const [repliesData, venuesList] = await Promise.all([
+      const [repliesData, venuesList, bookedData, targetFilledData] = await Promise.all([
         outreachUtils.getPendingReplies(auth.token),
         adminVenuesUtils.listVenues(auth.token),
+        outreachUtils.listOutreach(auth.token, { status: 'booked' }),
+        outreachUtils.listOutreach(auth.token, { status: 'target-filled' }),
       ]);
       setOutreachRecords(repliesData);
       setAllVenues(venuesList);
+      setFilledRecords([...bookedData, ...targetFilledData]);
       
       const map: Record<string, Ivenue> = {};
       venuesList.forEach((v) => { map[v._id] = v; });
@@ -881,6 +887,72 @@ export function AdminOutreach() {
                               </Box>
                             )}
 
+                          </CardContent>
+                        </Card>
+                      );
+                    })}
+                  </Box>
+                )}
+              </AccordionDetails>
+            </Accordion>
+
+            {/* ACCORDION: Blocked Venue-Weekends (Target-Filled / Booked, D-57/D-62) */}
+            <Accordion sx={{ borderRadius: 2, '&:before': { display: 'none' }, boxShadow: 2 }} data-testid="filled-outreach-accordion">
+              <AccordionSummary expandIcon={<DateRange />}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                  <Block color="error" />
+                  <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+                    Blocked Venue-Weekends ({filledRecords.length})
+                  </Typography>
+                  <Chip size="small" label="Filled / Booked" color="warning" variant="outlined" />
+                </Box>
+              </AccordionSummary>
+              <AccordionDetails sx={{ p: 2, bgcolor: 'action.hover' }}>
+                {repliesError ? null : filledRecords.length === 0 ? (
+                  <Box sx={{ p: 3, textAlign: 'center' }} data-testid="filled-outreach-empty">
+                    <Typography color="text.secondary">No venue-weekends are currently blocked.</Typography>
+                  </Box>
+                ) : (
+                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                    {filledRecords.map((record) => {
+                      const venue = venuesMap[record.venueId];
+                      const venueName = venue?.name || (record as any).venueName || record.venueId || 'Unknown Venue';
+                      const statusColor = record.status === 'booked' ? 'success' : 'primary';
+
+                      return (
+                        <Card
+                          key={record._id}
+                          sx={{
+                            borderRadius: 2,
+                            borderLeft: '6px solid',
+                            borderColor: `${statusColor}.main`,
+                          }}
+                          data-testid={`filled-record-${record._id}`}
+                        >
+                          <CardContent sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', py: 2 }}>
+                            <Box>
+                              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
+                                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+                                  {venueName}
+                                </Typography>
+                                <Chip size="small" label={record.status} color={statusColor} variant="filled" />
+                              </Box>
+                              <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
+                                {record.targetDates ? `Target Weekend: ${record.targetDates}` : ''}
+                                {record.bookingPeriod ? ` (${record.bookingPeriod})` : ''}
+                                {record.sentAt ? ` · Sent: ${new Date(record.sentAt).toLocaleDateString()}` : ''}
+                              </Typography>
+                            </Box>
+                            <Button
+                              variant="outlined"
+                              color="warning"
+                              size="small"
+                              startIcon={<Undo />}
+                              onClick={() => handleReopen(record._id)}
+                              data-testid={`filled-reopen-btn-${record._id}`}
+                            >
+                              Reopen
+                            </Button>
                           </CardContent>
                         </Card>
                       );

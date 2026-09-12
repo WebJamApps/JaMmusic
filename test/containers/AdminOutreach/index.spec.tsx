@@ -975,5 +975,70 @@ describe('AdminOutreach', () => {
       expect(screen.getByTestId('reports-error').textContent).toBe('index fail');
     });
   });
+
+  describe('Blocked Venue-Weekends (Target-Filled / Booked, D-57/D-62)', () => {
+    it('renders filled and booked records with a Reopen control and calls applySuggestion on click (D-57)', async () => {
+      const bookedRecords = [
+        {
+          _id: 'bk1',
+          venueId: 'c1',
+          venueName: 'Venue A',
+          status: 'booked',
+          targetDates: '2026-08-15',
+          bookingPeriod: 'August',
+          sentAt: '2026-08-01T12:00:00.000Z',
+        },
+      ];
+      const targetFilledRecords = [
+        {
+          _id: 'tf1',
+          venueId: 'c2',
+          venueName: 'Venue B',
+          status: 'target-filled',
+          targetDates: '2026-08-15',
+          bookingPeriod: 'August',
+          sentAt: '2026-08-01T12:00:00.000Z',
+        },
+      ];
+
+      outreachUtils.listOutreach = vi.fn((_token: string, query?: { status?: string }) => {
+        if (query?.status === 'booked') return Promise.resolve(bookedRecords);
+        if (query?.status === 'target-filled') return Promise.resolve(targetFilledRecords);
+        return Promise.resolve([]);
+      }) as any;
+
+      await renderPage();
+
+      expect(screen.getByText(/Blocked Venue-Weekends \(2\)/)).toBeInTheDocument();
+      expect(screen.getByTestId('filled-record-bk1')).toBeInTheDocument();
+      expect(screen.getByTestId('filled-record-tf1')).toBeInTheDocument();
+
+      const reopenBkBtn = screen.getByTestId('filled-reopen-btn-bk1');
+      await act(async () => { fireEvent.click(reopenBkBtn); });
+      expect(outreachUtils.applySuggestion).toHaveBeenCalledWith('tk', 'bk1', { reopen: true });
+
+      const reopenTfBtn = screen.getByTestId('filled-reopen-btn-tf1');
+      await act(async () => { fireEvent.click(reopenTfBtn); });
+      expect(outreachUtils.applySuggestion).toHaveBeenCalledWith('tk', 'tf1', { reopen: true });
+    });
+
+    it('renders an explicit empty state when no venue-weekends are blocked (outcome 2)', async () => {
+      outreachUtils.listOutreach = vi.fn(() => Promise.resolve([])) as any;
+      await renderPage();
+
+      expect(screen.getByText(/Blocked Venue-Weekends \(0\)/)).toBeInTheDocument();
+      expect(screen.getByTestId('filled-outreach-empty')).toBeInTheDocument();
+      expect(screen.getByText('No venue-weekends are currently blocked.')).toBeInTheDocument();
+    });
+
+    it('surfaces the error and does not render the empty success state when fetch fails (outcome 3)', async () => {
+      outreachUtils.listOutreach = vi.fn(() => Promise.reject(new Error('Network error on filled fetch'))) as any;
+      await renderPage();
+
+      expect(screen.getByTestId('replies-error')).toBeInTheDocument();
+      expect(screen.getByTestId('replies-error').textContent).toContain('Network error on filled fetch');
+      expect(screen.queryByTestId('filled-outreach-empty')).toBeNull();
+    });
+  });
 });
 
