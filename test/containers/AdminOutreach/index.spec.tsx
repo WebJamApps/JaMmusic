@@ -1040,5 +1040,68 @@ describe('AdminOutreach', () => {
       expect(screen.queryByTestId('filled-outreach-empty')).toBeNull();
     });
   });
+
+  describe('sent outreach records in Awaiting Reply panel (JaMmusic#1359)', () => {
+    it('merges sent records with pending replies and de-duplicates by _id', async () => {
+      const pendingReply = {
+        _id: 'rec-shared',
+        venueId: 'v1',
+        status: 'replied',
+        sentAt: '2026-08-01T12:00:00.000Z',
+        suggestion: {
+          sentiment: 'positive',
+          proposedBookingStatus: 'booking',
+        },
+      };
+
+      const sentRecords = [
+        {
+          _id: 'rec-shared',
+          venueId: 'v1',
+          status: 'sent',
+          sentAt: '2026-08-01T12:00:00.000Z',
+        },
+        {
+          _id: 'rec-sent-only',
+          venueId: 'v2',
+          status: 'sent',
+          sentAt: '2026-08-02T12:00:00.000Z',
+        },
+      ];
+
+      const venuesList = [
+        { _id: 'v1', name: 'Boston Hall', city: 'Boston', usState: 'MA' },
+        { _id: 'v2', name: 'Cambridge Club', city: 'Cambridge', usState: 'MA' },
+      ];
+
+      outreachUtils.getPendingReplies = vi.fn().mockResolvedValue([pendingReply]);
+      adminVenuesUtils.listVenues = vi.fn().mockResolvedValue(venuesList);
+      outreachUtils.listOutreach = vi.fn((_token: string, query?: { status?: string }) => {
+        if (query?.status === 'sent') return Promise.resolve(sentRecords);
+        return Promise.resolve([]);
+      }) as any;
+
+      await renderPage();
+
+      expect(screen.getByText('2 Active')).toBeInTheDocument();
+      expect(screen.getByText(/Awaiting Reply \(2\)/)).toBeInTheDocument();
+      expect(screen.getByTestId('reply-card-rec-shared')).toBeInTheDocument();
+      expect(screen.getByTestId('reply-card-rec-sent-only')).toBeInTheDocument();
+      expect(screen.getByText('Positive Reply')).toBeInTheDocument();
+      expect(outreachUtils.listOutreach).toHaveBeenCalledWith('tk', { status: 'sent' });
+    });
+
+    it('surfaces error when fetching sent records fails', async () => {
+      outreachUtils.listOutreach = vi.fn((_token: string, query?: { status?: string }) => {
+        if (query?.status === 'sent') return Promise.reject(new Error('Failed fetching sent records'));
+        return Promise.resolve([]);
+      }) as any;
+
+      await renderPage();
+
+      expect(screen.getByTestId('replies-error')).toBeInTheDocument();
+      expect(screen.getByTestId('replies-error').textContent).toContain('Failed fetching sent records');
+    });
+  });
 });
 

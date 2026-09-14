@@ -135,13 +135,26 @@ export function AdminOutreach() {
     setError('');
     setRepliesError('');
     try {
-      const [repliesData, venuesList, bookedData, targetFilledData] = await Promise.all([
+      const [repliesData, venuesList, bookedData, targetFilledData, sentData] = await Promise.all([
         outreachUtils.getPendingReplies(auth.token),
         adminVenuesUtils.listVenues(auth.token),
         outreachUtils.listOutreach(auth.token, { status: 'booked' }),
         outreachUtils.listOutreach(auth.token, { status: 'target-filled' }),
+        outreachUtils.listOutreach(auth.token, { status: 'sent' }),
       ]);
-      setOutreachRecords(repliesData);
+      const seenIds = new Set<string>();
+      const mergedOutreach: IpendingReply[] = [];
+      for (const r of [...repliesData, ...sentData]) {
+        if (r._id) {
+          if (!seenIds.has(r._id)) {
+            seenIds.add(r._id);
+            mergedOutreach.push(r);
+          }
+        } else {
+          mergedOutreach.push(r);
+        }
+      }
+      setOutreachRecords(mergedOutreach);
       setAllVenues(venuesList);
       setFilledRecords([...bookedData, ...targetFilledData]);
       
