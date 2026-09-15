@@ -85,6 +85,7 @@ export function AdminOutreach() {
   const [search, setSearch] = useState('');
   const [allVenues, setAllVenues] = useState<Ivenue[]>([]);
   const [outreachRecords, setOutreachRecords] = useState<IpendingReply[]>([]);
+  const [pendingReplies, setPendingReplies] = useState<IpendingReply[]>([]);
   const [venuesMap, setVenuesMap] = useState<Record<string, Ivenue>>({});
   const [globalLoading, setGlobalLoading] = useState(false);
   const [error, setError] = useState('');
@@ -135,13 +136,22 @@ export function AdminOutreach() {
     setError('');
     setRepliesError('');
     try {
-      const [repliesData, venuesList, bookedData, targetFilledData] = await Promise.all([
+      const [repliesData, venuesList, bookedData, targetFilledData, sentData] = await Promise.all([
         outreachUtils.getPendingReplies(auth.token),
         adminVenuesUtils.listVenues(auth.token),
         outreachUtils.listOutreach(auth.token, { status: 'booked' }),
         outreachUtils.listOutreach(auth.token, { status: 'target-filled' }),
+        outreachUtils.listOutreach(auth.token, { status: 'sent' }),
       ]);
-      setOutreachRecords(repliesData);
+      setPendingReplies(repliesData);
+      const seenIds = new Set<string>();
+      const mergedOutreach: IpendingReply[] = [];
+      for (const r of [...repliesData, ...sentData]) {
+        if (seenIds.has(r._id)) continue;
+        seenIds.add(r._id);
+        mergedOutreach.push(r);
+      }
+      setOutreachRecords(mergedOutreach);
       setAllVenues(venuesList);
       setFilledRecords([...bookedData, ...targetFilledData]);
       
@@ -542,11 +552,11 @@ export function AdminOutreach() {
                 {neverPitchedVenues.length} Venues
               </Typography>
             </Box>
-            {outreachRecords.length > 0 && (
+            {pendingReplies.length > 0 && (
               <Box>
                 <Typography variant="caption" sx={{ opacity: 0.6, display: 'block' }}>REPLY REVIEW QUEUE</Typography>
                 <Typography variant="h6" sx={{ fontWeight: 'bold', color: 'info.light' }} data-testid="replies-badge">
-                  {outreachRecords.length}
+                  {pendingReplies.length}
                 </Typography>
               </Box>
             )}
