@@ -4,7 +4,12 @@ import '@testing-library/jest-dom';
 import { AuthContext, defaultAuth, type Iauth } from 'src/providers/Auth.provider';
 import { AdminOutreach } from 'src/containers/AdminOutreach';
 import adminVenuesUtils from 'src/containers/AdminVenues/admin-venues.utils';
-import outreachUtils, { type Icandidate, type IbatchResult, type IpitchPreview } from 'src/containers/AdminOutreach/outreach.utils';
+import outreachUtils, {
+  type Icandidate,
+  type IbatchResult,
+  type IpitchPreview,
+  type IpendingReply,
+} from 'src/containers/AdminOutreach/outreach.utils';
 
 const candidates: Icandidate[] = [
   {
@@ -1038,6 +1043,104 @@ describe('AdminOutreach', () => {
       expect(screen.getByTestId('replies-error')).toBeInTheDocument();
       expect(screen.getByTestId('replies-error').textContent).toContain('Network error on filled fetch');
       expect(screen.queryByTestId('filled-outreach-empty')).toBeNull();
+    });
+  });
+
+  describe('sent outreach records in Awaiting Reply panel (JaMmusic#1359)', () => {
+    it('merges sent records with pending replies and de-duplicates by _id', async () => {
+      const pendingReply: IpendingReply = {
+        _id: 'rec-shared',
+        venueId: 'v1',
+        status: 'replied',
+        sentAt: '2026-08-01T12:00:00.000Z',
+        suggestion: {
+          sentiment: 'positive',
+          proposedBookingStatus: 'booking',
+        },
+      };
+
+      const sentRecords: IpendingReply[] = [
+        {
+          _id: 'rec-shared',
+          venueId: 'v1',
+          status: 'sent',
+          sentAt: '2026-08-01T12:00:00.000Z',
+        },
+        {
+          _id: 'rec-sent-only',
+          venueId: 'v2',
+          status: 'sent',
+          sentAt: '2026-08-02T12:00:00.000Z',
+        },
+      ];
+
+      const venuesList = [
+        { _id: 'v1', name: 'Boston Hall', city: 'Boston', usState: 'MA' },
+        { _id: 'v2', name: 'Cambridge Club', city: 'Cambridge', usState: 'MA' },
+        { _id: 'v3', name: 'Somerville Lounge', city: 'Somerville', usState: 'MA', outreachEligible: true },
+      ];
+
+      outreachUtils.getPendingReplies = vi.fn().mockResolvedValue([pendingReply]);
+      adminVenuesUtils.listVenues = vi.fn().mockResolvedValue(venuesList);
+      outreachUtils.listOutreach = vi.fn((_token: string, query?: { status?: string }) => {
+        if (query?.status === 'sent') return Promise.resolve(sentRecords);
+        return Promise.resolve([]);
+      }) as unknown as typeof outreachUtils.listOutreach;
+
+      await renderPage();
+
+      expect(screen.getByText('2 Active')).toBeInTheDocument();
+      expect(screen.getByText(/Awaiting Reply \(2\)/)).toBeInTheDocument();
+      expect(screen.getByTestId('reply-card-rec-shared')).toBeInTheDocument();
+      expect(screen.getByTestId('reply-card-rec-sent-only')).toBeInTheDocument();
+      expect(screen.getByText('Positive Reply')).toBeInTheDocument();
+      // Must Fix #1: REPLY REVIEW QUEUE badge must only count pending replies (1), not all sent records (2)
+      expect(screen.getByTestId('replies-badge')).toHaveTextContent('1');
+      // Suggestion #2: A venue with only a sent record (v2) is excluded from Never Pitched, leaving only unpitched v3
+      expect(screen.getByText('1 Venues')).toBeInTheDocument();
+      expect(outreachUtils.listOutreach).toHaveBeenCalledWith('tk', { status: 'sent' });
+    });
+
+    it('excludes venues that have sent outreach records from neverPitchedVenues', async () => {
+      const sentRecords: IpendingReply[] = [
+        {
+          _id: 'rec-sent-only',
+          venueId: 'v2',
+          status: 'sent',
+          sentAt: '2026-08-02T12:00:00.000Z',
+        },
+      ];
+
+      const venuesList = [
+        { _id: 'v1', name: 'Unpitched Venue A', city: 'Salem', usState: 'VA', outreachEligible: true },
+        { _id: 'v2', name: 'Pitched Venue B', city: 'Roanoke', usState: 'VA', outreachEligible: true },
+      ];
+
+      outreachUtils.getPendingReplies = vi.fn().mockResolvedValue([]);
+      adminVenuesUtils.listVenues = vi.fn().mockResolvedValue(venuesList);
+      outreachUtils.listOutreach = vi.fn((_token: string, query?: { status?: string }) => {
+        if (query?.status === 'sent') return Promise.resolve(sentRecords);
+        return Promise.resolve([]);
+      }) as unknown as typeof outreachUtils.listOutreach;
+
+      await renderPage();
+
+      // Only v1 should be in neverPitchedVenues because v2 has a sent campaign record
+      expect(screen.getByText('1 Venues')).toBeInTheDocument();
+      // Queue badge should not render when there are 0 pending replies
+      expect(screen.queryByTestId('replies-badge')).toBeNull();
+    });
+
+    it('surfaces error when fetching sent records fails', async () => {
+      outreachUtils.listOutreach = vi.fn((_token: string, query?: { status?: string }) => {
+        if (query?.status === 'sent') return Promise.reject(new Error('Failed fetching sent records'));
+        return Promise.resolve([]);
+      }) as unknown as typeof outreachUtils.listOutreach;
+
+      await renderPage();
+
+      expect(screen.getByTestId('replies-error')).toBeInTheDocument();
+      expect(screen.getByTestId('replies-error').textContent).toContain('Failed fetching sent records');
     });
   });
 });
