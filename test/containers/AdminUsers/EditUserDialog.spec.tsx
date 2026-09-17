@@ -123,4 +123,159 @@ describe('EditUserDialog', () => {
       name: 'Bot Two', email: 'b2@x.com', userDetails: 'updated note',
     }));
   });
+
+  it('renders checkboxes for outreach:approve and promo:email', async () => {
+    await act(async () => {
+      render(<EditUserDialog open user={user} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />);
+    });
+    expect(screen.getByTestId('edit-cap-outreach:approve')).toBeInTheDocument();
+    expect(screen.getByTestId('edit-cap-promo:email')).toBeInTheDocument();
+  });
+
+  it('Approve-block outcome 1: disables and unticks approve with helper text for AI agents, and never sends outreach:approve', async () => {
+    const agentUser: IadminUser = {
+      _id: 'u-agent',
+      name: 'Agent Bot',
+      email: 'agent@web-jam.com',
+      userType: 'web-jam-llm',
+      userStatus: 'ai-agent',
+      privileges: ['gig:create', 'outreach:approve'],
+    };
+    await act(async () => {
+      render(<EditUserDialog open user={agentUser} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />);
+    });
+
+    const approveBox = screen.getByTestId('edit-cap-outreach:approve');
+    expect(approveBox).toBeDisabled();
+    expect(approveBox).not.toBeChecked();
+    expect(screen.getByText('AI agents may draft but never send')).toBeInTheDocument();
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('edit-priv-save'));
+    });
+    expect(adminUtils.updateUser).toHaveBeenCalledWith('tk', 'u-agent', expect.objectContaining({
+      privileges: ['gig:create'],
+    }));
+  });
+
+  it('Cleanup path: opening agent account holding outreach:approve and saving drops it while keeping other caps', async () => {
+    const agentUserWithApprove: IadminUser = {
+      _id: 'u-agent-cleanup',
+      name: 'Agent Bot',
+      email: 'agent@web-jam.com',
+      userType: 'web-jam-llm',
+      userStatus: 'ai-agent',
+      privileges: ['gig:create', 'venue:create', 'outreach:create', 'outreach:approve'],
+    };
+    await act(async () => {
+      render(<EditUserDialog open user={agentUserWithApprove} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />);
+    });
+
+    // Save immediately without changing anything
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('edit-priv-save'));
+    });
+
+    expect(adminUtils.updateUser).toHaveBeenCalledWith('tk', 'u-agent-cleanup', expect.objectContaining({
+      privileges: ['gig:create', 'venue:create', 'outreach:create'],
+    }));
+  });
+
+  it('Approve-block outcome 2: enables approve for human account and ticking it sends outreach:approve', async () => {
+    const humanUser: IadminUser = {
+      _id: 'u-human',
+      name: 'Josh',
+      email: 'josh@web-jam.com',
+      userType: 'JaM-admin',
+      userStatus: 'human',
+      privileges: ['gig:create'],
+    };
+    await act(async () => {
+      render(<EditUserDialog open user={humanUser} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />);
+    });
+
+    const approveBox = screen.getByTestId('edit-cap-outreach:approve');
+    expect(approveBox).not.toBeDisabled();
+    expect(approveBox).not.toBeChecked();
+    expect(screen.queryByText('AI agents may draft but never send')).toBeNull();
+
+    await act(async () => {
+      fireEvent.click(approveBox);
+    });
+    expect(approveBox).toBeChecked();
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('edit-priv-save'));
+    });
+    expect(adminUtils.updateUser).toHaveBeenCalledWith('tk', 'u-human', expect.objectContaining({
+      privileges: expect.arrayContaining(['gig:create', 'outreach:approve']),
+    }));
+  });
+
+  it('Approve-block outcome 3: disables approve when role and status are both empty, and re-evaluates when role/status changes', async () => {
+    const emptyUser: IadminUser = {
+      _id: 'u-empty',
+      name: 'Undetermined',
+      email: 'empty@web-jam.com',
+      userType: '',
+      userStatus: '',
+      privileges: ['gig:create', 'outreach:approve'],
+    };
+    await act(async () => {
+      render(<EditUserDialog open user={emptyUser} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />);
+    });
+
+    const approveBox = screen.getByTestId('edit-cap-outreach:approve');
+    expect(approveBox).toBeDisabled();
+    expect(approveBox).not.toBeChecked();
+    expect(screen.queryByText('AI agents may draft but never send')).toBeNull();
+
+    // Changing role to JaM-admin enables approve
+    await act(async () => {
+      fireEvent.change(screen.getByTestId('edit-user-role'), { target: { value: 'JaM-admin' } });
+    });
+    expect(approveBox).not.toBeDisabled();
+
+    // Tick approve
+    await act(async () => {
+      fireEvent.click(approveBox);
+    });
+    expect(approveBox).toBeChecked();
+
+    // Changing status to ai-agent immediately unticks and disables approve with helper text
+    await act(async () => {
+      fireEvent.change(screen.getByTestId('edit-user-status'), { target: { value: 'ai-agent' } });
+    });
+    expect(approveBox).toBeDisabled();
+    expect(approveBox).not.toBeChecked();
+    expect(screen.getByText('AI agents may draft but never send')).toBeInTheDocument();
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('edit-priv-save'));
+    });
+    expect(adminUtils.updateUser).toHaveBeenCalledWith('tk', 'u-empty', expect.objectContaining({
+      privileges: ['gig:create'],
+    }));
+  });
+
+  it('preserves all existing privileges on save that the rule does not remove', async () => {
+    const existingCapsUser: IadminUser = {
+      _id: 'u-multi',
+      name: 'Admin',
+      email: 'admin@web-jam.com',
+      userType: 'JaM-admin',
+      userStatus: 'human',
+      privileges: ['gig:create', 'gig:edit', 'venue:create', 'outreach:create', 'tour:create'],
+    };
+    await act(async () => {
+      render(<EditUserDialog open user={existingCapsUser} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />);
+    });
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('edit-priv-save'));
+    });
+    expect(adminUtils.updateUser).toHaveBeenCalledWith('tk', 'u-multi', expect.objectContaining({
+      privileges: ['gig:create', 'gig:edit', 'venue:create', 'outreach:create', 'tour:create'],
+    }));
+  });
 });

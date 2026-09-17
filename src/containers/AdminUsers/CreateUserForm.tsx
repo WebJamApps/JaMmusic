@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import {
-  TextField, Button, FormControl, InputLabel, Select, MenuItem, FormGroup, FormControlLabel, Checkbox, Box, Typography, Divider,
+  TextField, Button, FormControl, InputLabel, Select, MenuItem, FormGroup, FormControlLabel, Checkbox, Box, Typography,
 } from '@mui/material';
-import { CAPABILITY_GROUPS, USER_STATUS_OPTIONS, USER_ROLES, type Capability } from './capabilities';
+import {
+  CAPABILITY_GROUPS, USER_STATUS_OPTIONS, USER_ROLES, type Capability, isAiAgent, isHumanUser,
+} from './capabilities';
 import adminUtils from './admin-users.utils';
 
 interface IcreateUserFormProps {
@@ -13,14 +15,19 @@ interface IcreateUserFormProps {
 export function CreateUserForm({ token, onCreated }: IcreateUserFormProps) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [userStatus, setUserStatus] = useState<string>('human');
+  const [userStatus, setUserStatus] = useState<string>('');
   const [userType, setUserType] = useState<string>('');
   const [privileges, setPrivileges] = useState<Capability[]>([]);
   const [notes, setNotes] = useState('');
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
+  const isAgent = isAiAgent(userType, userStatus);
+  const isHuman = isHumanUser(userType, userStatus);
+  const canApprove = isHuman;
+
   const toggleCapability = (cap: Capability) => {
+    if (cap === 'outreach:approve' && !canApprove) return;
     setPrivileges((prev) => (prev.includes(cap) ? prev.filter((c) => c !== cap) : [...prev, cap]));
   };
 
@@ -29,16 +36,17 @@ export function CreateUserForm({ token, onCreated }: IcreateUserFormProps) {
     if (!name.trim()) { setError('Name is required'); return; }
     if (!email.trim()) { setError('Email is required'); return; }
     setSubmitting(true);
+    const privilegesToSend = isHuman ? privileges : privileges.filter((c) => c !== 'outreach:approve');
     try {
       await adminUtils.createUser(token, {
         name: name.trim(),
         email: email.trim(),
-        userType,
-        userStatus,
-        privileges,
+        userType: userType || undefined,
+        userStatus: userStatus || undefined,
+        privileges: privilegesToSend,
         userDetails: notes,
       });
-      setName(''); setEmail(''); setUserStatus('human'); setUserType(''); setPrivileges([]); setNotes('');
+      setName(''); setEmail(''); setUserStatus(''); setUserType(''); setPrivileges([]); setNotes('');
       onCreated();
     } catch (e) {
       const err = e as { response?: { body?: { message?: string } }; message?: string };
@@ -47,6 +55,8 @@ export function CreateUserForm({ token, onCreated }: IcreateUserFormProps) {
       setSubmitting(false);
     }
   };
+
+  const crudActions = ['read', 'create', 'edit', 'delete'] as const;
 
   return (
     <Box className="create-user-form" sx={{ padding: 2, border: '1px solid #ddd', borderRadius: 1, marginBottom: 3 }}>
@@ -76,11 +86,21 @@ export function CreateUserForm({ token, onCreated }: IcreateUserFormProps) {
           onChange={(e) => {
             const val = e.target.value;
             setUserStatus(val);
-            if (val === 'ai-agent') setUserType('web-jam-llm');
-            else if (userType === 'web-jam-llm') setUserType('');
+            let nextRole = userType;
+            if (val === 'ai-agent') {
+              nextRole = 'web-jam-llm';
+              setUserType('web-jam-llm');
+            } else if (userType === 'web-jam-llm') {
+              nextRole = '';
+              setUserType('');
+            }
+            if (!isHumanUser(nextRole, val)) {
+              setPrivileges((prev) => prev.filter((c) => c !== 'outreach:approve'));
+            }
           }}
           data-testid="create-user-status"
         >
+          <MenuItem value="">None</MenuItem>
           {USER_STATUS_OPTIONS.map((s) => <MenuItem key={s} value={s}>{s}</MenuItem>)}
         </Select>
       </FormControl>
@@ -90,7 +110,13 @@ export function CreateUserForm({ token, onCreated }: IcreateUserFormProps) {
           labelId="create-user-role-label"
           value={userType}
           label="Role"
-          onChange={(e) => setUserType(e.target.value)}
+          onChange={(e) => {
+            const val = e.target.value;
+            setUserType(val);
+            if (!isHumanUser(val, userStatus)) {
+              setPrivileges((prev) => prev.filter((c) => c !== 'outreach:approve'));
+            }
+          }}
           data-testid="create-user-role"
         >
           <MenuItem value="">None</MenuItem>
@@ -101,37 +127,75 @@ export function CreateUserForm({ token, onCreated }: IcreateUserFormProps) {
       </FormControl>
       <Box sx={{ marginBottom: 2 }}>
         <Typography variant="subtitle2" sx={{ marginBottom: 1 }}>Privileges</Typography>
-        {CAPABILITY_GROUPS.map((group) => (
-          <Box key={group.label} sx={{ width: '100%', borderBottom: '1px solid #ccc' }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, minHeight: '44px' }}>
-              <Typography variant="body2"
-                sx={{ fontWeight: 'bold', minWidth: '110px', m: 0, mt: '20px', lineHeight: '44px' }}>{group.label}</Typography>
-              <FormGroup row sx={{ flexWrap: 'nowrap', margin: 0 }}>
-                {(['read', 'create', 'edit', 'delete'] as const).map((action) => {
-                  const cap = group.items.find((item) => item.endsWith(`:${action}`));
-                  return cap ? (
-                    <FormControlLabel
-                      key={cap}
-                      sx={{ minWidth: '100px', m: 0 }}
-                      control={(
-                        <Checkbox
-                          size="small"
-                          checked={privileges.includes(cap)}
-                          onChange={() => toggleCapability(cap)}
-                          aria-label={cap}
-                          data-testid={`cap-${cap}`}
+        {CAPABILITY_GROUPS.map((group) => {
+          const otherCaps = group.items.filter((item) => {
+            const action = item.split(':')[1];
+            return !crudActions.includes(action as typeof crudActions[number]);
+          });
+          return (
+            <Box key={group.label} sx={{ width: '100%', borderBottom: '1px solid #ccc' }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, minHeight: '44px' }}>
+                <Typography variant="body2"
+                  sx={{ fontWeight: 'bold', minWidth: '110px', m: 0, mt: '20px', lineHeight: '44px' }}>{group.label}</Typography>
+                <FormGroup row sx={{ flexWrap: 'nowrap', margin: 0, alignItems: 'center' }}>
+                  {crudActions.map((action) => {
+                    const cap = group.items.find((item) => item.endsWith(`:${action}`));
+                    return cap ? (
+                      <FormControlLabel
+                        key={cap}
+                        sx={{ minWidth: '100px', m: 0 }}
+                        control={(
+                          <Checkbox
+                            size="small"
+                            checked={privileges.includes(cap)}
+                            onChange={() => toggleCapability(cap)}
+                            aria-label={cap}
+                            data-testid={`create-cap-${cap}`}
+                          />
+                        )}
+                        label={cap.split(':')[1]}
+                      />
+                    ) : (
+                      <Box key={action} sx={{ minWidth: '100px' }} />
+                    );
+                  })}
+                  {otherCaps.map((cap) => {
+                    const isApprove = cap === 'outreach:approve';
+                    const disabled = isApprove && !canApprove;
+                    const checked = isApprove ? (canApprove && privileges.includes(cap)) : privileges.includes(cap);
+                    return (
+                      <Box key={cap} sx={{ display: 'flex', alignItems: 'center' }}>
+                        <FormControlLabel
+                          sx={{ minWidth: '100px', m: 0 }}
+                          control={(
+                            <Checkbox
+                              size="small"
+                              checked={checked}
+                              disabled={disabled}
+                              onChange={() => toggleCapability(cap)}
+                              aria-label={cap}
+                              data-testid={`create-cap-${cap}`}
+                            />
+                          )}
+                          label={cap.split(':')[1]}
                         />
-                      )}
-                      label={cap.split(':')[1]}
-                    />
-                  ) : (
-                    <Box key={action} sx={{ minWidth: '100px' }} />
-                  );
-                })}
-              </FormGroup>
+                        {isApprove && isAgent && (
+                          <Typography
+                            variant="caption"
+                            sx={{ color: 'text.secondary', whiteSpace: 'nowrap', ml: 1 }}
+                            data-testid="create-approve-helper-text"
+                          >
+                            AI agents may draft but never send
+                          </Typography>
+                        )}
+                      </Box>
+                    );
+                  })}
+                </FormGroup>
+              </Box>
             </Box>
-          </Box>
-        ))}
+          );
+        })}
       </Box>
       <TextField
         label="Notes"
