@@ -132,13 +132,20 @@ export function CreateUserForm({ token, onCreated }: IcreateUserFormProps) {
             const action = item.split(':')[1];
             return !crudActions.includes(action as typeof crudActions[number]);
           });
+          // Pad the CRUD columns only as far as the last action this group actually has,
+          // so a group with no CRUD member at all (Promotion) does not push its single
+          // checkbox four empty columns clear of its own label.
+          const lastCrudIndex = crudActions.reduce(
+            (last, action, i) => (group.items.some((item) => item.endsWith(`:${action}`)) ? i : last),
+            -1,
+          );
           return (
             <Box key={group.label} sx={{ width: '100%', borderBottom: '1px solid #ccc' }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, minHeight: '44px' }}>
                 <Typography variant="body2"
                   sx={{ fontWeight: 'bold', minWidth: '110px', m: 0, mt: '20px', lineHeight: '44px' }}>{group.label}</Typography>
-                <FormGroup row sx={{ flexWrap: 'nowrap', margin: 0, alignItems: 'center' }}>
-                  {crudActions.map((action) => {
+                <FormGroup row sx={{ flexWrap: 'wrap', margin: 0, alignItems: 'center' }}>
+                  {crudActions.slice(0, lastCrudIndex + 1).map((action) => {
                     const cap = group.items.find((item) => item.endsWith(`:${action}`));
                     return cap ? (
                       <FormControlLabel
@@ -164,35 +171,34 @@ export function CreateUserForm({ token, onCreated }: IcreateUserFormProps) {
                     const disabled = isApprove && !canApprove;
                     const checked = isApprove ? (canApprove && privileges.includes(cap)) : privileges.includes(cap);
                     return (
-                      <Box key={cap} sx={{ display: 'flex', alignItems: 'center' }}>
-                        <FormControlLabel
-                          sx={{ minWidth: '100px', m: 0 }}
-                          control={(
-                            <Checkbox
-                              size="small"
-                              checked={checked}
-                              disabled={disabled}
-                              onChange={() => toggleCapability(cap)}
-                              aria-label={cap}
-                              data-testid={`create-cap-${cap}`}
-                            />
-                          )}
-                          label={cap.split(':')[1]}
-                        />
-                        {isApprove && isAgent && (
-                          <Typography
-                            variant="caption"
-                            sx={{ color: 'text.secondary', whiteSpace: 'nowrap', ml: 1 }}
-                            data-testid="create-approve-helper-text"
-                          >
-                            AI agents may draft but never send
-                          </Typography>
+                      <FormControlLabel
+                        key={cap}
+                        sx={{ minWidth: '100px', m: 0 }}
+                        control={(
+                          <Checkbox
+                            size="small"
+                            checked={checked}
+                            disabled={disabled}
+                            onChange={() => toggleCapability(cap)}
+                            aria-label={cap}
+                            data-testid={`create-cap-${cap}`}
+                          />
                         )}
-                      </Box>
+                        label={cap.split(':')[1]}
+                      />
                     );
                   })}
                 </FormGroup>
               </Box>
+              {isAgent && group.items.includes('outreach:approve') && (
+                <Typography
+                  variant="caption"
+                  sx={{ color: 'text.secondary', display: 'block', pb: 1 }}
+                  data-testid="create-approve-helper-text"
+                >
+                  AI agents may draft but never send
+                </Typography>
+              )}
             </Box>
           );
         })}

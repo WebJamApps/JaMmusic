@@ -107,7 +107,17 @@ export function EditUserDialog({
             onChange={(e) => {
               const val = e.target.value;
               setUserStatus(val);
-              if (!isHumanUser(userType, val)) {
+              // The Role options below drop `web-jam-llm` whenever the status is not
+              // `ai-agent`, so clear the role too instead of leaving the Role select
+              // holding a value it can no longer display. Saving that stale pair would
+              // also omit `userStatus` from the PUT body, and the backend then keeps the
+              // stored `ai-agent` beside the new role — a combination it rejects outright.
+              let nextRole = userType;
+              if (val !== 'ai-agent' && userType === 'web-jam-llm') {
+                nextRole = '';
+                setUserType('');
+              }
+              if (!isHumanUser(nextRole, val)) {
                 setPrivileges((prev) => prev.filter((c) => c !== 'outreach:approve'));
               }
             }}
@@ -147,13 +157,20 @@ export function EditUserDialog({
             const action = item.split(':')[1];
             return !crudActions.includes(action as typeof crudActions[number]);
           });
+          // Pad the CRUD columns only as far as the last action this group actually has,
+          // so a group with no CRUD member at all (Promotion) does not push its single
+          // checkbox four empty columns clear of its own label.
+          const lastCrudIndex = crudActions.reduce(
+            (last, action, i) => (group.items.some((item) => item.endsWith(`:${action}`)) ? i : last),
+            -1,
+          );
           return (
             <Box key={group.label} sx={{ width: '100%', borderBottom: '1px solid #ccc' }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, minHeight: '44px' }}>
                 <Typography variant="body2"
                   sx={{ fontWeight: 'bold', minWidth: '110px', m: 0, mt: '20px', lineHeight: '44px' }}>{group.label}</Typography>
-                <FormGroup row sx={{ flexWrap: 'nowrap', margin: 0, alignItems: 'center' }}>
-                  {crudActions.map((action) => {
+                <FormGroup row sx={{ flexWrap: 'wrap', margin: 0, alignItems: 'center' }}>
+                  {crudActions.slice(0, lastCrudIndex + 1).map((action) => {
                     const cap = group.items.find((item) => item.endsWith(`:${action}`));
                     return cap ? (
                       <FormControlLabel
@@ -179,35 +196,34 @@ export function EditUserDialog({
                     const disabled = isApprove && !canApprove;
                     const checked = isApprove ? (canApprove && privileges.includes(cap)) : privileges.includes(cap);
                     return (
-                      <Box key={cap} sx={{ display: 'flex', alignItems: 'center' }}>
-                        <FormControlLabel
-                          sx={{ minWidth: '100px', m: 0 }}
-                          control={(
-                            <Checkbox
-                              size="small"
-                              checked={checked}
-                              disabled={disabled}
-                              onChange={() => toggleCapability(cap)}
-                              aria-label={cap}
-                              data-testid={`edit-cap-${cap}`}
-                            />
-                          )}
-                          label={cap.split(':')[1]}
-                        />
-                        {isApprove && isAgent && (
-                          <Typography
-                            variant="caption"
-                            sx={{ color: 'text.secondary', whiteSpace: 'nowrap', ml: 1 }}
-                            data-testid="edit-approve-helper-text"
-                          >
-                            AI agents may draft but never send
-                          </Typography>
+                      <FormControlLabel
+                        key={cap}
+                        sx={{ minWidth: '100px', m: 0 }}
+                        control={(
+                          <Checkbox
+                            size="small"
+                            checked={checked}
+                            disabled={disabled}
+                            onChange={() => toggleCapability(cap)}
+                            aria-label={cap}
+                            data-testid={`edit-cap-${cap}`}
+                          />
                         )}
-                      </Box>
+                        label={cap.split(':')[1]}
+                      />
                     );
                   })}
                 </FormGroup>
               </Box>
+              {isAgent && group.items.includes('outreach:approve') && (
+                <Typography
+                  variant="caption"
+                  sx={{ color: 'text.secondary', display: 'block', pb: 1 }}
+                  data-testid="edit-approve-helper-text"
+                >
+                  AI agents may draft but never send
+                </Typography>
+              )}
             </Box>
           );
         })}

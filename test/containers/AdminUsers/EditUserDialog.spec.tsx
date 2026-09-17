@@ -258,6 +258,52 @@ describe('EditUserDialog', () => {
     }));
   });
 
+  it('clearing Type on an agent account also clears the web-jam-llm role, so the Role select never holds a filtered-out value', async () => {
+    const agentUser: IadminUser = {
+      _id: 'u-agent-clear',
+      name: 'Agent Bot',
+      email: 'agent@web-jam.com',
+      userType: 'web-jam-llm',
+      userStatus: 'ai-agent',
+      privileges: ['gig:create'],
+    };
+    await act(async () => {
+      render(<EditUserDialog open user={agentUser} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />);
+    });
+    expect(screen.getByTestId('edit-user-role')).toHaveValue('web-jam-llm');
+
+    // Clearing Type drops `web-jam-llm` from the Role options, so the role must clear with it.
+    await act(async () => {
+      fireEvent.change(screen.getByTestId('edit-user-status'), { target: { value: '' } });
+    });
+    expect(screen.getByTestId('edit-user-role')).toHaveValue('');
+
+    // Picking a human role now sends no userStatus AND no stale agent role, so the backend
+    // cannot end up storing role `JaM-admin` beside the stored status `ai-agent`.
+    await act(async () => {
+      fireEvent.change(screen.getByTestId('edit-user-role'), { target: { value: 'JaM-admin' } });
+      fireEvent.click(screen.getByTestId('edit-priv-save'));
+    });
+    expect(adminUtils.updateUser).toHaveBeenCalledWith('tk', 'u-agent-clear', expect.objectContaining({
+      userType: 'JaM-admin',
+      userStatus: undefined,
+    }));
+  });
+
+  it('renders the Promotion group without leading empty CRUD columns', async () => {
+    await act(async () => {
+      render(<EditUserDialog open user={user} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />);
+    });
+    // Promotion has no CRUD member, so its row holds `email` alone — the four empty
+    // placeholder columns that used to precede it are gone.
+    const promoRow = screen.getByText('Promotion').parentElement as HTMLElement;
+    expect(within(promoRow).getAllByRole('checkbox')).toHaveLength(1);
+    expect(within(promoRow).getByRole('checkbox')).toBe(screen.getByTestId('edit-cap-promo:email'));
+    // Groups that do have CRUD members keep their column alignment.
+    const outreachRow = screen.getByText('Outreach').parentElement as HTMLElement;
+    expect(within(outreachRow).getAllByRole('checkbox')).toHaveLength(4);
+  });
+
   it('preserves all existing privileges on save that the rule does not remove', async () => {
     const existingCapsUser: IadminUser = {
       _id: 'u-multi',
