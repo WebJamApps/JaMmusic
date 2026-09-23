@@ -37,9 +37,16 @@ export interface Itouch {
   actor?: string;
 }
 
+// The backend stores targetWeekend bounds as Dates, so the API returns them as full ISO strings
+// ("2026-11-06T00:00:00.000Z"). The date pickers and the weekend filter work in YYYY-MM-DD.
+export function toDateOnly(value: string): string {
+  const match = value.match(/^\d{4}-\d{2}-\d{2}/);
+  return match ? match[0] : value;
+}
+
 export function resolveInitialTargetWeekend(reply: IpendingReply): { start: string; end: string } {
   if (reply.targetWeekend?.start && reply.targetWeekend.end) {
-    return { start: reply.targetWeekend.start, end: reply.targetWeekend.end };
+    return { start: toDateOnly(reply.targetWeekend.start), end: toDateOnly(reply.targetWeekend.end) };
   }
   if (!reply.targetDates) {
     return { start: '', end: '' };
@@ -91,7 +98,7 @@ export function resolveInitialTargetWeekend(reply: IpendingReply): { start: stri
 export function getReplyTargetWeekendKey(r: IpendingReply): string {
   if (r.targetDates) return r.targetDates;
   if (r.targetWeekend?.start && r.targetWeekend.end) {
-    return `${r.targetWeekend.start} to ${r.targetWeekend.end}`;
+    return `${toDateOnly(r.targetWeekend.start)} to ${toDateOnly(r.targetWeekend.end)}`;
   }
   return '';
 }
@@ -161,7 +168,11 @@ export function AdminOutreach() {
   const [confirmDncId, setConfirmDncId] = useState<{ recordId: string; venueId: string } | null>(null);
   const [bookingDateId, setBookingDateId] = useState<{ recordId: string; venueId: string } | null>(null);
   const [gigDateStr, setGigDateStr] = useState<string>('');
-  const [targetFilledDialog, setTargetFilledDialog] = useState<{ recordId: string; venueId: string } | null>(null);
+  const [targetFilledDialog, setTargetFilledDialog] = useState<{
+    recordId: string;
+    venueId: string;
+    storedWeekend?: { start: string; end: string };
+  } | null>(null);
   const [targetFilledStart, setTargetFilledStart] = useState<string>('');
   const [targetFilledEnd, setTargetFilledEnd] = useState<string>('');
 
@@ -370,15 +381,21 @@ export function AdminOutreach() {
     const initialWeekend = resolveInitialTargetWeekend(reply);
     setTargetFilledStart(initialWeekend.start);
     setTargetFilledEnd(initialWeekend.end);
-    setTargetFilledDialog({ recordId: reply._id, venueId: reply.venueId });
+    // A record that already has a weekend is locked to it: the backend refuses a different one.
+    const storedWeekend = reply.targetWeekend?.start && reply.targetWeekend.end
+      ? { start: reply.targetWeekend.start, end: reply.targetWeekend.end }
+      : undefined;
+    setTargetFilledDialog({ recordId: reply._id, venueId: reply.venueId, storedWeekend });
   };
 
   const confirmTargetFilled = () => {
     if (targetFilledDialog && targetFilledStart && targetFilledEnd) {
-      void recordOutcome(targetFilledDialog.recordId, 'target-filled', undefined, {
-        start: targetFilledStart,
-        end: targetFilledEnd,
-      });
+      void recordOutcome(
+        targetFilledDialog.recordId,
+        'target-filled',
+        undefined,
+        targetFilledDialog.storedWeekend || { start: targetFilledStart, end: targetFilledEnd },
+      );
       setTargetFilledDialog(null);
     }
   };
@@ -1668,12 +1685,15 @@ export function AdminOutreach() {
             <Event color="warning" /> Confirm Target Weekend Unavailable
           </DialogTitle>
           <DialogContent dividers>
-            <Typography variant="body2" sx={{ mb: 2 }}>
-              Specify the target weekend date range that is filled or unavailable for this venue:
+            <Typography variant="body2" sx={{ mb: 2 }} data-testid="target-filled-prompt">
+              {targetFilledDialog?.storedWeekend
+                ? 'This pitch was sent for the weekend below, so that is the weekend marked filled:'
+                : 'Specify the target weekend date range that is filled or unavailable for this venue:'}
             </Typography>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
               <DatePicker
                 label="Weekend Start Date"
+                disabled={Boolean(targetFilledDialog?.storedWeekend)}
                 value={targetFilledStart ? new Date(`${targetFilledStart}T00:00:00`) : null}
                 onChange={(newDate: Date | null) => {
                   if (!newDate || Number.isNaN(newDate.getTime())) { setTargetFilledStart(''); return; }
@@ -1686,6 +1706,7 @@ export function AdminOutreach() {
               />
               <DatePicker
                 label="Weekend End Date"
+                disabled={Boolean(targetFilledDialog?.storedWeekend)}
                 value={targetFilledEnd ? new Date(`${targetFilledEnd}T00:00:00`) : null}
                 onChange={(newDate: Date | null) => {
                   if (!newDate || Number.isNaN(newDate.getTime())) { setTargetFilledEnd(''); return; }

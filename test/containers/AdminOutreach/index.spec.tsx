@@ -2,7 +2,9 @@
 import { render, screen, fireEvent, act } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { AuthContext, defaultAuth, type Iauth } from 'src/providers/Auth.provider';
-import { AdminOutreach } from 'src/containers/AdminOutreach';
+import {
+  AdminOutreach, getReplyTargetWeekendKey, resolveInitialTargetWeekend, toDateOnly,
+} from 'src/containers/AdminOutreach';
 import adminVenuesUtils from 'src/containers/AdminVenues/admin-venues.utils';
 import outreachUtils, {
   type Icandidate,
@@ -74,6 +76,26 @@ const wrap = (auth: Iauth) => (
 
 const renderPage = async () => { await act(async () => { render(wrap(adminAuth)); }); };
 const typeDates = () => fireEvent.change(screen.getByLabelText('Weekend (eligibility)'), { target: { value: '2026-08-15' } });
+
+describe('target weekend helpers', () => {
+  const isoWeekend = { start: '2026-11-06T00:00:00.000Z', end: '2026-11-08T00:00:00.000Z' };
+
+  it('toDateOnly trims an ISO date-time to YYYY-MM-DD and leaves other text alone', () => {
+    expect(toDateOnly('2026-11-06T00:00:00.000Z')).toBe('2026-11-06');
+    expect(toDateOnly('2026-11-06')).toBe('2026-11-06');
+    expect(toDateOnly('Nov 6-8')).toBe('Nov 6-8');
+  });
+
+  it('resolveInitialTargetWeekend returns YYYY-MM-DD for a stored ISO weekend', () => {
+    expect(resolveInitialTargetWeekend({ _id: 'r', venueId: 'v', status: 'replied', targetWeekend: isoWeekend }))
+      .toEqual({ start: '2026-11-06', end: '2026-11-08' });
+  });
+
+  it('getReplyTargetWeekendKey labels a stored ISO weekend with dates only', () => {
+    expect(getReplyTargetWeekendKey({ _id: 'r', venueId: 'v', status: 'replied', targetWeekend: isoWeekend }))
+      .toBe('2026-11-06 to 2026-11-08');
+  });
+});
 
 describe('AdminOutreach', () => {
   beforeEach(() => {
@@ -1164,14 +1186,15 @@ describe('AdminOutreach', () => {
       expect(screen.getByTestId('replies-error').textContent).toContain('Failed fetching sent records');
     });
 
-    it('pre-fills target-filled dialog from targetWeekend and allows submission', async () => {
+    it('locks the target-filled dialog to a stored targetWeekend and sends it back unchanged', async () => {
+      // The API returns stored weekend bounds as full ISO strings (Mongoose Date fields).
       const records: IpendingReply[] = [
         {
           _id: 'tf-rec',
           venueId: 'v1',
           status: 'replied',
           targetDates: 'Aug 14-16',
-          targetWeekend: { start: '2026-08-14', end: '2026-08-16' },
+          targetWeekend: { start: '2026-08-14T00:00:00.000Z', end: '2026-08-16T00:00:00.000Z' },
           sentAt: '2026-08-01T12:00:00.000Z',
         },
       ];
@@ -1194,6 +1217,9 @@ describe('AdminOutreach', () => {
       });
 
       expect(screen.getByTestId('target-filled-dialog')).toBeInTheDocument();
+      expect(screen.getByTestId('target-filled-prompt').textContent).toContain('This pitch was sent for the weekend below');
+      expect(screen.getByLabelText('Weekend Start Date')).toBeDisabled();
+      expect(screen.getByLabelText('Weekend End Date')).toBeDisabled();
       const confirmBtn = screen.getByTestId('target-filled-confirm-btn');
       expect(confirmBtn).not.toBeDisabled();
 
@@ -1203,7 +1229,7 @@ describe('AdminOutreach', () => {
 
       expect(outreachUtils.recordOutcome).toHaveBeenCalledWith('tk', 'tf-rec', {
         status: 'target-filled',
-        targetWeekend: { start: '2026-08-14', end: '2026-08-16' },
+        targetWeekend: { start: '2026-08-14T00:00:00.000Z', end: '2026-08-16T00:00:00.000Z' },
       });
     });
 
