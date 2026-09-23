@@ -31,10 +31,76 @@ export interface Itouch {
   note?: string;
   templateType?: string;
   targetWeekend?: { start: string; end: string };
-  outcome?: 'interested' | 'not-interested' | 'booked' | 'target-filled' | 'not-a-fit';
+  outcome?: 'interested' | 'not-interested' | 'booked' | 'target-filled';
   bookedDate?: string;
   outreachId?: string;
   actor?: string;
+}
+
+// The backend stores targetWeekend bounds as Dates, so the API returns them as full ISO strings
+// ("2026-11-06T00:00:00.000Z"). The date pickers and the weekend filter work in YYYY-MM-DD.
+export function toDateOnly(value: string): string {
+  const match = value.match(/^\d{4}-\d{2}-\d{2}/);
+  return match ? match[0] : value;
+}
+
+export function resolveInitialTargetWeekend(reply: IpendingReply): { start: string; end: string } {
+  if (reply.targetWeekend?.start && reply.targetWeekend.end) {
+    return { start: toDateOnly(reply.targetWeekend.start), end: toDateOnly(reply.targetWeekend.end) };
+  }
+  if (!reply.targetDates) {
+    return { start: '', end: '' };
+  }
+  const isoMatches = reply.targetDates.match(/\b\d{4}-\d{2}-\d{2}\b/g);
+  if (isoMatches && isoMatches.length >= 2) {
+    return { start: isoMatches[0], end: isoMatches[1] };
+  }
+  if (isoMatches && isoMatches.length === 1) {
+    const s = new Date(`${isoMatches[0]}T00:00:00`);
+    if (!Number.isNaN(s.getTime())) {
+      s.setDate(s.getDate() + 2);
+      const year = s.getFullYear();
+      const month = String(s.getMonth() + 1).padStart(2, '0');
+      const day = String(s.getDate()).padStart(2, '0');
+      return { start: isoMatches[0], end: `${year}-${month}-${day}` };
+    }
+  }
+
+  const refYear = reply.sentAt
+    ? new Date(reply.sentAt).getFullYear()
+    : reply.repliedAt
+      ? new Date(reply.repliedAt).getFullYear()
+      : new Date().getFullYear();
+
+  const m1 = reply.targetDates.match(/([A-Za-z]+)\s+(\d{1,2})\s*[-–]\s*(\d{1,2})(?:,?\s*(\d{4}))?/);
+  if (m1) {
+    const monthName = m1[1];
+    const startDay = parseInt(m1[2], 10);
+    const endDay = parseInt(m1[3], 10);
+    const year = m1[4] ? parseInt(m1[4], 10) : refYear;
+
+    const startDate = new Date(`${monthName} ${startDay}, ${year} 00:00:00`);
+    const endDate = new Date(`${monthName} ${endDay}, ${year} 00:00:00`);
+    if (!Number.isNaN(startDate.getTime()) && !Number.isNaN(endDate.getTime())) {
+      const fmt = (d: Date) => {
+        const y = d.getFullYear();
+        const m = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return `${y}-${m}-${day}`;
+      };
+      return { start: fmt(startDate), end: fmt(endDate) };
+    }
+  }
+
+  return { start: '', end: '' };
+}
+
+export function getReplyTargetWeekendKey(r: IpendingReply): string {
+  if (r.targetDates) return r.targetDates;
+  if (r.targetWeekend?.start && r.targetWeekend.end) {
+    return `${toDateOnly(r.targetWeekend.start)} to ${toDateOnly(r.targetWeekend.end)}`;
+  }
+  return '';
 }
 
 function deriveSeason(dateStr: string): string {
@@ -102,6 +168,18 @@ export function AdminOutreach() {
   const [confirmDncId, setConfirmDncId] = useState<{ recordId: string; venueId: string } | null>(null);
   const [bookingDateId, setBookingDateId] = useState<{ recordId: string; venueId: string } | null>(null);
   const [gigDateStr, setGigDateStr] = useState<string>('');
+  const [targetFilledDialog, setTargetFilledDialog] = useState<{
+    recordId: string;
+    venueId: string;
+    storedWeekend?: { start: string; end: string };
+  } | null>(null);
+  const [targetFilledStart, setTargetFilledStart] = useState<string>('');
+  const [targetFilledEnd, setTargetFilledEnd] = useState<string>('');
+
+  // Awaiting reply weekend filter and pagination state
+  const [selectedWeekendFilter, setSelectedWeekendFilter] = useState<string>('all');
+  const [awaitingPage, setAwaitingPage] = useState(0);
+  const [awaitingRowsPerPage, setAwaitingRowsPerPage] = useState(10);
 
   // Batch composition state
   const [structuredDate, setStructuredDate] = useState('');
@@ -273,14 +351,16 @@ export function AdminOutreach() {
   // One-tap outcome triggers
   const recordOutcome = async (
     recordId: string,
-    status: 'interested' | 'not-interested' | 'booked' | 'target-filled' | 'not-a-fit',
+    status: 'interested' | 'not-interested' | 'booked' | 'target-filled',
     bookedDate?: string,
+    targetWeekend?: { start: string; end: string },
   ) => {
     setError('');
     try {
       await outreachUtils.recordOutcome(auth.token, recordId, {
         status,
         bookedDate: bookedDate || undefined,
+        targetWeekend: targetWeekend || undefined,
       });
       setRecordNote((prev) => ({ ...prev, [recordId]: '' }));
       await loadAllData();
@@ -297,8 +377,27 @@ export function AdminOutreach() {
     setConfirmDncId({ recordId, venueId });
   };
 
-  const handleRecordNotAFit = (recordId: string) => {
-    void recordOutcome(recordId, 'not-a-fit');
+  const handleRecordTargetFilled = (reply: IpendingReply) => {
+    const initialWeekend = resolveInitialTargetWeekend(reply);
+    setTargetFilledStart(initialWeekend.start);
+    setTargetFilledEnd(initialWeekend.end);
+    // A record that already has a weekend is locked to it: the backend refuses a different one.
+    const storedWeekend = reply.targetWeekend?.start && reply.targetWeekend.end
+      ? { start: reply.targetWeekend.start, end: reply.targetWeekend.end }
+      : undefined;
+    setTargetFilledDialog({ recordId: reply._id, venueId: reply.venueId, storedWeekend });
+  };
+
+  const confirmTargetFilled = () => {
+    if (targetFilledDialog && targetFilledStart && targetFilledEnd) {
+      void recordOutcome(
+        targetFilledDialog.recordId,
+        'target-filled',
+        undefined,
+        targetFilledDialog.storedWeekend || { start: targetFilledStart, end: targetFilledEnd },
+      );
+      setTargetFilledDialog(null);
+    }
   };
 
   const handleRecordBooked = (recordId: string, venueId: string) => {
@@ -444,8 +543,20 @@ export function AdminOutreach() {
 
   // Apply search filtering
   const q = search.trim().toLowerCase();
-  
+
+  const availableWeekends = Array.from(
+    new Set(
+      awaitingReplyCampaigns
+        .map((r) => getReplyTargetWeekendKey(r))
+        .filter(Boolean),
+    ),
+  ).sort();
+
   const filteredAwaitingReply = awaitingReplyCampaigns.filter((r) => {
+    if (selectedWeekendFilter !== 'all') {
+      const key = getReplyTargetWeekendKey(r);
+      if (key !== selectedWeekendFilter) return false;
+    }
     const v = venuesMap[r.venueId];
     if (!q) return true;
     return (v?.name || '').toLowerCase().includes(q) || (v?.city || '').toLowerCase().includes(q);
@@ -469,8 +580,20 @@ export function AdminOutreach() {
     return Math.floor((new Date().getTime() - sentDate.getTime()) / (1000 * 60 * 60 * 24));
   };
 
-  // Sort Awaiting Reply: longest days-since-send (oldest) at the top!
-  const sortedAwaitingReply = [...filteredAwaitingReply].sort((a, b) => getDaysSinceSend(b) - getDaysSinceSend(a));
+  // Sort Awaiting Reply: newest-first (shortest days-since-send) at the top!
+  const sortedAwaitingReply = [...filteredAwaitingReply].sort((a, b) => {
+    const diff = getDaysSinceSend(a) - getDaysSinceSend(b);
+    if (diff !== 0) return diff;
+    const timeA = new Date(a.sentAt || a.repliedAt || 0).getTime();
+    const timeB = new Date(b.sentAt || b.repliedAt || 0).getTime();
+    return timeB - timeA;
+  });
+
+  const awaitingPageCount = Math.ceil(sortedAwaitingReply.length / awaitingRowsPerPage) || 1;
+  const currentAwaitingPage = Math.min(awaitingPage, Math.max(0, awaitingPageCount - 1));
+  const awaitingStart = currentAwaitingPage * awaitingRowsPerPage;
+  const awaitingEnd = Math.min(awaitingStart + awaitingRowsPerPage, sortedAwaitingReply.length);
+  const paginatedAwaitingReply = sortedAwaitingReply.slice(awaitingStart, awaitingStart + awaitingRowsPerPage);
 
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -505,7 +628,10 @@ export function AdminOutreach() {
                 variant="outlined"
                 placeholder="Search venues by name or city..."
                 value={search}
-                onChange={(e) => setSearch(e.target.value)}
+                onChange={(e) => {
+                  setSearch(e.target.value);
+                  setAwaitingPage(0);
+                }}
                 slotProps={{
                   input: {
                     startAdornment: (
@@ -515,7 +641,13 @@ export function AdminOutreach() {
                     ),
                     endAdornment: search && (
                       <InputAdornment position="end">
-                        <Close sx={{ color: 'white', opacity: 0.7, cursor: 'pointer' }} onClick={() => setSearch('')} />
+                        <Close
+                          sx={{ color: 'white', opacity: 0.7, cursor: 'pointer' }}
+                          onClick={() => {
+                            setSearch('');
+                            setAwaitingPage(0);
+                          }}
+                        />
                       </InputAdornment>
                     ),
                     sx: {
@@ -598,13 +730,89 @@ export function AdminOutreach() {
                 </Box>
               </AccordionSummary>
               <AccordionDetails sx={{ p: 2, bgcolor: 'action.hover' }}>
+                {/* Weekend Filter and Pagination Toolbar */}
+                <Box sx={{
+                  display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                  flexWrap: 'wrap', gap: 2, mb: 2,
+                }}>
+                  <FormControl size="small" sx={{ minWidth: 220 }}>
+                    <InputLabel id="awaiting-weekend-filter-label">Filter by Weekend</InputLabel>
+                    <Select
+                      labelId="awaiting-weekend-filter-label"
+                      id="awaiting-weekend-filter"
+                      value={selectedWeekendFilter}
+                      label="Filter by Weekend"
+                      onChange={(e) => {
+                        setSelectedWeekendFilter(e.target.value as string);
+                        setAwaitingPage(0);
+                      }}
+                      data-testid="awaiting-weekend-filter"
+                    >
+                      <MenuItem value="all">All Weekends ({awaitingReplyCampaigns.length})</MenuItem>
+                      {availableWeekends.map((wk) => {
+                        const count = awaitingReplyCampaigns.filter((r) => getReplyTargetWeekendKey(r) === wk).length;
+                        return (
+                          <MenuItem key={wk} value={wk}>
+                            {wk} ({count})
+                          </MenuItem>
+                        );
+                      })}
+                    </Select>
+                  </FormControl>
+
+                  {sortedAwaitingReply.length > 0 && (
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flexWrap: 'wrap' }}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        <Typography variant="body2" color="text.secondary">Rows per page:</Typography>
+                        <Select
+                          size="small"
+                          value={awaitingRowsPerPage}
+                          onChange={(e) => {
+                            setAwaitingRowsPerPage(Number(e.target.value));
+                            setAwaitingPage(0);
+                          }}
+                          variant="standard"
+                          sx={{ fontSize: '0.875rem' }}
+                          data-testid="awaiting-rows-per-page"
+                        >
+                          <MenuItem value={5}>5</MenuItem>
+                          <MenuItem value={10}>10</MenuItem>
+                          <MenuItem value={25}>25</MenuItem>
+                          <MenuItem value={50}>50</MenuItem>
+                        </Select>
+                      </Box>
+                      <Typography variant="body2" data-testid="awaiting-page-info">
+                        {`${awaitingStart + 1}–${awaitingEnd} of ${sortedAwaitingReply.length}`}
+                      </Typography>
+                      <Box sx={{ display: 'flex', gap: 1 }}>
+                        <Button
+                          size="small"
+                          disabled={currentAwaitingPage === 0}
+                          onClick={() => setAwaitingPage((p) => Math.max(0, p - 1))}
+                          data-testid="awaiting-prev-page"
+                        >
+                          Prev
+                        </Button>
+                        <Button
+                          size="small"
+                          disabled={currentAwaitingPage >= awaitingPageCount - 1}
+                          onClick={() => setAwaitingPage((p) => Math.min(awaitingPageCount - 1, p + 1))}
+                          data-testid="awaiting-next-page"
+                        >
+                          Next
+                        </Button>
+                      </Box>
+                    </Box>
+                  )}
+                </Box>
+
                 {sortedAwaitingReply.length === 0 ? (
                   <Box sx={{ p: 3, textAlign: 'center' }} data-testid="replies-empty">
                     <Typography color="text.secondary">No campaigns awaiting reply match your criteria.</Typography>
                   </Box>
                 ) : (
                   <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                    {sortedAwaitingReply.map((reply) => {
+                    {paginatedAwaitingReply.map((reply) => {
                       const venue = venuesMap[reply.venueId];
                       const venueName = venue?.name || reply.venueId || 'Unknown Venue';
                       const isBounce = reply.replyKind === 'bounce';
@@ -883,11 +1091,12 @@ export function AdminOutreach() {
                                           fullWidth
                                           variant="outlined"
                                           color="warning"
-                                          startIcon={<ExitToApp />}
-                                          onClick={() => handleRecordNotAFit(reply._id)}
+                                          startIcon={<DateRange />}
+                                          onClick={() => handleRecordTargetFilled(reply)}
                                           sx={{ py: 1, textTransform: 'none', fontWeight: 'bold' }}
+                                          data-testid={`reply-target-filled-btn-${reply._id}`}
                                         >
-                                          Not a fit for format, door open
+                                          Dates Unavailable (Target Filled)
                                         </Button>
                                       </Box>
                                     </Paper>
@@ -901,6 +1110,32 @@ export function AdminOutreach() {
                         </Card>
                       );
                     })}
+                  </Box>
+                )}
+
+                {sortedAwaitingReply.length > awaitingRowsPerPage && (
+                  <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 2, mt: 2 }}>
+                    <Typography variant="body2" data-testid="awaiting-page-info-bottom">
+                      {`${awaitingStart + 1}–${awaitingEnd} of ${sortedAwaitingReply.length}`}
+                    </Typography>
+                    <Box sx={{ display: 'flex', gap: 1 }}>
+                      <Button
+                        size="small"
+                        disabled={currentAwaitingPage === 0}
+                        onClick={() => setAwaitingPage((p) => Math.max(0, p - 1))}
+                        data-testid="awaiting-prev-page-bottom"
+                      >
+                        Prev
+                      </Button>
+                      <Button
+                        size="small"
+                        disabled={currentAwaitingPage >= awaitingPageCount - 1}
+                        onClick={() => setAwaitingPage((p) => Math.min(awaitingPageCount - 1, p + 1))}
+                        data-testid="awaiting-next-page-bottom"
+                      >
+                        Next
+                      </Button>
+                    </Box>
                   </Box>
                 )}
               </AccordionDetails>
@@ -1434,6 +1669,66 @@ export function AdminOutreach() {
               sx={{ bgcolor: '#8b5cf6', '&:hover': { bgcolor: '#7c3aed' } }}
             >
               Confirm & Lock Booking
+            </Button>
+          </DialogActions>
+        </Dialog>
+
+        {/* DIALOG 3: Confirm Target Weekend Unavailable Dialog */}
+        <Dialog
+          open={targetFilledDialog !== null}
+          onClose={() => setTargetFilledDialog(null)}
+          maxWidth="xs"
+          fullWidth
+          data-testid="target-filled-dialog"
+        >
+          <DialogTitle sx={{ fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Event color="warning" /> Confirm Target Weekend Unavailable
+          </DialogTitle>
+          <DialogContent dividers>
+            <Typography variant="body2" sx={{ mb: 2 }} data-testid="target-filled-prompt">
+              {targetFilledDialog?.storedWeekend
+                ? 'This pitch was sent for the weekend below, so that is the weekend marked filled:'
+                : 'Specify the target weekend date range that is filled or unavailable for this venue:'}
+            </Typography>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
+              <DatePicker
+                label="Weekend Start Date"
+                disabled={Boolean(targetFilledDialog?.storedWeekend)}
+                value={targetFilledStart ? new Date(`${targetFilledStart}T00:00:00`) : null}
+                onChange={(newDate: Date | null) => {
+                  if (!newDate || Number.isNaN(newDate.getTime())) { setTargetFilledStart(''); return; }
+                  const year = newDate.getFullYear();
+                  const month = String(newDate.getMonth() + 1).padStart(2, '0');
+                  const day = String(newDate.getDate()).padStart(2, '0');
+                  setTargetFilledStart(`${year}-${month}-${day}`);
+                }}
+                slotProps={{ textField: { fullWidth: true, size: 'small' } }}
+              />
+              <DatePicker
+                label="Weekend End Date"
+                disabled={Boolean(targetFilledDialog?.storedWeekend)}
+                value={targetFilledEnd ? new Date(`${targetFilledEnd}T00:00:00`) : null}
+                onChange={(newDate: Date | null) => {
+                  if (!newDate || Number.isNaN(newDate.getTime())) { setTargetFilledEnd(''); return; }
+                  const year = newDate.getFullYear();
+                  const month = String(newDate.getMonth() + 1).padStart(2, '0');
+                  const day = String(newDate.getDate()).padStart(2, '0');
+                  setTargetFilledEnd(`${year}-${month}-${day}`);
+                }}
+                slotProps={{ textField: { fullWidth: true, size: 'small' } }}
+              />
+            </Box>
+          </DialogContent>
+          <DialogActions sx={{ p: 2 }}>
+            <Button onClick={() => setTargetFilledDialog(null)} data-testid="target-filled-cancel-btn">Cancel</Button>
+            <Button
+              variant="contained"
+              color="warning"
+              onClick={confirmTargetFilled}
+              disabled={!targetFilledStart || !targetFilledEnd}
+              data-testid="target-filled-confirm-btn"
+            >
+              Confirm Target Weekend Unavailable
             </Button>
           </DialogActions>
         </Dialog>

@@ -62,8 +62,9 @@ export interface IpendingReply {
   templateUsed?: string;
   targetDates?: string;
   bookingPeriod?: string;
+  targetWeekend?: { start: string; end: string };
   sentAt?: string;
-  status: 'sent' | 'replied' | 'declined' | 'booked' | 'no-response';
+  status: 'sent' | 'replied' | 'declined' | 'booked' | 'no-response' | 'target-filled';
   messageId?: string;
   gmailThreadId?: string;
   repliedAt?: string;
@@ -139,7 +140,11 @@ async function applySuggestion(
 async function recordOutcome(
   token: string,
   id: string,
-  payload: { status: 'interested' | 'not-interested' | 'booked' | 'target-filled' | 'not-a-fit'; bookedDate?: string },
+  payload: {
+    status: 'interested' | 'not-interested' | 'booked' | 'target-filled';
+    bookedDate?: string;
+    targetWeekend?: { start: string; end: string };
+  },
 ): Promise<unknown> {
   const res = await customFetch(`${outreachUrl}/${id}/outcome`, {
     method: 'POST', headers: headers(token, true), body: JSON.stringify(payload),

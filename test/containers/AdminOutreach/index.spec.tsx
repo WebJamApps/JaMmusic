@@ -2,7 +2,9 @@
 import { render, screen, fireEvent, act } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { AuthContext, defaultAuth, type Iauth } from 'src/providers/Auth.provider';
-import { AdminOutreach } from 'src/containers/AdminOutreach';
+import {
+  AdminOutreach, getReplyTargetWeekendKey, resolveInitialTargetWeekend, toDateOnly,
+} from 'src/containers/AdminOutreach';
 import adminVenuesUtils from 'src/containers/AdminVenues/admin-venues.utils';
 import outreachUtils, {
   type Icandidate,
@@ -74,6 +76,26 @@ const wrap = (auth: Iauth) => (
 
 const renderPage = async () => { await act(async () => { render(wrap(adminAuth)); }); };
 const typeDates = () => fireEvent.change(screen.getByLabelText('Weekend (eligibility)'), { target: { value: '2026-08-15' } });
+
+describe('target weekend helpers', () => {
+  const isoWeekend = { start: '2026-11-06T00:00:00.000Z', end: '2026-11-08T00:00:00.000Z' };
+
+  it('toDateOnly trims an ISO date-time to YYYY-MM-DD and leaves other text alone', () => {
+    expect(toDateOnly('2026-11-06T00:00:00.000Z')).toBe('2026-11-06');
+    expect(toDateOnly('2026-11-06')).toBe('2026-11-06');
+    expect(toDateOnly('Nov 6-8')).toBe('Nov 6-8');
+  });
+
+  it('resolveInitialTargetWeekend returns YYYY-MM-DD for a stored ISO weekend', () => {
+    expect(resolveInitialTargetWeekend({ _id: 'r', venueId: 'v', status: 'replied', targetWeekend: isoWeekend }))
+      .toEqual({ start: '2026-11-06', end: '2026-11-08' });
+  });
+
+  it('getReplyTargetWeekendKey labels a stored ISO weekend with dates only', () => {
+    expect(getReplyTargetWeekendKey({ _id: 'r', venueId: 'v', status: 'replied', targetWeekend: isoWeekend }))
+      .toBe('2026-11-06 to 2026-11-08');
+  });
+});
 
 describe('AdminOutreach', () => {
   beforeEach(() => {
@@ -534,17 +556,38 @@ describe('AdminOutreach', () => {
       });
       expect(outreachUtils.recordOutcome).toHaveBeenCalledWith('tk', 'r1', { status: 'not-interested' });
 
-      // Re-expand panel to test Not a fit outcome flow
+      // Re-expand panel to test Dates Unavailable (Target Filled) outcome flow
       await act(async () => {
         fireEvent.click(recordOutcomeBtn!);
       });
 
-      const notAFitBtn = screen.getByText('Not a fit for format, door open');
-      expect(notAFitBtn).toBeInTheDocument();
+      const targetFilledBtn = screen.getByText('Dates Unavailable (Target Filled)');
+      expect(targetFilledBtn).toBeInTheDocument();
       await act(async () => {
-        fireEvent.click(notAFitBtn);
+        fireEvent.click(targetFilledBtn);
       });
-      expect(outreachUtils.recordOutcome).toHaveBeenCalledWith('tk', 'r1', { status: 'not-a-fit' });
+
+      // Dialog should be open
+      expect(screen.getByTestId('target-filled-dialog')).toBeInTheDocument();
+      const startDateInput = screen.getByLabelText('Weekend Start Date');
+      const endDateInput = screen.getByLabelText('Weekend End Date');
+      expect(startDateInput).toBeInTheDocument();
+      expect(endDateInput).toBeInTheDocument();
+
+      // Change dates to explicit weekend
+      await act(async () => {
+        fireEvent.change(startDateInput, { target: { value: '2026-10-02' } });
+        fireEvent.change(endDateInput, { target: { value: '2026-10-04' } });
+      });
+
+      const confirmTargetFilledBtn = screen.getByTestId('target-filled-confirm-btn');
+      await act(async () => {
+        fireEvent.click(confirmTargetFilledBtn);
+      });
+      expect(outreachUtils.recordOutcome).toHaveBeenCalledWith('tk', 'r1', {
+        status: 'target-filled',
+        targetWeekend: { start: '2026-10-02', end: '2026-10-04' },
+      });
 
       // Re-expand panel to test Booked outcome flow
       await act(async () => {
@@ -1141,6 +1184,223 @@ describe('AdminOutreach', () => {
 
       expect(screen.getByTestId('replies-error')).toBeInTheDocument();
       expect(screen.getByTestId('replies-error').textContent).toContain('Failed fetching sent records');
+    });
+
+    it('locks the target-filled dialog to a stored targetWeekend and sends it back unchanged', async () => {
+      // The API returns stored weekend bounds as full ISO strings (Mongoose Date fields).
+      const records: IpendingReply[] = [
+        {
+          _id: 'tf-rec',
+          venueId: 'v1',
+          status: 'replied',
+          targetDates: 'Aug 14-16',
+          targetWeekend: { start: '2026-08-14T00:00:00.000Z', end: '2026-08-16T00:00:00.000Z' },
+          sentAt: '2026-08-01T12:00:00.000Z',
+        },
+      ];
+      const venuesList = [
+        { _id: 'v1', name: 'Venue With Target Weekend', city: 'Salem', usState: 'VA', outreachEligible: true },
+      ];
+      outreachUtils.getPendingReplies = vi.fn().mockResolvedValue(records);
+      adminVenuesUtils.listVenues = vi.fn().mockResolvedValue(venuesList);
+      outreachUtils.recordOutcome = vi.fn().mockResolvedValue({});
+
+      await renderPage();
+
+      const recordOutcomeBtn = screen.getByTestId('reply-card-tf-rec').querySelector('button');
+      await act(async () => {
+        fireEvent.click(recordOutcomeBtn!);
+      });
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('reply-target-filled-btn-tf-rec'));
+      });
+
+      expect(screen.getByTestId('target-filled-dialog')).toBeInTheDocument();
+      expect(screen.getByTestId('target-filled-prompt').textContent).toContain('This pitch was sent for the weekend below');
+      expect(screen.getByLabelText('Weekend Start Date')).toBeDisabled();
+      expect(screen.getByLabelText('Weekend End Date')).toBeDisabled();
+      const confirmBtn = screen.getByTestId('target-filled-confirm-btn');
+      expect(confirmBtn).not.toBeDisabled();
+
+      await act(async () => {
+        fireEvent.click(confirmBtn);
+      });
+
+      expect(outreachUtils.recordOutcome).toHaveBeenCalledWith('tk', 'tf-rec', {
+        status: 'target-filled',
+        targetWeekend: { start: '2026-08-14T00:00:00.000Z', end: '2026-08-16T00:00:00.000Z' },
+      });
+    });
+
+    it('disables target-filled confirm button when dates are missing and handles cancel', async () => {
+      const records: IpendingReply[] = [
+        {
+          _id: 'tf-empty',
+          venueId: 'v1',
+          status: 'replied',
+          sentAt: '2026-08-01T12:00:00.000Z',
+        },
+      ];
+      const venuesList = [
+        { _id: 'v1', name: 'Venue Empty Weekend', city: 'Salem', usState: 'VA', outreachEligible: true },
+      ];
+      outreachUtils.getPendingReplies = vi.fn().mockResolvedValue(records);
+      adminVenuesUtils.listVenues = vi.fn().mockResolvedValue(venuesList);
+
+      await renderPage();
+
+      const recordOutcomeBtn = screen.getByTestId('reply-card-tf-empty').querySelector('button');
+      await act(async () => {
+        fireEvent.click(recordOutcomeBtn!);
+      });
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('reply-target-filled-btn-tf-empty'));
+      });
+
+      expect(screen.getByTestId('target-filled-dialog')).toBeInTheDocument();
+      const confirmBtn = screen.getByTestId('target-filled-confirm-btn');
+      expect(confirmBtn).toBeDisabled();
+
+      // Cancel closing the dialog
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('target-filled-cancel-btn'));
+      });
+
+      expect(screen.getByTestId('target-filled-dialog')).toHaveAttribute('data-expanded', 'false');
+    });
+
+    it('sorts Awaiting Reply campaigns newest-first by default', async () => {
+      const now = new Date();
+      const d1 = new Date(now.getTime() - 1 * 86400000).toISOString();
+      const d5 = new Date(now.getTime() - 5 * 86400000).toISOString();
+      const d20 = new Date(now.getTime() - 20 * 86400000).toISOString();
+
+      const records: IpendingReply[] = [
+        { _id: 'c-oldest', venueId: 'v1', status: 'sent', sentAt: d20 },
+        { _id: 'c-newest', venueId: 'v2', status: 'sent', sentAt: d1 },
+        { _id: 'c-middle', venueId: 'v3', status: 'sent', sentAt: d5 },
+      ];
+      const venuesList = [
+        { _id: 'v1', name: 'Oldest Venue', city: 'Salem', usState: 'VA', outreachEligible: true },
+        { _id: 'v2', name: 'Newest Venue', city: 'Roanoke', usState: 'VA', outreachEligible: true },
+        { _id: 'v3', name: 'Middle Venue', city: 'Blacksburg', usState: 'VA', outreachEligible: true },
+      ];
+      outreachUtils.getPendingReplies = vi.fn().mockResolvedValue([]);
+      adminVenuesUtils.listVenues = vi.fn().mockResolvedValue(venuesList);
+      outreachUtils.listOutreach = vi.fn((_token: string, query?: { status?: string }) => {
+        if (query?.status === 'sent') return Promise.resolve(records);
+        return Promise.resolve([]);
+      }) as unknown as typeof outreachUtils.listOutreach;
+
+      await renderPage();
+
+      const cards = screen.getAllByTestId(/^reply-card-/);
+      expect(cards).toHaveLength(3);
+      expect(cards[0]).toHaveAttribute('data-testid', 'reply-card-c-newest');
+      expect(cards[1]).toHaveAttribute('data-testid', 'reply-card-c-middle');
+      expect(cards[2]).toHaveAttribute('data-testid', 'reply-card-c-oldest');
+    });
+
+    it('paginates Awaiting Reply cards and updates page and rows-per-page', async () => {
+      const records: IpendingReply[] = Array.from({ length: 12 }, (_, i) => ({
+        _id: `rec-${i + 1}`,
+        venueId: `v-${i + 1}`,
+        status: 'sent',
+        sentAt: new Date(Date.now() - (i + 1) * 86400000).toISOString(),
+      }));
+      const venuesList = Array.from({ length: 12 }, (_, i) => ({
+        _id: `v-${i + 1}`,
+        name: `Venue ${i + 1}`,
+        city: 'Salem',
+        usState: 'VA',
+        outreachEligible: true,
+      }));
+      outreachUtils.getPendingReplies = vi.fn().mockResolvedValue([]);
+      adminVenuesUtils.listVenues = vi.fn().mockResolvedValue(venuesList);
+      outreachUtils.listOutreach = vi.fn((_token: string, query?: { status?: string }) => {
+        if (query?.status === 'sent') return Promise.resolve(records);
+        return Promise.resolve([]);
+      }) as unknown as typeof outreachUtils.listOutreach;
+
+      await renderPage();
+
+      expect(screen.getByTestId('awaiting-page-info')).toHaveTextContent('1–10 of 12');
+      expect(screen.getByTestId('awaiting-prev-page')).toBeDisabled();
+      expect(screen.getByTestId('awaiting-next-page')).not.toBeDisabled();
+
+      // Go to next page
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('awaiting-next-page'));
+      });
+      expect(screen.getByTestId('awaiting-page-info')).toHaveTextContent('11–12 of 12');
+      expect(screen.getByTestId('awaiting-prev-page')).not.toBeDisabled();
+      expect(screen.getByTestId('awaiting-next-page')).toBeDisabled();
+
+      // Go back to prev page
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('awaiting-prev-page'));
+      });
+      expect(screen.getByTestId('awaiting-page-info')).toHaveTextContent('1–10 of 12');
+
+      // Change rows per page to 25
+      const rowsSelect = screen.getByTestId('awaiting-rows-per-page');
+      await act(async () => {
+        fireEvent.change(rowsSelect, { target: { value: 25 } });
+      });
+      expect(screen.getByTestId('awaiting-page-info')).toHaveTextContent('1–12 of 12');
+    });
+
+    it('filters Awaiting Reply campaigns by target weekend dropdown', async () => {
+      const records: IpendingReply[] = [
+        {
+          _id: 'rec-oct',
+          venueId: 'v1',
+          status: 'sent',
+          targetDates: 'Oct 16-18',
+          sentAt: '2026-09-01T12:00:00.000Z',
+        },
+        {
+          _id: 'rec-nov',
+          venueId: 'v2',
+          status: 'sent',
+          targetDates: 'Nov 6-8',
+          sentAt: '2026-09-02T12:00:00.000Z',
+        },
+      ];
+      const venuesList = [
+        { _id: 'v1', name: 'October Venue', city: 'Salem', usState: 'VA', outreachEligible: true },
+        { _id: 'v2', name: 'November Venue', city: 'Roanoke', usState: 'VA', outreachEligible: true },
+      ];
+      outreachUtils.getPendingReplies = vi.fn().mockResolvedValue([]);
+      adminVenuesUtils.listVenues = vi.fn().mockResolvedValue(venuesList);
+      outreachUtils.listOutreach = vi.fn((_token: string, query?: { status?: string }) => {
+        if (query?.status === 'sent') return Promise.resolve(records);
+        return Promise.resolve([]);
+      }) as unknown as typeof outreachUtils.listOutreach;
+
+      await renderPage();
+
+      expect(screen.getByTestId('reply-card-rec-oct')).toBeInTheDocument();
+      expect(screen.getByTestId('reply-card-rec-nov')).toBeInTheDocument();
+
+      // Filter by Oct 16-18
+      const weekendSelect = screen.getByTestId('awaiting-weekend-filter');
+      await act(async () => {
+        fireEvent.change(weekendSelect, { target: { value: 'Oct 16-18' } });
+      });
+
+      expect(screen.getByTestId('reply-card-rec-oct')).toBeInTheDocument();
+      expect(screen.queryByTestId('reply-card-rec-nov')).toBeNull();
+
+      // Reset filter to all
+      await act(async () => {
+        fireEvent.change(weekendSelect, { target: { value: 'all' } });
+      });
+
+      expect(screen.getByTestId('reply-card-rec-oct')).toBeInTheDocument();
+      expect(screen.getByTestId('reply-card-rec-nov')).toBeInTheDocument();
     });
   });
 });

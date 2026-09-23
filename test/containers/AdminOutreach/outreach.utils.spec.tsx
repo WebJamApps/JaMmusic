@@ -80,6 +80,22 @@ describe('Outreach utils', () => {
     expect(fetchMock.mock.calls[0][0]).toContain('/outreach/id1/outcome');
   });
 
+  it('recordOutcome POSTs target-filled outcome with targetWeekend (web-jam-back#1117)', async () => {
+    fetchMock.mockReturnValue(okJson({}));
+    const res = await outreachUtils.recordOutcome('tok', 'id1', {
+      status: 'target-filled',
+      targetWeekend: { start: '2026-08-14', end: '2026-08-16' },
+    });
+    expect(res).toBeDefined();
+    const opts = fetchMock.mock.calls[0][1] as RequestInit;
+    expect(opts.method).toBe('POST');
+    expect(JSON.parse(opts.body as string)).toEqual({
+      status: 'target-filled',
+      targetWeekend: { start: '2026-08-14', end: '2026-08-16' },
+    });
+    expect(fetchMock.mock.calls[0][0]).toContain('/outreach/id1/outcome');
+  });
+
   it('listOutreach GETs /outreach with optional queries', async () => {
     fetchMock.mockReturnValue(okJson([{ _id: 'o1' }]));
     const res = await outreachUtils.listOutreach('tok', { venueId: 'v1', status: 'replied' });
