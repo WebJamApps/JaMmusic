@@ -31,6 +31,11 @@ test.describe('Admin Venues page responsiveness and table scrollability', () => 
       } catch { /* ignore */ }
     });
 
+    // Abort external Google Maps API requests to prevent flaky autocomplete re-renders
+    await page.route(/maps\.googleapis\.com/, async (route) => {
+      await route.abort();
+    });
+
     // Intercept user profile retrieval API call
     await page.route(/\/user\/user-123/, async (route) => {
       await route.fulfill({
@@ -427,11 +432,11 @@ test.describe('Admin Venues page responsiveness and table scrollability', () => 
         usState: 'VA',
         venueType: 'MidRangeCafeBar',
         status: 'active',
-        outreachEligible: true,
+        outreachEligible: false,
         contactVerified: true,
       }));
 
-      await page.route('http://localhost:7000/venue*', async (route) => {
+      await page.route(/localhost:7000\/venue(\/|\?|$)/, async (route) => {
         if (route.request().method() === 'PATCH') {
           const patch = JSON.parse(route.request().postData() || '{}');
           updatedVenue = { ...updatedVenue, ...patch };
