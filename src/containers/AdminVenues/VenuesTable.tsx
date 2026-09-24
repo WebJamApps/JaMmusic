@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useTheme } from '@mui/material/styles';
 import {
   Table, TableHead, TableBody, TableRow, TableCell, TableSortLabel, Tooltip, Button, Chip, Box, Typography,
-  TextField, FormControlLabel, Switch, Select, MenuItem,
+  TextField, Switch, Select, MenuItem,
   Dialog, DialogTitle, DialogContent, DialogActions,
 } from '@mui/material';
 import LinearProgress from '@mui/material/LinearProgress';
@@ -25,6 +25,45 @@ interface IvenuesTableProps {
 }
 
 type Order = 'asc' | 'desc';
+
+export type ReadinessFilter = 'all' | 'needsType' | 'missingEmail' | 'pitchReady';
+
+export const READINESS_FILTER_OPTIONS: {
+  key: ReadinessFilter;
+  label: string;
+  testId: string;
+  countTestId: string;
+  color: 'primary' | 'warning' | 'success';
+}[] = [
+  {
+    key: 'all',
+    label: 'All',
+    testId: 'venues-filter-all',
+    countTestId: 'venues-filter-all-count',
+    color: 'primary',
+  },
+  {
+    key: 'needsType',
+    label: 'Needs Type',
+    testId: 'venues-filter-needs-type',
+    countTestId: 'venues-filter-needs-type-count',
+    color: 'warning',
+  },
+  {
+    key: 'missingEmail',
+    label: 'Missing Email',
+    testId: 'venues-filter-missing-email',
+    countTestId: 'venues-filter-missing-email-count',
+    color: 'warning',
+  },
+  {
+    key: 'pitchReady',
+    label: 'Pitch-Ready',
+    testId: 'venues-filter-pitch-ready',
+    countTestId: 'venues-filter-pitch-ready-count',
+    color: 'success',
+  },
+];
 
 // Columns: `key` drives sorting (via sortValue), `help` (a FIELD_HELP key) adds a
 // consequence tooltip on the header. 'prospect' is the computed default-sort column.
@@ -121,7 +160,7 @@ export function VenuesTable({
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [searchTerm, setSearchTerm] = useState('');
-  const [needsVettingFilter, setNeedsVettingFilter] = useState(false);
+  const [readinessFilter, setReadinessFilter] = useState<ReadinessFilter>('all');
 
   const [copyDialogOpen, setCopyDialogOpen] = useState(false);
   const [copyDialogTitle, setCopyDialogTitle] = useState('');
@@ -133,9 +172,16 @@ export function VenuesTable({
     setCopyDialogOpen(true);
   };
 
+  const counts: Record<ReadinessFilter, number> = {
+    all: venues.length,
+    needsType: venues.filter((v) => !v.venueType).length,
+    missingEmail: venues.filter((v) => !v.email).length,
+    pitchReady: venues.filter((v) => v.venueType && v.email && v.outreachEligible !== false).length,
+  };
+
   // Un-vetted definition: no venueType set.
   // This is Josh's vetting work queue.
-  const unvettedCount = venues.filter((v) => !v.venueType).length;
+  const unvettedCount = counts.needsType;
   const vettedCount = venues.length - unvettedCount;
 
   const handleSort = (key: string) => {
@@ -159,12 +205,7 @@ export function VenuesTable({
     setPage(0);
   };
 
-  const handleNeedsVettingToggle = (checked: boolean) => {
-    setNeedsVettingFilter(checked);
-    setPage(0);
-  };
-
-  // Perform filtering live on venue name + city, and needs-vetting state
+  // Perform filtering live on venue name + city, and readiness filter state
   const filtered = venues.filter((v) => {
     if (searchTerm) {
       const term = searchTerm.toLowerCase();
@@ -172,9 +213,12 @@ export function VenuesTable({
       const cityMatch = (v.city || '').toLowerCase().includes(term);
       if (!nameMatch && !cityMatch) return false;
     }
-    if (needsVettingFilter) {
-      const needsVetting = !v.venueType;
-      if (!needsVetting) return false;
+    if (readinessFilter === 'needsType') {
+      if (v.venueType) return false;
+    } else if (readinessFilter === 'missingEmail') {
+      if (v.email) return false;
+    } else if (readinessFilter === 'pitchReady') {
+      if (!v.venueType || !v.email || v.outreachEligible === false) return false;
     }
     return true;
   });
@@ -285,41 +329,71 @@ export function VenuesTable({
             </Tooltip>
           )}
 
-          {/* Needs Vetting switch aligned to the top edge */}
-          <FormControlLabel
-            control={
-              <Switch
-                checked={needsVettingFilter}
-                onChange={(e) => handleNeedsVettingToggle(e.target.checked)}
-                color="warning"
-                size="small"
-                data-testid="venues-needs-vetting-filter"
-                sx={{ 
-                  margin: 0,
-                  alignSelf: 'flex-start'
-                }}
-              />
-            }
-            label={
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, pt: 0.25, whiteSpace: 'nowrap' }}>
-                <Typography variant="body2" sx={{ fontWeight: 'medium', color: 'text.primary', whiteSpace: 'nowrap' }}>Needs Vetting</Typography>
-                <Chip 
-                  label={unvettedCount} 
-                  size="small" 
-                  color={needsVettingFilter ? "warning" : "default"}
-                  sx={{ height: 20, fontSize: '0.75rem', fontWeight: 'bold', borderRadius: '6px' }}
-                />
-              </Box>
-            }
-            sx={{ 
-              margin: 0, 
-              display: 'flex', 
-              alignItems: 'flex-start', 
-              alignSelf: 'flex-start',
-              pt: 0.5,
-              flexShrink: 0
+          {/* Readiness filter chips */}
+          <Box
+            data-testid="venues-readiness-filters"
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 1,
+              flexWrap: 'wrap',
+              pt: 0.25,
             }}
-          />
+          >
+            {READINESS_FILTER_OPTIONS.map((opt) => {
+              const isSelected = readinessFilter === opt.key;
+              const count = counts[opt.key];
+              return (
+                <Chip
+                  key={opt.key}
+                  data-testid={opt.testId}
+                  label={
+                    <Box component="span" sx={{ display: 'inline-flex', alignItems: 'center', gap: 0.75 }}>
+                      <span>{opt.label}</span>
+                      <Box
+                        component="span"
+                        data-testid={opt.countTestId}
+                        sx={{
+                          backgroundColor: isSelected
+                            ? 'rgba(255, 255, 255, 0.28)'
+                            : (theme) => (theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.12)' : 'rgba(0, 0, 0, 0.08)'),
+                          color: isSelected ? 'inherit' : 'text.secondary',
+                          borderRadius: '10px',
+                          px: 0.75,
+                          py: 0.1,
+                          fontSize: '0.75rem',
+                          fontWeight: 'bold',
+                          lineHeight: 1.3,
+                        }}
+                      >
+                        {count}
+                      </Box>
+                    </Box>
+                  }
+                  size="small"
+                  clickable
+                  aria-pressed={isSelected}
+                  onClick={() => {
+                    setReadinessFilter(opt.key);
+                    setPage(0);
+                  }}
+                  color={isSelected ? opt.color : 'default'}
+                  variant={isSelected ? 'filled' : 'outlined'}
+                  sx={{
+                    fontWeight: isSelected ? 'bold' : 'medium',
+                    height: 32,
+                    borderRadius: '16px',
+                    cursor: 'pointer',
+                    '& .MuiChip-label': {
+                      display: 'flex',
+                      alignItems: 'center',
+                      px: 1.25,
+                    },
+                  }}
+                />
+              );
+            })}
+          </Box>
         </Box>
         
         {/* Progress Counter & Stats styled as a premium green pill aligned to top */}
