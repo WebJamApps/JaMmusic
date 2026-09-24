@@ -3,7 +3,7 @@ import { Player, SongButtons, Songs } from 'src/containers/Songs';
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { Isong } from 'src/providers/Data.provider';
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter } from 'react-router';
 
 describe('Songs', () => {
   it('renders correctly', () => {

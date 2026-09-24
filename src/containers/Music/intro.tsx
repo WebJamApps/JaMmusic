@@ -1,6 +1,6 @@
 import { Button, IconButton, Tooltip } from '@mui/material';
 import { Add, Edit } from '@mui/icons-material';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 
 interface IclickToListenProps {
   appName?: string, isAdmin: boolean, setShowCreatePic: (arg0: boolean) => void, setShowEditPic: (arg0: boolean) => void

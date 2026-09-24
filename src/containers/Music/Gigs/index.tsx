@@ -10,7 +10,7 @@ import HtmlReactParser from 'html-react-parser';
 import { DataContext, Igig } from 'src/providers/Data.provider';
 import { AuthContext, Iauth } from 'src/providers/Auth.provider';
 import { defaultGig } from 'src/providers/fetchGigs';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import adminVenuesUtils from 'src/containers/AdminVenues/admin-venues.utils';
 import utils from './gigs.utils';
 import { EditGigDialog } from './EditGigDialog';

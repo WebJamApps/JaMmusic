@@ -3,7 +3,7 @@ import { Plyr, type APITypes, type PlyrSource } from 'plyr-react';
 import 'plyr-react/plyr.css';
 import { Button } from '@mui/material';
 import { Share } from '@mui/icons-material';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router';
 import type { Isong } from 'src/providers/Data.provider';
 import utils from './utils';
 import './musicPlayer.scss';

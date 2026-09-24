@@ -1,7 +1,7 @@
 import { ToastContainer } from 'react-toastify';
 import {
   BrowserRouter, Navigate, Route, Routes,
-} from 'react-router-dom';
+} from 'react-router';
 import { Homepage } from 'src/containers/Homepage';
 import { AdminUsers } from '../containers/AdminUsers';
 import { AdminVenues } from '../containers/AdminVenues';

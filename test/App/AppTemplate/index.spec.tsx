@@ -1,4 +1,4 @@
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter } from 'react-router';
 import { render } from '@testing-library/react';
 import {
   AppTemplate, handleEscapePress, handleKeyMenu, makeDrawerClass,
