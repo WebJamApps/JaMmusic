@@ -151,4 +151,51 @@ describe('AdminVenues page', () => {
     const exportBtn = screen.getByTestId('admin-venues-export-button');
     expect(exportBtn.hasAttribute('disabled')).toBe(true);
   });
+
+  it('updates venue type inline and refreshes', async () => {
+    const venue: Ivenue = { _id: 'v1', name: 'Venue A', venueType: 'Originals' };
+    adminVenuesUtils.listVenues = vi.fn(() => Promise.resolve([venue])) as any;
+    adminVenuesUtils.updateVenue = vi.fn(() => Promise.resolve({} as Ivenue)) as any;
+
+    await act(async () => { render(wrap(adminAuth)); });
+
+    const select = screen.getByTestId('venue-type-select-v1');
+    await act(async () => {
+      fireEvent.change(select, { target: { value: 'PubFestivalBrewery' } });
+    });
+
+    expect(adminVenuesUtils.updateVenue).toHaveBeenCalledWith('tk', 'v1', { venueType: 'PubFestivalBrewery' });
+    expect(adminVenuesUtils.listVenues).toHaveBeenCalledTimes(2); // Initial + post-update refresh
+  });
+
+  it('toggles venue outreach eligibility inline and refreshes', async () => {
+    const venue: Ivenue = { _id: 'v1', name: 'Venue A', outreachEligible: false };
+    adminVenuesUtils.listVenues = vi.fn(() => Promise.resolve([venue])) as any;
+    adminVenuesUtils.updateVenue = vi.fn(() => Promise.resolve({} as Ivenue)) as any;
+
+    await act(async () => { render(wrap(adminAuth)); });
+
+    const toggle = screen.getByTestId('venue-eligible-toggle-v1');
+    await act(async () => {
+      fireEvent.click(toggle);
+    });
+
+    expect(adminVenuesUtils.updateVenue).toHaveBeenCalledWith('tk', 'v1', { outreachEligible: true });
+    expect(adminVenuesUtils.listVenues).toHaveBeenCalledTimes(2); // Initial + post-update refresh
+  });
+
+  it('surfaces an error when inline update fails', async () => {
+    const venue: Ivenue = { _id: 'v1', name: 'Venue A', outreachEligible: false };
+    adminVenuesUtils.listVenues = vi.fn(() => Promise.resolve([venue])) as any;
+    adminVenuesUtils.updateVenue = vi.fn(() => Promise.reject(new Error('update failed'))) as any;
+
+    await act(async () => { render(wrap(adminAuth)); });
+
+    const toggle = screen.getByTestId('venue-eligible-toggle-v1');
+    await act(async () => {
+      fireEvent.click(toggle);
+    });
+
+    expect(screen.getByTestId('admin-venues-error').innerHTML).toBe('update failed');
+  });
 });

@@ -10,12 +10,13 @@ import InputAdornment from '@mui/material/InputAdornment';
 import { Search } from '@mui/icons-material';
 import { formatVenueDateYMD } from 'src/lib/venueTimezone';
 import {
-  FIELD_HELP, prospectScore, type Ivenue,
+  FIELD_HELP, prospectScore, VENUE_TYPES, type Ivenue, type IvenueUpdate,
 } from './admin-venues.utils';
 
 interface IvenuesTableProps {
   venues: Ivenue[];
   onEdit: (venue: Ivenue) => void;
+  onUpdate?: (venueId: string, patch: IvenueUpdate) => Promise<void> | void;
   onDelete?: (venue: Ivenue) => void;
   onRestore?: (venue: Ivenue) => void;
   showArchived?: boolean;
@@ -104,7 +105,7 @@ function sortVenues(venues: Ivenue[], orderBy: string, order: Order): Ivenue[] {
 }
 
 export function VenuesTable({
-  venues, onEdit, onDelete, onRestore, showArchived, targetDate, setTargetDate,
+  venues, onEdit, onUpdate, onDelete, onRestore, showArchived, targetDate, setTargetDate,
 }: IvenuesTableProps) {
   const theme = useTheme();
   const isDark = theme.palette.mode === 'dark';
@@ -401,6 +402,7 @@ export function VenuesTable({
                 {/* Sticky Actions Header */}
                 <TableCell
                   align="center"
+                  data-testid="header-actions"
                   sx={{
                     position: { xs: 'static', sm: 'sticky' },
                     left: 0,
@@ -421,6 +423,7 @@ export function VenuesTable({
                 {/* Sticky Name Header */}
                 <TableCell
                   key="name"
+                  data-testid="header-name"
                   sortDirection={orderBy === 'name' ? order : false}
                   onClick={() => handleSort('name')}
                   sx={{
@@ -466,19 +469,21 @@ export function VenuesTable({
                 {COLUMNS.slice(1).map((col) => (
                   <TableCell
                     key={col.key}
+                    data-testid={`header-${col.key}`}
                     sortDirection={orderBy === col.key ? order : false}
                     onClick={() => handleSort(col.key)}
                     sx={{
+                      position: { xs: 'static', sm: 'sticky' },
+                      top: 0,
+                      zIndex: { xs: 'auto', sm: 10 },
+                      backgroundColor: 'background.paper',
                       cursor: 'pointer',
                       userSelect: 'none',
                       fontWeight: 'bold',
                       whiteSpace: 'nowrap',
                       '&:hover': {
-                        backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.04)',
+                        background: headerHoverBg,
                       },
-                      backgroundColor: orderBy === col.key 
-                        ? (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.02)' : 'rgba(0,0,0,0.01)'
-                        : undefined,
                     }}
                   >
                     <Tooltip title={col.help ? FIELD_HELP[col.help] : ''} arrow>
@@ -698,28 +703,6 @@ export function VenuesTable({
                           </Typography>
                         )}
 
-                        {/* Secondary Email */}
-                        {v.secondaryEmail ? (
-                          <Tooltip title={`Secondary Email: ${v.secondaryEmail}`} arrow>
-                            <Box
-                              component="span"
-                              onClick={() => handleOpenCopyDialog('Secondary Email Address', v.secondaryEmail!)}
-                              data-testid={`venue-contact-secondary-email-${v._id}`}
-                              sx={{
-                                fontSize: '1.1rem',
-                                cursor: 'pointer',
-                                textDecoration: 'none',
-                                color: 'info.light',
-                                display: 'inline-flex',
-                                ml: 0.5,
-                                '&:hover': { opacity: 0.8 },
-                              }}
-                            >
-                              ✉₂
-                            </Box>
-                          </Tooltip>
-                        ) : null}
-
                         {/* Phone */}
                         {v.phone ? (
                           <Tooltip title={`Phone: ${v.phone}`} arrow>
@@ -779,13 +762,63 @@ export function VenuesTable({
                         )}
                       </Box>
                     </TableCell>
-                    <TableCell>
-                      {noType
-                        ? <Chip label="no type" color="warning" size="small" data-testid={`venue-notype-${v._id}`} />
-                        : v.venueType}
+                    <TableCell data-testid={`venue-type-${v._id}`}>
+                      <Select
+                        size="small"
+                        variant="standard"
+                        disableUnderline
+                        displayEmpty
+                        value={v.venueType || ''}
+                        onChange={(e) => void onUpdate?.(v._id, { venueType: e.target.value as string })}
+                        disabled={showArchived}
+                        data-testid={`venue-type-select-${v._id}`}
+                        renderValue={(selected) => {
+                          if (!selected) {
+                            return <Chip label="no type" color="warning" size="small" data-testid={`venue-notype-${v._id}`} />;
+                          }
+                          return selected;
+                        }}
+                        sx={{
+                          fontSize: '0.875rem',
+                          '& .MuiSelect-select': {
+                            paddingY: 0.5,
+                            paddingX: 0.5,
+                          },
+                        }}
+                      >
+                        <MenuItem value="">
+                          <Chip label="no type" color="warning" size="small" data-testid={`venue-notype-${v._id}`} />
+                        </MenuItem>
+                        {VENUE_TYPES.map((t) => (
+                          <MenuItem key={t} value={t} data-testid={`venue-type-option-${t}`}>{t}</MenuItem>
+                        ))}
+                        {v.venueType && !VENUE_TYPES.includes(v.venueType as (typeof VENUE_TYPES)[number]) && (
+                          <MenuItem value={v.venueType}>{v.venueType}</MenuItem>
+                        )}
+                      </Select>
                     </TableCell>
                     <TableCell>{dash(v.bookingStatus)}</TableCell>
-                    <TableCell data-testid={`venue-eligible-${v._id}`}>{yn(v.outreachEligible)}</TableCell>
+                    <TableCell data-testid={`venue-eligible-${v._id}`}>
+                      <Tooltip
+                        title={v.outreachEligible ? 'Outreach eligible (click to turn off)' : 'Not eligible (click to turn on)'}
+                        arrow
+                      >
+                        <Switch
+                          size="small"
+                          checked={Boolean(v.outreachEligible)}
+                          onChange={(e) => void onUpdate?.(v._id, { outreachEligible: e.target.checked })}
+                          color="primary"
+                          disabled={showArchived}
+                          data-testid={`venue-eligible-toggle-${v._id}`}
+                          slotProps={{
+                            input: {
+                              'aria-label': `Toggle outreach eligibility for ${v.name}`,
+                              ...({ 'data-testid': `venue-eligible-input-${v._id}` } as object),
+                            },
+                          }}
+                        />
+                      </Tooltip>
+                    </TableCell>
                     <TableCell data-testid={`venue-lastcontacted-${v._id}`}>{formatLastContacted(v.lastContacted)}</TableCell>
                     <TableCell data-testid={`venue-lastgig-${v._id}`}>{formatGigDate(v.lastGig, v.usState)}</TableCell>
                     <TableCell data-testid={`venue-nextgig-${v._id}`}>{formatGigDate(v.nextGig, v.usState)}</TableCell>
