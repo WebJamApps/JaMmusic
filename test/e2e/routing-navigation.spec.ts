@@ -141,23 +141,32 @@ test.describe('React Router 8 Routing and Navigation', () => {
   });
 
   test('performs client-side navigation via sidebar links without page reload', async ({ page }) => {
-    await page.goto('/', { waitUntil: 'domcontentloaded' });
+    // Start on a music route (/music) where ContinueMenuItem renders react-router Link
+    await page.goto('/music', { waitUntil: 'domcontentloaded' });
     await expect(page.locator('.elevation3')).toBeVisible();
 
-    // Open mobile sidebar toggle if present
+    // Open mobile sidebar drawer if toggle button is present
     const menuToggle = page.locator('#mobilemenutoggle');
     if (await menuToggle.isVisible()) {
       await menuToggle.click();
-      await page.waitForTimeout(300);
     }
 
-    // Click Buy Music link in the sidebar
-    const buyMusicLink = page.locator('.menu-item a[href="https://web-jam.com/music/buymusic"], .menu-item a[href="/music/buymusic"]').first();
-    if (await buyMusicLink.isVisible()) {
-      await buyMusicLink.click();
-      await expect(page).toHaveURL(/\/music\/buymusic/);
-      await expect(page.getByText('Buy from Amazon Music')).toBeVisible();
-    }
+    // Locate Buy Music link in the sidebar and ensure it is visible without artificial delays
+    const buyMusicLink = page.locator('.menu-item a[href*="/music/buymusic"]').first();
+    await expect(buyMusicLink).toBeVisible();
+
+    // Attach reload canary to prove transition is pure client-side SPA navigation
+    await page.evaluate(() => {
+      (window as unknown as { __noReload: boolean }).__noReload = true;
+    });
+
+    await buyMusicLink.click();
+    await expect(page).toHaveURL(/\/music\/buymusic$/);
+    await expect(page.getByText('Buy from Amazon Music')).toBeVisible();
+
+    // Assert page did not reload (window canary remains intact)
+    const noReload = await page.evaluate(() => (window as unknown as { __noReload?: boolean }).__noReload);
+    expect(noReload).toBe(true);
   });
 
   test('redirects unknown paths to homepage via wildcard route', async ({ page }) => {
@@ -168,42 +177,67 @@ test.describe('React Router 8 Routing and Navigation', () => {
   });
 
   test('supports browser back and forward history stack navigation', async ({ page }) => {
-    // History stack: / -> /music/buymusic -> /music/songs
-    await page.goto('/', { waitUntil: 'domcontentloaded' });
+    // 1. Start at /music
+    await page.goto('/music', { waitUntil: 'domcontentloaded' });
     await expect(page.locator('.elevation3')).toBeVisible();
 
-    await page.goto('/music/buymusic', { waitUntil: 'domcontentloaded' });
+    const menuToggle = page.locator('#mobilemenutoggle');
+
+    // 2. Client-side transition to /music/buymusic via Link
+    if (await menuToggle.isVisible()) {
+      await menuToggle.click();
+    }
+    const buyMusicLink = page.locator('.menu-item a[href*="/music/buymusic"]').first();
+    await expect(buyMusicLink).toBeVisible();
+    await buyMusicLink.click();
+    await expect(page).toHaveURL(/\/music\/buymusic$/);
     await expect(page.getByText('Buy from Amazon Music')).toBeVisible();
 
-    await page.goto('/music/songs', { waitUntil: 'domcontentloaded' });
+    // 3. Client-side transition to /music/songs via Link
+    if (await menuToggle.isVisible()) {
+      await menuToggle.click();
+    }
+    const songsLink = page.locator('.menu-item a[href*="/music/songs"]').first();
+    await expect(songsLink).toBeVisible();
+    await songsLink.click();
+    await expect(page).toHaveURL(/\/music\/songs$/);
     await expect(page.locator('.playerDiv')).toBeVisible();
 
-    // Step back to /music/buymusic
+    // 4. Step back to /music/buymusic in history stack
     await page.goBack({ waitUntil: 'domcontentloaded' });
     await expect(page).toHaveURL(/\/music\/buymusic$/);
     await expect(page.getByText('Buy from Amazon Music')).toBeVisible();
 
-    // Step back to /
+    // 5. Step back to /music in history stack
     await page.goBack({ waitUntil: 'domcontentloaded' });
-    await expect(page).toHaveURL(/\/$/);
+    await expect(page).toHaveURL(/\/music$/);
     await expect(page.locator('.elevation3')).toBeVisible();
 
-    // Step forward to /music/buymusic
+    // 6. Step forward to /music/buymusic in history stack
     await page.goForward({ waitUntil: 'domcontentloaded' });
     await expect(page).toHaveURL(/\/music\/buymusic$/);
     await expect(page.getByText('Buy from Amazon Music')).toBeVisible();
 
-    // Step forward to /music/songs
+    // 7. Step forward to /music/songs in history stack
     await page.goForward({ waitUntil: 'domcontentloaded' });
     await expect(page).toHaveURL(/\/music\/songs$/);
     await expect(page.locator('.playerDiv')).toBeVisible();
   });
 
   test('preserves search parameters handled by useSearchParams on /music/songs', async ({ page }) => {
-    await page.goto('/music/songs?category=Originals&filter=acoustic', { waitUntil: 'domcontentloaded' });
-    await expect(page).toHaveURL(/category=Originals/);
-    await expect(page).toHaveURL(/filter=acoustic/);
+    // 1. Default /music/songs loads without search params and displays full category view
+    await page.goto('/music/songs', { waitUntil: 'domcontentloaded' });
     await expect(page.locator('.playerDiv')).toBeVisible();
+    await expect(page.locator('.categoryTitle')).toBeVisible();
+    await expect(page.locator('.categoryButtons')).toBeVisible();
+
+    // 2. Loading with ?id=s1 is read by useSearchParams and utils.initSongs, triggering single-song view
+    await page.goto('/music/songs?id=s1', { waitUntil: 'domcontentloaded' });
+    await expect(page).toHaveURL(/id=s1/);
+    await expect(page.locator('.playerDiv')).toBeVisible();
+    await expect(page.getByText('Test Song')).toBeVisible();
+    await expect(page.locator('.categoryTitle')).not.toBeVisible();
+    await expect(page.locator('.categoryButtons')).not.toBeVisible();
   });
 
   test('renders authenticated admin routes', async ({ page }) => {
