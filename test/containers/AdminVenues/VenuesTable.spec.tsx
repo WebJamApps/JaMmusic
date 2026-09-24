@@ -22,7 +22,7 @@ describe('VenuesTable', () => {
   it('renders a row per venue with the eligible flag and computed score', () => {
     render(<VenuesTable venues={venues} onEdit={vi.fn()} />);
     expect(screen.getByTestId('venue-row-v1')).toBeDefined();
-    expect(screen.getByTestId('venue-eligible-v1').innerHTML).toBe('yes');
+    expect(screen.getByTestId('venue-eligible-toggle-v1')).toBeChecked();
     expect(screen.getByTestId('venue-score-v1')).toBeDefined();
   });
 
@@ -265,14 +265,14 @@ describe('VenuesTable', () => {
     expect(screen.getByTestId('venues-vetted-counter').innerHTML).toContain('Vetted 1 of 3');
 
     // Click Needs Vetting toggle
-    const toggle = screen.getByRole('checkbox');
+    const toggle = screen.getByTestId('venues-needs-vetting-filter');
     fireEvent.click(toggle);
 
     // Now only the unvetted rows should be shown
     expect(rowIds()).toEqual(['venue-row-v2', 'venue-row-v3']);
   });
 
-  it('opens CopyDialog when clicking primary and secondary email icons', async () => {
+  it('opens CopyDialog when clicking primary email icon and verifies secondary email icon is removed', async () => {
     const list: Ivenue[] = [
       {
         _id: 'v-emails',
@@ -289,11 +289,8 @@ describe('VenuesTable', () => {
     expect(screen.getByTestId('copy-dialog-content')).toHaveValue('pri@example.com');
     fireEvent.click(screen.getByTestId('copy-dialog-close'));
 
-    // Click Secondary Email icon
-    fireEvent.click(screen.getByTestId('venue-contact-secondary-email-v-emails'));
-    expect(screen.getByTestId('copy-dialog-title').textContent).toBe('Secondary Email Address');
-    expect(screen.getByTestId('copy-dialog-content')).toHaveValue('sec@example.com');
-    fireEvent.click(screen.getByTestId('copy-dialog-close'));
+    // Secondary email icon overlay is removed
+    expect(screen.queryByTestId('venue-contact-secondary-email-v-emails')).toBeNull();
   });
 
   it('renders inputs container with responsive wrap and non-shrinking inputs', () => {
@@ -458,6 +455,57 @@ describe('VenuesTable', () => {
 
     // State column renders non-US region
     expect(screen.getByTestId('venue-state-v-intl').textContent).toBe('Greater London');
+  });
+
+  it('renders Score header cell with sort label', () => {
+    render(<VenuesTable venues={venues} onEdit={vi.fn()} />);
+    const scoreHeader = screen.getByTestId('header-prospect');
+    expect(scoreHeader).toBeDefined();
+    expect(scoreHeader.textContent).toContain('Score');
+  });
+
+  it('triggers onUpdate with selected venueType when Type dropdown changes', () => {
+    const onUpdate = vi.fn();
+    render(
+      <VenuesTable
+        venues={[{ _id: 'v-inline', name: 'Inline Venue', venueType: 'Originals' }]}
+        onEdit={vi.fn()}
+        onUpdate={onUpdate}
+      />
+    );
+
+    const typeSelect = screen.getByTestId('venue-type-select-v-inline');
+    fireEvent.change(typeSelect, { target: { value: 'PubFestivalBrewery' } });
+    expect(onUpdate).toHaveBeenCalledWith('v-inline', { venueType: 'PubFestivalBrewery' });
+  });
+
+  it('triggers onUpdate with toggled outreachEligible when Eligible switch is clicked', () => {
+    const onUpdate = vi.fn();
+    render(
+      <VenuesTable
+        venues={[{ _id: 'v-inline', name: 'Inline Venue', outreachEligible: false }]}
+        onEdit={vi.fn()}
+        onUpdate={onUpdate}
+      />
+    );
+
+    const toggle = screen.getByTestId('venue-eligible-toggle-v-inline');
+    expect(toggle).not.toBeChecked();
+    fireEvent.click(toggle);
+    expect(onUpdate).toHaveBeenCalledWith('v-inline', { outreachEligible: true });
+  });
+
+  it('disables Type select and Eligible switch when showArchived is true', () => {
+    render(
+      <VenuesTable
+        venues={[{ _id: 'v-archived', name: 'Archived Venue', status: 'archived', outreachEligible: true }]}
+        onEdit={vi.fn()}
+        showArchived
+      />
+    );
+
+    expect(screen.getByTestId('venue-type-select-v-archived')).toBeDisabled();
+    expect(screen.getByTestId('venue-eligible-toggle-v-archived')).toBeDisabled();
   });
 });
 
