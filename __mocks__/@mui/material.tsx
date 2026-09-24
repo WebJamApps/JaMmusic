@@ -129,9 +129,14 @@ export function Radio(props: any) {
 }
 
 export function Select(props:any) {
-  const { children, labelId, ...rest } = props;
+  const { children, labelId, renderValue, value, ...rest } = props;
   // real MUI wires `labelId` to the combobox's accessible name
-  return <select aria-labelledby={labelId} {...rest}>{children}</select>;
+  return (
+    <>
+      <select aria-labelledby={labelId} value={value} {...rest}>{children}</select>
+      {renderValue ? renderValue(value) : null}
+    </>
+  );
 }
 
 export function MenuItem(props:any) {

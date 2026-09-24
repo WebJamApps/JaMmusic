@@ -402,4 +402,111 @@ test.describe('Admin Venues page responsiveness and table scrollability', () => 
       await expect(reopenedFamilyNearby).toBeChecked();
     },
   );
+
+  test(
+    'proves Score header is opaque and pinned when scrolled, and inline Type and Eligible update row',
+    async ({ page, isMobile }) => {
+      let updatedVenue = {
+        _id: 'v1',
+        name: 'Normal Active Venue',
+        city: 'Roanoke',
+        usState: 'VA',
+        venueType: 'Originals',
+        status: 'active',
+        outreachEligible: true,
+        contactVerified: true,
+        website: 'https://normalactivevenue.com',
+        contactName: 'Jane Doe',
+        email: 'jane@example.com',
+      };
+
+      const extraVenues = Array.from({ length: 14 }, (_, i) => ({
+        _id: `v-extra-${i + 2}`,
+        name: `Extra Venue ${i + 2}`,
+        city: 'Salem',
+        usState: 'VA',
+        venueType: 'MidRangeCafeBar',
+        status: 'active',
+        outreachEligible: true,
+        contactVerified: true,
+      }));
+
+      await page.route('http://localhost:7000/venue*', async (route) => {
+        if (route.request().method() === 'PATCH') {
+          const patch = JSON.parse(route.request().postData() || '{}');
+          updatedVenue = { ...updatedVenue, ...patch };
+          await route.fulfill({
+            status: 200,
+            contentType: 'application/json',
+            body: JSON.stringify(updatedVenue),
+          });
+        } else {
+          await route.fulfill({
+            status: 200,
+            contentType: 'application/json',
+            body: JSON.stringify([updatedVenue, ...extraVenues]),
+          });
+        }
+      });
+
+      if (!isMobile) {
+        await page.setViewportSize({ width: 1200, height: 800 });
+      }
+
+      await page.goto('/admin/venues', { waitUntil: 'domcontentloaded' });
+
+      // Verify Score header exists and has an opaque background
+      const scoreHeader = page.locator('[data-testid="header-prospect"]');
+      await expect(scoreHeader).toBeVisible();
+
+      const bgBefore = await scoreHeader.evaluate((el) => window.getComputedStyle(el).backgroundColor);
+      expect(bgBefore).not.toBe('transparent');
+      expect(bgBefore).not.toContain('rgba(0, 0, 0, 0)');
+
+      // On desktop, sticky header position is active
+      if (!isMobile) {
+        const posBefore = await scoreHeader.evaluate((el) => window.getComputedStyle(el).position);
+        expect(posBefore).toBe('sticky');
+      }
+
+      // Scroll table container vertically to verify header stays pinned and visible
+      const table = page.locator('[data-testid="venues-table"]');
+      await table.evaluate((el) => {
+        el.parentElement?.scrollBy(0, 300);
+      });
+
+      await expect(scoreHeader).toBeVisible();
+      const bgAfter = await scoreHeader.evaluate((el) => window.getComputedStyle(el).backgroundColor);
+      expect(bgAfter).not.toBe('transparent');
+      expect(bgAfter).not.toContain('rgba(0, 0, 0, 0)');
+
+      // Scroll back to top so row v1 controls are fully in view
+      await table.evaluate((el) => {
+        el.parentElement?.scrollTo(0, 0);
+      });
+
+      // (b) Test inline editing: change row's Type to PubFestivalBrewery
+      const typeSelect = page.locator('[data-testid="venue-type-select-v1"]');
+      await expect(typeSelect).toBeVisible();
+      await expect(typeSelect).toHaveText('Originals');
+      await typeSelect.click();
+
+      const pubOption = page.locator('[data-testid="venue-type-option-PubFestivalBrewery"]');
+      await expect(pubOption).toBeVisible();
+      await pubOption.click();
+
+      // Verify the type updated in UI after automatic refresh
+      await expect(typeSelect).toHaveText('PubFestivalBrewery');
+
+      // (b) Test inline editing: toggle Eligible switch to false
+      const eligibleToggle = page.locator('[data-testid="venue-eligible-toggle-v1"] input[type="checkbox"]');
+      await expect(eligibleToggle).toBeVisible();
+      await expect(eligibleToggle).toBeChecked();
+
+      await eligibleToggle.click();
+
+      // Verify eligible switch is toggled off after automatic refresh
+      await expect(eligibleToggle).not.toBeChecked();
+    },
+  );
 });

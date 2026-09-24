@@ -457,7 +457,7 @@ describe('VenuesTable', () => {
     expect(screen.getByTestId('venue-state-v-intl').textContent).toBe('Greater London');
   });
 
-  it('renders sticky Score header with opaque background.paper', () => {
+  it('renders Score header cell with sort label', () => {
     render(<VenuesTable venues={venues} onEdit={vi.fn()} />);
     const scoreHeader = screen.getByTestId('header-prospect');
     expect(scoreHeader).toBeDefined();

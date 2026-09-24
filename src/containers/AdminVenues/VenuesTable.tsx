@@ -787,7 +787,7 @@ export function VenuesTable({
                         }}
                       >
                         <MenuItem value="">
-                          <Chip label="no type" color="warning" size="small" data-testid={`venue-notype-${v._id}`} />
+                          <Chip label="no type" color="warning" size="small" />
                         </MenuItem>
                         {VENUE_TYPES.map((t) => (
                           <MenuItem key={t} value={t} data-testid={`venue-type-option-${t}`}>{t}</MenuItem>
@@ -813,7 +813,6 @@ export function VenuesTable({
                           slotProps={{
                             input: {
                               'aria-label': `Toggle outreach eligibility for ${v.name}`,
-                              ...({ 'data-testid': `venue-eligible-input-${v._id}` } as object),
                             },
                           }}
                         />
