@@ -4,7 +4,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { Music, checkIsAdmin, PhotosSection } from 'src/containers/Music';
 import { ClickToListen } from 'src/containers/Music/intro';
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter } from 'react-router';
 
 describe('/music', () => {
   it('renders the component', () => {

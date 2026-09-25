@@ -17,7 +17,7 @@ import {
 import { render } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import TSongs from 'test/testSongs';
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter } from 'react-router';
 import utils from 'src/containers/Songs/MusicPlayer/utils';
 import type { Isong } from 'src/providers/Data.provider';
 

@@ -10,7 +10,7 @@ import DownloadIcon from '@mui/icons-material/Download';
 import AddIcon from '@mui/icons-material/Add';
 import { VenuesTable } from './VenuesTable';
 import { EditVenueDialog } from './EditVenueDialog';
-import adminVenuesUtils, { type Ivenue } from './admin-venues.utils';
+import adminVenuesUtils, { type Ivenue, type IvenueUpdate } from './admin-venues.utils';
 
 export function AdminVenues() {
   const { auth } = useContext(AuthContext);
@@ -72,6 +72,16 @@ export function AdminVenues() {
       await refresh();
     } catch (e) {
       setError((e as { message?: string }).message || 'Failed to restore venue');
+    }
+  }, [auth.token, refresh]);
+
+  const handleUpdate = useCallback(async (venueId: string, patch: IvenueUpdate) => {
+    setError('');
+    try {
+      await adminVenuesUtils.updateVenue(auth.token, venueId, patch);
+      await refresh();
+    } catch (e) {
+      setError((e as { message?: string }).message || 'Failed to update venue');
     }
   }, [auth.token, refresh]);
 
@@ -184,6 +194,7 @@ export function AdminVenues() {
       <VenuesTable
         venues={venues}
         onEdit={(v) => setEditing(v)}
+        onUpdate={handleUpdate}
         onDelete={handleDelete}
         onRestore={handleRestore}
         showArchived={showArchived}

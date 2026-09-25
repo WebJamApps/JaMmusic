@@ -31,6 +31,11 @@ test.describe('Admin Venues page responsiveness and table scrollability', () => 
       } catch { /* ignore */ }
     });
 
+    // Abort external Google Maps API requests to prevent flaky autocomplete re-renders
+    await page.route(/maps\.googleapis\.com/, async (route) => {
+      await route.abort();
+    });
+
     // Intercept user profile retrieval API call
     await page.route(/\/user\/user-123/, async (route) => {
       await route.fulfill({
@@ -400,6 +405,220 @@ test.describe('Admin Venues page responsiveness and table scrollability', () => 
       const reopenedFamilyNearby = page.locator('[data-testid="edit-venue-family-nearby"] input[type="checkbox"]');
       await expect(reopenedFamilyNearby).toBeEnabled();
       await expect(reopenedFamilyNearby).toBeChecked();
+    },
+  );
+
+  test(
+    'proves Score header is opaque and pinned when scrolled, and inline Type and Eligible update row',
+    async ({ page, isMobile }) => {
+      let updatedVenue = {
+        _id: 'v1',
+        name: 'Normal Active Venue',
+        city: 'Roanoke',
+        usState: 'VA',
+        venueType: 'Originals',
+        status: 'active',
+        outreachEligible: true,
+        contactVerified: true,
+        website: 'https://normalactivevenue.com',
+        contactName: 'Jane Doe',
+        email: 'jane@example.com',
+      };
+
+      const extraVenues = Array.from({ length: 14 }, (_, i) => ({
+        _id: `v-extra-${i + 2}`,
+        name: `Extra Venue ${i + 2}`,
+        city: 'Salem',
+        usState: 'VA',
+        venueType: 'MidRangeCafeBar',
+        status: 'active',
+        outreachEligible: false,
+        contactVerified: true,
+      }));
+
+      await page.route(/localhost:7000\/venue(\/|\?|$)/, async (route) => {
+        if (route.request().method() === 'PATCH') {
+          const patch = JSON.parse(route.request().postData() || '{}');
+          updatedVenue = { ...updatedVenue, ...patch };
+          await route.fulfill({
+            status: 200,
+            contentType: 'application/json',
+            body: JSON.stringify(updatedVenue),
+          });
+        } else {
+          await route.fulfill({
+            status: 200,
+            contentType: 'application/json',
+            body: JSON.stringify([updatedVenue, ...extraVenues]),
+          });
+        }
+      });
+
+      if (!isMobile) {
+        await page.setViewportSize({ width: 1200, height: 800 });
+      }
+
+      await page.goto('/admin/venues', { waitUntil: 'domcontentloaded' });
+
+      // Verify Score header exists and has an opaque background
+      const scoreHeader = page.locator('[data-testid="header-prospect"]');
+      await expect(scoreHeader).toBeVisible();
+
+      const bgBefore = await scoreHeader.evaluate((el) => window.getComputedStyle(el).backgroundColor);
+      expect(bgBefore).not.toBe('transparent');
+      expect(bgBefore).not.toContain('rgba(0, 0, 0, 0)');
+
+      // On desktop, sticky header position is active
+      if (!isMobile) {
+        const posBefore = await scoreHeader.evaluate((el) => window.getComputedStyle(el).position);
+        expect(posBefore).toBe('sticky');
+      }
+
+      // Scroll table container vertically to verify header stays pinned and visible
+      const table = page.locator('[data-testid="venues-table"]');
+      await table.evaluate((el) => {
+        el.parentElement?.scrollBy(0, 300);
+      });
+
+      await expect(scoreHeader).toBeVisible();
+      const bgAfter = await scoreHeader.evaluate((el) => window.getComputedStyle(el).backgroundColor);
+      expect(bgAfter).not.toBe('transparent');
+      expect(bgAfter).not.toContain('rgba(0, 0, 0, 0)');
+
+      // Scroll back to top so row v1 controls are fully in view
+      await table.evaluate((el) => {
+        el.parentElement?.scrollTo(0, 0);
+      });
+
+      // (b) Test inline editing: change row's Type to PubFestivalBrewery
+      const typeSelect = page.locator('[data-testid="venue-type-select-v1"]');
+      await expect(typeSelect).toBeVisible();
+      await expect(typeSelect).toHaveText('Originals');
+      await typeSelect.click();
+
+      const pubOption = page.locator('[data-testid="venue-type-option-PubFestivalBrewery"]');
+      await expect(pubOption).toBeVisible();
+      await pubOption.click();
+
+      // Verify the type updated in UI after automatic refresh
+      await expect(typeSelect).toHaveText('PubFestivalBrewery');
+
+      // (b) Test inline editing: toggle Eligible switch to false
+      const eligibleToggle = page.locator('[data-testid="venue-eligible-toggle-v1"] input[type="checkbox"]');
+      await expect(eligibleToggle).toBeVisible();
+      await expect(eligibleToggle).toBeChecked();
+
+      await eligibleToggle.click();
+
+      // Verify eligible switch is toggled off after automatic refresh
+      await expect(eligibleToggle).not.toBeChecked();
+    },
+  );
+
+  test(
+    'toggles readiness filter chips and filters table rows with live count badges',
+    async ({ page }) => {
+      const mockVenues = [
+        {
+          _id: 'v-pitch-ready',
+          name: 'Pitch Ready Venue',
+          city: 'Roanoke',
+          usState: 'VA',
+          venueType: 'Originals',
+          status: 'active',
+          outreachEligible: true,
+          contactVerified: true,
+          email: 'booking@pitchready.com',
+        },
+        {
+          _id: 'v-needs-type',
+          name: 'Needs Type Venue',
+          city: 'Salem',
+          usState: 'VA',
+          venueType: undefined,
+          status: 'active',
+          outreachEligible: true,
+          contactVerified: true,
+          email: 'info@needstype.com',
+        },
+        {
+          _id: 'v-missing-email',
+          name: 'Missing Email Venue',
+          city: 'Roanoke',
+          usState: 'VA',
+          venueType: 'MidRangeCafeBar',
+          status: 'active',
+          outreachEligible: true,
+          contactVerified: true,
+          email: undefined,
+        },
+        {
+          _id: 'v-ineligible',
+          name: 'Ineligible Venue',
+          city: 'Salem',
+          usState: 'VA',
+          venueType: 'PubFestivalBrewery',
+          status: 'active',
+          outreachEligible: false,
+          contactVerified: true,
+          email: 'info@ineligible.com',
+        },
+      ];
+
+      await page.route(/localhost:7000\/venue(\/|\?|$)/, async (route) => {
+        await route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: JSON.stringify(mockVenues),
+        });
+      });
+
+      await page.goto('/admin/venues', { waitUntil: 'domcontentloaded' });
+
+      // Verify readiness filter chip toolbar is visible
+      const filtersBar = page.locator('[data-testid="venues-readiness-filters"]');
+      await expect(filtersBar).toBeVisible();
+
+      // Verify live count badges: 4 total, 1 needs type, 1 missing email, 1 pitch ready
+      await expect(page.locator('[data-testid="venues-filter-all-count"]')).toHaveText('4');
+      await expect(page.locator('[data-testid="venues-filter-needs-type-count"]')).toHaveText('1');
+      await expect(page.locator('[data-testid="venues-filter-missing-email-count"]')).toHaveText('1');
+      await expect(page.locator('[data-testid="venues-filter-pitch-ready-count"]')).toHaveText('1');
+
+      // All chip is selected by default and displays all 4 active venues
+      const allChip = page.locator('[data-testid="venues-filter-all"]');
+      await expect(allChip).toHaveAttribute('aria-pressed', 'true');
+      await expect(page.locator('[data-testid^="venue-row-"]')).toHaveCount(4);
+
+      // Click Needs Type chip: filters strictly to venues missing venueType
+      const needsTypeChip = page.locator('[data-testid="venues-filter-needs-type"]');
+      await needsTypeChip.click();
+      await expect(needsTypeChip).toHaveAttribute('aria-pressed', 'true');
+      await expect(allChip).toHaveAttribute('aria-pressed', 'false');
+      await expect(page.locator('[data-testid^="venue-row-"]')).toHaveCount(1);
+      await expect(page.locator('[data-testid="venue-row-v-needs-type"]')).toBeVisible();
+
+      // Click Missing Email chip: filters strictly to venues missing email
+      const missingEmailChip = page.locator('[data-testid="venues-filter-missing-email"]');
+      await missingEmailChip.click();
+      await expect(missingEmailChip).toHaveAttribute('aria-pressed', 'true');
+      await expect(needsTypeChip).toHaveAttribute('aria-pressed', 'false');
+      await expect(page.locator('[data-testid^="venue-row-"]')).toHaveCount(1);
+      await expect(page.locator('[data-testid="venue-row-v-missing-email"]')).toBeVisible();
+
+      // Click Pitch-Ready chip: filters strictly to venues having type, email, and not ineligible
+      const pitchReadyChip = page.locator('[data-testid="venues-filter-pitch-ready"]');
+      await pitchReadyChip.click();
+      await expect(pitchReadyChip).toHaveAttribute('aria-pressed', 'true');
+      await expect(missingEmailChip).toHaveAttribute('aria-pressed', 'false');
+      await expect(page.locator('[data-testid^="venue-row-"]')).toHaveCount(1);
+      await expect(page.locator('[data-testid="venue-row-v-pitch-ready"]')).toBeVisible();
+
+      // Switch back to All chip: restores all rows
+      await allChip.click();
+      await expect(allChip).toHaveAttribute('aria-pressed', 'true');
+      await expect(pitchReadyChip).toHaveAttribute('aria-pressed', 'false');
+      await expect(page.locator('[data-testid^="venue-row-"]')).toHaveCount(4);
     },
   );
 });

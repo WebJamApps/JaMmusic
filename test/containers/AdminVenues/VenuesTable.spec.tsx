@@ -22,7 +22,7 @@ describe('VenuesTable', () => {
   it('renders a row per venue with the eligible flag and computed score', () => {
     render(<VenuesTable venues={venues} onEdit={vi.fn()} />);
     expect(screen.getByTestId('venue-row-v1')).toBeDefined();
-    expect(screen.getByTestId('venue-eligible-v1').innerHTML).toBe('yes');
+    expect(screen.getByTestId('venue-eligible-toggle-v1')).toBeChecked();
     expect(screen.getByTestId('venue-score-v1')).toBeDefined();
   });
 
@@ -253,26 +253,146 @@ describe('VenuesTable', () => {
     expect(rowIds()).toEqual(['venue-row-va', 'venue-row-vc']);
   });
 
-  it('filters un-vetted venues and displays progress stats', () => {
-    const list: Ivenue[] = [
-      { _id: 'v1', name: 'Vetted 1', venueType: 'MidRangeCafeBar' },
-      { _id: 'v2', name: 'Unvetted 1', venueType: undefined }, // needs vetting
-      { _id: 'v3', name: 'Unvetted 2', venueType: undefined }, // needs vetting
+  describe('readiness filter chips', () => {
+    const mockVenues: Ivenue[] = [
+      {
+        _id: 'v-pitch-ready',
+        name: 'Pitch Ready Venue',
+        venueType: 'Originals',
+        email: 'booking@pitchready.com',
+        outreachEligible: true,
+      },
+      {
+        _id: 'v-pitch-ready-default-elig',
+        name: 'Pitch Ready Default Elig Venue',
+        venueType: 'PubFestivalBrewery',
+        email: 'info@pubfest.com',
+      },
+      {
+        _id: 'v-needs-type',
+        name: 'Needs Type Venue',
+        venueType: undefined,
+        email: 'info@needstype.com',
+        outreachEligible: true,
+      },
+      {
+        _id: 'v-missing-email',
+        name: 'Missing Email Venue',
+        venueType: 'MidRangeCafeBar',
+        email: undefined,
+        outreachEligible: true,
+      },
+      {
+        _id: 'v-ineligible',
+        name: 'Ineligible Venue',
+        venueType: 'Originals',
+        email: 'contact@ineligible.com',
+        outreachEligible: false,
+      },
+      {
+        _id: 'v-missing-both',
+        name: 'Missing Both Venue',
+        venueType: undefined,
+        email: undefined,
+        outreachEligible: false,
+      },
     ];
-    render(<VenuesTable venues={list} onEdit={vi.fn()} />);
-    
-    // Vetted stats should show: Vetted 1 of 3 (unvetted is v2, v3)
-    expect(screen.getByTestId('venues-vetted-counter').innerHTML).toContain('Vetted 1 of 3');
 
-    // Click Needs Vetting toggle
-    const toggle = screen.getByRole('checkbox');
-    fireEvent.click(toggle);
+    it('displays correct live counts on all readiness chips and vetted progress stats', () => {
+      render(<VenuesTable venues={mockVenues} onEdit={vi.fn()} />);
 
-    // Now only the unvetted rows should be shown
-    expect(rowIds()).toEqual(['venue-row-v2', 'venue-row-v3']);
+      // Live count badges
+      expect(screen.getByTestId('venues-filter-all-count').textContent).toBe('6');
+      expect(screen.getByTestId('venues-filter-needs-type-count').textContent).toBe('2'); // v-needs-type, v-missing-both
+      expect(screen.getByTestId('venues-filter-missing-email-count').textContent).toBe('2'); // v-missing-email, v-missing-both
+      expect(screen.getByTestId('venues-filter-pitch-ready-count').textContent).toBe('2'); // v-pitch-ready, v-pitch-ready-default-elig
+
+      // Vetted stats: 4 with venueType out of 6
+      expect(screen.getByTestId('venues-vetted-counter').textContent).toContain('Vetted 4 of 6');
+    });
+
+    it('defaults to All chip selected and shows all venues', () => {
+      render(<VenuesTable venues={mockVenues} onEdit={vi.fn()} />);
+
+      const allChip = screen.getByTestId('venues-filter-all');
+      expect(allChip).toHaveAttribute('aria-pressed', 'true');
+      expect(allChip).toHaveAttribute('variant', 'filled');
+      expect(allChip).toHaveAttribute('color', 'primary');
+
+      const needsTypeChip = screen.getByTestId('venues-filter-needs-type');
+      expect(needsTypeChip).toHaveAttribute('aria-pressed', 'false');
+      expect(needsTypeChip).toHaveAttribute('variant', 'outlined');
+      expect(needsTypeChip).toHaveAttribute('color', 'default');
+
+      expect(rowIds()).toHaveLength(6);
+    });
+
+    it('filters rows strictly to venues missing venueType when Needs Type is selected', () => {
+      render(<VenuesTable venues={mockVenues} onEdit={vi.fn()} />);
+
+      fireEvent.click(screen.getByTestId('venues-filter-needs-type'));
+
+      expect(screen.getByTestId('venues-filter-needs-type')).toHaveAttribute('aria-pressed', 'true');
+      expect(screen.getByTestId('venues-filter-needs-type')).toHaveAttribute('variant', 'filled');
+      expect(screen.getByTestId('venues-filter-needs-type')).toHaveAttribute('color', 'warning');
+      expect(screen.getByTestId('venues-filter-all')).toHaveAttribute('aria-pressed', 'false');
+      expect(screen.getByTestId('venues-filter-all')).toHaveAttribute('variant', 'outlined');
+
+      expect(rowIds()).toEqual(['venue-row-v-needs-type', 'venue-row-v-missing-both']);
+    });
+
+    it('filters rows strictly to venues missing email when Missing Email is selected', () => {
+      render(<VenuesTable venues={mockVenues} onEdit={vi.fn()} />);
+
+      fireEvent.click(screen.getByTestId('venues-filter-missing-email'));
+
+      expect(screen.getByTestId('venues-filter-missing-email')).toHaveAttribute('aria-pressed', 'true');
+      expect(screen.getByTestId('venues-filter-missing-email')).toHaveAttribute('variant', 'filled');
+      expect(screen.getByTestId('venues-filter-missing-email')).toHaveAttribute('color', 'warning');
+      expect(screen.getByTestId('venues-filter-all')).toHaveAttribute('aria-pressed', 'false');
+
+      expect(rowIds()).toEqual(['venue-row-v-missing-email', 'venue-row-v-missing-both']);
+    });
+
+    it('filters rows strictly to pitch-ready venues (has type, email, and not ineligible)', () => {
+      render(<VenuesTable venues={mockVenues} onEdit={vi.fn()} />);
+
+      fireEvent.click(screen.getByTestId('venues-filter-pitch-ready'));
+
+      expect(screen.getByTestId('venues-filter-pitch-ready')).toHaveAttribute('aria-pressed', 'true');
+      expect(screen.getByTestId('venues-filter-pitch-ready')).toHaveAttribute('variant', 'filled');
+      expect(screen.getByTestId('venues-filter-pitch-ready')).toHaveAttribute('color', 'success');
+      expect(screen.getByTestId('venues-filter-all')).toHaveAttribute('aria-pressed', 'false');
+
+      expect(rowIds()).toEqual(['venue-row-v-pitch-ready', 'venue-row-v-pitch-ready-default-elig']);
+    });
+
+    it('restores all venues when switching back to All chip', () => {
+      render(<VenuesTable venues={mockVenues} onEdit={vi.fn()} />);
+
+      fireEvent.click(screen.getByTestId('venues-filter-needs-type'));
+      expect(rowIds()).toHaveLength(2);
+
+      fireEvent.click(screen.getByTestId('venues-filter-all'));
+      expect(rowIds()).toHaveLength(6);
+      expect(screen.getByTestId('venues-filter-all')).toHaveAttribute('aria-pressed', 'true');
+    });
+
+    it('applies search filtering concurrently with readiness chip selection', () => {
+      render(<VenuesTable venues={mockVenues} onEdit={vi.fn()} />);
+
+      // Filter by pitch ready
+      fireEvent.click(screen.getByTestId('venues-filter-pitch-ready'));
+      expect(rowIds()).toHaveLength(2);
+
+      // Search for "Default"
+      const searchBox = screen.getByPlaceholderText('Search name or city...');
+      fireEvent.change(searchBox, { target: { value: 'Default' } });
+      expect(rowIds()).toEqual(['venue-row-v-pitch-ready-default-elig']);
+    });
   });
 
-  it('opens CopyDialog when clicking primary and secondary email icons', async () => {
+  it('opens CopyDialog when clicking primary email icon and verifies secondary email icon is removed', async () => {
     const list: Ivenue[] = [
       {
         _id: 'v-emails',
@@ -289,11 +409,8 @@ describe('VenuesTable', () => {
     expect(screen.getByTestId('copy-dialog-content')).toHaveValue('pri@example.com');
     fireEvent.click(screen.getByTestId('copy-dialog-close'));
 
-    // Click Secondary Email icon
-    fireEvent.click(screen.getByTestId('venue-contact-secondary-email-v-emails'));
-    expect(screen.getByTestId('copy-dialog-title').textContent).toBe('Secondary Email Address');
-    expect(screen.getByTestId('copy-dialog-content')).toHaveValue('sec@example.com');
-    fireEvent.click(screen.getByTestId('copy-dialog-close'));
+    // Secondary email icon overlay is removed
+    expect(screen.queryByTestId('venue-contact-secondary-email-v-emails')).toBeNull();
   });
 
   it('renders inputs container with responsive wrap and non-shrinking inputs', () => {
@@ -315,8 +432,11 @@ describe('VenuesTable', () => {
     const targetDate = screen.getByTestId('venues-target-date');
     expect(targetDate).toBeDefined();
 
-    const switchBtn = screen.getByTestId('venues-needs-vetting-filter');
-    expect(switchBtn).toBeDefined();
+    expect(screen.getByTestId('venues-readiness-filters')).toBeDefined();
+    expect(screen.getByTestId('venues-filter-all')).toBeDefined();
+    expect(screen.getByTestId('venues-filter-needs-type')).toBeDefined();
+    expect(screen.getByTestId('venues-filter-missing-email')).toBeDefined();
+    expect(screen.getByTestId('venues-filter-pitch-ready')).toBeDefined();
   });
 
   it('renders Restore button and hides Edit/Archive in archived view', () => {
@@ -458,6 +578,57 @@ describe('VenuesTable', () => {
 
     // State column renders non-US region
     expect(screen.getByTestId('venue-state-v-intl').textContent).toBe('Greater London');
+  });
+
+  it('renders Score header cell with sort label', () => {
+    render(<VenuesTable venues={venues} onEdit={vi.fn()} />);
+    const scoreHeader = screen.getByTestId('header-prospect');
+    expect(scoreHeader).toBeDefined();
+    expect(scoreHeader.textContent).toContain('Score');
+  });
+
+  it('triggers onUpdate with selected venueType when Type dropdown changes', () => {
+    const onUpdate = vi.fn();
+    render(
+      <VenuesTable
+        venues={[{ _id: 'v-inline', name: 'Inline Venue', venueType: 'Originals' }]}
+        onEdit={vi.fn()}
+        onUpdate={onUpdate}
+      />
+    );
+
+    const typeSelect = screen.getByTestId('venue-type-select-v-inline');
+    fireEvent.change(typeSelect, { target: { value: 'PubFestivalBrewery' } });
+    expect(onUpdate).toHaveBeenCalledWith('v-inline', { venueType: 'PubFestivalBrewery' });
+  });
+
+  it('triggers onUpdate with toggled outreachEligible when Eligible switch is clicked', () => {
+    const onUpdate = vi.fn();
+    render(
+      <VenuesTable
+        venues={[{ _id: 'v-inline', name: 'Inline Venue', outreachEligible: false }]}
+        onEdit={vi.fn()}
+        onUpdate={onUpdate}
+      />
+    );
+
+    const toggle = screen.getByTestId('venue-eligible-toggle-v-inline');
+    expect(toggle).not.toBeChecked();
+    fireEvent.click(toggle);
+    expect(onUpdate).toHaveBeenCalledWith('v-inline', { outreachEligible: true });
+  });
+
+  it('disables Type select and Eligible switch when showArchived is true', () => {
+    render(
+      <VenuesTable
+        venues={[{ _id: 'v-archived', name: 'Archived Venue', status: 'archived', outreachEligible: true }]}
+        onEdit={vi.fn()}
+        showArchived
+      />
+    );
+
+    expect(screen.getByTestId('venue-type-select-v-archived')).toBeDisabled();
+    expect(screen.getByTestId('venue-eligible-toggle-v-archived')).toBeDisabled();
   });
 });
 
