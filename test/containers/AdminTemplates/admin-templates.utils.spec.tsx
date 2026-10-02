@@ -124,5 +124,18 @@ describe('AdminTemplates utils', () => {
       expect(parseCSV('')).toEqual([]);
       expect(parseCSV('type,stage\n')).toEqual([]);
     });
+
+    it('exports introHtml between subject and body, escaping HTML and leaving absent intros blank', () => {
+      const introHtml = '<p>Hi, "friend"!</p>\nSee you soon.';
+      const csv = exportToCSV([
+        { type: 'Originals', stage: 'upcoming', subject: 'Upcoming', introHtml, bodyHtml: 'Body' },
+        { type: 'OnlineForm', stage: 'cold', subject: 'No intro', bodyHtml: 'Other body' },
+      ]);
+      expect(csv.split('\r\n')[0]).toBe('type,stage,subject,introHtml,bodyHtml,footerPhotoRef,active');
+      expect(csv).toContain('"<p>Hi, ""friend""!</p>\nSee you soon."');
+      expect(csv).toContain('OnlineForm,cold,No intro,,Other body,,true');
+      expect(parseCSV(csv)[0]).toMatchObject({ stage: 'upcoming', introHtml, bodyHtml: 'Body' });
+      expect(parseCSV(csv)[1].introHtml).toBe('');
+    });
   });
 });
