@@ -4,8 +4,9 @@ import { customFetch } from 'src/lib/fetch.utils';
 export interface Itemplate {
   _id?: string;
   type: 'Originals' | 'PubFestivalBrewery' | 'MidRangeCafeBar' | 'OnlineForm';
-  stage: 'cold' | 'returning';
+  stage: 'cold' | 'returning' | 'upcoming';
   subject?: string;
+  introHtml?: string;
   bodyHtml?: string;
   footerPhotoRef?: string;
   active?: boolean;
@@ -90,7 +91,7 @@ function escapeCSV(val: unknown): string {
 
 // Generates a CSV string from an array of templates
 export function exportToCSV(templates: Itemplate[]): string {
-  const headersList = ['type', 'stage', 'subject', 'bodyHtml', 'footerPhotoRef', 'active'];
+  const headersList = ['type', 'stage', 'subject', 'introHtml', 'bodyHtml', 'footerPhotoRef', 'active'];
   const csvRows = [headersList.join(',')];
   
   for (const t of templates) {
@@ -98,6 +99,7 @@ export function exportToCSV(templates: Itemplate[]): string {
       escapeCSV(t.type),
       escapeCSV(t.stage),
       escapeCSV(t.subject),
+      escapeCSV(t.introHtml),
       escapeCSV(t.bodyHtml),
       escapeCSV(t.footerPhotoRef),
       escapeCSV(t.active !== false),

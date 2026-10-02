@@ -36,8 +36,7 @@ JaMmusic itself does not deploy to Heroku directly.
 - **Unit tests:** `npm run test:unit` (vitest, run mode, with coverage, `TZ=UTC`).
 - **Type-check only:** `npm run typecheck` (`tsc --noEmit`).
 - **Dev server:** `npm run dev` (HTTPS Vite). **Build:** `npm run build`.
-- e2e (`npm run test:e2e`, Playwright) needs a browser install + running app;
-  you don't need to run it — unit tests + lint are the gate.
+- e2e (`npm run test:e2e`, Playwright) needs a browser install (`npm run test:e2e:install`) and starts the app by itself. CircleCI runs it on every build, after the unit tests.
 
 ## Conventions
 
@@ -88,10 +87,7 @@ from a `<lane>/<issue#>-<slug>` branch.
 
 - **Vite Production Builds**: Local environment variables (e.g., `NODE_ENV=development` in `.env`) can bleed into `npm run build` and compile a development-mode bundle containing React development helpers. This causes a critical browser runtime crash with the error: `TypeError: (0, X.jsxDEV) is not a function`. To compile a pure, clean production bundle, always prefix the build command: `NODE_ENV=production npm run build`.
 - **Playwright selectors for Material-UI Typography**: Material-UI's `<Typography>` component compiles to `<p>` tags (or other tags like `<h1>` or `<h6>` based on variants) by default, **never** `<span>` tags. Avoid utilizing tag-locked selectors like `span:has-text("...")` in E2E/Playwright tests, as they will timeout. Instead, use tag-agnostic text selectors like `:text("...")` or `p:has-text("...")`.
-- **Running Playwright E2E Tests Locally**: By default, `playwright.config.ts` targets `https://www.web-jam.com`. Running `npm run test:e2e` directly will test against the live production site and ignore local code modifications. To run E2E tests against your local changes:
-  1. Build a clean production bundle: `NODE_ENV=production npm run build`
-  2. Start the local preview server: `npm run preview` (typically runs on `http://localhost:4173`)
-  3. Run E2E tests pointing to the preview server: `BASE_URL=http://localhost:4173 npm run test:e2e`
+- **Running Playwright E2E Tests Locally**: `playwright.config.ts` defaults to `http://localhost:7878` and starts its own server (`npm run build && npm run preview -- --port 7878`), so `npm run test:e2e` tests your local code with no server started first. Run `npm run test:e2e:install` once to install the browser. Locally it reuses a server already listening on port 7878, so stop any old preview first. To run one spec, pass part of its file name: `npm run test:e2e -- <name>`. Set `BASE_URL` only to point the suite at a different server.
 - **Draft PR Script Requirements**: The workspace `create-draft-pr.sh` script strictly requires the `--author`, `--summary`, `--test-plan`, and `--test-evidence` flags. Leaving any of these empty or as a default placeholder will cause the script to abort and refuse to open the draft PR.
 - **Vitest Unit Tests and Environment Variables**: Local unit tests inspecting `checkIsAdmin` that parse `process.env.userRoles` must supply a fallback `userRoles` JSON string (e.g., `process.env.userRoles || JSON.stringify({ roles: ['admin'] })`) to be self-contained and pass on clean checkouts where `.env` is absent.
 - **Distinguishing Socket Server Failures vs Empty Data**: In components consuming socket-fetched collections (`gigs`, `pics`), set state to `null` on connection failure/timeout (`CONNECTION_TIMEOUT_MS = 8000`) so components render inline error banners (`.gigs-error-message`, `.pics-error-message`) rather than rendering an identical empty UI state as a 0-item dataset (`[]`).

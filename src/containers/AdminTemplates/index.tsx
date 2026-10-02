@@ -20,13 +20,14 @@ import { AuthContext } from 'src/providers/Auth.provider';
 import adminTemplatesUtils, { type Itemplate, exportToCSV, parseCSV } from './admin-templates.utils';
 
 const TYPES = ['Originals', 'PubFestivalBrewery', 'MidRangeCafeBar', 'OnlineForm'] as const;
-const STAGES = ['cold', 'returning'] as const;
+const STAGES = ['cold', 'returning', 'upcoming'] as const;
 
 const TOKENS = [
   '[Contact Name]',
   '[Venue Name]',
   '[Booking Period]',
   '[Target Dates]',
+  '[Next Gig Date]',
 ];
 
 export function AdminTemplates() {
@@ -43,6 +44,7 @@ export function AdminTemplates() {
   const [selectedType, setSelectedType] = useState<Itemplate['type']>('Originals');
   const [selectedStage, setSelectedStage] = useState<Itemplate['stage']>('cold');
   const [subject, setSubject] = useState('');
+  const [introHtml, setIntroHtml] = useState('');
   const [bodyHtml, setBodyHtml] = useState('');
   const [active, setActive] = useState(true);
   const [photoData, setPhotoData] = useState<string | null>(null);
@@ -57,6 +59,8 @@ export function AdminTemplates() {
   const [importStatus, setImportStatus] = useState('');
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const introTextareaRef = useRef<HTMLTextAreaElement>(null);
+  const lastFocusedEditor = useRef<'intro' | 'body'>('body');
 
   // Find active template being edited
   const currentTemplate = templates.find((t) => t.type === selectedType && t.stage === selectedStage);
@@ -83,6 +87,7 @@ export function AdminTemplates() {
   useEffect(() => {
     if (currentTemplate) {
       setSubject(currentTemplate.subject || '');
+      setIntroHtml(currentTemplate.introHtml || '');
       setBodyHtml(currentTemplate.bodyHtml || '');
       setActive(currentTemplate.active !== false);
       setPhotoData(null);
@@ -102,6 +107,7 @@ export function AdminTemplates() {
     } else {
       // Empty state
       setSubject('');
+      setIntroHtml('');
       setBodyHtml('');
       setActive(true);
       setPhotoData(null);
@@ -120,17 +126,20 @@ export function AdminTemplates() {
   }
 
   const handleInsertToken = (token: string) => {
-    const textarea = textareaRef.current;
+    const isIntro = lastFocusedEditor.current === 'intro';
+    const textarea = isIntro ? introTextareaRef.current : textareaRef.current;
+    const content = isIntro ? introHtml : bodyHtml;
+    const setContent = isIntro ? setIntroHtml : setBodyHtml;
     if (!textarea) {
-      setBodyHtml((prev) => prev + token);
+      setContent((prev) => prev + token);
       setIsDirty(true);
       return;
     }
     const start = textarea.selectionStart;
     const end = textarea.selectionEnd;
-    const before = bodyHtml.substring(0, start);
-    const after = bodyHtml.substring(end, bodyHtml.length);
-    setBodyHtml(before + token + after);
+    const before = content.substring(0, start);
+    const after = content.substring(end);
+    setContent(before + token + after);
     setIsDirty(true);
     setTimeout(() => {
       textarea.focus();
@@ -161,6 +170,7 @@ export function AdminTemplates() {
   const handleReset = () => {
     if (currentTemplate) {
       setSubject(currentTemplate.subject || '');
+      setIntroHtml(currentTemplate.introHtml || '');
       setBodyHtml(currentTemplate.bodyHtml || '');
       setActive(currentTemplate.active !== false);
       setPhotoData(null);
@@ -176,6 +186,7 @@ export function AdminTemplates() {
       }
     } else {
       setSubject('');
+      setIntroHtml('');
       setBodyHtml('');
       setActive(true);
       setPhotoData(null);
@@ -192,6 +203,7 @@ export function AdminTemplates() {
         type: selectedType,
         stage: selectedStage,
         subject,
+        introHtml,
         bodyHtml,
         active,
       };
@@ -263,6 +275,7 @@ export function AdminTemplates() {
             type: row.type as Itemplate['type'],
             stage: (row.stage || 'cold') as Itemplate['stage'],
             subject: row.subject || '',
+            introHtml: row.introHtml,
             bodyHtml: row.bodyHtml || '',
             footerPhotoRef: row.footerPhotoRef || '',
             active: row.active !== 'false',
@@ -303,6 +316,9 @@ export function AdminTemplates() {
           active: item.active !== false,
           footerPhotoRef: item.footerPhotoRef || undefined,
         };
+        if (typeof item.introHtml === 'string' && item.introHtml !== '') {
+          payload.introHtml = item.introHtml;
+        }
 
         // Check if duplicate already exists in loaded templates list
         const existing = templates.find((t) => t.type === item.type && t.stage === stage);
@@ -393,6 +409,7 @@ export function AdminTemplates() {
                 >
                   <Tab label="Cold" value="cold" data-testid="templates-tab-stage-cold" />
                   <Tab label="Returning" value="returning" data-testid="templates-tab-stage-returning" />
+                  <Tab label="Upcoming" value="upcoming" data-testid="templates-tab-stage-upcoming" />
                 </Tabs>
 
                 <Typography variant="subtitle2" sx={{ marginBottom: 1, fontWeight: 'bold' }}>
@@ -484,6 +501,21 @@ export function AdminTemplates() {
                     placeholder="e.g. Booking inquiry - JaM"
                   />
 
+                  <TextField
+                    label="Intro HTML Content"
+                    multiline
+                    rows={4}
+                    fullWidth
+                    value={introHtml}
+                    onChange={(e) => {
+                      setIntroHtml(e.target.value);
+                      setIsDirty(true);
+                    }}
+                    onFocus={() => { lastFocusedEditor.current = 'intro'; }}
+                    inputRef={introTextareaRef}
+                    slotProps={{ htmlInput: { 'data-testid': 'template-intro-textarea', style: { fontFamily: 'monospace' } } }}
+                  />
+
                   <Box>
                     <Box sx={{
                       display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 1,
@@ -516,6 +548,7 @@ export function AdminTemplates() {
                         setIsDirty(true);
                       }}
                       inputRef={textareaRef}
+                      onFocus={() => { lastFocusedEditor.current = 'body'; }}
                       slotProps={{ htmlInput: { 'data-testid': 'template-body-textarea', style: { fontFamily: 'monospace' } } }}
                       placeholder="Enter HTML or text pitch template content..."
                     />
