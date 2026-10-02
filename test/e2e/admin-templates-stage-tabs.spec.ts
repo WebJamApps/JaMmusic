@@ -59,7 +59,6 @@ test('Upcoming tab loads its template and intro, or a blank editor for an unconf
   await expect(page.getByTestId('template-body-textarea')).toHaveValue('Upcoming body');
   await page.getByRole('button', { name: 'Revert' }).click();
   await expect(intro).toHaveValue('See you on [Next Gig Date]');
-  await page.screenshot({ path: '/tmp/jammusic-1377-upcoming.png', fullPage: true });
 
   await page.getByTestId('template-type-OnlineForm').click();
   await expect(upcoming).toHaveAttribute('aria-selected', 'true');
