@@ -151,6 +151,20 @@ export function formatRunTime(dateStr: string | null | undefined): string {
   return d.toISOString().replace('T', ' ').slice(0, 19);
 }
 
+export function formatRunSize(bytes: number | null | undefined): string {
+  if (bytes === null || bytes === undefined || Number.isNaN(bytes) || bytes < 0) return '—';
+  if (bytes < 1024) return `${bytes} B`;
+  const units = ['KB', 'MB', 'GB', 'TB'];
+  let val = bytes / 1024;
+  let unitIndex = 0;
+  while (val >= 1024 && unitIndex < units.length - 1) {
+    val /= 1024;
+    unitIndex++;
+  }
+  const formatted = val >= 10 ? Math.round(val) : Number(val.toFixed(1));
+  return `${formatted} ${units[unitIndex]}`;
+}
+
 export default {
   TOP_ADMIN_ROLE,
   getAllowedAdminRoles,
@@ -162,4 +176,5 @@ export default {
   computeTotalCounts,
   formatAge,
   formatRunTime,
+  formatRunSize,
 };

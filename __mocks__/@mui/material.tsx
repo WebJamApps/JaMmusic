@@ -286,12 +286,22 @@ export function Autocomplete(props: any) {
   );
 }
 
-export function TableContainer(props: any) {
+export function TableContainer(props: {
+  children?: React.ReactNode;
+  component?: React.ElementType;
+  [key: string]: unknown;
+}) {
   const { children, component: Component = 'div', ...rest } = props;
   return <Component {...rest}>{children}</Component>;
 }
 
-export function Collapse(props: any) {
+export function Collapse(props: {
+  children?: React.ReactNode;
+  in?: boolean;
+  unmountOnExit?: boolean;
+  timeout?: unknown;
+  [key: string]: unknown;
+}) {
   const {
     children, in: inProp, unmountOnExit, timeout, ...rest
   } = props;

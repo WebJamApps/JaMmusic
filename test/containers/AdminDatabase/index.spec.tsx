@@ -280,6 +280,36 @@ describe('admin-database.utils', () => {
       expect(adminDatabaseUtils.formatRunTime('2026-10-07T21:40:51.044Z')).toBe('2026-10-07 21:40:51');
     });
   });
+
+  describe('formatRunSize', () => {
+    it('handles empty/null/negative/NaN values', () => {
+      expect(adminDatabaseUtils.formatRunSize(null)).toBe('—');
+      expect(adminDatabaseUtils.formatRunSize(undefined)).toBe('—');
+      expect(adminDatabaseUtils.formatRunSize(-1)).toBe('—');
+      expect(adminDatabaseUtils.formatRunSize(NaN)).toBe('—');
+    });
+
+    it('formats bytes under 1024', () => {
+      expect(adminDatabaseUtils.formatRunSize(0)).toBe('0 B');
+      expect(adminDatabaseUtils.formatRunSize(500)).toBe('500 B');
+      expect(adminDatabaseUtils.formatRunSize(1023)).toBe('1023 B');
+    });
+
+    it('formats kilobytes correctly', () => {
+      expect(adminDatabaseUtils.formatRunSize(1024)).toBe('1 KB');
+      expect(adminDatabaseUtils.formatRunSize(1536)).toBe('1.5 KB');
+      expect(adminDatabaseUtils.formatRunSize(10240)).toBe('10 KB');
+    });
+
+    it('formats megabytes correctly', () => {
+      expect(adminDatabaseUtils.formatRunSize(5800000)).toBe('5.5 MB');
+      expect(adminDatabaseUtils.formatRunSize(10485760)).toBe('10 MB');
+    });
+
+    it('formats gigabytes correctly', () => {
+      expect(adminDatabaseUtils.formatRunSize(1073741824)).toBe('1 GB');
+    });
+  });
 });
 
 describe('AdminDatabase Component', () => {
@@ -368,6 +398,9 @@ describe('AdminDatabase Component', () => {
     expect(screen.getByText('Admin Database')).toBeInTheDocument();
     expect(screen.getByTestId('admin-database-status')).toBeInTheDocument();
     expect(screen.getByTestId('backup-runs-table')).toBeInTheDocument();
+    expect(screen.getByText('Size')).toBeInTheDocument();
+    expect(screen.getByTestId('run-size-2026-10-10T10-00-00-000Z')).toHaveTextContent('5.5 MB');
+    expect(screen.getByTestId('run-size-2026-10-09T12-00-00-000Z')).toHaveTextContent('—');
   });
 
   it('displays status line with age in red when no good run exists', async () => {
@@ -787,19 +820,33 @@ describe('AdminDatabase Component', () => {
       });
     });
 
-    it('shows info message when operation polling times out', async () => {
+    it('continues polling beyond 30 attempts until operation completes', async () => {
       vi.spyOn(adminDatabaseUtils, 'listRuns').mockResolvedValue(sampleRuns);
       vi.spyOn(adminDatabaseUtils, 'startBackup').mockResolvedValueOnce({
-        name: 'op-long',
+        name: 'op-long-success',
         message: 'backup started',
       });
-      vi.spyOn(adminDatabaseUtils, 'getOperation').mockResolvedValue({
-        name: 'op-long',
-        type: 'backup',
-        status: 'in_progress',
-        startedAt: '2026-10-11T12:00:00.000Z',
-        finishedAt: null,
-        progress: 'exporting',
+      let callCount = 0;
+      vi.spyOn(adminDatabaseUtils, 'getOperation').mockImplementation(async () => {
+        callCount++;
+        if (callCount < 35) {
+          return {
+            name: 'op-long-success',
+            type: 'backup',
+            status: 'in_progress',
+            startedAt: '2026-10-11T12:00:00.000Z',
+            finishedAt: null,
+            progress: `exporting collection ${callCount}`,
+          };
+        }
+        return {
+          name: 'op-long-success',
+          type: 'backup',
+          status: 'completed',
+          startedAt: '2026-10-11T12:00:00.000Z',
+          finishedAt: '2026-10-11T12:00:40.000Z',
+          progress: 'complete',
+        };
       });
 
       const auth = {
@@ -822,8 +869,187 @@ describe('AdminDatabase Component', () => {
       fireEvent.click(screen.getByTestId('backup-now-button'));
 
       await waitFor(() => {
-        expect(screen.getByTestId('backup-result')).toHaveTextContent('Backup is still in progress');
-      }, { timeout: 3000 });
+        expect(screen.getByTestId('backup-result')).toHaveTextContent('Backup completed successfully');
+      }, { timeout: 4000 });
+
+      expect(callCount).toBeGreaterThanOrEqual(35);
+    });
+
+    it('continues polling beyond 30 attempts until operation fails', async () => {
+      vi.spyOn(adminDatabaseUtils, 'listRuns').mockResolvedValue(sampleRuns);
+      vi.spyOn(adminDatabaseUtils, 'startBackup').mockResolvedValueOnce({
+        name: 'op-long-fail',
+        message: 'backup started',
+      });
+      let callCount = 0;
+      vi.spyOn(adminDatabaseUtils, 'getOperation').mockImplementation(async () => {
+        callCount++;
+        if (callCount < 35) {
+          return {
+            name: 'op-long-fail',
+            type: 'backup',
+            status: 'in_progress',
+            startedAt: '2026-10-11T12:00:00.000Z',
+            finishedAt: null,
+            progress: 'exporting',
+          };
+        }
+        return {
+          name: 'op-long-fail',
+          type: 'backup',
+          status: 'failed',
+          startedAt: '2026-10-11T12:00:00.000Z',
+          finishedAt: '2026-10-11T12:00:40.000Z',
+          progress: 'failed',
+          error: 'Dropbox upload failed after 40 seconds',
+        };
+      });
+
+      const auth = {
+        ...defaultAuth,
+        isAuthenticated: true,
+        token: 'valid-token',
+        user: { userType: 'Developer', email: 'josh@web-jam.com' },
+      };
+
+      render(
+        <AuthContext.Provider value={{ auth, setAuth: vi.fn() }}>
+          <AdminDatabase pollInterval={5} />
+        </AuthContext.Provider>,
+      );
+
+      await waitFor(() => {
+        expect(screen.getByTestId('backup-now-button')).toBeInTheDocument();
+      });
+
+      fireEvent.click(screen.getByTestId('backup-now-button'));
+
+      await waitFor(() => {
+        expect(screen.getByTestId('backup-result')).toHaveTextContent('Dropbox upload failed after 40 seconds');
+      }, { timeout: 4000 });
+
+      expect(callCount).toBeGreaterThanOrEqual(35);
+    });
+
+    it('cancels polling and does not update state after unmount', async () => {
+      vi.spyOn(adminDatabaseUtils, 'listRuns').mockResolvedValue(sampleRuns);
+      vi.spyOn(adminDatabaseUtils, 'startBackup').mockResolvedValueOnce({
+        name: 'op-unmount',
+        message: 'backup started',
+      });
+      let resolveOp: (val: BackupOperation) => void = () => {};
+      vi.spyOn(adminDatabaseUtils, 'getOperation').mockImplementation(
+        () => new Promise<BackupOperation>((resolve) => {
+          resolveOp = resolve;
+        }),
+      );
+
+      const auth = {
+        ...defaultAuth,
+        isAuthenticated: true,
+        token: 'valid-token',
+        user: { userType: 'Developer', email: 'josh@web-jam.com' },
+      };
+
+      const { unmount } = render(
+        <AuthContext.Provider value={{ auth, setAuth: vi.fn() }}>
+          <AdminDatabase pollInterval={5} />
+        </AuthContext.Provider>,
+      );
+
+      await waitFor(() => {
+        expect(screen.getByTestId('backup-now-button')).toBeInTheDocument();
+      });
+
+      fireEvent.click(screen.getByTestId('backup-now-button'));
+
+      await waitFor(() => {
+        expect(adminDatabaseUtils.getOperation).toHaveBeenCalled();
+      });
+
+      const listRunsCallCount = (adminDatabaseUtils.listRuns as any).mock.calls.length;
+
+      unmount();
+
+      resolveOp({
+        name: 'op-unmount',
+        type: 'backup',
+        status: 'completed',
+        startedAt: '2026-10-11T12:00:00.000Z',
+        finishedAt: '2026-10-11T12:00:10.000Z',
+        progress: 'complete',
+      });
+
+      await new Promise((r) => { setTimeout(r, 20); });
+
+      expect((adminDatabaseUtils.listRuns as any).mock.calls.length).toBe(listRunsCallCount);
+    });
+
+    it('cancels polling when authorization is lost', async () => {
+      vi.spyOn(adminDatabaseUtils, 'listRuns').mockResolvedValue(sampleRuns);
+      vi.spyOn(adminDatabaseUtils, 'startBackup').mockResolvedValueOnce({
+        name: 'op-signout',
+        message: 'backup started',
+      });
+      let resolveOp: (val: BackupOperation) => void = () => {};
+      vi.spyOn(adminDatabaseUtils, 'getOperation').mockImplementation(
+        () => new Promise<BackupOperation>((resolve) => {
+          resolveOp = resolve;
+        }),
+      );
+
+      const initialAuth = {
+        ...defaultAuth,
+        isAuthenticated: true,
+        token: 'valid-token',
+        user: { userType: 'Developer', email: 'josh@web-jam.com' },
+      };
+
+      const { rerender } = render(
+        <AuthContext.Provider value={{ auth: initialAuth, setAuth: vi.fn() }}>
+          <AdminDatabase pollInterval={5} />
+        </AuthContext.Provider>,
+      );
+
+      await waitFor(() => {
+        expect(screen.getByTestId('backup-now-button')).toBeInTheDocument();
+      });
+
+      fireEvent.click(screen.getByTestId('backup-now-button'));
+
+      await waitFor(() => {
+        expect(adminDatabaseUtils.getOperation).toHaveBeenCalled();
+      });
+
+      const listRunsCallCount = (adminDatabaseUtils.listRuns as any).mock.calls.length;
+
+      const signedOutAuth = {
+        ...defaultAuth,
+        isAuthenticated: false,
+        token: '',
+        user: { userType: '', email: '' },
+      };
+
+      rerender(
+        <AuthContext.Provider value={{ auth: signedOutAuth, setAuth: vi.fn() }}>
+          <AdminDatabase pollInterval={5} />
+        </AuthContext.Provider>,
+      );
+
+      expect(screen.getByTestId('admin-database-unauthorized')).toBeInTheDocument();
+
+      resolveOp({
+        name: 'op-signout',
+        type: 'backup',
+        status: 'completed',
+        startedAt: '2026-10-11T12:00:00.000Z',
+        finishedAt: '2026-10-11T12:00:10.000Z',
+        progress: 'complete',
+      });
+
+      await new Promise((r) => { setTimeout(r, 20); });
+
+      expect((adminDatabaseUtils.listRuns as any).mock.calls.length).toBe(listRunsCallCount);
     });
   });
 });

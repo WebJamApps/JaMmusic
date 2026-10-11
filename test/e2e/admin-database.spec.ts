@@ -160,8 +160,12 @@ test.describe('AdminDatabase E2E', () => {
     await expect(page.getByTestId('run-time-2026-10-10T12-00-00-000Z')).toHaveText('2026-10-10 12:00:00');
     await expect(page.getByTestId('run-trigger-2026-10-10T12-00-00-000Z')).toHaveText('daily check');
     await expect(page.getByTestId('run-state-2026-10-10T12-00-00-000Z')).toHaveText('good');
+    await expect(page.getByTestId('run-size-2026-10-10T12-00-00-000Z')).toHaveText('5.5 MB');
     await expect(page.getByTestId('run-counts-2026-10-10T12-00-00-000Z')).toHaveText('152 records across 2 collections');
     await expect(page.getByTestId('run-path-2026-10-10T12-00-00-000Z')).toHaveText('/webjam-backups/2026-10-10T12-00-00-000Z');
+
+    // Second row size assertion (null size -> '—')
+    await expect(page.getByTestId('run-size-2026-10-09T08-00-00-000Z')).toHaveText('—');
 
     // Expand details
     const expandBtn = page.getByTestId('backup-run-expand-2026-10-10T12-00-00-000Z');

@@ -1,5 +1,5 @@
 import React, {
-  useCallback, useContext, useEffect, useState,
+  useCallback, useContext, useEffect, useRef, useState,
 } from 'react';
 import {
   Box, Typography, Button, CircularProgress, Alert,
@@ -40,13 +40,16 @@ export function RunRow({ run }: { run: BackupRunSummary }) {
         <TableCell data-testid={`run-state-${run.name}`}>
           <Chip label={run.state} color={stateColor} size="small" />
         </TableCell>
+        <TableCell data-testid={`run-size-${run.name}`}>
+          {adminDatabaseUtils.formatRunSize(run.size)}
+        </TableCell>
         <TableCell data-testid={`run-counts-${run.name}`}>
           {`${counts.totalRecords.toLocaleString()} records across ${counts.totalCollections} collection${counts.totalCollections === 1 ? '' : 's'}`}
         </TableCell>
         <TableCell data-testid={`run-path-${run.name}`}>{run.dropboxPath || run.path || '—'}</TableCell>
       </TableRow>
       <TableRow>
-        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
+        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={7}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box sx={{ margin: 2 }} data-testid={`backup-run-details-${run.name}`}>
               <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 'bold' }}>
@@ -110,6 +113,15 @@ export function AdminDatabase({ pollInterval = 1000 }: { pollInterval?: number }
   const [error, setError] = useState('');
   const [backupLoading, setBackupLoading] = useState(false);
   const [backupResult, setBackupResult] = useState<{ severity: 'success' | 'error' | 'info'; message: string } | null>(null);
+  const [activeOpName, setActiveOpName] = useState<string | null>(null);
+
+  const isMountedRef = useRef(true);
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
 
   const refresh = useCallback(async () => {
     if (!isAuthorized) return;
@@ -117,12 +129,16 @@ export function AdminDatabase({ pollInterval = 1000 }: { pollInterval?: number }
     setError('');
     try {
       const data = await adminDatabaseUtils.listRuns(auth.token);
+      if (!isMountedRef.current) return;
       setRuns(data);
     } catch (e) {
+      if (!isMountedRef.current) return;
       const err = e as { message?: string };
       setError(err.message || 'Failed to load backup runs');
     } finally {
-      setLoading(false);
+      if (isMountedRef.current) {
+        setLoading(false);
+      }
     }
   }, [auth.token, isAuthorized]);
 
@@ -130,15 +146,26 @@ export function AdminDatabase({ pollInterval = 1000 }: { pollInterval?: number }
     void refresh();
   }, [refresh]);
 
-  const pollOperation = async (opName: string) => {
-    const maxAttempts = 30;
-    let attempts = 0;
-    const interval = setInterval(async () => {
-      attempts++;
+  useEffect(() => {
+    if (!isAuthorized) {
+      setActiveOpName(null);
+      setBackupLoading(false);
+    }
+  }, [isAuthorized]);
+
+  useEffect(() => {
+    if (!activeOpName || !isAuthorized) return undefined;
+
+    let isCancelled = false;
+    let timerId: NodeJS.Timeout | null = null;
+
+    const poll = async () => {
       try {
-        const op = await adminDatabaseUtils.getOperation(auth.token, opName);
+        const op = await adminDatabaseUtils.getOperation(auth.token, activeOpName);
+        if (isCancelled) return;
+
         if (op.status === 'completed') {
-          clearInterval(interval);
+          setActiveOpName(null);
           setBackupLoading(false);
           setBackupResult({
             severity: 'success',
@@ -146,24 +173,21 @@ export function AdminDatabase({ pollInterval = 1000 }: { pollInterval?: number }
           });
           void refresh();
         } else if (op.status === 'failed') {
-          clearInterval(interval);
+          setActiveOpName(null);
           setBackupLoading(false);
           setBackupResult({
             severity: 'error',
             message: op.error || 'Backup failed',
           });
           void refresh();
-        } else if (attempts >= maxAttempts) {
-          clearInterval(interval);
-          setBackupLoading(false);
-          setBackupResult({
-            severity: 'info',
-            message: 'Backup is still in progress',
-          });
-          void refresh();
+        } else {
+          timerId = setTimeout(() => {
+            void poll();
+          }, pollInterval);
         }
       } catch (pollErr) {
-        clearInterval(interval);
+        if (isCancelled) return;
+        setActiveOpName(null);
         setBackupLoading(false);
         setBackupResult({
           severity: 'error',
@@ -171,16 +195,27 @@ export function AdminDatabase({ pollInterval = 1000 }: { pollInterval?: number }
         });
         void refresh();
       }
+    };
+
+    timerId = setTimeout(() => {
+      void poll();
     }, pollInterval);
-  };
+
+    return () => {
+      isCancelled = true;
+      if (timerId) clearTimeout(timerId);
+    };
+  }, [activeOpName, isAuthorized, auth.token, pollInterval, refresh]);
 
   const handleStartBackup = async () => {
     setBackupLoading(true);
     setBackupResult(null);
     try {
       const res = await adminDatabaseUtils.startBackup(auth.token);
-      await pollOperation(res.name);
+      if (!isMountedRef.current) return;
+      setActiveOpName(res.name);
     } catch (e) {
+      if (!isMountedRef.current) return;
       const err = e as { message?: string };
       setBackupResult({
         severity: 'error',
@@ -285,6 +320,7 @@ export function AdminDatabase({ pollInterval = 1000 }: { pollInterval?: number }
               <TableCell>When it ran</TableCell>
               <TableCell>Trigger</TableCell>
               <TableCell>State</TableCell>
+              <TableCell>Size</TableCell>
               <TableCell>Counts</TableCell>
               <TableCell>Dropbox path</TableCell>
             </TableRow>
@@ -292,7 +328,7 @@ export function AdminDatabase({ pollInterval = 1000 }: { pollInterval?: number }
           <TableBody>
             {runs.length === 0 && !loading ? (
               <TableRow>
-                <TableCell colSpan={6} align="center">
+                <TableCell colSpan={7} align="center">
                   <Typography variant="body2" color="text.secondary">
                     No backup runs found
                   </Typography>
