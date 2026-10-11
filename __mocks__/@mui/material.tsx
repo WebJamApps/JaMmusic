@@ -164,8 +164,8 @@ export function Grid(props:any) {
 }
 
 export function Typography(props:any) {
-  const { children } = props;
-  return <div {...props}>{children}</div>;
+  const { children, gutterBottom, ...rest } = props;
+  return <div {...rest}>{children}</div>;
 }
 
 export function Chip(props:any) {
@@ -243,8 +243,13 @@ export function Tab(props:any) {
 }
 
 export function Alert(props:any) {
-  const { children } = props;
-  return <div {...props}>{children}</div>;
+  const { children, onClose, ...rest } = props;
+  return (
+    <div {...rest}>
+      {children}
+      {onClose && <button type="button" aria-label="Close" onClick={() => onClose()}>×</button>}
+    </div>
+  );
 }
 
 export function Paper(props:any) {
@@ -281,3 +286,25 @@ export function Autocomplete(props: any) {
   );
 }
 
+export function TableContainer(props: {
+  children?: React.ReactNode;
+  component?: React.ElementType;
+  [key: string]: unknown;
+}) {
+  const { children, component: Component = 'div', ...rest } = props;
+  return <Component {...rest}>{children}</Component>;
+}
+
+export function Collapse(props: {
+  children?: React.ReactNode;
+  in?: boolean;
+  unmountOnExit?: boolean;
+  timeout?: unknown;
+  [key: string]: unknown;
+}) {
+  const {
+    children, in: inProp, unmountOnExit, timeout, ...rest
+  } = props;
+  if (!inProp) return null;
+  return <div {...rest}>{children}</div>;
+}
