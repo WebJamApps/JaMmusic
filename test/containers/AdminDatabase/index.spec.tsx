@@ -9,6 +9,7 @@ import { AdminDatabase, RunRow } from 'src/containers/AdminDatabase';
 import adminDatabaseUtils, {
   type BackupRunSummary,
   type BackupOperation,
+  type CopyResult,
 } from 'src/containers/AdminDatabase/admin-database.utils';
 
 describe('admin-database.utils', () => {
@@ -149,15 +150,97 @@ describe('admin-database.utils', () => {
   });
 
   describe('getRunDate', () => {
+    const baseRunFixture: BackupRunSummary = {
+      name: '2026-10-08T05-00-00-000Z',
+      startTime: null,
+      startedAt: null,
+      trigger: 'daily',
+      state: 'good',
+      size: 1024,
+      dropboxPath: '/webjam-backups/run',
+      path: '/webjam-backups/run',
+      collections: {},
+      databases: {},
+    };
+
     it('returns empty string when run is null or undefined', () => {
       expect(adminDatabaseUtils.getRunDate(null)).toBe('');
       expect(adminDatabaseUtils.getRunDate(undefined)).toBe('');
     });
 
     it('returns first 10 characters of startTime, startedAt, or name', () => {
-      expect(adminDatabaseUtils.getRunDate({ startTime: '2026-10-10T12:00:00.000Z' } as any)).toBe('2026-10-10');
-      expect(adminDatabaseUtils.getRunDate({ startedAt: '2026-10-09T08:00:00.000Z' } as any)).toBe('2026-10-09');
-      expect(adminDatabaseUtils.getRunDate({ name: '2026-10-08T05-00-00-000Z' } as any)).toBe('2026-10-08');
+      expect(adminDatabaseUtils.getRunDate({ ...baseRunFixture, startTime: '2026-10-10T12:00:00.000Z' })).toBe('2026-10-10');
+      expect(adminDatabaseUtils.getRunDate({ ...baseRunFixture, startedAt: '2026-10-09T08:00:00.000Z' })).toBe('2026-10-09');
+      expect(adminDatabaseUtils.getRunDate(baseRunFixture)).toBe('2026-10-08');
+    });
+  });
+
+  describe('isValidCopyResult', () => {
+    const validCopy: CopyResult = {
+      collections: [{
+        collection: 'users', copied: 1, manifest: 1, addressesReplaced: 1,
+      }],
+      missingIndexes: [],
+      indexFailures: [],
+      readBack: { status: 'none', remaining: 0, message: 'clean' },
+      clean: true,
+    };
+
+    it('returns true for valid CopyResult object', () => {
+      expect(adminDatabaseUtils.isValidCopyResult(validCopy)).toBe(true);
+    });
+
+    it('returns false for null, undefined, and non-object values', () => {
+      expect(adminDatabaseUtils.isValidCopyResult(null)).toBe(false);
+      expect(adminDatabaseUtils.isValidCopyResult(undefined)).toBe(false);
+      expect(adminDatabaseUtils.isValidCopyResult('not-an-object')).toBe(false);
+      expect(adminDatabaseUtils.isValidCopyResult(123)).toBe(false);
+    });
+
+    it('returns false when collections is not an array', () => {
+      expect(adminDatabaseUtils.isValidCopyResult({ ...validCopy, collections: null as unknown as [] })).toBe(false);
+    });
+
+    it('returns false when clean is not a boolean', () => {
+      expect(adminDatabaseUtils.isValidCopyResult({ ...validCopy, clean: null as unknown as boolean })).toBe(false);
+    });
+
+    it('returns false when readBack is missing or invalid', () => {
+      expect(adminDatabaseUtils.isValidCopyResult({ ...validCopy, readBack: null as unknown as CopyResult['readBack'] })).toBe(false);
+      expect(adminDatabaseUtils.isValidCopyResult({
+        ...validCopy,
+        readBack: { status: 'invalid-status' as unknown as 'none', remaining: 0, message: 'test' },
+      })).toBe(false);
+      expect(adminDatabaseUtils.isValidCopyResult({
+        ...validCopy,
+        readBack: { status: 'none', remaining: 0, message: 123 as unknown as string },
+      })).toBe(false);
+    });
+
+    it('accepts valid readBack statuses (none, found, failed)', () => {
+      expect(adminDatabaseUtils.isValidCopyResult({
+        ...validCopy,
+        clean: false,
+        readBack: { status: 'found', remaining: 2, message: 'found 2' },
+      })).toBe(true);
+      expect(adminDatabaseUtils.isValidCopyResult({
+        ...validCopy,
+        clean: false,
+        readBack: { status: 'failed', remaining: null, message: 'failed' },
+      })).toBe(true);
+    });
+  });
+
+  describe('isValidRestoreResult', () => {
+    it('returns true for valid RestoreResult with collections array', () => {
+      expect(adminDatabaseUtils.isValidRestoreResult({ collections: [], missingIndexes: [], indexFailures: [] })).toBe(true);
+    });
+
+    it('returns false for null, undefined, and invalid shapes', () => {
+      expect(adminDatabaseUtils.isValidRestoreResult(null)).toBe(false);
+      expect(adminDatabaseUtils.isValidRestoreResult(undefined)).toBe(false);
+      expect(adminDatabaseUtils.isValidRestoreResult({})).toBe(false);
+      expect(adminDatabaseUtils.isValidRestoreResult({ collections: null })).toBe(false);
     });
   });
 

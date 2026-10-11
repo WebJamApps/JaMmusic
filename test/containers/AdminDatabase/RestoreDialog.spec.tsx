@@ -347,4 +347,46 @@ describe('RestoreDialog Component', () => {
     fireEvent.click(cancelBtn);
     expect(mockOnClose).toHaveBeenCalled();
   });
+
+  it('handles completed operation with null result without fabricating success or empty collections', async () => {
+    vi.spyOn(adminDatabaseUtils, 'startRestore').mockResolvedValueOnce({
+      name: 'restore-null-res',
+      message: 'restore started',
+    });
+
+    vi.spyOn(adminDatabaseUtils, 'getOperation').mockResolvedValueOnce({
+      name: 'restore-null-res',
+      type: 'restore',
+      status: 'completed',
+      startedAt: '2026-10-11T12:00:00.000Z',
+      finishedAt: '2026-10-11T12:00:10.000Z',
+      progress: 'complete',
+      result: null,
+    });
+
+    render(
+      <RestoreDialog
+        open
+        runs={[goodRun1]}
+        token={mockToken}
+        onClose={mockOnClose}
+        onComplete={mockOnComplete}
+        pollInterval={10}
+      />,
+    );
+
+    const dateInput = getDateInput();
+    fireEvent.change(dateInput, { target: { value: '2026-10-10' } });
+    fireEvent.click(screen.getByTestId('restore-submit-button'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('restore-error-alert')).toHaveTextContent(
+        'Restore operation completed but result is missing or invalid',
+      );
+    });
+
+    expect(screen.queryByTestId('restore-success-alert')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('restore-collections-table')).not.toBeInTheDocument();
+    expect(mockOnComplete).toHaveBeenCalled();
+  });
 });

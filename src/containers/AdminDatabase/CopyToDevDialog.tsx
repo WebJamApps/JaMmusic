@@ -71,13 +71,14 @@ export function CopyToDevDialog({
         if (op.status === 'completed') {
           setActiveOpName(null);
           setInProgress(false);
-          setResult((op.result as CopyResult) || {
-            collections: [],
-            missingIndexes: [],
-            indexFailures: [],
-            readBack: { status: 'none', remaining: 0, message: 'clean' },
-            clean: true,
-          });
+          if (adminDatabaseUtils.isValidCopyResult(op.result)) {
+            setResult(op.result);
+          } else {
+            setResult(null);
+            setError(
+              op.error || 'Copy operation completed but verification result is missing or invalid',
+            );
+          }
           onComplete?.();
         } else if (op.status === 'failed') {
           setActiveOpName(null);

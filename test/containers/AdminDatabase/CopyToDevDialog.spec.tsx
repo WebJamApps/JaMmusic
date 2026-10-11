@@ -307,4 +307,86 @@ describe('CopyToDevDialog Component', () => {
     fireEvent.click(cancelBtn);
     expect(mockOnClose).toHaveBeenCalled();
   });
+
+  it('handles completed operation with missing or null result without fabricating success or clean read-back', async () => {
+    vi.spyOn(adminDatabaseUtils, 'startCopyToDev').mockResolvedValueOnce({
+      name: 'copy-null-res',
+      message: 'copy to DEV started',
+    });
+
+    vi.spyOn(adminDatabaseUtils, 'getOperation').mockResolvedValueOnce({
+      name: 'copy-null-res',
+      type: 'copy-to-dev',
+      status: 'completed',
+      startedAt: '2026-10-11T12:00:00.000Z',
+      finishedAt: '2026-10-11T12:00:10.000Z',
+      progress: 'complete',
+      result: null,
+    });
+
+    render(
+      <CopyToDevDialog
+        open
+        runs={[goodRun1]}
+        token={mockToken}
+        onClose={mockOnClose}
+        onComplete={mockOnComplete}
+        pollInterval={10}
+      />,
+    );
+
+    fireEvent.click(screen.getByTestId('copy-to-dev-submit-button'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('copy-to-dev-error-alert')).toHaveTextContent(
+        'Copy operation completed but verification result is missing or invalid',
+      );
+    });
+
+    expect(screen.queryByTestId('copy-to-dev-success-alert')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('copy-read-back-result')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('copy-total-addresses-replaced')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('copy-collections-table')).not.toBeInTheDocument();
+    expect(mockOnComplete).toHaveBeenCalled();
+  });
+
+  it('handles completed operation with invalid result structure without fabricating success', async () => {
+    vi.spyOn(adminDatabaseUtils, 'startCopyToDev').mockResolvedValueOnce({
+      name: 'copy-invalid-res',
+      message: 'copy to DEV started',
+    });
+
+    vi.spyOn(adminDatabaseUtils, 'getOperation').mockResolvedValueOnce({
+      name: 'copy-invalid-res',
+      type: 'copy-to-dev',
+      status: 'completed',
+      startedAt: '2026-10-11T12:00:00.000Z',
+      finishedAt: '2026-10-11T12:00:10.000Z',
+      progress: 'complete',
+      result: { collections: [] },
+    });
+
+    render(
+      <CopyToDevDialog
+        open
+        runs={[goodRun1]}
+        token={mockToken}
+        onClose={mockOnClose}
+        onComplete={mockOnComplete}
+        pollInterval={10}
+      />,
+    );
+
+    fireEvent.click(screen.getByTestId('copy-to-dev-submit-button'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('copy-to-dev-error-alert')).toHaveTextContent(
+        'Copy operation completed but verification result is missing or invalid',
+      );
+    });
+
+    expect(screen.queryByTestId('copy-to-dev-success-alert')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('copy-read-back-result')).not.toBeInTheDocument();
+    expect(mockOnComplete).toHaveBeenCalled();
+  });
 });

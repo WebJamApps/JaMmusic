@@ -280,6 +280,23 @@ export function formatRunSize(bytes: number | null | undefined): string {
   return `${formatted} ${units[unitIndex]}`;
 }
 
+export function isValidCopyResult(res: unknown): res is CopyResult {
+  if (!res || typeof res !== 'object') return false;
+  const c = res as Partial<CopyResult>;
+  if (!Array.isArray(c.collections)) return false;
+  if (typeof c.clean !== 'boolean') return false;
+  if (!c.readBack || typeof c.readBack !== 'object') return false;
+  const rb = c.readBack as Partial<ReadBackResult>;
+  if (typeof rb.message !== 'string') return false;
+  return rb.status === 'none' || rb.status === 'found' || rb.status === 'failed';
+}
+
+export function isValidRestoreResult(res: unknown): res is RestoreResult {
+  if (!res || typeof res !== 'object') return false;
+  const r = res as Partial<RestoreResult>;
+  return Array.isArray(r.collections);
+}
+
 export default {
   TOP_ADMIN_ROLE,
   getAllowedAdminRoles,
@@ -297,4 +314,6 @@ export default {
   formatAge,
   formatRunTime,
   formatRunSize,
+  isValidCopyResult,
+  isValidRestoreResult,
 };

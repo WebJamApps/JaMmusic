@@ -75,7 +75,14 @@ export function RestoreDialog({
         if (op.status === 'completed') {
           setActiveOpName(null);
           setInProgress(false);
-          setResult((op.result as RestoreResult) || { collections: [], missingIndexes: [], indexFailures: [] });
+          if (adminDatabaseUtils.isValidRestoreResult(op.result)) {
+            setResult(op.result);
+          } else {
+            setResult(null);
+            setError(
+              op.error || 'Restore operation completed but result is missing or invalid',
+            );
+          }
           onComplete?.();
         } else if (op.status === 'failed') {
           setActiveOpName(null);
