@@ -76,4 +76,26 @@ describe('SideMenuItem', () => {
     const isAllowed = checkIsAllowed(menu, auth, userRoles);
     expect(isAllowed).toBe(false);
   });
+  it('checkIsAllowed returns false if item has roles and user is not authenticated', () => {
+    const menu: any = { roles: ['Developer'] };
+    const auth: any = { isAuthenticated: false, user: { userType: '' } };
+    const userRoles = ['Developer'];
+    const isAllowed = checkIsAllowed(menu, auth, userRoles);
+    expect(isAllowed).toBe(false);
+  });
+  it('checkIsAllowed returns false if item has roles and user userType is not in roles', () => {
+    const menu: any = { auth: true, roles: ['Developer'] };
+    const auth: any = { isAuthenticated: true, user: { userType: 'JaM-admin' } };
+    const userRoles = ['JaM-admin', 'Developer'];
+    const isAllowed = checkIsAllowed(menu, auth, userRoles);
+    expect(isAllowed).toBe(false);
+  });
+  it('checkIsAllowed returns true if item has roles and user userType is in roles', () => {
+    const menu: any = { auth: true, roles: ['Developer'] };
+    const auth: any = { isAuthenticated: true, user: { userType: 'Developer' } };
+    const userRoles = ['JaM-admin', 'Developer'];
+    const isAllowed = checkIsAllowed(menu, auth, userRoles);
+    expect(isAllowed).toBe(true);
+  });
 });
+

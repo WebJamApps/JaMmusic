@@ -6,6 +6,7 @@ export interface ImenuItem {
   name: string,
   auth?: boolean,
   nav: string,
+  roles?: string[],
 }
 
 const jamNav = [
@@ -68,6 +69,16 @@ const wjNav = [
   },
   {
     nav: 'wj', className: '', type: 'link', iconClass: 'fas fa-envelope-open-text', link: '/admin/templates', name: 'Admin Templates', auth: true,
+  },
+  {
+    nav: 'wj',
+    className: '',
+    type: 'link',
+    iconClass: 'fas fa-database',
+    link: '/admin/database',
+    name: 'Admin Database',
+    auth: true,
+    roles: ['Developer'],
   },
   {
     nav: 'wj', className: 'home', type: 'link', iconClass: 'fas fa-home', link: '/', name: 'Web Jam LLC',

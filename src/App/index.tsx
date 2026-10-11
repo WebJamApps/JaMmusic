@@ -7,6 +7,7 @@ import { AdminUsers } from '../containers/AdminUsers';
 import { AdminVenues } from '../containers/AdminVenues';
 import { AdminOutreach } from '../containers/AdminOutreach';
 import { AdminTemplates } from '../containers/AdminTemplates';
+import { AdminDatabase } from '../containers/AdminDatabase';
 import BuyMusic from '../containers/BuyMusic';
 import { Music } from '../containers/Music';
 import { AppTemplate } from './AppTemplate';
@@ -34,6 +35,7 @@ export function App() {
           <Route path="/admin/venues" element={<AdminVenues />} />
           <Route path="/admin/outreach" element={<AdminOutreach />} />
           <Route path="/admin/templates" element={<AdminTemplates />} />
+          <Route path="/admin/database" element={<AdminDatabase />} />
           <Route path="/new-homepage" element={<Homepage />} />
           <Route path="/music" element={<Music />} />
           <Route path="/music/buymusic" element={<BuyMusic />} />
