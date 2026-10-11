@@ -1,5 +1,6 @@
 import adminVenuesUtils, {
   VENUE_TYPES, BOOKING_STATUSES, AUDIENCE_ATTENTIONS, FIELD_HELP, prospectScore,
+  createVenueWithOutcome, fetchWarningVenues,
   type Ivenue,
 } from 'src/containers/AdminVenues/admin-venues.utils';
 
@@ -130,6 +131,93 @@ describe('AdminVenues utils', () => {
     } as Response);
     fetchMock.mockReturnValue(jsonErrorResponse);
     await expect(adminVenuesUtils.updateVenue('t', '1', {})).rejects.toThrow('A valid email is required');
+  });
+
+  describe('createVenue and createVenueWithOutcome', () => {
+    it('returns created outcome for HTTP 201 response', async () => {
+      fetchMock.mockReturnValue(Promise.resolve({
+        ok: true,
+        status: 201,
+        json: () => Promise.resolve({ _id: 'v10', name: 'Fresh Venue' }),
+      } as Response));
+
+      const res = await createVenueWithOutcome('tok', { name: 'Fresh Venue', address: '123 Main St' });
+      expect(res.outcome).toBe('created');
+      expect(res.status).toBe(201);
+      expect(res.venue._id).toBe('v10');
+
+      const [url, opts] = fetchMock.mock.calls[0];
+      expect(url).toContain('/venue');
+      expect((opts as RequestInit).method).toBe('POST');
+    });
+
+    it('returns updated outcome for HTTP 200 response', async () => {
+      fetchMock.mockReturnValue(Promise.resolve({
+        ok: true,
+        status: 200,
+        json: () => Promise.resolve({ _id: 'v11', name: 'Existing Venue' }),
+      } as Response));
+
+      const res = await createVenueWithOutcome('tok', { name: 'Existing Venue', address: '123 Main St' });
+      expect(res.outcome).toBe('updated');
+      expect(res.status).toBe(200);
+      expect(res.venue._id).toBe('v11');
+    });
+
+    it('createVenue calls createVenueWithOutcome and returns venue', async () => {
+      fetchMock.mockReturnValue(Promise.resolve({
+        ok: true,
+        status: 201,
+        json: () => Promise.resolve({ _id: 'v12', name: 'Created Venue' }),
+      } as Response));
+
+      const venue = await adminVenuesUtils.createVenue('tok', { name: 'Created Venue' });
+      expect(venue._id).toBe('v12');
+    });
+
+    it('retains backend error message on HTTP 400 rejection', async () => {
+      fetchMock.mockReturnValue(Promise.resolve({
+        ok: false,
+        status: 400,
+        statusText: 'Bad Request',
+        json: () => Promise.resolve({ message: 'address is required to create a venue' }),
+      } as Response));
+
+      await expect(createVenueWithOutcome('tok', { name: 'Bad Venue' }))
+        .rejects.toThrow('address is required to create a venue');
+    });
+  });
+
+  describe('fetchWarningVenues', () => {
+    it('throws when token is missing', async () => {
+      await expect(fetchWarningVenues('')).rejects.toThrow('Token is required to fetch warning venues');
+    });
+
+    it('combines active and archived venues, marking archived records', async () => {
+      fetchMock
+        .mockReturnValueOnce(okJson([
+          { _id: 'a1', name: 'Active Venue 1', city: 'Salem' },
+          { _id: 'a2', name: 'Active Venue 2', city: 'Roanoke' },
+        ]))
+        .mockReturnValueOnce(okJson([
+          { _id: 'arc1', name: 'Archived Venue', city: 'Salem' },
+          { _id: 'a1', name: 'Active Venue 1', city: 'Salem' },
+        ]));
+
+      const venues = await fetchWarningVenues('tok');
+      expect(venues).toHaveLength(3);
+      const arc = venues.find((v) => v._id === 'arc1');
+      expect(arc).toBeDefined();
+      expect(arc?.status).toBe('archived');
+      expect(fetchMock).toHaveBeenCalledTimes(2);
+      expect(fetchMock.mock.calls[0][0]).not.toContain('status=archived');
+      expect(fetchMock.mock.calls[1][0]).toContain('status=archived');
+    });
+
+    it('rejects when active or archived fetch fails', async () => {
+      fetchMock.mockReturnValue(failed());
+      await expect(fetchWarningVenues('tok')).rejects.toThrow('500');
+    });
   });
 
   it('exports the venue-type, booking-status, and audience-attention option lists', () => {
