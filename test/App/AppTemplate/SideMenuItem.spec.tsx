@@ -4,6 +4,7 @@ import '@testing-library/jest-dom';
 import { BrowserRouter } from 'react-router';
 import type { ImenuItem } from 'src/App/AppTemplate/menuConfig';
 import { checkIsAllowed, ContinueMenuItem, SideMenuItem } from 'src/App/AppTemplate/SideMenuItem';
+import { defaultAuth, type Iauth } from 'src/providers/Auth.provider';
 import commonUtils from 'src/lib/utils';
 
 describe('SideMenuItem', () => {
@@ -70,10 +71,82 @@ describe('SideMenuItem', () => {
     expect(container.firstChild).toHaveClass('theme-toggle');
   });
   it('checkIsAllowed return false if item requires auth and userType is not allowed', () => {
-    const menu: any = { auth: true };
-    const auth: any = { isAuthenticated: true, user: { userType: 'tester' } };
+    const menu: ImenuItem = {
+      className: '',
+      type: 'link',
+      iconClass: '',
+      link: '/admin',
+      name: 'Admin',
+      nav: 'admin',
+      auth: true,
+    };
+    const auth: Iauth = {
+      ...defaultAuth,
+      isAuthenticated: true,
+      user: { userType: 'tester', email: '' },
+    };
     const userRoles = ['admin'];
     const isAllowed = checkIsAllowed(menu, auth, userRoles);
     expect(isAllowed).toBe(false);
   });
+  it('checkIsAllowed returns false if item has roles and user is not authenticated', () => {
+    const menu: ImenuItem = {
+      className: '',
+      type: 'link',
+      iconClass: '',
+      link: '/admin/database',
+      name: 'Admin Database',
+      nav: 'admin',
+      roles: ['Developer'],
+    };
+    const auth: Iauth = {
+      ...defaultAuth,
+      isAuthenticated: false,
+      user: { userType: '', email: '' },
+    };
+    const userRoles = ['Developer'];
+    const isAllowed = checkIsAllowed(menu, auth, userRoles);
+    expect(isAllowed).toBe(false);
+  });
+  it('checkIsAllowed returns false if item has roles and user userType is not in roles', () => {
+    const menu: ImenuItem = {
+      className: '',
+      type: 'link',
+      iconClass: '',
+      link: '/admin/database',
+      name: 'Admin Database',
+      nav: 'admin',
+      auth: true,
+      roles: ['Developer'],
+    };
+    const auth: Iauth = {
+      ...defaultAuth,
+      isAuthenticated: true,
+      user: { userType: 'JaM-admin', email: '' },
+    };
+    const userRoles = ['JaM-admin', 'Developer'];
+    const isAllowed = checkIsAllowed(menu, auth, userRoles);
+    expect(isAllowed).toBe(false);
+  });
+  it('checkIsAllowed returns true if item has roles and user userType is in roles', () => {
+    const menu: ImenuItem = {
+      className: '',
+      type: 'link',
+      iconClass: '',
+      link: '/admin/database',
+      name: 'Admin Database',
+      nav: 'admin',
+      auth: true,
+      roles: ['Developer'],
+    };
+    const auth: Iauth = {
+      ...defaultAuth,
+      isAuthenticated: true,
+      user: { userType: 'Developer', email: '' },
+    };
+    const userRoles = ['JaM-admin', 'Developer'];
+    const isAllowed = checkIsAllowed(menu, auth, userRoles);
+    expect(isAllowed).toBe(true);
+  });
 });
+

@@ -74,6 +74,7 @@ export const ContinueMenuItem = (props: IcontinueMenuItemProps): React.JSX.Eleme
 
 export const checkIsAllowed = (menu: ImenuItem, auth: Iauth, userRoles: string[]) => {
   if (menu.auth && (!auth.isAuthenticated || userRoles.indexOf(auth.user.userType) === -1)) return false;
+  if (menu.roles && (!auth.isAuthenticated || !menu.roles.includes(auth.user.userType))) return false;
   return true;
 };
 
