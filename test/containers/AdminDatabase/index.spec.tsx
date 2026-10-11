@@ -1164,6 +1164,25 @@ describe('AdminDatabase Component', () => {
         expect(screen.getByTestId('copy-to-dev-dialog')).toHaveAttribute('data-expanded', 'true');
       });
     });
+
+    it('renders the Diagrams component when user is authorized', async () => {
+      vi.spyOn(adminDatabaseUtils, 'listRuns').mockResolvedValue([]);
+      const auth = {
+        ...defaultAuth,
+        isAuthenticated: true,
+        token: 'valid-token',
+        user: { userType: 'Developer', email: 'josh@web-jam.com' },
+      };
+      render(
+        <AuthContext.Provider value={{ auth, setAuth: vi.fn() }}>
+          <AdminDatabase />
+        </AuthContext.Provider>,
+      );
+
+      await waitFor(() => {
+        expect(screen.getByTestId('admin-database-diagrams')).toBeInTheDocument();
+      });
+    });
   });
 });
 

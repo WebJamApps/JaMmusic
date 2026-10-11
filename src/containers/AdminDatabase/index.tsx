@@ -17,6 +17,8 @@ import adminDatabaseUtils, {
 import { RestoreDialog } from './RestoreDialog';
 import { CopyToDevDialog } from './CopyToDevDialog';
 
+const Diagrams = React.lazy(() => import('./Diagrams'));
+
 export function RunRow({ run }: { run: BackupRunSummary }) {
   const [open, setOpen] = useState(false);
   const counts = adminDatabaseUtils.computeTotalCounts(run);
@@ -382,6 +384,10 @@ export function AdminDatabase({ pollInterval = 1000 }: { pollInterval?: number }
         onComplete={() => { void refresh(); }}
         pollInterval={pollInterval}
       />
+
+      <React.Suspense fallback={null}>
+        <Diagrams token={auth.token} />
+      </React.Suspense>
     </Box>
   );
 }

@@ -168,6 +168,26 @@ export async function getOperation(token: string, name: string): Promise<BackupO
   return await res.json() as BackupOperation;
 }
 
+export async function getDatabaseDiagram(token: string): Promise<string> {
+  const res = await customFetch(`${baseUrl}/diagram/database`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+  return await res.text();
+}
+
+export async function getSystemDiagram(token: string): Promise<string> {
+  const res = await customFetch(`${baseUrl}/diagram/system`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+  return await res.text();
+}
+
 export function formatAge(ms: number): string {
   if (ms < 0) return 'just now';
   const totalHours = Math.floor(ms / (1000 * 60 * 60));
@@ -269,6 +289,8 @@ export default {
   startCopyToDev,
   getOperation,
   getRunDate,
+  getDatabaseDiagram,
+  getSystemDiagram,
   computeNewestGoodRun,
   getMostRecentRunResult,
   computeTotalCounts,
