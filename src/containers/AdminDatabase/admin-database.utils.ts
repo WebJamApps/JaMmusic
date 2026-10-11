@@ -24,6 +24,54 @@ export interface BackupOperation {
   error?: string;
 }
 
+export interface RestoredCollection {
+  collection: string;
+  restored: number;
+  manifest: number | null;
+}
+
+export interface MissingIndex {
+  collection: string;
+  index: string;
+}
+
+export interface IndexFailure {
+  collection: string;
+  message: string;
+}
+
+export interface RestoreResult {
+  collections: RestoredCollection[];
+  missingIndexes: MissingIndex[];
+  indexFailures: IndexFailure[];
+}
+
+export interface CopiedCollection {
+  collection: string;
+  copied: number;
+  manifest: number | null;
+  addressesReplaced: number;
+}
+
+export interface ReadBackResult {
+  status: 'none' | 'found' | 'failed';
+  remaining: number | null;
+  message: string;
+}
+
+export interface CopyResult {
+  collections: CopiedCollection[];
+  missingIndexes: MissingIndex[];
+  indexFailures: IndexFailure[];
+  readBack: ReadBackResult;
+  clean: boolean;
+}
+
+export interface StartOperationResponse {
+  name: string;
+  message: string;
+}
+
 export interface StartBackupResponse {
   name: string;
   message: string;
@@ -60,6 +108,53 @@ export async function startBackup(token: string): Promise<StartBackupResponse> {
   });
   if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
   return await res.json() as StartBackupResponse;
+}
+
+async function extractErrorMessage(res: Response): Promise<string> {
+  let msg = `${res.status} ${res.statusText}`;
+  try {
+    if (typeof res.json === 'function') {
+      const data = await res.json() as { message?: string };
+      if (data?.message) msg = data.message;
+    }
+  } catch {
+    // ignore
+  }
+  return msg;
+}
+
+export async function startRestore(token: string, runName: string, date: string): Promise<StartOperationResponse> {
+  const res = await customFetch(`${baseUrl}/runs/${encodeURIComponent(runName)}/restore`, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ date }),
+  });
+  if (!res.ok) throw new Error(await extractErrorMessage(res));
+  return await res.json() as StartOperationResponse;
+}
+
+export async function startCopyToDev(token: string, runName: string): Promise<StartOperationResponse> {
+  const res = await customFetch(`${baseUrl}/runs/${encodeURIComponent(runName)}/copy-to-dev`, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({}),
+  });
+  if (!res.ok) throw new Error(await extractErrorMessage(res));
+  return await res.json() as StartOperationResponse;
+}
+
+export function getRunDate(run: BackupRunSummary | null | undefined): string {
+  if (!run) return '';
+  const dateStr = run.startTime || run.startedAt || run.name;
+  return dateStr.slice(0, 10);
 }
 
 export async function getOperation(token: string, name: string): Promise<BackupOperation> {
@@ -170,7 +265,10 @@ export default {
   getAllowedAdminRoles,
   listRuns,
   startBackup,
+  startRestore,
+  startCopyToDev,
   getOperation,
+  getRunDate,
   computeNewestGoodRun,
   getMostRecentRunResult,
   computeTotalCounts,

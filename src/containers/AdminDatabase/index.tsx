@@ -14,6 +14,8 @@ import { AuthContext } from 'src/providers/Auth.provider';
 import adminDatabaseUtils, {
   type BackupRunSummary,
 } from './admin-database.utils';
+import { RestoreDialog } from './RestoreDialog';
+import { CopyToDevDialog } from './CopyToDevDialog';
 
 export function RunRow({ run }: { run: BackupRunSummary }) {
   const [open, setOpen] = useState(false);
@@ -114,6 +116,8 @@ export function AdminDatabase({ pollInterval = 1000 }: { pollInterval?: number }
   const [backupLoading, setBackupLoading] = useState(false);
   const [backupResult, setBackupResult] = useState<{ severity: 'success' | 'error' | 'info'; message: string } | null>(null);
   const [activeOpName, setActiveOpName] = useState<string | null>(null);
+  const [restoreOpen, setRestoreOpen] = useState(false);
+  const [copyToDevOpen, setCopyToDevOpen] = useState(false);
 
   const isMountedRef = useRef(true);
   useEffect(() => {
@@ -286,6 +290,24 @@ export function AdminDatabase({ pollInterval = 1000 }: { pollInterval?: number }
         >
           Back up now
         </Button>
+        <Button
+          variant="outlined"
+          color="primary"
+          data-testid="restore-button"
+          onClick={() => setRestoreOpen(true)}
+          disabled={backupLoading || loading}
+        >
+          Restore
+        </Button>
+        <Button
+          variant="outlined"
+          color="primary"
+          data-testid="copy-to-dev-button"
+          onClick={() => setCopyToDevOpen(true)}
+          disabled={backupLoading || loading}
+        >
+          Copy production into DEV
+        </Button>
         {backupLoading && (
           <Box data-testid="backup-in-progress" sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
             <CircularProgress size={20} />
@@ -342,6 +364,24 @@ export function AdminDatabase({ pollInterval = 1000 }: { pollInterval?: number }
           </TableBody>
         </Table>
       </TableContainer>
+
+      <RestoreDialog
+        open={restoreOpen}
+        runs={runs}
+        token={auth.token}
+        onClose={() => setRestoreOpen(false)}
+        onComplete={() => { void refresh(); }}
+        pollInterval={pollInterval}
+      />
+
+      <CopyToDevDialog
+        open={copyToDevOpen}
+        runs={runs}
+        token={auth.token}
+        onClose={() => setCopyToDevOpen(false)}
+        onComplete={() => { void refresh(); }}
+        pollInterval={pollInterval}
+      />
     </Box>
   );
 }

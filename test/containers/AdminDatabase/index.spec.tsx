@@ -100,6 +100,65 @@ describe('admin-database.utils', () => {
 
       await expect(adminDatabaseUtils.getOperation(mockToken, 'op-name')).rejects.toThrow('404 Not Found');
     });
+
+    it('startRestore posts date and returns response on success', async () => {
+      vi.spyOn(global, 'fetch').mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ name: 'restore-123', message: 'restore started' }),
+      } as Response);
+
+      const res = await adminDatabaseUtils.startRestore(mockToken, 'run-1', '2026-10-10');
+      expect(res).toEqual({ name: 'restore-123', message: 'restore started' });
+    });
+
+    it('startRestore throws error when !res.ok', async () => {
+      vi.spyOn(global, 'fetch').mockResolvedValueOnce({
+        ok: false,
+        status: 400,
+        statusText: 'Bad Request',
+        json: async () => ({ message: 'typed date does not match chosen run' }),
+      } as Response);
+
+      await expect(adminDatabaseUtils.startRestore(mockToken, 'run-1', '2026-10-11')).rejects.toThrow(
+        'typed date does not match chosen run',
+      );
+    });
+
+    it('startCopyToDev returns response on success', async () => {
+      vi.spyOn(global, 'fetch').mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ name: 'copy-123', message: 'copy to DEV started' }),
+      } as Response);
+
+      const res = await adminDatabaseUtils.startCopyToDev(mockToken, 'run-1');
+      expect(res).toEqual({ name: 'copy-123', message: 'copy to DEV started' });
+    });
+
+    it('startCopyToDev throws error when !res.ok', async () => {
+      vi.spyOn(global, 'fetch').mockResolvedValueOnce({
+        ok: false,
+        status: 500,
+        statusText: 'Internal Server Error',
+        json: async () => ({ message: 'DEV_MONGO_DB_URI is required' }),
+      } as Response);
+
+      await expect(adminDatabaseUtils.startCopyToDev(mockToken, 'run-1')).rejects.toThrow(
+        'DEV_MONGO_DB_URI is required',
+      );
+    });
+  });
+
+  describe('getRunDate', () => {
+    it('returns empty string when run is null or undefined', () => {
+      expect(adminDatabaseUtils.getRunDate(null)).toBe('');
+      expect(adminDatabaseUtils.getRunDate(undefined)).toBe('');
+    });
+
+    it('returns first 10 characters of startTime, startedAt, or name', () => {
+      expect(adminDatabaseUtils.getRunDate({ startTime: '2026-10-10T12:00:00.000Z' } as any)).toBe('2026-10-10');
+      expect(adminDatabaseUtils.getRunDate({ startedAt: '2026-10-09T08:00:00.000Z' } as any)).toBe('2026-10-09');
+      expect(adminDatabaseUtils.getRunDate({ name: '2026-10-08T05-00-00-000Z' } as any)).toBe('2026-10-08');
+    });
   });
 
   describe('formatAge', () => {
@@ -1050,6 +1109,60 @@ describe('AdminDatabase Component', () => {
       await new Promise((r) => { setTimeout(r, 20); });
 
       expect((adminDatabaseUtils.listRuns as any).mock.calls.length).toBe(listRunsCallCount);
+    });
+
+    it('opens RestoreDialog when Restore button is clicked', async () => {
+      vi.spyOn(adminDatabaseUtils, 'listRuns').mockResolvedValue(sampleRuns);
+      const auth = {
+        ...defaultAuth,
+        isAuthenticated: true,
+        token: 'valid-token',
+        user: { userType: 'Developer', email: 'josh@web-jam.com' },
+      };
+
+      render(
+        <AuthContext.Provider value={{ auth, setAuth: vi.fn() }}>
+          <AdminDatabase pollInterval={10} />
+        </AuthContext.Provider>,
+      );
+
+      await waitFor(() => {
+        expect(screen.getByTestId('restore-button')).toBeInTheDocument();
+      });
+
+      expect(screen.getByTestId('restore-dialog')).toHaveAttribute('data-expanded', 'false');
+      fireEvent.click(screen.getByTestId('restore-button'));
+
+      await waitFor(() => {
+        expect(screen.getByTestId('restore-dialog')).toHaveAttribute('data-expanded', 'true');
+      });
+    });
+
+    it('opens CopyToDevDialog when Copy production into DEV button is clicked', async () => {
+      vi.spyOn(adminDatabaseUtils, 'listRuns').mockResolvedValue(sampleRuns);
+      const auth = {
+        ...defaultAuth,
+        isAuthenticated: true,
+        token: 'valid-token',
+        user: { userType: 'Developer', email: 'josh@web-jam.com' },
+      };
+
+      render(
+        <AuthContext.Provider value={{ auth, setAuth: vi.fn() }}>
+          <AdminDatabase pollInterval={10} />
+        </AuthContext.Provider>,
+      );
+
+      await waitFor(() => {
+        expect(screen.getByTestId('copy-to-dev-button')).toBeInTheDocument();
+      });
+
+      expect(screen.getByTestId('copy-to-dev-dialog')).toHaveAttribute('data-expanded', 'false');
+      fireEvent.click(screen.getByTestId('copy-to-dev-button'));
+
+      await waitFor(() => {
+        expect(screen.getByTestId('copy-to-dev-dialog')).toHaveAttribute('data-expanded', 'true');
+      });
     });
   });
 });
