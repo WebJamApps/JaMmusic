@@ -124,12 +124,50 @@ async function updateVenue(token: string, venueId: string, payload: IvenueUpdate
   return await res.json() as Ivenue;
 }
 
-async function createVenue(token: string, payload: IvenueUpdate): Promise<Ivenue> {
+export interface VenueSaveOutcome {
+  venue: Ivenue;
+  outcome: 'created' | 'updated';
+  status: 200 | 201;
+}
+
+export async function createVenueWithOutcome(token: string, payload: IvenueUpdate): Promise<VenueSaveOutcome> {
   const res = await customFetch(venueUrl, {
     method: 'POST', headers: headers(token, true), body: JSON.stringify(payload),
   });
   if (!res.ok) await handleResponseError(res);
-  return await res.json() as Ivenue;
+  const venue = await res.json() as Ivenue;
+  const outcome: 'created' | 'updated' = res.status === 201 ? 'created' : 'updated';
+  return {
+    venue,
+    outcome,
+    status: res.status as 200 | 201,
+  };
+}
+
+export async function createVenue(token: string, payload: IvenueUpdate): Promise<Ivenue> {
+  const result = await createVenueWithOutcome(token, payload);
+  return result.venue;
+}
+
+export async function fetchWarningVenues(token: string): Promise<Ivenue[]> {
+  if (!token) {
+    throw new Error('Token is required to fetch warning venues');
+  }
+  const [activeVenues, archivedVenues] = await Promise.all([
+    listVenues(token),
+    listVenues(token, undefined, 'archived'),
+  ]);
+  const venueMap = new Map<string, Ivenue>();
+  for (const v of activeVenues) {
+    const key = v._id || `${v.name}-${v.city}`;
+    venueMap.set(key, v);
+  }
+  for (const v of archivedVenues) {
+    const key = v._id || `${v.name}-${v.city}`;
+    const existing = venueMap.get(key);
+    venueMap.set(key, existing ? { ...existing, status: 'archived' } : { ...v, status: 'archived' });
+  }
+  return Array.from(venueMap.values());
 }
 
 export const VENUE_TYPES = ['Originals', 'PubFestivalBrewery', 'MidRangeCafeBar'] as const;
@@ -311,6 +349,21 @@ export function getGoogleMapsUrl(address?: string, city?: string, usState?: stri
   return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
 }
 
+export {
+  listVenues, updateVenue, deleteVenue,
+};
+
+export * from './venue-shared.utils';
+
 export default {
-  listVenues, updateVenue, deleteVenue, createVenue, getAllowedAdminRoles, prospectScore, exportVenuesToExcel, getGoogleMapsUrl,
+  listVenues,
+  updateVenue,
+  deleteVenue,
+  createVenue,
+  createVenueWithOutcome,
+  fetchWarningVenues,
+  getAllowedAdminRoles,
+  prospectScore,
+  exportVenuesToExcel,
+  getGoogleMapsUrl,
 };
