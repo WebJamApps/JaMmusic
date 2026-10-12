@@ -18,4 +18,11 @@ ignore:
     - '*':
         reason: Dependency overridden globally in package.json, completely removing inflight package from lockfile
         expires: '2027-07-03T15:00:00.000Z'
+  SNYK-JS-KATEX-20419402:
+    - '*':
+        reason: Overridden globally to secure version ^0.18.2 in package.json
+        expires: '2027-10-11T15:00:00.000Z'
+    - 'mermaid > katex':
+        reason: Overridden globally to secure version ^0.18.2 in package.json
+        expires: '2027-10-11T15:00:00.000Z'
 patch: {}

@@ -9,6 +9,8 @@ import { AdminDatabase, RunRow } from 'src/containers/AdminDatabase';
 import adminDatabaseUtils, {
   type BackupRunSummary,
   type BackupOperation,
+  type CopyResult,
+  type RestoreResult,
 } from 'src/containers/AdminDatabase/admin-database.utils';
 
 describe('admin-database.utils', () => {
@@ -99,6 +101,304 @@ describe('admin-database.utils', () => {
       } as Response);
 
       await expect(adminDatabaseUtils.getOperation(mockToken, 'op-name')).rejects.toThrow('404 Not Found');
+    });
+
+    it('startRestore posts date and returns response on success', async () => {
+      vi.spyOn(global, 'fetch').mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ name: 'restore-123', message: 'restore started' }),
+      } as Response);
+
+      const res = await adminDatabaseUtils.startRestore(mockToken, 'run-1', '2026-10-10');
+      expect(res).toEqual({ name: 'restore-123', message: 'restore started' });
+    });
+
+    it('startRestore throws error when !res.ok', async () => {
+      vi.spyOn(global, 'fetch').mockResolvedValueOnce({
+        ok: false,
+        status: 400,
+        statusText: 'Bad Request',
+        json: async () => ({ message: 'typed date does not match chosen run' }),
+      } as Response);
+
+      await expect(adminDatabaseUtils.startRestore(mockToken, 'run-1', '2026-10-11')).rejects.toThrow(
+        'typed date does not match chosen run',
+      );
+    });
+
+    it('startCopyToDev returns response on success', async () => {
+      vi.spyOn(global, 'fetch').mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ name: 'copy-123', message: 'copy to DEV started' }),
+      } as Response);
+
+      const res = await adminDatabaseUtils.startCopyToDev(mockToken, 'run-1');
+      expect(res).toEqual({ name: 'copy-123', message: 'copy to DEV started' });
+    });
+
+    it('startCopyToDev throws error when !res.ok', async () => {
+      vi.spyOn(global, 'fetch').mockResolvedValueOnce({
+        ok: false,
+        status: 500,
+        statusText: 'Internal Server Error',
+        json: async () => ({ message: 'DEV_MONGO_DB_URI is required' }),
+      } as Response);
+
+      await expect(adminDatabaseUtils.startCopyToDev(mockToken, 'run-1')).rejects.toThrow(
+        'DEV_MONGO_DB_URI is required',
+      );
+    });
+  });
+
+  describe('getRunDate', () => {
+    const baseRunFixture: BackupRunSummary = {
+      name: '2026-10-08T05-00-00-000Z',
+      startTime: null,
+      startedAt: null,
+      trigger: 'daily',
+      state: 'good',
+      size: 1024,
+      dropboxPath: '/webjam-backups/run',
+      path: '/webjam-backups/run',
+      collections: {},
+      databases: {},
+    };
+
+    it('returns empty string when run is null or undefined', () => {
+      expect(adminDatabaseUtils.getRunDate(null)).toBe('');
+      expect(adminDatabaseUtils.getRunDate(undefined)).toBe('');
+    });
+
+    it('returns first 10 characters of startTime, startedAt, or name', () => {
+      expect(adminDatabaseUtils.getRunDate({ ...baseRunFixture, startTime: '2026-10-10T12:00:00.000Z' })).toBe('2026-10-10');
+      expect(adminDatabaseUtils.getRunDate({ ...baseRunFixture, startedAt: '2026-10-09T08:00:00.000Z' })).toBe('2026-10-09');
+      expect(adminDatabaseUtils.getRunDate(baseRunFixture)).toBe('2026-10-08');
+    });
+  });
+
+  describe('isValidCopyResult', () => {
+    const validCopy: CopyResult = {
+      collections: [{
+        collection: 'users', copied: 1, manifest: 1, addressesReplaced: 1,
+      }],
+      missingIndexes: [],
+      indexFailures: [],
+      readBack: { status: 'none', remaining: 0, message: 'clean' },
+      clean: true,
+    };
+
+    it('returns true for valid CopyResult object', () => {
+      expect(adminDatabaseUtils.isValidCopyResult(validCopy)).toBe(true);
+    });
+
+    it('returns false for null, undefined, and non-object values', () => {
+      expect(adminDatabaseUtils.isValidCopyResult(null)).toBe(false);
+      expect(adminDatabaseUtils.isValidCopyResult(undefined)).toBe(false);
+      expect(adminDatabaseUtils.isValidCopyResult('not-an-object')).toBe(false);
+      expect(adminDatabaseUtils.isValidCopyResult(123)).toBe(false);
+    });
+
+    it('returns false when collections is not an array or has null/incomplete entries', () => {
+      expect(adminDatabaseUtils.isValidCopyResult({ ...validCopy, collections: null as unknown as [] })).toBe(false);
+      expect(adminDatabaseUtils.isValidCopyResult({ ...validCopy, collections: [null] as unknown as [] })).toBe(false);
+      expect(adminDatabaseUtils.isValidCopyResult({
+        ...validCopy,
+        collections: [{ collection: 'users' }] as unknown as CopyResult['collections'],
+      })).toBe(false);
+      expect(adminDatabaseUtils.isValidCopyResult({
+        ...validCopy,
+        collections: [{
+          collection: '', copied: 1, manifest: 1, addressesReplaced: 1,
+        }],
+      })).toBe(false);
+      expect(adminDatabaseUtils.isValidCopyResult({
+        ...validCopy,
+        collections: [{
+          collection: 'users', copied: -1, manifest: 1, addressesReplaced: 1,
+        }],
+      })).toBe(false);
+      expect(adminDatabaseUtils.isValidCopyResult({
+        ...validCopy,
+        collections: [{
+          collection: 'users', copied: 1, manifest: -1, addressesReplaced: 1,
+        }],
+      })).toBe(false);
+      expect(adminDatabaseUtils.isValidCopyResult({
+        ...validCopy,
+        collections: [{
+          collection: 'users', copied: 1, manifest: 1, addressesReplaced: -1,
+        }],
+      })).toBe(false);
+    });
+
+    it('returns false when missingIndexes or indexFailures is malformed', () => {
+      expect(adminDatabaseUtils.isValidCopyResult({ ...validCopy, missingIndexes: null as unknown as [] })).toBe(false);
+      expect(adminDatabaseUtils.isValidCopyResult({ ...validCopy, missingIndexes: [null] as unknown as [] })).toBe(false);
+      expect(adminDatabaseUtils.isValidCopyResult({
+        ...validCopy,
+        missingIndexes: [{ collection: 'users' }] as unknown as CopyResult['missingIndexes'],
+      })).toBe(false);
+
+      expect(adminDatabaseUtils.isValidCopyResult({ ...validCopy, indexFailures: null as unknown as [] })).toBe(false);
+      expect(adminDatabaseUtils.isValidCopyResult({ ...validCopy, indexFailures: [null] as unknown as [] })).toBe(false);
+      expect(adminDatabaseUtils.isValidCopyResult({
+        ...validCopy,
+        indexFailures: [{ collection: 'users' }] as unknown as CopyResult['indexFailures'],
+      })).toBe(false);
+    });
+
+    it('returns false when clean is not a boolean', () => {
+      expect(adminDatabaseUtils.isValidCopyResult({ ...validCopy, clean: null as unknown as boolean })).toBe(false);
+    });
+
+    it('returns false when readBack is missing or invalid', () => {
+      expect(adminDatabaseUtils.isValidCopyResult({ ...validCopy, readBack: null as unknown as CopyResult['readBack'] })).toBe(false);
+      expect(adminDatabaseUtils.isValidCopyResult({
+        ...validCopy,
+        readBack: { status: 'invalid-status' as unknown as 'none', remaining: 0, message: 'test' },
+      })).toBe(false);
+      expect(adminDatabaseUtils.isValidCopyResult({
+        ...validCopy,
+        readBack: { status: 'none', remaining: 0, message: 123 as unknown as string },
+      })).toBe(false);
+      expect(adminDatabaseUtils.isValidCopyResult({
+        ...validCopy,
+        readBack: { status: 'none', remaining: 0, message: '   ' },
+      })).toBe(false);
+    });
+
+    it('rejects contradictory or incomplete verification payloads', () => {
+      // Failed status but clean: true and empty message
+      expect(adminDatabaseUtils.isValidCopyResult({
+        collections: [],
+        missingIndexes: [],
+        indexFailures: [],
+        clean: true,
+        readBack: { status: 'failed', remaining: null, message: '' },
+      })).toBe(false);
+
+      // Clean: true but remaining > 0
+      expect(adminDatabaseUtils.isValidCopyResult({
+        ...validCopy,
+        clean: true,
+        readBack: { status: 'none', remaining: 2, message: 'clean' },
+      })).toBe(false);
+
+      // Clean: false but status: 'none'
+      expect(adminDatabaseUtils.isValidCopyResult({
+        ...validCopy,
+        clean: false,
+        readBack: { status: 'none', remaining: 0, message: 'clean' },
+      })).toBe(false);
+
+      // Status 'found' but missing/null remaining count
+      expect(adminDatabaseUtils.isValidCopyResult({
+        ...validCopy,
+        clean: false,
+        readBack: { status: 'found', remaining: null, message: 'found addresses' },
+      })).toBe(false);
+
+      // Status 'found' but non-positive remaining count
+      expect(adminDatabaseUtils.isValidCopyResult({
+        ...validCopy,
+        clean: false,
+        readBack: { status: 'found', remaining: 0, message: 'found addresses' },
+      })).toBe(false);
+
+      // Status 'failed' but non-null remaining count
+      expect(adminDatabaseUtils.isValidCopyResult({
+        ...validCopy,
+        clean: false,
+        readBack: { status: 'failed', remaining: 5, message: 'failed' },
+      })).toBe(false);
+    });
+
+    it('accepts valid readBack statuses (none, found, failed)', () => {
+      expect(adminDatabaseUtils.isValidCopyResult({
+        ...validCopy,
+        clean: false,
+        readBack: { status: 'found', remaining: 2, message: 'found 2' },
+      })).toBe(true);
+      expect(adminDatabaseUtils.isValidCopyResult({
+        ...validCopy,
+        clean: false,
+        readBack: { status: 'failed', remaining: null, message: 'failed' },
+      })).toBe(true);
+    });
+  });
+
+  describe('isValidRestoreResult', () => {
+    const validRestore: RestoreResult = {
+      collections: [{ collection: 'users', restored: 10, manifest: 10 }],
+      missingIndexes: [{ collection: 'users', index: 'email_1' }],
+      indexFailures: [{ collection: 'users', message: 'index build failed' }],
+    };
+
+    it('returns true for valid RestoreResult with collections array', () => {
+      expect(adminDatabaseUtils.isValidRestoreResult({ collections: [], missingIndexes: [], indexFailures: [] })).toBe(true);
+      expect(adminDatabaseUtils.isValidRestoreResult(validRestore)).toBe(true);
+      expect(adminDatabaseUtils.isValidRestoreResult({
+        ...validRestore,
+        collections: [{ collection: 'users', restored: 0, manifest: null }],
+      })).toBe(true);
+    });
+
+    it('returns false for null, undefined, and invalid shapes', () => {
+      expect(adminDatabaseUtils.isValidRestoreResult(null)).toBe(false);
+      expect(adminDatabaseUtils.isValidRestoreResult(undefined)).toBe(false);
+      expect(adminDatabaseUtils.isValidRestoreResult({})).toBe(false);
+      expect(adminDatabaseUtils.isValidRestoreResult({ collections: null })).toBe(false);
+    });
+
+    it('returns false when collections contains null or incomplete entries', () => {
+      expect(adminDatabaseUtils.isValidRestoreResult({
+        ...validRestore,
+        collections: [null] as unknown as RestoreResult['collections'],
+      })).toBe(false);
+      expect(adminDatabaseUtils.isValidRestoreResult({
+        ...validRestore,
+        collections: [{ collection: 'users' }] as unknown as RestoreResult['collections'],
+      })).toBe(false);
+      expect(adminDatabaseUtils.isValidRestoreResult({
+        ...validRestore,
+        collections: [{ collection: 'users', restored: -1, manifest: 1 }],
+      })).toBe(false);
+      expect(adminDatabaseUtils.isValidRestoreResult({
+        ...validRestore,
+        collections: [{ collection: '', restored: 1, manifest: 1 }],
+      })).toBe(false);
+      expect(adminDatabaseUtils.isValidRestoreResult({
+        ...validRestore,
+        collections: [{ collection: 'users', restored: 1, manifest: -1 }],
+      })).toBe(false);
+    });
+
+    it('returns false when missingIndexes or indexFailures is malformed', () => {
+      expect(adminDatabaseUtils.isValidRestoreResult({
+        ...validRestore,
+        missingIndexes: null as unknown as [],
+      })).toBe(false);
+      expect(adminDatabaseUtils.isValidRestoreResult({
+        ...validRestore,
+        missingIndexes: [null] as unknown as [],
+      })).toBe(false);
+      expect(adminDatabaseUtils.isValidRestoreResult({
+        ...validRestore,
+        missingIndexes: [{ collection: 'users' }] as unknown as RestoreResult['missingIndexes'],
+      })).toBe(false);
+
+      expect(adminDatabaseUtils.isValidRestoreResult({
+        ...validRestore,
+        indexFailures: null as unknown as [],
+      })).toBe(false);
+      expect(adminDatabaseUtils.isValidRestoreResult({
+        ...validRestore,
+        indexFailures: [null] as unknown as [],
+      })).toBe(false);
+      expect(adminDatabaseUtils.isValidRestoreResult({
+        ...validRestore,
+        indexFailures: [{ collection: 'users' }] as unknown as RestoreResult['indexFailures'],
+      })).toBe(false);
     });
   });
 
@@ -1050,6 +1350,79 @@ describe('AdminDatabase Component', () => {
       await new Promise((r) => { setTimeout(r, 20); });
 
       expect((adminDatabaseUtils.listRuns as any).mock.calls.length).toBe(listRunsCallCount);
+    });
+
+    it('opens RestoreDialog when Restore button is clicked', async () => {
+      vi.spyOn(adminDatabaseUtils, 'listRuns').mockResolvedValue(sampleRuns);
+      const auth = {
+        ...defaultAuth,
+        isAuthenticated: true,
+        token: 'valid-token',
+        user: { userType: 'Developer', email: 'josh@web-jam.com' },
+      };
+
+      render(
+        <AuthContext.Provider value={{ auth, setAuth: vi.fn() }}>
+          <AdminDatabase pollInterval={10} />
+        </AuthContext.Provider>,
+      );
+
+      await waitFor(() => {
+        expect(screen.getByTestId('restore-button')).toBeInTheDocument();
+      });
+
+      expect(screen.getByTestId('restore-dialog')).toHaveAttribute('data-expanded', 'false');
+      fireEvent.click(screen.getByTestId('restore-button'));
+
+      await waitFor(() => {
+        expect(screen.getByTestId('restore-dialog')).toHaveAttribute('data-expanded', 'true');
+      });
+    });
+
+    it('opens CopyToDevDialog when Copy production into DEV button is clicked', async () => {
+      vi.spyOn(adminDatabaseUtils, 'listRuns').mockResolvedValue(sampleRuns);
+      const auth = {
+        ...defaultAuth,
+        isAuthenticated: true,
+        token: 'valid-token',
+        user: { userType: 'Developer', email: 'josh@web-jam.com' },
+      };
+
+      render(
+        <AuthContext.Provider value={{ auth, setAuth: vi.fn() }}>
+          <AdminDatabase pollInterval={10} />
+        </AuthContext.Provider>,
+      );
+
+      await waitFor(() => {
+        expect(screen.getByTestId('copy-to-dev-button')).toBeInTheDocument();
+      });
+
+      expect(screen.getByTestId('copy-to-dev-dialog')).toHaveAttribute('data-expanded', 'false');
+      fireEvent.click(screen.getByTestId('copy-to-dev-button'));
+
+      await waitFor(() => {
+        expect(screen.getByTestId('copy-to-dev-dialog')).toHaveAttribute('data-expanded', 'true');
+      });
+    });
+
+    it('renders the Diagrams component when user is authorized', async () => {
+      vi.spyOn(adminDatabaseUtils, 'listRuns').mockResolvedValue([]);
+      const auth = {
+        ...defaultAuth,
+        isAuthenticated: true,
+        token: 'valid-token',
+        user: { userType: 'Developer', email: 'josh@web-jam.com' },
+      };
+      render(
+        <AuthContext.Provider value={{ auth, setAuth: vi.fn() }}>
+          <AdminDatabase />
+        </AuthContext.Provider>,
+      );
+
+      await waitFor(() => {
+        expect(screen.getByTestId('admin-database-diagrams')).toBeInTheDocument();
+      });
     });
   });
 });
