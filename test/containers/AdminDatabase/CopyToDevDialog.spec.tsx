@@ -389,4 +389,194 @@ describe('CopyToDevDialog Component', () => {
     expect(screen.queryByTestId('copy-read-back-result')).not.toBeInTheDocument();
     expect(mockOnComplete).toHaveBeenCalled();
   });
+
+  it('rejects contradictory completed payload with failed status, clean true, and empty message', async () => {
+    vi.spyOn(adminDatabaseUtils, 'startCopyToDev').mockResolvedValueOnce({
+      name: 'copy-contradictory-res',
+      message: 'copy to DEV started',
+    });
+
+    vi.spyOn(adminDatabaseUtils, 'getOperation').mockResolvedValueOnce({
+      name: 'copy-contradictory-res',
+      type: 'copy-to-dev',
+      status: 'completed',
+      startedAt: '2026-10-11T12:00:00.000Z',
+      finishedAt: '2026-10-11T12:00:10.000Z',
+      progress: 'complete',
+      result: {
+        collections: [],
+        missingIndexes: [],
+        indexFailures: [],
+        clean: true,
+        readBack: { status: 'failed', remaining: null, message: '' },
+      },
+    });
+
+    render(
+      <CopyToDevDialog
+        open
+        runs={[goodRun1]}
+        token={mockToken}
+        onClose={mockOnClose}
+        onComplete={mockOnComplete}
+        pollInterval={10}
+      />,
+    );
+
+    fireEvent.click(screen.getByTestId('copy-to-dev-submit-button'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('copy-to-dev-error-alert')).toHaveTextContent(
+        'Copy operation completed but verification result is missing or invalid',
+      );
+    });
+
+    expect(screen.queryByTestId('copy-to-dev-success-alert')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('copy-read-back-result')).not.toBeInTheDocument();
+    expect(mockOnComplete).toHaveBeenCalled();
+  });
+
+  it('rejects completed payload with incomplete collection rows without crashing', async () => {
+    vi.spyOn(adminDatabaseUtils, 'startCopyToDev').mockResolvedValueOnce({
+      name: 'copy-incomplete-row',
+      message: 'copy to DEV started',
+    });
+
+    vi.spyOn(adminDatabaseUtils, 'getOperation').mockResolvedValueOnce({
+      name: 'copy-incomplete-row',
+      type: 'copy-to-dev',
+      status: 'completed',
+      startedAt: '2026-10-11T12:00:00.000Z',
+      finishedAt: '2026-10-11T12:00:10.000Z',
+      progress: 'complete',
+      result: {
+        collections: [{ collection: 'users' }],
+        missingIndexes: [],
+        indexFailures: [],
+        clean: true,
+        readBack: { status: 'none', remaining: 0, message: 'clean' },
+      },
+    });
+
+    render(
+      <CopyToDevDialog
+        open
+        runs={[goodRun1]}
+        token={mockToken}
+        onClose={mockOnClose}
+        onComplete={mockOnComplete}
+        pollInterval={10}
+      />,
+    );
+
+    fireEvent.click(screen.getByTestId('copy-to-dev-submit-button'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('copy-to-dev-error-alert')).toHaveTextContent(
+        'Copy operation completed but verification result is missing or invalid',
+      );
+    });
+
+    expect(screen.queryByTestId('copy-to-dev-success-alert')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('copy-collections-table')).not.toBeInTheDocument();
+    expect(mockOnComplete).toHaveBeenCalled();
+  });
+
+  it('displays warning alert and read-back details for genuine found addresses result', async () => {
+    vi.spyOn(adminDatabaseUtils, 'startCopyToDev').mockResolvedValueOnce({
+      name: 'copy-found-res',
+      message: 'copy to DEV started',
+    });
+
+    vi.spyOn(adminDatabaseUtils, 'getOperation').mockResolvedValueOnce({
+      name: 'copy-found-res',
+      type: 'copy-to-dev',
+      status: 'completed',
+      startedAt: '2026-10-11T12:00:00.000Z',
+      finishedAt: '2026-10-11T12:00:10.000Z',
+      progress: 'complete',
+      result: {
+        collections: [{
+          collection: 'users', copied: 5, manifest: 5, addressesReplaced: 3,
+        }],
+        missingIndexes: [],
+        indexFailures: [],
+        clean: false,
+        readBack: { status: 'found', remaining: 2, message: '2 real email address(es) remain in DEV' },
+      },
+    });
+
+    render(
+      <CopyToDevDialog
+        open
+        runs={[goodRun1]}
+        token={mockToken}
+        onClose={mockOnClose}
+        onComplete={mockOnComplete}
+        pollInterval={10}
+      />,
+    );
+
+    fireEvent.click(screen.getByTestId('copy-to-dev-submit-button'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('copy-to-dev-success-alert')).toHaveTextContent(
+        'Copy to DEV finished with warnings',
+      );
+    });
+
+    expect(screen.getByTestId('copy-read-back-result')).toHaveTextContent(
+      'Read-back check: 2 real email address(es) remain in DEV',
+    );
+    expect(mockOnComplete).toHaveBeenCalled();
+  });
+
+  it('displays error alert and read-back details for genuine failed read-back result', async () => {
+    vi.spyOn(adminDatabaseUtils, 'startCopyToDev').mockResolvedValueOnce({
+      name: 'copy-failed-readback-res',
+      message: 'copy to DEV started',
+    });
+
+    vi.spyOn(adminDatabaseUtils, 'getOperation').mockResolvedValueOnce({
+      name: 'copy-failed-readback-res',
+      type: 'copy-to-dev',
+      status: 'completed',
+      startedAt: '2026-10-11T12:00:00.000Z',
+      finishedAt: '2026-10-11T12:00:10.000Z',
+      progress: 'complete',
+      result: {
+        collections: [{
+          collection: 'users', copied: 5, manifest: 5, addressesReplaced: 5,
+        }],
+        missingIndexes: [],
+        indexFailures: [],
+        clean: false,
+        readBack: { status: 'failed', remaining: null, message: 'the read-back of DEV failed: connection timeout' },
+      },
+    });
+
+    render(
+      <CopyToDevDialog
+        open
+        runs={[goodRun1]}
+        token={mockToken}
+        onClose={mockOnClose}
+        onComplete={mockOnComplete}
+        pollInterval={10}
+      />,
+    );
+
+    fireEvent.click(screen.getByTestId('copy-to-dev-submit-button'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('copy-to-dev-success-alert')).toHaveTextContent(
+        'Copy to DEV finished with errors',
+      );
+    });
+
+    expect(screen.getByTestId('copy-read-back-result')).toHaveTextContent(
+      'Read-back check: the read-back of DEV failed: connection timeout',
+    );
+    expect(mockOnComplete).toHaveBeenCalled();
+  });
 });

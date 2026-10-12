@@ -280,21 +280,89 @@ export function formatRunSize(bytes: number | null | undefined): string {
   return `${formatted} ${units[unitIndex]}`;
 }
 
+function isValidIndexEntries(indexes: unknown): boolean {
+  if (!Array.isArray(indexes)) return false;
+  return indexes.every((idx) => {
+    if (!idx || typeof idx !== 'object') return false;
+    const item = idx as Record<string, unknown>;
+    return typeof item.collection === 'string' && item.collection.trim().length > 0
+      && typeof item.index === 'string' && item.index.trim().length > 0;
+  });
+}
+
+function isValidIndexFailures(failures: unknown): boolean {
+  if (!Array.isArray(failures)) return false;
+  return failures.every((fail) => {
+    if (!fail || typeof fail !== 'object') return false;
+    const item = fail as Record<string, unknown>;
+    return typeof item.collection === 'string' && item.collection.trim().length > 0
+      && typeof item.message === 'string' && item.message.trim().length > 0;
+  });
+}
+
+function isValidRestoredCollection(c: unknown): boolean {
+  if (!c || typeof c !== 'object') return false;
+  const item = c as Record<string, unknown>;
+  if (typeof item.collection !== 'string' || item.collection.trim().length === 0) return false;
+  if (typeof item.restored !== 'number' || Number.isNaN(item.restored) || item.restored < 0) return false;
+  if (item.manifest !== null && (typeof item.manifest !== 'number' || Number.isNaN(item.manifest) || item.manifest < 0)) {
+    return false;
+  }
+  return true;
+}
+
+function isValidCopiedCollection(c: unknown): boolean {
+  if (!c || typeof c !== 'object') return false;
+  const item = c as Record<string, unknown>;
+  if (typeof item.collection !== 'string' || item.collection.trim().length === 0) return false;
+  if (typeof item.copied !== 'number' || Number.isNaN(item.copied) || item.copied < 0) return false;
+  if (item.manifest !== null && (typeof item.manifest !== 'number' || Number.isNaN(item.manifest) || item.manifest < 0)) {
+    return false;
+  }
+  if (typeof item.addressesReplaced !== 'number' || Number.isNaN(item.addressesReplaced) || item.addressesReplaced < 0) {
+    return false;
+  }
+  return true;
+}
+
+function isValidReadBack(rb: unknown, clean: boolean): boolean {
+  if (!rb || typeof rb !== 'object') return false;
+  const item = rb as Partial<ReadBackResult>;
+  if (typeof item.message !== 'string' || item.message.trim().length === 0) return false;
+
+  if (clean) {
+    return item.status === 'none' && item.remaining === 0;
+  }
+
+  if (item.status === 'found') {
+    return typeof item.remaining === 'number' && !Number.isNaN(item.remaining) && item.remaining > 0;
+  }
+
+  if (item.status === 'failed') {
+    return item.remaining === null || item.remaining === undefined;
+  }
+
+  return false;
+}
+
 export function isValidCopyResult(res: unknown): res is CopyResult {
   if (!res || typeof res !== 'object') return false;
   const c = res as Partial<CopyResult>;
-  if (!Array.isArray(c.collections)) return false;
   if (typeof c.clean !== 'boolean') return false;
-  if (!c.readBack || typeof c.readBack !== 'object') return false;
-  const rb = c.readBack as Partial<ReadBackResult>;
-  if (typeof rb.message !== 'string') return false;
-  return rb.status === 'none' || rb.status === 'found' || rb.status === 'failed';
+  if (!Array.isArray(c.collections)) return false;
+  if (c.collections.some((coll) => !isValidCopiedCollection(coll))) return false;
+  if (!isValidIndexEntries(c.missingIndexes)) return false;
+  if (!isValidIndexFailures(c.indexFailures)) return false;
+  return isValidReadBack(c.readBack, c.clean);
 }
 
 export function isValidRestoreResult(res: unknown): res is RestoreResult {
   if (!res || typeof res !== 'object') return false;
   const r = res as Partial<RestoreResult>;
-  return Array.isArray(r.collections);
+  if (!Array.isArray(r.collections)) return false;
+  if (r.collections.some((coll) => !isValidRestoredCollection(coll))) return false;
+  if (!isValidIndexEntries(r.missingIndexes)) return false;
+  return isValidIndexFailures(r.indexFailures);
 }
 
 export default {

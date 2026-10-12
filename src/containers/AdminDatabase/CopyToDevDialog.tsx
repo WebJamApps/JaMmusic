@@ -146,8 +146,16 @@ export function CopyToDevDialog({
         )}
 
         {result && (
-          <Alert severity={result.clean ? 'success' : 'warning'} data-testid="copy-to-dev-success-alert" sx={{ mb: 2 }}>
-            {result.clean ? 'Copy to DEV completed successfully' : 'Copy to DEV finished with warnings'}
+          <Alert
+            severity={result.clean ? 'success' : (result.readBack?.status === 'failed' ? 'error' : 'warning')}
+            data-testid="copy-to-dev-success-alert"
+            sx={{ mb: 2 }}
+          >
+            {result.clean
+              ? 'Copy to DEV completed successfully'
+              : (result.readBack?.status === 'failed'
+                ? 'Copy to DEV finished with errors'
+                : 'Copy to DEV finished with warnings')}
           </Alert>
         )}
 
@@ -197,7 +205,7 @@ export function CopyToDevDialog({
               </Typography>
               <Typography variant="body2" data-testid="copy-read-back-result">
                 {'Read-back check: '}
-                <strong>{result.readBack?.message || (result.clean ? 'clean' : 'failed')}</strong>
+                <strong>{result.readBack?.message || 'verification failed'}</strong>
               </Typography>
             </Box>
 

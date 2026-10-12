@@ -10,6 +10,7 @@ import adminDatabaseUtils, {
   type BackupRunSummary,
   type BackupOperation,
   type CopyResult,
+  type RestoreResult,
 } from 'src/containers/AdminDatabase/admin-database.utils';
 
 describe('admin-database.utils', () => {
@@ -197,8 +198,53 @@ describe('admin-database.utils', () => {
       expect(adminDatabaseUtils.isValidCopyResult(123)).toBe(false);
     });
 
-    it('returns false when collections is not an array', () => {
+    it('returns false when collections is not an array or has null/incomplete entries', () => {
       expect(adminDatabaseUtils.isValidCopyResult({ ...validCopy, collections: null as unknown as [] })).toBe(false);
+      expect(adminDatabaseUtils.isValidCopyResult({ ...validCopy, collections: [null] as unknown as [] })).toBe(false);
+      expect(adminDatabaseUtils.isValidCopyResult({
+        ...validCopy,
+        collections: [{ collection: 'users' }] as unknown as CopyResult['collections'],
+      })).toBe(false);
+      expect(adminDatabaseUtils.isValidCopyResult({
+        ...validCopy,
+        collections: [{
+          collection: '', copied: 1, manifest: 1, addressesReplaced: 1,
+        }],
+      })).toBe(false);
+      expect(adminDatabaseUtils.isValidCopyResult({
+        ...validCopy,
+        collections: [{
+          collection: 'users', copied: -1, manifest: 1, addressesReplaced: 1,
+        }],
+      })).toBe(false);
+      expect(adminDatabaseUtils.isValidCopyResult({
+        ...validCopy,
+        collections: [{
+          collection: 'users', copied: 1, manifest: -1, addressesReplaced: 1,
+        }],
+      })).toBe(false);
+      expect(adminDatabaseUtils.isValidCopyResult({
+        ...validCopy,
+        collections: [{
+          collection: 'users', copied: 1, manifest: 1, addressesReplaced: -1,
+        }],
+      })).toBe(false);
+    });
+
+    it('returns false when missingIndexes or indexFailures is malformed', () => {
+      expect(adminDatabaseUtils.isValidCopyResult({ ...validCopy, missingIndexes: null as unknown as [] })).toBe(false);
+      expect(adminDatabaseUtils.isValidCopyResult({ ...validCopy, missingIndexes: [null] as unknown as [] })).toBe(false);
+      expect(adminDatabaseUtils.isValidCopyResult({
+        ...validCopy,
+        missingIndexes: [{ collection: 'users' }] as unknown as CopyResult['missingIndexes'],
+      })).toBe(false);
+
+      expect(adminDatabaseUtils.isValidCopyResult({ ...validCopy, indexFailures: null as unknown as [] })).toBe(false);
+      expect(adminDatabaseUtils.isValidCopyResult({ ...validCopy, indexFailures: [null] as unknown as [] })).toBe(false);
+      expect(adminDatabaseUtils.isValidCopyResult({
+        ...validCopy,
+        indexFailures: [{ collection: 'users' }] as unknown as CopyResult['indexFailures'],
+      })).toBe(false);
     });
 
     it('returns false when clean is not a boolean', () => {
@@ -214,6 +260,56 @@ describe('admin-database.utils', () => {
       expect(adminDatabaseUtils.isValidCopyResult({
         ...validCopy,
         readBack: { status: 'none', remaining: 0, message: 123 as unknown as string },
+      })).toBe(false);
+      expect(adminDatabaseUtils.isValidCopyResult({
+        ...validCopy,
+        readBack: { status: 'none', remaining: 0, message: '   ' },
+      })).toBe(false);
+    });
+
+    it('rejects contradictory or incomplete verification payloads', () => {
+      // Failed status but clean: true and empty message
+      expect(adminDatabaseUtils.isValidCopyResult({
+        collections: [],
+        missingIndexes: [],
+        indexFailures: [],
+        clean: true,
+        readBack: { status: 'failed', remaining: null, message: '' },
+      })).toBe(false);
+
+      // Clean: true but remaining > 0
+      expect(adminDatabaseUtils.isValidCopyResult({
+        ...validCopy,
+        clean: true,
+        readBack: { status: 'none', remaining: 2, message: 'clean' },
+      })).toBe(false);
+
+      // Clean: false but status: 'none'
+      expect(adminDatabaseUtils.isValidCopyResult({
+        ...validCopy,
+        clean: false,
+        readBack: { status: 'none', remaining: 0, message: 'clean' },
+      })).toBe(false);
+
+      // Status 'found' but missing/null remaining count
+      expect(adminDatabaseUtils.isValidCopyResult({
+        ...validCopy,
+        clean: false,
+        readBack: { status: 'found', remaining: null, message: 'found addresses' },
+      })).toBe(false);
+
+      // Status 'found' but non-positive remaining count
+      expect(adminDatabaseUtils.isValidCopyResult({
+        ...validCopy,
+        clean: false,
+        readBack: { status: 'found', remaining: 0, message: 'found addresses' },
+      })).toBe(false);
+
+      // Status 'failed' but non-null remaining count
+      expect(adminDatabaseUtils.isValidCopyResult({
+        ...validCopy,
+        clean: false,
+        readBack: { status: 'failed', remaining: 5, message: 'failed' },
       })).toBe(false);
     });
 
@@ -232,8 +328,19 @@ describe('admin-database.utils', () => {
   });
 
   describe('isValidRestoreResult', () => {
+    const validRestore: RestoreResult = {
+      collections: [{ collection: 'users', restored: 10, manifest: 10 }],
+      missingIndexes: [{ collection: 'users', index: 'email_1' }],
+      indexFailures: [{ collection: 'users', message: 'index build failed' }],
+    };
+
     it('returns true for valid RestoreResult with collections array', () => {
       expect(adminDatabaseUtils.isValidRestoreResult({ collections: [], missingIndexes: [], indexFailures: [] })).toBe(true);
+      expect(adminDatabaseUtils.isValidRestoreResult(validRestore)).toBe(true);
+      expect(adminDatabaseUtils.isValidRestoreResult({
+        ...validRestore,
+        collections: [{ collection: 'users', restored: 0, manifest: null }],
+      })).toBe(true);
     });
 
     it('returns false for null, undefined, and invalid shapes', () => {
@@ -241,6 +348,57 @@ describe('admin-database.utils', () => {
       expect(adminDatabaseUtils.isValidRestoreResult(undefined)).toBe(false);
       expect(adminDatabaseUtils.isValidRestoreResult({})).toBe(false);
       expect(adminDatabaseUtils.isValidRestoreResult({ collections: null })).toBe(false);
+    });
+
+    it('returns false when collections contains null or incomplete entries', () => {
+      expect(adminDatabaseUtils.isValidRestoreResult({
+        ...validRestore,
+        collections: [null] as unknown as RestoreResult['collections'],
+      })).toBe(false);
+      expect(adminDatabaseUtils.isValidRestoreResult({
+        ...validRestore,
+        collections: [{ collection: 'users' }] as unknown as RestoreResult['collections'],
+      })).toBe(false);
+      expect(adminDatabaseUtils.isValidRestoreResult({
+        ...validRestore,
+        collections: [{ collection: 'users', restored: -1, manifest: 1 }],
+      })).toBe(false);
+      expect(adminDatabaseUtils.isValidRestoreResult({
+        ...validRestore,
+        collections: [{ collection: '', restored: 1, manifest: 1 }],
+      })).toBe(false);
+      expect(adminDatabaseUtils.isValidRestoreResult({
+        ...validRestore,
+        collections: [{ collection: 'users', restored: 1, manifest: -1 }],
+      })).toBe(false);
+    });
+
+    it('returns false when missingIndexes or indexFailures is malformed', () => {
+      expect(adminDatabaseUtils.isValidRestoreResult({
+        ...validRestore,
+        missingIndexes: null as unknown as [],
+      })).toBe(false);
+      expect(adminDatabaseUtils.isValidRestoreResult({
+        ...validRestore,
+        missingIndexes: [null] as unknown as [],
+      })).toBe(false);
+      expect(adminDatabaseUtils.isValidRestoreResult({
+        ...validRestore,
+        missingIndexes: [{ collection: 'users' }] as unknown as RestoreResult['missingIndexes'],
+      })).toBe(false);
+
+      expect(adminDatabaseUtils.isValidRestoreResult({
+        ...validRestore,
+        indexFailures: null as unknown as [],
+      })).toBe(false);
+      expect(adminDatabaseUtils.isValidRestoreResult({
+        ...validRestore,
+        indexFailures: [null] as unknown as [],
+      })).toBe(false);
+      expect(adminDatabaseUtils.isValidRestoreResult({
+        ...validRestore,
+        indexFailures: [{ collection: 'users' }] as unknown as RestoreResult['indexFailures'],
+      })).toBe(false);
     });
   });
 

@@ -389,4 +389,96 @@ describe('RestoreDialog Component', () => {
     expect(screen.queryByTestId('restore-collections-table')).not.toBeInTheDocument();
     expect(mockOnComplete).toHaveBeenCalled();
   });
+
+  it('handles completed operation with incomplete/null rows without crashing', async () => {
+    vi.spyOn(adminDatabaseUtils, 'startRestore').mockResolvedValueOnce({
+      name: 'restore-incomplete-rows',
+      message: 'restore started',
+    });
+
+    vi.spyOn(adminDatabaseUtils, 'getOperation').mockResolvedValueOnce({
+      name: 'restore-incomplete-rows',
+      type: 'restore',
+      status: 'completed',
+      startedAt: '2026-10-11T12:00:00.000Z',
+      finishedAt: '2026-10-11T12:00:10.000Z',
+      progress: 'complete',
+      result: {
+        collections: [{ collection: 'users' }],
+        missingIndexes: [],
+        indexFailures: [],
+      },
+    });
+
+    render(
+      <RestoreDialog
+        open
+        runs={[goodRun1]}
+        token={mockToken}
+        onClose={mockOnClose}
+        onComplete={mockOnComplete}
+        pollInterval={10}
+      />,
+    );
+
+    const dateInput = getDateInput();
+    fireEvent.change(dateInput, { target: { value: '2026-10-10' } });
+    fireEvent.click(screen.getByTestId('restore-submit-button'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('restore-error-alert')).toHaveTextContent(
+        'Restore operation completed but result is missing or invalid',
+      );
+    });
+
+    expect(screen.queryByTestId('restore-success-alert')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('restore-collections-table')).not.toBeInTheDocument();
+    expect(mockOnComplete).toHaveBeenCalled();
+  });
+
+  it('handles completed operation with malformed index lists without crashing', async () => {
+    vi.spyOn(adminDatabaseUtils, 'startRestore').mockResolvedValueOnce({
+      name: 'restore-malformed-indexes',
+      message: 'restore started',
+    });
+
+    vi.spyOn(adminDatabaseUtils, 'getOperation').mockResolvedValueOnce({
+      name: 'restore-malformed-indexes',
+      type: 'restore',
+      status: 'completed',
+      startedAt: '2026-10-11T12:00:00.000Z',
+      finishedAt: '2026-10-11T12:00:10.000Z',
+      progress: 'complete',
+      result: {
+        collections: [{ collection: 'users', restored: 5, manifest: 5 }],
+        missingIndexes: [{ collection: 'users' }],
+        indexFailures: [],
+      },
+    });
+
+    render(
+      <RestoreDialog
+        open
+        runs={[goodRun1]}
+        token={mockToken}
+        onClose={mockOnClose}
+        onComplete={mockOnComplete}
+        pollInterval={10}
+      />,
+    );
+
+    const dateInput = getDateInput();
+    fireEvent.change(dateInput, { target: { value: '2026-10-10' } });
+    fireEvent.click(screen.getByTestId('restore-submit-button'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('restore-error-alert')).toHaveTextContent(
+        'Restore operation completed but result is missing or invalid',
+      );
+    });
+
+    expect(screen.queryByTestId('restore-success-alert')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('restore-collections-table')).not.toBeInTheDocument();
+    expect(mockOnComplete).toHaveBeenCalled();
+  });
 });
