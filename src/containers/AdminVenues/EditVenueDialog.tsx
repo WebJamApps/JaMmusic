@@ -9,92 +9,9 @@ import adminVenuesUtils, {
   type Ivenue, type IvenueUpdate,
 } from './admin-venues.utils';
 
-export const US_STATES = [
-  { code: 'AL', name: 'Alabama' },
-  { code: 'AK', name: 'Alaska' },
-  { code: 'AS', name: 'American Samoa' },
-  { code: 'AZ', name: 'Arizona' },
-  { code: 'AR', name: 'Arkansas' },
-  { code: 'CA', name: 'California' },
-  { code: 'CO', name: 'Colorado' },
-  { code: 'CT', name: 'Connecticut' },
-  { code: 'DE', name: 'Delaware' },
-  { code: 'DC', name: 'District of Columbia' },
-  { code: 'FM', name: 'Federated States of Micronesia' },
-  { code: 'FL', name: 'Florida' },
-  { code: 'GA', name: 'Georgia' },
-  { code: 'GU', name: 'Guam' },
-  { code: 'HI', name: 'Hawaii' },
-  { code: 'ID', name: 'Idaho' },
-  { code: 'IL', name: 'Illinois' },
-  { code: 'IN', name: 'Indiana' },
-  { code: 'IA', name: 'Iowa' },
-  { code: 'KS', name: 'Kansas' },
-  { code: 'KY', name: 'Kentucky' },
-  { code: 'LA', name: 'Louisiana' },
-  { code: 'ME', name: 'Maine' },
-  { code: 'MH', name: 'Marshall Islands' },
-  { code: 'MD', name: 'Maryland' },
-  { code: 'MA', name: 'Massachusetts' },
-  { code: 'MI', name: 'Michigan' },
-  { code: 'MN', name: 'Minnesota' },
-  { code: 'MS', name: 'Mississippi' },
-  { code: 'MO', name: 'Missouri' },
-  { code: 'MT', name: 'Montana' },
-  { code: 'NE', name: 'Nebraska' },
-  { code: 'NV', name: 'Nevada' },
-  { code: 'NH', name: 'New Hampshire' },
-  { code: 'NJ', name: 'New Jersey' },
-  { code: 'NM', name: 'New Mexico' },
-  { code: 'NY', name: 'New York' },
-  { code: 'NC', name: 'North Carolina' },
-  { code: 'ND', name: 'North Dakota' },
-  { code: 'MP', name: 'Northern Mariana Islands' },
-  { code: 'OH', name: 'Ohio' },
-  { code: 'OK', name: 'Oklahoma' },
-  { code: 'OR', name: 'Oregon' },
-  { code: 'PW', name: 'Palau' },
-  { code: 'PA', name: 'Pennsylvania' },
-  { code: 'PR', name: 'Puerto Rico' },
-  { code: 'RI', name: 'Rhode Island' },
-  { code: 'SC', name: 'South Carolina' },
-  { code: 'SD', name: 'South Dakota' },
-  { code: 'TN', name: 'Tennessee' },
-  { code: 'TX', name: 'Texas' },
-  { code: 'UT', name: 'Utah' },
-  { code: 'VT', name: 'Vermont' },
-  { code: 'VI', name: 'Virgin Island' },
-  { code: 'VA', name: 'Virginia' },
-  { code: 'WA', name: 'Washington' },
-  { code: 'WV', name: 'West Virginia' },
-  { code: 'WI', name: 'Wisconsin' },
-  { code: 'WY', name: 'Wyoming' },
-] as const;
+import * as venueShared from './venue-shared.utils';
 
-export const COUNTRIES = [
-  { code: 'US', name: 'United States (US)' },
-  { code: 'CA', name: 'Canada (CA)' },
-  { code: 'GB', name: 'United Kingdom (GB)' },
-  { code: 'IE', name: 'Ireland (IE)' },
-  { code: 'AU', name: 'Australia (AU)' },
-  { code: 'NZ', name: 'New Zealand (NZ)' },
-  { code: 'DE', name: 'Germany (DE)' },
-  { code: 'FR', name: 'France (FR)' },
-  { code: 'IT', name: 'Italy (IT)' },
-  { code: 'ES', name: 'Spain (ES)' },
-  { code: 'NL', name: 'Netherlands (NL)' },
-  { code: 'BE', name: 'Belgium (BE)' },
-  { code: 'CH', name: 'Switzerland (CH)' },
-  { code: 'AT', name: 'Austria (AT)' },
-  { code: 'SE', name: 'Sweden (SE)' },
-  { code: 'NO', name: 'Norway (NO)' },
-  { code: 'DK', name: 'Denmark (DK)' },
-  { code: 'FI', name: 'Finland (FI)' },
-  { code: 'JP', name: 'Japan (JP)' },
-  { code: 'MX', name: 'Mexico (MX)' },
-  { code: 'BR', name: 'Brazil (BR)' },
-  { code: 'ZA', name: 'South Africa (ZA)' },
-] as const;
+export { US_STATES, COUNTRIES } from './venue-shared.utils';
 
 // Inline consequence help shown under a field, so a manual edit can't quietly
 // make the data worse (#1139 §4/§8). `field` is a FIELD_HELP key.
@@ -606,7 +523,7 @@ export function EditVenueDialog({
             }}
             data-testid="edit-venue-country"
           >
-            {COUNTRIES.map((c) => (
+            {venueShared.COUNTRIES.map((c) => (
               <MenuItem key={c.code} value={c.code}>
                 {c.name}
               </MenuItem>
@@ -626,7 +543,7 @@ export function EditVenueDialog({
               <MenuItem value="">
                 <em>None</em>
               </MenuItem>
-              {US_STATES.map((s) => (
+              {venueShared.US_STATES.map((s) => (
                 <MenuItem key={s.code} value={s.code}>
                   {`${s.name} (${s.code})`}
                 </MenuItem>

@@ -24,6 +24,54 @@ export interface BackupOperation {
   error?: string;
 }
 
+export interface RestoredCollection {
+  collection: string;
+  restored: number;
+  manifest: number | null;
+}
+
+export interface MissingIndex {
+  collection: string;
+  index: string;
+}
+
+export interface IndexFailure {
+  collection: string;
+  message: string;
+}
+
+export interface RestoreResult {
+  collections: RestoredCollection[];
+  missingIndexes: MissingIndex[];
+  indexFailures: IndexFailure[];
+}
+
+export interface CopiedCollection {
+  collection: string;
+  copied: number;
+  manifest: number | null;
+  addressesReplaced: number;
+}
+
+export interface ReadBackResult {
+  status: 'none' | 'found' | 'failed';
+  remaining: number | null;
+  message: string;
+}
+
+export interface CopyResult {
+  collections: CopiedCollection[];
+  missingIndexes: MissingIndex[];
+  indexFailures: IndexFailure[];
+  readBack: ReadBackResult;
+  clean: boolean;
+}
+
+export interface StartOperationResponse {
+  name: string;
+  message: string;
+}
+
 export interface StartBackupResponse {
   name: string;
   message: string;
@@ -62,6 +110,53 @@ export async function startBackup(token: string): Promise<StartBackupResponse> {
   return await res.json() as StartBackupResponse;
 }
 
+async function extractErrorMessage(res: Response): Promise<string> {
+  let msg = `${res.status} ${res.statusText}`;
+  try {
+    if (typeof res.json === 'function') {
+      const data = await res.json() as { message?: string };
+      if (data?.message) msg = data.message;
+    }
+  } catch {
+    // ignore
+  }
+  return msg;
+}
+
+export async function startRestore(token: string, runName: string, date: string): Promise<StartOperationResponse> {
+  const res = await customFetch(`${baseUrl}/runs/${encodeURIComponent(runName)}/restore`, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ date }),
+  });
+  if (!res.ok) throw new Error(await extractErrorMessage(res));
+  return await res.json() as StartOperationResponse;
+}
+
+export async function startCopyToDev(token: string, runName: string): Promise<StartOperationResponse> {
+  const res = await customFetch(`${baseUrl}/runs/${encodeURIComponent(runName)}/copy-to-dev`, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({}),
+  });
+  if (!res.ok) throw new Error(await extractErrorMessage(res));
+  return await res.json() as StartOperationResponse;
+}
+
+export function getRunDate(run: BackupRunSummary | null | undefined): string {
+  if (!run) return '';
+  const dateStr = run.startTime || run.startedAt || run.name;
+  return dateStr.slice(0, 10);
+}
+
 export async function getOperation(token: string, name: string): Promise<BackupOperation> {
   const res = await customFetch(`${baseUrl}/operations/${encodeURIComponent(name)}`, {
     headers: {
@@ -71,6 +166,26 @@ export async function getOperation(token: string, name: string): Promise<BackupO
   });
   if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
   return await res.json() as BackupOperation;
+}
+
+export async function getDatabaseDiagram(token: string): Promise<string> {
+  const res = await customFetch(`${baseUrl}/diagram/database`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+  return await res.text();
+}
+
+export async function getSystemDiagram(token: string): Promise<string> {
+  const res = await customFetch(`${baseUrl}/diagram/system`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+  return await res.text();
 }
 
 export function formatAge(ms: number): string {
@@ -165,16 +280,108 @@ export function formatRunSize(bytes: number | null | undefined): string {
   return `${formatted} ${units[unitIndex]}`;
 }
 
+function isValidIndexEntries(indexes: unknown): boolean {
+  if (!Array.isArray(indexes)) return false;
+  return indexes.every((idx) => {
+    if (!idx || typeof idx !== 'object') return false;
+    const item = idx as Record<string, unknown>;
+    return typeof item.collection === 'string' && item.collection.trim().length > 0
+      && typeof item.index === 'string' && item.index.trim().length > 0;
+  });
+}
+
+function isValidIndexFailures(failures: unknown): boolean {
+  if (!Array.isArray(failures)) return false;
+  return failures.every((fail) => {
+    if (!fail || typeof fail !== 'object') return false;
+    const item = fail as Record<string, unknown>;
+    return typeof item.collection === 'string' && item.collection.trim().length > 0
+      && typeof item.message === 'string' && item.message.trim().length > 0;
+  });
+}
+
+function isValidRestoredCollection(c: unknown): boolean {
+  if (!c || typeof c !== 'object') return false;
+  const item = c as Record<string, unknown>;
+  if (typeof item.collection !== 'string' || item.collection.trim().length === 0) return false;
+  if (typeof item.restored !== 'number' || Number.isNaN(item.restored) || item.restored < 0) return false;
+  if (item.manifest !== null && (typeof item.manifest !== 'number' || Number.isNaN(item.manifest) || item.manifest < 0)) {
+    return false;
+  }
+  return true;
+}
+
+function isValidCopiedCollection(c: unknown): boolean {
+  if (!c || typeof c !== 'object') return false;
+  const item = c as Record<string, unknown>;
+  if (typeof item.collection !== 'string' || item.collection.trim().length === 0) return false;
+  if (typeof item.copied !== 'number' || Number.isNaN(item.copied) || item.copied < 0) return false;
+  if (item.manifest !== null && (typeof item.manifest !== 'number' || Number.isNaN(item.manifest) || item.manifest < 0)) {
+    return false;
+  }
+  if (typeof item.addressesReplaced !== 'number' || Number.isNaN(item.addressesReplaced) || item.addressesReplaced < 0) {
+    return false;
+  }
+  return true;
+}
+
+function isValidReadBack(rb: unknown, clean: boolean): boolean {
+  if (!rb || typeof rb !== 'object') return false;
+  const item = rb as Partial<ReadBackResult>;
+  if (typeof item.message !== 'string' || item.message.trim().length === 0) return false;
+
+  if (clean) {
+    return item.status === 'none' && item.remaining === 0;
+  }
+
+  if (item.status === 'found') {
+    return typeof item.remaining === 'number' && !Number.isNaN(item.remaining) && item.remaining > 0;
+  }
+
+  if (item.status === 'failed') {
+    return item.remaining === null || item.remaining === undefined;
+  }
+
+  return false;
+}
+
+export function isValidCopyResult(res: unknown): res is CopyResult {
+  if (!res || typeof res !== 'object') return false;
+  const c = res as Partial<CopyResult>;
+  if (typeof c.clean !== 'boolean') return false;
+  if (!Array.isArray(c.collections)) return false;
+  if (c.collections.some((coll) => !isValidCopiedCollection(coll))) return false;
+  if (!isValidIndexEntries(c.missingIndexes)) return false;
+  if (!isValidIndexFailures(c.indexFailures)) return false;
+  return isValidReadBack(c.readBack, c.clean);
+}
+
+export function isValidRestoreResult(res: unknown): res is RestoreResult {
+  if (!res || typeof res !== 'object') return false;
+  const r = res as Partial<RestoreResult>;
+  if (!Array.isArray(r.collections)) return false;
+  if (r.collections.some((coll) => !isValidRestoredCollection(coll))) return false;
+  if (!isValidIndexEntries(r.missingIndexes)) return false;
+  return isValidIndexFailures(r.indexFailures);
+}
+
 export default {
   TOP_ADMIN_ROLE,
   getAllowedAdminRoles,
   listRuns,
   startBackup,
+  startRestore,
+  startCopyToDev,
   getOperation,
+  getRunDate,
+  getDatabaseDiagram,
+  getSystemDiagram,
   computeNewestGoodRun,
   getMostRecentRunResult,
   computeTotalCounts,
   formatAge,
   formatRunTime,
   formatRunSize,
+  isValidCopyResult,
+  isValidRestoreResult,
 };
