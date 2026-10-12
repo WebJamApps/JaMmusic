@@ -329,7 +329,7 @@ export function getExistingVenueWarning(params: ExistingVenueWarningParams): Exi
     if (hasArchivedMatch) {
       notes.push('An archived matching record was found. If matched upon save, it will be restored and made active.');
     }
-    if (differentCityMatches.length > 0) {
+    if (differentCityMatches.length > 0 && sameCityMatches.length === 0) {
       notes.push('Matching venue(s) in a different city will result in creating a separate venue.');
     }
     if (sameCityMatches.length > 0) {

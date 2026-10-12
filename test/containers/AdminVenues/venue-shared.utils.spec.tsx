@@ -402,7 +402,56 @@ describe('venue-shared.utils', () => {
       });
       expect(res.hasWarning).toBe(true);
       expect(res.differentCityMatches).toHaveLength(1);
+      expect(res.sameCityMatches).toHaveLength(0);
       expect(res.message).toContain('Matching venue(s) in a different city will result in creating a separate venue.');
+    });
+
+    it('rejects false creation claim for mixed same-city and different-city candidates', () => {
+      const mixedInventory: Ivenue[] = [
+        { _id: 'v1', name: 'Test Venue', city: 'Salem', address: '1 Electric Road' },
+        { _id: 'v2', name: 'Test Venue', city: 'Roanoke', address: '2 Electric Road' },
+      ];
+      const res = getExistingVenueWarning({
+        name: 'Test Venue',
+        city: 'Salem',
+        address: '1 Electric Road',
+        inventory: mixedInventory,
+        mode: 'create',
+      });
+      expect(res.hasWarning).toBe(true);
+      expect(res.sameCityMatches).toHaveLength(1);
+      expect(res.differentCityMatches).toHaveLength(1);
+      expect(res.message).not.toContain(
+        'Matching venue(s) in a different city will result in creating a separate venue.',
+      );
+      expect(res.message).toContain('• "Test Venue" in Salem (1 Electric Road)');
+      expect(res.message).toContain('• "Test Venue" in Roanoke (2 Electric Road)');
+      expect(res.message).toContain(BACKEND_SAVE_RULES.sameAddressRule);
+      expect(res.message).toContain(BACKEND_SAVE_RULES.differentCityRule);
+    });
+
+    it('rejects false creation claim for mixed candidates with same-city address-less fallback', () => {
+      const mixedAddresslessInventory: Ivenue[] = [
+        { _id: 'v1', name: 'Test Venue', city: 'Salem', address: '' },
+        { _id: 'v2', name: 'Test Venue', city: 'Roanoke', address: '2 Electric Road' },
+      ];
+      const res = getExistingVenueWarning({
+        name: 'Test Venue',
+        city: 'Salem',
+        address: '1 Electric Road',
+        inventory: mixedAddresslessInventory,
+        mode: 'create',
+      });
+      expect(res.hasWarning).toBe(true);
+      expect(res.sameCityMatches).toHaveLength(1);
+      expect(res.differentCityMatches).toHaveLength(1);
+      expect(res.message).not.toContain(
+        'Matching venue(s) in a different city will result in creating a separate venue.',
+      );
+      expect(res.message).toContain(
+        'One same-name-and-city record has no address on file. '
+        + 'If no street address matches, saving will update that older record and make it active.',
+      );
     });
 
     it('includes all approved backend save conditions in create mode', () => {
