@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import '@testing-library/jest-dom';
 import { render, screen, act, fireEvent } from '@testing-library/react';
 import { AuthContext, defaultAuth, type Iauth } from 'src/providers/Auth.provider';
 import { AdminVenues } from 'src/containers/AdminVenues';
@@ -19,6 +20,7 @@ const wrap = (auth: Iauth) => (
 
 describe('AdminVenues page', () => {
   beforeEach(() => {
+    vi.spyOn(adminVenuesUtils, 'fetchWarningVenues').mockResolvedValue([]);
     adminVenuesUtils.listVenues = vi.fn(() => Promise.resolve([])) as any;
     adminVenuesUtils.getAllowedAdminRoles = vi.fn(() => ['JaM-admin', 'Developer']) as any;
     adminVenuesUtils.exportVenuesToExcel = vi.fn() as any;
@@ -198,4 +200,25 @@ describe('AdminVenues page', () => {
 
     expect(screen.getByTestId('admin-venues-error').innerHTML).toBe('update failed');
   });
+  it.each([
+    ['created', 'active', 'Venue created'],
+    ['updated', 'active', 'Existing venue updated'],
+    ['updated', 'archived', 'Existing archived venue restored and updated'],
+  ] as const)('keeps the %s/%s result after the dialog closes', async (outcome, status, message) => {
+    const saved: Ivenue = { _id: 'saved', name: 'Cafe', city: 'Salem', status };
+    vi.spyOn(adminVenuesUtils, 'fetchWarningVenues').mockResolvedValue([saved]);
+    vi.spyOn(adminVenuesUtils, 'createVenueWithOutcome').mockResolvedValue({ venue: saved, outcome, status: outcome === 'created' ? 201 : 200 });
+    vi.spyOn(window, 'confirm').mockReturnValue(true);
+    await act(async () => { render(wrap(adminAuth)); });
+    await act(async () => { fireEvent.click(screen.getByTestId('admin-venues-add-button')); });
+    const fields = { name: 'Cafe', address: '1 Main St', city: 'Salem', zip: '24153', state: 'VA' };
+    for (const [field, value] of Object.entries(fields)) {
+      fireEvent.change(screen.getByTestId(`edit-venue-${field}`), { target: { value } });
+    }
+    await act(async () => { fireEvent.click(screen.getByTestId('edit-venue-save')); });
+    expect(screen.getByTestId('admin-venues-save-result')).toHaveTextContent(message);
+    expect(screen.getByTestId('edit-venue-dialog-title').parentElement).toHaveAttribute('data-expanded', 'false');
+    expect(adminVenuesUtils.listVenues).toHaveBeenCalledTimes(2);
+  });
+
 });

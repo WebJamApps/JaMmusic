@@ -56,7 +56,7 @@ interface IeditVenueDialogProps {
   venue: Ivenue | null;
   token: string;
   onClose: () => void;
-  onSaved: () => void;
+  onSaved: (message: string) => void;
   existingVenues?: Ivenue[];
 }
 
@@ -202,75 +202,41 @@ export function EditVenueDialog({
 
   const set = <K extends keyof IvenueUpdate>(key: K, value: IvenueUpdate[K]) => setForm((f) => ({ ...f, [key]: value }));
 
-  const handleSave = async () => {
-    if (!form.name || !form.name.trim()) { setError('Name is required'); return; }
+  const [warningVenues, setWarningVenues] = useState<Ivenue[]>([]);
+  const [inventoryReady, setInventoryReady] = useState(false);
+  const [inventoryError, setInventoryError] = useState('');
+  const [inventoryAttempt, setInventoryAttempt] = useState(0);
 
-    const isCreate = !venue;
-    const hadAddress = !!(venue && venue.address && venue.address.trim());
-    const addressTrimmed = form.address ? form.address.trim() : '';
-
-    if (isCreate && !addressTrimmed) {
-      setError('Street address is required');
-      return;
-    }
-    if (!isCreate && hadAddress && !addressTrimmed) {
-      setError("Address can't be removed — enter the corrected address");
-      return;
-    }
-
-    const hadZip = !!(venue && venue.zipCode && venue.zipCode.trim());
-    const zipTrimmed = form.zipCode ? form.zipCode.trim() : '';
-
-    if (isCreate && !zipTrimmed) {
-      setError('Zip code is required');
-      return;
-    }
-    if (!isCreate && hadZip && !zipTrimmed) {
-      setError("Zip code can't be removed — enter the corrected zip code");
-      return;
-    }
-    if (zipTrimmed && !/^\d{5}(?:-\d{4})?$/.test(zipTrimmed)) {
-      setError('Zip code must be a valid 5-digit ZIP code');
-      return;
-    }
-
-    if (existingVenues) {
-      const isDuplicate = existingVenues.some(
-        (v) => v.name.trim().toLowerCase() === form.name!.trim().toLowerCase() && (isCreate || v._id !== venue?._id)
-      );
-      if (isDuplicate) {
-        const proceed = confirm(
-          `A venue with the name "${form.name.trim()}" already exists. ` +
-            'The existing record will be updated and un-archived instead of creating a duplicate. ' +
-            'Do you want to proceed?'
-        );
-        if (!proceed) return;
-      }
-    }
-
-    // Validate state when country is US
-    const currentCountry = form.country || 'US';
-    if (currentCountry === 'US' && (!form.usState || !form.usState.trim())) {
-      setError('State is required for US venues');
-      return;
-    }
-
-    // Validate and format website URL
-    let websiteUrl = form.website ? form.website.trim() : '';
-    if (websiteUrl) {
-      if (!/^https?:\/\//i.test(websiteUrl)) {
-        websiteUrl = `https://${websiteUrl}`;
-      }
+  useEffect(() => {
+    if (!open) return;
+    let cancelled = false;
+    setInventoryReady(false);
+    setInventoryError('');
+    const load = async () => {
       try {
-        const parsed = new URL(websiteUrl);
-        if (!parsed.hostname.includes('.')) {
-          throw new Error('Invalid host');
+        const inventory = existingVenues ?? await adminVenuesUtils.fetchWarningVenues(token);
+        if (!cancelled) {
+          setWarningVenues(inventory);
+          setInventoryReady(true);
         }
-      } catch {
-        setError('A valid website URL is required');
-        return;
+      } catch (e) {
+        if (!cancelled) setInventoryError((e as Error).message || 'Failed to check existing venues');
       }
+    };
+    void load();
+    return () => { cancelled = true; };
+  }, [open, token, existingVenues, inventoryAttempt]);
+
+  const handleSave = async () => {
+    if (!inventoryReady || submitting) return;
+    const validation = venueShared.validateVenueFields({ ...form }, {
+      mode: venue ? 'edit' : 'create', originalVenue: venue,
+    });
+    if (!validation.valid) {
+      setError(validation.error || 'Check the venue fields');
+      return;
     }
+    const currentCountry = form.country || 'US';
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const primaryEmail = form.email ? form.email.trim() : '';
@@ -285,17 +251,24 @@ export function EditVenueDialog({
       return;
     }
 
+    const warning = venueShared.getExistingVenueWarning({
+      name: form.name, city: form.city, address: form.address,
+      inventory: warningVenues, mode: venue ? 'edit' : 'create', selectedVenueId: venue?._id,
+    });
+    if (warning.hasWarning && !confirm(`${warning.message}\n\nDo you want to proceed?`)) return;
+
     const finalForm: IvenueUpdate = {
       ...form,
-      name: form.name.trim(),
-      address: addressTrimmed,
-      zipCode: zipTrimmed || undefined,
+      name: form.name!.trim(),
+      city: (form.city || '').trim(),
+      address: (form.address || '').trim(),
+      zipCode: (form.zipCode || '').trim() || undefined,
       email: primaryEmail,
       secondaryEmail: secondaryEmail,
       venueType: form.venueType || undefined,
       templateOverride: form.templateOverride || undefined,
       audienceAttention: form.audienceAttention || undefined,
-      website: websiteUrl,
+      website: validation.formattedWebsite,
       country: currentCountry,
       gigInterval: typeof form.gigInterval === 'number' ? form.gigInterval : 0,
       resumeBooking: form.resumeBooking || null,
@@ -337,6 +310,7 @@ export function EditVenueDialog({
     setNotice('');
     try {
       let savedVenue: Ivenue;
+      let outcome: 'created' | 'updated' = 'updated';
       if (venue) {
         // Edit mode
         savedVenue = await adminVenuesUtils.updateVenue(token, venue._id, {
@@ -344,18 +318,19 @@ export function EditVenueDialog({
         });
       } else {
         // Create mode
-        savedVenue = await adminVenuesUtils.createVenue(token, {
-          ...finalForm,
-        });
+        const result = await adminVenuesUtils.createVenueWithOutcome(token, { ...finalForm, status: 'active' });
+        savedVenue = result.venue;
+        outcome = result.outcome;
       }
       if (savedVenue && savedVenue.address !== undefined) {
         setForm((f) => ({ ...f, address: savedVenue.address || '' }));
       }
-      const rawRes = savedVenue as any;
-      if (rawRes?.notice || rawRes?.emailNotice) {
-        setNotice(rawRes.notice || rawRes.emailNotice);
-      }
-      onSaved();
+      const rawRes = savedVenue as Ivenue & { notice?: string; emailNotice?: string };
+      const backendNotice = rawRes?.notice || rawRes?.emailNotice;
+      if (backendNotice) setNotice(backendNotice);
+      const wasArchived = !venue && warningVenues.some((v) => v._id === savedVenue._id && v.status === 'archived');
+      const message = venueShared.formatVenueSaveOutcomeMessage(outcome, wasArchived);
+      onSaved(backendNotice ? `${message}. ${backendNotice}` : message);
     } catch (e) {
       const err = e as { message?: string };
       setError(err.message || (venue ? 'Update failed' : 'Create failed'));
@@ -735,11 +710,17 @@ export function EditVenueDialog({
         <TextField label="Notes" fullWidth multiline rows={6} value={form.notes || ''} onChange={(e) => set('notes', e.target.value)}
           sx={{ marginTop: 2 }} data-testid="edit-venue-notes" />
         {notice && <Typography color="info.main" sx={{ marginTop: 1 }} data-testid="edit-venue-notice">{notice}</Typography>}
+        {inventoryError && (
+          <Box role="alert">
+            <Typography color="error">{inventoryError}</Typography>
+            <Button onClick={() => setInventoryAttempt((n) => n + 1)}>Retry existing-venue check</Button>
+          </Box>
+        )}
         {error && <Typography color="error" sx={{ marginTop: 1 }} data-testid="edit-venue-error">{error}</Typography>}
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose} data-testid="edit-venue-cancel">Cancel</Button>
-        <Button onClick={handleSave} variant="contained" disabled={submitting} data-testid="edit-venue-save">
+        <Button onClick={handleSave} variant="contained" disabled={submitting || !inventoryReady} data-testid="edit-venue-save">
           {submitting ? 'Saving...' : 'Save'}
         </Button>
       </DialogActions>

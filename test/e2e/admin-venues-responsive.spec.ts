@@ -49,7 +49,7 @@ test.describe('Admin Venues page responsiveness and table scrollability', () => 
     });
 
     // Intercept API calls to /venue (ignoring the /admin/venues frontend page route)
-    await page.route('http://localhost:7000/venue*', async (route) => {
+    await page.route('http://localhost:7000/venue**', async (route) => {
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -338,7 +338,9 @@ test.describe('Admin Venues page responsiveness and table scrollability', () => 
       // Fill form without zip code
       await page.locator('[data-testid="edit-venue-name"] input').fill('Playwright Test Cafe');
       await page.locator('[data-testid="edit-venue-address"] input').fill('100 Main St');
-      await page.locator('[data-testid="edit-venue-state"] input').fill('VA');
+      await page.locator('[data-testid="edit-venue-city"] input').fill('Roanoke');
+      await page.getByTestId('edit-venue-state').click();
+      await page.getByRole('option', { name: 'Virginia (VA)', exact: true }).click();
 
       // Save and verify "Zip code is required" error
       await page.locator('[data-testid="edit-venue-save"]').click();
@@ -359,7 +361,7 @@ test.describe('Admin Venues page responsiveness and table scrollability', () => 
         } | null;
       } = { payload: null };
       let storedVenue: Record<string, unknown> | null = null;
-      await page.route('http://localhost:7000/venue*', async route => {
+      await page.route('http://localhost:7000/venue**', async route => {
         if (route.request().method() === 'POST') {
           captured.payload = JSON.parse(route.request().postData() || '{}');
           storedVenue = {

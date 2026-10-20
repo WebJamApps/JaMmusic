@@ -57,8 +57,9 @@ const venue: Ivenue = {
 
 describe('EditVenueDialog', () => {
   beforeEach(() => {
-    vi.spyOn(adminVenuesUtils, 'createVenue').mockResolvedValue({} as Ivenue);
+    vi.spyOn(adminVenuesUtils, 'createVenueWithOutcome').mockResolvedValue({ venue: {} as Ivenue, outcome: 'created', status: 201 });
     vi.spyOn(adminVenuesUtils, 'updateVenue').mockResolvedValue({} as Ivenue);
+    vi.spyOn(adminVenuesUtils, 'fetchWarningVenues').mockResolvedValue([]);
   });
 
   it('saves the venue and calls onSaved', async () => {
@@ -142,12 +143,13 @@ describe('EditVenueDialog', () => {
     });
     await act(async () => {
       fireEvent.change(screen.getByTestId('edit-venue-name'), { target: { value: 'Untouched Family Venue' } });
+      fireEvent.change(screen.getByTestId('edit-venue-city'), { target: { value: 'Salem' } });
       fireEvent.change(screen.getByTestId('edit-venue-address'), { target: { value: '123 Campbell Ave' } });
       fireEvent.change(screen.getByTestId('edit-venue-state'), { target: { value: 'NC' } });
       fireEvent.change(screen.getByTestId('edit-venue-zip'), { target: { value: '28202' } });
       fireEvent.click(screen.getByTestId('edit-venue-save'));
     });
-    expect(adminVenuesUtils.createVenue).toHaveBeenCalledWith('tk', expect.not.objectContaining({
+    expect(adminVenuesUtils.createVenueWithOutcome).toHaveBeenCalledWith('tk', expect.not.objectContaining({
       familyNearby: expect.anything(),
     }));
     expect(onSaved).toHaveBeenCalled();
@@ -269,6 +271,7 @@ describe('EditVenueDialog', () => {
     });
     await act(async () => {
       fireEvent.change(screen.getByTestId('edit-venue-name'), { target: { value: 'Recomputed Venue' } });
+      fireEvent.change(screen.getByTestId('edit-venue-city'), { target: { value: 'Salem' } });
       fireEvent.change(screen.getByTestId('edit-venue-address'), { target: { value: '123 Campbell Ave' } });
       fireEvent.change(screen.getByTestId('edit-venue-state'), { target: { value: 'NC' } });
       fireEvent.change(screen.getByTestId('edit-venue-zip'), { target: { value: '28202' } });
@@ -284,7 +287,7 @@ describe('EditVenueDialog', () => {
     await act(async () => {
       fireEvent.click(screen.getByTestId('edit-venue-save'));
     });
-    expect(adminVenuesUtils.createVenue).toHaveBeenCalledWith('tk', expect.not.objectContaining({
+    expect(adminVenuesUtils.createVenueWithOutcome).toHaveBeenCalledWith('tk', expect.not.objectContaining({
       familyNearby: expect.anything(),
     }));
     expect(onSaved).toHaveBeenCalled();
@@ -409,6 +412,7 @@ describe('EditVenueDialog', () => {
     });
     await act(async () => {
       fireEvent.change(screen.getByTestId('edit-venue-name'), { target: { value: 'New Cafe' } });
+      fireEvent.change(screen.getByTestId('edit-venue-city'), { target: { value: 'Salem' } });
       fireEvent.change(screen.getByTestId('edit-venue-address'), { target: { value: '123 Campbell Ave' } });
       fireEvent.change(screen.getByTestId('edit-venue-state'), { target: { value: 'NC' } });
       fireEvent.change(screen.getByTestId('edit-venue-zip'), { target: { value: '28202' } });
@@ -417,7 +421,7 @@ describe('EditVenueDialog', () => {
     await act(async () => {
       fireEvent.click(screen.getByTestId('edit-venue-save'));
     });
-    expect(adminVenuesUtils.createVenue).toHaveBeenCalledWith('tk', expect.objectContaining({
+    expect(adminVenuesUtils.createVenueWithOutcome).toHaveBeenCalledWith('tk', expect.objectContaining({
       name: 'New Cafe',
       address: '123 Campbell Ave',
       usState: 'NC',
@@ -425,7 +429,7 @@ describe('EditVenueDialog', () => {
       zipCode: '28202',
       familyNearby: true,
     }));
-    expect(adminVenuesUtils.createVenue).toHaveBeenCalledWith('tk', expect.not.objectContaining({
+    expect(adminVenuesUtils.createVenueWithOutcome).toHaveBeenCalledWith('tk', expect.not.objectContaining({
       templateOverride: expect.anything(),
       audienceAttention: expect.anything(),
     }));
@@ -438,13 +442,14 @@ describe('EditVenueDialog', () => {
     });
     await act(async () => {
       fireEvent.change(screen.getByTestId('edit-venue-name'), { target: { value: 'New Cafe' } });
+      fireEvent.change(screen.getByTestId('edit-venue-city'), { target: { value: 'Salem' } });
       fireEvent.change(screen.getByTestId('edit-venue-address'), { target: { value: '123 Campbell Ave' } });
     });
     await act(async () => {
       fireEvent.click(screen.getByTestId('edit-venue-save'));
     });
     expect(screen.getByTestId('edit-venue-error').innerHTML).toBe('Zip code is required');
-    expect(adminVenuesUtils.createVenue).not.toHaveBeenCalled();
+    expect(adminVenuesUtils.createVenueWithOutcome).not.toHaveBeenCalled();
   });
 
   it('validates that zip code must be a 5-digit code', async () => {
@@ -453,6 +458,7 @@ describe('EditVenueDialog', () => {
     });
     await act(async () => {
       fireEvent.change(screen.getByTestId('edit-venue-name'), { target: { value: 'New Cafe' } });
+      fireEvent.change(screen.getByTestId('edit-venue-city'), { target: { value: 'Salem' } });
       fireEvent.change(screen.getByTestId('edit-venue-address'), { target: { value: '123 Campbell Ave' } });
       fireEvent.change(screen.getByTestId('edit-venue-zip'), { target: { value: '2820' } });
     });
@@ -460,7 +466,7 @@ describe('EditVenueDialog', () => {
       fireEvent.click(screen.getByTestId('edit-venue-save'));
     });
     expect(screen.getByTestId('edit-venue-error').innerHTML).toBe('Zip code must be a valid 5-digit ZIP code');
-    expect(adminVenuesUtils.createVenue).not.toHaveBeenCalled();
+    expect(adminVenuesUtils.createVenueWithOutcome).not.toHaveBeenCalled();
   });
 
   it('accepts a valid ZIP+4 format when creating a venue', async () => {
@@ -470,6 +476,7 @@ describe('EditVenueDialog', () => {
     });
     await act(async () => {
       fireEvent.change(screen.getByTestId('edit-venue-name'), { target: { value: 'New Cafe' } });
+      fireEvent.change(screen.getByTestId('edit-venue-city'), { target: { value: 'Salem' } });
       fireEvent.change(screen.getByTestId('edit-venue-address'), { target: { value: '123 Campbell Ave' } });
       fireEvent.change(screen.getByTestId('edit-venue-state'), { target: { value: 'VA' } });
       fireEvent.change(screen.getByTestId('edit-venue-zip'), { target: { value: '24011-1234' } });
@@ -477,7 +484,7 @@ describe('EditVenueDialog', () => {
     await act(async () => {
       fireEvent.click(screen.getByTestId('edit-venue-save'));
     });
-    expect(adminVenuesUtils.createVenue).toHaveBeenCalledWith('tk', expect.objectContaining({
+    expect(adminVenuesUtils.createVenueWithOutcome).toHaveBeenCalledWith('tk', expect.objectContaining({
       name: 'New Cafe',
       zipCode: '24011-1234',
     }));
@@ -490,6 +497,7 @@ describe('EditVenueDialog', () => {
     });
     await act(async () => {
       fireEvent.change(screen.getByTestId('edit-venue-name'), { target: { value: 'New Cafe' } });
+      fireEvent.change(screen.getByTestId('edit-venue-city'), { target: { value: 'Salem' } });
       fireEvent.change(screen.getByTestId('edit-venue-address'), { target: { value: '123 Campbell Ave' } });
       fireEvent.change(screen.getByTestId('edit-venue-zip'), { target: { value: '28202' } });
     });
@@ -497,7 +505,7 @@ describe('EditVenueDialog', () => {
       fireEvent.click(screen.getByTestId('edit-venue-save'));
     });
     expect(screen.getByTestId('edit-venue-error').innerHTML).toBe('State is required for US venues');
-    expect(adminVenuesUtils.createVenue).not.toHaveBeenCalled();
+    expect(adminVenuesUtils.createVenueWithOutcome).not.toHaveBeenCalled();
   });
 
   it('validates and auto-prefixes website URL', async () => {
@@ -529,12 +537,13 @@ describe('EditVenueDialog', () => {
   });
 
   it('supports non-US countries with free-text region field', async () => {
-    vi.spyOn(adminVenuesUtils, 'createVenue').mockResolvedValue({} as Ivenue);
+    vi.spyOn(adminVenuesUtils, 'createVenueWithOutcome').mockResolvedValue({ venue: {} as Ivenue, outcome: 'created', status: 201 });
     await act(async () => {
       render(<EditVenueDialog open venue={null} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />);
     });
     await act(async () => {
       fireEvent.change(screen.getByTestId('edit-venue-name'), { target: { value: 'Global Club' } });
+      fireEvent.change(screen.getByTestId('edit-venue-city'), { target: { value: 'Salem' } });
       fireEvent.change(screen.getByTestId('edit-venue-address'), { target: { value: '123 Campbell Ave' } });
       fireEvent.change(screen.getByTestId('edit-venue-zip'), { target: { value: '12345' } });
       fireEvent.change(screen.getByTestId('edit-venue-country'), { target: { value: 'CA' } });
@@ -545,7 +554,7 @@ describe('EditVenueDialog', () => {
     await act(async () => {
       fireEvent.click(screen.getByTestId('edit-venue-save'));
     });
-    expect(adminVenuesUtils.createVenue).toHaveBeenCalledWith('tk', expect.objectContaining({
+    expect(adminVenuesUtils.createVenueWithOutcome).toHaveBeenCalledWith('tk', expect.objectContaining({
       name: 'Global Club',
       address: '123 Campbell Ave',
       country: 'CA',
@@ -556,7 +565,7 @@ describe('EditVenueDialog', () => {
   });
 
   it('warns on duplicate venue name and cancels save if user rejects confirm', async () => {
-    vi.spyOn(adminVenuesUtils, 'createVenue').mockResolvedValue({} as Ivenue);
+    vi.spyOn(adminVenuesUtils, 'createVenueWithOutcome').mockResolvedValue({ venue: {} as Ivenue, outcome: 'created', status: 201 });
     const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(false);
     const existing: Ivenue[] = [{ _id: 'v1', name: 'Existing Venue' }];
     await act(async () => {
@@ -564,6 +573,8 @@ describe('EditVenueDialog', () => {
     });
     await act(async () => {
       fireEvent.change(screen.getByTestId('edit-venue-name'), { target: { value: 'existing venue' } });
+      fireEvent.change(screen.getByTestId('edit-venue-state'), { target: { value: 'VA' } });
+      fireEvent.change(screen.getByTestId('edit-venue-city'), { target: { value: 'Salem' } });
       fireEvent.change(screen.getByTestId('edit-venue-address'), { target: { value: '123 Campbell Ave' } });
       fireEvent.change(screen.getByTestId('edit-venue-zip'), { target: { value: '24011' } });
     });
@@ -571,7 +582,7 @@ describe('EditVenueDialog', () => {
       fireEvent.click(screen.getByTestId('edit-venue-save'));
     });
     expect(confirmSpy).toHaveBeenCalled();
-    expect(adminVenuesUtils.createVenue).not.toHaveBeenCalled();
+    expect(adminVenuesUtils.createVenueWithOutcome).not.toHaveBeenCalled();
     confirmSpy.mockRestore();
   });
 
@@ -580,7 +591,7 @@ describe('EditVenueDialog', () => {
     await act(async () => { fireEvent.change(screen.getByTestId('edit-venue-name'), { target: { value: 'New Venue' } }); });
     await act(async () => { fireEvent.click(screen.getByTestId('edit-venue-save')); });
     expect(screen.getByTestId('edit-venue-error').innerHTML).toBe('Street address is required');
-    expect(adminVenuesUtils.createVenue).not.toHaveBeenCalled();
+    expect(adminVenuesUtils.createVenueWithOutcome).not.toHaveBeenCalled();
   });
 
   it('blocks save and shows an error when clearing address on a venue that has one', async () => {
@@ -628,29 +639,70 @@ describe('EditVenueDialog', () => {
 
   it('surfaces backend notice and server-returned normalized address on save', async () => {
     const onSaved = vi.fn();
-    vi.spyOn(adminVenuesUtils, 'createVenue').mockResolvedValue({
+    vi.spyOn(adminVenuesUtils, 'createVenueWithOutcome').mockResolvedValue({ venue: {
       _id: 'v2',
       name: 'Macados',
       address: '100 N Main St',
       notice: 'email also used by Macados Roanoke',
-    } as unknown as Ivenue);
+    } as unknown as Ivenue, outcome: 'created', status: 201 });
 
     await act(async () => { render(<EditVenueDialog open venue={null} token="tk" onClose={vi.fn()} onSaved={onSaved} />); });
     await act(async () => {
       fireEvent.change(screen.getByTestId('edit-venue-name'), { target: { value: 'Macados' } });
+      fireEvent.change(screen.getByTestId('edit-venue-city'), { target: { value: 'Salem' } });
       fireEvent.change(screen.getByTestId('edit-venue-address'), { target: { value: '100 North Main Street' } });
       fireEvent.change(screen.getByTestId('edit-venue-state'), { target: { value: 'VA' } });
       fireEvent.change(screen.getByTestId('edit-venue-zip'), { target: { value: '24011' } });
     });
     await act(async () => { fireEvent.click(screen.getByTestId('edit-venue-save')); });
 
-    expect(adminVenuesUtils.createVenue).toHaveBeenCalledWith('tk', expect.objectContaining({
+    expect(adminVenuesUtils.createVenueWithOutcome).toHaveBeenCalledWith('tk', expect.objectContaining({
       name: 'Macados',
       address: '100 North Main Street',
       zipCode: '24011',
     }));
     expect(screen.getByTestId('edit-venue-notice').innerHTML).toBe('email also used by Macados Roanoke');
     expect(onSaved).toHaveBeenCalled();
+  });
+
+  it('shows an inventory error and retries without clearing entered values', async () => {
+    vi.spyOn(adminVenuesUtils, 'fetchWarningVenues')
+      .mockRejectedValueOnce(new Error('Inventory unavailable')).mockResolvedValueOnce([]);
+    await act(async () => { render(<EditVenueDialog open venue={venue} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />); });
+    fireEvent.change(screen.getByTestId('edit-venue-name'), { target: { value: 'Retained name' } });
+    expect(screen.getByRole('alert')).toHaveTextContent('Inventory unavailable');
+    expect(screen.getByTestId('edit-venue-save')).toBeDisabled();
+    await act(async () => { fireEvent.click(screen.getByText('Retry existing-venue check')); });
+    expect(screen.getByTestId('edit-venue-name')).toHaveValue('Retained name');
+    expect(screen.getByTestId('edit-venue-save')).not.toBeDisabled();
+  });
+
+  it('ignores an inventory response after closing the dialog', async () => {
+    let resolveInventory: (venues: Ivenue[]) => void = () => {};
+    vi.spyOn(adminVenuesUtils, 'fetchWarningVenues').mockReturnValue(new Promise((resolve) => { resolveInventory = resolve; }));
+    const { rerender } = render(<EditVenueDialog open venue={venue} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />);
+    rerender(<EditVenueDialog open={false} venue={venue} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />);
+    await act(async () => { resolveInventory([]); });
+    expect(adminVenuesUtils.updateVenue).not.toHaveBeenCalled();
+  });
+
+  it('retains all inputs after a create refusal and reports the confirmed retry outcome', async () => {
+    const onSaved = vi.fn();
+    vi.spyOn(adminVenuesUtils, 'createVenueWithOutcome')
+      .mockRejectedValueOnce(new Error('Ambiguous venue matches'))
+      .mockResolvedValueOnce({ venue, status: 200, outcome: 'updated' });
+    await act(async () => { render(<EditVenueDialog open venue={null} token="tk" onClose={vi.fn()} onSaved={onSaved} />); });
+    const fields = { name: 'New Cafe', address: '1 Main St', city: 'Salem', zip: '24153', state: 'VA', website: 'example.test' };
+    for (const [field, value] of Object.entries(fields)) {
+      fireEvent.change(screen.getByTestId(`edit-venue-${field}`), { target: { value } });
+    }
+    await act(async () => { fireEvent.click(screen.getByTestId('edit-venue-save')); });
+    expect(screen.getByTestId('edit-venue-error')).toHaveTextContent('Ambiguous venue matches');
+    expect(screen.getByTestId('edit-venue-address')).toHaveValue('1 Main St');
+    expect(screen.getByTestId('edit-venue-website')).toHaveValue('example.test');
+    expect(onSaved).not.toHaveBeenCalled();
+    await act(async () => { fireEvent.click(screen.getByTestId('edit-venue-save')); });
+    expect(onSaved).toHaveBeenCalledWith('Existing venue updated');
   });
 
   describe('Google Places Autocomplete', () => {
