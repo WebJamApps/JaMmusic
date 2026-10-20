@@ -146,6 +146,7 @@ export const GigsDiv = (props: IgigsDivProps) => {
   const navigate = useNavigate();
   const isMobile = useMediaQuery('(max-width:600px)');
   const [page, setPage] = useState(0);
+  const [saveMessage, setSaveMessage] = useState('');
   const handleClick = () => {
     if (process.env.APP_NAME === 'joshandmariamusic.com') window.open('https://web-jam.com/music/bookus');
     else navigate('/music/bookus');
@@ -162,6 +163,7 @@ export const GigsDiv = (props: IgigsDivProps) => {
         <Button variant="contained" className="bookUsButton" onClick={handleClick}>Book Us</Button>
         <ShowCreateGigButton isAdmin={isAdmin} setShowDialog={setShowDialog} />
       </h4>
+      {saveMessage && <div role="status">{saveMessage}</div>}
       {gigsInOrder === null ? (
         <div
           className="gigs-error-message"
@@ -193,8 +195,9 @@ export const GigsDiv = (props: IgigsDivProps) => {
           />
         </div>
       )}
-      <CreateGigDialog showDialog={showDialog} setShowDialog={setShowDialog} />
+      <CreateGigDialog showDialog={showDialog} setShowDialog={setShowDialog} onSaveMessage={setSaveMessage} />
       <EditGigDialog
+        onSaveMessage={setSaveMessage}
         editGig={editGig}
         setEditGig={setEditGig}
         setShowDialog={setShowDialog}
