@@ -41,6 +41,7 @@ describe('CreateGigDialog', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.spyOn(adminVenuesUtils, 'fetchWarningVenues').mockResolvedValue([]);
   });
 
   it('handles existing venue path (selection, websites, preview, creation)', async () => {
@@ -91,12 +92,15 @@ describe('CreateGigDialog', () => {
       0,
       '',
       'v2',
+      expect.any(Function),
     ));
   });
 
   it('handles new venue path (creation)', async () => {
     vi.spyOn(adminVenuesUtils, 'listVenues').mockResolvedValue([]);
-    const createVenueSpy = vi.spyOn(adminVenuesUtils, 'createVenue').mockResolvedValue({ _id: 'new-venue-123' } as any);
+    const createVenueSpy = vi.spyOn(adminVenuesUtils, 'createVenueWithOutcome').mockResolvedValue({
+      venue: { _id: 'new-venue-123', name: 'New' }, outcome: 'created', status: 201,
+    });
     const createGigSpy = vi.spyOn(utils, 'createGig').mockResolvedValue('success');
     const setShowDialog = vi.fn();
 
@@ -112,19 +116,26 @@ describe('CreateGigDialog', () => {
     // Fill new venue info
     fireEvent.change(screen.getByLabelText('* Venue Name'), { target: { value: 'Brand New Place' } });
     fireEvent.change(screen.getByLabelText('* City'), { target: { value: 'Salem' } });
-    fireEvent.change(screen.getByLabelText('* State'), { target: { value: 'Virginia' } });
+    fireEvent.change(screen.getByLabelText('* State'), { target: { value: 'VA' } });
+
+    fireEvent.change(screen.getByLabelText('* Street Address'), { target: { value: '1 Main St' } });
+    fireEvent.change(screen.getByLabelText('* Zip Code'), { target: { value: '24153' } });
 
     // Verify preview
     expect(screen.getByText('Brand New Place')).toBeInTheDocument();
-    expect(screen.getByText('(Salem, Virginia)')).toBeInTheDocument();
+    expect(screen.getByText('(Salem, VA)')).toBeInTheDocument();
 
+    await waitFor(() => expect(screen.getByRole('button', { name: /^create$/i })).toBeEnabled());
     // Create
     fireEvent.click(screen.getByRole('button', { name: /create/i }));
 
     await waitFor(() => expect(createVenueSpy).toHaveBeenCalledWith('tk', {
       name: 'Brand New Place',
       city: 'Salem',
-      usState: 'Virginia',
+      usState: 'VA',
+      address: '1 Main St',
+      zipCode: '24153',
+      website: '',
       status: 'active',
     }));
     await waitFor(() => expect(createGigSpy).toHaveBeenCalledWith(
@@ -139,6 +150,7 @@ describe('CreateGigDialog', () => {
       0,
       '',
       'new-venue-123',
+      expect.any(Function),
     ));
   });
 

@@ -2,31 +2,34 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DateTimePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import {
   Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField,
-  FormControl, InputLabel, Select, MenuItem, Autocomplete, RadioGroup, FormControlLabel, Radio, Box,
+  FormControl, Autocomplete, RadioGroup, FormControlLabel, Radio, Box,
 } from '@mui/material';
 import type { Igig } from 'src/providers/Data.provider';
 import { defaultGig } from 'src/providers/fetchGigs';
 import { Editor } from '@tinymce/tinymce-react';
 import type { Iauth } from 'src/providers/Auth.provider';
-import { useContext, useState, useEffect } from 'react';
-import adminVenuesUtils from 'src/containers/AdminVenues/admin-venues.utils';
+import { useContext, useState, useEffect, useRef } from 'react';
+import adminVenuesUtils, { type Ivenue } from 'src/containers/AdminVenues/admin-venues.utils';
 import utils from './gigs.utils';
+import { GigVenueFields } from './GigVenueFields';
+import { useGigVenue } from './useGigVenue';
 
 interface IeditTextProps {
   objKey: 'tickets',
   editGig: typeof defaultGig,
   setEditChanged: (arg0: boolean) => void,
   setEditGig: (arg0: typeof defaultGig) => void,
-  required: boolean
+  required: boolean, disabled?: boolean
 }
 export const EditText = (props: IeditTextProps) => {
   const {
-    objKey, editGig, setEditChanged, setEditGig, required,
+    objKey, editGig, setEditChanged, setEditGig, required, disabled,
   } = props;
   let label = required ? '* ' : '';
   label = label + objKey.charAt(0).toUpperCase() + objKey.slice(1);
   return (
     <TextField
+      disabled={disabled}
       label={label}
       type="text"
       fullWidth
@@ -43,58 +46,58 @@ export const EditText = (props: IeditTextProps) => {
 
 interface IeditGigDialogProps {
   editGig: Igig, setEditGig: (arg0: Igig) => void, setShowDialog: (arg0: boolean) => void,
-  setEditChanged: (arg0: boolean) => void, editChanged: boolean, getGigs: () => void, auth: Iauth
+  setEditChanged: (arg0: boolean) => void, editChanged: boolean, getGigs: () => void, auth: Iauth,
+  onSaveMessage?: (message: string) => void
 }
 export function EditGigDialog(props: IeditGigDialogProps) {
   const {
-    editGig, setEditGig, setShowDialog, setEditChanged, editChanged, getGigs, auth,
+    editGig, setEditGig, setShowDialog, setEditChanged, editChanged, getGigs, auth, onSaveMessage,
   } = props;
 
   // 3-path venue state
-  const [venues, setVenues] = useState<any[]>([]);
-  const [selectedVenue, setSelectedVenue] = useState<any | null>(null);
+  const [venues, setVenues] = useState<Ivenue[]>([]);
+  const [selectedVenue, setSelectedVenue] = useState<Ivenue | null>(null);
   const [path, setPath] = useState<'existing' | 'new' | 'none'>('none');
-  const [inlineName, setInlineName] = useState('');
-  const [inlineCity, setInlineCity] = useState('');
-  const [inlineState, setInlineState] = useState('Virginia');
+  const venueForm = useGigVenue(editGig._id, auth.token);
+  const { fields } = venueForm;
+  const [saveError, setSaveError] = useState('');
+  const [saving, setSaving] = useState(false);
+  const savingRef = useRef(false);
+  useEffect(() => { setSaveError(''); }, [editGig._id]);
 
   useEffect(() => {
+    let cancelled = false;
     if (editGig._id && auth.token) {
-      adminVenuesUtils.listVenues(auth.token)
-        .then((allVenues) => {
-          const activeVenues = allVenues.filter((v) => v.status !== 'archived');
-          setVenues(activeVenues);
-
-          // Find initial path and selected venue
-          const initialVenueIdStr = typeof editGig.venueId === 'object' ? editGig.venueId?._id : editGig.venueId;
-          if (initialVenueIdStr) {
-            setPath('existing');
-            const match = activeVenues.find((v) => v._id === initialVenueIdStr);
-            if (match) setSelectedVenue(match);
-          } else {
-            setPath('none');
-            setSelectedVenue(null);
-          }
-        })
-        .catch((err) => console.error('Failed to fetch venues:', err));
+      const initialVenue = editGig.venueId;
+      const initialId = typeof initialVenue === 'object' ? initialVenue?._id : initialVenue;
+      setPath(initialId ? 'existing' : 'none');
+      setSelectedVenue(null);
+      adminVenuesUtils.listVenues(auth.token).then((allVenues) => {
+        if (cancelled) return;
+        const activeVenues = allVenues.filter((v) => v.status !== 'archived');
+        setVenues(activeVenues);
+        if (initialId) setSelectedVenue((selected) => selected || activeVenues.find((v) => v._id === initialId) || null);
+      }).catch((err) => console.error('Failed to fetch venues:', err));
     }
+    return () => { cancelled = true; };
   }, [editGig._id, auth.token]);
 
   const handleUpdate = async () => {
+    if (savingRef.current) return;
+    savingRef.current = true;
+    setSaving(true);
+    setSaveError('');
+    let venueMessage = venueForm.outcomeMessage;
     try {
       let finalVenueId = editGig.venueId;
       if (path === 'existing') {
         if (!selectedVenue) return;
         finalVenueId = selectedVenue._id;
       } else if (path === 'new') {
-        if (!inlineName || !inlineCity || !inlineState) return;
-        const newVenue = await adminVenuesUtils.createVenue(auth.token, {
-          name: inlineName,
-          city: inlineCity,
-          usState: inlineState,
-          status: 'active',
-        });
-        finalVenueId = newVenue._id;
+        const savedVenue = await venueForm.save();
+        finalVenueId = savedVenue.id;
+        venueMessage = savedVenue.message;
+        onSaveMessage?.(venueMessage);
       } else {
         finalVenueId = undefined;
       }
@@ -105,12 +108,20 @@ export function EditGigDialog(props: IeditGigDialogProps) {
         ...(finalVenueId ? { city: '', usState: '' } : {}),
       };
 
-      const result = await utils.updateGig(getGigs, setEditGig, setEditChanged, updatedGig, auth.token);
+      const result = await utils.updateGig(getGigs, setEditGig, setEditChanged, updatedGig, auth.token, setSaveError);
       if (result === 'success' || result === 'unconfirmed') {
+        onSaveMessage?.([
+          venueMessage, result === 'success' ? 'Gig updated.' : "Couldn't confirm gig save — list refreshed.",
+        ].filter(Boolean).join('. '));
         setShowDialog(false);
+      } else {
+        setSaveError((message) => message || 'Unable to update gig. Please retry.');
       }
     } catch (err) {
-      console.error('Failed to update gig:', err);
+      setSaveError(err instanceof Error ? err.message : 'Unable to update gig.');
+    } finally {
+      savingRef.current = false;
+      setSaving(false);
     }
   };
 
@@ -122,16 +133,19 @@ export function EditGigDialog(props: IeditGigDialogProps) {
       disableAutoFocus
       className="editGigDialog"
       open={!!editGig._id}
-      onClose={() => setShowDialog(false)}
+      onClose={() => { if (!saving) setEditGig(defaultGig); }}
     >
       <DialogTitle>Edit Gig</DialogTitle>
       <DialogContent sx={{ padding: '10px 10px' }}>
+        {saveError && <div role="alert">{saveError}</div>}
+        {venueForm.outcomeMessage && <div role="status">{venueForm.outcomeMessage}</div>}
         <DialogContentText sx={{ marginBottom: '30px' }}>Enter all *required fields</DialogContentText>
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <DateTimePicker
+            disabled={saving}
             className="editDateTime"
             label="* Date and Time"
-            value={editGig.datetime}
+            value={editGig.datetime ? new Date(editGig.datetime) : null}
             onChange={(newValue: Date | null) => {
               setEditChanged(true);
               setEditGig({ ...editGig, datetime: newValue }); return newValue;
@@ -147,7 +161,7 @@ export function EditGigDialog(props: IeditGigDialogProps) {
             row
             value={path}
             onChange={(e) => {
-              const newPath = e.target.value as any;
+              const newPath = e.target.value as 'existing' | 'new' | 'none';
               setPath(newPath);
               setEditChanged(true);
               if (newPath === 'none') {
@@ -156,14 +170,15 @@ export function EditGigDialog(props: IeditGigDialogProps) {
               }
             }}
           >
-            <FormControlLabel value="existing" control={<Radio size="small" />} label="Pick Existing Venue" />
-            <FormControlLabel value="new" control={<Radio size="small" />} label="Create New Venue" />
-            <FormControlLabel value="none" control={<Radio size="small" />} label="No Venue (One-off)" />
+            <FormControlLabel value="existing" control={<Radio size="small" disabled={saving} />} label="Pick Existing Venue" />
+            <FormControlLabel value="new" control={<Radio size="small" disabled={saving} />} label="Create New Venue" />
+            <FormControlLabel value="none" control={<Radio size="small" disabled={saving} />} label="No Venue (One-off)" />
           </RadioGroup>
         </FormControl>
 
         {path === 'existing' && (
           <Autocomplete
+            disabled={saving}
             id="venue-autocomplete"
             options={venues}
             getOptionLabel={(option) => option.name || ''}
@@ -174,51 +189,13 @@ export function EditGigDialog(props: IeditGigDialogProps) {
               setEditGig({ ...editGig, venueId: newValue || undefined });
             }}
             renderInput={(params) => (
-              <TextField {...params} label="* Search Venues" variant="outlined" fullWidth />
+              <TextField {...params} disabled={saving} label="* Search Venues" variant="outlined" fullWidth />
             )}
             sx={{ marginTop: '10px', marginBottom: '20px' }}
           />
         )}
 
-        {path === 'new' && (
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: '20px', marginTop: '10px', marginBottom: '20px' }}>
-            <TextField
-              label="* Venue Name"
-              type="text"
-              fullWidth
-              value={inlineName}
-              onChange={(evt) => {
-                setInlineName(evt.target.value);
-                setEditChanged(true);
-              }}
-            />
-            <TextField
-              label="* City"
-              type="text"
-              fullWidth
-              value={inlineCity}
-              onChange={(evt) => {
-                setInlineCity(evt.target.value);
-                setEditChanged(true);
-              }}
-            />
-            <FormControl fullWidth>
-              <InputLabel id="create-us-state-label">* State</InputLabel>
-              <Select
-                labelId="create-us-state-label"
-                id="create-us-state"
-                value={inlineState}
-                label="* State"
-                onChange={(evt) => {
-                  setInlineState(evt.target.value);
-                  setEditChanged(true);
-                }}
-              >
-                {utils.usStateOptions.map((s: string) => <MenuItem key={s} value={s}>{s}</MenuItem>)}
-              </Select>
-            </FormControl>
-          </Box>
-        )}
+        {path === 'new' && <GigVenueFields form={venueForm} disabled={saving} onChange={() => setEditChanged(true)} />}
 
         {path === 'existing' && selectedVenue && (
           <Box sx={{
@@ -264,7 +241,7 @@ export function EditGigDialog(props: IeditGigDialogProps) {
           </Box>
         )}
 
-        {path === 'new' && inlineName && (
+        {path === 'new' && fields.name && (
           <Box sx={{
             padding: '10px 15px',
             backgroundColor: 'action.hover',
@@ -278,9 +255,9 @@ export function EditGigDialog(props: IeditGigDialogProps) {
           }}
           >
             <span style={{ fontSize: '0.9rem', color: '#666', fontWeight: 'bold' }}>VENUE PREVIEW:</span>
-            <span style={{ fontWeight: 'bold' }}>{inlineName}</span>
+            <span style={{ fontWeight: 'bold' }}>{fields.name}</span>
             <span style={{ fontSize: '0.9rem', color: '#666' }}>
-              {`(${[inlineCity, inlineState].filter(Boolean).join(', ')})`}
+              {`(${[fields.city, fields.usState].filter(Boolean).join(', ')})`}
             </span>
           </Box>
         )}
@@ -290,6 +267,7 @@ export function EditGigDialog(props: IeditGigDialogProps) {
         </p>
 
         <Editor
+          disabled={saving}
           id="edit-venue"
           value={editGig.venue}
           apiKey={process.env.TINY_KEY}
@@ -315,8 +293,9 @@ export function EditGigDialog(props: IeditGigDialogProps) {
           }}
         />
 
-        <EditText objKey="tickets" editGig={editGig} setEditChanged={setEditChanged} setEditGig={setEditGig} required={false} />
+        <EditText disabled={saving} objKey="tickets" editGig={editGig} setEditChanged={setEditChanged} setEditGig={setEditGig} required={false} />
         <TextField
+          disabled={saving}
           label="Duration (hours)"
           type="number"
           fullWidth
@@ -325,6 +304,7 @@ export function EditGigDialog(props: IeditGigDialogProps) {
           onChange={(evt) => { setEditChanged(true); setEditGig({ ...editGig, duration: Number(evt.target.value) }); }}
         />
         <TextField
+          disabled={saving}
           label="Promo image URL"
           type="text"
           fullWidth
@@ -335,15 +315,18 @@ export function EditGigDialog(props: IeditGigDialogProps) {
       </DialogContent>
       <DialogActions>
         <Button
-          disabled={utils.checkUpdateDisabled(
+          disabled={saving || (path === 'new' && !venueForm.ready) || utils.checkUpdateDisabled(
             editGig,
             editChanged,
             path,
             selectedVenue?._id || null,
             editGig.venue || '',
-            inlineName,
-            inlineCity,
-            inlineState,
+            fields.name,
+            fields.city,
+            fields.usState,
+            fields.address,
+            fields.zipCode,
+            fields.website,
           )}
           size="small"
           variant="contained"
@@ -354,6 +337,7 @@ export function EditGigDialog(props: IeditGigDialogProps) {
         </Button>
         <Button
           size="small"
+          disabled={saving}
           className="deleteGigButton"
           sx={{ color: 'red' }}
           onClick={async () => {
@@ -368,6 +352,7 @@ export function EditGigDialog(props: IeditGigDialogProps) {
         </Button>
         <Button
           size="small"
+          disabled={saving}
           className="cancelEditGigButton"
           onClick={() => {
             setEditChanged(false);

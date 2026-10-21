@@ -1,22 +1,24 @@
 import {
   DialogActions, Button,
-  Dialog, DialogTitle, DialogContent, DialogContentText, TextField, FormControl, InputLabel, Select, MenuItem,
+  Dialog, DialogTitle, DialogContent, DialogContentText, TextField, FormControl,
   Autocomplete, RadioGroup, FormControlLabel, Radio, Box,
 } from '@mui/material';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DateTimePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { Editor } from '@tinymce/tinymce-react';
-import { useContext, useState, useEffect } from 'react';
+import { useContext, useState, useEffect, useRef } from 'react';
 import { DataContext } from 'src/providers/Data.provider';
 import { AuthContext } from 'src/providers/Auth.provider';
-import adminVenuesUtils from 'src/containers/AdminVenues/admin-venues.utils';
+import adminVenuesUtils, { type Ivenue } from 'src/containers/AdminVenues/admin-venues.utils';
 import utils from './gigs.utils';
+import { GigVenueFields } from './GigVenueFields';
+import { useGigVenue } from './useGigVenue';
 
 interface IcreateGigDialogProps {
-  showDialog: boolean, setShowDialog: (arg0: boolean) => void,
+  showDialog: boolean, setShowDialog: (arg0: boolean) => void, onSaveMessage?: (message: string) => void,
 }
 export function CreateGigDialog({
-  showDialog, setShowDialog,
+  showDialog, setShowDialog, onSaveMessage,
 }: IcreateGigDialogProps) {
   const { auth } = useContext(AuthContext);
   const { getGigs } = useContext(DataContext);
@@ -28,12 +30,15 @@ export function CreateGigDialog({
   const [promoImageUrl, setPromoImageUrl] = useState('');
 
   // 3-path venue state
-  const [venues, setVenues] = useState<any[]>([]);
-  const [selectedVenue, setSelectedVenue] = useState<any | null>(null);
+  const [venues, setVenues] = useState<Ivenue[]>([]);
+  const [selectedVenue, setSelectedVenue] = useState<Ivenue | null>(null);
   const [path, setPath] = useState<'existing' | 'new' | 'none'>('existing');
-  const [inlineName, setInlineName] = useState('');
-  const [inlineCity, setInlineCity] = useState('');
-  const [inlineState, setInlineState] = useState('Virginia');
+  const venueForm = useGigVenue(showDialog, auth.token);
+  const { fields } = venueForm;
+  const [saveError, setSaveError] = useState('');
+  const [saving, setSaving] = useState(false);
+  const savingRef = useRef(false);
+  useEffect(() => { setSaveError(''); }, [showDialog]);
 
   useEffect(() => {
     if (showDialog && auth.token) {
@@ -46,20 +51,21 @@ export function CreateGigDialog({
   }, [showDialog, auth.token]);
 
   const handleCreate = async () => {
+    if (savingRef.current) return;
+    savingRef.current = true;
+    setSaving(true);
+    setSaveError('');
+    let venueMessage = venueForm.outcomeMessage;
     try {
       let finalVenueId = null;
       if (path === 'existing') {
         if (!selectedVenue) return;
         finalVenueId = selectedVenue._id;
       } else if (path === 'new') {
-        if (!inlineName || !inlineCity || !inlineState) return;
-        const newVenue = await adminVenuesUtils.createVenue(auth.token, {
-          name: inlineName,
-          city: inlineCity,
-          usState: inlineState,
-          status: 'active',
-        });
-        finalVenueId = newVenue._id;
+        const savedVenue = await venueForm.save();
+        finalVenueId = savedVenue.id;
+        venueMessage = savedVenue.message;
+        onSaveMessage?.(venueMessage);
       }
 
       const result = await utils.createGig(
@@ -74,18 +80,24 @@ export function CreateGigDialog({
         duration,
         promoImageUrl,
         finalVenueId,
+        setSaveError,
       );
       if (result === 'success' || result === 'unconfirmed') {
+        onSaveMessage?.([
+          venueMessage, result === 'success' ? 'Gig created.' : "Couldn't confirm gig save — list refreshed.",
+        ].filter(Boolean).join('. '));
         // Reset form states
         setVenue('');
         setSelectedVenue(null);
-        setInlineName('');
-        setInlineCity('');
-        setInlineState('Virginia');
         setPath('existing');
+      } else {
+        setSaveError((message) => message || 'Unable to create gig. Please retry.');
       }
     } catch (err) {
-      console.error('Failed to create gig:', err);
+      setSaveError(err instanceof Error ? err.message : 'Unable to create gig.');
+    } finally {
+      savingRef.current = false;
+      setSaving(false);
     }
   };
 
@@ -95,15 +107,18 @@ export function CreateGigDialog({
       disableAutoFocus
       className="createNewGigDialog"
       open={showDialog}
-      onClose={() => setShowDialog(false)}
+      onClose={() => { if (!saving) setShowDialog(false); }}
     >
       <DialogTitle>Create New Gig</DialogTitle>
       <DialogContent sx={{ padding: '10px 10px' }}>
+        {saveError && <div role="alert">{saveError}</div>}
+        {venueForm.outcomeMessage && <div role="status">{venueForm.outcomeMessage}</div>}
         <DialogContentText sx={{ marginBottom: '30px' }}>
           Enter all *required fields to create a new gig.
         </DialogContentText>
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <DateTimePicker
+            disabled={saving}
             className="createDatetime"
             label="* Date and Time"
             value={dateTime}
@@ -118,16 +133,17 @@ export function CreateGigDialog({
             data-testid="venue-path-radio-group"
             row
             value={path}
-            onChange={(e) => setPath(e.target.value as any)}
+            onChange={(e) => setPath(e.target.value as 'existing' | 'new' | 'none')}
           >
-            <FormControlLabel value="existing" control={<Radio size="small" />} label="Pick Existing Venue" />
-            <FormControlLabel value="new" control={<Radio size="small" />} label="Create New Venue" />
-            <FormControlLabel value="none" control={<Radio size="small" />} label="No Venue (One-off)" />
+            <FormControlLabel value="existing" control={<Radio size="small" disabled={saving} />} label="Pick Existing Venue" />
+            <FormControlLabel value="new" control={<Radio size="small" disabled={saving} />} label="Create New Venue" />
+            <FormControlLabel value="none" control={<Radio size="small" disabled={saving} />} label="No Venue (One-off)" />
           </RadioGroup>
         </FormControl>
 
         {path === 'existing' && (
           <Autocomplete
+            disabled={saving}
             id="venue-autocomplete"
             options={venues}
             getOptionLabel={(option) => option.name || ''}
@@ -136,42 +152,13 @@ export function CreateGigDialog({
               setSelectedVenue(newValue);
             }}
             renderInput={(params) => (
-              <TextField {...params} label="* Search Venues" variant="outlined" fullWidth />
+              <TextField {...params} disabled={saving} label="* Search Venues" variant="outlined" fullWidth />
             )}
             sx={{ marginTop: '10px', marginBottom: '20px' }}
           />
         )}
 
-        {path === 'new' && (
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: '20px', marginTop: '10px', marginBottom: '20px' }}>
-            <TextField
-              label="* Venue Name"
-              type="text"
-              fullWidth
-              value={inlineName}
-              onChange={(evt) => setInlineName(evt.target.value)}
-            />
-            <TextField
-              label="* City"
-              type="text"
-              fullWidth
-              value={inlineCity}
-              onChange={(evt) => setInlineCity(evt.target.value)}
-            />
-            <FormControl fullWidth>
-              <InputLabel id="create-us-state-label">* State</InputLabel>
-              <Select
-                labelId="create-us-state-label"
-                id="create-us-state"
-                value={inlineState}
-                label="* State"
-                onChange={(evt) => setInlineState(evt.target.value)}
-              >
-                {utils.usStateOptions.map((s: string) => <MenuItem key={s} value={s}>{s}</MenuItem>)}
-              </Select>
-            </FormControl>
-          </Box>
-        )}
+        {path === 'new' && <GigVenueFields form={venueForm} disabled={saving} />}
 
         {path === 'existing' && selectedVenue && (
           <Box sx={{
@@ -217,7 +204,7 @@ export function CreateGigDialog({
           </Box>
         )}
 
-        {path === 'new' && inlineName && (
+        {path === 'new' && fields.name && (
           <Box sx={{
             padding: '10px 15px',
             backgroundColor: 'action.hover',
@@ -231,9 +218,9 @@ export function CreateGigDialog({
           }}
           >
             <span style={{ fontSize: '0.9rem', color: '#666', fontWeight: 'bold' }}>VENUE PREVIEW:</span>
-            <span style={{ fontWeight: 'bold' }}>{inlineName}</span>
+            <span style={{ fontWeight: 'bold' }}>{fields.name}</span>
             <span style={{ fontSize: '0.9rem', color: '#666' }}>
-              {`(${[inlineCity, inlineState].filter(Boolean).join(', ')})`}
+              {`(${[fields.city, fields.usState].filter(Boolean).join(', ')})`}
             </span>
           </Box>
         )}
@@ -243,6 +230,7 @@ export function CreateGigDialog({
         </p>
 
         <Editor
+          disabled={saving}
           id="create-venue"
           value={venue}
           apiKey={process.env.TINY_KEY}
@@ -264,6 +252,7 @@ export function CreateGigDialog({
         />
 
         <TextField
+          disabled={saving}
           sx={{ marginTop: '20px' }}
           label="Tickets"
           type="text"
@@ -272,6 +261,7 @@ export function CreateGigDialog({
           onChange={(evt) => { setTickets(evt.target.value); return evt.target.value; }}
         />
         <TextField
+          disabled={saving}
           sx={{ marginTop: '20px' }}
           label="Duration (hours)"
           type="number"
@@ -280,6 +270,7 @@ export function CreateGigDialog({
           onChange={(evt) => { setDuration(Number(evt.target.value)); return evt.target.value; }}
         />
         <TextField
+          disabled={saving}
           sx={{ marginTop: '20px' }}
           label="Promo image URL"
           type="text"
@@ -290,14 +281,17 @@ export function CreateGigDialog({
       </DialogContent>
       <DialogActions>
         <Button
-          disabled={utils.checkNewDisabled(
+          disabled={saving || (path === 'new' && !venueForm.ready) || utils.checkNewDisabled(
             dateTime,
             path,
             selectedVenue?._id || null,
             venue,
-            inlineName,
-            inlineCity,
-            inlineState,
+            fields.name,
+            fields.city,
+            fields.usState,
+            fields.address,
+            fields.zipCode,
+            fields.website,
           )}
           size="small"
           variant="contained"
@@ -308,6 +302,7 @@ export function CreateGigDialog({
         </Button>
         <Button
           size="small"
+          disabled={saving}
           className="cancelCreateButton"
           onClick={() => setShowDialog(false)}
         >
