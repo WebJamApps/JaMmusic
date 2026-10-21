@@ -84,10 +84,9 @@ async function openDialog(page: Page, mode: 'create' | 'edit') {
 }
 
 for (const mode of ['create', 'edit'] as const) {
-  test(`${mode}: typed validation, separate venue/gig failures and unchanged retry`, async ({ page }, testInfo) => {
+  test(`${mode}: typed validation, separate venue/gig failures and unchanged retry`, async ({ page }) => {
     const { state, venueWrites, gigWrites } = await fixture(page);
     const { dialog, submit } = await openDialog(page, mode);
-    await page.screenshot({ path: testInfo.outputPath('typed-venue-entry.png') });
     await dialog.getByLabel('* Street Address', { exact: true }).fill('   ');
     await expect(submit).toBeDisabled();
     await dialog.getByLabel('* Street Address', { exact: true }).fill('1 Electric Road');
@@ -119,6 +118,10 @@ for (const mode of ['create', 'edit'] as const) {
     expect(venueWrites).toHaveLength(2);
     expect(gigWrites).toHaveLength(2);
     await expect(page.locator('.gigsDiv > [role="status"]')).toContainText(mode === 'create' ? 'Gig created.' : 'Gig updated.');
+    const reopened = await openGigDialog(page, mode);
+    await expect(page.locator('.gigsDiv > [role="status"]')).toHaveCount(0);
+    await reopened.getByRole('button', { name: 'Cancel', exact: true }).click();
+    await expect(reopened).not.toBeVisible();
   });
 
   test(`${mode}: optional website and unconfirmed gig outcome remain accurate after closing`, async ({ page }) => {

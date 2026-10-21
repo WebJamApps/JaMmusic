@@ -147,6 +147,11 @@ export const GigsDiv = (props: IgigsDivProps) => {
   const isMobile = useMediaQuery('(max-width:600px)');
   const [page, setPage] = useState(0);
   const [saveMessage, setSaveMessage] = useState('');
+  useEffect(() => {
+    if (showDialog || Boolean(editGig?._id)) {
+      setSaveMessage('');
+    }
+  }, [showDialog, editGig?._id]);
   const handleClick = () => {
     if (process.env.APP_NAME === 'joshandmariamusic.com') window.open('https://web-jam.com/music/bookus');
     else navigate('/music/bookus');

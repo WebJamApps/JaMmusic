@@ -17,6 +17,30 @@ vi.mock('@mui/x-data-grid', () => ({
   },
 }));
 
+vi.mock('src/containers/Music/Gigs/CreateGigDialog', () => ({
+  CreateGigDialog: ({ onSaveMessage }: { onSaveMessage?: (msg: string) => void }) => (
+    <button
+      type="button"
+      data-testid="mock-create-gig-dialog"
+      onClick={() => onSaveMessage?.('Gig created.')}
+    >
+      mock create
+    </button>
+  ),
+}));
+
+vi.mock('src/containers/Music/Gigs/EditGigDialog', () => ({
+  EditGigDialog: ({ onSaveMessage }: { onSaveMessage?: (msg: string) => void }) => (
+    <button
+      type="button"
+      data-testid="mock-edit-gig-dialog"
+      onClick={() => onSaveMessage?.('Gig updated.')}
+    >
+      mock edit
+    </button>
+  ),
+}));
+
 describe('Gigs', () => {
   it('renders correctly when not isAdmin', () => {
     const { container } = render(<BrowserRouter><Gigs isAdmin={false} /></BrowserRouter>);
@@ -86,6 +110,37 @@ describe('Gigs', () => {
     const { container } = render(<BrowserRouter><GigsDiv {...props} /></BrowserRouter>);
     expect(container.querySelector('.gigs-error-message')).not.toBeInTheDocument();
     expect(container.querySelector('[data-testid="mock-data-grid"]')).toBeInTheDocument();
+  });
+  it('displays saveMessage and clears it when either create or edit dialog opens', () => {
+    const props = {
+      isAdmin: true,
+      setShowDialog: vi.fn(),
+      setEditGig: vi.fn(),
+      editGig: { _id: '' } as any,
+      gigsInOrder: [],
+      pageSize: 5,
+      showDialog: false,
+      editChanged: false,
+      setEditChanged: vi.fn(),
+      getGigs: vi.fn(),
+      auth: {} as any,
+      setPageSize: vi.fn(),
+    };
+    const { rerender } = render(<BrowserRouter><GigsDiv {...props} /></BrowserRouter>);
+    expect(screen.queryByRole('status')).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId('mock-create-gig-dialog'));
+    expect(screen.getByRole('status')).toHaveTextContent('Gig created.');
+
+    rerender(<BrowserRouter><GigsDiv {...props} showDialog /></BrowserRouter>);
+    expect(screen.queryByRole('status')).not.toBeInTheDocument();
+
+    rerender(<BrowserRouter><GigsDiv {...props} showDialog={false} /></BrowserRouter>);
+    fireEvent.click(screen.getByTestId('mock-edit-gig-dialog'));
+    expect(screen.getByRole('status')).toHaveTextContent('Gig updated.');
+
+    rerender(<BrowserRouter><GigsDiv {...props} editGig={{ _id: 'gig-123' } as any} /></BrowserRouter>);
+    expect(screen.queryByRole('status')).not.toBeInTheDocument();
   });
   it('renders ShowCreateGigButton and handles click', () => {
     const props = { isAdmin: true, setShowDialog: vi.fn() };
