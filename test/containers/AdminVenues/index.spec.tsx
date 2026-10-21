@@ -221,4 +221,41 @@ describe('AdminVenues page', () => {
     expect(adminVenuesUtils.listVenues).toHaveBeenCalledTimes(2);
   });
 
+  it('clears saveResult when the dialog opens for create or edit', async () => {
+    const venue: Ivenue = { _id: 'v1', name: 'Cafe', status: 'active' };
+    adminVenuesUtils.listVenues = vi.fn(() => Promise.resolve([venue])) as any;
+    vi.spyOn(adminVenuesUtils, 'fetchWarningVenues').mockResolvedValue([venue]);
+    vi.spyOn(adminVenuesUtils, 'createVenueWithOutcome').mockResolvedValue({ venue, outcome: 'created', status: 201 });
+    vi.spyOn(window, 'confirm').mockReturnValue(true);
+
+    await act(async () => { render(wrap(adminAuth)); });
+    await act(async () => { fireEvent.click(screen.getByTestId('admin-venues-add-button')); });
+    const fields = { name: 'Cafe', address: '1 Main St', city: 'Salem', zip: '24153', state: 'VA' };
+    for (const [field, value] of Object.entries(fields)) {
+      fireEvent.change(screen.getByTestId(`edit-venue-${field}`), { target: { value } });
+    }
+    await act(async () => { fireEvent.click(screen.getByTestId('edit-venue-save')); });
+    expect(screen.getByTestId('admin-venues-save-result')).toHaveTextContent('Venue created');
+
+    // Reopen create dialog: saveResult is cleared
+    await act(async () => { fireEvent.click(screen.getByTestId('admin-venues-add-button')); });
+    expect(screen.queryByTestId('admin-venues-save-result')).not.toBeInTheDocument();
+
+    // Cancel: saveResult remains cleared
+    await act(async () => { fireEvent.click(screen.getByTestId('edit-venue-cancel')); });
+    expect(screen.queryByTestId('admin-venues-save-result')).not.toBeInTheDocument();
+
+    // Re-save so saveResult is visible
+    await act(async () => { fireEvent.click(screen.getByTestId('admin-venues-add-button')); });
+    for (const [field, value] of Object.entries(fields)) {
+      fireEvent.change(screen.getByTestId(`edit-venue-${field}`), { target: { value } });
+    }
+    await act(async () => { fireEvent.click(screen.getByTestId('edit-venue-save')); });
+    expect(screen.getByTestId('admin-venues-save-result')).toHaveTextContent('Venue created');
+
+    // Open edit dialog on a venue row: saveResult is cleared
+    await act(async () => { fireEvent.click(screen.getByTestId('venue-edit-v1')); });
+    expect(screen.queryByTestId('admin-venues-save-result')).not.toBeInTheDocument();
+  });
+
 });

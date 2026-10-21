@@ -33,6 +33,12 @@ export function AdminVenues() {
     setPortalTarget(document.getElementById('header-controls-portal'));
   }, []);
 
+  useEffect(() => {
+    if (isCreating || Boolean(editing)) {
+      setSaveResult('');
+    }
+  }, [isCreating, editing]);
+
   const refresh = useCallback(async () => {
     if (!isAuthorized) return;
     setLoading(true);

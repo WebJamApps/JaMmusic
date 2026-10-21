@@ -94,7 +94,6 @@ for (const scenario of scenarios) {
       name: 'test cafe', address: '1 Electric Rd', city: 'Salem', usState: 'VA', zipCode: '24153-1234',
       website: 'https://example.test', status: 'active',
     }) }]);
-    if (scenario.title === 'archived match is restored') await page.screenshot({ path: '/tmp/jammusic-1392-restored.png' });
   });
 }
 
@@ -128,6 +127,10 @@ test('ambiguous legacy match shows backend error and retains input for retry', a
   response.venue = { ...baseVenue, _id: 'new' };
   await page.getByTestId('edit-venue-save').click();
   await expect(page.getByTestId('admin-venues-save-result')).toHaveText('Venue created');
+  await page.getByTestId('admin-venues-add-button').click();
+  await expect(page.getByTestId('admin-venues-save-result')).toBeHidden();
+  await page.getByTestId('edit-venue-cancel').click();
+  await expect(page.getByTestId('admin-venues-save-result')).toBeHidden();
   expect(writes).toHaveLength(2);
   expect(writes[1]).toEqual(writes[0]);
 });
