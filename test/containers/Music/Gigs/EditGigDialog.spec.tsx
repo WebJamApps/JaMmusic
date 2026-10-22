@@ -40,6 +40,7 @@ describe('EditGigDialog', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.spyOn(adminVenuesUtils, 'fetchWarningVenues').mockResolvedValue([]);
   });
 
   it('returns null when editGig._id is not set', () => {
@@ -97,6 +98,7 @@ describe('EditGigDialog', () => {
     // Verify preview changes to v2 (no website)
     expect(screen.getByText('Venue 2 NoWebsite', { selector: 'span' })).toBeInTheDocument();
 
+    await waitFor(() => expect(screen.getByRole('button', { name: /^update$/i })).toBeEnabled());
     // Click Update
     fireEvent.click(screen.getByRole('button', { name: /update/i }));
 
@@ -110,13 +112,16 @@ describe('EditGigDialog', () => {
         usState: '',
       }),
       'tk',
+      expect.any(Function),
     ));
     expect(setShowDialog).toHaveBeenCalledWith(false);
   });
 
   it('handles new inline venue path (creation and update)', async () => {
     vi.spyOn(adminVenuesUtils, 'listVenues').mockResolvedValue(activeVenues);
-    const createVenueSpy = vi.spyOn(adminVenuesUtils, 'createVenue').mockResolvedValue({ _id: 'new-venue-123' } as any);
+    const createVenueSpy = vi.spyOn(adminVenuesUtils, 'createVenueWithOutcome').mockResolvedValue({
+      venue: { _id: 'new-venue-123', name: 'New' }, outcome: 'created', status: 201,
+    });
     const updateSpy = vi.spyOn(utils, 'updateGig').mockResolvedValue('success');
 
     const editGig = {
@@ -145,19 +150,26 @@ describe('EditGigDialog', () => {
     // Fill inline details
     fireEvent.change(screen.getByLabelText('* Venue Name'), { target: { value: 'New Spot' } });
     fireEvent.change(screen.getByLabelText('* City'), { target: { value: 'Roanoke' } });
-    fireEvent.change(screen.getByLabelText('* State'), { target: { value: 'Virginia' } });
+    fireEvent.change(screen.getByLabelText('* State'), { target: { value: 'VA' } });
+
+    fireEvent.change(screen.getByLabelText('* Street Address'), { target: { value: '1 Main St' } });
+    fireEvent.change(screen.getByLabelText('* Zip Code'), { target: { value: '24153' } });
 
     // Verify preview
     expect(screen.getByText('New Spot')).toBeInTheDocument();
-    expect(screen.getByText('(Roanoke, Virginia)')).toBeInTheDocument();
+    expect(screen.getByText('(Roanoke, VA)')).toBeInTheDocument();
 
+    await waitFor(() => expect(screen.getByRole('button', { name: /^update$/i })).toBeEnabled());
     // Click Update
     fireEvent.click(screen.getByRole('button', { name: /update/i }));
 
     await waitFor(() => expect(createVenueSpy).toHaveBeenCalledWith('tk', {
       name: 'New Spot',
       city: 'Roanoke',
-      usState: 'Virginia',
+      usState: 'VA',
+      address: '1 Main St',
+      zipCode: '24153',
+      website: '',
       status: 'active',
     }));
     await waitFor(() => expect(updateSpy).toHaveBeenCalledWith(
@@ -170,6 +182,7 @@ describe('EditGigDialog', () => {
         usState: '',
       }),
       'tk',
+      expect.any(Function),
     ));
   });
 
@@ -201,6 +214,7 @@ describe('EditGigDialog', () => {
     // Switch to No Venue
     fireEvent.click(screen.getByLabelText('No Venue (One-off)'));
 
+    await waitFor(() => expect(screen.getByRole('button', { name: /^update$/i })).toBeEnabled());
     // Click Update
     fireEvent.click(screen.getByRole('button', { name: /update/i }));
 
@@ -212,6 +226,7 @@ describe('EditGigDialog', () => {
         venueId: undefined,
       }),
       'tk',
+      expect.any(Function),
     ));
   });
 
@@ -254,6 +269,7 @@ describe('EditGigDialog', () => {
         usState: 'Texas',
       }),
       'tk',
+      expect.any(Function),
     ));
   });
 
@@ -290,6 +306,7 @@ describe('EditGigDialog', () => {
     const select = screen.getByTestId('mock-autocomplete');
     fireEvent.change(select, { target: { value: 'v1' } });
 
+    await waitFor(() => expect(screen.getByRole('button', { name: /^update$/i })).toBeEnabled());
     // Click Update
     fireEvent.click(screen.getByRole('button', { name: /update/i }));
 
@@ -303,6 +320,7 @@ describe('EditGigDialog', () => {
         usState: '',
       }),
       'tk',
+      expect.any(Function),
     ));
   });
 

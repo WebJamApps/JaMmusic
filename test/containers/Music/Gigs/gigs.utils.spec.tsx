@@ -201,8 +201,10 @@ describe('gigs.utils', () => {
       scc.create = vi.fn(() => ({ transmit, receiver, subscribe, disconnect })) as any;
 
       const getGigs = vi.fn();
-      const result = await utils.updateGig(getGigs, vi.fn(), vi.fn(), {} as any, 'token');
+      const onError = vi.fn();
+      const result = await utils.updateGig(getGigs, vi.fn(), vi.fn(), {} as any, 'token', onError);
       expect(result).toBe('error');
+      expect(onError).toHaveBeenCalledWith('Update failed');
       expect(commonUtils.notify).toHaveBeenCalledWith('Error updating gig', 'Update failed', 'danger');
       expect(getGigs).not.toHaveBeenCalled();
       expect(disconnect).toHaveBeenCalled();
@@ -290,8 +292,12 @@ describe('gigs.utils', () => {
 
       const getGigs = vi.fn();
       const setShowDialog = vi.fn();
-      const result = await utils.createGig(getGigs, setShowDialog, new Date(), 'item', 'item', 'item', 'item', { token: 'token' } as Iauth, 0, '');
+      const onError = vi.fn();
+      const result = await utils.createGig(
+        getGigs, setShowDialog, new Date(), 'item', 'item', 'item', 'item', { token: 'token' } as Iauth, 0, '', null, onError,
+      );
       expect(result).toBe('error');
+      expect(onError).toHaveBeenCalledWith('Create failed');
       expect(commonUtils.notify).toHaveBeenCalledWith('Error creating gig', 'Create failed', 'danger');
       expect(getGigs).not.toHaveBeenCalled();
       expect(setShowDialog).not.toHaveBeenCalled();
@@ -346,7 +352,7 @@ describe('gigs.utils', () => {
     expect(utils.checkUpdateDisabled(validGig, true, 'existing', null, 'venue', '', '', '')).toBe(true);
     expect(utils.checkUpdateDisabled(validGig, true, 'existing', 'venueId', 'venue', '', '', '')).toBe(false);
     expect(utils.checkUpdateDisabled(validGig, true, 'new', 'venueId', 'venue', '', 'city', 'state')).toBe(true);
-    expect(utils.checkUpdateDisabled(validGig, true, 'new', 'venueId', 'venue', 'name', 'city', 'state')).toBe(false);
+    expect(utils.checkUpdateDisabled(validGig, true, 'new', 'venueId', 'venue', 'name', 'city', 'VA', '1 Main St', '24153')).toBe(false);
     expect(utils.checkUpdateDisabled(validGig, true, 'none', 'venueId', '', '', '', '')).toBe(true);
     expect(utils.checkUpdateDisabled(validGig, true, 'none', 'venueId', '<p></p>', '', '', '')).toBe(true);
     expect(utils.checkUpdateDisabled(validGig, true, 'none', 'venueId', 'valid venue', '', '', '')).toBe(false);
@@ -357,7 +363,7 @@ describe('gigs.utils', () => {
     expect(utils.checkNewDisabled(new Date(), 'existing', null, 'venue', '', '', '')).toBe(true);
     expect(utils.checkNewDisabled(new Date(), 'existing', 'venueId', 'venue', '', '', '')).toBe(false);
     expect(utils.checkNewDisabled(new Date(), 'new', 'venueId', 'venue', '', 'city', 'state')).toBe(true);
-    expect(utils.checkNewDisabled(new Date(), 'new', 'venueId', 'venue', 'name', 'city', 'state')).toBe(false);
+    expect(utils.checkNewDisabled(new Date(), 'new', 'venueId', 'venue', 'name', 'city', 'VA', '1 Main St', '24153')).toBe(false);
     expect(utils.checkNewDisabled(new Date(), 'none', 'venueId', '', '', '', '')).toBe(true);
     expect(utils.checkNewDisabled(new Date(), 'none', 'venueId', '<p></p>', '', '', '')).toBe(true);
     expect(utils.checkNewDisabled(new Date(), 'none', 'venueId', 'valid venue', '', '', '')).toBe(false);

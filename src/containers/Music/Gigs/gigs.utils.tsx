@@ -7,6 +7,8 @@ import type { Iauth } from 'src/providers/Auth.provider';
 import type { Igig } from 'src/providers/Data.provider';
 import { defaultGig } from 'src/providers/fetchGigs';
 
+import { validateVenueFields } from 'src/containers/AdminVenues/venue-shared.utils';
+
 export type GigOpResult = 'success' | 'error' | 'unconfirmed';
 
 // eslint-disable-next-line max-len
@@ -24,6 +26,7 @@ const createGig = async (
   duration: number,
   promoImageUrl: string,
   venueId?: string | null,
+  onError?: (message: string) => void,
 ): Promise<GigOpResult> => {
   let socket: scc.AGClientSocket | undefined;
   try {
@@ -69,6 +72,7 @@ const createGig = async (
     ]);
 
     if (result.kind === 'error') {
+      onError?.(result.message);
       commonUtils.notify('Error creating gig', result.message, 'danger');
       return 'error';
     }
@@ -84,7 +88,9 @@ const createGig = async (
     commonUtils.notify('Create gig', "Couldn't confirm — list refreshed", 'info');
     return 'unconfirmed';
   } catch (err) {
-    commonUtils.notify('Error creating gig', (err as Error).message, 'danger');
+    const message = err instanceof Error ? err.message : 'Unable to save gig';
+    onError?.(message);
+    commonUtils.notify('Error creating gig', message, 'danger');
     return 'error';
   } finally {
     if (socket) socket.disconnect();
@@ -97,6 +103,7 @@ const updateGig = async (
   setEditChanged: (arg0: boolean) => void,
   editGig: typeof defaultGig,
   token: string,
+  onError?: (message: string) => void,
 ): Promise<GigOpResult> => {
   let socket: scc.AGClientSocket | undefined;
   try {
@@ -146,6 +153,7 @@ const updateGig = async (
     ]);
 
     if (result.kind === 'error') {
+      onError?.(result.message);
       commonUtils.notify('Error updating gig', result.message, 'danger');
       return 'error';
     }
@@ -163,7 +171,9 @@ const updateGig = async (
     commonUtils.notify('Update gig', "Couldn't confirm — list refreshed", 'info');
     return 'unconfirmed';
   } catch (err) {
-    commonUtils.notify('Error updating gig', (err as Error).message, 'danger');
+    const message = err instanceof Error ? err.message : 'Unable to save gig';
+    onError?.(message);
+    commonUtils.notify('Error updating gig', message, 'danger');
     return 'error';
   } finally {
     if (socket) socket.disconnect();
@@ -186,13 +196,19 @@ const checkNewDisabled = (
   inlineName: string,
   inlineCity: string,
   inlineState: string,
+  inlineAddress = '',
+  inlineZipCode = '',
+  inlineWebsite = '',
 ) => {
   if (!dateTime) return true;
   if (path === 'existing') {
     return !venueId;
   }
   if (path === 'new') {
-    return !inlineName || !inlineCity || !inlineState;
+    return !validateVenueFields({
+      name: inlineName, city: inlineCity, usState: inlineState,
+      address: inlineAddress, zipCode: inlineZipCode, website: inlineWebsite,
+    }, { mode: 'create' }).valid;
   }
   if (path === 'none') {
     return !venue || venue.trim() === '' || venue.trim() === '<p></p>';
@@ -209,6 +225,9 @@ const checkUpdateDisabled = (
   inlineName: string,
   inlineCity: string,
   inlineState: string,
+  inlineAddress = '',
+  inlineZipCode = '',
+  inlineWebsite = '',
 ) => {
   if (!editChanged) return true;
   if (!editGig.datetime) return true;
@@ -216,7 +235,10 @@ const checkUpdateDisabled = (
     return !venueId;
   }
   if (path === 'new') {
-    return !inlineName || !inlineCity || !inlineState;
+    return !validateVenueFields({
+      name: inlineName, city: inlineCity, usState: inlineState,
+      address: inlineAddress, zipCode: inlineZipCode, website: inlineWebsite,
+    }, { mode: 'create' }).valid;
   }
   if (path === 'none') {
     return !venue || venue.trim() === '' || venue.trim() === '<p></p>';

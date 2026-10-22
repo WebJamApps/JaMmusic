@@ -1,6 +1,6 @@
 {
   "name": "jammusic",
-  "version": "2.24.1",
+  "version": "2.24.3",
   "description": "joshandmariamusic.com",
   "main": "dist/index.html",
   "repository": {
@@ -89,7 +89,7 @@
     "stream-browserify": "^3.0.0",
     "typescript": "^7.0.2",
     "util": "^0.12.5",
-    "vite": "^8.0.16",
+    "vite": "^8.3.5",
     "vite-plugin-checker": "0.14.1",
     "vm-browserify": "^1.1.2"
   },
