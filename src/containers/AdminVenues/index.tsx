@@ -19,6 +19,7 @@ export function AdminVenues() {
 
   const [venues, setVenues] = useState<Ivenue[]>([]);
   const [error, setError] = useState('');
+  const [saveResult, setSaveResult] = useState('');
   const [loading, setLoading] = useState(false);
   const [editing, setEditing] = useState<Ivenue | null>(null);
   const [isCreating, setIsCreating] = useState(false);
@@ -31,6 +32,12 @@ export function AdminVenues() {
   useEffect(() => {
     setPortalTarget(document.getElementById('header-controls-portal'));
   }, []);
+
+  useEffect(() => {
+    if (isCreating || Boolean(editing)) {
+      setSaveResult('');
+    }
+  }, [isCreating, editing]);
 
   const refresh = useCallback(async () => {
     if (!isAuthorized) return;
@@ -99,6 +106,7 @@ export function AdminVenues() {
       padding: '4px 24px 24px', maxWidth: 1200, margin: 'auto', width: '100%', minWidth: 0,
     }} data-testid="admin-venues-page">
       {loading && <Typography data-testid="admin-venues-loading">Loading...</Typography>}
+      {saveResult && <Typography role="status" data-testid="admin-venues-save-result">{saveResult}</Typography>}
       {error && <Typography color="error" data-testid="admin-venues-error">{error}</Typography>}
 
       {portalTarget && createPortal(
@@ -205,9 +213,8 @@ export function AdminVenues() {
         open={editing !== null || isCreating}
         venue={editing}
         token={auth.token}
-        existingVenues={venues}
         onClose={() => { setEditing(null); setIsCreating(false); }}
-        onSaved={() => { setEditing(null); setIsCreating(false); void refresh(); }}
+        onSaved={(message) => { setSaveResult(message); setEditing(null); setIsCreating(false); void refresh(); }}
       />
     </Box>
   );
