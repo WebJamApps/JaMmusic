@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { webcrypto } from 'node:crypto';
 import { render, screen, fireEvent, act } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { AuthContext, defaultAuth, type Iauth } from 'src/providers/Auth.provider';
@@ -56,10 +57,9 @@ const candidates: Icandidate[] = [
   { _id: 'c4', name: 'Venue D' },
 ];
 const okResult: IbatchResult = { requested: 2, sent: 2, skipped: [], records: [] };
-const previews: IpitchPreview[] = [
-  { venueId: 'c1', venueName: 'Venue A', subject: 'Subject A', body: 'Body A' },
-  { venueId: 'c2', venueName: 'Venue B', subject: 'Subject B', body: 'Body B' },
-];
+const previews: IpitchPreview[] = candidates.map(c => ({
+  venueId: c._id, venueName: c.name, subject: `Subject ${c.name}`, body: `<p>Body ${c.name}</p>`,
+}));
 
 const adminAuth: Iauth = {
   isAuthenticated: true,
@@ -100,16 +100,22 @@ describe('target weekend helpers', () => {
 describe('AdminOutreach', () => {
   beforeEach(() => {
     window.scrollTo = vi.fn();
-    outreachUtils.getAllowedAdminRoles = vi.fn(() => ['JaM-admin']) as any;
-    outreachUtils.getCandidates = vi.fn(() => Promise.resolve(candidates)) as any;
-    outreachUtils.sendBatch = vi.fn(() => Promise.resolve(okResult)) as any;
-    outreachUtils.getPreview = vi.fn(() => Promise.resolve(previews)) as any;
-    outreachUtils.getPendingReplies = vi.fn(() => Promise.resolve([])) as any;
-    outreachUtils.applySuggestion = vi.fn(() => Promise.resolve({})) as any;
-    outreachUtils.listOutreach = vi.fn(() => Promise.resolve([])) as any;
-    outreachUtils.recordOutcome = vi.fn(() => Promise.resolve({})) as any;
-    outreachUtils.getReportIndex = vi.fn(() => Promise.resolve([])) as any;
-    adminVenuesUtils.listVenues = vi.fn(() => Promise.resolve([])) as any;
+    outreachUtils.getAllowedAdminRoles = vi.fn(() => ['JaM-admin']) as unknown as typeof outreachUtils.getAllowedAdminRoles;
+    outreachUtils.getCandidates = vi.fn(() => Promise.resolve(candidates)) as unknown as typeof outreachUtils.getCandidates;
+    vi.stubGlobal('crypto', webcrypto);
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: true, json: async () => [] }));
+    outreachUtils.getVenueApproval = vi.fn().mockResolvedValue(null);
+    outreachUtils.approveVenues = vi.fn().mockResolvedValue({});
+    outreachUtils.approveDrafts = vi.fn().mockResolvedValue({});
+    outreachUtils.preflightBatch = vi.fn().mockResolvedValue({ dispatchId: 'dispatch-test', venueCount: 4 });
+    outreachUtils.sendBatch = vi.fn().mockResolvedValue({ ...okResult, remaining: 0 });
+    outreachUtils.getPreview = vi.fn(() => Promise.resolve(previews)) as unknown as typeof outreachUtils.getPreview;
+    outreachUtils.getPendingReplies = vi.fn(() => Promise.resolve([])) as unknown as typeof outreachUtils.getPendingReplies;
+    outreachUtils.applySuggestion = vi.fn(() => Promise.resolve({})) as unknown as typeof outreachUtils.applySuggestion;
+    outreachUtils.listOutreach = vi.fn(() => Promise.resolve([])) as unknown as typeof outreachUtils.listOutreach;
+    outreachUtils.recordOutcome = vi.fn(() => Promise.resolve({})) as unknown as typeof outreachUtils.recordOutcome;
+    outreachUtils.getReportIndex = vi.fn(() => Promise.resolve([])) as unknown as typeof outreachUtils.getReportIndex;
+    adminVenuesUtils.listVenues = vi.fn(() => Promise.resolve([])) as unknown as typeof adminVenuesUtils.listVenues;
   });
 
   it('renders not-authorized when not authenticated', () => {
@@ -212,7 +218,7 @@ describe('AdminOutreach', () => {
     typeDates();
     await act(async () => { fireEvent.click(screen.getByTestId('outreach-load')); });
     await act(async () => { fireEvent.click(screen.getByTestId('outreach-open-dialog')); });
-    expect(outreachUtils.getPreview).toHaveBeenCalledWith('tk', ['c1', 'c2', 'c3', 'c4'], 'Aug 15-17');
+    expect(outreachUtils.getPreview).toHaveBeenCalledWith('tk', ['c1', 'c2', 'c3', 'c4'], 'Aug 15-17', 'summer 2026');
     expect(screen.getByTestId('outreach-dialog')).toBeDefined();
     expect(screen.getByTestId('preview-c1')).toBeDefined();
   });
@@ -223,22 +229,25 @@ describe('AdminOutreach', () => {
     await act(async () => { fireEvent.click(screen.getByTestId('outreach-load')); });
     await act(async () => { fireEvent.click(screen.getByTestId('outreach-open-dialog')); });
     await act(async () => { fireEvent.click(screen.getByTestId('outreach-dialog-send')); });
-    expect(outreachUtils.sendBatch).toHaveBeenCalledWith('tk', expect.objectContaining({
-      venueIds: ['c1', 'c2', 'c3', 'c4'],
-      targetDates: 'Aug 15-17',
-      bookingPeriod: 'summer 2026',
+    const expectedBatch = expect.objectContaining({
+      venueIds: ['c1', 'c2', 'c3', 'c4'], bookingPeriod: 'summer 2026',
       targetWeekend: { start: '2026-08-15', end: '2026-08-17' },
-    }));
-    expect(screen.getByTestId('outreach-result').textContent).toContain('Sent 2 of 2');
+    });
+    const expectedFingerprint = expect.objectContaining({ venueId: 'c1', fingerprint: expect.any(String) });
+    expect(outreachUtils.approveDrafts).toHaveBeenCalledWith('tk', expectedBatch, expect.arrayContaining([expectedFingerprint]));
+    expect(outreachUtils.preflightBatch).toHaveBeenCalled();
+    expect(outreachUtils.sendBatch).toHaveBeenCalledWith('tk', { dispatchId: 'dispatch-test' });
+    expect(screen.getByTestId('outreach-result').textContent).toContain('Sent 2 of 4');
   });
 
   it('renders skip reasons in the result', async () => {
     outreachUtils.sendBatch = vi.fn(() => Promise.resolve({
       requested: 2,
       sent: 1,
+      remaining: 0,
       skipped: [{ venueId: 'c2', venueName: 'Venue B', reason: 'not outreach-eligible' }],
       records: [],
-    })) as any;
+    })) as unknown as typeof outreachUtils.sendBatch;
     await renderPage();
     typeDates();
     await act(async () => { fireEvent.click(screen.getByTestId('outreach-load')); });
@@ -251,7 +260,7 @@ describe('AdminOutreach', () => {
   });
 
   it('shows an error when loading candidates fails', async () => {
-    outreachUtils.getCandidates = vi.fn(() => Promise.reject(new Error('load fail'))) as any;
+    outreachUtils.getCandidates = vi.fn(() => Promise.reject(new Error('load fail'))) as unknown as typeof outreachUtils.getCandidates;
     await renderPage();
     typeDates();
     await act(async () => { fireEvent.click(screen.getByTestId('outreach-load')); });
@@ -259,7 +268,7 @@ describe('AdminOutreach', () => {
   });
 
   it('shows an error when get preview fails', async () => {
-    outreachUtils.getPreview = vi.fn(() => Promise.reject(new Error('preview fail'))) as any;
+    outreachUtils.getPreview = vi.fn(() => Promise.reject(new Error('preview fail'))) as unknown as typeof outreachUtils.getPreview;
     await renderPage();
     typeDates();
     await act(async () => { fireEvent.click(screen.getByTestId('outreach-load')); });
@@ -268,13 +277,77 @@ describe('AdminOutreach', () => {
   });
 
   it('shows an error when the batch send fails', async () => {
-    outreachUtils.sendBatch = vi.fn(() => Promise.reject(new Error('send fail'))) as any;
+    outreachUtils.sendBatch = vi.fn(() => Promise.reject(new Error('send fail'))) as unknown as typeof outreachUtils.sendBatch;
     await renderPage();
     typeDates();
     await act(async () => { fireEvent.click(screen.getByTestId('outreach-load')); });
     await act(async () => { fireEvent.click(screen.getByTestId('outreach-open-dialog')); });
     await act(async () => { fireEvent.click(screen.getByTestId('outreach-dialog-send')); });
     expect(screen.getByTestId('outreach-error').textContent).toBe('send fail');
+  });
+
+  it('shows the stored venue set before recording a replacement', async () => {
+    outreachUtils.getVenueApproval = vi.fn().mockResolvedValue({ batchId: 'stored', venueIds: ['c2'], approver: 'Josh' });
+    await renderPage(); typeDates();
+    await act(async () => { fireEvent.click(screen.getByTestId('outreach-load')); });
+    await act(async () => { fireEvent.click(screen.getByTestId('outreach-open-dialog')); });
+    expect(screen.getByTestId('stored-venue-approval')).toHaveTextContent('Venue B');
+    expect(outreachUtils.approveVenues).not.toHaveBeenCalled();
+    expect(outreachUtils.getPreview).not.toHaveBeenCalled();
+    expect(screen.getByTestId('outreach-dialog-send')).toBeDisabled();
+    await act(async () => { fireEvent.click(screen.getByTestId('outreach-confirm-venues')); });
+    expect(outreachUtils.approveVenues).toHaveBeenCalledWith('tk', expect.objectContaining({ venueIds: ['c1', 'c2', 'c3', 'c4'] }));
+    expect(outreachUtils.getPreview).toHaveBeenCalled();
+    expect(outreachUtils.approveDrafts).not.toHaveBeenCalled();
+    expect(outreachUtils.sendBatch).not.toHaveBeenCalled();
+  });
+
+  it('does not replace an approval when the stored approval lookup fails', async () => {
+    outreachUtils.getVenueApproval = vi.fn().mockRejectedValue(new Error('Approval store unavailable'));
+    await renderPage(); typeDates();
+    await act(async () => { fireEvent.click(screen.getByTestId('outreach-load')); });
+    await act(async () => { fireEvent.click(screen.getByTestId('outreach-open-dialog')); });
+    expect(screen.getByTestId('preview-error')).toHaveTextContent('Approval store unavailable');
+    expect(outreachUtils.approveVenues).not.toHaveBeenCalled();
+    expect(screen.getByTestId('outreach-dialog-send')).toBeDisabled();
+  });
+
+  it.each([[], previews.slice(0, 1)].map(data => ({ data })))('offers no sending for incomplete previews (%j)', async ({ data }) => {
+    outreachUtils.getPreview = vi.fn().mockResolvedValue(data);
+    await renderPage(); typeDates();
+    await act(async () => { fireEvent.click(screen.getByTestId('outreach-load')); });
+    await act(async () => { fireEvent.click(screen.getByTestId('outreach-open-dialog')); });
+    expect(outreachUtils.approveVenues).toHaveBeenCalled();
+    expect(screen.getByTestId('outreach-dialog-send')).toBeDisabled();
+    await act(async () => { fireEvent.click(screen.getByTestId('outreach-dialog-send')); });
+    expect(outreachUtils.approveDrafts).not.toHaveBeenCalled();
+    expect(outreachUtils.preflightBatch).not.toHaveBeenCalled();
+    expect(outreachUtils.sendBatch).not.toHaveBeenCalled();
+  });
+
+  it('renders email HTML in a sandboxed dark frame while preserving the raw preview for hashing', async () => {
+    await renderPage(); typeDates();
+    await act(async () => { fireEvent.click(screen.getByTestId('outreach-load')); });
+    await act(async () => { fireEvent.click(screen.getByTestId('outreach-open-dialog')); });
+    const frame = screen.getByTitle('Email for Venue A');
+    expect(frame).toHaveAttribute('sandbox', 'allow-same-origin');
+    expect(frame.getAttribute('srcdoc')).toContain('#121214');
+    expect(frame.getAttribute('srcdoc')).toContain('<p>Body Venue A</p>');
+  });
+
+  it('retains partial totals and stops on the backend refusal instead of reporting success or retrying', async () => {
+    outreachUtils.sendBatch = vi.fn()
+      .mockResolvedValueOnce({ sent: 1, skipped: [], records: [], remaining: 3 })
+      .mockRejectedValueOnce(new Error('Approval changed; remaining venues not sent'));
+    await renderPage(); typeDates();
+    await act(async () => { fireEvent.click(screen.getByTestId('outreach-load')); });
+    await act(async () => { fireEvent.click(screen.getByTestId('outreach-open-dialog')); });
+    await act(async () => { fireEvent.click(screen.getByTestId('outreach-dialog-send')); });
+    expect(screen.getByTestId('preview-error')).toHaveTextContent('Approval changed; remaining venues not sent');
+    expect(screen.getByTestId('outreach-result')).toHaveTextContent('Sent 1 of 4');
+    expect(screen.getByTestId('outreach-result')).toHaveTextContent('Dispatch stopped');
+    expect(screen.getByTestId('outreach-dialog-send')).toBeDisabled();
+    expect(outreachUtils.sendBatch).toHaveBeenCalledTimes(2);
   });
 
   describe('Replies to Review', () => {
@@ -979,7 +1052,7 @@ describe('AdminOutreach', () => {
 
   describe('Stored Run Reports (web-jam-back#1084, D-52/D-53)', () => {
     it('renders an empty state when the index returns nothing', async () => {
-      outreachUtils.getReportIndex = vi.fn(() => Promise.resolve([])) as any;
+      outreachUtils.getReportIndex = vi.fn(() => Promise.resolve([])) as unknown as typeof outreachUtils.getReportIndex;
       await renderPage();
       const accordion = screen.getByText(/Stored Run Reports \(0\)/);
       await act(async () => { fireEvent.click(accordion); });
@@ -997,7 +1070,7 @@ describe('AdminOutreach', () => {
           candidatesCount: 15, dispatchedCount: 10, updated_at: '2026-09-01T00:00:00.000Z',
         },
       ];
-      outreachUtils.getReportIndex = vi.fn(() => Promise.resolve(reports)) as any;
+      outreachUtils.getReportIndex = vi.fn(() => Promise.resolve(reports)) as unknown as typeof outreachUtils.getReportIndex;
       await renderPage();
       const accordion = screen.getByText(/Stored Run Reports \(2\)/);
       await act(async () => { fireEvent.click(accordion); });
@@ -1016,7 +1089,7 @@ describe('AdminOutreach', () => {
     });
 
     it('shows an error when the report index fails to load', async () => {
-      outreachUtils.getReportIndex = vi.fn(() => Promise.reject(new Error('index fail'))) as any;
+      outreachUtils.getReportIndex = vi.fn(() => Promise.reject(new Error('index fail'))) as unknown as typeof outreachUtils.getReportIndex;
       await renderPage();
       const accordion = screen.getByText(/Stored Run Reports \(0\)/);
       await act(async () => { fireEvent.click(accordion); });
@@ -1053,7 +1126,7 @@ describe('AdminOutreach', () => {
         if (query?.status === 'booked') return Promise.resolve(bookedRecords);
         if (query?.status === 'target-filled') return Promise.resolve(targetFilledRecords);
         return Promise.resolve([]);
-      }) as any;
+      }) as unknown as typeof outreachUtils.listOutreach;
 
       await renderPage();
 
@@ -1071,7 +1144,7 @@ describe('AdminOutreach', () => {
     });
 
     it('renders an explicit empty state when no venue-weekends are blocked (outcome 2)', async () => {
-      outreachUtils.listOutreach = vi.fn(() => Promise.resolve([])) as any;
+      outreachUtils.listOutreach = vi.fn(() => Promise.resolve([])) as unknown as typeof outreachUtils.listOutreach;
       await renderPage();
 
       expect(screen.getByText(/Blocked Venue-Weekends \(0\)/)).toBeInTheDocument();
@@ -1080,7 +1153,7 @@ describe('AdminOutreach', () => {
     });
 
     it('surfaces the error and does not render the empty success state when fetch fails (outcome 3)', async () => {
-      outreachUtils.listOutreach = vi.fn(() => Promise.reject(new Error('Network error on filled fetch'))) as any;
+      outreachUtils.listOutreach = vi.fn().mockRejectedValue(new Error('Network error on filled fetch'));
       await renderPage();
 
       expect(screen.getByTestId('replies-error')).toBeInTheDocument();
