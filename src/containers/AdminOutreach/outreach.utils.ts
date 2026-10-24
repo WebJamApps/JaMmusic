@@ -26,7 +26,27 @@ export interface IbatchResult {
   sent: number;
   skipped: IbatchSkip[];
   records: unknown[];
+  remaining?: number;
+  stopped?: { venueId: string; venueName: string; reason: string };
 }
+
+export type IdispatchChunk = Omit<IbatchResult, 'requested' | 'remaining'> & { remaining: number };
+
+export interface IbatchPayload {
+  venueIds: string[];
+  targetDates: string;
+  bookingPeriod?: string;
+  targetWeekend: { start: string; end: string };
+  batchId: string;
+}
+
+export interface IvenueApproval {
+  batchId: string;
+  venueIds: string[];
+  approver: string;
+}
+
+export interface IdraftFingerprint { venueId: string; subject: string; fingerprint: string }
 
 export interface IpitchPreview {
   venueId: string;
@@ -90,38 +110,126 @@ async function getCandidates(token: string, targetDates?: string, eligibleFor?: 
   if (eligibleFor) qs.push(`eligibleFor=${encodeURIComponent(eligibleFor)}`);
   const query = qs.length > 0 ? `?${qs.join('&')}` : '';
   const res = await customFetch(`${outreachUrl}/candidates${query}`, { headers: headers(token) });
-  if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+  if (!res.ok) throw await responseError(res);
   return await res.json() as Icandidate[];
 }
 
-async function sendBatch(
-  token: string,
-  payload: {
-    venueIds: string[];
-    targetDates: string;
-    bookingPeriod?: string;
-    targetWeekend: { start: string; end: string };
-  },
-): Promise<IbatchResult> {
-  const res = await customFetch(`${outreachUrl}/batch`, {
+async function responseError(res: Response): Promise<Error> {
+  const fallback = `${res.status} ${res.statusText}`.trim();
+  const text = await res.text().catch(() => '');
+  try {
+    const body: unknown = JSON.parse(text);
+    if (body && typeof body === 'object' && 'message' in body && typeof body.message === 'string' && body.message.trim()) {
+      return new Error(body.message);
+    }
+  } catch { /* Plain-text refusals are also shown verbatim. */ }
+  return new Error(text.trim() || fallback);
+}
+
+async function postOutreach<T>(token: string, path: string, payload: unknown): Promise<T> {
+  const res = await customFetch(`${outreachUrl}/${path}`, {
     method: 'POST', headers: headers(token, true), body: JSON.stringify(payload),
   });
-  if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
-  return await res.json() as IbatchResult;
+  if (!res.ok) throw await responseError(res);
+  return await res.json() as T;
+}
+
+async function sendBatch(token: string, payload: { dispatchId: string }): Promise<IdispatchChunk> {
+  return postOutreach<IdispatchChunk>(token, 'batch', payload);
+}
+
+async function getVenueApproval(token: string, batchId: string): Promise<IvenueApproval | null> {
+  const res = await customFetch(`${outreachUrl}/approval/gate1/${encodeURIComponent(batchId)}`, { headers: headers(token) });
+  if (res.status === 404) return null;
+  if (!res.ok) throw await responseError(res);
+  const data = await res.json() as IvenueApproval;
+  if (!data || !Array.isArray(data.venueIds) || data.venueIds.some(id => typeof id !== 'string')) {
+    throw new Error('Could not read the stored venue approval. No approval was replaced.');
+  }
+  return data;
+}
+
+async function approveVenues(token: string, batch: IbatchPayload): Promise<unknown> {
+  return postOutreach(token, 'approval/gate1', { ...batch, approver: 'Josh' });
+}
+
+async function approveDrafts(token: string, batch: IbatchPayload, draftFingerprints: IdraftFingerprint[]): Promise<unknown> {
+  return postOutreach(token, 'approval/gate2', { ...batch, approver: 'Josh', draftFingerprints });
+}
+
+async function preflightBatch(token: string, batch: IbatchPayload): Promise<{ dispatchId: string; venueCount: number }> {
+  const result = await postOutreach<{ dispatchId: string; venueCount: number }>(token, 'batch/preflight', batch);
+  if (!result || typeof result.dispatchId !== 'string' || !result.dispatchId.trim() || result.venueCount !== batch.venueIds.length) {
+    throw new Error('The batch check returned no valid dispatch. Nothing was sent.');
+  }
+  return result;
+}
+
+export function hasCompletePreviews(venueIds: string[], previews: IpitchPreview[]): boolean {
+  return venueIds.length > 0 && previews.length === venueIds.length
+    && previews.every(p => p && typeof p.venueId === 'string')
+    && new Set(previews.map(p => p.venueId)).size === venueIds.length
+    && venueIds.every(id => previews.some(p => p.venueId === id && typeof p.subject === 'string'
+      && p.subject.trim() && typeof p.body === 'string' && p.body.trim()));
+}
+
+export async function fingerprintDraft(preview: IpitchPreview): Promise<IdraftFingerprint> {
+  // Matches the server's computeDraftFingerprint({ subject, body }) exactly.
+  const content = `${preview.subject.trim()}\n\n${preview.body.trim()}`;
+  const hash = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(content));
+  const fingerprint = Array.from(new Uint8Array(hash), byte => byte.toString(16).padStart(2, '0')).join('');
+  return { venueId: preview.venueId, subject: preview.subject, fingerprint };
 }
 
 async function getPreview(
-  token: string, venueIds: string[], targetDates: string,
+  token: string, venueIds: string[], targetDates: string, bookingPeriod?: string,
 ): Promise<IpitchPreview[]> {
-  const qs = `?venueIds=${venueIds.join(',')}&targetDates=${encodeURIComponent(targetDates)}`;
+  const qs = `?venueIds=${venueIds.map(id => encodeURIComponent(id)).join(',')}&targetDates=${encodeURIComponent(targetDates)}`
+    + (bookingPeriod ? `&bookingPeriod=${encodeURIComponent(bookingPeriod)}` : '');
   const res = await customFetch(`${outreachUrl}/preview${qs}`, { headers: headers(token) });
-  if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
-  return await res.json() as IpitchPreview[];
+  if (!res.ok) throw await responseError(res);
+  const data: unknown = await res.json();
+  if (!Array.isArray(data) || !hasCompletePreviews(venueIds, data as IpitchPreview[])) {
+    throw new Error('A complete email preview is required for every selected venue. Nothing can be sent.');
+  }
+  return data as IpitchPreview[];
+}
+
+export async function dispatchApprovedBatch(
+  token: string, batch: IbatchPayload, previews: IpitchPreview[], onProgress: (result: IbatchResult) => void,
+): Promise<IbatchResult> {
+  if (!hasCompletePreviews(batch.venueIds, previews)) throw new Error('Every email must be previewed before approval.');
+  const fingerprints = await Promise.all(previews.map(preview => fingerprintDraft(preview)));
+  await outreachApi.approveDrafts(token, batch, fingerprints);
+  const { dispatchId } = await outreachApi.preflightBatch(token, batch);
+  let remaining = batch.venueIds.length;
+  const total: IbatchResult = { requested: remaining, sent: 0, skipped: [], records: [], remaining };
+  while (remaining > 0) {
+    // Only a checked dispatch id chooses venues on this path. Never retry a failed call.
+    // eslint-disable-next-line no-await-in-loop
+    const chunk = await outreachApi.sendBatch(token, { dispatchId });
+    if (!chunk || !Number.isSafeInteger(chunk.sent) || chunk.sent < 0 || !Number.isSafeInteger(chunk.remaining)
+      || chunk.remaining < 0 || chunk.remaining > remaining || !Array.isArray(chunk.skipped) || !Array.isArray(chunk.records)
+      || chunk.skipped.some(item => !item || typeof item.venueId !== 'string'
+        || typeof item.venueName !== 'string' || typeof item.reason !== 'string')
+      || chunk.sent + chunk.skipped.length > remaining) {
+      throw new Error('The send returned an invalid result. Dispatch stopped; check the outreach records before retrying.');
+    }
+    total.sent += chunk.sent;
+    total.skipped.push(...chunk.skipped);
+    total.records.push(...chunk.records);
+    total.remaining = chunk.remaining;
+    onProgress({ ...total, skipped: [...total.skipped], records: [...total.records] });
+    if (chunk.stopped) throw new Error(`Dispatch paused: ${chunk.stopped.venueName}: ${chunk.stopped.reason}`);
+    if (chunk.remaining >= remaining) throw new Error('Dispatch made no progress. Check the outreach records before retrying.');
+    remaining = chunk.remaining;
+  }
+  return total;
 }
 
 async function getPendingReplies(token: string): Promise<IpendingReply[]> {
   const res = await customFetch(`${outreachUrl}/replies/pending`, { headers: headers(token) });
-  if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+  if (!res.ok) throw await responseError(res);
   return await res.json() as IpendingReply[];
 }
 
@@ -133,7 +241,7 @@ async function applySuggestion(
   const res = await customFetch(`${outreachUrl}/${id}/apply-suggestion`, {
     method: 'POST', headers: headers(token, true), body: JSON.stringify(payload),
   });
-  if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+  if (!res.ok) throw await responseError(res);
   return await res.json();
 }
 
@@ -149,7 +257,7 @@ async function recordOutcome(
   const res = await customFetch(`${outreachUrl}/${id}/outcome`, {
     method: 'POST', headers: headers(token, true), body: JSON.stringify(payload),
   });
-  if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+  if (!res.ok) throw await responseError(res);
   return await res.json();
 }
 
@@ -162,13 +270,13 @@ async function listOutreach(
   if (query?.status) qs.push(`status=${encodeURIComponent(query.status)}`);
   const qStr = qs.length > 0 ? `?${qs.join('&')}` : '';
   const res = await customFetch(`${outreachUrl}${qStr}`, { headers: headers(token) });
-  if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+  if (!res.ok) throw await responseError(res);
   return await res.json() as IpendingReply[];
 }
 
 async function deleteOutreach(token: string, id: string): Promise<void> {
   const res = await customFetch(`${outreachUrl}/${id}`, { method: 'DELETE', headers: headers(token) });
-  if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+  if (!res.ok) throw await responseError(res);
 }
 
 // GET /outreach/report — administrator-only index of stored run reports
@@ -177,13 +285,17 @@ async function deleteOutreach(token: string, id: string): Promise<void> {
 // by the caller, never fetched through this helper.
 async function getReportIndex(token: string): Promise<IreportSummary[]> {
   const res = await customFetch(`${outreachUrl}/report`, { headers: headers(token) });
-  if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+  if (!res.ok) throw await responseError(res);
   return await res.json() as IreportSummary[];
 }
 
-export default {
+const outreachApi = {
   getCandidates,
   sendBatch,
+  getVenueApproval,
+  approveVenues,
+  approveDrafts,
+  preflightBatch,
   getPreview,
   getAllowedAdminRoles,
   getPendingReplies,
@@ -194,3 +306,4 @@ export default {
   getReportIndex,
 };
 
+export default outreachApi;

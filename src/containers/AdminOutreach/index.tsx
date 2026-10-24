@@ -1,5 +1,5 @@
 import {
-  useCallback, useContext, useEffect, useState,
+  useCallback, useContext, useEffect, useState, useRef,
 } from 'react';
 import {
   Box, Typography, TextField, Button, Checkbox, FormControlLabel,
@@ -21,6 +21,7 @@ import { customFetch } from 'src/lib/fetch.utils';
 import adminVenuesUtils, { type Ivenue } from 'src/containers/AdminVenues/admin-venues.utils';
 import outreachUtils, {
   type Icandidate, type IbatchResult, type IpitchPreview, type IpendingReply, type IreportSummary,
+  type IbatchPayload, type IvenueApproval, dispatchApprovedBatch, hasCompletePreviews,
 } from './outreach.utils';
 import { OutreachDialog } from './OutreachDialog';
 
@@ -194,6 +195,14 @@ export function AdminOutreach() {
   const [previews, setPreviews] = useState<IpitchPreview[]>([]);
   const [previewLoading, setPreviewLoading] = useState(false);
   const [previewError, setPreviewError] = useState('');
+  const [reviewBatch, setReviewBatch] = useState<IbatchPayload | null>(null);
+  const [reviewVenues, setReviewVenues] = useState<Icandidate[]>([]);
+  const [storedApproval, setStoredApproval] = useState<IvenueApproval | null>(null);
+  const [needsVenueConfirmation, setNeedsVenueConfirmation] = useState(false);
+  const [sendAttempted, setSendAttempted] = useState(false);
+  const [dispatchComplete, setDispatchComplete] = useState(false);
+  const reviewVersion = useRef(0);
+  const sendInFlight = useRef(false);
   const [existingGigs, setExistingGigs] = useState<any[]>([]);
 
   // Sentiment colors configuration
@@ -460,55 +469,92 @@ export function AdminOutreach() {
     return next;
   });
 
+  const approveAndPreview = async (batch: IbatchPayload, version: number) => {
+    setPreviewLoading(true);
+    setPreviewError('');
+    try {
+      await outreachUtils.approveVenues(auth.token, batch);
+      if (reviewVersion.current !== version) return;
+      setNeedsVenueConfirmation(false);
+      const data = await outreachUtils.getPreview(auth.token, batch.venueIds, batch.targetDates, batch.bookingPeriod);
+      if (reviewVersion.current === version) setPreviews(data);
+    } catch (e) {
+      if (reviewVersion.current === version) setPreviewError((e as Error).message || 'Could not approve venues and load previews');
+    } finally {
+      if (reviewVersion.current === version) setPreviewLoading(false);
+    }
+  };
+
   const openDialog = async () => {
     if (selected.size === 0) { setError('Select at least one venue'); return; }
+    if (!structuredDate || !targetDates.trim()) { setError('Select a weekend and target dates first'); return; }
+    const endDate = new Date(`${structuredDate}T00:00:00Z`);
+    endDate.setUTCDate(endDate.getUTCDate() + 2);
+    const end = endDate.toISOString().slice(0, 10);
+    const batch: IbatchPayload = {
+      venueIds: [...selected], targetDates: targetDates.trim(), bookingPeriod: bookingPeriod.trim() || undefined,
+      targetWeekend: { start: structuredDate, end }, batchId: `${structuredDate}-to-${end}`,
+    };
+    const version = ++reviewVersion.current;
+    setReviewBatch(batch);
+    setReviewVenues(candidates.filter(c => selected.has(c._id)));
+    setStoredApproval(null);
+    setNeedsVenueConfirmation(false);
+    setSendAttempted(false);
+    setDispatchComplete(false);
+    setResult(null);
+    setError('');
     setDialogOpen(true);
     setPreviewLoading(true);
     setPreviewError('');
     setPreviews([]);
     try {
-      const data = await outreachUtils.getPreview(auth.token, [...selected], targetDates.trim());
-      setPreviews(data);
+      const approval = await outreachUtils.getVenueApproval(auth.token, batch.batchId);
+      if (reviewVersion.current !== version) return;
+      if (approval) {
+        setStoredApproval(approval);
+        setNeedsVenueConfirmation(true);
+        setPreviewLoading(false);
+      } else {
+        await approveAndPreview(batch, version);
+      }
     } catch (e) {
-      setPreviewError((e as { message?: string }).message || 'Could not load previews');
-    } finally {
-      setPreviewLoading(false);
+      if (reviewVersion.current === version) {
+        setPreviewError((e as Error).message || 'Could not read the stored venue approval');
+        setPreviewLoading(false);
+      }
     }
   };
 
   const send = async () => {
-    if (!structuredDate) {
-      setError('Select a weekend date first');
-      return;
-    }
+    if (sendInFlight.current || sendAttempted || !reviewBatch || needsVenueConfirmation
+      || previewLoading || previewError || !hasCompletePreviews(reviewBatch.venueIds, previews)) return;
+    sendInFlight.current = true;
+    setSendAttempted(true);
     setSending(true);
     setError('');
     try {
-      const startDate = new Date(`${structuredDate}T00:00:00`);
-      const endDate = new Date(startDate);
-      endDate.setDate(startDate.getDate() + 2);
-      const year = endDate.getFullYear();
-      const month = String(endDate.getMonth() + 1).padStart(2, '0');
-      const day = String(endDate.getDate()).padStart(2, '0');
-      const end = `${year}-${month}-${day}`;
-
-      const res = await outreachUtils.sendBatch(auth.token, {
-        venueIds: [...selected],
-        targetDates: targetDates.trim(),
-        bookingPeriod: bookingPeriod.trim() || undefined,
-        targetWeekend: { start: structuredDate, end },
-      });
+      const res = await dispatchApprovedBatch(auth.token, reviewBatch, previews, setResult);
       setResult(res);
+      setDispatchComplete(true);
       setCandidates([]);
       setSelected(new Set());
       setDialogOpen(false);
       await loadAllData();
     } catch (e) {
-      setError((e as { message?: string }).message || 'Batch send failed');
-      setDialogOpen(false);
+      const message = (e as Error).message || 'Batch send failed';
+      setError(message);
+      setPreviewError(message);
     } finally {
+      sendInFlight.current = false;
       setSending(false);
     }
+  };
+
+  const closeReview = () => {
+    if (sending || previewLoading) return;
+    reviewVersion.current += 1;
+    setDialogOpen(false);
   };
 
   if (!isAuthorized) {
@@ -594,6 +640,30 @@ export function AdminOutreach() {
   const awaitingStart = currentAwaitingPage * awaitingRowsPerPage;
   const awaitingEnd = Math.min(awaitingStart + awaitingRowsPerPage, sortedAwaitingReply.length);
   const paginatedAwaitingReply = sortedAwaitingReply.slice(awaitingStart, awaitingStart + awaitingRowsPerPage);
+
+  const resultStatus = dispatchComplete
+    ? {
+      title: 'Batch complete',
+      icon: <CheckCircle data-testid="result-icon-complete" />,
+      color: 'success.main',
+      bgcolor: 'rgba(16, 185, 129, 0.05)',
+      borderColor: 'success.light',
+    }
+    : sending
+      ? {
+        title: 'Sending outreach',
+        icon: <CircularProgress size={20} color="inherit" data-testid="result-icon-sending" />,
+        color: 'info.main',
+        bgcolor: 'rgba(2, 132, 199, 0.05)',
+        borderColor: 'info.light',
+      }
+      : {
+        title: 'Dispatch stopped',
+        icon: <Warning data-testid="result-icon-stopped" />,
+        color: 'warning.main',
+        bgcolor: 'rgba(245, 158, 11, 0.05)',
+        borderColor: 'warning.light',
+      };
 
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -1570,8 +1640,8 @@ export function AdminOutreach() {
 
               <Box sx={{ display: 'flex', gap: 2 }}>
                 <Button variant="contained" color="primary" onClick={openDialog}
-                  disabled={selected.size === 0} data-testid="outreach-open-dialog" sx={{ fontWeight: 'bold' }}>
-                  Compose & Batch Outreach
+                  disabled={selected.size === 0 || previewLoading || sending} data-testid="outreach-open-dialog" sx={{ fontWeight: 'bold' }}>
+                  Approve venues and review emails
                 </Button>
               </Box>
             </Box>
@@ -1579,17 +1649,18 @@ export function AdminOutreach() {
 
           {result && (
             <Box sx={{
-              mt: 4, p: 3, borderRadius: 2, bgcolor: 'rgba(16, 185, 129, 0.05)',
-              border: '1px solid', borderColor: 'success.light',
+              mt: 4, p: 3, borderRadius: 2, bgcolor: resultStatus.bgcolor,
+              border: '1px solid', borderColor: resultStatus.borderColor,
             }} data-testid="outreach-result">
               <Typography variant="subtitle1" sx={{
-                fontWeight: 'bold', color: 'success.main', display: 'flex',
+                fontWeight: 'bold', color: resultStatus.color, display: 'flex',
                 alignItems: 'center', gap: 1, mb: 1,
               }}>
-                <CheckCircle /> Batch Sent Successfully
+                {resultStatus.icon} {resultStatus.title}
               </Typography>
               <Typography variant="body2" sx={{ mb: 1 }}>
-                Sent <strong>{result.sent}</strong> of <strong>{result.requested}</strong> requested pitches. Skipped {result.skipped.length}.
+                Sent <strong>{result.sent}</strong> of <strong>{result.requested}</strong> requested pitches.
+                Skipped {result.skipped.length}. Remaining {result.remaining ?? 0}.
               </Typography>
               {result.skipped.map((s) => (
                 <Typography key={s.venueId} variant="caption" sx={{ display: 'block', color: 'text.secondary' }}>
@@ -1606,16 +1677,23 @@ export function AdminOutreach() {
         {/* Outreach batch dialog */}
         <OutreachDialog
           open={dialogOpen}
-          candidates={candidates}
-          selected={selected}
-          targetDates={targetDates}
-          bookingPeriod={bookingPeriod}
+          candidates={reviewVenues}
+          selected={new Set(reviewBatch?.venueIds || [])}
+          targetDates={reviewBatch?.targetDates || ''}
+          bookingPeriod={reviewBatch?.bookingPeriod || ''}
+          storedVenues={storedApproval?.venueIds.map(id => ({
+            _id: id, name: venuesMap[id]?.name || candidates.find(c => c._id === id)?.name || id,
+          })) || []}
+          needsVenueConfirmation={needsVenueConfirmation}
+          onApproveVenues={() => { if (reviewBatch) void approveAndPreview(reviewBatch, reviewVersion.current); }}
+          sendAttempted={sendAttempted}
+          progress={result}
           previews={previews}
           previewLoading={previewLoading}
           previewError={previewError}
           sending={sending}
           onSend={send}
-          onClose={() => setDialogOpen(false)}
+          onClose={closeReview}
         />
 
         {/* DIALOG 1: Confirm DNC Dialog */}
