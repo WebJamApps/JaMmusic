@@ -641,6 +641,30 @@ export function AdminOutreach() {
   const awaitingEnd = Math.min(awaitingStart + awaitingRowsPerPage, sortedAwaitingReply.length);
   const paginatedAwaitingReply = sortedAwaitingReply.slice(awaitingStart, awaitingStart + awaitingRowsPerPage);
 
+  const resultStatus = dispatchComplete
+    ? {
+      title: 'Batch complete',
+      icon: <CheckCircle data-testid="result-icon-complete" />,
+      color: 'success.main',
+      bgcolor: 'rgba(16, 185, 129, 0.05)',
+      borderColor: 'success.light',
+    }
+    : sending
+      ? {
+        title: 'Sending outreach',
+        icon: <CircularProgress size={20} color="inherit" data-testid="result-icon-sending" />,
+        color: 'info.main',
+        bgcolor: 'rgba(2, 132, 199, 0.05)',
+        borderColor: 'info.light',
+      }
+      : {
+        title: 'Dispatch stopped',
+        icon: <Warning data-testid="result-icon-stopped" />,
+        color: 'warning.main',
+        bgcolor: 'rgba(245, 158, 11, 0.05)',
+        borderColor: 'warning.light',
+      };
+
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       <Box
@@ -1625,14 +1649,14 @@ export function AdminOutreach() {
 
           {result && (
             <Box sx={{
-              mt: 4, p: 3, borderRadius: 2, bgcolor: 'rgba(16, 185, 129, 0.05)',
-              border: '1px solid', borderColor: 'success.light',
+              mt: 4, p: 3, borderRadius: 2, bgcolor: resultStatus.bgcolor,
+              border: '1px solid', borderColor: resultStatus.borderColor,
             }} data-testid="outreach-result">
               <Typography variant="subtitle1" sx={{
-                fontWeight: 'bold', color: 'success.main', display: 'flex',
+                fontWeight: 'bold', color: resultStatus.color, display: 'flex',
                 alignItems: 'center', gap: 1, mb: 1,
               }}>
-                <CheckCircle /> {dispatchComplete ? 'Batch complete' : sending ? 'Sending outreach' : 'Dispatch stopped'}
+                {resultStatus.icon} {resultStatus.title}
               </Typography>
               <Typography variant="body2" sx={{ mb: 1 }}>
                 Sent <strong>{result.sent}</strong> of <strong>{result.requested}</strong> requested pitches.

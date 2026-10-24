@@ -238,6 +238,7 @@ describe('AdminOutreach', () => {
     expect(outreachUtils.preflightBatch).toHaveBeenCalled();
     expect(outreachUtils.sendBatch).toHaveBeenCalledWith('tk', { dispatchId: 'dispatch-test' });
     expect(screen.getByTestId('outreach-result').textContent).toContain('Sent 2 of 4');
+    expect(screen.getByTestId('result-icon-complete')).toBeInTheDocument();
   });
 
   it('renders skip reasons in the result', async () => {
@@ -346,6 +347,7 @@ describe('AdminOutreach', () => {
     expect(screen.getByTestId('preview-error')).toHaveTextContent('Approval changed; remaining venues not sent');
     expect(screen.getByTestId('outreach-result')).toHaveTextContent('Sent 1 of 4');
     expect(screen.getByTestId('outreach-result')).toHaveTextContent('Dispatch stopped');
+    expect(screen.getByTestId('result-icon-stopped')).toBeInTheDocument();
     expect(screen.getByTestId('outreach-dialog-send')).toBeDisabled();
     expect(outreachUtils.sendBatch).toHaveBeenCalledTimes(2);
   });
