@@ -42,7 +42,6 @@ describe('BackendUrl contract and build-time assertions', () => {
     delete process.env.BackendUrl;
     delete process.env.ALLOW_LOCALHOST_BACKEND;
     delete process.env.GoogleClientId;
-    delete process.env.GOOGLE_MAPS_API_KEY;
     delete process.env.APP_NAME;
   });
 
@@ -128,14 +127,13 @@ describe('BackendUrl contract and build-time assertions', () => {
   it('verifies replaced process.env does not contain hardcoded credentials fallback when env is unset', async () => {
     const plugin = await getReplaceProcessEnvPlugin({
       GoogleClientId: '',
-      GOOGLE_MAPS_API_KEY: '',
     });
     expect(plugin).toBeDefined();
     const transformed = plugin.transform(
-      'const g = process.env.GoogleClientId; const m = process.env.GOOGLE_MAPS_API_KEY;',
+      'const g = process.env.GoogleClientId;',
       'src/file.ts',
     );
-    expect(transformed?.code).toBe('const g = ""; const m = "";');
+    expect(transformed?.code).toBe('const g = "";');
   });
 
   it('verifies production build dist assets contain 0 occurrences of localhost:7000', () => {
@@ -147,5 +145,10 @@ describe('BackendUrl contract and build-time assertions', () => {
         expect(content).not.toContain('localhost:7000');
       }
     }
+  });
+
+  it('does not expose the retired Maps key through the build environment', async () => {
+    const plugin = await getReplaceProcessEnvPlugin();
+    expect(plugin.transform('const legacy = process.env.GOOGLE_MAPS_API_KEY;', 'src/file.ts')).toBeNull();
   });
 });

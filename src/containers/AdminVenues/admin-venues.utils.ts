@@ -9,6 +9,7 @@ export interface Ivenue {
   _id: string;
   name: string;
   address?: string;
+  location?: { type: 'Point'; coordinates: [number, number] };
   city?: string;
   usState?: string;
   zipCode?: string;
@@ -47,6 +48,7 @@ export interface Ivenue {
 export interface IvenueUpdate {
   name?: string;
   address?: string;
+  location?: { type: 'Point'; coordinates: [number, number] };
   city?: string;
   usState?: string;
   zipCode?: string;

@@ -277,11 +277,19 @@ export function AccordionDetails(props: any) {
   return <div {...rest}>{children}</div>;
 }
 
-export function Autocomplete(props: any) {
-  const { options, value, onChange, renderInput, getOptionLabel, ...rest } = props;
+export function Autocomplete(props: {
+  renderInput: (params: Record<string, unknown>) => React.ReactNode;
+  inputValue?: string;
+  onInputChange?: (event: React.ChangeEvent<HTMLInputElement>, value: string, reason: string) => void;
+  [key: string]: unknown;
+}) {
+  const { options, value, onChange, renderInput, getOptionLabel, inputValue, onInputChange, ...rest } = props;
   return (
     <div {...rest}>
-      {renderInput({})}
+      {renderInput({
+        value: inputValue,
+        onChange: (event: React.ChangeEvent<HTMLInputElement>) => onInputChange?.(event, event.target.value, 'input'),
+      })}
     </div>
   );
 }

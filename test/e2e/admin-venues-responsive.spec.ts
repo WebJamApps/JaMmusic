@@ -31,11 +31,6 @@ test.describe('Admin Venues page responsiveness and table scrollability', () => 
       } catch { /* ignore */ }
     });
 
-    // Abort external Google Maps API requests to prevent flaky autocomplete re-renders
-    await page.route(/maps\.googleapis\.com/, async (route) => {
-      await route.abort();
-    });
-
     // Intercept user profile retrieval API call
     await page.route(/\/user\/user-123/, async (route) => {
       await route.fulfill({
