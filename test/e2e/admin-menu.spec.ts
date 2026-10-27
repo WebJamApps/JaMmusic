@@ -51,6 +51,7 @@ async function setupMocks(page: Page, authUser?: { userType: string; email: stri
           ws.send(JSON.stringify({ rid: packet.cid }));
         } else if (packet.event === 'initial message') {
           ws.send(JSON.stringify({ event: 'allGigs', data: [] }));
+          ws.send(JSON.stringify({ event: 'jamPics', data: [] }));
           ws.send(JSON.stringify({ event: 'allPics', data: [] }));
         }
       } catch { /* ignore */ }
@@ -58,6 +59,42 @@ async function setupMocks(page: Page, authUser?: { userType: string; email: stri
   });
 
   await page.route(/^https:\/\//, (route: Route) => route.abort());
+
+  await page.route('**/song*', async (route: Route) => {
+    if (route.request().resourceType() === 'document') {
+      await route.continue();
+      return;
+    }
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify([]),
+    });
+  });
+
+  await page.route('**/tour*', async (route: Route) => {
+    if (route.request().resourceType() === 'document') {
+      await route.continue();
+      return;
+    }
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify([]),
+    });
+  });
+
+  await page.route('**/picture*', async (route: Route) => {
+    if (route.request().resourceType() === 'document') {
+      await route.continue();
+      return;
+    }
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify([]),
+    });
+  });
 
   // Mock backend API routes across both local and preview hostnames (ignoring HTML document navigations)
   await page.route('**/user/user-*', async (route: Route) => {
@@ -135,7 +172,7 @@ test.describe('Admin side menu fold-open section (Desktop)', () => {
     }, DEVELOPER_AUTH);
 
     await page.goto('/', { waitUntil: 'domcontentloaded' });
-    await expect(page.locator('.elevation3')).toBeVisible();
+    await expect(page.locator('.menu-item').first()).toBeVisible();
 
     // 1. Admin group button is in the desktop sidebar and initially collapsed
     const adminButton = page.getByRole('button', { name: 'Admin' });
@@ -232,7 +269,7 @@ test.describe('Admin side menu fold-open section (Desktop)', () => {
     }, JAM_ADMIN_AUTH);
 
     await page.goto('/', { waitUntil: 'domcontentloaded' });
-    await expect(page.locator('.elevation3')).toBeVisible();
+    await expect(page.locator('.menu-item').first()).toBeVisible();
 
     const adminButton = page.getByRole('button', { name: 'Admin' });
     await expect(adminButton).toBeVisible();
@@ -256,7 +293,7 @@ test.describe('Admin side menu fold-open section (Desktop)', () => {
       } catch { /* ignore */ }
     });
     await page.goto('/', { waitUntil: 'domcontentloaded' });
-    await expect(page.locator('.elevation3')).toBeVisible();
+    await expect(page.locator('.menu-item').first()).toBeVisible();
 
     // Admin section button is not rendered at all
     await expect(page.getByRole('button', { name: 'Admin' })).toHaveCount(0);
@@ -271,7 +308,7 @@ test.describe('Admin side menu fold-open section (Desktop)', () => {
     }, DEVELOPER_AUTH);
 
     await page.goto('/', { waitUntil: 'domcontentloaded' });
-    await expect(page.locator('.elevation3')).toBeVisible();
+    await expect(page.locator('.menu-item').first()).toBeVisible();
 
     const adminButton = page.getByRole('button', { name: 'Admin' });
     await adminButton.focus();
@@ -310,7 +347,7 @@ test.describe('Admin side menu fold-open section (Mobile)', () => {
     }, DEVELOPER_AUTH);
 
     await page.goto('/', { waitUntil: 'domcontentloaded' });
-    await expect(page.locator('.elevation3')).toBeVisible();
+    await expect(page.locator('#mobilemenutoggle')).toBeVisible();
 
     const sidebar = page.locator('#sidebar');
     await expect(sidebar).toHaveClass(/close/);
