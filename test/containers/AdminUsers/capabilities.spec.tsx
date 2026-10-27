@@ -3,7 +3,7 @@ import {
 } from 'src/containers/AdminUsers/capabilities';
 
 const EXPECTED_CAPABILITIES = [
-  'gig:create', 'gig:edit', 'gig:delete',
+  'gig:create', 'gig:edit', 'gig:delete', 'gig:announce',
   'tour:create', 'tour:edit', 'tour:delete',
   'song:create', 'song:edit', 'song:delete',
   'book:create', 'book:edit', 'book:delete',
@@ -15,12 +15,13 @@ const EXPECTED_CAPABILITIES = [
 ];
 
 describe('AdminUsers capabilities registry', () => {
-  it('contains exactly the 24 capabilities from the backend registry', () => {
+  it('contains exactly the 25 capabilities from the backend registry', () => {
     expect([...CAPABILITIES].sort()).toEqual([...EXPECTED_CAPABILITIES].sort());
-    expect(CAPABILITIES.length).toBe(24);
+    expect(CAPABILITIES.length).toBe(25);
   });
 
-  it('includes venue-mining:create, outreach:approve, promo:email, and tour:* capabilities', () => {
+  it('includes gig:announce, venue-mining:create, outreach:approve, promo:email, and tour:* capabilities', () => {
+    expect(CAPABILITIES).toContain('gig:announce');
     expect(CAPABILITIES).toContain('venue-mining:create');
     expect(CAPABILITIES).toContain('outreach:approve');
     expect(CAPABILITIES).toContain('promo:email');

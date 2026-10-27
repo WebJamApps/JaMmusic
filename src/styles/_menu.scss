@@ -64,6 +64,76 @@ button.nav-link:hover {
   background-color: var(--sidebar-hover-bg);
 }
 
+.menu-group-container {
+  width: 100%;
+}
+
+.menu-group-header {
+  padding-left: 10px;
+  padding-right: 16px;
+}
+
+button.menu-group-button {
+  background: transparent !important;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0 !important;
+  color: var(--sidebar-fg);
+  font-family: 'Roboto', 'Noto', sans-serif;
+  font-size: 13px;
+  line-height: 24px;
+  text-align: left;
+  outline: none;
+}
+
+button.menu-group-button:hover {
+  background-color: transparent !important;
+  color: var(--sidebar-fg-hover);
+}
+
+.menu-group-title {
+  display: inline-flex;
+  align-items: center;
+
+  i {
+    margin-right: 8px;
+    flex-shrink: 0;
+  }
+}
+
+.menu-group-title .group-name {
+  color: var(--sidebar-fg);
+  font-weight: bold;
+  text-decoration: none;
+}
+
+button.menu-group-button:hover .group-name {
+  color: var(--sidebar-fg-hover);
+}
+
+.menu-group-button .group-arrow {
+  margin-left: auto;
+  font-size: 13px;
+  color: var(--sidebar-fg);
+}
+
+.group-items {
+  width: 100%;
+}
+
+.group-items[hidden] {
+  display: none !important;
+}
+
+.menu-sub-item {
+  padding-left: 24px;
+}
+
 .theme-toggle {
   padding-top: 8px;
   padding-bottom: 8px;

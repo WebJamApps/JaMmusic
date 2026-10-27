@@ -28,7 +28,7 @@ export default defineConfig({
     env: {
       BackendUrl: process.env.BackendUrl || 'http://localhost:7000',
       ALLOW_LOCALHOST_BACKEND: 'true',
-      userRoles: process.env.userRoles || JSON.stringify({ roles: ['Developer'] }),
+      userRoles: process.env.userRoles || JSON.stringify({ roles: ['Developer', 'JaM-admin'] }),
     },
   },
   projects: [
