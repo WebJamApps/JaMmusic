@@ -80,7 +80,7 @@ describe('Inquiry utils', () => {
     expect(setHasSubmitted).toHaveBeenCalled();
   });
   it('handleSubmit includes form, website, and formLoadedAt in payload', async () => {
-    const evt: any = { preventDefault: vi.fn() };
+    const evt = { preventDefault: vi.fn() } as unknown as React.MouseEvent<HTMLButtonElement>;
     const emailForm = {
       firstname: 'Josh',
       lastname: 'Sherman',
@@ -96,9 +96,9 @@ describe('Inquiry utils', () => {
     };
     const setHasSubmitted = vi.fn();
     const setSubmitError = vi.fn();
-    let capturedBody: any;
+    let capturedBody: Record<string, unknown> | null = null;
     global.fetch = vi.fn().mockImplementationOnce((_url, init) => {
-      capturedBody = JSON.parse(init.body);
+      capturedBody = JSON.parse(init.body as string);
       return Promise.resolve({ ok: true, json: async () => ({}) });
     });
 

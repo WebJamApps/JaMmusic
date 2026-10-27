@@ -44,13 +44,9 @@ interface IformActionsProps {
   setHasSubmitted: (arg0: boolean) => void,
   setSubmitError: (arg0: boolean) => void,
   formData: IinquiryFormData,
-  form?: string,
-  formLoadedAt?: number,
 }
 export function FormActions(props: IformActionsProps) {
-  const {
-    setHasSubmitted, setSubmitError, formData, form, formLoadedAt,
-  } = props;
+  const { setHasSubmitted, setSubmitError, formData } = props;
   return (
     <div className="inquiryValidation input-field col" style={{ marginBottom: '12px' }}>
       <span className="inquiryValidation">* Required</span>
@@ -60,16 +56,7 @@ export function FormActions(props: IformActionsProps) {
         id="sendEmailButton"
         disabled={utils.validateForm(formData)}
         onClick={(evt) => {
-          utils.handleSubmit(
-            evt,
-            {
-              ...formData,
-              form: formData.form || form,
-              formLoadedAt: typeof formData.formLoadedAt === 'number' ? formData.formLoadedAt : formLoadedAt,
-            },
-            setHasSubmitted,
-            setSubmitError,
-          );
+          utils.handleSubmit(evt, formData, setHasSubmitted, setSubmitError);
         }}
       >
         Submit
@@ -158,12 +145,10 @@ interface IinquiryFormProps {
   setFormData: (arg0: IinquiryFormData) => void,
   formData: IinquiryFormData,
   staticCountry?: string,
-  form?: string,
-  formLoadedAt?: number,
 }
 export function InquiryForm(props: IinquiryFormProps) {
   // eslint-disable-next-line object-curly-newline
-  const { formData, setFormData, setHasSubmitted, setSubmitError, staticCountry, form, formLoadedAt } = props;
+  const { formData, setFormData, setHasSubmitted, setSubmitError, staticCountry } = props;
   const {
     country, uSAstate, zipcode, website,
   } = formData;
@@ -235,8 +220,6 @@ export function InquiryForm(props: IinquiryFormProps) {
           ...formData,
           country: formData.country || staticCountry || '',
         }}
-        form={form}
-        formLoadedAt={formLoadedAt}
       />
     </form>
   );
@@ -276,14 +259,11 @@ interface IcontactFormProps {
   setSubmitError: (arg0: boolean) => void,
   formData: IinquiryFormData,
   setFormData: (arg0: IinquiryFormData) => void,
-  form?: string,
-  formLoadedAt?: number,
 }
 
 export function ContactForm(props: IcontactFormProps) {
   const {
     hasSubmitted, submitError, hideTitle, country, setHasSubmitted, setSubmitError, formData, setFormData,
-    form, formLoadedAt,
   } = props;
   return (
     <div
@@ -311,8 +291,6 @@ export function ContactForm(props: IcontactFormProps) {
             setSubmitError={setSubmitError}
             formData={formData}
             setFormData={setFormData}
-            form={form}
-            formLoadedAt={formLoadedAt}
           />
         </div>
       ) : (
@@ -325,10 +303,10 @@ export function ContactForm(props: IcontactFormProps) {
 export interface IinquiryProps {
   country?: string;
   hideTitle?: boolean;
-  form?: string;
+  form: string;
 }
 
-export function Inquiry({ country, hideTitle, form = 'webjam-homepage' }: IinquiryProps) {
+export function Inquiry({ country, hideTitle, form }: IinquiryProps) {
   const [hasSubmitted, setHasSubmitted] = useState(false);
   const [submitError, setSubmitError] = useState(false);
   const [formLoadedAt] = useState(() => Date.now());
@@ -352,8 +330,6 @@ export function Inquiry({ country, hideTitle, form = 'webjam-homepage' }: Iinqui
     setSubmitError,
     formData,
     setFormData,
-    form,
-    formLoadedAt,
   };
   return (
     <ContactForm {...props} />

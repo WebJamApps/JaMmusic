@@ -154,7 +154,7 @@ describe('Inquiry', () => {
   });
 
   it('renders Inquiry', () => {
-    const props = { country: '', hideTitle: true };
+    const props = { country: '', hideTitle: true, form: 'webjam-homepage' };
     render(<Inquiry {...props} />);
     expect(screen.queryByText(/contact us/i)).not.toBeInTheDocument();
   });

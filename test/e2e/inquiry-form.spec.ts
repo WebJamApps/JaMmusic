@@ -5,10 +5,22 @@ import { test, expect } from '@playwright/test';
 // 2. Book Us form sends form='jam-bookus', empty website, and formLoadedAt
 // 3. Trap field submission sends populated website field when targeted by a bot
 
+interface IinquiryPayload {
+  firstname?: string;
+  lastname?: string;
+  emailaddress?: string;
+  phonenumber?: string;
+  country?: string;
+  uSAstate?: string;
+  zipcode?: string;
+  comments?: string;
+  form?: string;
+  website?: string;
+  formLoadedAt?: number;
+}
+
 test.describe('Inquiry forms spam protection & form labeling', () => {
   test.beforeEach(async ({ page }) => {
-    page.on('console', (msg) => console.log('CONSOLE:', msg.text()));
-    page.on('pageerror', (err) => console.log('PAGE ERROR:', err.message));
     await page.setViewportSize({ width: 1200, height: 800 });
     // Prevent socketcluster hangs and external script errors
     await page.routeWebSocket(/.*/, (ws) => ws.close());
@@ -16,12 +28,12 @@ test.describe('Inquiry forms spam protection & form labeling', () => {
   });
 
   test('Web Jam homepage form sends form="webjam-homepage", empty website, and formLoadedAt', async ({ page }) => {
-    let capturedPayload: any = null;
+    let capturedPayload: IinquiryPayload | null = null;
 
     await page.route('http://localhost:7000/**', async (route) => {
       const url = new URL(route.request().url());
       if (url.pathname === '/inquiry') {
-        capturedPayload = route.request().postDataJSON();
+        capturedPayload = route.request().postDataJSON() as IinquiryPayload;
         await route.fulfill({
           status: 200,
           contentType: 'application/json',
@@ -65,28 +77,29 @@ test.describe('Inquiry forms spam protection & form labeling', () => {
     await expect(page.getByText('Thank you for contacting us.')).toBeVisible();
 
     expect(capturedPayload).not.toBeNull();
-    expect(capturedPayload.form).toBe('webjam-homepage');
-    expect(capturedPayload.website).toBe('');
-    expect(typeof capturedPayload.formLoadedAt).toBe('number');
-    expect(capturedPayload.formLoadedAt).toBeGreaterThan(0);
-    expect(capturedPayload.formLoadedAt).toBeLessThanOrEqual(Date.now());
-    expect(capturedPayload.firstname).toBe('Josh');
-    expect(capturedPayload.lastname).toBe('Sherman');
-    expect(capturedPayload.emailaddress).toBe('josh@web-jam.com');
-    expect(capturedPayload.phonenumber).toBe('540-555-1234');
-    expect(capturedPayload.country).toBe('United States');
-    expect(capturedPayload.uSAstate).toBe('Virginia');
-    expect(capturedPayload.zipcode).toBe('24153');
-    expect(capturedPayload.comments).toBe('Website project consultation inquiry.');
+    const payload = capturedPayload!;
+    expect(payload.form).toBe('webjam-homepage');
+    expect(payload.website).toBe('');
+    expect(typeof payload.formLoadedAt).toBe('number');
+    expect(payload.formLoadedAt).toBeGreaterThan(0);
+    expect(payload.formLoadedAt).toBeLessThanOrEqual(Date.now());
+    expect(payload.firstname).toBe('Josh');
+    expect(payload.lastname).toBe('Sherman');
+    expect(payload.emailaddress).toBe('josh@web-jam.com');
+    expect(payload.phonenumber).toBe('540-555-1234');
+    expect(payload.country).toBe('United States');
+    expect(payload.uSAstate).toBe('Virginia');
+    expect(payload.zipcode).toBe('24153');
+    expect(payload.comments).toBe('Website project consultation inquiry.');
   });
 
   test('Book Us form sends form="jam-bookus", empty website, and formLoadedAt', async ({ page }) => {
-    let capturedPayload: any = null;
+    let capturedPayload: IinquiryPayload | null = null;
 
     await page.route('http://localhost:7000/**', async (route) => {
       const url = new URL(route.request().url());
       if (url.pathname === '/inquiry') {
-        capturedPayload = route.request().postDataJSON();
+        capturedPayload = route.request().postDataJSON() as IinquiryPayload;
         await route.fulfill({
           status: 200,
           contentType: 'application/json',
@@ -129,28 +142,29 @@ test.describe('Inquiry forms spam protection & form labeling', () => {
     await expect(page.getByText('Thank you for contacting us.')).toBeVisible();
 
     expect(capturedPayload).not.toBeNull();
-    expect(capturedPayload.form).toBe('jam-bookus');
-    expect(capturedPayload.website).toBe('');
-    expect(typeof capturedPayload.formLoadedAt).toBe('number');
-    expect(capturedPayload.formLoadedAt).toBeGreaterThan(0);
-    expect(capturedPayload.formLoadedAt).toBeLessThanOrEqual(Date.now());
-    expect(capturedPayload.firstname).toBe('Maria');
-    expect(capturedPayload.lastname).toBe('Sherman');
-    expect(capturedPayload.emailaddress).toBe('maria@example.com');
-    expect(capturedPayload.phonenumber).toBe('540-555-5678');
-    expect(capturedPayload.country).toBe('United States');
-    expect(capturedPayload.uSAstate).toBe('Virginia');
-    expect(capturedPayload.zipcode).toBe('24018');
-    expect(capturedPayload.comments).toBe('Booking inquiry for acoustic live music event.');
+    const payload = capturedPayload!;
+    expect(payload.form).toBe('jam-bookus');
+    expect(payload.website).toBe('');
+    expect(typeof payload.formLoadedAt).toBe('number');
+    expect(payload.formLoadedAt).toBeGreaterThan(0);
+    expect(payload.formLoadedAt).toBeLessThanOrEqual(Date.now());
+    expect(payload.firstname).toBe('Maria');
+    expect(payload.lastname).toBe('Sherman');
+    expect(payload.emailaddress).toBe('maria@example.com');
+    expect(payload.phonenumber).toBe('540-555-5678');
+    expect(payload.country).toBe('United States');
+    expect(payload.uSAstate).toBe('Virginia');
+    expect(payload.zipcode).toBe('24018');
+    expect(payload.comments).toBe('Booking inquiry for acoustic live music event.');
   });
 
   test('Trap field submission carries bot-entered website value in payload', async ({ page }) => {
-    let capturedPayload: any = null;
+    let capturedPayload: IinquiryPayload | null = null;
 
     await page.route('http://localhost:7000/**', async (route) => {
       const url = new URL(route.request().url());
       if (url.pathname === '/inquiry') {
-        capturedPayload = route.request().postDataJSON();
+        capturedPayload = route.request().postDataJSON() as IinquiryPayload;
         // Backend silently drops trap submission with HTTP 200
         await route.fulfill({
           status: 200,
@@ -200,9 +214,10 @@ test.describe('Inquiry forms spam protection & form labeling', () => {
     await expect(page.getByText('Thank you for contacting us.')).toBeVisible();
 
     expect(capturedPayload).not.toBeNull();
-    expect(capturedPayload.form).toBe('jam-bookus');
-    expect(capturedPayload.website).toBe('https://seo-ranking-services.example.com');
-    expect(typeof capturedPayload.formLoadedAt).toBe('number');
-    expect(capturedPayload.formLoadedAt).toBeGreaterThan(0);
+    const payload = capturedPayload!;
+    expect(payload.form).toBe('jam-bookus');
+    expect(payload.website).toBe('https://seo-ranking-services.example.com');
+    expect(typeof payload.formLoadedAt).toBe('number');
+    expect(payload.formLoadedAt).toBeGreaterThan(0);
   });
 });

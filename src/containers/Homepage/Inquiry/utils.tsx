@@ -46,9 +46,9 @@ async function handleSubmit(
     phonenumber,
     zipcode,
     comments: (comments || '').trim(),
-    form: form || 'webjam-homepage',
+    form: form || '',
     website: website || '',
-    formLoadedAt: typeof formLoadedAt === 'number' ? formLoadedAt : Date.now(),
+    formLoadedAt,
   };
   await createEmailApi(emailForm, setHasSubmitted, setSubmitError);
 }
