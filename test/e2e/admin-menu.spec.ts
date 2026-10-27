@@ -96,6 +96,15 @@ async function setupMocks(page: Page, authUser?: { userType: string; email: stri
     });
   });
 
+  await page.route('**/facebook/**', async (route: Route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      headers: { 'access-control-allow-origin': '*' },
+      body: JSON.stringify({ posts: [], lastUpdated: new Date().toISOString() }),
+    });
+  });
+
   // Mock backend API routes across both local and preview hostnames (ignoring HTML document navigations)
   await page.route('**/user/user-*', async (route: Route) => {
     if (route.request().resourceType() === 'document') {
@@ -106,12 +115,20 @@ async function setupMocks(page: Page, authUser?: { userType: string; email: stri
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
+        headers: {
+          'access-control-allow-origin': '*',
+          'access-control-allow-headers': '*',
+          'access-control-allow-methods': '*',
+        },
         body: JSON.stringify(authUser),
       });
     } else {
       await route.fulfill({
         status: 401,
         contentType: 'application/json',
+        headers: {
+          'access-control-allow-origin': '*',
+        },
         body: JSON.stringify({ message: 'Unauthorized' }),
       });
     }
