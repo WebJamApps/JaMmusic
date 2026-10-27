@@ -1,4 +1,6 @@
-import { test, expect } from '@playwright/test';
+import {
+  test, expect, type Page, type WebSocketRoute, type Route,
+} from '@playwright/test';
 
 // E2E tests for the fold-open Admin section in the side menu:
 // - opens and folds on click
@@ -8,6 +10,7 @@ import { test, expect } from '@playwright/test';
 // - hides Database link for non-Developer admin roles (e.g. JaM-admin)
 // - hides entire Admin section for unauthenticated visitors
 // - mobile drawer: toggling group leaves drawer open, selecting child closes drawer
+// - accessible keyboard navigation: visible focus ring, toggle with Enter and Space
 
 const DEVELOPER_AUTH = {
   isAuthenticated: true,
@@ -29,21 +32,63 @@ const JAM_ADMIN_AUTH = {
   },
 };
 
-async function setupMocks(page: any, authUser = DEVELOPER_AUTH.user) {
-  // Prevent socketcluster hangs and external script errors (e.g. Google GSI client unhandled exceptions)
-  await page.routeWebSocket(/.*/, (ws: any) => ws.close());
-  await page.route(/^https:\/\//, (route: any) => route.abort());
+interface SocketPacket {
+  event?: string;
+  cid?: number;
+  data?: unknown;
+}
 
-  // Mock all backend API routes
-  await page.route('http://localhost:7000/**', async (route: any) => {
-    const url = new URL(route.request().url());
-    const path = url.pathname;
-    let body: unknown = [];
+async function setupMocks(page: Page, authUser?: { userType: string; email: string }) {
+  // Handle socketcluster handshake and mock data messages so no connection-failure toast overlay is displayed
+  await page.routeWebSocket(/.*/, (ws: WebSocketRoute) => {
+    ws.onMessage((message) => {
+      if (typeof message !== 'string' || !message.startsWith('{')) return;
+      try {
+        const packet = JSON.parse(message) as SocketPacket;
+        if (packet.event === '#handshake') {
+          ws.send(JSON.stringify({ rid: packet.cid, data: { id: 'fixture', pingTimeout: 20000, isAuthenticated: false } }));
+        } else if (packet.event === '#subscribe') {
+          ws.send(JSON.stringify({ rid: packet.cid }));
+        } else if (packet.event === 'initial message') {
+          ws.send(JSON.stringify({ event: 'allGigs', data: [] }));
+          ws.send(JSON.stringify({ event: 'allPics', data: [] }));
+        }
+      } catch { /* ignore */ }
+    });
+  });
 
-    if (path.startsWith('/user/user-')) {
-      body = authUser;
-    } else if (path.startsWith('/admin/user')) {
-      body = [
+  await page.route(/^https:\/\//, (route: Route) => route.abort());
+
+  // Mock backend API routes across both local and preview hostnames (ignoring HTML document navigations)
+  await page.route('**/user/user-*', async (route: Route) => {
+    if (route.request().resourceType() === 'document') {
+      await route.continue();
+      return;
+    }
+    if (authUser) {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(authUser),
+      });
+    } else {
+      await route.fulfill({
+        status: 401,
+        contentType: 'application/json',
+        body: JSON.stringify({ message: 'Unauthorized' }),
+      });
+    }
+  });
+
+  await page.route('**/admin/user*', async (route: Route) => {
+    if (route.request().resourceType() === 'document') {
+      await route.continue();
+      return;
+    }
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify([
         {
           _id: 'u-1',
           name: 'Admin User',
@@ -51,9 +96,19 @@ async function setupMocks(page: any, authUser = DEVELOPER_AUTH.user) {
           userType: 'JaM-admin',
           privileges: ['gig:create', 'gig:announce'],
         },
-      ];
-    } else if (path.startsWith('/venue')) {
-      body = [
+      ]),
+    });
+  });
+
+  await page.route('**/venue*', async (route: Route) => {
+    if (route.request().resourceType() === 'document') {
+      await route.continue();
+      return;
+    }
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify([
         {
           _id: 'v-1',
           name: 'Test Venue',
@@ -61,13 +116,7 @@ async function setupMocks(page: any, authUser = DEVELOPER_AUTH.user) {
           usState: 'VA',
           outreachEligible: true,
         },
-      ];
-    }
-
-    await route.fulfill({
-      status: 200,
-      contentType: 'application/json',
-      body: JSON.stringify(body),
+      ]),
     });
   });
 }
@@ -97,7 +146,7 @@ test.describe('Admin side menu fold-open section (Desktop)', () => {
     await expect(adminList).toBeHidden();
 
     // 2. Click to open Admin section
-    await adminButton.dispatchEvent('click');
+    await adminButton.click();
     await expect(adminButton).toHaveAttribute('aria-expanded', 'true');
     await expect(adminList).toBeVisible();
 
@@ -115,12 +164,12 @@ test.describe('Admin side menu fold-open section (Desktop)', () => {
     await expect(databaseLink).toBeVisible();
 
     // 4. Click Admin button again to fold closed
-    await adminButton.dispatchEvent('click');
+    await adminButton.click();
     await expect(adminButton).toHaveAttribute('aria-expanded', 'false');
     await expect(adminList).toBeHidden();
 
     // 5. Click Admin button to open again
-    await adminButton.dispatchEvent('click');
+    await adminButton.click();
     await expect(adminButton).toHaveAttribute('aria-expanded', 'true');
     await expect(adminList).toBeVisible();
 
@@ -187,7 +236,7 @@ test.describe('Admin side menu fold-open section (Desktop)', () => {
 
     const adminButton = page.getByRole('button', { name: 'Admin' });
     await expect(adminButton).toBeVisible();
-    await adminButton.dispatchEvent('click');
+    await adminButton.click();
 
     // 4 admin child links are visible
     await expect(page.getByRole('link', { name: 'Users' })).toBeVisible();
@@ -199,13 +248,55 @@ test.describe('Admin side menu fold-open section (Desktop)', () => {
     await expect(page.getByRole('link', { name: 'Database' })).toHaveCount(0);
   });
 
-  test('Admin section is hidden for unauthenticated visitors', async ({ page }) => {
+  test('Admin section is hidden for unauthenticated visitors', async ({ context, page }) => {
     await setupMocks(page);
+    await context.addInitScript(() => {
+      try {
+        localStorage.removeItem('auth');
+      } catch { /* ignore */ }
+    });
     await page.goto('/', { waitUntil: 'domcontentloaded' });
     await expect(page.locator('.elevation3')).toBeVisible();
 
     // Admin section button is not rendered at all
     await expect(page.getByRole('button', { name: 'Admin' })).toHaveCount(0);
+  });
+
+  test('keyboard users can tab to Admin toggle, see visible focus outline, and expand/collapse with Enter and Space', async ({ context, page }) => {
+    await setupMocks(page, DEVELOPER_AUTH.user);
+    await context.addInitScript((auth) => {
+      try {
+        localStorage.setItem('auth', JSON.stringify(auth));
+      } catch { /* ignore */ }
+    }, DEVELOPER_AUTH);
+
+    await page.goto('/', { waitUntil: 'domcontentloaded' });
+    await expect(page.locator('.elevation3')).toBeVisible();
+
+    const adminButton = page.getByRole('button', { name: 'Admin' });
+    await adminButton.focus();
+    await expect(adminButton).toBeFocused();
+
+    // Verify focus-visible outline is active and styled (not outline: none)
+    const focusStyle = await adminButton.evaluate((el) => {
+      const style = window.getComputedStyle(el);
+      return {
+        outlineStyle: style.outlineStyle,
+        outlineWidth: style.outlineWidth,
+      };
+    });
+    expect(focusStyle.outlineStyle).not.toBe('none');
+    expect(parseInt(focusStyle.outlineWidth, 10)).toBeGreaterThanOrEqual(1);
+
+    // Expand with Enter
+    await page.keyboard.press('Enter');
+    await expect(adminButton).toHaveAttribute('aria-expanded', 'true');
+    await expect(page.locator('#menu-group-admin')).toBeVisible();
+
+    // Collapse with Space
+    await page.keyboard.press('Space');
+    await expect(adminButton).toHaveAttribute('aria-expanded', 'false');
+    await expect(page.locator('#menu-group-admin')).toBeHidden();
   });
 });
 
@@ -225,7 +316,7 @@ test.describe('Admin side menu fold-open section (Mobile)', () => {
     await expect(sidebar).toHaveClass(/close/);
 
     // Open mobile drawer via toggle
-    await page.evaluate(() => document.getElementById('mobilemenutoggle')?.click());
+    await page.locator('#mobilemenutoggle').click();
     await expect(sidebar).toHaveClass(/open/);
 
     // Admin button is visible in drawer
@@ -234,7 +325,7 @@ test.describe('Admin side menu fold-open section (Mobile)', () => {
     await expect(adminButton).toHaveAttribute('aria-expanded', 'false');
 
     // Tap Admin button to open: drawer remains open
-    await adminButton.dispatchEvent('click');
+    await adminButton.click();
     await expect(adminButton).toHaveAttribute('aria-expanded', 'true');
     await expect(sidebar, 'drawer must remain open when toggling a group').toHaveClass(/open/);
 

@@ -156,7 +156,7 @@ export function SideMenuItem(props: IsideMenuItemProps): React.JSX.Element | nul
           hidden={!isOpen}
           style={{ display: isOpen ? 'block' : 'none' }}
         >
-          {menu.children.map((child, childIndex) => (
+          {isOpen && menu.children.map((child, childIndex) => (
             <SideMenuItem
               key={child.name || childIndex}
               menu={child}
