@@ -414,6 +414,16 @@ exports[`Homepage > renders correctly 1`] = `
                       class="col"
                       id="new-contact"
                     >
+                      <input
+                        aria-hidden="true"
+                        autocomplete="off"
+                        id="website"
+                        name="website"
+                        style="display: none;"
+                        tabindex="-1"
+                        type="text"
+                        value=""
+                      />
                       <table
                         class="tableSection"
                       >

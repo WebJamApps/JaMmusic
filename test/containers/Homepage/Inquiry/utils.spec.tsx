@@ -79,6 +79,46 @@ describe('Inquiry utils', () => {
     await utils.handleSubmit(evt, emailForm, setHasSubmitted, setSubmitError);
     expect(setHasSubmitted).toHaveBeenCalled();
   });
+  it('handleSubmit includes form, website, and formLoadedAt in payload', async () => {
+    const evt = { preventDefault: vi.fn() } as unknown as React.MouseEvent<HTMLButtonElement>;
+    const emailForm = {
+      firstname: 'Josh',
+      lastname: 'Sherman',
+      emailaddress: 'josh@example.com',
+      uSAstate: 'VA',
+      country: 'United States',
+      phonenumber: '5401234567',
+      zipcode: '24153',
+      comments: 'Need a band for a party',
+      form: 'jam-bookus',
+      website: '',
+      formLoadedAt: 1730000000000,
+    };
+    const setHasSubmitted = vi.fn();
+    const setSubmitError = vi.fn();
+    let capturedBody: Record<string, unknown> | null = null;
+    global.fetch = vi.fn().mockImplementationOnce((_url, init) => {
+      capturedBody = JSON.parse(init.body as string);
+      return Promise.resolve({ ok: true, json: async () => ({}) });
+    });
+
+    await utils.handleSubmit(evt, emailForm, setHasSubmitted, setSubmitError);
+
+    expect(setHasSubmitted).toHaveBeenCalledWith(true);
+    expect(capturedBody).toEqual({
+      firstname: 'Josh',
+      lastname: 'Sherman',
+      emailaddress: 'josh@example.com',
+      uSAstate: 'VA',
+      country: 'United States',
+      phonenumber: '5401234567',
+      zipcode: '24153',
+      comments: 'Need a band for a party',
+      form: 'jam-bookus',
+      website: '',
+      formLoadedAt: 1730000000000,
+    });
+  });
   it('handleInputChange', () => {
     const evt: any = { target: { value: 'any', id: '1' } };
     const formData = {
