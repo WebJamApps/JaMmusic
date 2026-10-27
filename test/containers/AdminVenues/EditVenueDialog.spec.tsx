@@ -1,22 +1,34 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { render, screen, fireEvent, act, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
+import { customFetch } from 'src/lib/fetch.utils';
+import type { AddressSuggestion, PlaceAddress } from 'src/containers/AdminVenues/venue-address-lookup';
 import { EditVenueDialog } from 'src/containers/AdminVenues/EditVenueDialog';
 import adminVenuesUtils, { type Ivenue } from 'src/containers/AdminVenues/admin-venues.utils';
+
+vi.mock('src/lib/fetch.utils', () => ({ customFetch: vi.fn() }));
+
+interface AutocompleteMockProps {
+  inputValue: string; options: AddressSuggestion[];
+  onInputChange: (event: unknown, value: string, reason: string) => void;
+  onChange: (event: unknown, value: AddressSuggestion) => void;
+  renderInput: (props: Record<string, unknown>) => React.ReactNode;
+  getOptionLabel: (option: AddressSuggestion) => string;
+}
 
 vi.mock('@mui/material', async () => {
   const mockMui = await import('../../../__mocks__/@mui/material');
   return {
     ...mockMui,
-    Autocomplete: (props: any) => {
+    Autocomplete: (props: AutocompleteMockProps) => {
       return (
         <div data-testid="mock-autocomplete">
           {props.renderInput({
             role: 'combobox',
             value: props.inputValue || '',
-            onChange: (e: any) => {
+            onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
               if (props.onInputChange) {
-                props.onInputChange(e, e.target.value);
+                props.onInputChange(e, e.target.value, 'input');
               }
             },
             slotProps: {
@@ -27,11 +39,11 @@ vi.mock('@mui/material', async () => {
           })}
           {props.options && props.options.length > 0 && (
             <div data-testid="mock-autocomplete-options">
-              {props.options.map((option: any) => {
-                const label = props.getOptionLabel ? props.getOptionLabel(option) : (option.description || option);
+              {props.options.map((option: AddressSuggestion) => {
+                const label = props.getOptionLabel ? props.getOptionLabel(option) : option.text;
                 return (
                   <button
-                    key={option.place_id || label}
+                    key={option.placeId || label}
                     onClick={(e) => {
                       if (props.onChange) {
                         props.onChange(e, option);
@@ -705,196 +717,62 @@ describe('EditVenueDialog', () => {
     expect(onSaved).toHaveBeenCalledWith('Existing venue updated');
   });
 
-  describe('Google Places Autocomplete', () => {
-    let mockGetPlacePredictions: any;
-    let mockGetDetails: any;
-
-    const getFormInput = (testId: string) => {
-      const el = screen.getByTestId(testId);
-      return el.tagName === 'INPUT' ? el : (el.querySelector('input') || el);
+  describe('backend address lookup', () => {
+    const details: PlaceAddress = {
+      street: '123 Campbell Ave', city: 'Roanoke', state: 'VA', country: 'US', zipCode: '24011-1234', lat: 37.27, lng: -79.94,
     };
-
     beforeEach(() => {
       vi.useRealTimers();
-
-      mockGetPlacePredictions = vi.fn((options: any, callback: any) => {
-        callback([{ description: '123 Campbell Ave, Roanoke, VA', place_id: 'p1' }], 'OK');
-      });
-
-      mockGetDetails = vi.fn((options: any, callback: any) => {
-        callback({
-          address_components: [
-            { types: ['street_number'], long_name: '123' },
-            { types: ['route'], long_name: 'Campbell Ave' },
-            { types: ['locality'], long_name: 'Roanoke' },
-            { types: ['administrative_area_level_1'], short_name: 'VA' },
-            { types: ['country'], short_name: 'US' },
-            { types: ['postal_code'], long_name: '24011' },
-          ],
-          geometry: {
-            location: {
-              lat: () => 37.27,
-              lng: () => -79.94,
-            },
-          },
-          formatted_address: '123 Campbell Ave, Roanoke, VA 24011',
-        }, 'OK');
-      });
-
-      const mockAutocompleteService = vi.fn().mockImplementation(function () {
-        return {
-          getPlacePredictions: mockGetPlacePredictions,
-        };
-      });
-
-      const mockPlacesService = vi.fn().mockImplementation(function () {
-        return {
-          getDetails: mockGetDetails,
-        };
-      });
-
-      const mockAutocompleteSessionToken = vi.fn();
-
-      (window as any).google = {
-        maps: {
-          places: {
-            AutocompleteService: mockAutocompleteService,
-            PlacesService: mockPlacesService,
-            AutocompleteSessionToken: mockAutocompleteSessionToken,
-            PlacesServiceStatus: { OK: 'OK' },
-          },
-        },
-      };
-
-      process.env.GOOGLE_MAPS_API_KEY = 'test-api-key';
+      vi.mocked(customFetch).mockImplementation(async (url) => new Response(JSON.stringify(
+        String(url).includes('/suggest?') ? [{ placeId: 'p1', text: 'Campbell suggestion' }] : details,
+      )));
     });
-
-    afterEach(() => {
-      vi.useRealTimers();
-      delete (window as any).google;
-      delete process.env.GOOGLE_MAPS_API_KEY;
+    const openDialog = async () => {
+      await act(async () => { render(<EditVenueDialog open venue={null} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />); });
+      fireEvent.change(screen.getByTestId('edit-venue-address'), { target: { value: '123 Campbell' } });
+      await screen.findByText('Campbell suggestion');
+    };
+    it('maps the selected address and exact coordinates into the saved form', async () => {
+      await openDialog();
+      fireEvent.click(screen.getByText('Campbell suggestion'));
+      await waitFor(() => expect(screen.getByTestId('edit-venue-city')).toHaveValue('Roanoke'));
+      fireEvent.change(screen.getByTestId('edit-venue-name'), { target: { value: 'New venue' } });
+      fireEvent.click(screen.getByTestId('edit-venue-save'));
+      await waitFor(() => expect(adminVenuesUtils.createVenueWithOutcome).toHaveBeenCalledWith('tk', expect.objectContaining({
+        address: '123 Campbell Ave', city: 'Roanoke', usState: 'VA', zipCode: '24011',
+        location: { type: 'Point', coordinates: [-79.94, 37.27] },
+      })));
     });
-
-    it('loads the Google Maps script and initializes services', async () => {
-      await act(async () => {
-        render(<EditVenueDialog open venue={null} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />);
-      });
-      await waitFor(() => {
-        const input = getFormInput('edit-venue-address');
-        expect(input.getAttribute('role')).toBe('combobox');
-      });
-      expect(getFormInput('edit-venue-address')).toBeDefined();
+    it('keeps manual fields when a detail response arrives late', async () => {
+      let finish: (response: Response) => void = () => { throw new Error('No pending details'); };
+      await openDialog();
+      vi.mocked(customFetch).mockImplementationOnce(() => new Promise((resolve) => { finish = resolve; }));
+      fireEvent.click(screen.getByText('Campbell suggestion'));
+      fireEvent.change(screen.getByTestId('edit-venue-city'), { target: { value: 'My city' } });
+      await act(async () => { finish(new Response(JSON.stringify(details))); });
+      expect(screen.getByTestId('edit-venue-city')).toHaveValue('My city');
+      expect(screen.getByTestId('edit-venue-address')).toHaveValue('123 Campbell');
     });
-
-    it('fetches predictions when address input changes', async () => {
-      await act(async () => {
-        render(<EditVenueDialog open venue={null} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />);
-      });
-
-      await waitFor(() => {
-        const input = getFormInput('edit-venue-address');
-        expect(input.getAttribute('role')).toBe('combobox');
-      });
-
-      vi.useFakeTimers();
-      const input = getFormInput('edit-venue-address');
-      await act(async () => {
-        fireEvent.change(input, { target: { value: '123 Campbell' } });
-      });
-
-      await act(async () => {
-        vi.advanceTimersByTime(350);
-      });
-
-      vi.useRealTimers();
-      const option = await screen.findByText(/123 Campbell Ave/);
-      expect(option).toBeInTheDocument();
+    it('retains typed input on detail failure and still enforces required fields', async () => {
+      await openDialog();
+      vi.mocked(customFetch).mockResolvedValueOnce(new Response('{}', { status: 502 }));
+      fireEvent.click(screen.getByText('Campbell suggestion'));
+      await screen.findByText(/Address lookup unavailable/);
+      expect(screen.getByTestId('edit-venue-address')).toHaveValue('123 Campbell');
+      fireEvent.click(screen.getByTestId('edit-venue-save'));
+      await screen.findByTestId('edit-venue-error');
+      expect(adminVenuesUtils.createVenueWithOutcome).not.toHaveBeenCalled();
     });
-
-    it('populates address, city, state, country on prediction selection', async () => {
-      await act(async () => {
-        render(<EditVenueDialog open venue={null} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />);
-      });
-
-      await waitFor(() => {
-        const input = getFormInput('edit-venue-address');
-        expect(input.getAttribute('role')).toBe('combobox');
-      });
-
-      vi.useFakeTimers();
-      const input = getFormInput('edit-venue-address') as HTMLInputElement;
-      await act(async () => {
-        fireEvent.change(input, { target: { value: '123 Campbell' } });
-      });
-
-      await act(async () => {
-        vi.advanceTimersByTime(350);
-      });
-      vi.useRealTimers();
-
-      const option = await screen.findByText(/123 Campbell Ave/);
-      await act(async () => {
-        fireEvent.click(option);
-      });
-
-      expect(mockGetDetails).toHaveBeenCalledWith(
-        expect.objectContaining({ placeId: 'p1' }),
-        expect.any(Function)
-      );
-
-      expect(input.value).toBe('123 Campbell Ave');
-      expect((getFormInput('edit-venue-city') as HTMLInputElement).value).toBe('Roanoke');
-      expect((getFormInput('edit-venue-zip') as HTMLInputElement).value).toBe('24011');
-    });
-
-    it('populates non-US countries with free-text region on prediction selection', async () => {
-      mockGetDetails.mockImplementationOnce((options: any, callback: any) => {
-        callback({
-          address_components: [
-            { types: ['street_number'], long_name: '456' },
-            { types: ['route'], long_name: 'Yonge St' },
-            { types: ['locality'], long_name: 'Toronto' },
-            { types: ['administrative_area_level_1'], short_name: 'ON' },
-            { types: ['country'], short_name: 'CA' },
-          ],
-          geometry: {
-            location: {
-              lat: () => 43.65,
-              lng: () => -79.38,
-            },
-          },
-          formatted_address: '456 Yonge St, Toronto, ON, Canada',
-        }, 'OK');
-      });
-
-      await act(async () => {
-        render(<EditVenueDialog open venue={null} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />);
-      });
-
-      await waitFor(() => {
-        const input = getFormInput('edit-venue-address');
-        expect(input.getAttribute('role')).toBe('combobox');
-      });
-
-      vi.useFakeTimers();
-      const input = getFormInput('edit-venue-address') as HTMLInputElement;
-      await act(async () => {
-        fireEvent.change(input, { target: { value: '456 Yonge' } });
-      });
-
-      await act(async () => {
-        vi.advanceTimersByTime(350);
-      });
-      vi.useRealTimers();
-
-      const option = await screen.findByText(/123 Campbell Ave/);
-      await act(async () => {
-        fireEvent.click(option);
-      });
-
-      expect(input.value).toBe('456 Yonge St');
-      expect((getFormInput('edit-venue-city') as HTMLInputElement).value).toBe('Toronto');
-      expect((getFormInput('edit-venue-region') as HTMLInputElement).value).toBe('ON');
+    it('drops a selected coordinate when the address is manually changed', async () => {
+      await openDialog();
+      fireEvent.click(screen.getByText('Campbell suggestion'));
+      await waitFor(() => expect(screen.getByTestId('edit-venue-city')).toHaveValue('Roanoke'));
+      fireEvent.change(screen.getByTestId('edit-venue-name'), { target: { value: 'New venue' } });
+      fireEvent.change(screen.getByTestId('edit-venue-address'), { target: { value: '999 Manual St' } });
+      fireEvent.click(screen.getByTestId('edit-venue-save'));
+      await waitFor(() => expect(adminVenuesUtils.createVenueWithOutcome).toHaveBeenCalledWith('tk', expect.objectContaining({
+        address: '999 Manual St', location: undefined,
+      })));
     });
   });
 });

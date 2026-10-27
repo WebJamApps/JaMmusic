@@ -35,6 +35,7 @@ jobs:
           environment:
             BackendUrl: "http://localhost:7000"
             ALLOW_LOCALHOST_BACKEND: "true"
+            userRoles: '{"roles":["Developer","JaM-admin"]}'
           command: npm run test:e2e
       - store_artifacts:
           path: coverage

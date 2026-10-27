@@ -43,11 +43,11 @@ const MusTT = () => (
 );
 
 interface InavLinksProps {
-  handleClose: () => void, userCount?: number, heartBeat?: string,
+  handleClose: () => void, userCount?: number, heartBeat?: string, menuOpen?: boolean,
 }
 export function NavLinks(props: InavLinksProps) {
   const {
-    userCount, heartBeat, handleClose,
+    userCount, heartBeat, handleClose, menuOpen,
   } = props;
   return (
     <div className="nav-list" style={{ width: '180px' }}>
@@ -61,6 +61,7 @@ export function NavLinks(props: InavLinksProps) {
             menu={menu}
             index={index}
             handleClose={handleClose}
+            menuOpen={menuOpen}
           />
         ),
       )

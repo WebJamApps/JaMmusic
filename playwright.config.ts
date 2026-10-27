@@ -5,6 +5,17 @@ import { defineConfig, devices } from '@playwright/test';
 // regression guard is runnable out of the box.
 const baseURL = process.env.BASE_URL || 'http://localhost:7878';
 
+function getE2EUserRoles(): string {
+  try {
+    const parsed = JSON.parse(process.env.userRoles || '{}');
+    const existing = Array.isArray(parsed.roles) ? parsed.roles : [];
+    const merged = Array.from(new Set([...existing, 'Developer', 'JaM-admin']));
+    return JSON.stringify({ roles: merged });
+  } catch {
+    return JSON.stringify({ roles: ['Developer', 'JaM-admin'] });
+  }
+}
+
 export default defineConfig({
   testDir: './test/e2e',
   outputDir: './test/test-results',
@@ -28,7 +39,7 @@ export default defineConfig({
     env: {
       BackendUrl: process.env.BackendUrl || 'http://localhost:7000',
       ALLOW_LOCALHOST_BACKEND: 'true',
-      userRoles: process.env.userRoles || JSON.stringify({ roles: ['Developer'] }),
+      userRoles: getE2EUserRoles(),
     },
   },
   projects: [

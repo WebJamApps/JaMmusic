@@ -73,6 +73,7 @@ export function AppTemplate(props: IpageHostProps) {
         // userCount={userCount}
         // heartBeat={heartBeat}
         handleClose={handleClose}
+        menuOpen={menuOpen}
       />
       <MainPanel children={children} onClick={onClick} onKeyPress={onKeyPress} />
     </div>

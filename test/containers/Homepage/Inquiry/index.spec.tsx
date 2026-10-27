@@ -154,7 +154,7 @@ describe('Inquiry', () => {
   });
 
   it('renders Inquiry', () => {
-    const props = { country: '', hideTitle: true };
+    const props = { country: '', hideTitle: true, form: 'webjam-homepage' };
     render(<Inquiry {...props} />);
     expect(screen.queryByText(/contact us/i)).not.toBeInTheDocument();
   });
@@ -209,5 +209,59 @@ describe('Inquiry', () => {
     };
     render(<ContactForm {...props} />);
     expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+  });
+
+  it('renders hidden trap field with accessibility attributes', () => {
+    const { container } = render(
+      <InquiryForm
+        formData={formData}
+        setFormData={vi.fn()}
+        setHasSubmitted={vi.fn()}
+        setSubmitError={vi.fn()}
+      />,
+    );
+    const trapInput = container.querySelector('#website') as HTMLInputElement;
+    expect(trapInput).toBeInTheDocument();
+    expect(trapInput).toHaveAttribute('type', 'text');
+    expect(trapInput).toHaveAttribute('name', 'website');
+    expect(trapInput).toHaveAttribute('tabindex', '-1');
+    expect(trapInput).toHaveAttribute('autocomplete', 'off');
+    expect(trapInput).toHaveAttribute('aria-hidden', 'true');
+    expect(trapInput).toHaveStyle({ display: 'none' });
+  });
+
+  it('handles onChange for trap field website in InquiryForm', () => {
+    const setFormData = vi.fn();
+    const { container } = render(
+      <InquiryForm
+        formData={formData}
+        setFormData={setFormData}
+        setHasSubmitted={vi.fn()}
+        setSubmitError={vi.fn()}
+      />,
+    );
+    const trapInput = container.querySelector('#website')!;
+    fireEvent.change(trapInput, { target: { value: 'bot-spam-url' } });
+    expect(setFormData).toHaveBeenCalled();
+  });
+
+  it('renders Inquiry with explicit form prop and initializes payload metadata', () => {
+    const handleSubmitSpy = vi.spyOn(utils, 'handleSubmit').mockImplementation(() => Promise.resolve());
+    vi.spyOn(utils, 'validateForm').mockReturnValue(false);
+
+    render(<Inquiry country="United States" hideTitle form="jam-bookus" />);
+    const submitButton = screen.getByRole('button', { name: /submit/i });
+    fireEvent.click(submitButton);
+
+    expect(handleSubmitSpy).toHaveBeenCalledWith(
+      expect.anything(),
+      expect.objectContaining({
+        form: 'jam-bookus',
+        website: '',
+        formLoadedAt: expect.any(Number),
+      }),
+      expect.any(Function),
+      expect.any(Function),
+    );
   });
 });

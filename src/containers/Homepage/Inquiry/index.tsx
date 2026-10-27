@@ -2,7 +2,7 @@ import {
   TextareaAutosize,
   Button,
 } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { WjInput } from 'src/components/WjInput';
 import { WjDropdown } from 'src/components/WjDropdown';
 import stateData from './StateData.json';
@@ -13,6 +13,9 @@ import './inquiry.scss';
 export interface IinquiryFormData {
   firstname: string; lastname: string; emailaddress: string; uSAstate: string; country: string;
   phonenumber: string; zipcode: string; comments: string;
+  form?: string;
+  website?: string;
+  formLoadedAt?: number;
 }
 interface IcommentsSectionProps {
   formData: IinquiryFormData, setFormData: (arg0: IinquiryFormData) => void
@@ -141,14 +144,31 @@ interface IinquiryFormProps {
   setSubmitError: (arg0: boolean) => void,
   setFormData: (arg0: IinquiryFormData) => void,
   formData: IinquiryFormData,
-  staticCountry?: string
+  staticCountry?: string,
 }
 export function InquiryForm(props: IinquiryFormProps) {
   // eslint-disable-next-line object-curly-newline
   const { formData, setFormData, setHasSubmitted, setSubmitError, staticCountry } = props;
-  const { country, uSAstate, zipcode } = formData;
+  const {
+    country, uSAstate, zipcode, website,
+  } = formData;
   return (
     <form id="new-contact" className="col">
+      <input
+        type="text"
+        name="website"
+        id="website"
+        value={website || ''}
+        onChange={(evt) => {
+          const { target: { value } } = evt;
+          utils.handleInputChange(evt, formData, setFormData);
+          return value;
+        }}
+        tabIndex={-1}
+        autoComplete="off"
+        aria-hidden="true"
+        style={{ display: 'none' }}
+      />
       <TableSection formData={formData} setFormData={setFormData} />
       <WjDropdown
         disabled={!!staticCountry}
@@ -193,7 +213,14 @@ export function InquiryForm(props: IinquiryFormProps) {
       />
       <p style={{ margin: 0 }}>&nbsp;</p>
       <CommentsSection formData={formData} setFormData={setFormData} />
-      <FormActions setHasSubmitted={setHasSubmitted} setSubmitError={setSubmitError} formData={formData} />
+      <FormActions
+        setHasSubmitted={setHasSubmitted}
+        setSubmitError={setSubmitError}
+        formData={{
+          ...formData,
+          country: formData.country || staticCountry || '',
+        }}
+      />
     </form>
   );
 }
@@ -228,10 +255,10 @@ interface IcontactFormProps {
   submitError: boolean,
   hideTitle?: boolean,
   country?: string,
-  setHasSubmitted: (arg0: boolean) => void
-  setSubmitError: (arg0: boolean) => void
+  setHasSubmitted: (arg0: boolean) => void,
+  setSubmitError: (arg0: boolean) => void,
   formData: IinquiryFormData,
-  setFormData: (arg0: IinquiryFormData) => void
+  setFormData: (arg0: IinquiryFormData) => void,
 }
 
 export function ContactForm(props: IcontactFormProps) {
@@ -272,12 +299,37 @@ export function ContactForm(props: IcontactFormProps) {
     </div>
   );
 }
-export function Inquiry({ country, hideTitle }: { country?: string, hideTitle?: boolean }) {
+
+export interface IinquiryProps {
+  country?: string;
+  hideTitle?: boolean;
+  form: string;
+}
+
+export function Inquiry({ country, hideTitle, form }: IinquiryProps) {
   const [hasSubmitted, setHasSubmitted] = useState(false);
   const [submitError, setSubmitError] = useState(false);
-  const [formData, setFormData] = useState({} as IinquiryFormData);
+  const [formLoadedAt] = useState(() => Date.now());
+  const [formData, setFormData] = useState<IinquiryFormData>(() => ({
+    country: country || '',
+    form,
+    website: '',
+    formLoadedAt,
+  } as IinquiryFormData));
+
+  useEffect(() => {
+    setFormData((prev) => (prev.form === form ? prev : { ...prev, form }));
+  }, [form]);
+
   const props = {
-    hasSubmitted, submitError, hideTitle, country, setHasSubmitted, setSubmitError, formData, setFormData,
+    hasSubmitted,
+    submitError,
+    hideTitle,
+    country,
+    setHasSubmitted,
+    setSubmitError,
+    formData,
+    setFormData,
   };
   return (
     <ContactForm {...props} />

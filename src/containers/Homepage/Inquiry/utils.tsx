@@ -35,8 +35,9 @@ async function handleSubmit(
 ): Promise<void> {
   const {
     firstname, lastname, emailaddress, uSAstate, country, phonenumber, zipcode, comments,
+    form, website, formLoadedAt,
   } = formData;
-  const emailForm = {
+  const emailForm: IinquiryFormData = {
     firstname,
     lastname,
     emailaddress,
@@ -44,7 +45,10 @@ async function handleSubmit(
     country,
     phonenumber,
     zipcode,
-    comments: (comments).trim(),
+    comments: (comments || '').trim(),
+    form: form || '',
+    website: website || '',
+    formLoadedAt,
   };
   await createEmailApi(emailForm, setHasSubmitted, setSubmitError);
 }

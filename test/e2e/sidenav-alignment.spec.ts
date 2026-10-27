@@ -1,7 +1,35 @@
-import { test, expect } from '@playwright/test';
+import {
+  test, expect, type WebSocketRoute, type Route,
+} from '@playwright/test';
+
+interface SocketPacket {
+  event?: string;
+  cid?: number;
+  data?: unknown;
+}
 
 test.describe('Sidebar navigation alignment regression tests', () => {
   test.beforeEach(async ({ context, page }) => {
+    // Handle socketcluster handshake and mock data messages so no connection-failure toast overlay is displayed
+    await page.routeWebSocket(/.*/, (ws: WebSocketRoute) => {
+      ws.onMessage((message) => {
+        if (typeof message !== 'string' || !message.startsWith('{')) return;
+        try {
+          const packet = JSON.parse(message) as SocketPacket;
+          if (packet.event === '#handshake') {
+            ws.send(JSON.stringify({ rid: packet.cid, data: { id: 'fixture', pingTimeout: 20000, isAuthenticated: false } }));
+          } else if (packet.event === '#subscribe') {
+            ws.send(JSON.stringify({ rid: packet.cid }));
+          } else if (packet.event === 'initial message') {
+            ws.send(JSON.stringify({ event: 'allGigs', data: [] }));
+            ws.send(JSON.stringify({ event: 'allPics', data: [] }));
+          }
+        } catch { /* ignore */ }
+      });
+    });
+
+    await page.route(/^https:\/\//, (route: Route) => route.abort());
+
     // Seed localStorage to simulate a logged-in Developer/Admin user,
     // which renders the complete list of admin menu links in the sidebar.
     await context.addInitScript(() => {

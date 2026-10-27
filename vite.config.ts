@@ -33,7 +33,6 @@ const APP_ENV_KEYS = [
   'TINY_KEY',
   'FB_APP_ID',
   'NODE_ENV',
-  'GOOGLE_MAPS_API_KEY',
 ] as const;
 
 function replaceProcessEnv(env: Record<string, string>): Plugin {
