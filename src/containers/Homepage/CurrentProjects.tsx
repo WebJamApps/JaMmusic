@@ -44,7 +44,7 @@ function CurrentProjects(): React.JSX.Element {
               </Grid>
             </Grid>
             <Grid size={{ xs: 12, md: 5, lg: 4, xl: 4 }}>
-              <Item><Inquiry /></Item>
+              <Item><Inquiry form="webjam-homepage" /></Item>
             </Grid>
 
           </>
