@@ -7,6 +7,7 @@ export interface ImenuItem {
   auth?: boolean,
   nav: string,
   roles?: string[],
+  children?: ImenuItem[],
 }
 
 const jamNav = [
@@ -59,26 +60,61 @@ const wjNav = [
     nav: 'wj', className: 'tipjar', type: 'link', iconClass: 'fab fa-gratipay', link: '/music/tipjar', name: 'Tip Jar',
   },
   {
-    nav: 'wj', className: '', type: 'link', iconClass: 'fas fa-users-cog', link: '/admin/users', name: 'Admin Users', auth: true,
-  },
-  {
-    nav: 'wj', className: '', type: 'link', iconClass: 'fas fa-store', link: '/admin/venues', name: 'Admin Venues', auth: true,
-  },
-  {
-    nav: 'wj', className: '', type: 'link', iconClass: 'fas fa-paper-plane', link: '/admin/outreach', name: 'Batch Outreach', auth: true,
-  },
-  {
-    nav: 'wj', className: '', type: 'link', iconClass: 'fas fa-envelope-open-text', link: '/admin/templates', name: 'Admin Templates', auth: true,
-  },
-  {
     nav: 'wj',
-    className: '',
-    type: 'link',
-    iconClass: 'fas fa-database',
-    link: '/admin/database',
-    name: 'Admin Database',
+    className: 'admin',
+    type: 'group',
+    iconClass: 'fas fa-user-secret',
+    link: '',
+    name: 'Admin',
     auth: true,
-    roles: ['Developer'],
+    children: [
+      {
+        nav: 'wj',
+        className: 'users',
+        type: 'link',
+        iconClass: 'fas fa-users-cog',
+        link: '/admin/users',
+        name: 'Users',
+        auth: true,
+      },
+      {
+        nav: 'wj',
+        className: 'venues',
+        type: 'link',
+        iconClass: 'fas fa-store',
+        link: '/admin/venues',
+        name: 'Venues',
+        auth: true,
+      },
+      {
+        nav: 'wj',
+        className: 'outreach',
+        type: 'link',
+        iconClass: 'fas fa-paper-plane',
+        link: '/admin/outreach',
+        name: 'Batch Outreach',
+        auth: true,
+      },
+      {
+        nav: 'wj',
+        className: 'templates',
+        type: 'link',
+        iconClass: 'fas fa-envelope-open-text',
+        link: '/admin/templates',
+        name: 'Templates',
+        auth: true,
+      },
+      {
+        nav: 'wj',
+        className: 'database',
+        type: 'link',
+        iconClass: 'fas fa-database',
+        link: '/admin/database',
+        name: 'Database',
+        auth: true,
+        roles: ['Developer'],
+      },
+    ],
   },
   {
     nav: 'wj', className: 'home', type: 'link', iconClass: 'fas fa-home', link: '/', name: 'Web Jam LLC',

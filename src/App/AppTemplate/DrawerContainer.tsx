@@ -2,18 +2,26 @@ import { NavLinks } from './NavLinks';
 
 interface IdrawerContainerProps {
   handleKeyPress: (arg0: any) => void, className: any, userCount?: number,
-  heartBeat?: string, handleClose: () => void
+  heartBeat?: string, handleClose: () => void, menuOpen?: boolean,
 }
 export function DrawerContainer(props: IdrawerContainerProps) {
   const {
-    userCount, heartBeat, className, handleClose, handleKeyPress,
+    userCount, heartBeat, className, handleClose, handleKeyPress, menuOpen,
   } = props;
   return (
     // Click/Escape-to-close conveniences only — the drawer wrapper is not a
     // widget itself (its nav links are the interactive controls; a
     // role="button" wrapper violates axe nested-interactive). Escape key
     // events bubble up here from the focused links inside.
-    <div role="presentation" id="sidebar" onClick={handleClose} onKeyPress={handleKeyPress} className={className}>
+    <div
+      role="presentation"
+      id="sidebar"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) handleClose();
+      }}
+      onKeyPress={handleKeyPress}
+      className={className}
+    >
       <div
         className="drawer"
         style={{
@@ -36,6 +44,7 @@ export function DrawerContainer(props: IdrawerContainerProps) {
           handleClose={handleClose}
           userCount={userCount}
           heartBeat={heartBeat}
+          menuOpen={menuOpen}
         />
       </div>
     </div>
