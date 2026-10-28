@@ -2,6 +2,7 @@ import { ToastContainer } from 'react-toastify';
 import {
   BrowserRouter, Navigate, Route, Routes,
 } from 'react-router';
+import { lazy, Suspense } from 'react';
 import { Homepage } from 'src/containers/Homepage';
 import { AdminUsers } from '../containers/AdminUsers';
 import { AdminVenues } from '../containers/AdminVenues';
@@ -15,6 +16,8 @@ import { Songs } from '../containers/Songs';
 import { BookUs } from '../containers/BookUs';
 import { Tipjar } from '../containers/Tipjar';
 import { Setlist } from '../containers/Setlist';
+
+const AdminApi = lazy(() => import('../containers/AdminApi'));
 
 export function checkAppName() {
   return process.env.APP_NAME === 'web-jam.com'
@@ -36,6 +39,14 @@ export function App() {
           <Route path="/admin/outreach" element={<AdminOutreach />} />
           <Route path="/admin/templates" element={<AdminTemplates />} />
           <Route path="/admin/database" element={<AdminDatabase />} />
+          <Route
+            path="/admin/api"
+            element={(
+              <Suspense fallback={null}>
+                <AdminApi />
+              </Suspense>
+            )}
+          />
           <Route path="/new-homepage" element={<Homepage />} />
           <Route path="/music" element={<Music />} />
           <Route path="/music/buymusic" element={<BuyMusic />} />

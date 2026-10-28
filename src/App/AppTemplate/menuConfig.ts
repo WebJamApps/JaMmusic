@@ -114,6 +114,16 @@ const wjNav = [
         auth: true,
         roles: ['Developer'],
       },
+      {
+        nav: 'wj',
+        className: 'api',
+        type: 'link',
+        iconClass: 'fas fa-code',
+        link: '/admin/api',
+        name: 'API',
+        auth: true,
+        roles: ['JaM-admin', 'Developer'],
+      },
     ],
   },
   {
