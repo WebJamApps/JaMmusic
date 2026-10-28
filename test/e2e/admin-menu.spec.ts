@@ -4,7 +4,7 @@ import {
 
 // E2E tests for the fold-open Admin section in the side menu:
 // - opens and folds on click
-// - displays all 5 admin links (Users, Venues, Batch Outreach, Templates, Database) for Developer
+// - displays all 6 admin links (Users, Venues, Batch Outreach, Templates, Database, API) for Developer
 // - follows links and maintains state
 // - automatically opens when navigating directly to an admin page
 // - hides Database link for non-Developer admin roles (e.g. JaM-admin)
@@ -154,6 +154,31 @@ async function setupMocks(page: Page, authUser?: { userType: string; email: stri
     });
   });
 
+  await page.route('**/openapi.json*', async (route: Route) => {
+    if (route.request().resourceType() === 'document') {
+      await route.continue();
+      return;
+    }
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      headers: {
+        'access-control-allow-origin': '*',
+        'access-control-allow-headers': '*',
+        'access-control-allow-methods': '*',
+      },
+      body: JSON.stringify({
+        openapi: '3.1.0',
+        info: { title: 'web-jam-back API', version: '1.0.0' },
+        paths: {
+          '/gig': {
+            get: { summary: 'List gigs', responses: { 200: { description: 'OK' } } },
+          },
+        },
+      }),
+    });
+  });
+
   await page.route('**/venue*', async (route: Route) => {
     if (route.request().resourceType() === 'document') {
       await route.continue();
@@ -180,7 +205,7 @@ test.describe('Admin side menu fold-open section (Desktop)', () => {
     await page.setViewportSize({ width: 1200, height: 800 });
   });
 
-  test('opens, folds, displays 5 links for Developer, and follows child links', async ({ context, page }) => {
+  test('opens, folds, displays 6 links for Developer, and follows child links', async ({ context, page }) => {
     await setupMocks(page, DEVELOPER_AUTH.user);
     await context.addInitScript((auth) => {
       try {
@@ -204,18 +229,20 @@ test.describe('Admin side menu fold-open section (Desktop)', () => {
     await expect(adminButton).toHaveAttribute('aria-expanded', 'true');
     await expect(adminList).toBeVisible();
 
-    // 3. Verify all 5 child links are visible
+    // 3. Verify all 6 child links are visible
     const usersLink = page.getByRole('link', { name: 'Users' });
     const venuesLink = page.getByRole('link', { name: 'Venues' });
     const outreachLink = page.getByRole('link', { name: 'Batch Outreach' });
     const templatesLink = page.getByRole('link', { name: 'Templates' });
     const databaseLink = page.getByRole('link', { name: 'Database' });
+    const apiLink = page.getByRole('link', { name: 'API' });
 
     await expect(usersLink).toBeVisible();
     await expect(venuesLink).toBeVisible();
     await expect(outreachLink).toBeVisible();
     await expect(templatesLink).toBeVisible();
     await expect(databaseLink).toBeVisible();
+    await expect(apiLink).toBeVisible();
 
     // 4. Click Admin button again to fold closed
     await adminButton.click();
@@ -256,6 +283,12 @@ test.describe('Admin side menu fold-open section (Desktop)', () => {
     await expect(page).toHaveURL(/\/admin\/database$/);
     await expect(adminButton).toHaveAttribute('aria-expanded', 'true');
     await expect(adminList).toBeVisible();
+
+    // 11. Follow API link
+    await apiLink.click();
+    await expect(page).toHaveURL(/\/admin\/api$/);
+    await expect(adminButton).toHaveAttribute('aria-expanded', 'true');
+    await expect(adminList).toBeVisible();
   });
 
   test('auto-opens the Admin section when navigating directly to an admin page', async ({ context, page }) => {
@@ -292,14 +325,39 @@ test.describe('Admin side menu fold-open section (Desktop)', () => {
     await expect(adminButton).toBeVisible();
     await adminButton.click();
 
-    // 4 admin child links are visible
+    // 5 admin child links are visible
     await expect(page.getByRole('link', { name: 'Users' })).toBeVisible();
     await expect(page.getByRole('link', { name: 'Venues' })).toBeVisible();
     await expect(page.getByRole('link', { name: 'Batch Outreach' })).toBeVisible();
     await expect(page.getByRole('link', { name: 'Templates' })).toBeVisible();
+    await expect(page.getByRole('link', { name: 'API' })).toBeVisible();
 
     // Database link is excluded for JaM-admin
     await expect(page.getByRole('link', { name: 'Database' })).toHaveCount(0);
+  });
+
+  test('opens API from the Admin section and renders Swagger UI', async ({ context, page }) => {
+    await setupMocks(page, DEVELOPER_AUTH.user);
+    await context.addInitScript((auth) => {
+      try {
+        localStorage.setItem('auth', JSON.stringify(auth));
+      } catch { /* ignore */ }
+    }, DEVELOPER_AUTH);
+
+    await page.goto('/', { waitUntil: 'domcontentloaded' });
+    await expect(page.locator('.menu-item').first()).toBeVisible();
+
+    const adminButton = page.getByRole('button', { name: 'Admin' });
+    await expect(adminButton).toBeVisible();
+    await adminButton.click();
+
+    const apiLink = page.getByRole('link', { name: 'API' });
+    await expect(apiLink).toBeVisible();
+    await apiLink.click();
+
+    await expect(page).toHaveURL(/\/admin\/api$/);
+    await expect(page.locator('[data-testid="admin-api-page"]')).toBeVisible();
+    await expect(page.locator('.swagger-ui')).toBeVisible();
   });
 
   test('Admin section is hidden for unauthenticated visitors', async ({ context, page }) => {

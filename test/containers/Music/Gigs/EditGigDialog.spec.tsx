@@ -95,7 +95,7 @@ describe('EditGigDialog', () => {
     expect(screen.getByLabelText('Pick Existing Venue')).toBeChecked();
 
     // Verify initial selected venue preview (with website)
-    expect(screen.getByRole('link', { name: 'Venue 1 Website' })).toHaveAttribute('href', 'http://v1.com');
+    expect(await screen.findByRole('link', { name: 'Venue 1 Website' })).toHaveAttribute('href', 'http://v1.com');
 
     // Change autocomplete selection to v2
     const select = screen.getByTestId('mock-autocomplete');

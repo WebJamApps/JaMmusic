@@ -1,6 +1,6 @@
 {
   "name": "jammusic",
-  "version": "2.25.0",
+  "version": "2.25.1",
   "description": "joshandmariamusic.com",
   "main": "dist/index.html",
   "repository": {
@@ -87,6 +87,7 @@
     "slick-carousel": "^1.8.1",
     "socketcluster-client": "^20.0.1",
     "stream-browserify": "^3.0.0",
+    "swagger-ui-react": "^5.34.0",
     "typescript": "^7.0.2",
     "util": "^0.12.5",
     "vite": "^8.3.5",
@@ -129,6 +130,7 @@
     "archiver": "^7.0.1",
     "unzipper": "^0.12.3",
     "katex": "^0.18.2",
+    "deepmerge": "npm:@stackline/deepmerge@^1.1.0",
     "typescript-eslint": {
       "typescript": "$typescript"
     },
