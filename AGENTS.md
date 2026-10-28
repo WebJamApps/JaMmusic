@@ -131,6 +131,7 @@ from a `<lane>/<issue#>-<slug>` branch.
   - **Single Source of Truth in `formData`**: When collecting form metadata (such as `form`, `website`, `formLoadedAt`), initialize all fields once in component state (`formData`) and require callers to explicitly supply the form identifier (`<Inquiry form="webjam-homepage" />` or `<Inquiry form="jam-bookus" />`). Avoid redundant prop-threading through intermediate form components, and do not re-merge or overwrite state in submission click handlers.
   - **No Submission-Time Load-Time Fallbacks**: Never supply submission-time fallback defaults for interaction timestamps (e.g. defaulting `formLoadedAt` to `Date.now()`). Defaulting to the current time at submit time yields `now - formLoadedAt ~ 0ms`, falsely tripping the backend's minimum human interaction speed check (< 3 seconds) and rejecting valid submissions as bot spam.
   - **Clean E2E Test Listeners**: Never leave temporary debug listeners (`page.on('console', ...)`, `page.on('pageerror', ...)`) active in checked-in Playwright E2E test suites.
+- **ESLint `unicorn/prefer-classlist-toggle` in Theme and Class Synchronization Effects**: When updating DOM class lists based on reactive boolean state (such as syncing theme `dark-mode` onto `document.documentElement`), ESLint's `unicorn/prefer-classlist-toggle` forbids manual `if (active) el.classList.add(...) else el.classList.remove(...)` branches. Always use `el.classList.toggle('class-name', booleanCondition)` directly.
 
 
 
