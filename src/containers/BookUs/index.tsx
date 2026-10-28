@@ -23,7 +23,7 @@ export function BookUs() {
         <p style={{ textAlign: 'center' }}>
           Please fill out this form and we will get back with you soon.
         </p>
-        <Inquiry country="United States" hideTitle form="jam-bookus" />
+        <Inquiry country="United States" hideTitle form="jam-bookus" showBookingFields />
       </div>
     </div>
   );

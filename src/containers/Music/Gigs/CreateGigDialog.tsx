@@ -158,7 +158,7 @@ export function CreateGigDialog({
           />
         )}
 
-        {path === 'new' && <GigVenueFields form={venueForm} disabled={saving} />}
+        {path === 'new' && <GigVenueFields form={venueForm} disabled={saving} open={showDialog} token={auth.token} />}
 
         {path === 'existing' && selectedVenue && (
           <Box sx={{
