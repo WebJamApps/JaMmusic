@@ -7,6 +7,7 @@ import {
   loadGoogleMapsScript,
   type PlaceSuggestion,
   UNAVAILABLE_NOTE,
+  withTimeout,
 } from './googlePlaces';
 
 interface IVenueAddressInputProps {
@@ -19,17 +20,25 @@ export function VenueAddressInput({ formData, setFormData }: IVenueAddressInputP
   const [inputValue, setInputValue] = useState(formData.venueAddress || '');
   const [suggestions, setSuggestions] = useState<PlaceSuggestion[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
+
   const formDataRef = useRef(formData);
   formDataRef.current = formData;
   const setFormDataRef = useRef(setFormData);
   setFormDataRef.current = setFormData;
+  const inputValueRef = useRef(inputValue);
+  inputValueRef.current = inputValue;
+  const isFallbackRef = useRef(isFallback);
+  isFallbackRef.current = isFallback;
+
   const timerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const activePlaceIdRef = useRef<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
     const apiKey = process.env.GOOGLE_MAPS_API_KEY;
     if (!apiKey) {
       setIsFallback(true);
+      isFallbackRef.current = true;
       return () => {
         cancelled = true;
       };
@@ -37,6 +46,7 @@ export function VenueAddressInput({ formData, setFormData }: IVenueAddressInputP
     loadGoogleMapsScript(apiKey).catch(() => {
       if (!cancelled) {
         setIsFallback(true);
+        isFallbackRef.current = true;
         if (formDataRef.current.venueAddress) {
           setFormDataRef.current({
             ...formDataRef.current,
@@ -53,8 +63,8 @@ export function VenueAddressInput({ formData, setFormData }: IVenueAddressInputP
   const handleFallbackChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = evt.target;
     setInputValue(value);
-    setFormData({
-      ...formData,
+    setFormDataRef.current({
+      ...formDataRef.current,
       venueAddress: value,
       venuePlaceId: '',
     });
@@ -63,8 +73,9 @@ export function VenueAddressInput({ formData, setFormData }: IVenueAddressInputP
   const handleSuggestionInputChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = evt.target;
     setInputValue(value);
-    setFormData({
-      ...formData,
+    activePlaceIdRef.current = null;
+    setFormDataRef.current({
+      ...formDataRef.current,
       venuePlaceId: '',
       venueAddress: '',
     });
@@ -78,16 +89,23 @@ export function VenueAddressInput({ formData, setFormData }: IVenueAddressInputP
 
     timerRef.current = setTimeout(async () => {
       try {
-        const results = await fetchSuggestions(value.trim());
+        const results = await withTimeout(fetchSuggestions(value.trim()));
+        if (isFallbackRef.current || activePlaceIdRef.current !== null || inputValueRef.current !== value) {
+          return;
+        }
         setSuggestions(results);
         setShowSuggestions(results.length > 0);
       } catch {
+        if (isFallbackRef.current || activePlaceIdRef.current !== null) {
+          return;
+        }
         setIsFallback(true);
+        isFallbackRef.current = true;
         setSuggestions([]);
         setShowSuggestions(false);
         setFormDataRef.current({
           ...formDataRef.current,
-          venueAddress: value,
+          venueAddress: inputValueRef.current,
           venuePlaceId: '',
         });
       }
@@ -98,19 +116,35 @@ export function VenueAddressInput({ formData, setFormData }: IVenueAddressInputP
     clearTimeout(timerRef.current);
     setShowSuggestions(false);
     setSuggestions([]);
+    const selectedPlaceId = suggestion.placeId;
+    activePlaceIdRef.current = selectedPlaceId;
+
+    setInputValue(suggestion.description);
+    setFormDataRef.current({
+      ...formDataRef.current,
+      venuePlaceId: suggestion.placeId,
+      venueAddress: '',
+    });
+
     try {
-      const formatted = await fetchPlaceAddress(suggestion.placeId);
+      const formatted = await withTimeout(fetchPlaceAddress(suggestion.placeId));
+      if (activePlaceIdRef.current !== selectedPlaceId || isFallbackRef.current) {
+        return;
+      }
       const displayAddress = formatted || suggestion.description;
       setInputValue(displayAddress);
-      setFormData({
-        ...formData,
+      setFormDataRef.current({
+        ...formDataRef.current,
         venuePlaceId: suggestion.placeId,
         venueAddress: '',
       });
     } catch {
+      if (activePlaceIdRef.current !== selectedPlaceId || isFallbackRef.current) {
+        return;
+      }
       setInputValue(suggestion.description);
-      setFormData({
-        ...formData,
+      setFormDataRef.current({
+        ...formDataRef.current,
         venuePlaceId: suggestion.placeId,
         venueAddress: '',
       });

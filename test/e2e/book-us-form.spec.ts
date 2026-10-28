@@ -19,6 +19,8 @@ interface IinquiryPayload {
 }
 
 test.describe('Book Us booking fields & Google address suggestions', () => {
+  const futureEventDate = new Date(Date.now() + 30 * 86400000).toISOString().slice(0, 10);
+
   test.beforeEach(async ({ page }) => {
     await page.setViewportSize({ width: 1200, height: 800 });
     // Prevent socketcluster hangs and websocket errors
@@ -135,7 +137,7 @@ test.describe('Book Us booking fields & Google address suggestions', () => {
     await page.locator('#zipcode').fill('24018');
 
     // Fill booking fields
-    await eventDateInput.fill('2026-12-25');
+    await eventDateInput.fill(futureEventDate);
     await eventTypeSelect.selectOption('wedding');
 
     // Type address to trigger suggestions
@@ -156,7 +158,7 @@ test.describe('Book Us booking fields & Google address suggestions', () => {
     expect(capturedPayload).not.toBeNull();
     const payload = capturedPayload!;
     expect(payload.form).toBe('jam-bookus');
-    expect(payload.eventDate).toBe('2026-12-25');
+    expect(payload.eventDate).toBe(futureEventDate);
     expect(payload.eventType).toBe('wedding');
     expect(payload.venuePlaceId).toBe('ChIJN1t_tDeuEmsRUsoyG83frY4');
     expect(payload.venueAddress).toBeUndefined();
@@ -206,7 +208,7 @@ test.describe('Book Us booking fields & Google address suggestions', () => {
     await page.locator('#zipcode').fill('24153');
 
     // Fill booking fields
-    await page.locator('#eventDate').fill('2026-11-20');
+    await page.locator('#eventDate').fill(futureEventDate);
     await page.locator('#eventType').selectOption('brewery-winery');
 
     // Send button remains disabled until address is typed
@@ -224,7 +226,7 @@ test.describe('Book Us booking fields & Google address suggestions', () => {
     expect(capturedPayload).not.toBeNull();
     const payload = capturedPayload!;
     expect(payload.form).toBe('jam-bookus');
-    expect(payload.eventDate).toBe('2026-11-20');
+    expect(payload.eventDate).toBe(futureEventDate);
     expect(payload.eventType).toBe('brewery-winery');
     expect(payload.venueAddress).toBe('100 Main St, Salem, VA 24153');
     expect(payload.venuePlaceId).toBeUndefined();

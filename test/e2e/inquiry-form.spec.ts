@@ -20,6 +20,8 @@ interface IinquiryPayload {
 }
 
 test.describe('Inquiry forms spam protection & form labeling', () => {
+  const futureEventDate = new Date(Date.now() + 30 * 86400000).toISOString().slice(0, 10);
+
   test.beforeEach(async ({ page }) => {
     await page.setViewportSize({ width: 1200, height: 800 });
     // Prevent socketcluster hangs and external script errors
@@ -133,7 +135,7 @@ test.describe('Inquiry forms spam protection & form labeling', () => {
     await page.locator('#phonenumber').fill('540-555-5678');
     await page.locator('#state').selectOption('Virginia');
     await page.locator('#zipcode').fill('24018');
-    await page.locator('#eventDate').fill('2026-12-15');
+    await page.locator('#eventDate').fill(futureEventDate);
     await page.locator('#eventType').selectOption('private-party');
     await page.locator('#venueAddress').fill('123 Music Lane, Roanoke, VA 24018');
     await page.getByPlaceholder('* Comments').fill('Booking inquiry for acoustic live music event.');
@@ -208,7 +210,7 @@ test.describe('Inquiry forms spam protection & form labeling', () => {
     await page.locator('#phonenumber').fill('555-019-2834');
     await page.locator('#state').selectOption('Virginia');
     await page.locator('#zipcode').fill('24018');
-    await page.locator('#eventDate').fill('2026-12-15');
+    await page.locator('#eventDate').fill(futureEventDate);
     await page.locator('#eventType').selectOption('private-party');
     await page.locator('#venueAddress').fill('123 Spam Highway, Roanoke, VA 24018');
     await page.getByPlaceholder('* Comments').fill('We offer SEO and ranking services.');

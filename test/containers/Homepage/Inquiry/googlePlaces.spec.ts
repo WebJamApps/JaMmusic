@@ -5,6 +5,7 @@ import {
   loadGoogleMapsScript,
   resetGoogleMapsScriptPromise,
   UNAVAILABLE_NOTE,
+  withTimeout,
 } from 'src/containers/Homepage/Inquiry/googlePlaces';
 
 describe('googlePlaces', () => {
@@ -73,6 +74,14 @@ describe('googlePlaces', () => {
 
     await expect(promise).rejects.toThrow('Failed to load Google Maps script');
     expect((window as unknown as Record<string, unknown>).__googleMapsCallback).toBeUndefined();
+  });
+
+  it('rejects with timeout when script loading neither fires callback nor errors', async () => {
+    vi.useFakeTimers();
+    const promise = loadGoogleMapsScript('timeout-key', 50);
+    vi.advanceTimersByTime(60);
+    await expect(promise).rejects.toThrow('Google Maps script load timed out');
+    vi.useRealTimers();
   });
 
   describe('fetchSuggestions', () => {
@@ -190,11 +199,37 @@ describe('googlePlaces', () => {
 
       await expect(fetchSuggestions('Fail')).rejects.toThrow('Places autocomplete failed: ERROR');
     });
+
+    it('rejects with timeout when fetchSuggestions neither resolves nor rejects', async () => {
+      vi.useFakeTimers();
+      (window as unknown as { google: unknown }).google = {
+        maps: {
+          importLibrary: vi.fn().mockImplementation(() => new Promise(() => {})),
+        },
+      };
+      const promise = fetchSuggestions('Hanging Input', 50);
+      vi.advanceTimersByTime(60);
+      await expect(promise).rejects.toThrow('Places autocomplete timed out');
+      vi.useRealTimers();
+    });
   });
 
   describe('fetchPlaceAddress', () => {
     it('returns empty string if google.maps is not available', async () => {
       expect(await fetchPlaceAddress('p-123')).toBe('');
+    });
+
+    it('rejects with timeout when fetchPlaceAddress neither resolves nor rejects', async () => {
+      vi.useFakeTimers();
+      (window as unknown as { google: unknown }).google = {
+        maps: {
+          importLibrary: vi.fn().mockImplementation(() => new Promise(() => {})),
+        },
+      };
+      const promise = fetchPlaceAddress('hanging-place', 50);
+      vi.advanceTimersByTime(60);
+      await expect(promise).rejects.toThrow('Place details timed out');
+      vi.useRealTimers();
     });
 
     it('uses importLibrary Place when available', async () => {
@@ -253,6 +288,21 @@ describe('googlePlaces', () => {
 
       const addr = await fetchPlaceAddress('p-notfound');
       expect(addr).toBe('');
+    });
+  });
+
+  describe('withTimeout', () => {
+    it('resolves when inner promise resolves before timeout', async () => {
+      const res = await withTimeout(Promise.resolve('completed'), 500);
+      expect(res).toBe('completed');
+    });
+
+    it('rejects when inner promise hangs beyond timeout', async () => {
+      vi.useFakeTimers();
+      const promise = withTimeout(new Promise(() => {}), 100, 'Custom timeout');
+      vi.advanceTimersByTime(120);
+      await expect(promise).rejects.toThrow('Custom timeout');
+      vi.useRealTimers();
     });
   });
 });

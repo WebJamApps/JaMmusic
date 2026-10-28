@@ -5,6 +5,7 @@ import {
 import '@testing-library/jest-dom';
 import {
   CommentsSection, ContactForm, ContactRequest, EmailPhoneRow, FormActions, Inquiry, InquiryError, InquiryForm, TableSection,
+  type IinquiryFormData,
 } from 'src/containers/Homepage/Inquiry';
 import utils from 'src/containers/Homepage/Inquiry/utils';
 
@@ -457,6 +458,173 @@ describe('Inquiry', () => {
       expect(
         await screen.findByText("Address suggestions are unavailable. Type the venue's full street address."),
       ).toBeInTheDocument();
+
+      vi.useRealTimers();
+    });
+
+    it('VenueAddressInput preserves intervening form edits when fetchPlaceAddress finishes', async () => {
+      vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+      process.env.GOOGLE_MAPS_API_KEY = 'test-key';
+      const googlePlacesModule = await import('src/containers/Homepage/Inquiry/googlePlaces');
+      vi.spyOn(googlePlacesModule, 'loadGoogleMapsScript').mockResolvedValue();
+      vi.spyOn(googlePlacesModule, 'fetchSuggestions').mockResolvedValue([
+        { placeId: 'place-1', description: 'Venue One, Salem, VA' },
+      ]);
+
+      let resolveDetails!: (addr: string) => void;
+      const delayedDetails = new Promise<string>((res) => {
+        resolveDetails = res;
+      });
+      vi.spyOn(googlePlacesModule, 'fetchPlaceAddress').mockReturnValue(delayedDetails);
+
+      let currentFormData: IinquiryFormData = { ...formData, form: 'jam-bookus', firstname: 'InitialName' };
+      const setFormData = vi.fn((newVal: IinquiryFormData) => {
+        currentFormData = newVal;
+      });
+
+      const { rerender } = render(
+        <InquiryForm
+          formData={currentFormData}
+          showBookingFields={true}
+          setFormData={setFormData}
+          setHasSubmitted={vi.fn()}
+          setSubmitError={vi.fn()}
+        />,
+      );
+
+      const venueInput = screen.getByPlaceholderText('* Venue Address');
+      fireEvent.change(venueInput, { target: { value: 'Ven' } });
+      await vi.advanceTimersByTimeAsync(350);
+
+      const listbox = await screen.findByRole('listbox');
+      const option = within(listbox).getAllByRole('option')[0];
+      fireEvent.click(option);
+
+      // Intervening customer edit to firstname while details lookup is pending
+      currentFormData = { ...currentFormData, firstname: 'CustomerEditedName' };
+      rerender(
+        <InquiryForm
+          formData={currentFormData}
+          showBookingFields={true}
+          setFormData={setFormData}
+          setHasSubmitted={vi.fn()}
+          setSubmitError={vi.fn()}
+        />,
+      );
+
+      // Now details resolves
+      resolveDetails('Venue One, 100 Main St, Salem, VA');
+      await vi.advanceTimersByTimeAsync(10);
+
+      expect(setFormData).toHaveBeenLastCalledWith(
+        expect.objectContaining({
+          firstname: 'CustomerEditedName',
+          venuePlaceId: 'place-1',
+          venueAddress: '',
+        }),
+      );
+
+      vi.useRealTimers();
+    });
+
+    it('VenueAddressInput discards place details completion if customer changed venue input', async () => {
+      vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+      process.env.GOOGLE_MAPS_API_KEY = 'test-key';
+      const googlePlacesModule = await import('src/containers/Homepage/Inquiry/googlePlaces');
+      vi.spyOn(googlePlacesModule, 'loadGoogleMapsScript').mockResolvedValue();
+      vi.spyOn(googlePlacesModule, 'fetchSuggestions').mockResolvedValue([
+        { placeId: 'place-1', description: 'Venue One, Salem, VA' },
+      ]);
+
+      let resolveDetails!: (addr: string) => void;
+      const delayedDetails = new Promise<string>((res) => {
+        resolveDetails = res;
+      });
+      vi.spyOn(googlePlacesModule, 'fetchPlaceAddress').mockReturnValue(delayedDetails);
+
+      let currentFormData: IinquiryFormData = { ...formData, form: 'jam-bookus' };
+      const setFormData = vi.fn((newVal: IinquiryFormData) => {
+        currentFormData = newVal;
+      });
+
+      const { rerender } = render(
+        <InquiryForm
+          formData={currentFormData}
+          showBookingFields={true}
+          setFormData={setFormData}
+          setHasSubmitted={vi.fn()}
+          setSubmitError={vi.fn()}
+        />,
+      );
+
+      const venueInput = screen.getByPlaceholderText('* Venue Address');
+      fireEvent.change(venueInput, { target: { value: 'Ven' } });
+      await vi.advanceTimersByTimeAsync(350);
+
+      const listbox = await screen.findByRole('listbox');
+      const option = within(listbox).getAllByRole('option')[0];
+      fireEvent.click(option);
+
+      // Customer changes venue input before details resolve
+      fireEvent.change(venueInput, { target: { value: 'Changed Mind St' } });
+      rerender(
+        <InquiryForm
+          formData={currentFormData}
+          showBookingFields={true}
+          setFormData={setFormData}
+          setHasSubmitted={vi.fn()}
+          setSubmitError={vi.fn()}
+        />,
+      );
+
+      // Details resolve after customer changed input
+      resolveDetails('Venue One, 100 Main St, Salem, VA');
+      await vi.advanceTimersByTimeAsync(10);
+
+      // Completion must be discarded: venuePlaceId must NOT be set back to place-1
+      expect(currentFormData.venuePlaceId).toBe('');
+
+      vi.useRealTimers();
+    });
+
+    it('VenueAddressInput falls back to typed address when fetchSuggestions neither resolves nor rejects', async () => {
+      vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+      process.env.GOOGLE_MAPS_API_KEY = 'test-key';
+      const googlePlacesModule = await import('src/containers/Homepage/Inquiry/googlePlaces');
+      vi.spyOn(googlePlacesModule, 'loadGoogleMapsScript').mockResolvedValue();
+      // Returns a promise that neither resolves nor rejects
+      vi.spyOn(googlePlacesModule, 'fetchSuggestions').mockImplementation(() => new Promise(() => {}));
+
+      let currentFormData: IinquiryFormData = { ...formData, form: 'jam-bookus' };
+      const setFormData = vi.fn((newVal: IinquiryFormData) => {
+        currentFormData = newVal;
+      });
+
+      render(
+        <InquiryForm
+          formData={currentFormData}
+          showBookingFields={true}
+          setFormData={setFormData}
+          setHasSubmitted={vi.fn()}
+          setSubmitError={vi.fn()}
+        />,
+      );
+
+      const venueInput = screen.getByPlaceholderText('* Venue Address');
+      fireEvent.change(venueInput, { target: { value: '456 Unanswered St' } });
+
+      // Advance debounce (300ms) + bounded request timeout (3000ms)
+      await vi.advanceTimersByTimeAsync(3400);
+
+      expect(
+        await screen.findByText("Address suggestions are unavailable. Type the venue's full street address."),
+      ).toBeInTheDocument();
+      expect(setFormData).toHaveBeenLastCalledWith(
+        expect.objectContaining({
+          venueAddress: '456 Unanswered St',
+          venuePlaceId: '',
+        }),
+      );
 
       vi.useRealTimers();
     });
