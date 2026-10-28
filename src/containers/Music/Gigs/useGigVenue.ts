@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import adminVenuesUtils, { type Ivenue, type IvenueUpdate } from 'src/containers/AdminVenues/admin-venues.utils';
 import { formatVenueSaveOutcomeMessage, getExistingVenueWarning, validateVenueFields } from 'src/containers/AdminVenues/venue-shared.utils';
 
-const emptyFields = { name: '', address: '', city: '', usState: 'VA', zipCode: '', website: '' };
+const emptyFields = { name: '', address: '', city: '', usState: 'VA', zipCode: '', website: '', location: undefined as IvenueUpdate['location'] };
 export type GigVenueFieldsValue = typeof emptyFields;
 
 export function useGigVenue(session: string | boolean | undefined, token: string) {
@@ -43,6 +43,7 @@ export function useGigVenue(session: string | boolean | undefined, token: string
       name: fields.name.trim(), address: fields.address.trim(), city: fields.city.trim(),
       usState: fields.usState, zipCode: fields.zipCode.trim(),
       website: validation.formattedWebsite, status: 'active',
+      ...(fields.location ? { location: fields.location } : {}),
     };
     const signature = JSON.stringify(payload);
     if (saved.current?.signature === signature) return saved.current;

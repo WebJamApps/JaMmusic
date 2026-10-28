@@ -1,4 +1,7 @@
 import { vi } from 'vitest';
+import { gigLookupTests } from './gig-lookup.fixtures';
+
+vi.mock('src/lib/fetch.utils', () => ({ customFetch: vi.fn() }));
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { EditGigDialog, EditText } from 'src/containers/Music/Gigs/EditGigDialog';
@@ -8,9 +11,11 @@ import { defaultGig } from 'src/providers/fetchGigs';
 
 vi.mock('@mui/material', async () => {
   const mockMui = await import('../../../../__mocks__/@mui/material');
+  const { AddressAutocompleteMock } = await import('./AddressAutocompleteMock');
   return {
     ...mockMui,
     Autocomplete: (props: any) => {
+      if (props.freeSolo) return <AddressAutocompleteMock {...props} />;
       return (
         <select
           data-testid="mock-autocomplete"
@@ -33,6 +38,7 @@ vi.mock('@mui/material', async () => {
 });
 
 describe('EditGigDialog', () => {
+  gigLookupTests('edit');
   const activeVenues = [
     { _id: 'v1', name: 'Venue 1 Website', website: 'http://v1.com', city: 'Durham', usState: 'North Carolina', status: 'active' },
     { _id: 'v2', name: 'Venue 2 NoWebsite', city: 'Raleigh', usState: 'North Carolina', status: 'active' },

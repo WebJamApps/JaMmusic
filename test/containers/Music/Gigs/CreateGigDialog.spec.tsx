@@ -1,4 +1,7 @@
 import { vi } from 'vitest';
+import { gigLookupTests } from './gig-lookup.fixtures';
+
+vi.mock('src/lib/fetch.utils', () => ({ customFetch: vi.fn() }));
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { CreateGigDialog } from 'src/containers/Music/Gigs/CreateGigDialog';
@@ -8,9 +11,11 @@ import { AuthContext } from 'src/providers/Auth.provider';
 
 vi.mock('@mui/material', async () => {
   const mockMui = await import('../../../../__mocks__/@mui/material');
+  const { AddressAutocompleteMock } = await import('./AddressAutocompleteMock');
   return {
     ...mockMui,
     Autocomplete: (props: any) => {
+      if (props.freeSolo) return <AddressAutocompleteMock {...props} />;
       return (
         <select
           data-testid="mock-autocomplete"
@@ -33,6 +38,7 @@ vi.mock('@mui/material', async () => {
 });
 
 describe('CreateGigDialog', () => {
+  gigLookupTests('create');
   const auth = {
     isAuthenticated: true,
     token: 'tk',
