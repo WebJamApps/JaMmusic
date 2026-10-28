@@ -25,4 +25,11 @@ ignore:
     - 'mermaid > katex':
         reason: Overridden globally to secure version ^0.18.2 in package.json
         expires: '2027-10-11T15:00:00.000Z'
+  SNYK-JS-DEEPMERGE-19964053:
+    - '*':
+        reason: Overridden globally to secure version 4.1.2 in package.json
+        expires: '2027-10-27T15:00:00.000Z'
+    - 'swagger-ui-react > swagger-client > deepmerge':
+        reason: Overridden globally to secure version 4.1.2 in package.json
+        expires: '2027-10-27T15:00:00.000Z'
 patch: {}
