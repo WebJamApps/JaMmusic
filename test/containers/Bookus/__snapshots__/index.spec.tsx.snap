@@ -1703,6 +1703,100 @@ exports[`Bookus > renders correctly 1`] = `
                
             </p>
             <input
+              id="eventDate"
+              name="eventDate"
+              placeholder="* Event Date"
+              style="width: 100%;"
+              type="date"
+              value=""
+            />
+            <p
+              style="margin: 0px;"
+            >
+               
+            </p>
+            <select
+              aria-label="Event Type"
+              id="eventType"
+              name="eventType"
+              style="width: 100%; padding: 10px; margin-top: 8px; font-size: 1rem; border-radius: 4px; border-color: rgb(204, 204, 204);"
+            >
+              <option
+                value=""
+              >
+                * Select Event Type
+              </option>
+              <option
+                value="brewery-winery"
+              >
+                Brewery or winery
+              </option>
+              <option
+                value="restaurant-bar"
+              >
+                Restaurant or bar
+              </option>
+              <option
+                value="wedding"
+              >
+                Wedding
+              </option>
+              <option
+                value="private-party"
+              >
+                Private party
+              </option>
+              <option
+                value="festival-fair"
+              >
+                Festival or fair
+              </option>
+              <option
+                value="church"
+              >
+                Church event
+              </option>
+              <option
+                value="corporate"
+              >
+                Corporate event
+              </option>
+              <option
+                value="other"
+              >
+                Other
+              </option>
+            </select>
+            <p
+              style="margin: 0px;"
+            >
+               
+            </p>
+            <div
+              class="venue-address-group"
+              style="width: 100%;"
+            >
+              <p
+                class="address-suggestions-unavailable-note"
+                style="color: rgb(102, 102, 102); font-size: 0.85rem; margin: 4px 0px 6px;"
+              >
+                Address suggestions are unavailable. Type the venue's full street address.
+              </p>
+              <input
+                id="venueAddress"
+                name="venueAddress"
+                placeholder="* Venue Address"
+                style="width: 100%;"
+                type="text"
+                value=""
+              />
+            </div>
+            <p
+              style="margin: 0px;"
+            >
+               
+            </p>
+            <input
               class="comments"
               placeholder="* Comments"
               style="margin-top: 20px; height: 80px; width: 100%;"
