@@ -44,7 +44,6 @@ for (const mode of ['create', 'edit'] as const) {
     expect(session).toMatch(/^[\da-f-]{36}$/i);
     expect(reads[1].url.searchParams.get('sessionToken')).toBe(session);
     expect(reads.every((read) => read.authorization?.startsWith('Bearer '))).toBe(true);
-    await page.screenshot({ path: `/tmp/jammusic-1395-${mode}-lookup.png`, fullPage: true });
     await submit(dialog, mode).click();
     await expect(dialog).not.toBeVisible();
     expect(venueWrites[0]).toMatchObject({

@@ -66,6 +66,7 @@ describe('CreateGigDialog', () => {
     );
 
     await waitFor(() => expect(listVenuesSpy).toHaveBeenCalledWith('tk'));
+    await waitFor(() => expect(screen.getByText('Venue 1 Website')).toBeInTheDocument());
 
     // Verify option 'none' is not filtered from existing, but archived is filtered out from options.
     // Our Autocomplete select mock should render 'Select...', 'Venue 1 Website', and 'Venue 2 NoWebsite'
