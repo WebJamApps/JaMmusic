@@ -59,4 +59,19 @@ describe('AdminApi utils', () => {
       await expect(adminApiUtils.fetchOpenApi('admin-token-123')).rejects.toThrow('403 Forbidden');
     });
   });
+
+  describe('swagger-client deepmerge security regression (CVE-2026-93753)', () => {
+    it('drops __proto__ property injection during specmap mergeDeep patches', async () => {
+      // @ts-expect-error swagger-client untyped internal import
+      const specmap = (await import('swagger-client/lib/resolver/specmap/lib/index.js')).default;
+      const result = specmap.applyPatch({ schema: {} }, {
+        op: 'mergeDeep',
+        path: '/schema',
+        value: JSON.parse('{"__proto__":{"reviewProbe":true}}'),
+      });
+      expect(result.schema?.reviewProbe).toBeUndefined();
+      expect(Object.hasOwn(result.schema, 'reviewProbe')).toBe(false);
+      expect(Object.hasOwn(Object.prototype, 'reviewProbe')).toBe(false);
+    });
+  });
 });

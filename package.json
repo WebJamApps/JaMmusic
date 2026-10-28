@@ -130,7 +130,7 @@
     "archiver": "^7.0.1",
     "unzipper": "^0.12.3",
     "katex": "^0.18.2",
-    "deepmerge": "4.1.2",
+    "deepmerge": "npm:@stackline/deepmerge@^1.1.0",
     "typescript-eslint": {
       "typescript": "$typescript"
     },
