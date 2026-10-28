@@ -1,13 +1,27 @@
-import { Box, Button, FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material';
+import { Autocomplete, Box, Button, FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material';
 import { US_STATES } from 'src/containers/AdminVenues/venue-shared.utils';
+import { addressFields, useAddressLookup } from 'src/containers/AdminVenues/venue-address-lookup';
+import { AddressSuggestionsPaper } from 'src/containers/AdminVenues/AddressSuggestionsPaper';
 import type { useGigVenue } from './useGigVenue';
 
-export function GigVenueFields({ form, onChange, disabled }: {
-  form: ReturnType<typeof useGigVenue>; onChange?: () => void; disabled: boolean;
+export function GigVenueFields({ form, onChange, disabled, open, token }: {
+  form: ReturnType<typeof useGigVenue>; onChange?: () => void; disabled: boolean; open: boolean; token: string;
 }) {
   const { fields, setFields, validation } = form;
-  const change = (key: keyof typeof fields, value: string) => {
-    setFields((previous) => ({ ...previous, [key]: value }));
+  const lookup = useAddressLookup(open && !disabled, token, (place) => {
+    setFields((previous) => {
+      const selected = addressFields(place, previous);
+      return {
+        ...previous, address: selected.address || '', city: selected.city || '',
+        usState: selected.usState || '', zipCode: selected.zipCode || '', location: selected.location,
+      };
+    });
+    onChange?.();
+  });
+  const change = (key: 'name' | 'address' | 'city' | 'zipCode' | 'website' | 'usState', value: string) => {
+    const addressChanged = ['address', 'city', 'usState', 'zipCode'].includes(key);
+    if (addressChanged) lookup.invalidate();
+    setFields((previous) => ({ ...previous, [key]: value, ...(addressChanged ? { location: undefined } : {}) }));
     onChange?.();
   };
   return (
@@ -17,7 +31,30 @@ export function GigVenueFields({ form, onChange, disabled }: {
         // eslint-disable-next-line security/detect-object-injection
         const error = validation.errors[key];
         return (
-          <TextField
+          key === 'address' ? (
+            <Autocomplete
+              key={key}
+              freeSolo
+              disabled={disabled}
+              options={lookup.suggestions}
+              slots={{ paper: AddressSuggestionsPaper }}
+              getOptionLabel={(option) => typeof option === 'string' ? option : option.text}
+              filterOptions={(options) => options}
+              inputValue={fields.address}
+              loading={lookup.loading}
+              onInputChange={(_, input, reason) => {
+                if (reason !== 'input' && reason !== 'clear') return;
+                change('address', input);
+                lookup.search(input, 'US');
+              }}
+              onChange={(_, value) => {
+                if (value && typeof value !== 'string') void lookup.select(value);
+              }}
+              renderInput={(params) => (
+                <TextField {...params} label="* Street Address" fullWidth error={Boolean(error)} helperText={error || ''} />
+              )}
+            />
+          ) : <TextField
             key={key}
             // eslint-disable-next-line security/detect-object-injection
             label={labels[key]}
@@ -31,6 +68,7 @@ export function GigVenueFields({ form, onChange, disabled }: {
           />
         );
       })}
+      {lookup.message && <div role="status">{lookup.message}</div>}
       <FormControl fullWidth>
         <InputLabel id="gig-us-state-label">* State</InputLabel>
         <Select

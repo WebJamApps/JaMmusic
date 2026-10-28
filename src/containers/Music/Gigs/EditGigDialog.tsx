@@ -195,7 +195,9 @@ export function EditGigDialog(props: IeditGigDialogProps) {
           />
         )}
 
-        {path === 'new' && <GigVenueFields form={venueForm} disabled={saving} onChange={() => setEditChanged(true)} />}
+        {path === 'new' && (
+          <GigVenueFields form={venueForm} disabled={saving} open={!!editGig._id} token={auth.token} onChange={() => setEditChanged(true)} />
+        )}
 
         {path === 'existing' && selectedVenue && (
           <Box sx={{
