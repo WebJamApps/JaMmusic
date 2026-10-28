@@ -1,4 +1,5 @@
 import { vi } from 'vitest';
+import type { IinquiryFormData } from 'src/containers/Homepage/Inquiry';
 import utils from 'src/containers/Homepage/Inquiry/utils';
 
 describe('Inquiry utils', () => {
@@ -221,5 +222,177 @@ describe('Inquiry utils', () => {
     };
     const result = utils.validateForm(formData);
     expect(result).toBe(true);
+  });
+
+  describe('booking fields validation', () => {
+    it('isValidEventDate checks dates correctly', () => {
+      expect(utils.isValidEventDate()).toBe(false);
+      expect(utils.isValidEventDate('')).toBe(false);
+      expect(utils.isValidEventDate('invalid-date')).toBe(false);
+      expect(utils.isValidEventDate('2015-01-01')).toBe(false);
+      expect(utils.isValidEventDate('2026-02-31')).toBe(false);
+      expect(utils.isValidEventDate(utils.getTodayString())).toBe(true);
+      expect(utils.isValidEventDate('2099-12-31')).toBe(true);
+    });
+
+    it('isValidEventType checks event types', () => {
+      expect(utils.isValidEventType()).toBe(false);
+      expect(utils.isValidEventType('')).toBe(false);
+      expect(utils.isValidEventType('concert')).toBe(false);
+      utils.EVENT_TYPES.forEach(({ value }) => {
+        expect(utils.isValidEventType(value)).toBe(true);
+      });
+    });
+
+    it('isValidVenue checks placeId or address', () => {
+      const baseVenueForm: IinquiryFormData = {
+        firstname: '',
+        lastname: '',
+        emailaddress: '',
+        uSAstate: '',
+        country: '',
+        phonenumber: '',
+        zipcode: '',
+        comments: '',
+      };
+      expect(utils.isValidVenue(baseVenueForm)).toBe(false);
+      expect(utils.isValidVenue({ ...baseVenueForm, venuePlaceId: '' })).toBe(false);
+      expect(utils.isValidVenue({ ...baseVenueForm, venueAddress: '   ' })).toBe(false);
+      expect(utils.isValidVenue({ ...baseVenueForm, venuePlaceId: 'place-123' })).toBe(true);
+      expect(utils.isValidVenue({ ...baseVenueForm, venueAddress: '123 Main St' })).toBe(true);
+    });
+
+    it('validateForm enforces booking fields when showBookingFields or jam-bookus form is active', () => {
+      const baseValidStandard = {
+        firstname: 'Josh',
+        lastname: 'Sherman',
+        emailaddress: 'josh@example.com',
+        uSAstate: 'VA',
+        country: 'United States',
+        phonenumber: '5401234567',
+        zipcode: '24153',
+        comments: 'Need a duo',
+        form: 'jam-bookus',
+      };
+
+      // Missing booking fields -> invalid (true)
+      expect(utils.validateForm(baseValidStandard)).toBe(true);
+
+      // Missing eventType -> invalid
+      expect(
+        utils.validateForm({
+          ...baseValidStandard,
+          eventDate: '2099-01-01',
+          venuePlaceId: 'place-xyz',
+        }),
+      ).toBe(true);
+
+      // Missing venue -> invalid
+      expect(
+        utils.validateForm({
+          ...baseValidStandard,
+          eventDate: '2099-01-01',
+          eventType: 'wedding',
+        }),
+      ).toBe(true);
+
+      // With venuePlaceId -> valid (false)
+      expect(
+        utils.validateForm({
+          ...baseValidStandard,
+          eventDate: '2099-01-01',
+          eventType: 'wedding',
+          venuePlaceId: 'place-xyz',
+        }),
+      ).toBe(false);
+
+      // With venueAddress -> valid (false)
+      expect(
+        utils.validateForm({
+          ...baseValidStandard,
+          eventDate: '2099-01-01',
+          eventType: 'brewery-winery',
+          venueAddress: '456 Elm St',
+        }),
+      ).toBe(false);
+
+      // Homepage form without booking fields is valid
+      const homepageForm = {
+        ...baseValidStandard,
+        form: 'webjam-homepage',
+      };
+      expect(utils.validateForm(homepageForm)).toBe(false);
+    });
+
+    it('handleSubmit includes eventDate, eventType, and venuePlaceId when suggestion picked', async () => {
+      const evt = { preventDefault: vi.fn() } as unknown as React.MouseEvent<HTMLButtonElement>;
+      const formData = {
+        firstname: 'Josh',
+        lastname: 'Sherman',
+        emailaddress: 'josh@example.com',
+        uSAstate: 'VA',
+        country: 'United States',
+        phonenumber: '5401234567',
+        zipcode: '24153',
+        comments: 'Wedding booking',
+        form: 'jam-bookus',
+        website: '',
+        formLoadedAt: 1730000000000,
+        eventDate: '2099-06-15',
+        eventType: 'wedding',
+        venuePlaceId: 'place-abc-123',
+        venueAddress: 'ignored-if-place-id-present',
+      };
+      const setHasSubmitted = vi.fn();
+      const setSubmitError = vi.fn();
+      const captured: { payload?: IinquiryFormData } = {};
+      global.fetch = vi.fn().mockImplementationOnce((_url, init) => {
+        captured.payload = JSON.parse(init.body as string) as IinquiryFormData;
+        return Promise.resolve({ ok: true, json: async () => ({}) });
+      });
+
+      await utils.handleSubmit(evt, formData, setHasSubmitted, setSubmitError);
+
+      expect(setHasSubmitted).toHaveBeenCalledWith(true);
+      expect(captured.payload?.eventDate).toBe('2099-06-15');
+      expect(captured.payload?.eventType).toBe('wedding');
+      expect(captured.payload?.venuePlaceId).toBe('place-abc-123');
+      expect(captured.payload?.venueAddress).toBeUndefined();
+    });
+
+    it('handleSubmit includes venueAddress when typed and venuePlaceId is absent', async () => {
+      const evt = { preventDefault: vi.fn() } as unknown as React.MouseEvent<HTMLButtonElement>;
+      const formData = {
+        firstname: 'Josh',
+        lastname: 'Sherman',
+        emailaddress: 'josh@example.com',
+        uSAstate: 'VA',
+        country: 'United States',
+        phonenumber: '5401234567',
+        zipcode: '24153',
+        comments: 'Brewery booking',
+        form: 'jam-bookus',
+        website: '',
+        formLoadedAt: 1730000000000,
+        eventDate: '2099-08-20',
+        eventType: 'brewery-winery',
+        venueAddress: '789 Vineyard Rd, Salem, VA',
+      };
+      const setHasSubmitted = vi.fn();
+      const setSubmitError = vi.fn();
+      const captured: { payload?: IinquiryFormData } = {};
+      global.fetch = vi.fn().mockImplementationOnce((_url, init) => {
+        captured.payload = JSON.parse(init.body as string) as IinquiryFormData;
+        return Promise.resolve({ ok: true, json: async () => ({}) });
+      });
+
+      await utils.handleSubmit(evt, formData, setHasSubmitted, setSubmitError);
+
+      expect(setHasSubmitted).toHaveBeenCalledWith(true);
+      expect(captured.payload?.eventDate).toBe('2099-08-20');
+      expect(captured.payload?.eventType).toBe('brewery-winery');
+      expect(captured.payload?.venueAddress).toBe('789 Vineyard Rd, Salem, VA');
+      expect(captured.payload?.venuePlaceId).toBeUndefined();
+    });
   });
 });

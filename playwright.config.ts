@@ -40,6 +40,7 @@ export default defineConfig({
       BackendUrl: process.env.BackendUrl || 'http://localhost:7000',
       ALLOW_LOCALHOST_BACKEND: 'true',
       userRoles: getE2EUserRoles(),
+      GOOGLE_MAPS_API_KEY: process.env.GOOGLE_MAPS_API_KEY || 'e2e-dummy-google-maps-api-key',
     },
   },
   projects: [

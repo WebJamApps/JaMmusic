@@ -147,8 +147,15 @@ describe('BackendUrl contract and build-time assertions', () => {
     }
   });
 
-  it('does not expose the retired Maps key through the build environment', async () => {
-    const plugin = await getReplaceProcessEnvPlugin();
-    expect(plugin.transform('const legacy = process.env.GOOGLE_MAPS_API_KEY;', 'src/file.ts')).toBeNull();
+  it('exposes GOOGLE_MAPS_API_KEY through the build environment for Book Us', async () => {
+    const plugin = await getReplaceProcessEnvPlugin({
+      GOOGLE_MAPS_API_KEY: 'test-google-maps-key',
+    });
+    expect(plugin).toBeDefined();
+    const transformed = plugin.transform(
+      'const key = process.env.GOOGLE_MAPS_API_KEY;',
+      'src/file.ts',
+    );
+    expect(transformed?.code).toBe('const key = "test-google-maps-key";');
   });
 });

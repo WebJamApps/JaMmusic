@@ -8,6 +8,7 @@ import { WjDropdown } from 'src/components/WjDropdown';
 import stateData from './StateData.json';
 import countryData from './CountryData.json';
 import utils from './utils';
+import { VenueAddressInput } from './VenueAddressInput';
 import './inquiry.scss';
 
 export interface IinquiryFormData {
@@ -16,6 +17,10 @@ export interface IinquiryFormData {
   form?: string;
   website?: string;
   formLoadedAt?: number;
+  eventDate?: string;
+  eventType?: string;
+  venuePlaceId?: string;
+  venueAddress?: string;
 }
 interface IcommentsSectionProps {
   formData: IinquiryFormData, setFormData: (arg0: IinquiryFormData) => void
@@ -41,12 +46,13 @@ export function CommentsSection(props: IcommentsSectionProps) {
 }
 
 interface IformActionsProps {
-  setHasSubmitted: (arg0: boolean) => void,
-  setSubmitError: (arg0: boolean) => void,
-  formData: IinquiryFormData,
+  setHasSubmitted: (arg0: boolean) => void;
+  setSubmitError: (arg0: boolean) => void;
+  formData: IinquiryFormData;
+  showBookingFields?: boolean;
 }
 export function FormActions(props: IformActionsProps) {
-  const { setHasSubmitted, setSubmitError, formData } = props;
+  const { setHasSubmitted, setSubmitError, formData, showBookingFields } = props;
   return (
     <div className="inquiryValidation input-field col" style={{ marginBottom: '12px' }}>
       <span className="inquiryValidation">* Required</span>
@@ -54,7 +60,7 @@ export function FormActions(props: IformActionsProps) {
         className="submit-inquiry"
         variant="contained"
         id="sendEmailButton"
-        disabled={utils.validateForm(formData)}
+        disabled={utils.validateForm(formData, showBookingFields)}
         onClick={(evt) => {
           utils.handleSubmit(evt, formData, setHasSubmitted, setSubmitError);
         }}
@@ -140,18 +146,22 @@ export function TableSection(props: ItableSectionProps) {
 }
 
 interface IinquiryFormProps {
-  setHasSubmitted: (arg0: boolean) => void,
-  setSubmitError: (arg0: boolean) => void,
-  setFormData: (arg0: IinquiryFormData) => void,
-  formData: IinquiryFormData,
-  staticCountry?: string,
+  setHasSubmitted: (arg0: boolean) => void;
+  setSubmitError: (arg0: boolean) => void;
+  setFormData: (arg0: IinquiryFormData) => void;
+  formData: IinquiryFormData;
+  staticCountry?: string;
+  showBookingFields?: boolean;
 }
 export function InquiryForm(props: IinquiryFormProps) {
-  // eslint-disable-next-line object-curly-newline
-  const { formData, setFormData, setHasSubmitted, setSubmitError, staticCountry } = props;
+  const {
+    formData, setFormData, setHasSubmitted, setSubmitError, staticCountry, showBookingFields,
+  } = props;
   const {
     country, uSAstate, zipcode, website,
   } = formData;
+  const isBooking = Boolean(showBookingFields || formData.form === 'jam-bookus');
+
   return (
     <form id="new-contact" className="col">
       <input
@@ -211,11 +221,59 @@ export function InquiryForm(props: IinquiryFormProps) {
         }}
         style={{ width: '100%' }}
       />
+      {isBooking && (
+        <>
+          <p style={{ margin: 0 }}>&nbsp;</p>
+          <WjInput
+            id="eventDate"
+            label="Event Date"
+            isRequired
+            type="date"
+            value={formData.eventDate || ''}
+            onChange={(evt) => {
+              const { target: { value } } = evt;
+              utils.handleInputChange(evt, formData, setFormData);
+              return value;
+            }}
+            style={{ width: '100%' }}
+          />
+          <p style={{ margin: 0 }}>&nbsp;</p>
+          <select
+            id="eventType"
+            name="eventType"
+            aria-label="Event Type"
+            value={formData.eventType || ''}
+            onChange={(evt) => {
+              const { target: { value } } = evt;
+              utils.handleInputChange(evt as unknown as React.ChangeEvent<HTMLInputElement>, formData, setFormData);
+              return value;
+            }}
+            style={{
+              width: '100%',
+              padding: '10px',
+              marginTop: '8px',
+              fontSize: '1rem',
+              borderRadius: '4px',
+              borderColor: '#ccc',
+            }}
+          >
+            <option value="">* Select Event Type</option>
+            {utils.EVENT_TYPES.map((t) => (
+              <option key={t.value} value={t.value}>
+                {t.label}
+              </option>
+            ))}
+          </select>
+          <p style={{ margin: 0 }}>&nbsp;</p>
+          <VenueAddressInput formData={formData} setFormData={setFormData} />
+        </>
+      )}
       <p style={{ margin: 0 }}>&nbsp;</p>
       <CommentsSection formData={formData} setFormData={setFormData} />
       <FormActions
         setHasSubmitted={setHasSubmitted}
         setSubmitError={setSubmitError}
+        showBookingFields={isBooking}
         formData={{
           ...formData,
           country: formData.country || staticCountry || '',
@@ -251,19 +309,21 @@ export const ContactRequest = () => (
   </div>
 );
 interface IcontactFormProps {
-  hasSubmitted: boolean,
-  submitError: boolean,
-  hideTitle?: boolean,
-  country?: string,
-  setHasSubmitted: (arg0: boolean) => void,
-  setSubmitError: (arg0: boolean) => void,
-  formData: IinquiryFormData,
-  setFormData: (arg0: IinquiryFormData) => void,
+  hasSubmitted: boolean;
+  submitError: boolean;
+  hideTitle?: boolean;
+  country?: string;
+  showBookingFields?: boolean;
+  setHasSubmitted: (arg0: boolean) => void;
+  setSubmitError: (arg0: boolean) => void;
+  formData: IinquiryFormData;
+  setFormData: (arg0: IinquiryFormData) => void;
 }
 
 export function ContactForm(props: IcontactFormProps) {
   const {
-    hasSubmitted, submitError, hideTitle, country, setHasSubmitted, setSubmitError, formData, setFormData,
+    hasSubmitted, submitError, hideTitle, country, showBookingFields,
+    setHasSubmitted, setSubmitError, formData, setFormData,
   } = props;
   return (
     <div
@@ -287,6 +347,7 @@ export function ContactForm(props: IcontactFormProps) {
           {submitError ? <InquiryError /> : null}
           <InquiryForm
             staticCountry={country}
+            showBookingFields={showBookingFields}
             setHasSubmitted={setHasSubmitted}
             setSubmitError={setSubmitError}
             formData={formData}
@@ -304,12 +365,14 @@ export interface IinquiryProps {
   country?: string;
   hideTitle?: boolean;
   form: string;
+  showBookingFields?: boolean;
 }
 
-export function Inquiry({ country, hideTitle, form }: IinquiryProps) {
+export function Inquiry({ country, hideTitle, form, showBookingFields }: IinquiryProps) {
   const [hasSubmitted, setHasSubmitted] = useState(false);
   const [submitError, setSubmitError] = useState(false);
   const [formLoadedAt] = useState(() => Date.now());
+  const isBooking = Boolean(showBookingFields || form === 'jam-bookus');
   const [formData, setFormData] = useState<IinquiryFormData>(() => ({
     country: country || '',
     form,
@@ -326,6 +389,7 @@ export function Inquiry({ country, hideTitle, form }: IinquiryProps) {
     submitError,
     hideTitle,
     country,
+    showBookingFields: isBooking,
     setHasSubmitted,
     setSubmitError,
     formData,
@@ -335,4 +399,3 @@ export function Inquiry({ country, hideTitle, form }: IinquiryProps) {
     <ContactForm {...props} />
   );
 }
-
