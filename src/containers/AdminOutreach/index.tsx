@@ -21,7 +21,7 @@ import { customFetch } from 'src/lib/fetch.utils';
 import adminVenuesUtils, { type Ivenue } from 'src/containers/AdminVenues/admin-venues.utils';
 import outreachUtils, {
   type Icandidate, type IbatchResult, type IpitchPreview, type IpendingReply, type IreportSummary,
-  type IbatchPayload, type IvenueApproval, dispatchApprovedBatch, hasCompletePreviews,
+  type IbatchPayload, type IvenueApproval, type IVenueCustomization, dispatchApprovedBatch, hasCompletePreviews,
 } from './outreach.utils';
 import { OutreachDialog } from './OutreachDialog';
 
@@ -526,7 +526,22 @@ export function AdminOutreach() {
     }
   };
 
-  const send = async () => {
+  const updateSinglePreview = async (venueId: string, customIntro?: string, customBody?: string) => {
+    if (!reviewBatch) return;
+    const data = await outreachUtils.getPreview(
+      auth.token,
+      [venueId],
+      reviewBatch.targetDates,
+      reviewBatch.bookingPeriod,
+      { customIntro, customBody },
+    );
+    if (data && data.length > 0) {
+      const updated = data[0];
+      setPreviews((prev) => prev.map((p) => (p.venueId === venueId ? updated : p)));
+    }
+  };
+
+  const send = async (customizations?: IVenueCustomization[]) => {
     if (sendInFlight.current || sendAttempted || !reviewBatch || needsVenueConfirmation
       || previewLoading || previewError || !hasCompletePreviews(reviewBatch.venueIds, previews)) return;
     sendInFlight.current = true;
@@ -534,7 +549,11 @@ export function AdminOutreach() {
     setSending(true);
     setError('');
     try {
-      const res = await dispatchApprovedBatch(auth.token, reviewBatch, previews, setResult);
+      const batchToSend: IbatchPayload = {
+        ...reviewBatch,
+        venueCustomizations: (customizations && customizations.length > 0) ? customizations : undefined,
+      };
+      const res = await dispatchApprovedBatch(auth.token, batchToSend, previews, setResult);
       setResult(res);
       setDispatchComplete(true);
       setCandidates([]);
@@ -1569,12 +1588,33 @@ export function AdminOutreach() {
                             <Box>
                               <Typography variant="body2" sx={{ fontWeight: 'medium' }}>
                                 {candidateLabel(c)}
+                                {c.lastPitchDate && (
+                                  <Typography
+                                    component="span"
+                                    variant="body2"
+                                    sx={{ color: 'text.secondary', ml: 1, fontWeight: 'normal' }}
+                                    data-testid={`outreach-pitched-${c._id}`}
+                                  >
+                                    Pitched {new Date(c.lastPitchDate).toLocaleDateString()}, no reply recorded
+                                  </Typography>
+                                )}
                               </Typography>
                               {c.reason && (
                                 <Box
                                   sx={{ mt: 0.5, display: 'flex', flexWrap: 'wrap', gap: 0.5, alignItems: 'center' }}
                                   data-testid={`outreach-reason-${c._id}`}
                                 >
+                                  {c.lastPitchDate && (
+                                    <Chip
+                                      icon={<History sx={{ fontSize: '0.8rem !important' }} />}
+                                      label={`Pitched ${new Date(c.lastPitchDate).toLocaleDateString()}, no reply recorded`}
+                                      size="small"
+                                      variant="outlined"
+                                      color="warning"
+                                      sx={{ fontSize: '0.7rem', height: 20 }}
+                                      data-testid={`outreach-pitched-chip-${c._id}`}
+                                    />
+                                  )}
                                   <Chip
                                     icon={<DateRange sx={{ fontSize: '0.8rem !important' }} />}
                                     label={c.reason.spacingNote}
@@ -1692,6 +1732,7 @@ export function AdminOutreach() {
           previewLoading={previewLoading}
           previewError={previewError}
           sending={sending}
+          onUpdatePreview={updateSinglePreview}
           onSend={send}
           onClose={closeReview}
         />

@@ -241,6 +241,102 @@ describe('AdminOutreach', () => {
     expect(screen.getByTestId('result-icon-complete')).toBeInTheDocument();
   });
 
+  it('shows "Pitched <date>, no reply recorded" beside already-pitched venues and allows per-email edits', async () => {
+    const candidatesWithPitched: Icandidate[] = [
+      {
+        ...candidates[0],
+        lastPitchDate: '2026-08-01T12:00:00.000Z',
+      },
+      ...candidates.slice(1),
+    ];
+    outreachUtils.getCandidates = vi.fn().mockResolvedValue(candidatesWithPitched);
+    outreachUtils.getPreview = vi.fn((_token, venueIds, _dates, _period, custom) => {
+      if (custom?.customIntro) {
+        return Promise.resolve([{
+          venueId: venueIds[0],
+          venueName: 'Venue A',
+          subject: 'Custom Subject',
+          body: '<p>Custom Intro</p>',
+        }]);
+      }
+      return Promise.resolve(previews);
+    }) as unknown as typeof outreachUtils.getPreview;
+
+    await renderPage();
+    typeDates();
+    await act(async () => { fireEvent.click(screen.getByTestId('outreach-load')); });
+
+    // Verify pitched label in candidate list
+    expect(screen.getByTestId('outreach-pitched-c1')).toBeInTheDocument();
+    expect(screen.getByTestId('outreach-pitched-c1').textContent).toContain('Pitched');
+    expect(screen.getByTestId('outreach-pitched-c1').textContent).toContain('no reply recorded');
+
+    // Open OutreachDialog
+    await act(async () => { fireEvent.click(screen.getByTestId('outreach-open-dialog')); });
+    expect(screen.getByTestId('outreach-dialog-send')).toBeEnabled();
+
+    // Click Edit on c1
+    const editToggle = screen.getByTestId('edit-toggle-c1');
+    await act(async () => { fireEvent.click(editToggle); });
+    expect(screen.getByTestId('edit-box-c1')).toBeInTheDocument();
+
+    // Type in Opening box
+    const introInput = screen.getByLabelText('Opening');
+    await act(async () => {
+      fireEvent.change(introInput, { target: { value: 'Hi Pat, custom opener.' } });
+    });
+
+    // Send button should be disabled because edit box holds un-rebuilt text
+    expect(screen.getByTestId('outreach-dialog-send')).toBeDisabled();
+
+    // Click Update preview
+    const updateBtn = screen.getByTestId('update-preview-c1');
+    await act(async () => { fireEvent.click(updateBtn); });
+
+    // Check single preview was requested with customIntro
+    expect(outreachUtils.getPreview).toHaveBeenCalledWith(
+      'tk', ['c1'], 'Aug 15-17', 'summer 2026',
+      expect.objectContaining({ customIntro: 'Hi Pat, custom opener.' }),
+    );
+
+    // Send button should be re-enabled
+    expect(screen.getByTestId('outreach-dialog-send')).toBeEnabled();
+
+    // Edited mark should be visible
+    expect(screen.getByTestId('edited-mark-c1')).toBeInTheDocument();
+    expect(screen.getByTestId('edited-mark-c1').textContent).toBe('Edited');
+
+    // Click Send
+    await act(async () => { fireEvent.click(screen.getByTestId('outreach-dialog-send')); });
+
+    // Preflight received venueCustomizations
+    expect(outreachUtils.approveDrafts).toHaveBeenCalledWith(
+      'tk',
+      expect.objectContaining({
+        venueCustomizations: [{ venueId: 'c1', customIntro: 'Hi Pat, custom opener.' }],
+      }),
+      expect.any(Array),
+    );
+  });
+
+  it('displays update preview error when single preview update fails', async () => {
+    await renderPage();
+    typeDates();
+    await act(async () => { fireEvent.click(screen.getByTestId('outreach-load')); });
+    await act(async () => { fireEvent.click(screen.getByTestId('outreach-open-dialog')); });
+
+    await act(async () => { fireEvent.click(screen.getByTestId('edit-toggle-c1')); });
+    await act(async () => {
+      fireEvent.change(screen.getByLabelText('Opening'), { target: { value: 'Bad text' } });
+    });
+
+    outreachUtils.getPreview = vi.fn().mockRejectedValueOnce(new Error('Preview rebuild failed'));
+    await act(async () => { fireEvent.click(screen.getByTestId('update-preview-c1')); });
+
+    expect(screen.getByTestId('update-error-c1')).toHaveTextContent('Preview rebuild failed');
+    expect(screen.getByTestId('outreach-dialog-send')).toBeDisabled();
+  });
+
   it('renders skip reasons in the result', async () => {
     outreachUtils.sendBatch = vi.fn(() => Promise.resolve({
       requested: 2,

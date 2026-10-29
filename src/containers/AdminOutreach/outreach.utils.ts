@@ -11,6 +11,7 @@ export interface Icandidate {
   city?: string;
   venueType?: string;
   email?: string;
+  lastPitchDate?: string | null;
   reason?: {
     lastGigDate: string | null;
     gigIntervalMonths: number;
@@ -18,6 +19,12 @@ export interface Icandidate {
     spacingNote: string;
     resumeBookingExpired: boolean;
   };
+}
+
+export interface IVenueCustomization {
+  venueId: string;
+  customIntro?: string;
+  customBody?: string;
 }
 
 export interface IbatchSkip { venueId: string; venueName: string; reason: string }
@@ -38,6 +45,7 @@ export interface IbatchPayload {
   bookingPeriod?: string;
   targetWeekend: { start: string; end: string };
   batchId: string;
+  venueCustomizations?: IVenueCustomization[];
 }
 
 export interface IvenueApproval {
@@ -182,11 +190,24 @@ export async function fingerprintDraft(preview: IpitchPreview): Promise<IdraftFi
 }
 
 async function getPreview(
-  token: string, venueIds: string[], targetDates: string, bookingPeriod?: string,
+  token: string,
+  venueIds: string[],
+  targetDates: string,
+  bookingPeriod?: string,
+  customizations?: { customIntro?: string; customBody?: string },
 ): Promise<IpitchPreview[]> {
-  const qs = `?venueIds=${venueIds.map(id => encodeURIComponent(id)).join(',')}&targetDates=${encodeURIComponent(targetDates)}`
-    + (bookingPeriod ? `&bookingPeriod=${encodeURIComponent(bookingPeriod)}` : '');
-  const res = await customFetch(`${outreachUrl}/preview${qs}`, { headers: headers(token) });
+  const qs = [
+    `venueIds=${venueIds.map(id => encodeURIComponent(id)).join(',')}`,
+    `targetDates=${encodeURIComponent(targetDates)}`,
+  ];
+  if (bookingPeriod) qs.push(`bookingPeriod=${encodeURIComponent(bookingPeriod)}`);
+  if (customizations?.customIntro && customizations.customIntro.trim()) {
+    qs.push(`customIntro=${encodeURIComponent(customizations.customIntro)}`);
+  }
+  if (customizations?.customBody && customizations.customBody.trim()) {
+    qs.push(`customBody=${encodeURIComponent(customizations.customBody)}`);
+  }
+  const res = await customFetch(`${outreachUrl}/preview?${qs.join('&')}`, { headers: headers(token) });
   if (!res.ok) throw await responseError(res);
   const data: unknown = await res.json();
   if (!Array.isArray(data) || !hasCompletePreviews(venueIds, data as IpitchPreview[])) {
