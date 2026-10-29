@@ -48,7 +48,7 @@ export function OutreachDialog({
   storedVenues, needsVenueConfirmation, onApproveVenues, sendAttempted, progress,
   onUpdatePreview,
 }: IoutreachDialogProps) {
-  const [openEdits, setOpenEdits] = useState<Record<string, boolean>>({});
+  const [openEdits, setOpenEdits] = useState<Set<string>>(new Set());
   const [drafts, setDrafts] = useState<Record<string, IeditDraft>>({});
   const [rebuilt, setRebuilt] = useState<Record<string, IeditDraft>>({});
   const [updatingVenueId, setUpdatingVenueId] = useState<string | null>(null);
@@ -56,7 +56,7 @@ export function OutreachDialog({
 
   useEffect(() => {
     if (!open) {
-      setOpenEdits({});
+      setOpenEdits(new Set());
       setDrafts({});
       setRebuilt({});
       setUpdatingVenueId(null);
@@ -80,8 +80,9 @@ export function OutreachDialog({
   });
 
   const venueCustomizations: IVenueCustomization[] = Object.entries(rebuilt)
-    .filter(([, custom]) => Boolean(
-      (custom.customIntro && custom.customIntro.trim()) || (custom.customBody && custom.customBody.trim()),
+    .filter(([, custom]) => (
+      (custom.customIntro !== undefined && custom.customIntro.trim().length > 0)
+      || (custom.customBody !== undefined && custom.customBody.trim().length > 0)
     ))
     .map(([venueId, custom]) => {
       const item: IVenueCustomization = { venueId };
@@ -91,8 +92,16 @@ export function OutreachDialog({
     });
 
   const toggleEdit = (venueId: string) => {
-    setOpenEdits((prev) => ({ ...prev, [venueId]: !prev[venueId] }));
-    if (!drafts[venueId]) {
+    setOpenEdits((prev) => {
+      const next = new Set(prev);
+      if (next.has(venueId)) {
+        next.delete(venueId);
+      } else {
+        next.add(venueId);
+      }
+      return next;
+    });
+    if (!Object.hasOwn(drafts, venueId)) {
       setDrafts((prev) => ({
         ...prev,
         [venueId]: {
@@ -214,14 +223,14 @@ export function OutreachDialog({
                 onClick={() => toggleEdit(p.venueId)}
                 data-testid={`edit-toggle-${p.venueId}`}
               >
-                {openEdits[p.venueId] ? 'Close Edit' : 'Edit'}
+                {openEdits.has(p.venueId) ? 'Close Edit' : 'Edit'}
               </Button>
             </Box>
             <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 1 }}>
               Subject: {p.subject}
             </Typography>
 
-            {openEdits[p.venueId] && (
+            {openEdits.has(p.venueId) && (
               <Box
                 sx={{
                   my: 1.5, p: 1.5, bgcolor: 'background.paper', borderRadius: 1, border: '1px solid', borderColor: 'divider',
