@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
   Box, Typography, Dialog, DialogTitle, DialogContent, DialogActions,
   Button, Divider, CircularProgress, TextField, Chip,
@@ -29,6 +29,7 @@ interface IoutreachDialogProps {
   onSend: (customizations?: IVenueCustomization[]) => void;
   onClose: () => void;
   onUpdatePreview?: (venueId: string, customIntro?: string, customBody?: string) => Promise<void>;
+  reviewVersion?: number;
 }
 
 interface IeditDraft {
@@ -46,15 +47,17 @@ export function OutreachDialog({
   open, candidates, selected, targetDates, bookingPeriod,
   previews, previewLoading, previewError, sending, onSend, onClose,
   storedVenues, needsVenueConfirmation, onApproveVenues, sendAttempted, progress,
-  onUpdatePreview,
+  onUpdatePreview, reviewVersion,
 }: IoutreachDialogProps) {
   const [openEdits, setOpenEdits] = useState<Set<string>>(new Set());
   const [drafts, setDrafts] = useState<Record<string, IeditDraft>>({});
   const [rebuilt, setRebuilt] = useState<Record<string, IeditDraft>>({});
   const [updatingVenueId, setUpdatingVenueId] = useState<string | null>(null);
   const [updateErrors, setUpdateErrors] = useState<Record<string, string>>({});
+  const reviewGeneration = useRef(reviewVersion ?? 0);
 
   useEffect(() => {
+    reviewGeneration.current = reviewVersion ?? (reviewGeneration.current + 1);
     if (!open) {
       setOpenEdits(new Set());
       setDrafts({});
@@ -62,7 +65,12 @@ export function OutreachDialog({
       setUpdatingVenueId(null);
       setUpdateErrors({});
     }
-  }, [open]);
+  }, [open, reviewVersion]);
+
+  const handleClose = () => {
+    reviewGeneration.current += 1;
+    onClose();
+  };
 
   const candidateMap = new Map(candidates.map((c) => [c._id, c]));
   const selectedVenues = candidates.filter((c) => selected.has(c._id));
@@ -139,6 +147,7 @@ export function OutreachDialog({
 
   const handleUpdatePreview = async (venueId: string) => {
     if (!onUpdatePreview) return;
+    const generation = reviewGeneration.current;
     setUpdatingVenueId(venueId);
     setUpdateErrors((prev) => ({ ...prev, [venueId]: '' }));
     const draft = drafts[venueId] || { customIntro: '', customBody: '' };
@@ -148,16 +157,20 @@ export function OutreachDialog({
         draft.customIntro.trim() ? draft.customIntro : undefined,
         draft.customBody.trim() ? draft.customBody : undefined,
       );
+      if (reviewGeneration.current !== generation) return;
       setRebuilt((prev) => ({ ...prev, [venueId]: { ...draft } }));
     } catch (err) {
+      if (reviewGeneration.current !== generation) return;
       setUpdateErrors((prev) => ({ ...prev, [venueId]: (err as Error).message || 'Failed to update preview' }));
     } finally {
-      setUpdatingVenueId(null);
+      if (reviewGeneration.current === generation) {
+        setUpdatingVenueId(null);
+      }
     }
   };
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth data-testid="outreach-dialog">
+    <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth data-testid="outreach-dialog">
       <DialogTitle>{needsVenueConfirmation ? 'Confirm venue approval' : 'Review every email'}</DialogTitle>
       <DialogContent dividers>
         <Typography variant="body2" sx={{ marginBottom: 1 }}>
@@ -302,7 +315,7 @@ export function OutreachDialog({
         )}
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose} disabled={sending || previewLoading} data-testid="outreach-dialog-cancel">Close</Button>
+        <Button onClick={handleClose} disabled={sending || previewLoading} data-testid="outreach-dialog-cancel">Close</Button>
         {needsVenueConfirmation && <Button variant="contained" onClick={onApproveVenues} disabled={previewLoading || sending}
           data-testid="outreach-confirm-venues">Confirm venues and review emails</Button>}
         <Button

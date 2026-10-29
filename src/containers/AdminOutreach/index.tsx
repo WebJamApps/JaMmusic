@@ -528,6 +528,7 @@ export function AdminOutreach() {
 
   const updateSinglePreview = async (venueId: string, customIntro?: string, customBody?: string) => {
     if (!reviewBatch) return;
+    const version = reviewVersion.current;
     const data = await outreachUtils.getPreview(
       auth.token,
       [venueId],
@@ -535,6 +536,7 @@ export function AdminOutreach() {
       reviewBatch.bookingPeriod,
       { customIntro, customBody },
     );
+    if (reviewVersion.current !== version) return;
     if (data && data.length > 0) {
       const updated = data[0];
       setPreviews((prev) => prev.map((p) => (p.venueId === venueId ? updated : p)));
@@ -1735,6 +1737,7 @@ export function AdminOutreach() {
           onUpdatePreview={updateSinglePreview}
           onSend={send}
           onClose={closeReview}
+          reviewVersion={reviewVersion.current}
         />
 
         {/* DIALOG 1: Confirm DNC Dialog */}

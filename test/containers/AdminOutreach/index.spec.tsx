@@ -337,6 +337,64 @@ describe('AdminOutreach', () => {
     expect(screen.getByTestId('outreach-dialog-send')).toBeDisabled();
   });
 
+  it('ignores single-preview rebuild if review is closed and reopened before request resolves', async () => {
+    let resolveStalePreview: (val: any) => void = () => {};
+    const deferredPreviewPromise = new Promise((resolve) => {
+      resolveStalePreview = resolve;
+    });
+
+    await renderPage();
+    typeDates();
+    await act(async () => { fireEvent.click(screen.getByTestId('outreach-load')); });
+    await act(async () => { fireEvent.click(screen.getByTestId('outreach-open-dialog')); });
+
+    // Open edit for c1 and type an opening
+    await act(async () => { fireEvent.click(screen.getByTestId('edit-toggle-c1')); });
+    await act(async () => {
+      fireEvent.change(screen.getByLabelText('Opening'), { target: { value: 'Stale opener' } });
+    });
+
+    // Mock getPreview to return deferred promise only for the update request
+    const origGetPreview = outreachUtils.getPreview;
+    outreachUtils.getPreview = vi.fn((tk, vIds, dates, period, custom) => {
+      if (custom?.customIntro === 'Stale opener') {
+        return deferredPreviewPromise as Promise<IpitchPreview[]>;
+      }
+      return origGetPreview(tk, vIds, dates, period, custom);
+    });
+
+    // Click Update preview
+    await act(async () => { fireEvent.click(screen.getByTestId('update-preview-c1')); });
+
+    // While request is in flight, close review dialog
+    await act(async () => { fireEvent.click(screen.getByTestId('outreach-dialog-cancel')); });
+    expect(screen.getByTestId('outreach-dialog')).toHaveAttribute('data-expanded', 'false');
+
+    // Re-open review dialog (creates new reviewVersion generation)
+    await act(async () => { fireEvent.click(screen.getByTestId('outreach-open-dialog')); });
+    expect(screen.getByTestId('outreach-dialog')).toHaveAttribute('data-expanded', 'true');
+
+    // Now resolve the stale in-flight preview from the previous review session
+    await act(async () => {
+      resolveStalePreview([{ venueId: 'c1', venueName: 'Venue A', subject: 'Stale Subj', body: 'Stale email body' }]);
+    });
+
+    // The stale response should NOT have marked c1 as Edited or updated previews
+    expect(screen.queryByTestId('edited-mark-c1')).toBeNull();
+    // And send should be enabled (not held by dirty or updating state from old session)
+    expect(screen.getByTestId('outreach-dialog-send')).toBeEnabled();
+
+    // When sending, venueCustomizations should NOT contain the stale customization
+    await act(async () => { fireEvent.click(screen.getByTestId('outreach-dialog-send')); });
+    expect(outreachUtils.approveDrafts).toHaveBeenCalledWith(
+      'tk',
+      expect.objectContaining({
+        venueCustomizations: undefined,
+      }),
+      expect.any(Array),
+    );
+  });
+
   it('renders skip reasons in the result', async () => {
     outreachUtils.sendBatch = vi.fn(() => Promise.resolve({
       requested: 2,

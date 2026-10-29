@@ -185,3 +185,113 @@ test('admin edits one email preview, holds send until rebuilt, and sends with ve
     },
   ]);
 });
+
+test('deferred preview update resolved after dialog close and reopen does not affect the new review session', async ({ page, context }) => {
+  await context.addInitScript(() => {
+    localStorage.setItem('auth', JSON.stringify({
+      isAuthenticated: true,
+      error: '',
+      token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyLTEyMyIsImV4cCI6OTk5OTk5OTk5OX0.signature',
+      user: { userType: 'Developer', email: 'admin@example.com' },
+    }));
+  });
+  await page.routeWebSocket(/.*/, (ws) => ws.close());
+  await page.route(/^https:\/\//, (route) => route.abort());
+
+  const writes: { path: string; body: Record<string, unknown> }[] = [];
+  let resolveDeferredRoute: () => void = () => {};
+  const deferredRoutePromise = new Promise<void>((resolve) => {
+    resolveDeferredRoute = resolve;
+  });
+
+  await page.route('http://localhost:7000/**', async (route) => {
+    const url = new URL(route.request().url());
+    const path = url.pathname;
+    const method = route.request().method();
+    if (method === 'POST') {
+      writes.push({ path, body: route.request().postDataJSON() as Record<string, unknown> });
+    }
+    let body: unknown = [];
+    let status = 200;
+
+    if (path === '/user/user-123') {
+      body = { userType: 'Developer', email: 'admin@example.com' };
+    } else if (path === '/venue' || path === '/outreach/candidates') {
+      body = venues;
+    } else if (path.startsWith('/outreach/approval/gate1')) {
+      if (method === 'GET') {
+        status = 404;
+        body = { message: 'No stored approval' };
+      } else {
+        body = { ok: true };
+      }
+    } else if (path === '/outreach/approval/gate2') {
+      body = { ok: true };
+    } else if (path === '/outreach/preview') {
+      const query = url.searchParams;
+      if (query.get('venueIds') === 'venue-a' && query.get('customIntro') === 'Stale opener') {
+        await deferredRoutePromise;
+        body = [{
+          venueId: 'venue-a',
+          venueName: 'First Venue',
+          subject: 'Stale Subject',
+          body: '<p>Stale body that should be ignored</p>',
+        }];
+      } else {
+        body = drafts;
+      }
+    } else if (path === '/outreach/batch/preflight') {
+      body = { dispatchId: 'checked-dispatch-deferred', venueCount: 2 };
+    } else if (path === '/outreach/batch') {
+      body = { sent: 2, skipped: [], records: [], remaining: 0 };
+    }
+    await route.fulfill({ status, contentType: 'application/json', body: JSON.stringify(body) });
+  });
+
+  await selectWeekend(page);
+
+  // Open review dialog
+  await page.getByRole('button', { name: 'Approve venues and review emails', exact: true }).click();
+  await expect(page.getByTestId('outreach-dialog')).toBeVisible();
+
+  // Click Edit on First Venue and enter stale opener text
+  await page.getByTestId('edit-toggle-venue-a').click();
+  await page.getByLabel('Opening').fill('Stale opener');
+
+  // Trigger preview update (deferred in-flight route)
+  await page.getByTestId('update-preview-venue-a').click();
+
+  // Close the dialog while request is pending
+  await page.getByTestId('outreach-dialog-cancel').click();
+  await expect(page.getByTestId('outreach-dialog')).toBeHidden();
+
+  // Re-open the review dialog
+  await page.getByRole('button', { name: 'Approve venues and review emails', exact: true }).click();
+  await expect(page.getByTestId('outreach-dialog')).toBeVisible();
+
+  // Resolve the stale pending request
+  resolveDeferredRoute();
+
+  // Give the browser event loop a moment to deliver and process the route response
+  await page.waitForTimeout(100);
+
+  // Check that venue-a does NOT show Edited chip
+  await expect(page.getByTestId('edited-mark-venue-a')).toHaveCount(0);
+
+  // Check that the preview frame still shows standard draft, not stale body
+  const frameA = page.frameLocator('iframe[title="Email for First Venue"]');
+  await expect(frameA.locator('body')).toContainText('Complete email for First Venue');
+  await expect(frameA.locator('body')).not.toContainText('Stale body that should be ignored');
+
+  // Send button should be enabled
+  await expect(page.getByTestId('outreach-dialog-send')).toBeEnabled();
+
+  // Send batch
+  await page.getByTestId('outreach-dialog-send').click();
+  await expect(page.getByTestId('outreach-result')).toContainText('Batch complete');
+
+  // Verify preflight was called without venueCustomizations
+  const preflightWrite = writes.find((w) => w.path === '/outreach/batch/preflight');
+  expect(preflightWrite).toBeDefined();
+  expect(preflightWrite?.body.venueCustomizations).toBeUndefined();
+});
