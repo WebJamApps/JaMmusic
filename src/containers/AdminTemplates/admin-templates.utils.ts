@@ -4,7 +4,7 @@ import { customFetch } from 'src/lib/fetch.utils';
 export interface Itemplate {
   _id?: string;
   type: 'Originals' | 'PubFestivalBrewery' | 'MidRangeCafeBar' | 'OnlineForm';
-  stage: 'cold' | 'returning' | 'upcoming';
+  stage: 'cold' | 'returning' | 'upcoming' | 'second-pitch';
   subject?: string;
   introHtml?: string;
   bodyHtml?: string;

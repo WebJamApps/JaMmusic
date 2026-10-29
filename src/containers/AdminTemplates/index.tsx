@@ -20,7 +20,7 @@ import { AuthContext } from 'src/providers/Auth.provider';
 import adminTemplatesUtils, { type Itemplate, exportToCSV, parseCSV } from './admin-templates.utils';
 
 const TYPES = ['Originals', 'PubFestivalBrewery', 'MidRangeCafeBar', 'OnlineForm'] as const;
-const STAGES = ['cold', 'returning', 'upcoming'] as const;
+const STAGES = ['cold', 'returning', 'upcoming', 'second-pitch'] as const;
 
 const TOKENS = [
   '[Contact Name]',
@@ -28,6 +28,7 @@ const TOKENS = [
   '[Booking Period]',
   '[Target Dates]',
   '[Next Gig Date]',
+  '[First Pitch Date]',
 ];
 
 export function AdminTemplates() {
@@ -410,6 +411,7 @@ export function AdminTemplates() {
                   <Tab label="Cold" value="cold" data-testid="templates-tab-stage-cold" />
                   <Tab label="Returning" value="returning" data-testid="templates-tab-stage-returning" />
                   <Tab label="Upcoming" value="upcoming" data-testid="templates-tab-stage-upcoming" />
+                  <Tab label="Second pitch" value="second-pitch" data-testid="templates-tab-stage-second-pitch" />
                 </Tabs>
 
                 <Typography variant="subtitle2" sx={{ marginBottom: 1, fontWeight: 'bold' }}>

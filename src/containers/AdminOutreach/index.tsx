@@ -28,11 +28,11 @@ import { OutreachDialog } from './OutreachDialog';
 // Touch timeline interface
 export interface Itouch {
   date: string;
-  type: 'visit' | 'form' | 'card' | 'call' | 'email' | 'gig' | 'other' | 'outcome';
+  type: 'visit' | 'form' | 'card' | 'call' | 'email' | 'gig' | 'other' | 'outcome' | 'replied';
   note?: string;
   templateType?: string;
   targetWeekend?: { start: string; end: string };
-  outcome?: 'interested' | 'not-interested' | 'booked' | 'target-filled';
+  outcome?: 'interested' | 'not-interested' | 'booked' | 'target-filled' | 'replied';
   bookedDate?: string;
   outreachId?: string;
   actor?: string;
@@ -1075,32 +1075,47 @@ export function AdminOutreach() {
                                           touchColor = '#ea580c';
                                           touchIcon = <Phone fontSize="small" style={{ color: 'white' }} />;
                                         } else if (touch.type === 'outcome') {
-                                          touchColor = touch.outcome === 'booked'
-                                            ? '#8b5cf6'
-                                            : touch.outcome === 'interested'
-                                              ? '#10b981'
-                                              : '#ef4444';
+                                          if (touch.outcome === 'booked') {
+                                            touchColor = '#8b5cf6';
+                                          } else if (touch.outcome === 'interested') {
+                                            touchColor = '#10b981';
+                                          } else if (touch.outcome === 'replied') {
+                                            touchColor = '#06b6d4';
+                                          } else {
+                                            touchColor = '#ef4444';
+                                          }
+                                          touchIcon = <CheckCircle fontSize="small" style={{ color: 'white' }} />;
+                                        } else if (touch.type === 'replied') {
+                                          touchColor = '#06b6d4';
                                           touchIcon = <CheckCircle fontSize="small" style={{ color: 'white' }} />;
                                         }
 
                                         return (
                                           <Box key={idx} sx={{ position: 'relative' }}>
                                             {/* Vertical line dot */}
-                                            <Box sx={{
-                                              position: 'absolute', left: '-25px', top: '2px',
-                                              width: '18px', height: '18px', borderRadius: '50%',
-                                              backgroundColor: touchColor, display: 'flex',
-                                              alignItems: 'center', justifyContent: 'center',
-                                              boxShadow: 1,
-                                            }}>
+                                            <Box
+                                              sx={{
+                                                position: 'absolute', left: '-25px', top: '2px',
+                                                width: '18px', height: '18px', borderRadius: '50%',
+                                                backgroundColor: touchColor, display: 'flex',
+                                                alignItems: 'center', justifyContent: 'center',
+                                                boxShadow: 1,
+                                              }}
+                                              data-testid={`touch-dot-${touch.outcome || touch.type}`}
+                                            >
                                               {touchIcon}
                                             </Box>
 
                                             <Box sx={{ p: 1.5, bgcolor: 'background.paper', borderRadius: 2, boxShadow: 1 }}>
                                               <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
-                                                <Typography variant="subtitle2" sx={{
-                                                  fontWeight: 'bold', color: touchColor, textTransform: 'capitalize',
-                                                }}>
+                                                <Typography
+                                                  variant="subtitle2"
+                                                  style={{ color: touchColor }}
+                                                  sx={{
+                                                    fontWeight: 'bold', color: touchColor, textTransform: 'capitalize',
+                                                  }}
+                                                  data-testid={`touch-label-${touch.outcome || touch.type}`}
+                                                >
                                                   {touch.type === 'outcome' ? `Outcome: ${touch.outcome}` : touch.type}
                                                 </Typography>
                                                 <Typography variant="caption" color="text.secondary">

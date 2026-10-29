@@ -41,6 +41,14 @@ const mockTemplates: Itemplate[] = [
     introHtml: 'Looking forward to [Next Gig Date]',
     bodyHtml: 'Upcoming Originals Body',
   },
+  {
+    _id: 'temp-4',
+    type: 'Originals',
+    stage: 'second-pitch',
+    subject: 'Second Pitch Originals Subject',
+    introHtml: 'Following up on our note from [First Pitch Date]',
+    bodyHtml: 'Second Pitch Originals Body',
+  },
 ];
 
 const wrap = (auth: Iauth) => (
@@ -126,7 +134,20 @@ describe('AdminTemplates page container', () => {
     expect(screen.getByTestId('template-body-textarea')).toHaveValue('');
   });
 
-  it.each(['cold', 'returning', 'upcoming'])('loads the intro or a blank value on the %s tab', async (stage) => {
+  it('loads Second pitch content and shows blank fields for a type without a Second pitch template', async () => {
+    await act(async () => { render(wrap(adminAuth)); });
+    fireEvent.click(screen.getByTestId('templates-tab-stage-second-pitch'));
+    expect(screen.getByTestId('template-subject-input')).toHaveValue('Second Pitch Originals Subject');
+    expect(screen.getByTestId('template-intro-textarea')).toHaveValue('Following up on our note from [First Pitch Date]');
+    expect(screen.getByTestId('template-body-textarea')).toHaveValue('Second Pitch Originals Body');
+
+    fireEvent.click(screen.getByTestId('template-type-MidRangeCafeBar'));
+    expect(screen.getByTestId('template-subject-input')).toHaveValue('');
+    expect(screen.getByTestId('template-intro-textarea')).toHaveValue('');
+    expect(screen.getByTestId('template-body-textarea')).toHaveValue('');
+  });
+
+  it.each(['cold', 'returning', 'upcoming', 'second-pitch'])('loads the intro or a blank value on the %s tab', async (stage) => {
     await act(async () => { render(wrap(adminAuth)); });
     fireEvent.click(screen.getByTestId(`templates-tab-stage-${stage}`));
     const expectedIntro = mockTemplates.find(t => t.type === 'Originals' && t.stage === stage)?.introHtml || '';
@@ -188,6 +209,12 @@ describe('AdminTemplates page container', () => {
     expect(screen.getByTestId('template-subject-input')).toHaveValue('Cold Originals Subject');
   });
 
+  it('inserts First Pitch Date into the body by default after clicking the token chip', async () => {
+    await act(async () => { render(wrap(adminAuth)); });
+    fireEvent.click(screen.getByTestId('token-chip-[First Pitch Date]'));
+    expect(screen.getByTestId('template-body-textarea')).toHaveValue('Cold Originals Body[First Pitch Date]');
+  });
+
   it('inserts chips at the last-focused intro or body selection and restores its cursor', async () => {
     await act(async () => { render(wrap(adminAuth)); });
     const intro = screen.getByTestId('template-intro-textarea') as HTMLTextAreaElement;
@@ -217,17 +244,19 @@ describe('AdminTemplates page container', () => {
     await act(async () => { render(wrap(adminAuth)); });
     const rows = [
       { type: 'Originals', stage: 'upcoming', subject: 'Upcoming import' },
+      { type: 'Originals', stage: 'second-pitch', subject: 'Second pitch import' },
       { type: 'Originals', stage: 'warm', subject: 'Invalid import' },
       { type: 'OnlineForm', subject: 'Default cold import' },
       { type: 'PubFestivalBrewery', stage: 'returning', subject: 'Returning import' },
     ];
     const content = format === 'json' ? JSON.stringify(rows)
-      : ['type,stage,subject', 'Originals,upcoming,Upcoming import', 'Originals,warm,Invalid import',
-        'OnlineForm,,Default cold import', 'PubFestivalBrewery,returning,Returning import'].join('\n');
+      : ['type,stage,subject', 'Originals,upcoming,Upcoming import', 'Originals,second-pitch,Second pitch import',
+        'Originals,warm,Invalid import', 'OnlineForm,,Default cold import', 'PubFestivalBrewery,returning,Returning import'].join('\n');
     await importFile(content, format);
-    expect(screen.getByText('Import complete. Success: 3, Failures: 1')).toBeInTheDocument();
-    expect(adminTemplatesUtils.updateTemplate).toHaveBeenCalledTimes(2);
+    expect(screen.getByText('Import complete. Success: 4, Failures: 1')).toBeInTheDocument();
+    expect(adminTemplatesUtils.updateTemplate).toHaveBeenCalledTimes(3);
     expect(adminTemplatesUtils.updateTemplate).toHaveBeenCalledWith('tk', 'temp-3', expect.objectContaining({ stage: 'upcoming' }));
+    expect(adminTemplatesUtils.updateTemplate).toHaveBeenCalledWith('tk', 'temp-4', expect.objectContaining({ stage: 'second-pitch' }));
     expect(adminTemplatesUtils.updateTemplate).toHaveBeenCalledWith('tk', 'temp-2', expect.objectContaining({ stage: 'returning' }));
     expect(adminTemplatesUtils.createTemplate).toHaveBeenCalledTimes(1);
     expect(adminTemplatesUtils.createTemplate).toHaveBeenCalledWith('tk', expect.objectContaining({ stage: 'cold' }));
