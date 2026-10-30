@@ -1086,7 +1086,8 @@ describe('AdminOutreach', () => {
             { type: 'outcome', date: '2026-07-03', outcome: 'booked', bookedDate: '2026-10-10', actor: 'Josh' },
             { type: 'outcome', date: '2026-07-04', outcome: 'interested', actor: 'Josh' },
             { type: 'outcome', date: '2026-07-05', outcome: 'not-interested', actor: 'Josh' },
-            { type: 'other', date: '2026-07-06', actor: 'Josh' },
+            { type: 'outcome', date: '2026-07-06', outcome: 'replied', actor: 'Josh' },
+            { type: 'other', date: '2026-07-07', actor: 'Josh' },
           ]
         }
       ];
@@ -1102,6 +1103,11 @@ describe('AdminOutreach', () => {
 
       // It should display the timeline and render all touches
       expect(screen.getByText('Contact Touch Timeline')).toBeInTheDocument();
+      const repliedTouch = screen.getByTestId('touch-label-replied');
+      expect(repliedTouch).toBeInTheDocument();
+      expect(repliedTouch).toHaveTextContent('Outcome: replied');
+      expect(repliedTouch).toHaveStyle({ color: '#06b6d4' });
+      expect(screen.getByTestId('touch-dot-replied')).toBeInTheDocument();
     });
 
     it('supports clicking Add to Pitch Batch on a Never Pitched venue', async () => {
