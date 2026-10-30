@@ -338,8 +338,8 @@ describe('AdminOutreach', () => {
   });
 
   it('ignores single-preview rebuild if review is closed and reopened before request resolves', async () => {
-    let resolveStalePreview: (val: any) => void = () => {};
-    const deferredPreviewPromise = new Promise((resolve) => {
+    let resolveStalePreview: (value: IpitchPreview[]) => void = () => {};
+    const deferredPreviewPromise = new Promise<IpitchPreview[]>((resolve) => {
       resolveStalePreview = resolve;
     });
 
@@ -358,7 +358,7 @@ describe('AdminOutreach', () => {
     const origGetPreview = outreachUtils.getPreview;
     outreachUtils.getPreview = vi.fn((tk, vIds, dates, period, custom) => {
       if (custom?.customIntro === 'Stale opener') {
-        return deferredPreviewPromise as Promise<IpitchPreview[]>;
+        return deferredPreviewPromise;
       }
       return origGetPreview(tk, vIds, dates, period, custom);
     });
