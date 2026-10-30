@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-test('Upcoming tab loads its template and intro, or a blank editor for an unconfigured type', async ({ context, page }) => {
+test('Upcoming and Second pitch tabs load templates, or blank editors for unconfigured types', async ({ context, page }) => {
   await context.addInitScript(() => {
     localStorage.setItem('auth', JSON.stringify({
       isAuthenticated: true,
@@ -35,6 +35,13 @@ test('Upcoming tab loads its template and intro, or a blank editor for an unconf
           bodyHtml: 'Upcoming body',
           footerPhotoRef: 'mock-photo',
         },
+        {
+          _id: 'second-pitch',
+          type: 'Originals',
+          stage: 'second-pitch',
+          subject: 'Second pitch subject',
+          bodyHtml: 'Following up from our previous pitch',
+        },
       ]),
     });
   });
@@ -47,6 +54,7 @@ test('Upcoming tab loads its template and intro, or a blank editor for an unconf
   await expect(upcoming).toHaveAttribute('aria-selected', 'true');
   await expect(page.getByTestId('templates-tab-stage-cold')).toHaveAttribute('aria-selected', 'false');
   await expect(page.getByTestId('templates-tab-stage-returning')).toHaveAttribute('aria-selected', 'false');
+  await expect(page.getByTestId('templates-tab-stage-second-pitch')).toHaveAttribute('aria-selected', 'false');
   await expect(page.getByTestId('template-subject-input')).toHaveValue('Upcoming subject');
   await expect(page.getByTestId('template-intro-textarea')).toHaveValue('See you on [Next Gig Date]');
   await expect(page.getByTestId('template-body-textarea')).toHaveValue('Upcoming body');
@@ -65,4 +73,30 @@ test('Upcoming tab loads its template and intro, or a blank editor for an unconf
   await expect(page.getByTestId('template-subject-input')).toHaveValue('');
   await expect(intro).toHaveValue('');
   await expect(page.getByTestId('template-body-textarea')).toHaveValue('');
+
+  const secondPitch = page.getByTestId('templates-tab-stage-second-pitch');
+  await expect(secondPitch).toBeVisible();
+  await secondPitch.click();
+  await expect(secondPitch).toHaveAttribute('aria-selected', 'true');
+  await expect(upcoming).toHaveAttribute('aria-selected', 'false');
+  await expect(page.getByTestId('templates-tab-stage-cold')).toHaveAttribute('aria-selected', 'false');
+  await expect(page.getByTestId('templates-tab-stage-returning')).toHaveAttribute('aria-selected', 'false');
+
+  // OnlineForm is unconfigured for second-pitch
+  await expect(page.getByTestId('template-subject-input')).toHaveValue('');
+  await expect(intro).toHaveValue('');
+  await expect(page.getByTestId('template-body-textarea')).toHaveValue('');
+
+  // Switch to configured Originals type
+  await page.getByTestId('template-type-Originals').click();
+  await expect(secondPitch).toHaveAttribute('aria-selected', 'true');
+  await expect(page.getByTestId('template-subject-input')).toHaveValue('Second pitch subject');
+  await expect(page.getByTestId('template-body-textarea')).toHaveValue('Following up from our previous pitch');
+
+  const body = page.getByTestId('template-body-textarea');
+  await body.fill('Second pitch: ');
+  await page.getByTestId('token-chip-[First Pitch Date]').click();
+  await expect(body).toHaveValue('Second pitch: [First Pitch Date]');
+  await page.getByRole('button', { name: 'Revert' }).click();
+  await expect(body).toHaveValue('Following up from our previous pitch');
 });
