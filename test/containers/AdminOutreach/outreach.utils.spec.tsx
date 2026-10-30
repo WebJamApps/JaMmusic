@@ -38,6 +38,17 @@ describe('Outreach utils', () => {
     expect(fetchMock.mock.calls[0][0]).toContain('/outreach/preview?venueIds=c1&targetDates=Aug%2014');
   });
 
+  it('getPreview includes customIntro and customBody query parameters when provided', async () => {
+    fetchMock.mockReturnValue(okJson([{ venueId: 'c1', venueName: 'Venue A', subject: 'S', body: 'B' }]));
+    const previews = await outreachUtils.getPreview('tok', ['c1'], 'Aug 14', 'spring 2027', {
+      customIntro: 'Hi Pat,\ncustom opener.', customBody: 'Nearby gig note.',
+    });
+    expect(previews).toHaveLength(1);
+    const url = fetchMock.mock.calls[0][0] as string;
+    expect(url).toContain('customIntro=Hi%20Pat%2C%0Acustom%20opener.');
+    expect(url).toContain('customBody=Nearby%20gig%20note.');
+  });
+
   it('getPendingReplies GETs /outreach/replies/pending', async () => {
     fetchMock.mockReturnValue(okJson([{ _id: 'o1', status: 'replied' }]));
     const replies = await outreachUtils.getPendingReplies('tok');
@@ -200,6 +211,22 @@ describe('Outreach utils', () => {
     expect(result).toMatchObject({ requested: 2, sent: 1, remaining: 0, skipped: [{ reason: 'On hold' }] });
     expect(progress).toHaveBeenCalledTimes(2);
     expect(progress.mock.calls[0][0]).toMatchObject({ sent: 1, remaining: 1 });
+  });
+
+  it('includes venueCustomizations in preflightBatch payload when present on batch', async () => {
+    fetchMock.mockReturnValueOnce(okJson({}));
+    fetchMock.mockReturnValueOnce(okJson({ dispatchId: 'checked-dispatch', venueCount: 2 }));
+    fetchMock.mockReturnValueOnce(okJson({ sent: 2, skipped: [], records: [{}, {}], remaining: 0 }));
+    const batchWithCustom = {
+      ...batch,
+      venueCustomizations: [{ venueId: 'a', customIntro: 'Custom opener' }],
+    };
+    await dispatchApprovedBatch('tok', batchWithCustom, drafts, vi.fn());
+    expect(fetchMock).toHaveBeenCalledTimes(3);
+    const preflightCall = fetchMock.mock.calls[1];
+    expect(preflightCall[0]).toContain('batch/preflight');
+    const preflightBody = JSON.parse((preflightCall[1] as RequestInit).body as string);
+    expect(preflightBody.venueCustomizations).toEqual([{ venueId: 'a', customIntro: 'Custom opener' }]);
   });
 
   it.each(['approval/gate2', 'batch/preflight', 'batch'])('stops on a refusal from %s with its exact message', async path => {
