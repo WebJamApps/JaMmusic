@@ -98,6 +98,7 @@ export interface VenueFormFields {
   zipCode?: string;
   country?: string;
   website?: string;
+  instagramUsername?: string;
   [key: string]: unknown;
 }
 
@@ -136,6 +137,16 @@ export function normalizeWebsiteUrl(website?: string): { valid: boolean; url: st
   } catch {
     return { valid: false, url: '', error: 'A valid website URL is required' };
   }
+}
+
+export function validateInstagramUsername(username?: string): boolean {
+  if (username === undefined || username === null || username === '') {
+    return true;
+  }
+  if (username.trim() === '') {
+    return true;
+  }
+  return /^[A-Za-z0-9._]{1,30}$/.test(username);
 }
 
 export function validateVenueFields(
@@ -199,12 +210,21 @@ export function validateVenueFields(
     }
   }
 
+  // 7. Instagram username: optional; letters, numbers, periods, underscores up to 30 chars, without @
+  if (fields.instagramUsername !== undefined && fields.instagramUsername !== '') {
+    const rawIg = String(fields.instagramUsername);
+    if (rawIg.trim() !== '' && !validateInstagramUsername(rawIg)) {
+      errors.instagramUsername = 'Instagram username must contain only letters, numbers, periods and underscores, up to 30 characters, without @';
+    }
+  }
+
   const firstError = errors.name
     || errors.address
     || errors.city
     || errors.zipCode
     || errors.usState
-    || errors.website;
+    || errors.website
+    || errors.instagramUsername;
 
   return {
     valid: Object.keys(errors).length === 0,

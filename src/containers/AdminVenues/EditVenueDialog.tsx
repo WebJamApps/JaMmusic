@@ -67,6 +67,7 @@ export function EditVenueDialog({
           secondaryEmail: venue.secondaryEmail || '',
           phone: venue.phone || '',
           website: venue.website || '',
+          instagramUsername: venue.instagramUsername || '',
           outreachEligible: !!venue.outreachEligible,
           bookingStatus: venue.bookingStatus || 'booking',
           payAmount: venue.payAmount ?? undefined,
@@ -95,6 +96,7 @@ export function EditVenueDialog({
           secondaryEmail: '',
           phone: '',
           website: '',
+          instagramUsername: '',
           outreachEligible: false,
           bookingStatus: 'booking',
           payAmount: undefined,
@@ -186,6 +188,7 @@ export function EditVenueDialog({
       templateOverride: form.templateOverride || undefined,
       audienceAttention: form.audienceAttention || undefined,
       website: validation.formattedWebsite,
+      instagramUsername: form.instagramUsername ? form.instagramUsername.trim() : (venue?.instagramUsername ? '' : undefined),
       country: currentCountry,
       gigInterval: typeof form.gigInterval === 'number' ? form.gigInterval : 0,
       resumeBooking: form.resumeBooking || null,
@@ -449,6 +452,9 @@ export function EditVenueDialog({
           sx={{ marginBottom: 2 }} data-testid="edit-venue-phone" />
         <TextField label="Website" fullWidth value={form.website || ''} onChange={(e) => set('website', e.target.value)}
           sx={{ marginBottom: 2 }} data-testid="edit-venue-website" />
+        <TextField label="Instagram Username" fullWidth value={form.instagramUsername || ''}
+          onChange={(e) => set('instagramUsername', e.target.value)}
+          sx={{ marginBottom: 2 }} data-testid="edit-venue-instagram-username" />
         <TextField
           label="Pay Amount"
           type="number"
