@@ -21,6 +21,7 @@ export interface Ivenue {
   secondaryEmail?: string;
   phone?: string;
   website?: string;
+  instagramUsername?: string;
   status?: string;
   outreachEligible?: boolean;
   inScope?: boolean;
@@ -60,6 +61,7 @@ export interface IvenueUpdate {
   secondaryEmail?: string;
   phone?: string;
   website?: string;
+  instagramUsername?: string;
   outreachEligible?: boolean;
   inScope?: boolean;
   bookingStatus?: string;

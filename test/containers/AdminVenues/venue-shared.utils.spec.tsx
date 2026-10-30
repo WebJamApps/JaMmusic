@@ -3,6 +3,7 @@ import {
   COUNTRIES,
   validateZipCode,
   normalizeWebsiteUrl,
+  validateInstagramUsername,
   validateVenueFields,
   getExistingVenueWarning,
   formatVenueSaveOutcomeMessage,
@@ -68,6 +69,42 @@ describe('venue-shared.utils', () => {
       const res = normalizeWebsiteUrl('not-a-host');
       expect(res.valid).toBe(false);
       expect(res.error).toBe('A valid website URL is required');
+    });
+  });
+
+  describe('validateInstagramUsername', () => {
+    it('accepts empty, undefined, and whitespace-only values as optional', () => {
+      expect(validateInstagramUsername('')).toBe(true);
+      expect(validateInstagramUsername(undefined)).toBe(true);
+      expect(validateInstagramUsername('   ')).toBe(true);
+    });
+
+    it('accepts valid usernames with letters, numbers, periods, and underscores up to 30 characters', () => {
+      expect(validateInstagramUsername('venue')).toBe(true);
+      expect(validateInstagramUsername('venue.name_123')).toBe(true);
+      expect(validateInstagramUsername('A_B.c_1')).toBe(true);
+      expect(validateInstagramUsername('a'.repeat(30))).toBe(true);
+    });
+
+    it('rejects values with @ symbol', () => {
+      expect(validateInstagramUsername('@venue')).toBe(false);
+      expect(validateInstagramUsername('venue@')).toBe(false);
+    });
+
+    it('rejects values with spaces', () => {
+      expect(validateInstagramUsername('venue name')).toBe(false);
+      expect(validateInstagramUsername(' venue')).toBe(false);
+      expect(validateInstagramUsername('venue ')).toBe(false);
+    });
+
+    it('rejects values longer than 30 characters', () => {
+      expect(validateInstagramUsername('a'.repeat(31))).toBe(false);
+    });
+
+    it('rejects values containing invalid special characters', () => {
+      expect(validateInstagramUsername('venue-name')).toBe(false);
+      expect(validateInstagramUsername('venue!')).toBe(false);
+      expect(validateInstagramUsername('venue#1')).toBe(false);
     });
   });
 
@@ -184,6 +221,31 @@ describe('venue-shared.utils', () => {
       expect(res.valid).toBe(false);
       expect(res.error).toBe('A valid website URL is required');
       expect(res.errors.website).toBe('A valid website URL is required');
+    });
+
+    it('accepts valid instagramUsername fixtures', () => {
+      for (const ig of ['', '   ', 'valid.venue_1', 'a'.repeat(30)]) {
+        const res = validateVenueFields({ ...validCreateFields, instagramUsername: ig }, { mode: 'create' });
+        expect(res.valid).toBe(true);
+        expect(res.errors.instagramUsername).toBeUndefined();
+      }
+    });
+
+    it('rejects invalid instagramUsername with @, spaces, or > 30 characters', () => {
+      const expectedError = 'Instagram username must contain only letters, numbers, periods and underscores, '
+        + 'up to 30 characters, without @';
+      for (const invalid of ['@venue', 'venue name', 'a'.repeat(31), 'venue-name']) {
+        const res = validateVenueFields({ ...validCreateFields, instagramUsername: invalid }, { mode: 'create' });
+        expect(res.valid).toBe(false);
+        expect(res.error).toBe(expectedError);
+        expect(res.errors.instagramUsername).toBe(expectedError);
+      }
+    });
+
+    it('passes validation when instagramUsername is omitted', () => {
+      const res = validateVenueFields(validCreateFields, { mode: 'create' });
+      expect(res.valid).toBe(true);
+      expect(res.errors.instagramUsername).toBeUndefined();
     });
 
     describe('edit mode', () => {

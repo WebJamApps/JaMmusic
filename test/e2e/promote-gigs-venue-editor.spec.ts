@@ -185,3 +185,16 @@ test('shared checks reject whitespace, bad ZIP and website; country keeps region
   await expect(page.getByTestId('admin-venues-save-result')).toHaveText('Venue created');
   expect(writes[0].payload).toEqual(expect.objectContaining({ country: 'CA', region: 'Ontario', usState: '', website: '' }));
 });
+
+test('types an Instagram username and asserts the save request carries it', async ({ page }) => {
+  const { writes } = await setup(page, [], { status: 201, venue: baseVenue });
+  await createForm(page);
+  await page.getByTestId('edit-venue-instagram-username').locator('input').fill('slowplaybrewing');
+  await page.getByTestId('edit-venue-save').click();
+  await expect(page.getByTestId('admin-venues-save-result')).toHaveText('Venue created');
+  expect(writes).toHaveLength(1);
+  expect(writes[0].payload).toEqual(expect.objectContaining({
+    name: 'test cafe',
+    instagramUsername: 'slowplaybrewing',
+  }));
+});
