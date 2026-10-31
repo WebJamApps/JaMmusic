@@ -601,19 +601,18 @@ describe('gigs.utils', () => {
   describe('fetchVenue', () => {
     it('returns venue data on successful GET request', async () => {
       const mockVenue = { _id: 'v123', name: 'Slow Play Brewing', instagramUsername: 'slowplaybeer' };
-      vi.spyOn(fetchUtils, 'customFetch').mockResolvedValueOnce({
-        ok: true,
-        json: async () => mockVenue,
-      } as any);
+      vi.spyOn(fetchUtils, 'customFetch').mockResolvedValueOnce(
+        new Response(JSON.stringify(mockVenue), { status: 200 }),
+      );
 
       const result = await utils.fetchVenue('test-token', 'v123');
       expect(result).toEqual(mockVenue);
     });
 
     it('returns null on failure or error', async () => {
-      vi.spyOn(fetchUtils, 'customFetch').mockResolvedValueOnce({
-        ok: false,
-      } as any);
+      vi.spyOn(fetchUtils, 'customFetch').mockResolvedValueOnce(
+        new Response(null, { status: 500 }),
+      );
 
       const result = await utils.fetchVenue('test-token', 'v123');
       expect(result).toBeNull();
@@ -629,10 +628,9 @@ describe('gigs.utils', () => {
 
   describe('announceGig', () => {
     it('returns success response when API returns 200 with instagram ok', async () => {
-      vi.spyOn(fetchUtils, 'customFetch').mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({ instagram: { ok: true, id: 'post-999' } }),
-      } as any);
+      vi.spyOn(fetchUtils, 'customFetch').mockResolvedValueOnce(
+        new Response(JSON.stringify({ instagram: { ok: true, id: 'post-999' } }), { status: 200 }),
+      );
 
       const result = await utils.announceGig('token', 'gig-1', {
         caption: 'Test caption',
@@ -643,11 +641,12 @@ describe('gigs.utils', () => {
     });
 
     it('returns failure response with error message when API responds with error status', async () => {
-      vi.spyOn(fetchUtils, 'customFetch').mockResolvedValueOnce({
-        ok: false,
-        status: 400,
-        json: async () => ({ message: 'userTags invalid', instagram: { ok: false, error: 'userTags invalid' } }),
-      } as any);
+      vi.spyOn(fetchUtils, 'customFetch').mockResolvedValueOnce(
+        new Response(
+          JSON.stringify({ message: 'userTags invalid', instagram: { ok: false, error: 'userTags invalid' } }),
+          { status: 400 },
+        ),
+      );
 
       const result = await utils.announceGig('token', 'gig-1', {
         caption: 'Test caption',

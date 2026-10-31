@@ -528,7 +528,7 @@ export const announceGig = async (
     });
     const data = await res.json() as { message?: string; instagram?: { ok: boolean; id?: string; error?: string } };
     if (!res.ok) {
-      const errorMsg = data.message || `Server error (${res.status})`;
+      const errorMsg = data.instagram?.error || data.message || `Server error (${res.status})`;
       return { ok: false, message: errorMsg, instagram: { ok: false, error: errorMsg } };
     }
     return { ok: Boolean(data.instagram?.ok), ...data };

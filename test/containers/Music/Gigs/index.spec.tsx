@@ -6,6 +6,7 @@ import '@testing-library/jest-dom';
 import {
   Gigs, columns, makeColumns, GigsDiv, ShowCreateGigButton,
 } from 'src/containers/Music/Gigs';
+import type { AnnounceGigDialogProps } from 'src/containers/Music/Gigs/AnnounceGigDialog';
 import utils from 'src/containers/Music/Gigs/gigs.utils';
 
 vi.mock('@mui/x-data-grid', () => ({
@@ -43,7 +44,7 @@ vi.mock('src/containers/Music/Gigs/EditGigDialog', () => ({
 }));
 
 vi.mock('src/containers/Music/Gigs/AnnounceGigDialog', () => ({
-  AnnounceGigDialog: ({ open, onClose, onSuccess }: any) => (
+  AnnounceGigDialog: ({ open, onClose, onSuccess }: AnnounceGigDialogProps) => (
     open ? (
       <div data-testid="mock-announce-gig-dialog">
         <button type="button" onClick={onClose} data-testid="mock-cancel-announce">cancel announce</button>

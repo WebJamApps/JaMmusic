@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
@@ -6,13 +5,14 @@ import { AnnounceGigDialog } from 'src/containers/Music/Gigs/AnnounceGigDialog';
 import utils from 'src/containers/Music/Gigs/gigs.utils';
 import type { Igig } from 'src/providers/Data.provider';
 import type { Iauth } from 'src/providers/Auth.provider';
+import type { Ivenue } from 'src/containers/AdminVenues/admin-venues.utils';
 
 describe('AnnounceGigDialog', () => {
   const mockAuth: Iauth = {
     token: 'test-token',
     error: '',
     isAuthenticated: true,
-    user: { userType: 'JaM-admin' } as any,
+    user: { userType: 'JaM-admin', email: 'admin@example.com' },
   };
 
   const sampleGig: Igig = {
@@ -65,7 +65,7 @@ describe('AnnounceGigDialog', () => {
       name: 'Slow Play Brewing',
       instagramUsername: 'slowplaybeer',
       website: 'https://slowplaybrewing.com',
-    } as any);
+    });
 
     render(
       <AnnounceGigDialog
@@ -117,7 +117,7 @@ describe('AnnounceGigDialog', () => {
       _id: 'venue-456',
       name: 'Slow Play Brewing',
       instagramUsername: 'slowplaybeer',
-    } as any);
+    });
 
     render(
       <AnnounceGigDialog
@@ -236,5 +236,164 @@ describe('AnnounceGigDialog', () => {
 
     fireEvent.click(screen.getByRole('button', { name: /Cancel/i }));
     expect(onClose).toHaveBeenCalled();
+  });
+
+  it('resets venue tag immediately when opening a new preview, preventing stale tags on failed lookup', async () => {
+    // 1. First preview: gig A loads with a venue tag
+    vi.spyOn(utils, 'fetchVenue').mockResolvedValueOnce({
+      _id: 'venue-456',
+      name: 'Slow Play Brewing',
+      instagramUsername: 'venue_a_handle',
+    });
+
+    const { rerender } = render(
+      <AnnounceGigDialog
+        gig={sampleGig}
+        open
+        onClose={vi.fn()}
+        auth={mockAuth}
+      />,
+    );
+
+    await waitFor(() => {
+      const venueInput = screen.getByLabelText(/Venue Instagram Tag/i) as HTMLInputElement;
+      expect(venueInput.value).toBe('venue_a_handle');
+    });
+
+    // Close preview for gig A
+    rerender(
+      <AnnounceGigDialog
+        gig={null}
+        open={false}
+        onClose={vi.fn()}
+        auth={mockAuth}
+      />,
+    );
+
+    // 2. Second preview: open gig B with a different venueId whose lookup fails / returns null
+    const gigB: Igig = {
+      _id: 'gig-2',
+      venue: 'Second Venue',
+      tickets: '',
+      datetime: new Date('2026-10-15T22:00:00.000Z'),
+      venueId: 'venue-789',
+    };
+
+    let resolveLookupB!: (val: null) => void;
+    const lookupBPromise = new Promise<null>((resolve) => {
+      resolveLookupB = resolve;
+    });
+    vi.spyOn(utils, 'fetchVenue').mockReturnValueOnce(lookupBPromise);
+
+    rerender(
+      <AnnounceGigDialog
+        gig={gigB}
+        open
+        onClose={vi.fn()}
+        auth={mockAuth}
+      />,
+    );
+
+    // Verify venue tag is immediately cleared, NOT retaining venue_a_handle
+    const venueInputB = screen.getByLabelText(/Venue Instagram Tag/i) as HTMLInputElement;
+    expect(venueInputB.value).toBe('');
+
+    // Now resolve lookup B with null (failed read)
+    resolveLookupB(null);
+    await lookupBPromise;
+
+    // Verify venue tag remains empty
+    expect((screen.getByLabelText(/Venue Instagram Tag/i) as HTMLInputElement).value).toBe('');
+  });
+
+  it('preserves administrator caption and tag edits when delayed venue lookup completes', async () => {
+    let resolveVenue!: (val: Ivenue) => void;
+    const deferredVenuePromise = new Promise<Ivenue>((resolve) => {
+      resolveVenue = resolve;
+    });
+    vi.spyOn(utils, 'fetchVenue').mockReturnValueOnce(deferredVenuePromise);
+
+    const announceSpy = vi.spyOn(utils, 'announceGig').mockResolvedValue({
+      ok: true,
+      instagram: { ok: true, id: 'post-custom' },
+    });
+
+    render(
+      <AnnounceGigDialog
+        gig={sampleGig}
+        open
+        onClose={vi.fn()}
+        auth={mockAuth}
+      />,
+    );
+
+    // Venue tag is initially empty while fetch is pending
+    const venueInput = screen.getByLabelText(/Venue Instagram Tag/i) as HTMLInputElement;
+    expect(venueInput.value).toBe('');
+
+    // Administrator edits caption before lookup completes
+    const captionEditor = screen.getByTestId('announce-caption') as HTMLTextAreaElement;
+    fireEvent.change(captionEditor, { target: { value: '<p>Admin custom edited caption</p>' } });
+    expect(captionEditor.value).toBe('<p>Admin custom edited caption</p>');
+
+    // Administrator edits venue tag before lookup completes
+    fireEvent.change(venueInput, { target: { value: '@admin_chosen_tag' } });
+    expect(venueInput.value).toBe('admin_chosen_tag');
+
+    // Late venue response arrives with different defaults
+    resolveVenue({
+      _id: 'venue-456',
+      name: 'Slow Play Brewing',
+      instagramUsername: 'late_default_tag',
+      website: 'https://late-default-website.com',
+    });
+    await deferredVenuePromise;
+
+    // Verify user edits were NOT overwritten by late venue response
+    expect(captionEditor.value).toBe('<p>Admin custom edited caption</p>');
+    expect(venueInput.value).toBe('admin_chosen_tag');
+
+    // Confirm post preserves administrator's chosen values
+    const confirmButton = screen.getByRole('button', { name: /Confirm/i });
+    fireEvent.click(confirmButton);
+
+    await waitFor(() => {
+      expect(announceSpy).toHaveBeenCalledWith('test-token', 'gig-123', {
+        caption: '<p>Admin custom edited caption</p>',
+        imageUrl: 'https://example.com/promo.jpg',
+        userTags: ['chemmariasherman', 'admin_chosen_tag'],
+      });
+    });
+  });
+
+  it('preserves administrator clearing venue tag when delayed venue lookup completes', async () => {
+    let resolveVenue!: (val: Ivenue) => void;
+    const deferredVenuePromise = new Promise<Ivenue>((resolve) => {
+      resolveVenue = resolve;
+    });
+    vi.spyOn(utils, 'fetchVenue').mockReturnValueOnce(deferredVenuePromise);
+
+    render(
+      <AnnounceGigDialog
+        gig={sampleGig}
+        open
+        onClose={vi.fn()}
+        auth={mockAuth}
+      />,
+    );
+
+    const venueInput = screen.getByLabelText(/Venue Instagram Tag/i) as HTMLInputElement;
+    fireEvent.change(venueInput, { target: { value: '' } });
+
+    // Late venue response arrives with instagramUsername
+    resolveVenue({
+      _id: 'venue-456',
+      name: 'Slow Play Brewing',
+      instagramUsername: 'should_not_restore_tag',
+      website: 'https://venue.com',
+    });
+    await deferredVenuePromise;
+
+    expect(venueInput.value).toBe('');
   });
 });

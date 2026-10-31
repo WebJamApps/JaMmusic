@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   Dialog,
   DialogTitle,
@@ -37,11 +37,20 @@ export function AnnounceGigDialog({
   const [statusMessage, setStatusMessage] = useState('');
   const [statusSeverity, setStatusSeverity] = useState<'success' | 'error' | null>(null);
 
+  const captionEditedRef = useRef(false);
+  const venueTagEditedRef = useRef(false);
+  const hasSubmittedRef = useRef(false);
+
   useEffect(() => {
     if (!open || !gig) return;
 
+    captionEditedRef.current = false;
+    venueTagEditedRef.current = false;
+    hasSubmittedRef.current = false;
+
     setImageUrl(gig.promoImageUrl || '');
     setMariaTag('chemmariasherman');
+    setVenueTag('');
     setSubmitting(false);
     setStatusMessage('');
     setStatusSeverity(null);
@@ -56,13 +65,15 @@ export function AnnounceGigDialog({
     if (resolvedVenueId && auth.token) {
       let isMounted = true;
       utils.fetchVenue(auth.token, resolvedVenueId).then((venue) => {
-        if (!isMounted || !venue) return;
-        if (venue.instagramUsername) {
-          setVenueTag(venue.instagramUsername);
-        } else {
-          setVenueTag('');
+        if (!isMounted || !venue || hasSubmittedRef.current) return;
+        if (!venueTagEditedRef.current) {
+          if (venue.instagramUsername) {
+            setVenueTag(venue.instagramUsername);
+          } else {
+            setVenueTag('');
+          }
         }
-        if (venue.website) {
+        if (!captionEditedRef.current && venue.website) {
           setCaption(generateStartingCaption(gig, { venueWebsite: venue.website }));
         }
       }).catch(() => {});
@@ -70,8 +81,6 @@ export function AnnounceGigDialog({
         isMounted = false;
       };
     }
-
-    setVenueTag('');
   }, [open, gig, auth.token]);
 
   const handleConfirm = async () => {
@@ -90,6 +99,7 @@ export function AnnounceGigDialog({
     setSubmitting(false);
 
     if (res.ok || res.instagram?.ok) {
+      hasSubmittedRef.current = true;
       const nowIso = new Date().toISOString();
       setStatusSeverity('success');
       setStatusMessage('Gig announced successfully to Instagram!');
@@ -191,7 +201,10 @@ export function AnnounceGigDialog({
                 + 'alignleft aligncenter alignright alignjustify |'
                 + 'bullist numlist outdent indent | removeformat | help',
             }}
-            onEditorChange={(newCaption: string) => setCaption(newCaption)}
+            onEditorChange={(newCaption: string) => {
+              captionEditedRef.current = true;
+              setCaption(newCaption);
+            }}
           />
         </Box>
 
@@ -211,7 +224,10 @@ export function AnnounceGigDialog({
             label="Venue Instagram Tag"
             id="announce-tag-venue"
             value={venueTag}
-            onChange={(e) => setVenueTag(e.target.value.replace(/^@/, ''))}
+            onChange={(e) => {
+              venueTagEditedRef.current = true;
+              setVenueTag(e.target.value.replace(/^@/, ''));
+            }}
             helperText="Position: 75% across, 85% down"
           />
         </Box>
