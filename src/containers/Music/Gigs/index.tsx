@@ -15,9 +15,14 @@ import adminVenuesUtils from 'src/containers/AdminVenues/admin-venues.utils';
 import utils from './gigs.utils';
 import { EditGigDialog } from './EditGigDialog';
 import { CreateGigDialog } from './CreateGigDialog';
+import { AnnounceGigDialog } from './AnnounceGigDialog';
 import './gigs.scss';
 
-export const makeColumns = (isMobile = false): GridColDef[] => {
+export const makeColumns = (
+  isMobile = false,
+  isAdmin = false,
+  onAnnounce?: (gig: Igig) => void,
+): GridColDef[] => {
   const dateCol: GridColDef = {
     field: 'date',
     headerName: 'Date',
@@ -109,8 +114,44 @@ export const makeColumns = (isMobile = false): GridColDef[] => {
       );
     },
   };
-  // Apply the requested column order for both mobile and desktop (photo far right).
-  return [dateCol, timeCol, utils.makeVenue(isMobile), locationCol, ticketsCol, photoCol];
+  const announceCol: GridColDef = {
+    field: 'announce',
+    headerName: 'Announce',
+    width: isMobile ? 140 : 170,
+    sortable: false,
+    editable: false,
+    renderCell: (params: GridRenderCellParams) => {
+      const { row } = params;
+      if (!isAdmin || !utils.isUpcomingGig(row)) return '';
+      return (
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <Button
+            size="small"
+            variant="outlined"
+            className="announceButton"
+            onClick={(e) => {
+              e.stopPropagation();
+              onAnnounce?.(row);
+            }}
+          >
+            Announce
+          </Button>
+          {Boolean(row.announcedAt) && (
+            <span
+              className="announcedBadge"
+              style={{ color: '#2e7d32', fontWeight: 'bold', fontSize: '12px' }}
+            >
+              announced ✓
+            </span>
+          )}
+        </div>
+      );
+    },
+  };
+
+  const baseColumns = [dateCol, timeCol, utils.makeVenue(isMobile), locationCol, ticketsCol, photoCol];
+  if (isAdmin) baseColumns.push(announceCol);
+  return baseColumns;
 };
 
 // Backwards-compatible default (desktop) export.
@@ -147,6 +188,7 @@ export const GigsDiv = (props: IgigsDivProps) => {
   const isMobile = useMediaQuery('(max-width:600px)');
   const [page, setPage] = useState(0);
   const [saveMessage, setSaveMessage] = useState('');
+  const [announceGig, setAnnounceGig] = useState<Igig | null>(null);
   useEffect(() => {
     if (showDialog || Boolean(editGig?._id)) {
       setSaveMessage('');
@@ -188,11 +230,15 @@ export const GigsDiv = (props: IgigsDivProps) => {
           <DataGrid
             className={isAdmin ? 'adminGrid' : ''}
             getRowHeight={() => 'auto'}
+            getRowClassName={(params) => {
+              const isNudge = isAdmin && utils.isUpcomingGig(params.row) && utils.isWithin10Days(params.row.datetime);
+              return isNudge ? 'gig-announce-nudge' : '';
+            }}
             onRowClick={(rowParams) => {
               utils.clickToEdit(setEditGig, isAdmin, rowParams.row);
             }}
             rows={gigsInOrder || []}
-            columns={makeColumns(isMobile)}
+            columns={makeColumns(isMobile, isAdmin, (gig) => setAnnounceGig(gig))}
             paginationModel={{ page, pageSize }}
             onPaginationModelChange={(model) => { setPage(model.page); setPageSize(model.pageSize); }}
             pageSizeOptions={[5, 10, 25, 50]}
@@ -210,6 +256,15 @@ export const GigsDiv = (props: IgigsDivProps) => {
         editChanged={editChanged}
         getGigs={getGigs}
         auth={auth}
+      />
+      <AnnounceGigDialog
+        gig={announceGig}
+        open={Boolean(announceGig)}
+        onClose={() => setAnnounceGig(null)}
+        auth={auth}
+        onSuccess={() => {
+          getGigs?.();
+        }}
       />
     </div>
   );
