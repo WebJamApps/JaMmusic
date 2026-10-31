@@ -20,7 +20,7 @@ jobs:
             echo "OK: PR base/head branch verification passed (Target: ${TARGET:-default}, Source: $SOURCE)"
       - run:
           name: Test install
-          command: npm install
+          command: npm ci
       - run:
           name: typecheck
           command: npm run typecheck
@@ -41,9 +41,7 @@ jobs:
           path: coverage
       - run:
           name: Smoketest - clean install without devDependencies
-          command: |
-            rm -rf node_modules package-lock.json
-            npm install --omit=dev
+          command: npm run smoketest
 
 workflows:
   build-and-test:
