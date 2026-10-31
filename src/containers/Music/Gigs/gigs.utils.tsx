@@ -2,10 +2,12 @@ import type { GridColDef, GridRenderCellParams, GridRowParams } from '@mui/x-dat
 import HtmlReactParser from 'html-react-parser';
 import scc from 'socketcluster-client';
 import commonUtils from 'src/lib/utils';
+import { customFetch } from 'src/lib/fetch.utils';
 import { formatInVenueTimeZone } from 'src/lib/venueTimezone';
 import type { Iauth } from 'src/providers/Auth.provider';
 import type { Igig } from 'src/providers/Data.provider';
 import { defaultGig } from 'src/providers/fetchGigs';
+import type { Ivenue } from 'src/containers/AdminVenues/admin-venues.utils';
 
 import { validateVenueFields } from 'src/containers/AdminVenues/venue-shared.utils';
 
@@ -465,6 +467,77 @@ const makeVenue = (isMobile = false): GridColDef => (
   }
 );
 
+export const isUpcomingGig = (gig?: Igig | null, now: Date = new Date()): boolean => {
+  if (!gig || !gig.datetime || gig.id === 999 || gig.venue === 'Our Past Performances') return false;
+  const startOfDay = new Date(now);
+  startOfDay.setDate(startOfDay.getDate() - 1);
+  const iso = typeof gig.datetime === 'string' ? gig.datetime : new Date(gig.datetime).toISOString();
+  return iso >= startOfDay.toISOString();
+};
+
+export const isWithin10Days = (datetime?: string | Date | null, now: Date = new Date()): boolean => {
+  if (!datetime) return false;
+  const gigDate = typeof datetime === 'string' ? new Date(datetime) : datetime;
+  const gigTime = gigDate.getTime();
+  const nowTime = now.getTime();
+  const tenDaysMs = 10 * 24 * 60 * 60 * 1000;
+  const oneDayMs = 24 * 60 * 60 * 1000;
+  const diff = gigTime - nowTime;
+  return diff <= tenDaysMs && diff >= -oneDayMs;
+};
+
+export const fetchVenue = async (token: string, venueId: string): Promise<Ivenue | null> => {
+  try {
+    const res = await customFetch(`${process.env.BackendUrl}/venue/${venueId}`, {
+      headers: {
+        Accept: 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (!res.ok) return null;
+    return await res.json() as Ivenue;
+  } catch {
+    return null;
+  }
+};
+
+export interface AnnounceResponse {
+  ok: boolean;
+  message?: string;
+  instagram?: {
+    ok: boolean;
+    id?: string;
+    error?: string;
+  };
+}
+
+export const announceGig = async (
+  token: string,
+  gigId: string,
+  payload: { caption: string; imageUrl?: string; userTags: string[] },
+): Promise<AnnounceResponse> => {
+  try {
+    const res = await customFetch(`${process.env.BackendUrl}/gig/${gigId}/announce`, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(payload),
+    });
+    const data = await res.json() as { message?: string; instagram?: { ok: boolean; id?: string; error?: string } };
+    if (!res.ok) {
+      const errorMsg = data.message || `Server error (${res.status})`;
+      return { ok: false, message: errorMsg, instagram: { ok: false, error: errorMsg } };
+    }
+    return { ok: Boolean(data.instagram?.ok), ...data };
+  } catch (err) {
+    const msg = (err as Error).message || 'Network error';
+    return { ok: false, message: msg, instagram: { ok: false, error: msg } };
+  }
+};
+
 export default {
   makeVenue,
   makeVenueValue,
@@ -484,4 +557,8 @@ export default {
   normalizeTextForComparison,
   isFreeTextRenderable,
   renderVenueCell,
+  isUpcomingGig,
+  isWithin10Days,
+  fetchVenue,
+  announceGig,
 };

@@ -20,6 +20,7 @@ export interface Igig {
   duration?: number;
   promoImageUrl?: string;
   artist?: string;
+  announcedAt?: string | Date;
   venueId?: string | {
     _id: string;
     name: string;
