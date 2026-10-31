@@ -3,6 +3,7 @@ import '@testing-library/jest-dom';
 import scc from 'socketcluster-client';
 import utils from 'src/containers/Music/Gigs/gigs.utils';
 import commonUtils from 'src/lib/utils';
+import * as fetchUtils from 'src/lib/fetch.utils';
 import type { Iauth } from 'src/providers/Auth.provider';
 import type { Igig } from 'src/providers/Data.provider';
 
@@ -551,6 +552,119 @@ describe('gigs.utils', () => {
       expect(screen.queryByRole('link')).toBeNull();
       expect(screen.getByText('Salem Farmers Market')).toBeInTheDocument();
       expect(screen.queryByText(/- Salem, VA/i)).toBeNull();
+    });
+  });
+
+  describe('isUpcomingGig', () => {
+    it('returns false for null, missing datetime, or separator row', () => {
+      expect(utils.isUpcomingGig(null)).toBe(false);
+      expect(utils.isUpcomingGig({ venue: 'Test', tickets: '', datetime: null })).toBe(false);
+      expect(utils.isUpcomingGig({ venue: 'Our Past Performances', tickets: '', datetime: new Date() })).toBe(false);
+      expect(utils.isUpcomingGig({ id: 999, venue: 'Test', tickets: '', datetime: new Date() })).toBe(false);
+    });
+
+    it('returns true for future dates and false for past dates', () => {
+      const now = new Date('2026-10-31T12:00:00.000Z');
+      const future = new Date('2026-11-05T18:00:00.000Z');
+      const past = new Date('2026-10-20T18:00:00.000Z');
+
+      expect(utils.isUpcomingGig({ venue: 'Future Gig', tickets: '', datetime: future }, now)).toBe(true);
+      expect(utils.isUpcomingGig({ venue: 'Past Gig', tickets: '', datetime: past }, now)).toBe(false);
+    });
+  });
+
+  describe('isWithin10Days', () => {
+    it('returns false when datetime is null or undefined', () => {
+      expect(utils.isWithin10Days(null)).toBe(false);
+      expect(utils.isWithin10Days(undefined)).toBe(false);
+    });
+
+    it('returns true when gig is within 10 days in the future', () => {
+      const now = new Date('2026-10-31T12:00:00.000Z');
+      const in5Days = new Date('2026-11-05T18:00:00.000Z');
+      const in10Days = new Date('2026-11-10T12:00:00.000Z');
+
+      expect(utils.isWithin10Days(in5Days, now)).toBe(true);
+      expect(utils.isWithin10Days(in10Days, now)).toBe(true);
+    });
+
+    it('returns false when gig is beyond 10 days in the future or in the past', () => {
+      const now = new Date('2026-10-31T12:00:00.000Z');
+      const in15Days = new Date('2026-11-15T18:00:00.000Z');
+      const inPast = new Date('2026-10-25T18:00:00.000Z');
+
+      expect(utils.isWithin10Days(in15Days, now)).toBe(false);
+      expect(utils.isWithin10Days(inPast, now)).toBe(false);
+    });
+  });
+
+  describe('fetchVenue', () => {
+    it('returns venue data on successful GET request', async () => {
+      const mockVenue = { _id: 'v123', name: 'Slow Play Brewing', instagramUsername: 'slowplaybeer' };
+      vi.spyOn(fetchUtils, 'customFetch').mockResolvedValueOnce(
+        new Response(JSON.stringify(mockVenue), { status: 200 }),
+      );
+
+      const result = await utils.fetchVenue('test-token', 'v123');
+      expect(result).toEqual(mockVenue);
+    });
+
+    it('returns null on failure or error', async () => {
+      vi.spyOn(fetchUtils, 'customFetch').mockResolvedValueOnce(
+        new Response(null, { status: 500 }),
+      );
+
+      const result = await utils.fetchVenue('test-token', 'v123');
+      expect(result).toBeNull();
+    });
+
+    it('handles thrown exceptions gracefully', async () => {
+      vi.spyOn(fetchUtils, 'customFetch').mockRejectedValueOnce(new Error('Network error'));
+
+      const result = await utils.fetchVenue('test-token', 'v123');
+      expect(result).toBeNull();
+    });
+  });
+
+  describe('announceGig', () => {
+    it('returns success response when API returns 200 with instagram ok', async () => {
+      vi.spyOn(fetchUtils, 'customFetch').mockResolvedValueOnce(
+        new Response(JSON.stringify({ instagram: { ok: true, id: 'post-999' } }), { status: 200 }),
+      );
+
+      const result = await utils.announceGig('token', 'gig-1', {
+        caption: 'Test caption',
+        userTags: ['maria', 'venue'],
+      });
+      expect(result.ok).toBe(true);
+      expect(result.instagram?.id).toBe('post-999');
+    });
+
+    it('returns failure response with error message when API responds with error status', async () => {
+      vi.spyOn(fetchUtils, 'customFetch').mockResolvedValueOnce(
+        new Response(
+          JSON.stringify({ message: 'userTags invalid', instagram: { ok: false, error: 'userTags invalid' } }),
+          { status: 400 },
+        ),
+      );
+
+      const result = await utils.announceGig('token', 'gig-1', {
+        caption: 'Test caption',
+        userTags: ['bad@handle'],
+      });
+      expect(result.ok).toBe(false);
+      expect(result.instagram?.error).toBe('userTags invalid');
+    });
+
+    it('handles network throw gracefully', async () => {
+      vi.spyOn(fetchUtils, 'customFetch').mockRejectedValueOnce(new Error('Connection dropped'));
+
+      const result = await utils.announceGig('token', 'gig-1', {
+        caption: 'Test caption',
+        userTags: [],
+      });
+      expect(result.ok).toBe(false);
+      expect(result.message).toBe('Connection dropped');
     });
   });
 });

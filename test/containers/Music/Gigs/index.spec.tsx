@@ -4,14 +4,16 @@ import { BrowserRouter } from 'react-router';
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import {
-  Gigs, columns, GigsDiv, ShowCreateGigButton,
+  Gigs, columns, makeColumns, GigsDiv, ShowCreateGigButton,
 } from 'src/containers/Music/Gigs';
+import type { AnnounceGigDialogProps } from 'src/containers/Music/Gigs/AnnounceGigDialog';
 import utils from 'src/containers/Music/Gigs/gigs.utils';
 
 vi.mock('@mui/x-data-grid', () => ({
   DataGrid: (props: any) => {
     if (props.getRowHeight) props.getRowHeight();
     if (props.onRowClick) props.onRowClick({ row: { _id: '1' } });
+    if (props.getRowClassName) props.getRowClassName({ row: { _id: '1', datetime: new Date().toISOString() } });
     if (props.onPaginationModelChange) props.onPaginationModelChange({ page: 1, pageSize: 10 });
     return <div data-testid="mock-data-grid" />;
   },
@@ -38,6 +40,17 @@ vi.mock('src/containers/Music/Gigs/EditGigDialog', () => ({
     >
       mock edit
     </button>
+  ),
+}));
+
+vi.mock('src/containers/Music/Gigs/AnnounceGigDialog', () => ({
+  AnnounceGigDialog: ({ open, onClose, onSuccess }: AnnounceGigDialogProps) => (
+    open ? (
+      <div data-testid="mock-announce-gig-dialog">
+        <button type="button" onClick={onClose} data-testid="mock-cancel-announce">cancel announce</button>
+        <button type="button" onClick={() => onSuccess?.(new Date().toISOString())} data-testid="mock-success-announce">success announce</button>
+      </div>
+    ) : null
   ),
 }));
 
@@ -295,5 +308,74 @@ describe('Gigs', () => {
     const paramsWithoutPhoto: any = { row: { promoImageUrl: '' } };
     const cellWithoutPhoto = photoCol.renderCell(paramsWithoutPhoto);
     expect(cellWithoutPhoto).toBe('');
+  });
+  it('makeColumns includes Announce column only when isAdmin is true', () => {
+    const nonAdminCols = makeColumns(false, false);
+    expect(nonAdminCols).toHaveLength(6);
+    expect(nonAdminCols.some((c) => c.field === 'announce')).toBe(false);
+
+    const adminCols = makeColumns(false, true);
+    expect(adminCols).toHaveLength(7);
+    const announceCol = adminCols.find((c) => c.field === 'announce');
+    expect(announceCol).toBeDefined();
+    expect(announceCol?.headerName).toBe('Announce');
+  });
+  it('announceCol renderCell renders Announce button and announced ✓ badge appropriately', () => {
+    const onAnnounce = vi.fn();
+    const adminCols = makeColumns(false, true, onAnnounce);
+    const announceCol = adminCols.find((c) => c.field === 'announce')!;
+
+    // Case 1: Past gig returns empty string
+    const yesterday = new Date(Date.now() - 24 * 3600 * 1000 * 5).toISOString();
+    const pastParams: any = { row: { datetime: yesterday } };
+    expect(announceCol.renderCell!(pastParams)).toBe('');
+
+    // Case 2: Upcoming gig without announcedAt
+    const futureDate = new Date(Date.now() + 24 * 3600 * 1000 * 3).toISOString();
+    const upcomingRow = { _id: 'g1', datetime: futureDate };
+    const upcomingParams: any = { row: upcomingRow };
+    const unannouncedCell: any = announceCol.renderCell!(upcomingParams);
+    expect(unannouncedCell).not.toBe('');
+
+    const { container: unannouncedContainer } = render(unannouncedCell);
+    expect(unannouncedContainer.textContent).toContain('Announce');
+    expect(unannouncedContainer.textContent).not.toContain('announced ✓');
+
+    // Clicking Announce button calls onAnnounce and stops propagation
+    const stopPropagation = vi.fn();
+    const announceBtn = screen.getByRole('button', { name: /Announce/i });
+    fireEvent.click(announceBtn, { stopPropagation });
+    expect(onAnnounce).toHaveBeenCalledWith(upcomingRow);
+
+    // Case 3: Upcoming gig with announcedAt
+    const announcedRow = { _id: 'g2', datetime: futureDate, announcedAt: new Date().toISOString() };
+    const announcedParams: any = { row: announcedRow };
+    const announcedCell: any = announceCol.renderCell!(announcedParams);
+    const { container: announcedContainer } = render(announcedCell);
+    expect(announcedContainer.textContent).toContain('Announce');
+    expect(announcedContainer.textContent).toContain('announced ✓');
+  });
+  it('GigsDiv passes row class name with gig-announce-nudge when upcoming within 10 days', () => {
+    const isUpcomingSpy = vi.spyOn(utils, 'isUpcomingGig').mockReturnValue(true);
+    const isWithin10Spy = vi.spyOn(utils, 'isWithin10Days').mockReturnValue(true);
+
+    const props = {
+      isAdmin: true,
+      setShowDialog: vi.fn(),
+      setEditGig: vi.fn(),
+      editGig: {} as any,
+      gigsInOrder: [{ _id: 'g1', datetime: new Date().toISOString() }] as any,
+      pageSize: 5,
+      showDialog: false,
+      editChanged: false,
+      setEditChanged: vi.fn(),
+      getGigs: vi.fn(),
+      auth: {} as any,
+      setPageSize: vi.fn(),
+    };
+    render(<BrowserRouter><GigsDiv {...props} /></BrowserRouter>);
+
+    expect(isUpcomingSpy).toHaveBeenCalled();
+    expect(isWithin10Spy).toHaveBeenCalled();
   });
 });
