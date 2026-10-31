@@ -21,18 +21,18 @@ import { customFetch } from 'src/lib/fetch.utils';
 import adminVenuesUtils, { type Ivenue } from 'src/containers/AdminVenues/admin-venues.utils';
 import outreachUtils, {
   type Icandidate, type IbatchResult, type IpitchPreview, type IpendingReply, type IreportSummary,
-  type IbatchPayload, type IvenueApproval, dispatchApprovedBatch, hasCompletePreviews,
+  type IbatchPayload, type IvenueApproval, type IVenueCustomization, dispatchApprovedBatch, hasCompletePreviews,
 } from './outreach.utils';
 import { OutreachDialog } from './OutreachDialog';
 
 // Touch timeline interface
 export interface Itouch {
   date: string;
-  type: 'visit' | 'form' | 'card' | 'call' | 'email' | 'gig' | 'other' | 'outcome';
+  type: 'visit' | 'form' | 'card' | 'call' | 'email' | 'gig' | 'other' | 'outcome' | 'replied';
   note?: string;
   templateType?: string;
   targetWeekend?: { start: string; end: string };
-  outcome?: 'interested' | 'not-interested' | 'booked' | 'target-filled';
+  outcome?: 'interested' | 'not-interested' | 'booked' | 'target-filled' | 'replied';
   bookedDate?: string;
   outreachId?: string;
   actor?: string;
@@ -526,7 +526,24 @@ export function AdminOutreach() {
     }
   };
 
-  const send = async () => {
+  const updateSinglePreview = async (venueId: string, customIntro?: string, customBody?: string) => {
+    if (!reviewBatch) return;
+    const version = reviewVersion.current;
+    const data = await outreachUtils.getPreview(
+      auth.token,
+      [venueId],
+      reviewBatch.targetDates,
+      reviewBatch.bookingPeriod,
+      { customIntro, customBody },
+    );
+    if (reviewVersion.current !== version) return;
+    if (data && data.length > 0) {
+      const updated = data[0];
+      setPreviews((prev) => prev.map((p) => (p.venueId === venueId ? updated : p)));
+    }
+  };
+
+  const send = async (customizations?: IVenueCustomization[]) => {
     if (sendInFlight.current || sendAttempted || !reviewBatch || needsVenueConfirmation
       || previewLoading || previewError || !hasCompletePreviews(reviewBatch.venueIds, previews)) return;
     sendInFlight.current = true;
@@ -534,7 +551,11 @@ export function AdminOutreach() {
     setSending(true);
     setError('');
     try {
-      const res = await dispatchApprovedBatch(auth.token, reviewBatch, previews, setResult);
+      const batchToSend: IbatchPayload = {
+        ...reviewBatch,
+        venueCustomizations: (customizations && customizations.length > 0) ? customizations : undefined,
+      };
+      const res = await dispatchApprovedBatch(auth.token, batchToSend, previews, setResult);
       setResult(res);
       setDispatchComplete(true);
       setCandidates([]);
@@ -1054,32 +1075,47 @@ export function AdminOutreach() {
                                           touchColor = '#ea580c';
                                           touchIcon = <Phone fontSize="small" style={{ color: 'white' }} />;
                                         } else if (touch.type === 'outcome') {
-                                          touchColor = touch.outcome === 'booked'
-                                            ? '#8b5cf6'
-                                            : touch.outcome === 'interested'
-                                              ? '#10b981'
-                                              : '#ef4444';
+                                          if (touch.outcome === 'booked') {
+                                            touchColor = '#8b5cf6';
+                                          } else if (touch.outcome === 'interested') {
+                                            touchColor = '#10b981';
+                                          } else if (touch.outcome === 'replied') {
+                                            touchColor = '#06b6d4';
+                                          } else {
+                                            touchColor = '#ef4444';
+                                          }
+                                          touchIcon = <CheckCircle fontSize="small" style={{ color: 'white' }} />;
+                                        } else if (touch.type === 'replied') {
+                                          touchColor = '#06b6d4';
                                           touchIcon = <CheckCircle fontSize="small" style={{ color: 'white' }} />;
                                         }
 
                                         return (
                                           <Box key={idx} sx={{ position: 'relative' }}>
                                             {/* Vertical line dot */}
-                                            <Box sx={{
-                                              position: 'absolute', left: '-25px', top: '2px',
-                                              width: '18px', height: '18px', borderRadius: '50%',
-                                              backgroundColor: touchColor, display: 'flex',
-                                              alignItems: 'center', justifyContent: 'center',
-                                              boxShadow: 1,
-                                            }}>
+                                            <Box
+                                              sx={{
+                                                position: 'absolute', left: '-25px', top: '2px',
+                                                width: '18px', height: '18px', borderRadius: '50%',
+                                                backgroundColor: touchColor, display: 'flex',
+                                                alignItems: 'center', justifyContent: 'center',
+                                                boxShadow: 1,
+                                              }}
+                                              data-testid={`touch-dot-${touch.outcome || touch.type}`}
+                                            >
                                               {touchIcon}
                                             </Box>
 
                                             <Box sx={{ p: 1.5, bgcolor: 'background.paper', borderRadius: 2, boxShadow: 1 }}>
                                               <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
-                                                <Typography variant="subtitle2" sx={{
-                                                  fontWeight: 'bold', color: touchColor, textTransform: 'capitalize',
-                                                }}>
+                                                <Typography
+                                                  variant="subtitle2"
+                                                  style={{ color: touchColor }}
+                                                  sx={{
+                                                    fontWeight: 'bold', color: touchColor, textTransform: 'capitalize',
+                                                  }}
+                                                  data-testid={`touch-label-${touch.outcome || touch.type}`}
+                                                >
                                                   {touch.type === 'outcome' ? `Outcome: ${touch.outcome}` : touch.type}
                                                 </Typography>
                                                 <Typography variant="caption" color="text.secondary">
@@ -1569,12 +1605,33 @@ export function AdminOutreach() {
                             <Box>
                               <Typography variant="body2" sx={{ fontWeight: 'medium' }}>
                                 {candidateLabel(c)}
+                                {c.lastPitchDate && (
+                                  <Typography
+                                    component="span"
+                                    variant="body2"
+                                    sx={{ color: 'text.secondary', ml: 1, fontWeight: 'normal' }}
+                                    data-testid={`outreach-pitched-${c._id}`}
+                                  >
+                                    Pitched {new Date(c.lastPitchDate).toLocaleDateString()}, no reply recorded
+                                  </Typography>
+                                )}
                               </Typography>
                               {c.reason && (
                                 <Box
                                   sx={{ mt: 0.5, display: 'flex', flexWrap: 'wrap', gap: 0.5, alignItems: 'center' }}
                                   data-testid={`outreach-reason-${c._id}`}
                                 >
+                                  {c.lastPitchDate && (
+                                    <Chip
+                                      icon={<History sx={{ fontSize: '0.8rem !important' }} />}
+                                      label={`Pitched ${new Date(c.lastPitchDate).toLocaleDateString()}, no reply recorded`}
+                                      size="small"
+                                      variant="outlined"
+                                      color="warning"
+                                      sx={{ fontSize: '0.7rem', height: 20 }}
+                                      data-testid={`outreach-pitched-chip-${c._id}`}
+                                    />
+                                  )}
                                   <Chip
                                     icon={<DateRange sx={{ fontSize: '0.8rem !important' }} />}
                                     label={c.reason.spacingNote}
@@ -1692,8 +1749,10 @@ export function AdminOutreach() {
           previewLoading={previewLoading}
           previewError={previewError}
           sending={sending}
+          onUpdatePreview={updateSinglePreview}
           onSend={send}
           onClose={closeReview}
+          reviewVersion={reviewVersion.current}
         />
 
         {/* DIALOG 1: Confirm DNC Dialog */}

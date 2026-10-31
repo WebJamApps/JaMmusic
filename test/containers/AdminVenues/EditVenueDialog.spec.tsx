@@ -548,6 +548,60 @@ describe('EditVenueDialog', () => {
     expect(screen.getByTestId('edit-venue-error').innerHTML).toBe('A valid website URL is required');
   });
 
+  it('loads instagramUsername from venue prop into form', async () => {
+    const venueWithIg: Ivenue = { ...venue, instagramUsername: 'the_spot_kirk' };
+    await act(async () => {
+      render(<EditVenueDialog open venue={venueWithIg} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />);
+    });
+    expect(screen.getByTestId('edit-venue-instagram-username')).toHaveValue('the_spot_kirk');
+  });
+
+  it('validates and sends valid instagramUsername on save', async () => {
+    await act(async () => {
+      render(<EditVenueDialog open venue={venue} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />);
+    });
+    await act(async () => {
+      fireEvent.change(screen.getByTestId('edit-venue-instagram-username'), { target: { value: 'slowplay.brewing_1' } });
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('edit-venue-save'));
+    });
+    expect(adminVenuesUtils.updateVenue).toHaveBeenCalledWith('tk', 'v1', expect.objectContaining({
+      instagramUsername: 'slowplay.brewing_1',
+    }));
+  });
+
+  it.each(['@badhandle', 'bad handle', 'a'.repeat(31)])('rejects invalid instagramUsername "%s" and sends nothing', async (invalid) => {
+    await act(async () => {
+      render(<EditVenueDialog open venue={venue} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />);
+    });
+    await act(async () => {
+      fireEvent.change(screen.getByTestId('edit-venue-instagram-username'), { target: { value: invalid } });
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('edit-venue-save'));
+    });
+    const expectedError = 'Instagram username must contain only letters, numbers, periods and underscores, '
+      + 'up to 30 characters, without @';
+    expect(screen.getByTestId('edit-venue-error')).toHaveTextContent(expectedError);
+    expect(adminVenuesUtils.updateVenue).not.toHaveBeenCalled();
+  });
+
+  it('accepts blank instagramUsername and saves successfully', async () => {
+    await act(async () => {
+      render(<EditVenueDialog open venue={venue} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />);
+    });
+    await act(async () => {
+      fireEvent.change(screen.getByTestId('edit-venue-instagram-username'), { target: { value: '   ' } });
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('edit-venue-save'));
+    });
+    expect(adminVenuesUtils.updateVenue).toHaveBeenCalledWith('tk', 'v1', expect.objectContaining({
+      name: 'Mac n Bob',
+    }));
+  });
+
   it('supports non-US countries with free-text region field', async () => {
     vi.spyOn(adminVenuesUtils, 'createVenueWithOutcome').mockResolvedValue({ venue: {} as Ivenue, outcome: 'created', status: 201 });
     await act(async () => {
