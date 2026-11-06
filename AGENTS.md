@@ -50,6 +50,23 @@ JaMmusic itself does not deploy to Heroku directly.
   not after CI flags it.
 - **Tests** live in `test/`, mirroring `src/`; shared mocks in `__mocks__/`. Add
   or update specs alongside the file you change.
+- **Context provider action return contracts**: When context methods (like `getSongs`, `getGigs`,
+  `getPics`) are consumed by action handlers to obtain uncached data imperatively (e.g.
+  `const data = await getSongs()`), the provider function must actually return the underlying fetch
+  promise/result (e.g. `export const makeGetSongs = (setSongs) => async () => await fetchSongs.getSongs(setSongs)`),
+  rather than discarding the return value (`await fetch(...)` without `return`). Otherwise, local
+  callers receive `undefined` and fall back to error/static states because React's asynchronous state
+  setter does not update local variables in the caller's stack.
+- **Explicit MongoDB `$unset` on URL/optional field removal in PUT requests**: When updating existing
+  documents via `PUT` endpoints backed by Mongoose `findByIdAndUpdate`, omitting a field from the
+  payload leaves the existing document field untouched in the database. To clear an optional field
+  (such as removing a recording URL so an unrecorded song does not collide with a sparse unique index
+  or retain a stale URL), the update payload must explicitly pass `$unset: { <field>: '' }` while
+  deleting the key from the top-level payload (`delete payload.<field>`), rather than simply omitting it.
+- **Strict typing in test fixtures without `as any`**: When updating TypeScript interfaces to make
+  fields optional (e.g. `Isong.url?`, `Isong.year?`), update test fixtures directly to conform to the
+  interface rather than casting with `as any`. Preserving strict typing ensures that schema and model
+  refactors surface compile-time breakages in tests.
 
 ## Layout
 
