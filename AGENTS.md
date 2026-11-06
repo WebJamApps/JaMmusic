@@ -63,10 +63,6 @@ JaMmusic itself does not deploy to Heroku directly.
   (such as removing a recording URL so an unrecorded song does not collide with a sparse unique index
   or retain a stale URL), the update payload must explicitly pass `$unset: { <field>: '' }` while
   deleting the key from the top-level payload (`delete payload.<field>`), rather than simply omitting it.
-- **Strict typing in test fixtures without `as any`**: When updating TypeScript interfaces to make
-  fields optional (e.g. `Isong.url?`, `Isong.year?`), update test fixtures directly to conform to the
-  interface rather than casting with `as any`. Preserving strict typing ensures that schema and model
-  refactors surface compile-time breakages in tests.
 
 ## Layout
 

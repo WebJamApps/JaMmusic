@@ -57,7 +57,19 @@ describe('Bookus', () => {
     const mockSongs: Isong[] = [
       { title: 'Uncached Song', artist: 'Josh & Maria', category: 'original', url: 'https://youtu.be/uncached' },
     ];
+    let resolveMountFetch!: (songs: Isong[]) => void;
+    const mountFetchPromise = new Promise<Isong[]>((resolve) => {
+      resolveMountFetch = resolve;
+    });
+
+    let calls = 0;
     const fetchSpy = vi.spyOn(fetchSongs, 'getSongs').mockImplementation(async (setSongs) => {
+      calls += 1;
+      if (calls === 1) {
+        const result = await mountFetchPromise;
+        setSongs(result);
+        return result;
+      }
       setSongs(mockSongs);
       return mockSongs;
     });
@@ -68,7 +80,12 @@ describe('Bookus', () => {
       </DataProvider>,
     );
 
+    // Click while songs in context is still null (mount fetch still pending)
     fireEvent.click(screen.getByRole('button', { name: /current songlist/i }));
+
+    // Resolve mount fetch
+    resolveMountFetch(mockSongs);
+
     await waitFor(() => {
       expect(openPdfSpy).toHaveBeenCalledWith(mockSongs);
     });
