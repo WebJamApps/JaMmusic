@@ -32,4 +32,16 @@ describe('Songs', () => {
     render(<BrowserRouter><Player songs={songs} editDialogState={editDialogState} /></BrowserRouter>);
     expect(await screen.findByText('a - Artist A')).toBeInTheDocument();
   });
+  it('renders Player with a song in the new grown catalog shape without url or year', async () => {
+    const grownSongs: Isong[] = [{
+      _id: 'grown-1',
+      title: 'Unrecorded Song',
+      artist: 'Josh & Maria Sherman',
+      category: 'original',
+      composer: 'Josh Sherman',
+    }];
+    const editDialogState = { setShowEditDialog: vi.fn(), showEditDialog: false };
+    render(<BrowserRouter><Player songs={grownSongs} editDialogState={editDialogState} /></BrowserRouter>);
+    expect(await screen.findByText('Unrecorded Song - Josh & Maria Sherman')).toBeInTheDocument();
+  });
 });

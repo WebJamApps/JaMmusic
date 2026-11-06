@@ -24,13 +24,15 @@ const createSong = async (
 ) => {
   try {
     const { token } = auth;
+    const payload: Partial<Isong> = { ...song };
+    if (!payload.url) delete payload.url;
     const res = await customFetch(`${process.env.BackendUrl}/song`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify(song),
+      body: JSON.stringify(payload),
     });
     if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
     setShowDialog(false);
@@ -48,13 +50,15 @@ const updateSong = async (
 ) => {
   try {
     const { token } = auth;
+    const payload: Partial<Isong> = { ...song };
+    if (!payload.url) delete payload.url;
     const res = await customFetch(`${process.env.BackendUrl}/song/${song._id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify(song),
+      body: JSON.stringify(payload),
     });
     if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
     setShowDialog(false);
@@ -84,7 +88,7 @@ const deleteSong = async (
 };
 
 const checkDisabled = (song: Isong) => {
-  if (song.url && song.title && song.artist && song.year) return false;
+  if (song.title && song.artist && song.category) return false;
   return true;
 };
 

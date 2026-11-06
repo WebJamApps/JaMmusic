@@ -37,10 +37,10 @@ export interface Isong {
   composer?: string;
   category: string;
   album?: string;
-  year: number;
+  year?: number;
   image?: string;
   title: string;
-  url: string;
+  url?: string;
   _id?: string;
   modify?: React.JSX.Element
 }

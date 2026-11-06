@@ -19,7 +19,7 @@ function setPlayerStyle(song: Isong): Record<string, unknown> {
       backgroundSize: '80%',
       backgroundRepeat: 'no-repeat',
     };
-    if (song.url[8] === 's' || song.url[12] === 'y') {
+    if (song.url && (song.url[8] === 's' || song.url[12] === 'y')) {
       playerStyle = {
         backgroundImage: '',
         backgroundColor: '#eee',
