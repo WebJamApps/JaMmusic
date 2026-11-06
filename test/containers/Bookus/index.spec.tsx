@@ -2,7 +2,8 @@ import React from 'react';
 import { vi } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { BookUs } from 'src/containers/BookUs';
-import { DataContext, Isong } from 'src/providers/Data.provider';
+import { DataProvider, DataContext, Isong } from 'src/providers/Data.provider';
+import fetchSongs from 'src/providers/fetchSongs';
 import * as songlistPdf from 'src/lib/songlistPdf';
 
 describe('Bookus', () => {
@@ -49,5 +50,29 @@ describe('Bookus', () => {
       expect(openPdfSpy).toHaveBeenCalledWith(mockSongs);
     });
     openPdfSpy.mockRestore();
+  });
+
+  it('fetches songs via DataProvider when initially uncached and generates dynamic PDF', async () => {
+    const openPdfSpy = vi.spyOn(songlistPdf, 'openSonglistPdf').mockImplementation(() => {});
+    const mockSongs: Isong[] = [
+      { title: 'Uncached Song', artist: 'Josh & Maria', category: 'original', url: 'https://youtu.be/uncached' },
+    ];
+    const fetchSpy = vi.spyOn(fetchSongs, 'getSongs').mockImplementation(async (setSongs) => {
+      setSongs(mockSongs);
+      return mockSongs;
+    });
+
+    render(
+      <DataProvider>
+        <BookUs />
+      </DataProvider>,
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: /current songlist/i }));
+    await waitFor(() => {
+      expect(openPdfSpy).toHaveBeenCalledWith(mockSongs);
+    });
+    openPdfSpy.mockRestore();
+    fetchSpy.mockRestore();
   });
 });

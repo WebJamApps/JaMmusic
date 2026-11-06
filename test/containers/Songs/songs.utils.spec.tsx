@@ -77,7 +77,7 @@ describe('songs utils', () => {
     expect(setShowDialog).toHaveBeenCalledWith(false);
     expect(getSongs).toHaveBeenCalled();
   });
-  it('updateSong omits empty url so sparse index does not collide', async () => {
+  it('updateSong unsets empty url so sparse index does not collide and url is removed on backend', async () => {
     const fetchMock = vi.fn().mockResolvedValue({ ok: true, json: vi.fn().mockResolvedValue({}) });
     vi.stubGlobal('fetch', fetchMock);
     const songToUpdate = {
@@ -90,6 +90,22 @@ describe('songs utils', () => {
     await utils.updateSong(vi.fn(), vi.fn(), songToUpdate, vi.fn(), editAuth);
     const sentBody = JSON.parse(fetchMock.mock.calls[0][1].body);
     expect(sentBody.url).toBeUndefined();
+    expect(sentBody.$unset).toEqual({ url: '' });
+  });
+  it('updateSong preserves url and does not unset when url is provided', async () => {
+    const fetchMock = vi.fn().mockResolvedValue({ ok: true, json: vi.fn().mockResolvedValue({}) });
+    vi.stubGlobal('fetch', fetchMock);
+    const songWithUrl = {
+      _id: 'song2',
+      artist: 'A',
+      category: 'original',
+      title: 'T',
+      url: 'https://youtu.be/test',
+    };
+    await utils.updateSong(vi.fn(), vi.fn(), songWithUrl, vi.fn(), editAuth);
+    const sentBody = JSON.parse(fetchMock.mock.calls[0][1].body);
+    expect(sentBody.url).toBe('https://youtu.be/test');
+    expect(sentBody.$unset).toBeUndefined();
   });
   it('updateSong notifies on error', async () => {
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: false, status: 500, statusText: 'fail' }));
@@ -107,12 +123,12 @@ describe('songs utils', () => {
     const song = {
       category: 'original', title: 'Song Title', artist: 'Artist Name',
     };
-    expect(utils.checkDisabled(song as any)).toBe(false);
+    expect(utils.checkDisabled(song)).toBe(false);
   });
   it('checkDisabled rejects when title, artist, or category is missing', () => {
-    expect(utils.checkDisabled({ title: '', artist: 'A', category: 'original' } as any)).toBe(true);
-    expect(utils.checkDisabled({ title: 'T', artist: '', category: 'original' } as any)).toBe(true);
-    expect(utils.checkDisabled({ title: 'T', artist: 'A', category: '' } as any)).toBe(true);
+    expect(utils.checkDisabled({ title: '', artist: 'A', category: 'original' })).toBe(true);
+    expect(utils.checkDisabled({ title: 'T', artist: '', category: 'original' })).toBe(true);
+    expect(utils.checkDisabled({ title: 'T', artist: 'A', category: '' })).toBe(true);
   });
   const delSong = {
     _id: 'abc', artist: '', category: '1', title: 'a', year: 12, url: 'https://test1.com',

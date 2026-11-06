@@ -50,8 +50,11 @@ const updateSong = async (
 ) => {
   try {
     const { token } = auth;
-    const payload: Partial<Isong> = { ...song };
-    if (!payload.url) delete payload.url;
+    const payload: Partial<Isong> & { $unset?: Record<string, string> } = { ...song };
+    if (!payload.url) {
+      delete payload.url;
+      payload.$unset = { url: '' };
+    }
     const res = await customFetch(`${process.env.BackendUrl}/song/${song._id}`, {
       method: 'PUT',
       headers: {
