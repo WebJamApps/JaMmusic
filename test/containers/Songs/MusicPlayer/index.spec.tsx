@@ -101,4 +101,26 @@ describe('MusicPlayer index', () => {
     // Play/Pause is hidden for SoundCloud songs.
     expect(container.querySelector('#play-pause')).toBeNull();
   });
+  it('renders unrecorded song with no player box and hides Play/Pause button', () => {
+    const unrecordedSong: Isong = {
+      category: 'original',
+      title: 'Unrecorded Ballad',
+      artist: 'Josh & Maria Sherman',
+      _id: 'unrecorded-1',
+    };
+    const editDialogState = { setShowEditDialog: vi.fn(), showEditDialog: false };
+    const { container } = render(
+      <BrowserRouter>
+        <MusicPlayer songs={[unrecordedSong]} filterBy="original" editDialogState={editDialogState} />
+      </BrowserRouter>,
+    );
+    const playerDiv = container.querySelector('#mainPlayer');
+    expect(playerDiv).not.toBeNull();
+    expect(playerDiv).toHaveClass('unrecorded');
+    // Play/Pause button is hidden when song has no url
+    expect(container.querySelector('#play-pause')).toBeNull();
+    // Next and Prev buttons remain
+    expect(container.querySelector('#next')).not.toBeNull();
+    expect(container.querySelector('#prev')).not.toBeNull();
+  });
 });

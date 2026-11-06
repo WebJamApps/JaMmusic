@@ -37,10 +37,10 @@ export interface Isong {
   composer?: string;
   category: string;
   album?: string;
-  year: number;
+  year?: number;
   image?: string;
   title: string;
-  url: string;
+  url?: string;
   _id?: string;
   modify?: React.JSX.Element
 }
@@ -90,16 +90,16 @@ export const makeGetGigs = (setGigs: (arg0: Igig[] | null) => void) => () => fet
 
 export const makeGetPics = (setPics: (arg0: Ipic[] | null) => void) => () => fetchPics.getPics(setPics);
 
+export const makeGetSongs = (setSongs: (arg0: Isong[]) => void) => async () => await fetchSongs.getSongs(setSongs);
+
 export function DataProvider({ children }: { children: React.ReactNode }): React.JSX.Element {
   const [gigs, setGigs] = useState([defaultGig] as Igig[] | null);
   const [songs, setSongs] = useState(null as Isong[] | null);
   const [pics, setPics] = useState(null as Ipic[] | null);
   const getPics = makeGetPics(setPics);
   const getGigs = makeGetGigs(setGigs);
-  const getSongs = async () => {
-    await fetchSongs.getSongs(setSongs);
-  };
-  useEffect(() => { getSongs(); }, []);
+  const getSongs = makeGetSongs(setSongs);
+  useEffect(() => { void getSongs(); }, []);
   const Provider = MakeProvider(
     { Context: DataContext, fetches: [fetchGigs.getGigs, fetchPics.getPics], setters: [setGigs, setPics] },
   );

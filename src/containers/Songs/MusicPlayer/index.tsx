@@ -96,6 +96,18 @@ export function MyReactPlayer(props: ImyReactPlayerProps): React.JSX.Element {
     };
   }, [index, songsState, setIndex, setPlaying, playerRef]);
   if (!song) return <> </>;
+  if (!song.url) {
+    const audioBoxStyle: React.CSSProperties = {
+      ...(utils.setPlayerStyle(song) as React.CSSProperties),
+      minHeight: '40vh',
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'flex-end',
+    };
+    return (
+      <div key="no-player" id="mainPlayer" className="audio unrecorded" style={audioBoxStyle} />
+    );
+  }
   if (isSoundCloud(song.url)) {
     return (
       // Distinct key from the Plyr branch so React cleanly unmounts the whole
@@ -164,9 +176,10 @@ export function MyButtons(props: ImyButtonsProps): React.JSX.Element {
   };
   // eslint-disable-next-line security/detect-object-injection
   const currentSong = songsState[index];
-  // SoundCloud songs render their own widget (with built-in controls), so hide
-  // our Play/Pause for them; Next/Prev still navigate.
-  const hidePlayPause = isSoundCloud(currentSong?.url);
+  // SoundCloud songs render their own widget (with built-in controls), and
+  // unrecorded songs have no audio source to play, so hide our Play/Pause for them;
+  // Next/Prev still navigate.
+  const hidePlayPause = !currentSong?.url || isSoundCloud(currentSong?.url);
   return (
     <div style={{ paddingTop: 0, margin: 'auto' }}>
       <div id="play-buttons">

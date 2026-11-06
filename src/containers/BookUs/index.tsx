@@ -1,8 +1,29 @@
+import React, { useContext } from 'react';
 import { Button } from '@mui/material';
+import { DataContext } from 'src/providers/Data.provider';
+import { openSonglistPdf } from 'src/lib/songlistPdf';
 import { Inquiry } from '../Homepage/Inquiry';
 
 const songlistUrl = '/Josh-Maria-Songlist.pdf';
 export function BookUs() {
+  const { songs, getSongs } = useContext(DataContext);
+
+  const handleSonglistClick = async () => {
+    try {
+      let list = songs;
+      if (!list || list.length === 0) {
+        list = await getSongs();
+      }
+      if (list && list.length > 0) {
+        openSonglistPdf(list);
+        return;
+      }
+      window.open(songlistUrl, '_blank', 'noopener,noreferrer');
+    } catch {
+      window.open(songlistUrl, '_blank', 'noopener,noreferrer');
+    }
+  };
+
   return (
     <div className="bookus" style={{ margin: 'auto', padding: '6px', paddingRight: '12px' }}>
       <div style={{ maxWidth: '800px' }}>
@@ -14,7 +35,7 @@ export function BookUs() {
             style={{ marginLeft: '8px' }}
             size="small"
             variant="contained"
-            onClick={() => window.open(songlistUrl, '_blank', 'noopener,noreferrer')}
+            onClick={handleSonglistClick}
           >
             Current Songlist
           </Button>

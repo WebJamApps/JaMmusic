@@ -59,8 +59,8 @@ export function EditSongDialog({ editDialogState, editSongState, currentSong }: 
           Enter all *Required fields to add a new song.
         </DialogContentText>
         <SongField
-          label="* Url"
-          value={editSong.url}
+          label="Url"
+          value={editSong.url || ''}
           onChange={(evt) => {
             const { target: { value } } = evt;
             setEditSong({ ...editSong, url: value });

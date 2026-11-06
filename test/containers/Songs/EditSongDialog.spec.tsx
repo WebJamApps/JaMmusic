@@ -41,7 +41,7 @@ describe('EditSongDialog', () => {
     expect(screen.getByText('Edit Song')).toBeInTheDocument();
   });
 
-  it.each(['* Url', '* Title', '* Artist', 'Composer', 'Album', 'Image', 'Order (highest number plays first)'])(
+  it.each(['Url', '* Title', '* Artist', 'Composer', 'Album', 'Image', 'Order (highest number plays first)'])(
     'fires onChange for the %s field',
     (label) => {
       renderDialog();
