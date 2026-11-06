@@ -49,8 +49,8 @@ export function CreateSongDialog({ showDialog, setShowDialog }: IcreateSongDialo
           Enter all *Required fields to add a new song.
         </DialogContentText>
         <SongField
-          label="* Url"
-          value={song.url}
+          label="Url"
+          value={song.url || ''}
           onChange={(evt) => {
             const { target: { value } } = evt;
             setSong({ ...song, url: value });

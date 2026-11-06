@@ -14,7 +14,7 @@ describe('CreateSongDialog', () => {
     const showDialog = true;
     const setShowDialog = vi.fn();
     render(<CreateSongDialog showDialog={showDialog} setShowDialog={setShowDialog} />);
-    const input = document.querySelector('[label="* Url"]')!;
+    const input = document.querySelector('[label="Url"]')!;
     fireEvent.change(input, { target: { value: 'song' } });
     expect(input).toBeDefined();
   });

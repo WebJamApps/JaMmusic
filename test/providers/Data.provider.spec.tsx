@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import {
-  DataProvider, getGigsDef, Igig, Isong, makeGetGigs, setGigsDef, setSongsDef, getPicsDef, getSongsDef, setPicsDef,
+  DataProvider, getGigsDef, Igig, Isong, makeGetGigs, makeGetSongs, setGigsDef, setSongsDef, getPicsDef, getSongsDef, setPicsDef,
 } from 'src/providers/Data.provider';
 import fetchSongs from 'src/providers/fetchSongs';
 import fetchGigs from 'src/providers/fetchGigs';
@@ -38,5 +38,14 @@ describe('DataProvider', () => {
     const getGigs = makeGetGigs(setGigs);
     getGigs();
     expect(fetchGigs.getGigs).toHaveBeenCalled();
+  });
+  it('make getSongs and returns fetched songs', async () => {
+    const mockSongs = [{ title: 'S', artist: 'A', category: 'pub' }];
+    fetchSongs.getSongs = jest.fn().mockResolvedValue(mockSongs);
+    const setSongs = jest.fn();
+    const getSongs = makeGetSongs(setSongs);
+    const res = await getSongs();
+    expect(fetchSongs.getSongs).toHaveBeenCalledWith(setSongs);
+    expect(res).toBe(mockSongs);
   });
 });

@@ -59,6 +59,16 @@ describe('MusicPlayer/utils', () => {
     const newPlayerStyle = utils.setPlayerStyle(song);
     expect(newPlayerStyle).toEqual(playerStyle);
   });
+  it('setPlayerStyle handles song with undefined url safely', () => {
+    const songWithoutUrl: Isong = {
+      artist: 'Josh Sherman',
+      category: 'original',
+      title: 'Unrecorded',
+    };
+    const style = utils.setPlayerStyle(songWithoutUrl);
+    expect(style.backgroundImage).toBe('url("/imgs/webjamlogo1.png")');
+    expect(style.backgroundColor).toBe('#2a2a2a');
+  });
   it('copy song URL and show notification', () => {
     const elemDiv = document.createElement('input');
     elemDiv.id = 'copyUrl';

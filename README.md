@@ -72,8 +72,7 @@ id) lives in **web-jam-back's README**.
 
 ## Static assets
 
-* **`public/Josh-Maria-Songlist.pdf`** — the "Current Songlist" PDF linked from the **Book Us** page (`/music/bookus`). It is served by the app itself (opens inline in a new tab at `/Josh-Maria-Songlist.pdf`) rather than from Dropbox, so it renders reliably and isn't subject to Dropbox's download/redirect behavior.
-  * It is **derived from** the source spreadsheet in Dropbox: `joshandmariamusic/docs/Josh & Maria Songlist with links.xlsx`. The PDF lists each song's Title and Artist; original songs link their title to a working recording (web-jam.com or YouTube). When that spreadsheet changes, regenerate the PDF and re-commit it here (deploy required to publish).
+* **`public/Josh-Maria-Songlist.pdf`** — static fallback for the "Current Songlist" PDF linked from the **Book Us** page (`/music/bookus`). The live songlist PDF is generated dynamically from the song catalog in the database via `src/lib/songlistPdf.ts` (Letter size, Title and Artist, original songs link to recordings); if the live catalog cannot be loaded, the app falls back to this static PDF.
 
 ## Deployment
 
