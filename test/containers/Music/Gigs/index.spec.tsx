@@ -4,8 +4,9 @@ import { BrowserRouter } from 'react-router';
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import {
-  Gigs, columns, makeColumns, GigsDiv, ShowCreateGigButton,
+  Gigs, columns, makeColumns, GigsDiv, ShowCreateGigButton, GigCard,
 } from 'src/containers/Music/Gigs';
+import * as mui from '@mui/material';
 import type { AnnounceGigDialogProps } from 'src/containers/Music/Gigs/AnnounceGigDialog';
 import utils from 'src/containers/Music/Gigs/gigs.utils';
 
@@ -377,5 +378,120 @@ describe('Gigs', () => {
 
     expect(isUpcomingSpy).toHaveBeenCalled();
     expect(isWithin10Spy).toHaveBeenCalled();
+  });
+  it('places Announce as the first column for an administrator', () => {
+    const adminCols = makeColumns(false, true);
+    expect(adminCols[0].field).toBe('announce');
+    expect(adminCols[0].headerName).toBe('Announce');
+
+    const visitorCols = makeColumns(false, false);
+    expect(visitorCols[0].field).toBe('date');
+    expect(visitorCols.some((col) => col.field === 'announce')).toBe(false);
+  });
+  it('ensures column minimum widths add up to no more than 960 pixels', () => {
+    const adminCols = makeColumns(false, true);
+    const totalAdminWidth = adminCols.reduce(
+      (sum, col) => sum + (col.minWidth ?? col.width ?? 0),
+      0,
+    );
+    expect(totalAdminWidth).toBeLessThanOrEqual(960);
+
+    const visitorCols = makeColumns(false, false);
+    const totalVisitorWidth = visitorCols.reduce(
+      (sum, col) => sum + (col.minWidth ?? col.width ?? 0),
+      0,
+    );
+    expect(totalVisitorWidth).toBeLessThanOrEqual(960);
+  });
+  it('renders one card column under 600 pixels and two from 600 to 959', () => {
+    const mediaSpy = vi.spyOn(mui, 'useMediaQuery');
+    const props = {
+      isAdmin: true,
+      setShowDialog: vi.fn(),
+      setEditGig: vi.fn(),
+      editGig: {} as any,
+      gigsInOrder: [
+        { _id: 'g1', venue: 'Slow Play Brewing', datetime: new Date().toISOString() },
+        { _id: 'g2', venue: 'Durty Bull Brewing', datetime: new Date().toISOString() },
+      ] as any,
+      pageSize: 5,
+      showDialog: false,
+      editChanged: false,
+      setEditChanged: vi.fn(),
+      getGigs: vi.fn(),
+      auth: {} as any,
+      setPageSize: vi.fn(),
+    };
+
+    // Under 600 pixels: max-width:959px is true, max-width:599px is true
+    mediaSpy.mockImplementation((query: any) => String(query).includes('959') || String(query).includes('599'));
+    const { container, rerender } = render(<BrowserRouter><GigsDiv {...props} /></BrowserRouter>);
+    const containerSingle = container.querySelector('.gigs-cards-container');
+    expect(containerSingle).toBeInTheDocument();
+    expect(containerSingle).toHaveClass('cards-single-col');
+    expect(containerSingle).toHaveStyle({ gridTemplateColumns: '1fr' });
+
+    // From 600 to 959 pixels: max-width:959px is true, max-width:599px is false
+    mediaSpy.mockImplementation((query: any) => String(query).includes('959') && !String(query).includes('599'));
+    rerender(<BrowserRouter><GigsDiv {...props} /></BrowserRouter>);
+    const containerTwo = container.querySelector('.gigs-cards-container');
+    expect(containerTwo).toBeInTheDocument();
+    expect(containerTwo).toHaveClass('cards-two-col');
+    expect(containerTwo).toHaveStyle({ gridTemplateColumns: 'repeat(2, 1fr)' });
+
+    mediaSpy.mockRestore();
+  });
+  it('opens Edit Gig on row or card click and does not open Edit Gig on Announce click', () => {
+    const clickToEditSpy = vi.spyOn(utils, 'clickToEdit');
+    const futureDate = new Date(Date.now() + 86400000).toISOString();
+    const gig = { _id: 'g1', venue: 'Slow Play Brewing', datetime: futureDate };
+
+    // 1. Desktop table row click
+    const props = {
+      isAdmin: true,
+      setShowDialog: vi.fn(),
+      setEditGig: vi.fn(),
+      editGig: {} as any,
+      gigsInOrder: [gig] as any,
+      pageSize: 5,
+      showDialog: false,
+      editChanged: false,
+      setEditChanged: vi.fn(),
+      getGigs: vi.fn(),
+      auth: {} as any,
+      setPageSize: vi.fn(),
+    };
+    render(<BrowserRouter><GigsDiv {...props} /></BrowserRouter>);
+    // DataGrid mock triggers onRowClick during render
+    expect(clickToEditSpy).toHaveBeenCalled();
+    clickToEditSpy.mockClear();
+
+    // 2. Card view click and Announce click
+    const onAnnounce = vi.fn();
+    const onEdit = vi.fn();
+    const { container: cardContainer } = render(
+      <GigCard gig={gig as any} isAdmin onAnnounce={onAnnounce} onEdit={onEdit} />,
+    );
+
+    // Clicking the card opens Edit Gig
+    const cardEl = cardContainer.querySelector('.gig-card')!;
+    fireEvent.click(cardEl);
+    expect(onEdit).toHaveBeenCalledWith(gig);
+    onEdit.mockClear();
+
+    // Clicking Announce button opens preview and does NOT open Edit Gig
+    const announceBtn = screen.getByRole('button', { name: /Announce/i });
+    fireEvent.click(announceBtn);
+    expect(onAnnounce).toHaveBeenCalledWith(gig);
+    expect(onEdit).not.toHaveBeenCalled();
+
+    clickToEditSpy.mockRestore();
+  });
+  it('renders card separator for Our Past Performances', () => {
+    const { container } = render(
+      <GigCard gig={{ venue: 'Our Past Performances', id: 999 } as any} isAdmin />,
+    );
+    expect(container.querySelector('.gig-card-separator')).toBeInTheDocument();
+    expect(container.textContent).toContain('Our Past Performances');
   });
 });
