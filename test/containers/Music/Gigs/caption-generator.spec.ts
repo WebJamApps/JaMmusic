@@ -271,6 +271,9 @@ describe('caption-generator', () => {
       expect(decodeHtmlEntities('&amp; &lt; &gt; &quot; &#39; &nbsp; &eacute;')).toBe('& < > " \'   é');
       expect(decodeHtmlEntities('&#x2013;')).toBe('–');
       expect(decodeHtmlEntities('&#8212;')).toBe('—');
+      expect(decodeHtmlEntities('&copy; 2026 &euro;50 &trade; &hellip; &frac12;')).toBe('© 2026 €50 ™ … ½');
+      expect(decodeHtmlEntities('&foobar;')).toBe('&foobar;');
+      expect(decodeHtmlEntities('')).toBe('');
     });
 
     it('converts rich HTML caption into plain text for Instagram and Facebook', () => {

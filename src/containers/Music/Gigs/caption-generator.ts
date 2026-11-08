@@ -235,6 +235,18 @@ const ANCHOR_RE = /<a\b[^>]*href="([^"]*)"[^>]*>[\s\S]*?<\/a>/gi;
 const BR_RE = /<br\s*\/?>/gi;
 const BLOCK_CLOSE_RE = /<\/(p|div|li|h[1-6]|blockquote)>/gi;
 const REMAINING_TAG_RE = /<[^>]*>/g;
+
+let cachedTextarea: HTMLTextAreaElement | null = null;
+
+function getCachedTextarea(): HTMLTextAreaElement | null {
+  if (typeof document === 'undefined') return null;
+  if (!cachedTextarea) {
+    cachedTextarea = document.createElement('textarea');
+  }
+  return cachedTextarea;
+}
+
+const ENTITY_RE = /&(?:#x[0-9a-fA-F]+|#\d+|[a-zA-Z0-9]+);/g;
 const NAMED_ENTITIES: Record<string, string> = {
   amp: '&',
   lt: '<',
@@ -249,16 +261,37 @@ const NAMED_ENTITIES: Record<string, string> = {
   rdquo: '”',
   ldquo: '“',
   eacute: 'é',
+  copy: '©',
+  euro: '€',
+  trade: '™',
+  hellip: '…',
+  reg: '®',
+  deg: '°',
 };
-const NAMED_ENTITY_RE = /&([a-zA-Z]+);/g;
+const NAMED_ENTITY_RE = /&([a-zA-Z0-9]+);/g;
 const NUMERIC_ENTITY_RE = /&#(\d+);/g;
 const HEX_ENTITY_RE = /&#x([0-9a-fA-F]+);/g;
 
 export function decodeHtmlEntities(text: string): string {
+  if (!text) return '';
+  const textarea = getCachedTextarea();
+  if (textarea) {
+    return text.replace(ENTITY_RE, entity => {
+      textarea.innerHTML = entity;
+      return textarea.value.replace(/\u{A0}/gu, ' ');
+    });
+  }
+  if (typeof DOMParser !== 'undefined') {
+    return text.replace(ENTITY_RE, entity => {
+      const doc = new DOMParser().parseFromString(entity, 'text/html');
+      return (doc.body.textContent || entity).replace(/\u{A0}/gu, ' ');
+    });
+  }
   return text
     .replace(HEX_ENTITY_RE, (_m, hex: string) => String.fromCodePoint(parseInt(hex, 16)))
     .replace(NUMERIC_ENTITY_RE, (_m, dec: string) => String.fromCodePoint(parseInt(dec, 10)))
-    .replace(NAMED_ENTITY_RE, (m, name: string) => NAMED_ENTITIES[name] ?? m);
+    .replace(NAMED_ENTITY_RE, (m, name: string) => NAMED_ENTITIES[name] ?? m)
+    .replace(/\u{A0}/gu, ' ');
 }
 
 export function htmlCaptionToText(html: string): string {
