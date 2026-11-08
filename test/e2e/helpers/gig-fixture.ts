@@ -19,7 +19,9 @@ export async function fixture(page: Page, lookup: {
       user: { userType: 'Developer', email: 'fixture@example.com' },
     }));
   });
-  const active = { _id: 'existing', name: 'Existing Hall', address: '9 First St', city: 'Salem', usState: 'VA', status: 'active' };
+  const active = {
+    _id: 'existing', name: 'Existing Hall', address: '9 First St', city: 'Salem', usState: 'VA', status: 'active', facebookPageId: '378590115336095',
+  };
   const archived = { _id: 'archivedHall', name: 'The Hall', address: '1 Electric Rd', city: 'Salem', usState: 'VA', status: 'archived' };
   await page.route('**/*', async (route) => {
     const url = new URL(route.request().url());

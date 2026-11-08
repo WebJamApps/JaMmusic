@@ -22,6 +22,7 @@ export interface Ivenue {
   phone?: string;
   website?: string;
   instagramUsername?: string;
+  facebookPageId?: string;
   status?: string;
   outreachEligible?: boolean;
   inScope?: boolean;
@@ -62,6 +63,7 @@ export interface IvenueUpdate {
   phone?: string;
   website?: string;
   instagramUsername?: string;
+  facebookPageId?: string;
   outreachEligible?: boolean;
   inScope?: boolean;
   bookingStatus?: string;
