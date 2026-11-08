@@ -143,3 +143,69 @@
 .announcedBadge {
   white-space: nowrap;
 }
+
+.gigs-table-container {
+  width: 100%;
+}
+
+.gigs-cards-wrapper {
+  width: 100%;
+}
+
+.gigs-cards-container {
+  display: grid;
+  gap: 16px;
+  width: 100%;
+  margin-top: 12px;
+  grid-template-columns: 1fr;
+
+  @media (min-width: 600px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  &.cards-single-col {
+    grid-template-columns: 1fr;
+  }
+
+  &.cards-two-col {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.gig-card {
+  background-color: var(--table-bg);
+  border: 1px solid var(--table-border);
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  color: var(--fg);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.15s ease-in-out;
+
+  &:hover {
+    background-color: var(--table-row-alt-bg);
+  }
+
+  &.gig-announce-nudge {
+    background-color: #fff9c4 !important;
+  }
+}
+
+[data-theme="dark"] .gig-card.gig-announce-nudge {
+  background-color: #3e3818 !important;
+}
+
+.gig-card-separator {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 12px 8px;
+  margin: 4px 0;
+  border-radius: 4px;
+}
+
+.gigs-cards-pagination {
+  border-top: 1px solid var(--table-border);
+  margin-top: 8px;
+}
+

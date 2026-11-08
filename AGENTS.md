@@ -63,6 +63,31 @@ JaMmusic itself does not deploy to Heroku directly.
   (such as removing a recording URL so an unrecorded song does not collide with a sparse unique index
   or retain a stale URL), the update payload must explicitly pass `$unset: { <field>: '' }` while
   deleting the key from the top-level payload (`delete payload.<field>`), rather than simply omitting it.
+- **Responsive Desktop Tables & Viewport Content Width**: When testing or designing desktop data tables
+  (e.g. MUI X DataGrid) to eliminate horizontal scrolling at desktop breakpoints (such as 960px or 1024px),
+  never sum column minimum widths against the viewport width alone. In layouts with persistent navigation
+  sidebars (e.g. `.main-panel` width `calc(100% - 180px)` for viewports >= 900px) and page content padding
+  (e.g. 16px left + 16px right in `.gigsDiv`), the actual available content width is significantly less than
+  the viewport (at 960px, available width is only `960 - 180 - 32 = 748px`; at 1024px,
+  `1024 - 180 - 32 = 812px`). Sizing strategies must ensure column minimum widths sum to less than or equal to
+  the actual available content width (using `box-sizing: border-box`), and responsive column widths should
+  leverage `flex` properties rather than fixed pixel widths to adapt cleanly across screen widths without
+  forcing horizontal scrollbars (`scrollWidth <= clientWidth`).
+- **Keyboard Activation and Event Scoping on Interactive Container Cards**: When interactive container
+  cards (e.g. `GigCard`) have click and keydown handlers (e.g. opening an edit modal on click/Enter/Space),
+  always scope keyboard activation strictly to `e.target === e.currentTarget` (and give the card accessible
+  semantics: `role="button"`, `tabIndex={0}`, and `aria-label`). Descendant buttons (like "Announce") and
+  links (venue/map/tickets) must not have their activation intercepted by the parent container: child buttons
+  must call `e.stopPropagation()` on both `click` and `keydown` for Enter and Space, and container click
+  handlers must ignore clicks originating from interactive child elements
+  (`a, button, input, select, textarea, img`).
+- **E2E Selector Migration for Responsive Layout Breakpoints**: When a desktop data table
+  (e.g. `.MuiDataGrid-root` / `.MuiDataGrid-row`) is responsively transformed into a card layout
+  (e.g. `.gig-card`) below a specific viewport breakpoint, shared E2E test helpers (such as `openGigDialog`)
+  and browser test suites must not unconditionally query removed desktop table selectors. Because Playwright
+  mobile projects (such as `Pixel 5`) run at narrow viewports (< 960px), helpers and assertions must detect
+  whether card elements or table elements are visible, exercising cards at narrow viewports while retaining
+  desktop table coverage when viewports are resized.
 
 ## Layout
 
