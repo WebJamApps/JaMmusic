@@ -1,4 +1,14 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, type Page } from '@playwright/test';
+
+const ADMIN_AUTH = {
+  isAuthenticated: true,
+  error: '',
+  token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyLTEyMyIsImV4cCI6OTk5OTk5OTk5OX0.signature',
+  user: {
+    userType: 'Developer',
+    email: 'admin@web-jam.com',
+  },
+};
 
 // The site stores its theme in localStorage (applied as a data-theme attribute
 // on <html>), NOT via prefers-color-scheme — so seed localStorage before the
@@ -8,6 +18,26 @@ test.beforeEach(async ({ context, page }) => {
     try { localStorage.setItem('theme', 'dark'); } catch { /* ignore */ }
   });
 
+  // Mock profile endpoint so AuthProvider validates admin token without error
+  await page.route('**/user/user-*', async (route) => {
+    if (route.request().resourceType() === 'document') {
+      await route.continue();
+      return;
+    }
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      headers: {
+        'access-control-allow-origin': '*',
+        'access-control-allow-headers': '*',
+        'access-control-allow-methods': '*',
+      },
+      body: JSON.stringify({ userType: 'Developer', email: 'admin@web-jam.com' }),
+    });
+  });
+
+  const upcomingDatetime = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
+
   // Mock API requests for the /music page to prevent loading spinner hang
   await page.route(/\/tour/, async (route) => {
     await route.fulfill({
@@ -16,7 +46,7 @@ test.beforeEach(async ({ context, page }) => {
       body: JSON.stringify([
         {
           _id: 'g1',
-          datetime: new Date().toISOString(),
+          datetime: upcomingDatetime,
           venue: 'Mock Venue',
           tickets: 'Free',
           location: 'Mock City, VA',
@@ -54,7 +84,7 @@ test.beforeEach(async ({ context, page }) => {
           event: 'allGigs',
           data: [{
             _id: 'g1',
-            datetime: new Date().toISOString(),
+            datetime: upcomingDatetime,
             venue: 'Mock Venue',
             tickets: 'Free',
             location: 'Mock City, VA',
@@ -106,38 +136,63 @@ test('music page has no horizontal overflow on a phone', async ({ page }) => {
   expect(overflow, `unexpected horizontal overflow of ${overflow}px`).toBeLessThanOrEqual(2);
 });
 
-test('gigs table has no horizontal overflow on desktop at 960px and 1024px', async ({ page }) => {
+const checkTableOverflow = async (page: Page, label: string, width: number) => {
+  const overflow = await page.evaluate(() => {
+    const el = document.scrollingElement || document.documentElement;
+    const pageOverflow = el.scrollWidth - el.clientWidth;
+
+    const outer = document.querySelector('.search-table-outer') as HTMLElement | null;
+    const outerOverflow = outer ? outer.scrollWidth - outer.clientWidth : 0;
+
+    const gridEl = document.querySelector('.MuiDataGrid-root') as HTMLElement | null;
+    const gridOverflow = gridEl ? gridEl.scrollWidth - gridEl.clientWidth : 0;
+
+    const scroller = document.querySelector('.MuiDataGrid-virtualScroller') as HTMLElement | null;
+    const scrollerOverflow = scroller ? scroller.scrollWidth - scroller.clientWidth : 0;
+
+    return {
+      pageOverflow,
+      outerOverflow,
+      gridOverflow,
+      scrollerOverflow,
+    };
+  });
+
+  expect(overflow.pageOverflow, `${label} page horizontal overflow at ${width}px`).toBeLessThanOrEqual(2);
+  expect(overflow.outerOverflow, `${label} outer table wrapper overflow at ${width}px`).toBeLessThanOrEqual(2);
+  expect(overflow.gridOverflow, `${label} DataGrid overflow at ${width}px`).toBeLessThanOrEqual(2);
+  expect(overflow.scrollerOverflow, `${label} DataGrid virtual scroller overflow at ${width}px`).toBeLessThanOrEqual(2);
+};
+
+test('gigs table has no horizontal overflow on desktop at 960px and 1024px', async ({ page, context }) => {
+  // 1. Visitor table (without admin privileges or Announce column)
   for (const width of [960, 1024]) {
     await page.setViewportSize({ width, height: 800 });
     await page.goto('/music', { waitUntil: 'domcontentloaded' });
 
     const grid = page.locator('.MuiDataGrid-root').first();
     await grid.waitFor({ state: 'visible', timeout: 10000 });
+    await expect(page.locator('.MuiDataGrid-root.adminGrid')).toHaveCount(0);
+    await expect(page.locator('.MuiDataGrid-columnHeader[data-field="announce"]')).toHaveCount(0);
 
-    const overflow = await page.evaluate(() => {
-      const el = document.scrollingElement || document.documentElement;
-      const pageOverflow = el.scrollWidth - el.clientWidth;
+    await checkTableOverflow(page, 'visitor', width);
+  }
 
-      const outer = document.querySelector('.search-table-outer') as HTMLElement | null;
-      const outerOverflow = outer ? outer.scrollWidth - outer.clientWidth : 0;
+  // 2. Administrator table with upcoming gig (exercises Announce column and .adminGrid)
+  await context.addInitScript((auth) => {
+    try { localStorage.setItem('auth', JSON.stringify(auth)); } catch { /* ignore */ }
+  }, ADMIN_AUTH);
 
-      const gridEl = document.querySelector('.MuiDataGrid-root') as HTMLElement | null;
-      const gridOverflow = gridEl ? gridEl.scrollWidth - gridEl.clientWidth : 0;
+  for (const width of [960, 1024]) {
+    await page.setViewportSize({ width, height: 800 });
+    await page.goto('/music', { waitUntil: 'domcontentloaded' });
 
-      const scroller = document.querySelector('.MuiDataGrid-virtualScroller') as HTMLElement | null;
-      const scrollerOverflow = scroller ? scroller.scrollWidth - scroller.clientWidth : 0;
+    const adminGrid = page.locator('.MuiDataGrid-root.adminGrid').first();
+    await adminGrid.waitFor({ state: 'visible', timeout: 10000 });
 
-      return {
-        pageOverflow,
-        outerOverflow,
-        gridOverflow,
-        scrollerOverflow,
-      };
-    });
+    const announceHeader = page.locator('.MuiDataGrid-columnHeader[data-field="announce"]');
+    await expect(announceHeader).toBeVisible();
 
-    expect(overflow.pageOverflow, `page horizontal overflow at ${width}px`).toBeLessThanOrEqual(2);
-    expect(overflow.outerOverflow, `outer table wrapper overflow at ${width}px`).toBeLessThanOrEqual(2);
-    expect(overflow.gridOverflow, `DataGrid overflow at ${width}px`).toBeLessThanOrEqual(2);
-    expect(overflow.scrollerOverflow, `DataGrid virtual scroller overflow at ${width}px`).toBeLessThanOrEqual(2);
+    await checkTableOverflow(page, 'admin', width);
   }
 });
