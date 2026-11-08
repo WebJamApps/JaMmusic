@@ -179,7 +179,7 @@ exports[`/music > renders the component 1`] = `
     >
       <div
         class="gigsDiv"
-        style="margin: auto; padding: 10px 16px; width: 100%;"
+        style="margin: auto; padding: 10px 16px; width: 100%; box-sizing: border-box;"
       >
         <h4
           style="text-align: center;"

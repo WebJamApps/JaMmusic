@@ -27,8 +27,9 @@ export const makeColumns = (
   const dateCol: GridColDef = {
     field: 'date',
     headerName: 'Date',
-    width: 120,
-    minWidth: 120,
+    width: 90,
+    minWidth: 85,
+    resizable: false,
     editable: false,
     renderCell: (params: GridRenderCellParams) => {
       const { row: { datetime, usState, venueId } } = params;
@@ -40,8 +41,9 @@ export const makeColumns = (
   const timeCol: GridColDef = {
     field: 'time',
     headerName: 'Time',
-    width: 120,
-    minWidth: 120,
+    width: 90,
+    minWidth: 85,
+    resizable: false,
     editable: false,
     renderCell: (params: GridRenderCellParams) => {
       const { row: { datetime, duration, usState, venueId } } = params;
@@ -53,25 +55,31 @@ export const makeColumns = (
   const locationCol: GridColDef = {
     field: 'location',
     headerName: 'Location',
-    minWidth: 160,
+    minWidth: 120,
     flex: 1,
+    resizable: false,
     editable: false,
     renderCell: (params: GridRenderCellParams) => utils.renderLocation(params.row),
   };
   const ticketsCol: GridColDef = {
     field: 'tickets',
     headerName: 'Tickets',
-    width: 100,
-    minWidth: 100,
+    width: 70,
+    minWidth: 65,
+    sortable: false,
+    resizable: false,
+    disableColumnMenu: true,
     editable: false,
     renderCell: (params: GridRenderCellParams) => <span>{HtmlReactParser(params.value || 'Free')}</span>,
   };
   const photoCol: GridColDef = {
     field: 'promoImageUrl',
     headerName: 'Photo',
-    width: 80,
-    minWidth: 80,
+    width: 60,
+    minWidth: 50,
     sortable: false,
+    resizable: false,
+    disableColumnMenu: true,
     editable: false,
     renderCell: (params: GridRenderCellParams) => {
       const { row: { promoImageUrl } } = params;
@@ -92,22 +100,35 @@ export const makeColumns = (
   const announceCol: GridColDef = {
     field: 'announce',
     headerName: 'Announce',
-    width: 150,
-    minWidth: 150,
+    width: 140,
+    minWidth: 135,
     sortable: false,
+    resizable: false,
+    disableColumnMenu: true,
     editable: false,
     renderCell: (params: GridRenderCellParams) => {
       const { row } = params;
       if (!isAdmin || !utils.isUpcomingGig(row)) return '';
       return (
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap',
+        }}
+        >
           <Button
             size="small"
             variant="outlined"
             className="announceButton"
+            sx={{
+              minWidth: 'auto', padding: '2px 8px', fontSize: '0.75rem', lineHeight: 1.3,
+            }}
             onClick={(e) => {
               e.stopPropagation();
               onAnnounce?.(row);
+            }}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.stopPropagation();
+              }
             }}
           >
             Announce
@@ -115,7 +136,9 @@ export const makeColumns = (
           {Boolean(row.announcedAt) && (
             <span
               className="announcedBadge"
-              style={{ color: '#2e7d32', fontWeight: 'bold', fontSize: '12px' }}
+              style={{
+                color: '#2e7d32', fontWeight: 'bold', fontSize: '11px', whiteSpace: 'nowrap',
+              }}
             >
               announced ✓
             </span>
@@ -162,12 +185,21 @@ export const GigCard = ({
     <div
       className={`gig-card ${isNudge ? 'gig-announce-nudge' : ''}`}
       data-testid={`gig-card-${gig._id || gig.id || 'item'}`}
+      role={isAdmin ? 'button' : undefined}
+      // eslint-disable-next-line jsx-a11y-x/no-noninteractive-tabindex
+      tabIndex={isAdmin ? 0 : undefined}
+      aria-label={isAdmin ? `Edit gig at ${gig.venue || 'venue'} on ${dateTimeStr}` : undefined}
       style={{ cursor: isAdmin ? 'pointer' : 'default' }}
-      onClick={() => {
-        if (isAdmin) onEdit?.(gig);
+      onClick={(e) => {
+        if (!isAdmin) return;
+        const target = e.target as HTMLElement | null;
+        if (target && target.closest('a, button, input, select, textarea, img')) {
+          return;
+        }
+        onEdit?.(gig);
       }}
       onKeyDown={(e) => {
-        if (isAdmin && (e.key === 'Enter' || e.key === ' ')) {
+        if (isAdmin && e.target === e.currentTarget && (e.key === 'Enter' || e.key === ' ')) {
           e.preventDefault();
           onEdit?.(gig);
         }
@@ -182,6 +214,11 @@ export const GigCard = ({
             onClick={(e) => {
               e.stopPropagation();
               onAnnounce?.(gig);
+            }}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.stopPropagation();
+              }
             }}
           >
             Announce
@@ -202,7 +239,7 @@ export const GigCard = ({
         </div>
       )}
       <div className="gig-card-venue" style={{ marginBottom: '6px' }}>
-        {utils.renderVenueCell({ row: gig } as any)}
+        {utils.renderVenue(gig)}
       </div>
       <div className="gig-card-location" style={{ marginBottom: '8px' }}>
         {utils.renderLocation(gig)}
@@ -272,7 +309,7 @@ export const GigsDiv = (props: IgigsDivProps) => {
     <div
       className="gigsDiv"
       style={{
-        margin: 'auto', padding: '10px 16px', width: '100%',
+        margin: 'auto', padding: '10px 16px', width: '100%', boxSizing: 'border-box',
       }}
     >
       <h4 style={{ textAlign: 'center' }}>
@@ -331,7 +368,7 @@ export const GigsDiv = (props: IgigsDivProps) => {
           />
         </div>
       ) : (
-        <div className="gigs-table-container" style={{ width: '100%' }}>
+        <div className="gigs-table-container" style={{ width: '100%', maxWidth: '100%', boxSizing: 'border-box' }}>
           <DataGrid
             className={isAdmin ? 'adminGrid' : ''}
             autoHeight
@@ -349,6 +386,19 @@ export const GigsDiv = (props: IgigsDivProps) => {
             onPaginationModelChange={(model) => { setPage(model.page); setPageSize(model.pageSize); }}
             pageSizeOptions={[5, 10, 25, 50]}
             disableRowSelectionOnClick
+            sx={{
+              width: '100%',
+              maxWidth: '100%',
+              boxSizing: 'border-box',
+              '& .MuiDataGrid-main': { width: '100%' },
+              '& .MuiDataGrid-cell': {
+                whiteSpace: 'normal',
+                wordBreak: 'break-word',
+              },
+              '& .MuiDataGrid-columnSeparator': {
+                display: 'none',
+              },
+            }}
           />
         </div>
       )}

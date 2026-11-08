@@ -9,6 +9,8 @@ import {
 import * as mui from '@mui/material';
 import type { AnnounceGigDialogProps } from 'src/containers/Music/Gigs/AnnounceGigDialog';
 import utils from 'src/containers/Music/Gigs/gigs.utils';
+import type { Igig } from 'src/providers/Data.provider';
+import type { Iauth } from 'src/providers/Auth.provider';
 
 vi.mock('@mui/x-data-grid', () => ({
   DataGrid: (props: any) => {
@@ -388,43 +390,54 @@ describe('Gigs', () => {
     expect(visitorCols[0].field).toBe('date');
     expect(visitorCols.some((col) => col.field === 'announce')).toBe(false);
   });
-  it('ensures column minimum widths add up to no more than 960 pixels', () => {
+  it('ensures column minimum widths fit available content width at 960px and 1024px', () => {
+    // At 960px viewport: 960 - 180 (sidebar) - 32 (padding) = 748px available content width
     const adminCols = makeColumns(false, true);
     const totalAdminWidth = adminCols.reduce(
       (sum, col) => sum + (col.minWidth ?? col.width ?? 0),
       0,
     );
-    expect(totalAdminWidth).toBeLessThanOrEqual(960);
+    expect(totalAdminWidth).toBeLessThanOrEqual(748);
 
+    // Visitor columns
     const visitorCols = makeColumns(false, false);
     const totalVisitorWidth = visitorCols.reduce(
       (sum, col) => sum + (col.minWidth ?? col.width ?? 0),
       0,
     );
-    expect(totalVisitorWidth).toBeLessThanOrEqual(960);
+    expect(totalVisitorWidth).toBeLessThanOrEqual(748);
   });
   it('renders one card column under 600 pixels and two from 600 to 959', () => {
     const mediaSpy = vi.spyOn(mui, 'useMediaQuery');
+    const mockAuth: Iauth = {
+      token: 'mock-token',
+      isAuthenticated: true,
+      error: '',
+      user: { userType: 'admin', email: 'admin@example.com' },
+    };
+    const mockGig1 = {
+      _id: 'g1', venue: 'Slow Play Brewing', datetime: new Date(), tickets: 'Free',
+    } as Igig;
+    const mockGig2 = {
+      _id: 'g2', venue: 'Durty Bull Brewing', datetime: new Date(), tickets: 'Free',
+    } as Igig;
     const props = {
       isAdmin: true,
       setShowDialog: vi.fn(),
       setEditGig: vi.fn(),
-      editGig: {} as any,
-      gigsInOrder: [
-        { _id: 'g1', venue: 'Slow Play Brewing', datetime: new Date().toISOString() },
-        { _id: 'g2', venue: 'Durty Bull Brewing', datetime: new Date().toISOString() },
-      ] as any,
+      editGig: {} as Igig,
+      gigsInOrder: [mockGig1, mockGig2],
       pageSize: 5,
       showDialog: false,
       editChanged: false,
       setEditChanged: vi.fn(),
       getGigs: vi.fn(),
-      auth: {} as any,
+      auth: mockAuth,
       setPageSize: vi.fn(),
     };
 
     // Under 600 pixels: max-width:959px is true, max-width:599px is true
-    mediaSpy.mockImplementation((query: any) => String(query).includes('959') || String(query).includes('599'));
+    mediaSpy.mockImplementation((query: unknown) => String(query).includes('959') || String(query).includes('599'));
     const { container, rerender } = render(<BrowserRouter><GigsDiv {...props} /></BrowserRouter>);
     const containerSingle = container.querySelector('.gigs-cards-container');
     expect(containerSingle).toBeInTheDocument();
@@ -432,7 +445,7 @@ describe('Gigs', () => {
     expect(containerSingle).toHaveStyle({ gridTemplateColumns: '1fr' });
 
     // From 600 to 959 pixels: max-width:959px is true, max-width:599px is false
-    mediaSpy.mockImplementation((query: any) => String(query).includes('959') && !String(query).includes('599'));
+    mediaSpy.mockImplementation((query: unknown) => String(query).includes('959') && !String(query).includes('599'));
     rerender(<BrowserRouter><GigsDiv {...props} /></BrowserRouter>);
     const containerTwo = container.querySelector('.gigs-cards-container');
     expect(containerTwo).toBeInTheDocument();
@@ -443,22 +456,30 @@ describe('Gigs', () => {
   });
   it('opens Edit Gig on row or card click and does not open Edit Gig on Announce click', () => {
     const clickToEditSpy = vi.spyOn(utils, 'clickToEdit');
-    const futureDate = new Date(Date.now() + 86400000).toISOString();
-    const gig = { _id: 'g1', venue: 'Slow Play Brewing', datetime: futureDate };
+    const futureDate = new Date(Date.now() + 86400000);
+    const gig = {
+      _id: 'g1', venue: 'Slow Play Brewing', datetime: futureDate, tickets: 'Free',
+    } as Igig;
+    const mockAuth: Iauth = {
+      token: 'mock-token',
+      isAuthenticated: true,
+      error: '',
+      user: { userType: 'admin', email: 'admin@example.com' },
+    };
 
     // 1. Desktop table row click
     const props = {
       isAdmin: true,
       setShowDialog: vi.fn(),
       setEditGig: vi.fn(),
-      editGig: {} as any,
-      gigsInOrder: [gig] as any,
+      editGig: {} as Igig,
+      gigsInOrder: [gig],
       pageSize: 5,
       showDialog: false,
       editChanged: false,
       setEditChanged: vi.fn(),
       getGigs: vi.fn(),
-      auth: {} as any,
+      auth: mockAuth,
       setPageSize: vi.fn(),
     };
     render(<BrowserRouter><GigsDiv {...props} /></BrowserRouter>);
@@ -470,7 +491,7 @@ describe('Gigs', () => {
     const onAnnounce = vi.fn();
     const onEdit = vi.fn();
     const { container: cardContainer } = render(
-      <GigCard gig={gig as any} isAdmin onAnnounce={onAnnounce} onEdit={onEdit} />,
+      <GigCard gig={gig} isAdmin onAnnounce={onAnnounce} onEdit={onEdit} />,
     );
 
     // Clicking the card opens Edit Gig
@@ -487,9 +508,61 @@ describe('Gigs', () => {
 
     clickToEditSpy.mockRestore();
   });
-  it('renders card separator for Our Past Performances', () => {
+  it('handles keyboard activation on card and prevents bubbling from Announce or links', () => {
+    const futureDate = new Date(Date.now() + 86400000);
+    const gig = {
+      _id: 'g1',
+      venue: 'Slow Play Brewing',
+      datetime: futureDate,
+      tickets: 'Free',
+      venueId: {
+        _id: 'v1',
+        name: 'Slow Play Brewing',
+        website: 'https://slowplaybrewing.com',
+      },
+    } as Igig;
+
+    const onAnnounce = vi.fn();
+    const onEdit = vi.fn();
     const { container } = render(
-      <GigCard gig={{ venue: 'Our Past Performances', id: 999 } as any} isAdmin />,
+      <GigCard gig={gig} isAdmin onAnnounce={onAnnounce} onEdit={onEdit} />,
+    );
+
+    const cardEl = container.querySelector('.gig-card')!;
+    expect(cardEl).toHaveAttribute('role', 'button');
+    expect(cardEl).toHaveAttribute('tabIndex', '0');
+
+    // 1. Enter on the card itself triggers onEdit
+    fireEvent.keyDown(cardEl, { key: 'Enter', target: cardEl });
+    expect(onEdit).toHaveBeenCalledWith(gig);
+    onEdit.mockClear();
+
+    // 2. Space on the card itself triggers onEdit
+    fireEvent.keyDown(cardEl, { key: ' ', target: cardEl });
+    expect(onEdit).toHaveBeenCalledWith(gig);
+    onEdit.mockClear();
+
+    // 3. Other key (e.g. Tab or Escape) does NOT trigger onEdit
+    fireEvent.keyDown(cardEl, { key: 'Escape', target: cardEl });
+    expect(onEdit).not.toHaveBeenCalled();
+
+    // 4. Enter on Announce button stops propagation and does NOT trigger onEdit
+    const announceBtn = screen.getByRole('button', { name: /Announce/i });
+    fireEvent.keyDown(announceBtn, { key: 'Enter' });
+    expect(onEdit).not.toHaveBeenCalled();
+
+    // 5. Enter on venue link does NOT trigger onEdit
+    const linkEl = container.querySelector('a')!;
+    expect(linkEl).toBeInTheDocument();
+    fireEvent.keyDown(linkEl, { key: 'Enter' });
+    expect(onEdit).not.toHaveBeenCalled();
+  });
+  it('renders card separator for Our Past Performances', () => {
+    const pastGig = {
+      venue: 'Our Past Performances', id: 999, datetime: null, tickets: '',
+    } as Igig;
+    const { container } = render(
+      <GigCard gig={pastGig} isAdmin />,
     );
     expect(container.querySelector('.gig-card-separator')).toBeInTheDocument();
     expect(container.textContent).toContain('Our Past Performances');

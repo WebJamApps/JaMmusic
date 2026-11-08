@@ -425,10 +425,9 @@ export const isFreeTextRenderable = (venue?: string, linkedName?: string): boole
   return normalizedFreeText !== normalizedVenueName;
 };
 
-const renderVenueCell = (params: GridRenderCellParams) => {
-  const row = params?.row;
+export const renderVenue = (row?: Igig | null, fallbackValue?: string) => {
   if (!row) {
-    return makeVenueValue(params?.value || '');
+    return makeVenueValue(fallbackValue || '');
   }
   const { venue, venueId } = row;
   if (venue === 'Our Past Performances') {
@@ -438,7 +437,13 @@ const renderVenueCell = (params: GridRenderCellParams) => {
     const { name, website } = venueId;
     const hrefUrl = website ? normalizeUrl(website) : '';
     const resolvedLink = hrefUrl ? (
-      <a href={hrefUrl} target="_blank" rel="noopener" style={{ fontWeight: 'bold', textDecoration: 'underline' }}>
+      <a
+        href={hrefUrl}
+        target="_blank"
+        rel="noopener"
+        style={{ fontWeight: 'bold', textDecoration: 'underline' }}
+        onClick={(e) => e.stopPropagation()}
+      >
         {name}
       </a>
     ) : (
@@ -460,13 +465,18 @@ const renderVenueCell = (params: GridRenderCellParams) => {
   return <div>{HtmlReactParser(venue || '')}</div>;
 };
 
+const renderVenueCell = (params?: GridRenderCellParams | { row?: Igig | null; value?: unknown }) => (
+  renderVenue(params?.row, typeof params?.value === 'string' ? params.value : undefined)
+);
+
 const makeVenue = (isMobile = false): GridColDef => (
   {
     field: 'venue',
     headerName: 'Venue',
     width: isMobile ? 220 : undefined,
-    minWidth: 220,
+    minWidth: 160,
     flex: 2,
+    resizable: false,
     editable: false,
     renderCell: (params: GridRenderCellParams) => renderVenueCell(params),
   }
@@ -600,6 +610,7 @@ export default {
   normalizeUrl,
   normalizeTextForComparison,
   isFreeTextRenderable,
+  renderVenue,
   renderVenueCell,
   renderLocation,
   getCardColumnCount,

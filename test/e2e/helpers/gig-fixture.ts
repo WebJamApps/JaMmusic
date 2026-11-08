@@ -1,4 +1,4 @@
-import { type Page } from '@playwright/test';
+import { type Page, expect } from '@playwright/test';
 
 interface SocketPacket { event?: string; cid?: number; data?: { gig?: Record<string, unknown> } }
 export async function fixture(page: Page, lookup: {
@@ -90,7 +90,17 @@ export async function fixture(page: Page, lookup: {
 }
 
 export async function openGigDialog(page: Page, mode: 'create' | 'edit') {
-  if (mode === 'create') await page.locator('.showCreateDialog').click();
-  else await page.locator('.gigsDiv .MuiDataGrid-row[data-id="0"]').click();
+  if (mode === 'create') {
+    await page.locator('.showCreateDialog').click();
+  } else {
+    const card = page.locator('.gigsDiv .gig-card:not(.gig-card-separator)').first();
+    const row = page.locator('.gigsDiv .MuiDataGrid-row[data-id="0"]').first();
+    await expect(card.or(row)).toBeVisible();
+    if (await card.isVisible()) {
+      await card.click();
+    } else {
+      await row.click();
+    }
+  }
   return page.getByRole('dialog', { name: mode === 'create' ? 'Create New Gig' : 'Edit Gig' });
 }

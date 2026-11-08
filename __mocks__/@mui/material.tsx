@@ -303,7 +303,17 @@ export function TableContainer(props: {
   return <Component {...rest}>{children}</Component>;
 }
 
-export function TablePagination(props: any) {
+export function TablePagination(props: {
+  count: number;
+  page: number;
+  rowsPerPage: number;
+  onPageChange?: (event: React.MouseEvent<HTMLButtonElement> | null, page: number) => void;
+  onRowsPerPageChange?: (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+  rowsPerPageOptions?: Array<number | { value: number; label: string }>;
+  component?: React.ElementType;
+  className?: string;
+  [key: string]: unknown;
+}) {
   const {
     count, page, rowsPerPage, onPageChange, onRowsPerPageChange, rowsPerPageOptions, ...rest
   } = props;

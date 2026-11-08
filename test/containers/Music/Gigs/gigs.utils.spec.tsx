@@ -686,15 +686,15 @@ describe('gigs.utils', () => {
     });
 
     it('returns empty string when datetime is falsy', () => {
-      expect(utils.makeDateValue('' as any)).toBe('');
-      expect(utils.makeDateValue(null as any)).toBe('');
+      expect(utils.makeDateValue('' as unknown as string)).toBe('');
+      expect(utils.makeDateValue(null as unknown as string)).toBe('');
     });
   });
 
   describe('makeVenue', () => {
-    it('configures venue column with minWidth 220 and flex 2', () => {
+    it('configures venue column with minWidth 160 and flex 2', () => {
       const col = utils.makeVenue(false);
-      expect(col.minWidth).toBe(220);
+      expect(col.minWidth).toBe(160);
       expect(col.flex).toBe(2);
     });
   });
@@ -705,35 +705,41 @@ describe('gigs.utils', () => {
     });
 
     it('returns free-text location when present', () => {
-      expect(utils.renderLocation({ location: 'Main Stage' } as any)).toBe('Main Stage');
+      const row: Partial<Igig> = { location: 'Main Stage' };
+      expect(utils.renderLocation(row as Igig)).toBe('Main Stage');
     });
 
     it('returns map link when linked venue has an address', () => {
-      const row = {
+      const row: Partial<Igig> = {
         venueId: {
+          _id: 'v1',
           name: 'The Spot',
           address: '123 Main St',
           city: 'Roanoke',
           usState: 'VA',
         },
-      } as any;
-      const cell: any = utils.renderLocation(row);
+      };
+      const cell = utils.renderLocation(row as Igig) as React.ReactElement<{
+        href?: string;
+        onClick?: (e: { stopPropagation: () => void }) => void;
+      }>;
       expect(cell.type).toBe('a');
       expect(cell.props.href).toContain('123%20Main%20St');
       const stopPropagation = vi.fn();
-      cell.props.onClick({ stopPropagation });
+      cell.props.onClick?.({ stopPropagation });
       expect(stopPropagation).toHaveBeenCalled();
     });
 
     it('returns resolved city, state when venue has no address', () => {
-      const row = {
+      const row: Partial<Igig> = {
         venueId: {
+          _id: 'v1',
           name: 'The Spot',
           city: 'Roanoke',
           usState: 'VA',
         },
-      } as any;
-      expect(utils.renderLocation(row)).toBe('Roanoke, VA');
+      };
+      expect(utils.renderLocation(row as Igig)).toBe('Roanoke, VA');
     });
   });
 });
