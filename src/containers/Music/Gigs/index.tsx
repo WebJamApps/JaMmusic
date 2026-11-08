@@ -4,14 +4,15 @@ import {
 import {
   DataGrid, type GridColDef, type GridRenderCellParams,
 } from '@mui/x-data-grid';
-import { Button, IconButton, Tooltip, useMediaQuery } from '@mui/material';
+import {
+  Button, IconButton, TablePagination, Tooltip, useMediaQuery,
+} from '@mui/material';
 import { Add as AddIcon } from '@mui/icons-material';
 import HtmlReactParser from 'html-react-parser';
 import { DataContext, Igig } from 'src/providers/Data.provider';
 import { AuthContext, Iauth } from 'src/providers/Auth.provider';
 import { defaultGig } from 'src/providers/fetchGigs';
 import { useNavigate } from 'react-router';
-import adminVenuesUtils from 'src/containers/AdminVenues/admin-venues.utils';
 import utils from './gigs.utils';
 import { EditGigDialog } from './EditGigDialog';
 import { CreateGigDialog } from './CreateGigDialog';
@@ -26,19 +27,23 @@ export const makeColumns = (
   const dateCol: GridColDef = {
     field: 'date',
     headerName: 'Date',
-    width: isMobile ? 110 : 220,
+    width: 90,
+    minWidth: 85,
+    resizable: false,
     editable: false,
     renderCell: (params: GridRenderCellParams) => {
       const { row: { datetime, usState, venueId } } = params;
       if (!datetime) return '';
       const resolvedState = venueId && typeof venueId === 'object' ? venueId.usState : usState;
-      return isMobile ? utils.makeShortDateValue(datetime, resolvedState) : utils.makeDateValue(datetime, resolvedState);
+      return utils.makeDateValue(datetime, resolvedState);
     },
   };
   const timeCol: GridColDef = {
     field: 'time',
     headerName: 'Time',
-    width: isMobile ? 140 : 170,
+    width: 90,
+    minWidth: 85,
+    resizable: false,
     editable: false,
     renderCell: (params: GridRenderCellParams) => {
       const { row: { datetime, duration, usState, venueId } } = params;
@@ -50,53 +55,31 @@ export const makeColumns = (
   const locationCol: GridColDef = {
     field: 'location',
     headerName: 'Location',
-    width: isMobile ? 150 : undefined,
-    minWidth: isMobile ? undefined : 160,
-    flex: isMobile ? 0 : 1,
+    minWidth: 120,
+    flex: 1,
+    resizable: false,
     editable: false,
-    renderCell: (params: GridRenderCellParams) => {
-      const { row: { location, city, usState, venueId } } = params;
-      if (location) return location;
-      const isVenueObj = venueId && typeof venueId === 'object';
-      const venueAddress = isVenueObj && venueId.address ? venueId.address.trim() : '';
-      const resolvedCity = isVenueObj ? (venueId.city || '') : (city || '');
-      const resolvedState = isVenueObj ? (venueId.usState || '') : (usState || '');
-      const venueName = isVenueObj ? (venueId.name || '') : '';
-
-      if (isVenueObj && venueAddress) {
-        const mapUrl = adminVenuesUtils.getGoogleMapsUrl(venueAddress, resolvedCity, resolvedState);
-        const line2 = resolvedCity && resolvedState ? `${resolvedCity}, ${resolvedState}` : (resolvedCity || resolvedState || '');
-        return (
-          <a
-            href={mapUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label={`Open ${venueName || 'venue'} in Google Maps`}
-            style={{ textDecoration: 'underline' }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div>{venueAddress}</div>
-            {line2 ? <div>{line2}</div> : null}
-          </a>
-        );
-      }
-
-      if (resolvedCity) return resolvedState ? `${resolvedCity}, ${resolvedState}` : resolvedCity;
-      return resolvedState || '';
-    },
+    renderCell: (params: GridRenderCellParams) => utils.renderLocation(params.row),
   };
   const ticketsCol: GridColDef = {
     field: 'tickets',
     headerName: 'Tickets',
-    width: 120,
+    width: 70,
+    minWidth: 65,
+    sortable: false,
+    resizable: false,
+    disableColumnMenu: true,
     editable: false,
     renderCell: (params: GridRenderCellParams) => <span>{HtmlReactParser(params.value || 'Free')}</span>,
   };
   const photoCol: GridColDef = {
     field: 'promoImageUrl',
     headerName: 'Photo',
-    width: 90,
+    width: 60,
+    minWidth: 50,
     sortable: false,
+    resizable: false,
+    disableColumnMenu: true,
     editable: false,
     renderCell: (params: GridRenderCellParams) => {
       const { row: { promoImageUrl } } = params;
@@ -117,21 +100,35 @@ export const makeColumns = (
   const announceCol: GridColDef = {
     field: 'announce',
     headerName: 'Announce',
-    width: isMobile ? 140 : 170,
+    width: 140,
+    minWidth: 135,
     sortable: false,
+    resizable: false,
+    disableColumnMenu: true,
     editable: false,
     renderCell: (params: GridRenderCellParams) => {
       const { row } = params;
       if (!isAdmin || !utils.isUpcomingGig(row)) return '';
       return (
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap',
+        }}
+        >
           <Button
             size="small"
             variant="outlined"
             className="announceButton"
+            sx={{
+              minWidth: 'auto', padding: '2px 8px', fontSize: '0.75rem', lineHeight: 1.3,
+            }}
             onClick={(e) => {
               e.stopPropagation();
               onAnnounce?.(row);
+            }}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.stopPropagation();
+              }
             }}
           >
             Announce
@@ -139,7 +136,9 @@ export const makeColumns = (
           {Boolean(row.announcedAt) && (
             <span
               className="announcedBadge"
-              style={{ color: '#2e7d32', fontWeight: 'bold', fontSize: '12px' }}
+              style={{
+                color: '#2e7d32', fontWeight: 'bold', fontSize: '11px', whiteSpace: 'nowrap',
+              }}
             >
               announced ✓
             </span>
@@ -150,12 +149,119 @@ export const makeColumns = (
   };
 
   const baseColumns = [dateCol, timeCol, utils.makeVenue(isMobile), locationCol, ticketsCol, photoCol];
-  if (isAdmin) baseColumns.push(announceCol);
+  if (isAdmin) return [announceCol, ...baseColumns];
   return baseColumns;
 };
 
 // Backwards-compatible default (desktop) export.
 export const columns: GridColDef[] = makeColumns(false);
+
+export const GigCard = ({
+  gig,
+  isAdmin,
+  onAnnounce,
+  onEdit,
+}: {
+  gig: Igig;
+  isAdmin: boolean;
+  onAnnounce?: (gig: Igig) => void;
+  onEdit?: (gig: Igig) => void;
+}) => {
+  if (gig.venue === 'Our Past Performances' || gig.id === 999) {
+    return (
+      <div className="ourPastPerformances gig-card-separator">
+        {HtmlReactParser(gig.venue || 'Our Past Performances')}
+      </div>
+    );
+  }
+  const isNudge = isAdmin && utils.isUpcomingGig(gig) && utils.isWithin10Days(gig.datetime);
+  const resolvedState = gig.venueId && typeof gig.venueId === 'object' ? gig.venueId.usState : gig.usState;
+  const dateStr = gig.datetime ? utils.makeDateValue(gig.datetime, resolvedState) : '';
+  const timeStr = gig.datetime ? utils.makeTimeRange(gig.datetime, gig.duration, resolvedState) : '';
+  const dateTimeStr = timeStr ? `${dateStr}, ${timeStr}` : dateStr;
+
+  return (
+    // eslint-disable-next-line jsx-a11y-x/click-events-have-key-events, jsx-a11y-x/no-static-element-interactions
+    <div
+      className={`gig-card ${isNudge ? 'gig-announce-nudge' : ''}`}
+      data-testid={`gig-card-${gig._id || gig.id || 'item'}`}
+      role={isAdmin ? 'button' : undefined}
+      // eslint-disable-next-line jsx-a11y-x/no-noninteractive-tabindex
+      tabIndex={isAdmin ? 0 : undefined}
+      aria-label={isAdmin ? `Edit gig at ${gig.venue || 'venue'} on ${dateTimeStr}` : undefined}
+      style={{ cursor: isAdmin ? 'pointer' : 'default' }}
+      onClick={(e) => {
+        if (!isAdmin) return;
+        const target = e.target as HTMLElement | null;
+        if (target && target.closest('a, button, input, select, textarea, img')) {
+          return;
+        }
+        onEdit?.(gig);
+      }}
+      onKeyDown={(e) => {
+        if (isAdmin && e.target === e.currentTarget && (e.key === 'Enter' || e.key === ' ')) {
+          e.preventDefault();
+          onEdit?.(gig);
+        }
+      }}
+    >
+      {isAdmin && utils.isUpcomingGig(gig) && (
+        <div className="gig-card-announce" style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+          <Button
+            size="small"
+            variant="outlined"
+            className="announceButton"
+            onClick={(e) => {
+              e.stopPropagation();
+              onAnnounce?.(gig);
+            }}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.stopPropagation();
+              }
+            }}
+          >
+            Announce
+          </Button>
+          {Boolean(gig.announcedAt) && (
+            <span
+              className="announcedBadge"
+              style={{ color: '#2e7d32', fontWeight: 'bold', fontSize: '12px' }}
+            >
+              announced ✓
+            </span>
+          )}
+        </div>
+      )}
+      {dateTimeStr && (
+        <div className="gig-card-datetime" style={{ fontWeight: 500, marginBottom: '6px' }}>
+          {dateTimeStr}
+        </div>
+      )}
+      <div className="gig-card-venue" style={{ marginBottom: '6px' }}>
+        {utils.renderVenue(gig)}
+      </div>
+      <div className="gig-card-location" style={{ marginBottom: '8px' }}>
+        {utils.renderLocation(gig)}
+      </div>
+      <div className="gig-card-footer" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 'auto' }}>
+        <span className="gig-card-tickets">
+          {HtmlReactParser(gig.tickets || 'Free')}
+        </span>
+        {gig.promoImageUrl && (
+          // eslint-disable-next-line jsx-a11y-x/click-events-have-key-events, jsx-a11y-x/no-noninteractive-element-interactions
+          <img
+            src={gig.promoImageUrl}
+            alt="gig promo"
+            className="gig-card-photo"
+            style={{ height: '40px', width: 'auto', objectFit: 'contain' }}
+            onClick={(e) => e.stopPropagation()}
+          />
+        )}
+      </div>
+    </div>
+  );
+};
 
 export const ShowCreateGigButton = (
   { isAdmin, setShowDialog }: { isAdmin: boolean, setShowDialog: (arg0: boolean) => void },
@@ -185,7 +291,8 @@ export const GigsDiv = (props: IgigsDivProps) => {
     isAdmin, setShowDialog, setEditGig, editGig, gigsInOrder = [], pageSize, showDialog, editChanged, setEditChanged, getGigs, auth, setPageSize,
   } = props;
   const navigate = useNavigate();
-  const isMobile = useMediaQuery('(max-width:600px)');
+  const isCardsView = useMediaQuery('(max-width:959px)');
+  const isSingleColumn = useMediaQuery('(max-width:599px)');
   const [page, setPage] = useState(0);
   const [saveMessage, setSaveMessage] = useState('');
   const [announceGig, setAnnounceGig] = useState<Igig | null>(null);
@@ -202,7 +309,7 @@ export const GigsDiv = (props: IgigsDivProps) => {
     <div
       className="gigsDiv"
       style={{
-        margin: 'auto', padding: '10px 16px', width: '100%',
+        margin: 'auto', padding: '10px 16px', width: '100%', boxSizing: 'border-box',
       }}
     >
       <h4 style={{ textAlign: 'center' }}>
@@ -225,10 +332,46 @@ export const GigsDiv = (props: IgigsDivProps) => {
         >
           Unable to load gig schedule from the server. Please refresh or try again shortly.
         </div>
+      ) : isCardsView ? (
+        <div className="gigs-cards-wrapper" style={{ width: '100%' }}>
+          <div
+            className={`gigs-cards-container ${isSingleColumn ? 'cards-single-col' : 'cards-two-col'}`}
+            style={{
+              display: 'grid',
+              gridTemplateColumns: isSingleColumn ? '1fr' : 'repeat(2, 1fr)',
+              gap: '16px',
+              width: '100%',
+            }}
+          >
+            {gigsInOrder.slice(page * pageSize, (page + 1) * pageSize).map((gig) => (
+              <GigCard
+                key={gig.id ?? gig._id ?? `${gig.venue}-${gig.datetime}`}
+                gig={gig}
+                isAdmin={isAdmin}
+                onAnnounce={(g) => setAnnounceGig(g)}
+                onEdit={(g) => utils.clickToEdit(setEditGig, isAdmin, g)}
+              />
+            ))}
+          </div>
+          <TablePagination
+            component="div"
+            count={gigsInOrder.length}
+            page={page}
+            onPageChange={(_e, newPage) => setPage(newPage)}
+            rowsPerPage={pageSize}
+            onRowsPerPageChange={(e) => {
+              setPageSize(parseInt(e.target.value, 10));
+              setPage(0);
+            }}
+            rowsPerPageOptions={[5, 10, 25, 50]}
+            className="gigs-cards-pagination"
+          />
+        </div>
       ) : (
-        <div style={{ height: '500px', width: '100%' }}>
+        <div className="gigs-table-container" style={{ width: '100%', maxWidth: '100%', boxSizing: 'border-box' }}>
           <DataGrid
             className={isAdmin ? 'adminGrid' : ''}
+            autoHeight
             getRowHeight={() => 'auto'}
             getRowClassName={(params) => {
               const isNudge = isAdmin && utils.isUpcomingGig(params.row) && utils.isWithin10Days(params.row.datetime);
@@ -238,11 +381,24 @@ export const GigsDiv = (props: IgigsDivProps) => {
               utils.clickToEdit(setEditGig, isAdmin, rowParams.row);
             }}
             rows={gigsInOrder || []}
-            columns={makeColumns(isMobile, isAdmin, (gig) => setAnnounceGig(gig))}
+            columns={makeColumns(false, isAdmin, (gig) => setAnnounceGig(gig))}
             paginationModel={{ page, pageSize }}
             onPaginationModelChange={(model) => { setPage(model.page); setPageSize(model.pageSize); }}
             pageSizeOptions={[5, 10, 25, 50]}
             disableRowSelectionOnClick
+            sx={{
+              width: '100%',
+              maxWidth: '100%',
+              boxSizing: 'border-box',
+              '& .MuiDataGrid-main': { width: '100%' },
+              '& .MuiDataGrid-cell': {
+                whiteSpace: 'normal',
+                wordBreak: 'break-word',
+              },
+              '& .MuiDataGrid-columnSeparator': {
+                display: 'none',
+              },
+            }}
           />
         </div>
       )}

@@ -7,7 +7,7 @@ import { formatInVenueTimeZone } from 'src/lib/venueTimezone';
 import type { Iauth } from 'src/providers/Auth.provider';
 import type { Igig } from 'src/providers/Data.provider';
 import { defaultGig } from 'src/providers/fetchGigs';
-import type { Ivenue } from 'src/containers/AdminVenues/admin-venues.utils';
+import adminVenuesUtils, { type Ivenue } from 'src/containers/AdminVenues/admin-venues.utils';
 
 import { validateVenueFields } from 'src/containers/AdminVenues/venue-shared.utils';
 
@@ -356,20 +356,24 @@ export const orderGigs = (
 // Rendered in the gig's venue timezone (#1222) rather than the viewer's
 // browser timezone, via the shared `formatInVenueTimeZone` (falls back to the
 // browser's local zone when the gig has no usState — the prior behavior).
-const makeDateValue = (datetime: string, usState?: string) => formatInVenueTimeZone(datetime, {
-  weekday: 'long',
-  year: 'numeric',
-  month: 'long',
-  day: 'numeric',
-}, usState);
+// Formats as short weekday and date, such as "Sat Nov 14".
+const makeDateValue = (datetime: string | Date, usState?: string) => {
+  if (!datetime) return '';
+  const formatted = formatInVenueTimeZone(datetime, {
+    weekday: 'short',
+    month: 'short',
+    day: 'numeric',
+  }, usState);
+  return formatted.replace(/^([A-Za-z]+),/, '$1');
+};
 
-const makeShortDateValue = (datetime: string, usState?: string) => formatInVenueTimeZone(
+const makeShortDateValue = (datetime: string | Date, usState?: string) => formatInVenueTimeZone(
   datetime,
   { year: '2-digit', month: 'numeric', day: 'numeric' },
   usState,
 );
 
-const makeTimeValue = (datetime: string, usState?: string) => formatInVenueTimeZone(
+const makeTimeValue = (datetime: string | Date, usState?: string) => formatInVenueTimeZone(
   datetime,
   { hour: 'numeric', minute: '2-digit' },
   usState,
@@ -377,10 +381,11 @@ const makeTimeValue = (datetime: string, usState?: string) => formatInVenueTimeZ
 
 // With a duration (hours) the Time column becomes a range "8:00 AM to 5:00 PM";
 // with no duration it stays the start time alone.
-const makeTimeRange = (datetime: string, duration?: number, usState?: string) => {
+const makeTimeRange = (datetime: string | Date, duration?: number, usState?: string) => {
   const start = makeTimeValue(datetime, usState);
   if (!duration || duration <= 0) return start;
-  const end = new Date(new Date(datetime).getTime() + duration * 60 * 60 * 1000);
+  const dt = typeof datetime === 'string' ? new Date(datetime) : datetime;
+  const end = new Date(dt.getTime() + duration * 60 * 60 * 1000);
   return `${start} to ${makeTimeValue(end.toISOString(), usState)}`;
 };
 
@@ -420,10 +425,9 @@ export const isFreeTextRenderable = (venue?: string, linkedName?: string): boole
   return normalizedFreeText !== normalizedVenueName;
 };
 
-const renderVenueCell = (params: GridRenderCellParams) => {
-  const row = params?.row;
+export const renderVenue = (row?: Igig | null, fallbackValue?: string) => {
   if (!row) {
-    return makeVenueValue(params?.value || '');
+    return makeVenueValue(fallbackValue || '');
   }
   const { venue, venueId } = row;
   if (venue === 'Our Past Performances') {
@@ -433,7 +437,13 @@ const renderVenueCell = (params: GridRenderCellParams) => {
     const { name, website } = venueId;
     const hrefUrl = website ? normalizeUrl(website) : '';
     const resolvedLink = hrefUrl ? (
-      <a href={hrefUrl} target="_blank" rel="noopener" style={{ fontWeight: 'bold', textDecoration: 'underline' }}>
+      <a
+        href={hrefUrl}
+        target="_blank"
+        rel="noopener"
+        style={{ fontWeight: 'bold', textDecoration: 'underline' }}
+        onClick={(e) => e.stopPropagation()}
+      >
         {name}
       </a>
     ) : (
@@ -455,17 +465,61 @@ const renderVenueCell = (params: GridRenderCellParams) => {
   return <div>{HtmlReactParser(venue || '')}</div>;
 };
 
+const renderVenueCell = (params?: GridRenderCellParams | { row?: Igig | null; value?: unknown }) => (
+  renderVenue(params?.row, typeof params?.value === 'string' ? params.value : undefined)
+);
+
 const makeVenue = (isMobile = false): GridColDef => (
   {
     field: 'venue',
     headerName: 'Venue',
-    width: isMobile ? 250 : undefined,
-    minWidth: isMobile ? undefined : 400,
-    flex: isMobile ? 0 : 2,
+    width: isMobile ? 220 : undefined,
+    minWidth: 160,
+    flex: 2,
+    resizable: false,
     editable: false,
     renderCell: (params: GridRenderCellParams) => renderVenueCell(params),
   }
 );
+
+export const renderLocation = (row?: Igig | null) => {
+  if (!row) return '';
+  const {
+    location, city, usState, venueId,
+  } = row;
+  if (location) return location;
+  const isVenueObj = venueId && typeof venueId === 'object';
+  const venueAddress = isVenueObj && venueId.address ? venueId.address.trim() : '';
+  const resolvedCity = isVenueObj ? (venueId.city || '') : (city || '');
+  const resolvedState = isVenueObj ? (venueId.usState || '') : (usState || '');
+  const venueName = isVenueObj ? (venueId.name || '') : '';
+
+  if (isVenueObj && venueAddress) {
+    const mapUrl = adminVenuesUtils.getGoogleMapsUrl(venueAddress, resolvedCity, resolvedState);
+    const line2 = resolvedCity && resolvedState ? `${resolvedCity}, ${resolvedState}` : (resolvedCity || resolvedState || '');
+    return (
+      <a
+        href={mapUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label={`Open ${venueName || 'venue'} in Google Maps`}
+        style={{ textDecoration: 'underline' }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div>{venueAddress}</div>
+        {line2 ? <div>{line2}</div> : null}
+      </a>
+    );
+  }
+
+  if (resolvedCity) return resolvedState ? `${resolvedCity}, ${resolvedState}` : resolvedCity;
+  return resolvedState || '';
+};
+
+export const getCardColumnCount = (width: number): number => {
+  if (width < 600) return 1;
+  return 2;
+};
 
 export const isUpcomingGig = (gig?: Igig | null, now: Date = new Date()): boolean => {
   if (!gig || !gig.datetime || gig.id === 999 || gig.venue === 'Our Past Performances') return false;
@@ -556,7 +610,10 @@ export default {
   normalizeUrl,
   normalizeTextForComparison,
   isFreeTextRenderable,
+  renderVenue,
   renderVenueCell,
+  renderLocation,
+  getCardColumnCount,
   isUpcomingGig,
   isWithin10Days,
   fetchVenue,

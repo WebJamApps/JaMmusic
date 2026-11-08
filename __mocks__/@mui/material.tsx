@@ -303,6 +303,34 @@ export function TableContainer(props: {
   return <Component {...rest}>{children}</Component>;
 }
 
+export function TablePagination(props: {
+  count: number;
+  page: number;
+  rowsPerPage: number;
+  onPageChange?: (event: React.MouseEvent<HTMLButtonElement> | null, page: number) => void;
+  onRowsPerPageChange?: (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+  rowsPerPageOptions?: Array<number | { value: number; label: string }>;
+  component?: React.ElementType;
+  className?: string;
+  [key: string]: unknown;
+}) {
+  const {
+    count, page, rowsPerPage, onPageChange, onRowsPerPageChange, rowsPerPageOptions, ...rest
+  } = props;
+  return (
+    <div data-testid="mock-table-pagination" data-page={page} data-rows-per-page={rowsPerPage} data-count={count} {...rest}>
+      <span>{`Rows per page: ${rowsPerPage}`}</span>
+      <span>{`${page * rowsPerPage + 1}-${Math.min((page + 1) * rowsPerPage, count)} of ${count}`}</span>
+      <button type="button" aria-label="Previous page" onClick={(e) => onPageChange?.(e, page - 1)} disabled={page === 0}>
+        prev
+      </button>
+      <button type="button" aria-label="Next page" onClick={(e) => onPageChange?.(e, page + 1)} disabled={(page + 1) * rowsPerPage >= count}>
+        next
+      </button>
+    </div>
+  );
+}
+
 export function Collapse(props: {
   children?: React.ReactNode;
   in?: boolean;

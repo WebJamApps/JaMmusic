@@ -667,4 +667,79 @@ describe('gigs.utils', () => {
       expect(result.message).toBe('Connection dropped');
     });
   });
+
+  describe('getCardColumnCount', () => {
+    it('returns 1 for screens under 600px and 2 for screens 600px and wider', () => {
+      expect(utils.getCardColumnCount(320)).toBe(1);
+      expect(utils.getCardColumnCount(599)).toBe(1);
+      expect(utils.getCardColumnCount(600)).toBe(2);
+      expect(utils.getCardColumnCount(768)).toBe(2);
+      expect(utils.getCardColumnCount(959)).toBe(2);
+    });
+  });
+
+  describe('makeDateValue', () => {
+    it('formats datetime as short weekday and date with no comma', () => {
+      const dt = '2026-11-14T19:00:00.000Z';
+      const formatted = utils.makeDateValue(dt, 'VA');
+      expect(formatted).toBe('Sat Nov 14');
+    });
+
+    it('returns empty string when datetime is falsy', () => {
+      expect(utils.makeDateValue('' as unknown as string)).toBe('');
+      expect(utils.makeDateValue(null as unknown as string)).toBe('');
+    });
+  });
+
+  describe('makeVenue', () => {
+    it('configures venue column with minWidth 160 and flex 2', () => {
+      const col = utils.makeVenue(false);
+      expect(col.minWidth).toBe(160);
+      expect(col.flex).toBe(2);
+    });
+  });
+
+  describe('renderLocation', () => {
+    it('returns empty string when row is falsy', () => {
+      expect(utils.renderLocation(null)).toBe('');
+    });
+
+    it('returns free-text location when present', () => {
+      const row: Partial<Igig> = { location: 'Main Stage' };
+      expect(utils.renderLocation(row as Igig)).toBe('Main Stage');
+    });
+
+    it('returns map link when linked venue has an address', () => {
+      const row: Partial<Igig> = {
+        venueId: {
+          _id: 'v1',
+          name: 'The Spot',
+          address: '123 Main St',
+          city: 'Roanoke',
+          usState: 'VA',
+        },
+      };
+      const cell = utils.renderLocation(row as Igig) as React.ReactElement<{
+        href?: string;
+        onClick?: (e: { stopPropagation: () => void }) => void;
+      }>;
+      expect(cell.type).toBe('a');
+      expect(cell.props.href).toContain('123%20Main%20St');
+      const stopPropagation = vi.fn();
+      cell.props.onClick?.({ stopPropagation });
+      expect(stopPropagation).toHaveBeenCalled();
+    });
+
+    it('returns resolved city, state when venue has no address', () => {
+      const row: Partial<Igig> = {
+        venueId: {
+          _id: 'v1',
+          name: 'The Spot',
+          city: 'Roanoke',
+          usState: 'VA',
+        },
+      };
+      expect(utils.renderLocation(row as Igig)).toBe('Roanoke, VA');
+    });
+  });
 });

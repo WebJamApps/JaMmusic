@@ -129,4 +129,28 @@ test.describe('Gigs Announce interaction', () => {
 
     expect(announceCalls).toBe(0);
   });
+
+  test('keyboard activation of Announce button opens preview and never Edit Gig', async ({ page }) => {
+    await fixture(page);
+
+    await page.route('**/venue/existing', async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        json: { _id: 'existing', name: 'Existing Hall', instagramUsername: 'existing_hall_ig' },
+        headers: { 'access-control-allow-origin': '*' },
+      });
+    });
+
+    const announceBtn = page.getByRole('button', { name: 'Announce', exact: true }).first();
+    await expect(announceBtn).toBeVisible();
+    await announceBtn.focus();
+    await page.keyboard.press('Enter');
+
+    const announceDialog = page.getByRole('dialog', { name: 'Announce Gig to Instagram' });
+    await expect(announceDialog).toBeVisible();
+
+    const editDialog = page.getByRole('dialog', { name: 'Edit Gig' });
+    await expect(editDialog).not.toBeVisible();
+  });
 });
