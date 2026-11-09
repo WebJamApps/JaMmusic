@@ -11,6 +11,7 @@ import adminVenuesUtils, { type Ivenue } from 'src/containers/AdminVenues/admin-
 
 import { validateVenueFields } from 'src/containers/AdminVenues/venue-shared.utils';
 
+export type { Igig, GigAnnouncement } from 'src/providers/Data.provider';
 export type GigOpResult = 'success' | 'error' | 'unconfirmed';
 
 // eslint-disable-next-line max-len

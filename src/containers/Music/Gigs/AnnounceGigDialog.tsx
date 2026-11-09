@@ -11,11 +11,153 @@ import {
 import { Editor } from '@tinymce/tinymce-react';
 import type { Igig } from 'src/providers/Data.provider';
 import type { Iauth } from 'src/providers/Auth.provider';
-import { generateStartingCaption, htmlCaptionToText } from './caption-generator';
+import { generateStartingCaption, htmlCaptionToText, formatPlainDate } from './caption-generator';
 import utils, { type AnnouncePayload } from './gigs.utils';
+
+export interface PostedPictureInfo {
+  postedDate: Date;
+  dateLabel: string;
+}
+
+export const getDefaultPromoUrl = (): string => `${process.env.BackendUrl || ''}/gig/promo-default.jpg`;
+
+export function formatPostedDate(date: Date | string): string {
+  const d = typeof date === 'string' ? new Date(date) : date;
+  if (!d || Number.isNaN(d.getTime())) return '';
+  return `posted ${formatPlainDate(d)}`;
+}
+
+export function getGigPostedPictures(gig: Igig | null): Map<string, PostedPictureInfo> {
+  const map = new Map<string, PostedPictureInfo>();
+  if (!gig) return map;
+
+  const recordPost = (url?: string, at?: string | Date) => {
+    if (!url || !url.trim()) return;
+    const trimmedUrl = url.trim();
+    const effectiveAt = at || gig.announcedAt || new Date();
+    const dateObj = typeof effectiveAt === 'string' ? new Date(effectiveAt) : effectiveAt;
+    if (!dateObj || Number.isNaN(dateObj.getTime())) return;
+
+    const existing = map.get(trimmedUrl);
+    if (!existing || dateObj.getTime() > existing.postedDate.getTime()) {
+      map.set(trimmedUrl, {
+        postedDate: dateObj,
+        dateLabel: formatPostedDate(dateObj),
+      });
+    }
+  };
+
+  if (Array.isArray(gig.announcements)) {
+    gig.announcements.forEach((a) => {
+      recordPost(a.imageUrl, a.at);
+    });
+  }
+
+  if (gig.announceImageUrl) {
+    recordPost(gig.announceImageUrl, gig.announcedAt);
+  }
+
+  return map;
+}
+
+export function isPicturePosted(
+  url: string,
+  postedMap: Map<string, PostedPictureInfo>,
+): boolean {
+  if (postedMap.has(url)) return true;
+  if (url.endsWith('/gig/promo-default.jpg')) {
+    for (const key of postedMap.keys()) {
+      if (key.endsWith('/gig/promo-default.jpg')) return true;
+    }
+  }
+  return false;
+}
+
+export function getPicturePostedInfo(
+  url: string,
+  postedMap: Map<string, PostedPictureInfo>,
+): PostedPictureInfo | undefined {
+  if (postedMap.has(url)) return postedMap.get(url);
+  if (url.endsWith('/gig/promo-default.jpg')) {
+    for (const [key, value] of postedMap) {
+      if (key.endsWith('/gig/promo-default.jpg')) return value;
+    }
+  }
+  return undefined;
+}
+
+export function buildPictureStripUrls(
+  gigs: Igig[] = [],
+  defaultUrl: string = getDefaultPromoUrl(),
+): string[] {
+  const urls: string[] = [];
+  const seen = new Set<string>();
+
+  for (const g of gigs) {
+    if (!g || typeof g.promoImageUrl !== 'string' || !g.promoImageUrl.trim()) continue;
+    const url = g.promoImageUrl.trim();
+    if (!seen.has(url)) {
+      seen.add(url);
+      urls.push(url);
+    }
+  }
+
+  if (defaultUrl && !seen.has(defaultUrl)) {
+    urls.push(defaultUrl);
+  }
+
+  return urls;
+}
+
+export function determineStartingImageUrl(
+  gig: Igig | null,
+  stripUrls: string[],
+  postedMap: Map<string, PostedPictureInfo>,
+  defaultUrl: string = getDefaultPromoUrl(),
+): string {
+  if (!gig) return '';
+
+  const gigPromo = gig.promoImageUrl?.trim();
+
+  // 1. Gig's own picture when unposted
+  if (gigPromo && !isPicturePosted(gigPromo, postedMap)) {
+    return gigPromo;
+  }
+
+  // 2. First unposted picture in the strip
+  const firstUnposted = stripUrls.find((url) => !isPicturePosted(url, postedMap));
+  if (firstUnposted) {
+    if (stripUrls.length === 1 && stripUrls[0] === defaultUrl && !gigPromo) {
+      return '';
+    }
+    return firstUnposted;
+  }
+
+  // 3. When every picture has been posted, the one posted longest ago
+  let longestAgoUrl = '';
+  let oldestTime = Infinity;
+
+  for (const url of stripUrls) {
+    const info = getPicturePostedInfo(url, postedMap);
+    if (info) {
+      const t = info.postedDate.getTime();
+      if (t < oldestTime) {
+        oldestTime = t;
+        longestAgoUrl = url;
+      }
+    }
+  }
+
+  if (longestAgoUrl) {
+    return longestAgoUrl;
+  }
+
+  return gigPromo || '';
+}
 
 export interface AnnounceGigDialogProps {
   gig: Igig | null;
+  gigs?: Igig[];
   open: boolean;
   onClose: () => void;
   auth: Iauth;
@@ -24,6 +166,7 @@ export interface AnnounceGigDialogProps {
 
 export function AnnounceGigDialog({
   gig,
+  gigs,
   open,
   onClose,
   auth,
@@ -40,11 +183,14 @@ export function AnnounceGigDialog({
   const [copyMessage, setCopyMessage] = useState('');
   const [statusMessage, setStatusMessage] = useState('');
   const [statusSeverity, setStatusSeverity] = useState<'success' | 'error' | null>(null);
+  const [failedUrls, setFailedUrls] = useState<string[]>([]);
 
   const captionEditedRef = useRef(false);
   const venueTagEditedRef = useRef(false);
   const locationEditedRef = useRef(false);
   const hasSubmittedRef = useRef(false);
+
+  const loadedGigs = gigs || [];
 
   useEffect(() => {
     if (!open || !gig) return;
@@ -53,8 +199,17 @@ export function AnnounceGigDialog({
     venueTagEditedRef.current = false;
     locationEditedRef.current = false;
     hasSubmittedRef.current = false;
+    setFailedUrls([]);
 
-    setImageUrl(gig.promoImageUrl || '');
+    const defaultPhoto = getDefaultPromoUrl();
+    const candidateUrls = buildPictureStripUrls(
+      loadedGigs.length > 0 ? loadedGigs : (gig ? [gig] : []),
+      defaultPhoto,
+    );
+    const postedPictures = getGigPostedPictures(gig);
+    const initialImageUrl = determineStartingImageUrl(gig, candidateUrls, postedPictures, defaultPhoto);
+
+    setImageUrl(initialImageUrl);
     setMariaTag('chemmariasherman');
     setVenueTag('');
     setCollaborator('chemmariasherman');
@@ -98,7 +253,7 @@ export function AnnounceGigDialog({
         isMounted = false;
       };
     }
-  }, [open, gig, auth.token]);
+  }, [open, gig, gigs, auth.token]);
 
   const handleConfirm = async () => {
     if (!gig?._id) return;
@@ -156,6 +311,14 @@ export function AnnounceGigDialog({
   };
 
   if (!open || !gig) return null;
+
+  const defaultPhoto = getDefaultPromoUrl();
+  const candidateUrls = buildPictureStripUrls(
+    loadedGigs.length > 0 ? loadedGigs : (gig ? [gig] : []),
+    defaultPhoto,
+  );
+  const postedPictures = getGigPostedPictures(gig);
+  const stripItems = candidateUrls.filter((url) => !failedUrls.includes(url));
 
   return (
     <Dialog
@@ -270,6 +433,82 @@ export function AnnounceGigDialog({
             onChange={(e) => setImageUrl(e.target.value)}
             helperText="Public image URL (optional — leave blank for default photo)"
           />
+
+          {stripItems.length > 0 && (
+            <Box
+              id="announce-picture-strip"
+              data-testid="announce-picture-strip"
+              aria-label="Picture strip"
+              sx={{
+                display: 'flex',
+                gap: 1.5,
+                overflowX: 'auto',
+                pt: 1.5,
+                pb: 1,
+                alignItems: 'flex-start',
+              }}
+            >
+              {stripItems.map((itemUrl, index) => {
+                const isSelected = imageUrl.trim() === itemUrl;
+                const postedInfo = getPicturePostedInfo(itemUrl, postedPictures);
+                const isDefault = itemUrl.endsWith('/gig/promo-default.jpg');
+                const label = isDefault ? 'Default photo' : `Picture ${index + 1}`;
+
+                return (
+                  <button
+                    key={itemUrl}
+                    type="button"
+                    onClick={() => setImageUrl(itemUrl)}
+                    aria-label={postedInfo ? `${label} (${postedInfo.dateLabel})` : label}
+                    data-testid={`picture-strip-item-${index}`}
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      background: 'none',
+                      border: isSelected ? '2px solid #1976d2' : '1px solid #ccc',
+                      borderRadius: '6px',
+                      padding: '4px',
+                      cursor: 'pointer',
+                      flexShrink: 0,
+                      width: '74px',
+                      outline: 'none',
+                    }}
+                  >
+                    {/* eslint-disable-next-line jsx-a11y-x/no-noninteractive-element-interactions */}
+                    <img
+                      src={itemUrl}
+                      alt={isDefault ? 'Default promo photo' : `Picture option ${index + 1}`}
+                      onError={() => {
+                        setFailedUrls((prev) => (prev.includes(itemUrl) ? prev : [...prev, itemUrl]));
+                      }}
+                      style={{
+                        width: '64px',
+                        height: '64px',
+                        objectFit: 'cover',
+                        borderRadius: '4px',
+                      }}
+                    />
+                    {postedInfo?.dateLabel && (
+                      <Box
+                        component="span"
+                        sx={{
+                          fontSize: '11px',
+                          color: 'text.secondary',
+                          textAlign: 'center',
+                          mt: 0.5,
+                          lineHeight: 1.2,
+                          wordBreak: 'break-word',
+                        }}
+                      >
+                        {postedInfo.dateLabel}
+                      </Box>
+                    )}
+                  </button>
+                );
+              })}
+            </Box>
+          )}
         </Box>
 
         <Box sx={{ mb: 2 }}>

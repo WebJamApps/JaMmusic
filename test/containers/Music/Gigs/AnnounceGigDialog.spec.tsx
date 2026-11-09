@@ -1,7 +1,16 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { AnnounceGigDialog } from 'src/containers/Music/Gigs/AnnounceGigDialog';
+import {
+  AnnounceGigDialog,
+  getDefaultPromoUrl,
+  formatPostedDate,
+  getGigPostedPictures,
+  isPicturePosted,
+  getPicturePostedInfo,
+  buildPictureStripUrls,
+  determineStartingImageUrl,
+} from 'src/containers/Music/Gigs/AnnounceGigDialog';
 import utils from 'src/containers/Music/Gigs/gigs.utils';
 import type { Igig } from 'src/providers/Data.provider';
 import type { Iauth } from 'src/providers/Auth.provider';
@@ -599,5 +608,355 @@ describe('AnnounceGigDialog', () => {
     await deferredVenuePromise;
 
     expect(locInput.value).toBe('custom_page_id_123');
+  });
+
+  describe('picture strip in Announce preview', () => {
+    it('formats posted date correctly', () => {
+      expect(formatPostedDate(new Date('2026-11-08T18:00:00.000Z'))).toBe('posted Nov 8');
+      expect(formatPostedDate('2026-09-26T22:00:00.000Z')).toBe('posted Sept 26');
+      expect(formatPostedDate('invalid-date')).toBe('');
+    });
+
+    it('builds posted pictures map from gig announcements and announceImageUrl', () => {
+      expect(getGigPostedPictures(null).size).toBe(0);
+
+      const gig: Igig = {
+        _id: 'g1',
+        venue: 'Test Venue',
+        datetime: new Date('2026-09-26T22:00:00.000Z'),
+        tickets: '',
+        announceImageUrl: 'https://example.com/legacy.jpg',
+        announcedAt: '2026-11-01T12:00:00.000Z',
+        announcements: [
+          {
+            imageUrl: 'https://example.com/pic1.jpg',
+            at: '2026-11-05T12:00:00.000Z',
+          },
+          {
+            imageUrl: 'https://example.com/pic1.jpg',
+            at: '2026-11-08T12:00:00.000Z',
+          },
+        ],
+      };
+
+      const map = getGigPostedPictures(gig);
+      expect(map.size).toBe(2);
+      expect(map.get('https://example.com/legacy.jpg')?.dateLabel).toBe('posted Nov 1');
+      // For pic1, the newer date (Nov 8) takes precedence
+      expect(map.get('https://example.com/pic1.jpg')?.dateLabel).toBe('posted Nov 8');
+    });
+
+    it('checks isPicturePosted and getPicturePostedInfo with default promo url handling', () => {
+      const map = new Map([
+        ['https://api.example.com/gig/promo-default.jpg', {
+          postedDate: new Date('2026-11-01T12:00:00.000Z'),
+          dateLabel: 'posted Nov 1',
+        }],
+        ['https://example.com/pic1.jpg', {
+          postedDate: new Date('2026-11-05T12:00:00.000Z'),
+          dateLabel: 'posted Nov 5',
+        }],
+      ]);
+
+      expect(isPicturePosted('https://example.com/pic1.jpg', map)).toBe(true);
+      expect(isPicturePosted('https://example.com/pic2.jpg', map)).toBe(false);
+      // default photo match even with different host prefix
+      expect(isPicturePosted('/gig/promo-default.jpg', map)).toBe(true);
+
+      expect(getPicturePostedInfo('https://example.com/pic1.jpg', map)?.dateLabel).toBe('posted Nov 5');
+      expect(getPicturePostedInfo('/gig/promo-default.jpg', map)?.dateLabel).toBe('posted Nov 1');
+      expect(getPicturePostedInfo('https://example.com/unknown.jpg', map)).toBeUndefined();
+    });
+
+    it('buildPictureStripUrls returns distinct promoImageUrls followed by default photo', () => {
+      const gigs: Igig[] = [
+        {
+          _id: '1', venue: 'V1', datetime: new Date(), tickets: '', promoImageUrl: 'https://example.com/pic1.jpg',
+        },
+        {
+          _id: '2', venue: 'V2', datetime: new Date(), tickets: '', promoImageUrl: 'https://example.com/pic2.jpg',
+        },
+        {
+          _id: '3', venue: 'V3', datetime: new Date(), tickets: '', promoImageUrl: 'https://example.com/pic1.jpg',
+        },
+        {
+          _id: '4', venue: 'V4', datetime: new Date(), tickets: '', promoImageUrl: '   ',
+        },
+      ];
+
+      const urls = buildPictureStripUrls(gigs, '/gig/promo-default.jpg');
+      expect(urls).toEqual([
+        'https://example.com/pic1.jpg',
+        'https://example.com/pic2.jpg',
+        '/gig/promo-default.jpg',
+      ]);
+    });
+
+    it('determineStartingImageUrl chooses gig promo, else first unposted in strip, else longest ago', () => {
+      const defaultUrl = '/gig/promo-default.jpg';
+      const stripUrls = ['https://example.com/pic1.jpg', 'https://example.com/pic2.jpg', defaultUrl];
+
+      // 1. Gig own picture unposted
+      const gigUnposted: Igig = {
+        _id: 'g1',
+        venue: 'V',
+        datetime: new Date(),
+        tickets: '',
+        promoImageUrl: 'https://example.com/pic1.jpg',
+      };
+      expect(determineStartingImageUrl(gigUnposted, stripUrls, new Map(), defaultUrl)).toBe('https://example.com/pic1.jpg');
+
+      // 2. Gig own picture posted -> choose first unposted in strip
+      const postedMap = new Map([
+        ['https://example.com/pic1.jpg', {
+          postedDate: new Date('2026-11-05T12:00:00.000Z'),
+          dateLabel: 'posted Nov 5',
+        }],
+      ]);
+      expect(determineStartingImageUrl(gigUnposted, stripUrls, postedMap, defaultUrl)).toBe('https://example.com/pic2.jpg');
+
+      // 3. All pictures posted -> choose longest ago
+      const allPostedMap = new Map([
+        ['https://example.com/pic1.jpg', {
+          postedDate: new Date('2026-11-05T12:00:00.000Z'),
+          dateLabel: 'posted Nov 5',
+        }],
+        ['https://example.com/pic2.jpg', {
+          postedDate: new Date('2026-10-01T12:00:00.000Z'),
+          dateLabel: 'posted Oct 1',
+        }],
+        [defaultUrl, {
+          postedDate: new Date('2026-11-01T12:00:00.000Z'),
+          dateLabel: 'posted Nov 1',
+        }],
+      ]);
+      expect(determineStartingImageUrl(gigUnposted, stripUrls, allPostedMap, defaultUrl)).toBe('https://example.com/pic2.jpg');
+
+      // 4. Fallback when only default url exists and gig has no promoImageUrl
+      expect(determineStartingImageUrl({
+        _id: 'g2', venue: 'V', datetime: new Date(), tickets: '',
+      }, [defaultUrl], new Map(), defaultUrl)).toBe('');
+    });
+
+    it('renders picture strip with loaded gigs, updates input and preview when a picture is clicked', () => {
+      const defaultPhoto = getDefaultPromoUrl();
+      const gig1: Igig = {
+        _id: 'g1',
+        venue: 'V1',
+        datetime: new Date('2026-09-26T22:00:00.000Z'),
+        tickets: '',
+        promoImageUrl: 'https://example.com/pic1.jpg',
+      };
+      const gig2: Igig = {
+        _id: 'g2',
+        venue: 'V2',
+        datetime: new Date('2026-09-26T22:00:00.000Z'),
+        tickets: '',
+        promoImageUrl: 'https://example.com/pic2.jpg',
+      };
+      const gig3: Igig = {
+        _id: 'g3',
+        venue: 'V3',
+        datetime: new Date('2026-09-26T22:00:00.000Z'),
+        tickets: '',
+        promoImageUrl: 'https://example.com/pic1.jpg',
+      };
+
+      render(
+        <AnnounceGigDialog
+          gig={gig1}
+          gigs={[gig1, gig2, gig3]}
+          open
+          onClose={vi.fn()}
+          auth={mockAuth}
+        />,
+      );
+
+      const strip = screen.getByTestId('announce-picture-strip');
+      expect(strip).toBeInTheDocument();
+
+      const item0 = screen.getByTestId('picture-strip-item-0');
+      const item1 = screen.getByTestId('picture-strip-item-1');
+      const item2 = screen.getByTestId('picture-strip-item-2');
+      expect(item0).toBeInTheDocument();
+      expect(item1).toBeInTheDocument();
+      expect(item2).toBeInTheDocument();
+
+      const imageInput = screen.getByLabelText(/Image URL/i) as HTMLInputElement;
+      expect(imageInput.value).toBe('https://example.com/pic1.jpg');
+
+      const previewImg = screen.getByAltText('Promo preview') as HTMLImageElement;
+      expect(previewImg.src).toBe('https://example.com/pic1.jpg');
+
+      // Click picture 2
+      fireEvent.click(item1);
+      expect(imageInput.value).toBe('https://example.com/pic2.jpg');
+      expect(previewImg.src).toBe('https://example.com/pic2.jpg');
+
+      // Click default photo
+      fireEvent.click(item2);
+      expect(imageInput.value).toBe(defaultPhoto);
+    });
+
+    it('shows posted date on strip items posted for this gig', () => {
+      const gigWithAnnouncements: Igig = {
+        _id: 'g1',
+        venue: 'Slow Play Brewing',
+        datetime: new Date('2026-09-26T22:00:00.000Z'),
+        tickets: '',
+        promoImageUrl: 'https://example.com/pic1.jpg',
+        announcements: [
+          {
+            imageUrl: 'https://example.com/pic1.jpg',
+            at: '2026-11-08T18:00:00.000Z',
+          },
+        ],
+      };
+      const gig2: Igig = {
+        _id: 'g2',
+        venue: 'Durty Bull Brewing',
+        datetime: new Date('2026-09-26T22:00:00.000Z'),
+        tickets: '',
+        promoImageUrl: 'https://example.com/pic2.jpg',
+      };
+
+      render(
+        <AnnounceGigDialog
+          gig={gigWithAnnouncements}
+          gigs={[gigWithAnnouncements, gig2]}
+          open
+          onClose={vi.fn()}
+          auth={mockAuth}
+        />,
+      );
+
+      const item0 = screen.getByTestId('picture-strip-item-0');
+      expect(item0).toHaveTextContent('posted Nov 8');
+      expect(item0).toHaveAttribute('aria-label', expect.stringContaining('posted Nov 8'));
+
+      const item1 = screen.getByTestId('picture-strip-item-1');
+      expect(item1).not.toHaveTextContent('posted');
+    });
+
+    it('opens on first unposted picture when gig own picture is already posted', () => {
+      const gigPostedOwn: Igig = {
+        _id: 'g1',
+        venue: 'Slow Play Brewing',
+        datetime: new Date('2026-09-26T22:00:00.000Z'),
+        tickets: '',
+        promoImageUrl: 'https://example.com/pic1.jpg',
+        announcements: [
+          {
+            imageUrl: 'https://example.com/pic1.jpg',
+            at: '2026-11-08T18:00:00.000Z',
+          },
+        ],
+      };
+      const gig2: Igig = {
+        _id: 'g2',
+        venue: 'Durty Bull Brewing',
+        datetime: new Date('2026-09-26T22:00:00.000Z'),
+        tickets: '',
+        promoImageUrl: 'https://example.com/pic2.jpg',
+      };
+
+      render(
+        <AnnounceGigDialog
+          gig={gigPostedOwn}
+          gigs={[gigPostedOwn, gig2]}
+          open
+          onClose={vi.fn()}
+          auth={mockAuth}
+        />,
+      );
+
+      const imageInput = screen.getByLabelText(/Image URL/i) as HTMLInputElement;
+      expect(imageInput.value).toBe('https://example.com/pic2.jpg');
+    });
+
+    it('opens on picture posted longest ago when all strip pictures have been posted', () => {
+      const defaultPhoto = getDefaultPromoUrl();
+      const gigAllPosted: Igig = {
+        _id: 'g1',
+        venue: 'Slow Play Brewing',
+        datetime: new Date('2026-09-26T22:00:00.000Z'),
+        tickets: '',
+        promoImageUrl: 'https://example.com/pic1.jpg',
+        announcements: [
+          {
+            imageUrl: 'https://example.com/pic1.jpg',
+            at: '2026-11-10T12:00:00.000Z',
+          },
+          {
+            imageUrl: 'https://example.com/pic2.jpg',
+            at: '2026-11-02T12:00:00.000Z',
+          },
+          {
+            imageUrl: defaultPhoto,
+            at: '2026-11-06T12:00:00.000Z',
+          },
+        ],
+      };
+      const gig2: Igig = {
+        _id: 'g2',
+        venue: 'Durty Bull Brewing',
+        datetime: new Date('2026-09-26T22:00:00.000Z'),
+        tickets: '',
+        promoImageUrl: 'https://example.com/pic2.jpg',
+      };
+
+      render(
+        <AnnounceGigDialog
+          gig={gigAllPosted}
+          gigs={[gigAllPosted, gig2]}
+          open
+          onClose={vi.fn()}
+          auth={mockAuth}
+        />,
+      );
+
+      const imageInput = screen.getByLabelText(/Image URL/i) as HTMLInputElement;
+      expect(imageInput.value).toBe('https://example.com/pic2.jpg');
+    });
+
+    it('leaves out of the strip any picture that fails to load via onError', () => {
+      const gig1: Igig = {
+        _id: 'g1',
+        venue: 'V1',
+        datetime: new Date('2026-09-26T22:00:00.000Z'),
+        tickets: '',
+        promoImageUrl: 'https://example.com/broken.jpg',
+      };
+      const gig2: Igig = {
+        _id: 'g2',
+        venue: 'V2',
+        datetime: new Date('2026-09-26T22:00:00.000Z'),
+        tickets: '',
+        promoImageUrl: 'https://example.com/working.jpg',
+      };
+
+      render(
+        <AnnounceGigDialog
+          gig={gig1}
+          gigs={[gig1, gig2]}
+          open
+          onClose={vi.fn()}
+          auth={mockAuth}
+        />,
+      );
+
+      expect(screen.getByTestId('picture-strip-item-0')).toBeInTheDocument();
+      expect(screen.getByTestId('picture-strip-item-1')).toBeInTheDocument();
+
+      const brokenImg = screen.getByAltText('Picture option 1');
+      expect(brokenImg).toHaveAttribute('src', 'https://example.com/broken.jpg');
+
+      fireEvent.error(brokenImg);
+
+      expect(screen.queryByAltText('Picture option 1')).toBeInTheDocument();
+      const remainingOption1 = screen.getByAltText('Picture option 1');
+      expect(remainingOption1).toHaveAttribute('src', 'https://example.com/working.jpg');
+      expect(screen.queryByAltText('Picture option 2')).not.toBeInTheDocument();
+    });
   });
 });

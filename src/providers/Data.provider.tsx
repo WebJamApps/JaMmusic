@@ -4,6 +4,11 @@ import fetchPics from './fetchPics';
 import fetchSongs from './fetchSongs';
 import { MakeProvider } from './MakeProvider';
 
+export interface GigAnnouncement {
+  at?: string | Date;
+  imageUrl?: string;
+}
+
 export interface Igig {
   modify?: React.JSX.Element,
   datetime: Date | null;
@@ -21,6 +26,8 @@ export interface Igig {
   promoImageUrl?: string;
   artist?: string;
   announcedAt?: string | Date;
+  announceImageUrl?: string;
+  announcements?: GigAnnouncement[];
   venueId?: string | {
     _id: string;
     name: string;
