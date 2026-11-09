@@ -4,7 +4,7 @@ import '@testing-library/jest-dom';
 import { customFetch } from 'src/lib/fetch.utils';
 import type { AddressSuggestion, PlaceAddress } from 'src/containers/AdminVenues/venue-address-lookup';
 import { EditVenueDialog } from 'src/containers/AdminVenues/EditVenueDialog';
-import adminVenuesUtils, { type Ivenue } from 'src/containers/AdminVenues/admin-venues.utils';
+import adminVenuesUtils, { FACEBOOK_PAGE_ID_ERROR, type Ivenue } from 'src/containers/AdminVenues/admin-venues.utils';
 
 vi.mock('src/lib/fetch.utils', () => ({ customFetch: vi.fn() }));
 
@@ -600,6 +600,70 @@ describe('EditVenueDialog', () => {
     expect(adminVenuesUtils.updateVenue).toHaveBeenCalledWith('tk', 'v1', expect.objectContaining({
       name: 'Mac n Bob',
     }));
+  });
+
+  it('loads facebookPageId from venue prop into form', async () => {
+    const venueWithFb: Ivenue = { ...venue, facebookPageId: '378590115336095' };
+    await act(async () => {
+      render(<EditVenueDialog open venue={venueWithFb} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />);
+    });
+    expect(screen.getByTestId('edit-venue-facebook-page-id')).toHaveValue('378590115336095');
+  });
+
+  it.each([
+    '378590115336095',
+    'https://www.instagram.com/explore/locations/378590115336095/durty-bull-brewing-company-gastonia/',
+    'instagram.com/explore/locations/378590115336095/durty-bull-brewing-company-gastonia/',
+    'https://www.instagram.com/explore/locations/378590115336095/durty-bull-brewing-company-gastonia/?hl=en',
+    'https://www.instagram.com/explore/locations/378590115336095',
+  ])('keeps 378590115336095 from facebookPageId input "%s" and sends it on save', async (input) => {
+    await act(async () => {
+      render(<EditVenueDialog open venue={venue} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />);
+    });
+    await act(async () => {
+      fireEvent.change(screen.getByTestId('edit-venue-facebook-page-id'), { target: { value: input } });
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('edit-venue-save'));
+    });
+    expect(adminVenuesUtils.updateVenue).toHaveBeenCalledWith('tk', 'v1', expect.objectContaining({
+      facebookPageId: '378590115336095',
+    }));
+  });
+
+  it('clears facebookPageId when an empty field is saved on a venue that had one', async () => {
+    const venueWithFb: Ivenue = { ...venue, facebookPageId: '378590115336095' };
+    await act(async () => {
+      render(<EditVenueDialog open venue={venueWithFb} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />);
+    });
+    await act(async () => {
+      fireEvent.change(screen.getByTestId('edit-venue-facebook-page-id'), { target: { value: '' } });
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('edit-venue-save'));
+    });
+    expect(adminVenuesUtils.updateVenue).toHaveBeenCalledWith('tk', 'v1', expect.objectContaining({
+      facebookPageId: '',
+    }));
+  });
+
+  it.each([
+    'https://www.facebook.com/profile.php?id=61562765818551',
+    'https://www.instagram.com/joshua.v.sherman/',
+    'abc',
+    '123456789012345678901',
+  ])('refuses invalid facebookPageId "%s" with the field error and sends nothing', async (invalid) => {
+    await act(async () => {
+      render(<EditVenueDialog open venue={venue} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />);
+    });
+    await act(async () => {
+      fireEvent.change(screen.getByTestId('edit-venue-facebook-page-id'), { target: { value: invalid } });
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('edit-venue-save'));
+    });
+    expect(screen.getByTestId('edit-venue-error')).toHaveTextContent(FACEBOOK_PAGE_ID_ERROR);
+    expect(adminVenuesUtils.updateVenue).not.toHaveBeenCalled();
   });
 
   it('supports non-US countries with free-text region field', async () => {

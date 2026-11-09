@@ -43,6 +43,36 @@ test.describe('Admin Venues page responsiveness and table scrollability', () => 
       });
     });
 
+    // Mock WebSocket and background requests
+    await page.routeWebSocket(/.*/, ws => {
+      ws.onMessage(message => {
+        if (typeof message !== 'string' || !message.startsWith('{')) return;
+        try {
+          const packet = JSON.parse(message);
+          if (packet.event === '#handshake') {
+            ws.send(JSON.stringify({ rid: packet.cid, data: { id: 'fixture', pingTimeout: 20000, isAuthenticated: false } }));
+          } else if (packet.event === '#subscribe') {
+            ws.send(JSON.stringify({ rid: packet.cid }));
+          } else if (packet.event === 'initial message') {
+            ws.send(JSON.stringify({ event: 'allGigs', data: [] }));
+            ws.send(JSON.stringify({ event: 'jamPics', data: [] }));
+            ws.send(JSON.stringify({ event: 'allPics', data: [] }));
+          }
+        } catch { /* ignore */ }
+      });
+    });
+
+    await page.route(/accounts\.google\.com/, route => route.abort());
+
+    await page.route('**/song*', async route => {
+      if (route.request().resourceType() === 'document') return route.continue();
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify([]),
+      });
+    });
+
     // Intercept API calls to /venue (ignoring the /admin/venues frontend page route)
     await page.route('http://localhost:7000/venue**', async (route) => {
       await route.fulfill({
@@ -616,6 +646,97 @@ test.describe('Admin Venues page responsiveness and table scrollability', () => 
       await expect(allChip).toHaveAttribute('aria-pressed', 'true');
       await expect(pitchReadyChip).toHaveAttribute('aria-pressed', 'false');
       await expect(page.locator('[data-testid^="venue-row-"]')).toHaveCount(4);
+    },
+  );
+
+  test(
+    'edits Facebook Page ID with Instagram location URL, clears value on save, and validates invalid URL',
+    async ({ page }) => {
+      let currentVenue = {
+        _id: 'v1',
+        name: 'Normal Active Venue',
+        city: 'Roanoke',
+        usState: 'VA',
+        venueType: 'Restaurant',
+        status: 'active',
+        outreachEligible: true,
+        contactVerified: true,
+        website: 'https://normalactivevenue.com',
+        contactName: 'Jane Doe',
+        email: 'jane@example.com',
+        facebookPageId: undefined as string | undefined,
+      };
+      const patchCalls: Record<string, unknown>[] = [];
+
+      await page.route(/localhost:7000\/venue(\/|\?|$)/, async route => {
+        if (route.request().method() === 'PATCH') {
+          const patch = JSON.parse(route.request().postData() || '{}');
+          patchCalls.push(patch);
+          currentVenue = { ...currentVenue, ...patch };
+          await route.fulfill({
+            status: 200,
+            contentType: 'application/json',
+            body: JSON.stringify(currentVenue),
+          });
+        } else {
+          await route.fulfill({
+            status: 200,
+            contentType: 'application/json',
+            body: JSON.stringify([currentVenue]),
+          });
+        }
+      });
+
+      await page.goto('/admin/venues', { waitUntil: 'domcontentloaded' });
+
+      // 1. Open Edit dialog for existing venue v1
+      const editButton = page.locator('[data-testid="venue-edit-v1"]');
+      await editButton.click();
+      await expect(page.locator('[data-testid="edit-venue-dialog-title"]')).toHaveText('Edit Venue — Normal Active Venue');
+
+      // 2. Paste Instagram location address and save
+      const fbPageInput = page.locator('[data-testid="edit-venue-facebook-page-id"] input');
+      await expect(fbPageInput).toBeVisible();
+      const igLocationUrl = 'https://www.instagram.com/explore/locations/378590115336095/durty-bull-brewing-company-gastonia/';
+      await fbPageInput.fill(igLocationUrl);
+
+      const saveButton = page.locator('[data-testid="edit-venue-save"]');
+      await saveButton.click();
+
+      // Assert that saving sends only its digits
+      await expect.poll(() => patchCalls.length).toBe(1);
+      expect(patchCalls[0].facebookPageId).toBe('378590115336095');
+      await expect(page.locator('[data-testid="edit-venue-dialog-title"]')).toBeHidden();
+
+      // 3. Reopen and clear the value
+      await editButton.click();
+      await expect(page.locator('[data-testid="edit-venue-dialog-title"]')).toBeVisible();
+      await expect(fbPageInput).toHaveValue('378590115336095');
+      await fbPageInput.fill('');
+      await saveButton.click();
+
+      // Assert that saving sends empty string to clear the value
+      await expect.poll(() => patchCalls.length).toBe(2);
+      expect(patchCalls[1].facebookPageId).toBe('');
+      await expect(page.locator('[data-testid="edit-venue-dialog-title"]')).toBeHidden();
+
+      // 4. Reopen and verify an invalid profile URL displays validation error without a save request
+      await editButton.click();
+      await expect(page.locator('[data-testid="edit-venue-dialog-title"]')).toBeVisible();
+      const invalidProfileUrl = 'https://www.facebook.com/profile.php?id=61562765818551';
+      await fbPageInput.fill(invalidProfileUrl);
+      await saveButton.click();
+
+      // Verify validation error is displayed
+      const errorAlert = page.locator('[data-testid="edit-venue-error"]');
+      await expect(errorAlert).toBeVisible();
+      await expect(errorAlert).toHaveText(
+        'Facebook Page ID must be 1 to 20 digits or an Instagram location URL (instagram.com/explore/locations/<id>)',
+      );
+
+      // Verify no additional save request was sent
+      expect(patchCalls).toHaveLength(2);
+      await expect(page.locator('[data-testid="edit-venue-dialog-title"]')).toBeVisible();
     },
   );
 });
