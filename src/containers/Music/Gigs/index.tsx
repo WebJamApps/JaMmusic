@@ -415,6 +415,7 @@ export const GigsDiv = (props: IgigsDivProps) => {
       />
       <AnnounceGigDialog
         gig={announceGig}
+        gigs={gigsInOrder || []}
         open={Boolean(announceGig)}
         onClose={() => setAnnounceGig(null)}
         auth={auth}
