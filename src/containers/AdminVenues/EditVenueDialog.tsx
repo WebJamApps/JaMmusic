@@ -68,6 +68,7 @@ export function EditVenueDialog({
           phone: venue.phone || '',
           website: venue.website || '',
           instagramUsername: venue.instagramUsername || '',
+          facebookPageId: venue.facebookPageId || '',
           outreachEligible: !!venue.outreachEligible,
           bookingStatus: venue.bookingStatus || 'booking',
           payAmount: venue.payAmount ?? undefined,
@@ -97,6 +98,7 @@ export function EditVenueDialog({
           phone: '',
           website: '',
           instagramUsername: '',
+          facebookPageId: '',
           outreachEligible: false,
           bookingStatus: 'booking',
           payAmount: undefined,
@@ -189,6 +191,7 @@ export function EditVenueDialog({
       audienceAttention: form.audienceAttention || undefined,
       website: validation.formattedWebsite,
       instagramUsername: form.instagramUsername ? form.instagramUsername.trim() : (venue?.instagramUsername ? '' : undefined),
+      facebookPageId: validation.formattedFacebookPageId || (venue?.facebookPageId ? '' : undefined),
       country: currentCountry,
       gigInterval: typeof form.gigInterval === 'number' ? form.gigInterval : 0,
       resumeBooking: form.resumeBooking || null,
@@ -455,6 +458,9 @@ export function EditVenueDialog({
         <TextField label="Instagram Username" fullWidth value={form.instagramUsername || ''}
           onChange={(e) => set('instagramUsername', e.target.value)}
           sx={{ marginBottom: 2 }} data-testid="edit-venue-instagram-username" />
+        <TextField label="Facebook Page ID" fullWidth value={form.facebookPageId || ''}
+          onChange={(e) => set('facebookPageId', e.target.value)}
+          sx={{ marginBottom: 2 }} data-testid="edit-venue-facebook-page-id" />
         <TextField
           label="Pay Amount"
           type="number"
