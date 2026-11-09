@@ -692,6 +692,30 @@ describe('AnnounceGigDialog', () => {
       ]);
     });
 
+    it('buildPictureStripUrls always places default photo strictly last, even when an existing gig promoImageUrl equals defaultUrl', () => {
+      const defaultUrl = '/gig/promo-default.jpg';
+      const gigs: Igig[] = [
+        {
+          _id: '1', venue: 'V1', datetime: new Date(), tickets: '', promoImageUrl: defaultUrl,
+        },
+        {
+          _id: '2', venue: 'V2', datetime: new Date(), tickets: '', promoImageUrl: 'https://example.com/other.jpg',
+        },
+      ];
+
+      const urls = buildPictureStripUrls(gigs, defaultUrl);
+      expect(urls).toEqual([
+        'https://example.com/other.jpg',
+        defaultUrl,
+      ]);
+
+      // When choosing starting image with first unposted, the non-default gig photo is preferred ahead of default
+      const starting = determineStartingImageUrl({
+        _id: 'g3', venue: 'V3', datetime: new Date(), tickets: '',
+      }, urls, new Map(), defaultUrl);
+      expect(starting).toBe('https://example.com/other.jpg');
+    });
+
     it('determineStartingImageUrl chooses gig promo, else first unposted in strip, else longest ago', () => {
       const defaultUrl = '/gig/promo-default.jpg';
       const stripUrls = ['https://example.com/pic1.jpg', 'https://example.com/pic2.jpg', defaultUrl];
@@ -957,6 +981,86 @@ describe('AnnounceGigDialog', () => {
       const remainingOption1 = screen.getByAltText('Picture option 1');
       expect(remainingOption1).toHaveAttribute('src', 'https://example.com/working.jpg');
       expect(screen.queryByAltText('Picture option 2')).not.toBeInTheDocument();
+    });
+
+    it('refreshes gigs after a successful confirm while retaining submitted caption, success controls, and disabled Confirm', async () => {
+      vi.spyOn(utils, 'announceGig').mockResolvedValue({
+        ok: true,
+        instagram: { ok: true, id: 'ig-post-123' },
+      });
+
+      const gig1: Igig = {
+        _id: 'g1',
+        venue: 'Slow Play Brewing',
+        datetime: new Date('2026-09-26T22:00:00.000Z'),
+        tickets: '',
+        promoImageUrl: 'https://example.com/pic1.jpg',
+      };
+      const gig2: Igig = {
+        _id: 'g2',
+        venue: 'Durty Bull Brewing',
+        datetime: new Date('2026-09-26T22:00:00.000Z'),
+        tickets: '',
+        promoImageUrl: 'https://example.com/pic2.jpg',
+      };
+
+      const { rerender } = render(
+        <AnnounceGigDialog
+          gig={gig1}
+          gigs={[gig1, gig2]}
+          open
+          onClose={vi.fn()}
+          auth={mockAuth}
+        />,
+      );
+
+      const captionTextarea = screen.getByTestId('announce-caption') as HTMLTextAreaElement;
+      fireEvent.change(captionTextarea, { target: { value: 'Custom submitted caption!' } });
+      expect(captionTextarea.value).toBe('Custom submitted caption!');
+
+      const confirmButton = screen.getByRole('button', { name: /^Confirm$/i });
+      expect(confirmButton).toBeEnabled();
+      fireEvent.click(confirmButton);
+
+      await waitFor(() => {
+        expect(screen.getByText(/Gig announced successfully to Instagram!/i)).toBeInTheDocument();
+      });
+      expect(screen.getByText('Facebook')).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /Copy caption/i })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /Download picture/i })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /Open Facebook/i })).toBeInTheDocument();
+      expect(confirmButton).toBeDisabled();
+
+      const updatedGig1: Igig = {
+        ...gig1,
+        announcements: [
+          {
+            imageUrl: 'https://example.com/pic1.jpg',
+            at: '2026-11-09T12:00:00.000Z',
+          },
+        ],
+      };
+
+      rerender(
+        <AnnounceGigDialog
+          gig={gig1}
+          gigs={[updatedGig1, gig2]}
+          open
+          onClose={vi.fn()}
+          auth={mockAuth}
+        />,
+      );
+
+      expect(captionTextarea.value).toBe('Custom submitted caption!');
+      expect(screen.getByText(/Gig announced successfully to Instagram!/i)).toBeInTheDocument();
+      expect(screen.getByText('Facebook')).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /Copy caption/i })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /Download picture/i })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /Open Facebook/i })).toBeInTheDocument();
+      expect(confirmButton).toBeDisabled();
+
+      const item0 = screen.getByTestId('picture-strip-item-0');
+      expect(item0).toHaveTextContent('posted Nov 9');
     });
   });
 });

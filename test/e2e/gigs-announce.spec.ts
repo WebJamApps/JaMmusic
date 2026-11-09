@@ -85,6 +85,85 @@ test.describe('Gigs Announce interaction', () => {
     });
   });
 
+  test('picture strip thumbnail selection populates image URL and retains Facebook hand-off', async ({ page }) => {
+    await fixture(page);
+
+    const tinyGif = Buffer.from('R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7', 'base64');
+    await page.route('**/gig/promo-default.jpg', async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'image/gif',
+        body: tinyGif,
+        headers: { 'access-control-allow-origin': '*' },
+      });
+    });
+
+    const announceWrites: Record<string, unknown>[] = [];
+
+    await page.route('**/venue/existing', async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        json: {
+          _id: 'existing',
+          name: 'Existing Hall',
+          instagramUsername: 'existing_hall_ig',
+          website: 'https://existinghall.com',
+          facebookPageId: '378590115336095',
+        },
+        headers: { 'access-control-allow-origin': '*' },
+      });
+    });
+
+    await page.route('**/gig/gig1/announce', async (route) => {
+      if (route.request().method() === 'POST') {
+        announceWrites.push(route.request().postDataJSON() as Record<string, unknown>);
+        await route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          json: { ok: true, instagram: { ok: true, id: 'ig-12345' } },
+          headers: { 'access-control-allow-origin': '*' },
+        });
+      } else {
+        await route.abort();
+      }
+    });
+
+    const announceButton = page.getByRole('button', { name: 'Announce', exact: true });
+    await expect(announceButton).toBeVisible();
+    await announceButton.click();
+
+    const dialog = page.getByRole('dialog', { name: 'Announce Gig to Instagram' });
+    await expect(dialog).toBeVisible();
+
+    const strip = dialog.getByTestId('announce-picture-strip');
+    await expect(strip).toBeVisible();
+
+    const defaultThumbnail = dialog.getByTestId('picture-strip-item-0');
+    await expect(defaultThumbnail).toBeVisible();
+    await defaultThumbnail.click();
+
+    const imageUrlInput = dialog.getByLabel('Image URL');
+    await expect(imageUrlInput).toHaveValue(/promo-default\.jpg/);
+
+    const confirmButton = dialog.getByRole('button', { name: 'Confirm', exact: true });
+    await expect(confirmButton).toBeEnabled();
+    await confirmButton.click();
+
+    const statusBanner = dialog.getByRole('status');
+    await expect(statusBanner).toBeVisible();
+    await expect(statusBanner).toContainText('Gig announced successfully to Instagram!');
+
+    // Facebook hand-off controls appear and remain usable
+    await expect(dialog.getByRole('button', { name: 'Copy caption', exact: true })).toBeVisible();
+    await expect(dialog.getByRole('button', { name: 'Download picture', exact: true })).toBeVisible();
+    await expect(dialog.getByRole('button', { name: 'Open Facebook', exact: true })).toBeVisible();
+    await expect(confirmButton).toBeDisabled();
+
+    expect(announceWrites).toHaveLength(1);
+    expect(announceWrites[0].imageUrl).toMatch(/promo-default\.jpg/);
+  });
+
   test('displays "Posted without the location" message when announce response carries locationDropped', async ({ page }) => {
     await fixture(page);
 

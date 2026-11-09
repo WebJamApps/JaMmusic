@@ -98,6 +98,23 @@ JaMmusic itself does not deploy to Heroku directly.
   specifications, while falling back gracefully to numeric and named entity decoders in headless/non-browser
   contexts. Test suites must cover entities outside common ASCII sets (e.g. `&copy;`, `&euro;`, `&trade;`,
   `&hellip;`).
+- **Dialog Lifecycle Separation on Collection Updates vs. Opening/Switching**: When dialogs consume parent/global
+  collection lists (such as `gigs`) for auxiliary features (such as thumbnail strips or selection lists) while
+  maintaining form/submission states (`submittedSuccessfully`, `hasSubmittedRef`, status messages, input edits),
+  never tie form initialization to changes in the collection prop array. A post-submission refresh in the parent
+  (e.g. calling `getGigs()` on success) instantiates a new array reference, which reruns the initialization effect,
+  wiping out success confirmation banners, clearing clipboard/hand-off controls, and re-enabling submission buttons
+  to allow accidental duplicate posts. Instead, isolate dialog reset and form initialization strictly to opening
+  state transitions or entity ID changes (`open`, `gig?._id`), allowing auxiliary lists to update independently
+  without resetting the open dialog's submission lifecycle.
+- **Deterministic Strip Ordering with Fallback Photos & Deduplication**: When constructing ordered lists where a
+  fixed default item must strictly appear at the end (or beginning), never rely on naive uniqueness checks
+  (`!seen.has(defaultUrl)`) after looping through caller-provided items. If caller items contain the default URL
+  (e.g. an existing gig whose `promoImageUrl` equals `defaultUrl`), processing them first inserts the default
+  prematurely at an earlier index and suppresses the terminal append. Explicitly filter out or skip the fixed
+  terminal element during intermediate processing, then append it once at the end. In addition, Playwright E2E
+  suites testing image strips with `onError` filtering must mock valid binary image responses (e.g. 1x1 GIF) on
+  routes registered after navigation fixtures to prevent 404s from removing strip elements prematurely.
 
 ## Layout
 

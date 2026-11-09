@@ -92,18 +92,20 @@ export function buildPictureStripUrls(
 ): string[] {
   const urls: string[] = [];
   const seen = new Set<string>();
+  const normalizedDefault = (defaultUrl || '').trim();
 
   for (const g of gigs) {
     if (!g || typeof g.promoImageUrl !== 'string' || !g.promoImageUrl.trim()) continue;
     const url = g.promoImageUrl.trim();
+    if (normalizedDefault && url === normalizedDefault) continue;
     if (!seen.has(url)) {
       seen.add(url);
       urls.push(url);
     }
   }
 
-  if (defaultUrl && !seen.has(defaultUrl)) {
-    urls.push(defaultUrl);
+  if (normalizedDefault) {
+    urls.push(normalizedDefault);
   }
 
   return urls;
@@ -189,11 +191,28 @@ export function AnnounceGigDialog({
   const venueTagEditedRef = useRef(false);
   const locationEditedRef = useRef(false);
   const hasSubmittedRef = useRef(false);
+  const prevGigIdRef = useRef<string | null>(null);
+  const prevOpenRef = useRef<boolean>(false);
 
   const loadedGigs = gigs || [];
+  const activeGig = (gigs && gig?._id ? gigs.find((g) => g._id === gig._id) : null) || gig;
 
   useEffect(() => {
-    if (!open || !gig) return;
+    if (!open || !gig) {
+      prevGigIdRef.current = null;
+      prevOpenRef.current = false;
+      return;
+    }
+
+    const isOpening = !prevOpenRef.current;
+    const isGigSwitch = prevGigIdRef.current !== null && prevGigIdRef.current !== gig._id;
+
+    prevOpenRef.current = true;
+    prevGigIdRef.current = gig._id ?? null;
+
+    if (!isOpening && !isGigSwitch) {
+      return;
+    }
 
     captionEditedRef.current = false;
     venueTagEditedRef.current = false;
@@ -253,7 +272,21 @@ export function AnnounceGigDialog({
         isMounted = false;
       };
     }
-  }, [open, gig, gigs, auth.token]);
+  }, [open, gig?._id, auth.token]);
+
+  useEffect(() => {
+    if (!open || !gig || hasSubmittedRef.current || imageUrl) return;
+    const defaultPhoto = getDefaultPromoUrl();
+    const candidateUrls = buildPictureStripUrls(
+      loadedGigs.length > 0 ? loadedGigs : [gig],
+      defaultPhoto,
+    );
+    const postedPictures = getGigPostedPictures(activeGig);
+    const startingUrl = determineStartingImageUrl(activeGig, candidateUrls, postedPictures, defaultPhoto);
+    if (startingUrl) {
+      setImageUrl(startingUrl);
+    }
+  }, [open, gig?._id, gigs, imageUrl]);
 
   const handleConfirm = async () => {
     if (!gig?._id) return;
@@ -314,10 +347,10 @@ export function AnnounceGigDialog({
 
   const defaultPhoto = getDefaultPromoUrl();
   const candidateUrls = buildPictureStripUrls(
-    loadedGigs.length > 0 ? loadedGigs : (gig ? [gig] : []),
+    loadedGigs.length > 0 ? loadedGigs : (activeGig ? [activeGig] : []),
     defaultPhoto,
   );
-  const postedPictures = getGigPostedPictures(gig);
+  const postedPictures = getGigPostedPictures(activeGig);
   const stripItems = candidateUrls.filter((url) => !failedUrls.includes(url));
 
   return (
