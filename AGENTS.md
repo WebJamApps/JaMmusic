@@ -88,6 +88,16 @@ JaMmusic itself does not deploy to Heroku directly.
   mobile projects (such as `Pixel 5`) run at narrow viewports (< 960px), helpers and assertions must detect
   whether card elements or table elements are visible, exercising cards at narrow viewports while retaining
   desktop table coverage when viewports are resized.
+- **Full-Spectrum HTML Entity Decoding & Non-Breaking Spaces in Caption Converters**: When converting
+  rich HTML captions (from rich-text editors like TinyMCE) to plain text for social platforms (such as
+  Facebook or Instagram), never rely solely on a manual allowlist of named HTML entities (`NAMED_ENTITIES`).
+  A small list leaves hundreds of valid named entities (such as `&copy;`, `&euro;`, `&trade;`, `&hellip;`)
+  unparsed. In browser and jsdom environments, decode entity tokens using native browser parsing
+  (`document.createElement('textarea')` with `textarea.innerHTML = entity; textarea.value` or `DOMParser`),
+  turning non-breaking space codes (`&nbsp;`, `\u{A0}`) into standard plain spaces (`' '`) per design
+  specifications, while falling back gracefully to numeric and named entity decoders in headless/non-browser
+  contexts. Test suites must cover entities outside common ASCII sets (e.g. `&copy;`, `&euro;`, `&trade;`,
+  `&hellip;`).
 
 ## Layout
 

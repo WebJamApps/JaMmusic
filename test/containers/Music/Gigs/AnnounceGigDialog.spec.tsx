@@ -189,6 +189,8 @@ describe('AnnounceGigDialog', () => {
         caption: expect.stringContaining('Josh & Maria'),
         imageUrl: 'https://example.com/promo.jpg',
         userTags: ['chemmariasherman', ''],
+        collaborators: ['chemmariasherman'],
+        locationId: undefined,
       });
       expect(onSuccess).toHaveBeenCalled();
       expect(screen.getByText(/Gig announced successfully to Instagram!/i)).toBeInTheDocument();
@@ -362,6 +364,8 @@ describe('AnnounceGigDialog', () => {
         caption: '<p>Admin custom edited caption</p>',
         imageUrl: 'https://example.com/promo.jpg',
         userTags: ['chemmariasherman', 'admin_chosen_tag'],
+        collaborators: ['chemmariasherman'],
+        locationId: undefined,
       });
     });
   });
@@ -395,5 +399,205 @@ describe('AnnounceGigDialog', () => {
     await deferredVenuePromise;
 
     expect(venueInput.value).toBe('');
+  });
+
+  it('populates Location from venue facebookPageId read through fetchVenue and initializes Collaborator to chemmariasherman', async () => {
+    vi.spyOn(utils, 'fetchVenue').mockResolvedValue({
+      _id: 'venue-456',
+      name: 'Slow Play Brewing',
+      facebookPageId: '378590115336095',
+    });
+
+    render(
+      <AnnounceGigDialog
+        gig={sampleGig}
+        open
+        onClose={vi.fn()}
+        auth={mockAuth}
+      />,
+    );
+
+    const collabInput = screen.getByLabelText(/Collaborator/i) as HTMLInputElement;
+    expect(collabInput.value).toBe('chemmariasherman');
+
+    await waitFor(() => {
+      const locInput = screen.getByLabelText(/Location/i) as HTMLInputElement;
+      expect(locInput.value).toBe('378590115336095');
+    });
+  });
+
+  it('submits Confirm with edited collaborator and location in confirm body', async () => {
+    const announceSpy = vi.spyOn(utils, 'announceGig').mockResolvedValue({
+      ok: true,
+      instagram: { ok: true, id: 'ig-custom-123' },
+    });
+
+    render(
+      <AnnounceGigDialog
+        gig={sampleGig}
+        open
+        onClose={vi.fn()}
+        auth={mockAuth}
+      />,
+    );
+
+    const collabInput = screen.getByLabelText(/Collaborator/i);
+    fireEvent.change(collabInput, { target: { value: '@custom_collab' } });
+    expect((collabInput as HTMLInputElement).value).toBe('custom_collab');
+
+    const locInput = screen.getByLabelText(/Location/i);
+    fireEvent.change(locInput, { target: { value: '987654321' } });
+    expect((locInput as HTMLInputElement).value).toBe('987654321');
+
+    fireEvent.click(screen.getByRole('button', { name: /Confirm/i }));
+
+    await waitFor(() => {
+      expect(announceSpy).toHaveBeenCalledWith('test-token', 'gig-123', expect.objectContaining({
+        collaborators: ['custom_collab'],
+        locationId: '987654321',
+      }));
+    });
+  });
+
+  it('sends empty collaborators list when Collaborator field is cleared and omits locationId when blank', async () => {
+    const announceSpy = vi.spyOn(utils, 'announceGig').mockResolvedValue({
+      ok: true,
+      instagram: { ok: true, id: 'ig-post-empty' },
+    });
+
+    render(
+      <AnnounceGigDialog
+        gig={sampleGig}
+        open
+        onClose={vi.fn()}
+        auth={mockAuth}
+      />,
+    );
+
+    const collabInput = screen.getByLabelText(/Collaborator/i);
+    fireEvent.change(collabInput, { target: { value: '' } });
+    expect((collabInput as HTMLInputElement).value).toBe('');
+
+    const locInput = screen.getByLabelText(/Location/i);
+    fireEvent.change(locInput, { target: { value: '   ' } });
+
+    fireEvent.click(screen.getByRole('button', { name: /Confirm/i }));
+
+    await waitFor(() => {
+      expect(announceSpy).toHaveBeenCalledWith('test-token', 'gig-123', expect.objectContaining({
+        collaborators: [],
+        locationId: undefined,
+      }));
+    });
+  });
+
+  it('shows "Posted without the location" message when response carries locationDropped', async () => {
+    vi.spyOn(utils, 'announceGig').mockResolvedValue({
+      ok: true,
+      instagram: {
+        ok: true,
+        id: 'ig-post-123',
+        locationDropped: 'Error 100: Invalid location ID',
+      },
+    });
+
+    render(
+      <AnnounceGigDialog
+        gig={sampleGig}
+        open
+        onClose={vi.fn()}
+        auth={mockAuth}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: /Confirm/i }));
+
+    await waitFor(() => {
+      expect(
+        screen.getByText(/Posted without the location: Instagram refused it: Error 100: Invalid location ID/i),
+      ).toBeInTheDocument();
+    });
+
+    expect(screen.getByText('Facebook')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Copy caption/i })).toBeInTheDocument();
+  });
+
+  it('offers Facebook hand-off (Copy caption, Download picture, Open Facebook) after Instagram succeeds', async () => {
+    vi.spyOn(utils, 'announceGig').mockResolvedValue({
+      ok: true,
+      instagram: { ok: true, id: 'ig-post-fb' },
+    });
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    Object.defineProperty(navigator, 'clipboard', {
+      value: { writeText },
+      writable: true,
+      configurable: true,
+    });
+    const downloadSpy = vi.spyOn(utils, 'downloadAnnounceImage').mockImplementation(() => {});
+    const openSpy = vi.spyOn(window, 'open').mockImplementation(() => null);
+
+    render(
+      <AnnounceGigDialog
+        gig={sampleGig}
+        open
+        onClose={vi.fn()}
+        auth={mockAuth}
+      />,
+    );
+
+    expect(screen.queryByText('Facebook')).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: /Confirm/i }));
+
+    await waitFor(() => {
+      expect(screen.getByText('Facebook')).toBeInTheDocument();
+    });
+
+    const copyBtn = screen.getByRole('button', { name: /Copy caption/i });
+    fireEvent.click(copyBtn);
+    await waitFor(() => {
+      expect(writeText).toHaveBeenCalled();
+      expect(screen.getByText('Caption copied to clipboard!')).toBeInTheDocument();
+    });
+
+    const downloadBtn = screen.getByRole('button', { name: /Download picture/i });
+    fireEvent.click(downloadBtn);
+    expect(downloadSpy).toHaveBeenCalledWith('gig-123');
+
+    const openFbBtn = screen.getByRole('button', { name: /Open Facebook/i });
+    fireEvent.click(openFbBtn);
+    expect(openSpy).toHaveBeenCalledWith('https://www.facebook.com/', '_blank', 'noopener,noreferrer');
+  });
+
+  it('preserves administrator location edits when delayed venue lookup completes and does not mutate venue record', async () => {
+    let resolveVenue!: (val: Ivenue) => void;
+    const deferredVenuePromise = new Promise<Ivenue>((resolve) => {
+      resolveVenue = resolve;
+    });
+    vi.spyOn(utils, 'fetchVenue').mockReturnValueOnce(deferredVenuePromise);
+
+    render(
+      <AnnounceGigDialog
+        gig={sampleGig}
+        open
+        onClose={vi.fn()}
+        auth={mockAuth}
+      />,
+    );
+
+    const locInput = screen.getByLabelText(/Location/i) as HTMLInputElement;
+    expect(locInput.value).toBe('');
+
+    fireEvent.change(locInput, { target: { value: 'custom_page_id_123' } });
+    expect(locInput.value).toBe('custom_page_id_123');
+
+    resolveVenue({
+      _id: 'venue-456',
+      name: 'Slow Play Brewing',
+      facebookPageId: 'stale_lookup_id',
+    });
+    await deferredVenuePromise;
+
+    expect(locInput.value).toBe('custom_page_id_123');
   });
 });

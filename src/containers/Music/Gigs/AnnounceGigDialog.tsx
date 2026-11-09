@@ -11,8 +11,8 @@ import {
 import { Editor } from '@tinymce/tinymce-react';
 import type { Igig } from 'src/providers/Data.provider';
 import type { Iauth } from 'src/providers/Auth.provider';
-import { generateStartingCaption } from './caption-generator';
-import utils from './gigs.utils';
+import { generateStartingCaption, htmlCaptionToText } from './caption-generator';
+import utils, { type AnnouncePayload } from './gigs.utils';
 
 export interface AnnounceGigDialogProps {
   gig: Igig | null;
@@ -33,12 +33,17 @@ export function AnnounceGigDialog({
   const [caption, setCaption] = useState('');
   const [mariaTag, setMariaTag] = useState('chemmariasherman');
   const [venueTag, setVenueTag] = useState('');
+  const [collaborator, setCollaborator] = useState('chemmariasherman');
+  const [location, setLocation] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [submittedSuccessfully, setSubmittedSuccessfully] = useState(false);
+  const [copyMessage, setCopyMessage] = useState('');
   const [statusMessage, setStatusMessage] = useState('');
   const [statusSeverity, setStatusSeverity] = useState<'success' | 'error' | null>(null);
 
   const captionEditedRef = useRef(false);
   const venueTagEditedRef = useRef(false);
+  const locationEditedRef = useRef(false);
   const hasSubmittedRef = useRef(false);
 
   useEffect(() => {
@@ -46,12 +51,17 @@ export function AnnounceGigDialog({
 
     captionEditedRef.current = false;
     venueTagEditedRef.current = false;
+    locationEditedRef.current = false;
     hasSubmittedRef.current = false;
 
     setImageUrl(gig.promoImageUrl || '');
     setMariaTag('chemmariasherman');
     setVenueTag('');
+    setCollaborator('chemmariasherman');
+    setLocation('');
     setSubmitting(false);
+    setSubmittedSuccessfully(false);
+    setCopyMessage('');
     setStatusMessage('');
     setStatusSeverity(null);
 
@@ -73,6 +83,13 @@ export function AnnounceGigDialog({
             setVenueTag('');
           }
         }
+        if (!locationEditedRef.current) {
+          if (venue.facebookPageId) {
+            setLocation(venue.facebookPageId);
+          } else {
+            setLocation('');
+          }
+        }
         if (!captionEditedRef.current && venue.website) {
           setCaption(generateStartingCaption(gig, { venueWebsite: venue.website }));
         }
@@ -89,10 +106,12 @@ export function AnnounceGigDialog({
     setStatusMessage('');
     setStatusSeverity(null);
 
-    const payload = {
+    const payload: AnnouncePayload = {
       caption,
       imageUrl: imageUrl.trim() || undefined,
       userTags: [mariaTag.trim(), venueTag.trim()],
+      collaborators: collaborator.trim() ? [collaborator.trim()] : [],
+      locationId: location.trim() || undefined,
     };
 
     const res = await utils.announceGig(auth.token, gig._id, payload);
@@ -100,15 +119,40 @@ export function AnnounceGigDialog({
 
     if (res.ok || res.instagram?.ok) {
       hasSubmittedRef.current = true;
+      setSubmittedSuccessfully(true);
       const nowIso = new Date().toISOString();
       setStatusSeverity('success');
-      setStatusMessage('Gig announced successfully to Instagram!');
+      if (res.instagram?.locationDropped) {
+        const dropReason = res.instagram.locationDropped ? `: ${res.instagram.locationDropped}` : '';
+        setStatusMessage(`Posted without the location: Instagram refused it${dropReason}`);
+      } else {
+        setStatusMessage('Gig announced successfully to Instagram!');
+      }
       onSuccess?.(nowIso);
     } else {
       setStatusSeverity('error');
       const errText = res.instagram?.error || res.message || 'Instagram announce failed';
       setStatusMessage(`Instagram error: ${errText}`);
     }
+  };
+
+  const handleCopyCaption = async () => {
+    const plainText = htmlCaptionToText(caption);
+    try {
+      await navigator.clipboard.writeText(plainText);
+      setCopyMessage('Caption copied to clipboard!');
+    } catch (_e) {
+      setCopyMessage('Failed to copy caption');
+    }
+  };
+
+  const handleDownloadPicture = () => {
+    if (!gig?._id) return;
+    utils.downloadAnnounceImage(gig._id);
+  };
+
+  const handleOpenFacebook = () => {
+    window.open('https://www.facebook.com/', '_blank', 'noopener,noreferrer');
   };
 
   if (!open || !gig) return null;
@@ -138,6 +182,51 @@ export function AnnounceGigDialog({
             }}
           >
             {statusMessage}
+          </Box>
+        )}
+
+        {submittedSuccessfully && (
+          <Box
+            sx={{
+              p: 2,
+              mb: 2,
+              borderRadius: '4px',
+              backgroundColor: 'rgba(0, 0, 0, 0.04)',
+              border: '1px solid #e0e0e0',
+            }}
+          >
+            <Box sx={{ fontWeight: 600, mb: 1, fontSize: '14px' }}>Facebook</Box>
+            <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+              <Button
+                variant="outlined"
+                size="small"
+                id="announce-copy-caption-button"
+                onClick={handleCopyCaption}
+              >
+                Copy caption
+              </Button>
+              <Button
+                variant="outlined"
+                size="small"
+                id="announce-download-picture-button"
+                onClick={handleDownloadPicture}
+              >
+                Download picture
+              </Button>
+              <Button
+                variant="outlined"
+                size="small"
+                id="announce-open-facebook-button"
+                onClick={handleOpenFacebook}
+              >
+                Open Facebook
+              </Button>
+            </Box>
+            {copyMessage && (
+              <Box sx={{ mt: 1, fontSize: '13px', color: 'success.main' }}>
+                {copyMessage}
+              </Box>
+            )}
           </Box>
         )}
 
@@ -231,16 +320,40 @@ export function AnnounceGigDialog({
             helperText="Position: 75% across, 85% down"
           />
         </Box>
+
+        <Box sx={{ display: 'flex', gap: 2, mt: 2 }}>
+          <TextField
+            fullWidth
+            size="small"
+            label="Collaborator"
+            id="announce-collaborator"
+            value={collaborator}
+            onChange={(e) => setCollaborator(e.target.value.replace(/^@/, ''))}
+            helperText="Instagram collaborator (default: chemmariasherman)"
+          />
+          <TextField
+            fullWidth
+            size="small"
+            label="Location"
+            id="announce-location"
+            value={location}
+            onChange={(e) => {
+              locationEditedRef.current = true;
+              setLocation(e.target.value);
+            }}
+            helperText="Facebook Page ID (from venue record)"
+          />
+        </Box>
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose} disabled={submitting}>
-          Cancel
+          {submittedSuccessfully ? 'Close' : 'Cancel'}
         </Button>
         <Button
           variant="contained"
           color="primary"
           id="announce-confirm-button"
-          disabled={submitting || !caption.trim()}
+          disabled={submitting || !caption.trim() || submittedSuccessfully}
           onClick={handleConfirm}
         >
           {submitting ? 'Confirming...' : 'Confirm'}

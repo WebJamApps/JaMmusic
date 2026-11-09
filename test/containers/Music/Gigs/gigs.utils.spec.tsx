@@ -666,6 +666,48 @@ describe('gigs.utils', () => {
       expect(result.ok).toBe(false);
       expect(result.message).toBe('Connection dropped');
     });
+
+    it('sends collaborators and locationId when provided in payload', async () => {
+      const customFetchSpy = vi.spyOn(fetchUtils, 'customFetch').mockResolvedValueOnce(
+        new Response(
+          JSON.stringify({ instagram: { ok: true, id: 'post-with-loc', locationDropped: 'refused' } }),
+          { status: 200 },
+        ),
+      );
+
+      const result = await utils.announceGig('token', 'gig-1', {
+        caption: 'Test caption',
+        userTags: ['maria', 'venue'],
+        collaborators: ['chemmariasherman'],
+        locationId: '378590115336095',
+      });
+      expect(result.ok).toBe(true);
+      expect(result.instagram?.locationDropped).toBe('refused');
+      expect(customFetchSpy).toHaveBeenCalledWith(
+        expect.stringContaining('/gig/gig-1/announce'),
+        expect.objectContaining({
+          body: JSON.stringify({
+            caption: 'Test caption',
+            userTags: ['maria', 'venue'],
+            collaborators: ['chemmariasherman'],
+            locationId: '378590115336095',
+          }),
+        }),
+      );
+    });
+  });
+
+  describe('downloadAnnounceImage', () => {
+    it('creates an anchor element pointing to the gig announce image endpoint and triggers click', () => {
+      const clickSpy = vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {});
+      const appendChildSpy = vi.spyOn(document.body, 'appendChild');
+      const removeChildSpy = vi.spyOn(document.body, 'removeChild');
+
+      utils.downloadAnnounceImage('gig-999');
+      expect(clickSpy).toHaveBeenCalled();
+      expect(appendChildSpy).toHaveBeenCalled();
+      expect(removeChildSpy).toHaveBeenCalled();
+    });
   });
 
   describe('getCardColumnCount', () => {
