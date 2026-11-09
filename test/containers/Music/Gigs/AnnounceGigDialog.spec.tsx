@@ -1062,5 +1062,72 @@ describe('AnnounceGigDialog', () => {
       const item0 = screen.getByTestId('picture-strip-item-0');
       expect(item0).toHaveTextContent('posted Nov 9');
     });
+
+    it('clears an initially populated URL, verifies it stays empty through a gigs refresh, and confirms payload omits imageUrl', async () => {
+      const announceSpy = vi.spyOn(utils, 'announceGig').mockResolvedValue({
+        ok: true,
+        instagram: { ok: true, id: 'ig-post-123' },
+      });
+
+      const gig1: Igig = {
+        _id: 'g1',
+        venue: 'Slow Play Brewing',
+        datetime: new Date('2026-09-26T22:00:00.000Z'),
+        tickets: '',
+        promoImageUrl: 'https://example.com/pic1.jpg',
+      };
+      const gig2: Igig = {
+        _id: 'g2',
+        venue: 'Durty Bull Brewing',
+        datetime: new Date('2026-09-26T22:00:00.000Z'),
+        tickets: '',
+        promoImageUrl: 'https://example.com/pic2.jpg',
+      };
+
+      const { rerender } = render(
+        <AnnounceGigDialog
+          gig={gig1}
+          gigs={[gig1, gig2]}
+          open
+          onClose={vi.fn()}
+          auth={mockAuth}
+        />,
+      );
+
+      const imageInput = screen.getByLabelText(/Image URL/i) as HTMLInputElement;
+      expect(imageInput.value).toBe('https://example.com/pic1.jpg');
+
+      // Clear the input intentionally to leave blank for default photo
+      fireEvent.change(imageInput, { target: { value: '' } });
+      expect(imageInput.value).toBe('');
+
+      // Refresh gigs (e.g. background polling or parent state update)
+      const updatedGigs: Igig[] = [
+        { ...gig1, venue: 'Slow Play Brewing Updated' },
+        gig2,
+      ];
+      rerender(
+        <AnnounceGigDialog
+          gig={gig1}
+          gigs={updatedGigs}
+          open
+          onClose={vi.fn()}
+          auth={mockAuth}
+        />,
+      );
+
+      // Verify it stays empty through the gigs refresh
+      expect(imageInput.value).toBe('');
+
+      // Submit and confirm payload omits imageUrl (imageUrl: undefined)
+      const confirmButton = screen.getByRole('button', { name: /^Confirm$/i });
+      fireEvent.click(confirmButton);
+
+      await waitFor(() => {
+        expect(announceSpy).toHaveBeenCalledTimes(1);
+      });
+      const [, , payload] = announceSpy.mock.calls[0];
+      expect(payload.imageUrl).toBeUndefined();
+    });
   });
 });

@@ -190,6 +190,7 @@ export function AnnounceGigDialog({
   const captionEditedRef = useRef(false);
   const venueTagEditedRef = useRef(false);
   const locationEditedRef = useRef(false);
+  const imageEditedRef = useRef(false);
   const hasSubmittedRef = useRef(false);
   const prevGigIdRef = useRef<string | null>(null);
   const prevOpenRef = useRef<boolean>(false);
@@ -201,6 +202,7 @@ export function AnnounceGigDialog({
     if (!open || !gig) {
       prevGigIdRef.current = null;
       prevOpenRef.current = false;
+      imageEditedRef.current = false;
       return;
     }
 
@@ -217,6 +219,7 @@ export function AnnounceGigDialog({
     captionEditedRef.current = false;
     venueTagEditedRef.current = false;
     locationEditedRef.current = false;
+    imageEditedRef.current = false;
     hasSubmittedRef.current = false;
     setFailedUrls([]);
 
@@ -275,7 +278,7 @@ export function AnnounceGigDialog({
   }, [open, gig?._id, auth.token]);
 
   useEffect(() => {
-    if (!open || !gig || hasSubmittedRef.current || imageUrl) return;
+    if (!open || !gig || hasSubmittedRef.current || imageEditedRef.current) return;
     const defaultPhoto = getDefaultPromoUrl();
     const candidateUrls = buildPictureStripUrls(
       loadedGigs.length > 0 ? loadedGigs : [gig],
@@ -286,7 +289,7 @@ export function AnnounceGigDialog({
     if (startingUrl) {
       setImageUrl(startingUrl);
     }
-  }, [open, gig?._id, gigs, imageUrl]);
+  }, [open, gig?._id, gigs]);
 
   const handleConfirm = async () => {
     if (!gig?._id) return;
@@ -463,7 +466,10 @@ export function AnnounceGigDialog({
             label="Image URL"
             id="announce-image-url"
             value={imageUrl}
-            onChange={(e) => setImageUrl(e.target.value)}
+            onChange={(e) => {
+              imageEditedRef.current = true;
+              setImageUrl(e.target.value);
+            }}
             helperText="Public image URL (optional — leave blank for default photo)"
           />
 
@@ -491,7 +497,10 @@ export function AnnounceGigDialog({
                   <button
                     key={itemUrl}
                     type="button"
-                    onClick={() => setImageUrl(itemUrl)}
+                    onClick={() => {
+                      imageEditedRef.current = true;
+                      setImageUrl(itemUrl);
+                    }}
                     aria-label={postedInfo ? `${label} (${postedInfo.dateLabel})` : label}
                     data-testid={`picture-strip-item-${index}`}
                     style={{
