@@ -11,6 +11,7 @@ import adminVenuesUtils, { type Ivenue } from 'src/containers/AdminVenues/admin-
 
 import { validateVenueFields } from 'src/containers/AdminVenues/venue-shared.utils';
 
+export type { Igig, GigAnnouncement } from 'src/providers/Data.provider';
 export type GigOpResult = 'success' | 'error' | 'unconfirmed';
 
 // eslint-disable-next-line max-len
@@ -555,6 +556,14 @@ export const fetchVenue = async (token: string, venueId: string): Promise<Ivenue
   }
 };
 
+export interface AnnouncePayload {
+  caption: string;
+  imageUrl?: string;
+  userTags: string[];
+  collaborators?: string[];
+  locationId?: string;
+}
+
 export interface AnnounceResponse {
   ok: boolean;
   message?: string;
@@ -562,13 +571,14 @@ export interface AnnounceResponse {
     ok: boolean;
     id?: string;
     error?: string;
+    locationDropped?: string;
   };
 }
 
 export const announceGig = async (
   token: string,
   gigId: string,
-  payload: { caption: string; imageUrl?: string; userTags: string[] },
+  payload: AnnouncePayload,
 ): Promise<AnnounceResponse> => {
   try {
     const res = await customFetch(`${process.env.BackendUrl}/gig/${gigId}/announce`, {
@@ -580,7 +590,10 @@ export const announceGig = async (
       },
       body: JSON.stringify(payload),
     });
-    const data = await res.json() as { message?: string; instagram?: { ok: boolean; id?: string; error?: string } };
+    const data = await res.json() as {
+      message?: string;
+      instagram?: { ok: boolean; id?: string; error?: string; locationDropped?: string };
+    };
     if (!res.ok) {
       const errorMsg = data.instagram?.error || data.message || `Server error (${res.status})`;
       return { ok: false, message: errorMsg, instagram: { ok: false, error: errorMsg } };
@@ -590,6 +603,16 @@ export const announceGig = async (
     const msg = (err as Error).message || 'Network error';
     return { ok: false, message: msg, instagram: { ok: false, error: msg } };
   }
+};
+
+export const downloadAnnounceImage = (gigId: string): void => {
+  const url = `${process.env.BackendUrl}/gig/${gigId}/announce-image.jpg`;
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `gig-${gigId}-announce.jpg`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
 };
 
 export default {
@@ -618,4 +641,5 @@ export default {
   isWithin10Days,
   fetchVenue,
   announceGig,
+  downloadAnnounceImage,
 };

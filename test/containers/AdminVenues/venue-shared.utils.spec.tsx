@@ -4,6 +4,8 @@ import {
   validateZipCode,
   normalizeWebsiteUrl,
   validateInstagramUsername,
+  normalizeFacebookPageId,
+  FACEBOOK_PAGE_ID_ERROR,
   validateVenueFields,
   getExistingVenueWarning,
   formatVenueSaveOutcomeMessage,
@@ -105,6 +107,46 @@ describe('venue-shared.utils', () => {
       expect(validateInstagramUsername('venue-name')).toBe(false);
       expect(validateInstagramUsername('venue!')).toBe(false);
       expect(validateInstagramUsername('venue#1')).toBe(false);
+    });
+  });
+
+  describe('normalizeFacebookPageId', () => {
+    it('keeps a direct numeric Page ID up to 20 digits', () => {
+      expect(normalizeFacebookPageId('378590115336095')).toEqual({
+        valid: true,
+        facebookPageId: '378590115336095',
+      });
+    });
+
+    it.each([
+      'https://www.instagram.com/explore/locations/378590115336095/durty-bull-brewing-company-gastonia/',
+      'instagram.com/explore/locations/378590115336095/durty-bull-brewing-company-gastonia/',
+      'https://www.instagram.com/explore/locations/378590115336095/durty-bull-brewing-company-gastonia/?hl=en',
+      'https://www.instagram.com/explore/locations/378590115336095',
+    ])('extracts 378590115336095 from pasted Instagram location URL "%s"', (input) => {
+      expect(normalizeFacebookPageId(input)).toEqual({
+        valid: true,
+        facebookPageId: '378590115336095',
+      });
+    });
+
+    it('clears the value when given an empty or whitespace field', () => {
+      expect(normalizeFacebookPageId('')).toEqual({ valid: true, facebookPageId: '' });
+      expect(normalizeFacebookPageId('   ')).toEqual({ valid: true, facebookPageId: '' });
+      expect(normalizeFacebookPageId(undefined)).toEqual({ valid: true, facebookPageId: '' });
+    });
+
+    it.each([
+      'https://www.facebook.com/profile.php?id=61562765818551',
+      'https://www.instagram.com/joshua.v.sherman/',
+      'abc',
+      '123456789012345678901',
+    ])('refuses invalid input "%s" with the field error', (invalid) => {
+      expect(normalizeFacebookPageId(invalid)).toEqual({
+        valid: false,
+        facebookPageId: '',
+        error: FACEBOOK_PAGE_ID_ERROR,
+      });
     });
   });
 
@@ -246,6 +288,39 @@ describe('venue-shared.utils', () => {
       const res = validateVenueFields(validCreateFields, { mode: 'create' });
       expect(res.valid).toBe(true);
       expect(res.errors.instagramUsername).toBeUndefined();
+    });
+
+    it('accepts valid facebookPageId numbers and Instagram location URLs', () => {
+      for (const fb of [
+        '378590115336095',
+        'https://www.instagram.com/explore/locations/378590115336095/durty-bull-brewing-company-gastonia/',
+        'instagram.com/explore/locations/378590115336095/durty-bull-brewing-company-gastonia/',
+        'https://www.instagram.com/explore/locations/378590115336095/durty-bull-brewing-company-gastonia/?hl=en',
+        'https://www.instagram.com/explore/locations/378590115336095',
+      ]) {
+        const res = validateVenueFields({ ...validCreateFields, facebookPageId: fb }, { mode: 'create' });
+        expect(res.valid).toBe(true);
+        expect(res.errors.facebookPageId).toBeUndefined();
+        expect(res.formattedFacebookPageId).toBe('378590115336095');
+      }
+
+      const emptyRes = validateVenueFields({ ...validCreateFields, facebookPageId: '' }, { mode: 'create' });
+      expect(emptyRes.valid).toBe(true);
+      expect(emptyRes.formattedFacebookPageId).toBe('');
+    });
+
+    it('rejects invalid facebookPageId values with the field error', () => {
+      for (const invalid of [
+        'https://www.facebook.com/profile.php?id=61562765818551',
+        'https://www.instagram.com/joshua.v.sherman/',
+        'abc',
+        '123456789012345678901',
+      ]) {
+        const res = validateVenueFields({ ...validCreateFields, facebookPageId: invalid }, { mode: 'create' });
+        expect(res.valid).toBe(false);
+        expect(res.error).toBe(FACEBOOK_PAGE_ID_ERROR);
+        expect(res.errors.facebookPageId).toBe(FACEBOOK_PAGE_ID_ERROR);
+      }
     });
 
     describe('edit mode', () => {

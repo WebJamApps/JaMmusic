@@ -160,7 +160,7 @@ export function formatTimeRangeEastern(datetime: Date | string, durationHours?: 
   const startFormattedTime = startMinute === '00' ? startHour : `${startHour}:${startMinute}`;
 
   if (!durationHours || durationHours <= 0) {
-    return `${startFormattedTime} ${startDayPeriod}`;
+    return `at ${startFormattedTime} ${startDayPeriod}`;
   }
 
   const endDate = new Date(startDate.getTime() + durationHours * 60 * 60 * 1000);
@@ -178,9 +178,9 @@ export function formatTimeRangeEastern(datetime: Date | string, durationHours?: 
   const endFormattedTime = endMinute === '00' ? endHour : `${endHour}:${endMinute}`;
 
   if (startDayPeriod === endDayPeriod) {
-    return `${startFormattedTime}–${endFormattedTime} ${endDayPeriod}`;
+    return `from ${startFormattedTime} to ${endFormattedTime} ${endDayPeriod}`;
   }
-  return `${startFormattedTime} ${startDayPeriod}–${endFormattedTime} ${endDayPeriod}`;
+  return `from ${startFormattedTime} ${startDayPeriod} to ${endFormattedTime} ${endDayPeriod}`;
 }
 
 export function generateStartingCaption(gig: Igig, options?: CaptionOptions): string {
@@ -191,15 +191,14 @@ export function generateStartingCaption(gig: Igig, options?: CaptionOptions): st
   const locationText = [city, stateAbbr].filter(Boolean).join(', ');
 
   const gigDate = gig.datetime ? new Date(gig.datetime) : refDate;
-  const in7Days = isWithin7Days(gigDate, refDate);
   const plainDate = formatPlainDate(gigDate);
   const weekday = formatWeekdayEastern(gigDate);
-  const dateIntro = in7Days ? `this ${weekday}` : plainDate;
+  const weekdayDate = `${weekday} ${plainDate}`;
   const timeRange = formatTimeRangeEastern(gigDate, gig.duration);
 
   const locSuffix = locationText ? ` in ${locationText}` : '';
   const gigHeading = `Josh & Maria at ${venueName || 'venue'}${locSuffix}`;
-  const introParagraph = `<p>Live music ${dateIntro}! 🎶 ${gigHeading} — ${plainDate}, ${timeRange}. Come grab a pint and hang out with us!</p>`;
+  const introParagraph = `<p>Live music ${weekdayDate}! 🎶 ${gigHeading} ${timeRange}. Come grab a pint and hang out with us!</p>`;
 
   const paragraphs = [introParagraph];
 
@@ -232,6 +231,82 @@ export function generateStartingCaption(gig: Igig, options?: CaptionOptions): st
   return paragraphs.join('\n');
 }
 
+const ANCHOR_RE = /<a\b[^>]*href="([^"]*)"[^>]*>[\s\S]*?<\/a>/gi;
+const BR_RE = /<br\s*\/?>/gi;
+const BLOCK_CLOSE_RE = /<\/(p|div|li|h[1-6]|blockquote)>/gi;
+const REMAINING_TAG_RE = /<[^>]*>/g;
+
+let cachedTextarea: HTMLTextAreaElement | null = null;
+
+function getCachedTextarea(): HTMLTextAreaElement | null {
+  if (typeof document === 'undefined') return null;
+  if (!cachedTextarea) {
+    cachedTextarea = document.createElement('textarea');
+  }
+  return cachedTextarea;
+}
+
+const ENTITY_RE = /&(?:#x[0-9a-fA-F]+|#\d+|[a-zA-Z0-9]+);/g;
+const NAMED_ENTITIES: Record<string, string> = {
+  amp: '&',
+  lt: '<',
+  gt: '>',
+  quot: '"',
+  apos: "'",
+  nbsp: ' ',
+  ndash: '–',
+  mdash: '—',
+  rsquo: '’',
+  lsquo: '‘',
+  rdquo: '”',
+  ldquo: '“',
+  eacute: 'é',
+  copy: '©',
+  euro: '€',
+  trade: '™',
+  hellip: '…',
+  reg: '®',
+  deg: '°',
+};
+const NAMED_ENTITY_RE = /&([a-zA-Z0-9]+);/g;
+const NUMERIC_ENTITY_RE = /&#(\d+);/g;
+const HEX_ENTITY_RE = /&#x([0-9a-fA-F]+);/g;
+
+export function decodeHtmlEntities(text: string): string {
+  if (!text) return '';
+  const textarea = getCachedTextarea();
+  if (textarea) {
+    return text.replace(ENTITY_RE, entity => {
+      textarea.innerHTML = entity;
+      return textarea.value.replace(/\u{A0}/gu, ' ');
+    });
+  }
+  if (typeof DOMParser !== 'undefined') {
+    return text.replace(ENTITY_RE, entity => {
+      const doc = new DOMParser().parseFromString(entity, 'text/html');
+      return (doc.body.textContent || entity).replace(/\u{A0}/gu, ' ');
+    });
+  }
+  return text
+    .replace(HEX_ENTITY_RE, (_m, hex: string) => String.fromCodePoint(parseInt(hex, 16)))
+    .replace(NUMERIC_ENTITY_RE, (_m, dec: string) => String.fromCodePoint(parseInt(dec, 10)))
+    .replace(NAMED_ENTITY_RE, (m, name: string) => NAMED_ENTITIES[name] ?? m)
+    .replace(/\u{A0}/gu, ' ');
+}
+
+export function htmlCaptionToText(html: string): string {
+  const withLinks = (html || '').replace(ANCHOR_RE, (_m, href: string) => href);
+  const withBreaks = withLinks.replace(BR_RE, '\n').replace(BLOCK_CLOSE_RE, '\n\n');
+  const stripped = withBreaks.replace(REMAINING_TAG_RE, '');
+  const decoded = decodeHtmlEntities(stripped);
+  return decoded
+    .split('\n')
+    .map((line) => line.trim())
+    .join('\n')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
+}
+
 export default {
   generateStartingCaption,
   extractVenueInfo,
@@ -241,4 +316,6 @@ export default {
   formatTimeRangeEastern,
   formatStateAbbr,
   isWithin7Days,
+  decodeHtmlEntities,
+  htmlCaptionToText,
 };

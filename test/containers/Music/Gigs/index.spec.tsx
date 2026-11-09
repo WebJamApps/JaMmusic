@@ -47,9 +47,11 @@ vi.mock('src/containers/Music/Gigs/EditGigDialog', () => ({
 }));
 
 vi.mock('src/containers/Music/Gigs/AnnounceGigDialog', () => ({
-  AnnounceGigDialog: ({ open, onClose, onSuccess }: AnnounceGigDialogProps) => (
+  AnnounceGigDialog: ({
+    open, onClose, onSuccess, gigs,
+  }: AnnounceGigDialogProps) => (
     open ? (
-      <div data-testid="mock-announce-gig-dialog">
+      <div data-testid="mock-announce-gig-dialog" data-gigs-count={gigs?.length}>
         <button type="button" onClick={onClose} data-testid="mock-cancel-announce">cancel announce</button>
         <button type="button" onClick={() => onSuccess?.(new Date().toISOString())} data-testid="mock-success-announce">success announce</button>
       </div>
@@ -566,5 +568,46 @@ describe('Gigs', () => {
     );
     expect(container.querySelector('.gig-card-separator')).toBeInTheDocument();
     expect(container.textContent).toContain('Our Past Performances');
+  });
+  it('passes loaded gigsInOrder to AnnounceGigDialog when Announce is triggered', () => {
+    const mediaSpy = vi.spyOn(mui, 'useMediaQuery').mockReturnValue(true);
+    const futureDate = new Date(Date.now() + 86400000);
+    const mockGig1 = {
+      _id: 'g1', venue: 'Slow Play Brewing', datetime: futureDate, tickets: 'Free',
+    } as Igig;
+    const mockGig2 = {
+      _id: 'g2', venue: 'Durty Bull Brewing', datetime: futureDate, tickets: 'Free',
+    } as Igig;
+    const mockAuth: Iauth = {
+      token: 'mock-token',
+      isAuthenticated: true,
+      error: '',
+      user: { userType: 'admin', email: 'admin@example.com' },
+    };
+    const props = {
+      isAdmin: true,
+      setShowDialog: vi.fn(),
+      setEditGig: vi.fn(),
+      editGig: {} as Igig,
+      gigsInOrder: [mockGig1, mockGig2],
+      pageSize: 5,
+      showDialog: false,
+      editChanged: false,
+      setEditChanged: vi.fn(),
+      getGigs: vi.fn(),
+      auth: mockAuth,
+      setPageSize: vi.fn(),
+    };
+    render(<BrowserRouter><GigsDiv {...props} /></BrowserRouter>);
+    expect(screen.queryByTestId('mock-announce-gig-dialog')).not.toBeInTheDocument();
+
+    const announceButtons = screen.getAllByRole('button', { name: /Announce/i });
+    fireEvent.click(announceButtons[0]);
+
+    const dialog = screen.getByTestId('mock-announce-gig-dialog');
+    expect(dialog).toBeInTheDocument();
+    expect(dialog).toHaveAttribute('data-gigs-count', '2');
+
+    mediaSpy.mockRestore();
   });
 });

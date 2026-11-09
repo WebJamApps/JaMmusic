@@ -88,6 +88,48 @@ JaMmusic itself does not deploy to Heroku directly.
   mobile projects (such as `Pixel 5`) run at narrow viewports (< 960px), helpers and assertions must detect
   whether card elements or table elements are visible, exercising cards at narrow viewports while retaining
   desktop table coverage when viewports are resized.
+- **Full-Spectrum HTML Entity Decoding & Non-Breaking Spaces in Caption Converters**: When converting
+  rich HTML captions (from rich-text editors like TinyMCE) to plain text for social platforms (such as
+  Facebook or Instagram), never rely solely on a manual allowlist of named HTML entities (`NAMED_ENTITIES`).
+  A small list leaves hundreds of valid named entities (such as `&copy;`, `&euro;`, `&trade;`, `&hellip;`)
+  unparsed. In browser and jsdom environments, decode entity tokens using native browser parsing
+  (`document.createElement('textarea')` with `textarea.innerHTML = entity; textarea.value` or `DOMParser`),
+  turning non-breaking space codes (`&nbsp;`, `\u{A0}`) into standard plain spaces (`' '`) per design
+  specifications, while falling back gracefully to numeric and named entity decoders in headless/non-browser
+  contexts. Test suites must cover entities outside common ASCII sets (e.g. `&copy;`, `&euro;`, `&trade;`,
+  `&hellip;`).
+- **Dialog Lifecycle Separation on Collection Updates vs. Opening/Switching**: When dialogs consume parent/global
+  collection lists (such as `gigs`) for auxiliary features (such as thumbnail strips or selection lists) while
+  maintaining form/submission states (`submittedSuccessfully`, `hasSubmittedRef`, status messages, input edits),
+  never tie form initialization to changes in the collection prop array. A post-submission refresh in the parent
+  (e.g. calling `getGigs()` on success) instantiates a new array reference, which reruns the initialization effect,
+  wiping out success confirmation banners, clearing clipboard/hand-off controls, and re-enabling submission buttons
+  to allow accidental duplicate posts. Instead, isolate dialog reset and form initialization strictly to opening
+  state transitions or entity ID changes (`open`, `gig?._id`), allowing auxiliary lists to update independently
+  without resetting the open dialog's submission lifecycle.
+- **Deterministic Strip Ordering with Fallback Photos & Deduplication**: When constructing ordered lists where a
+  fixed default item must strictly appear at the end (or beginning), never rely on naive uniqueness checks
+  (`!seen.has(defaultUrl)`) after looping through caller-provided items. If caller items contain the default URL
+  (e.g. an existing gig whose `promoImageUrl` equals `defaultUrl`), processing them first inserts the default
+  prematurely at an earlier index and suppresses the terminal append. Explicitly filter out or skip the fixed
+  terminal element during intermediate processing, then append it once at the end. In addition, Playwright E2E
+  suites testing image strips with `onError` filtering must mock valid binary image responses (e.g. 1x1 GIF) on
+  routes registered after navigation fixtures to prevent 404s from removing strip elements prematurely.
+- **Distinguishing Intentional Empty Field Edits from Uninitialized State**: When implementing automatic field selection
+  (such as deriving a recommended starting image or template URL), never treat an empty string (`!value` or
+  `value === ''`) as an uninitialized condition that triggers automatic re-population. Doing so causes intentional blank
+  edits (such as clearing a field to accept a backend default or leave an optional value blank) to be immediately
+  overwritten. Distinguish initial state from user edits by tracking an explicit dirty/touched ref (e.g.
+  `imageEditedRef.current = true` on `onChange`/selection), resetting it strictly on dialog open or entity switch.
+  Automatic fallback effects must guard on `!editedRef.current` and omit the field value from their dependency array
+  so intentional clearing is preserved through subsequent collection refreshes.
+- **Playwright E2E Mocking for External Auth & Background Transports**: When writing or extending Playwright browser test
+  suites for pages embedded in the root App (such as Admin pages under `AppTemplate`), external identity providers (such as
+  Google Identity Services at `https://accounts.google.com/gsi/client`) injected by providers like `GoogleOAuthProvider`
+  must be explicitly aborted (`await page.route(/accounts\.google\.com/, route => route.abort())`) to prevent unhandled
+  runtime script exceptions from breaking React root mounting in headless Chrome. Background poll/socket endpoints (e.g.
+  SocketCluster WebSocket connections and initial collection requests like `**/song*`) must also be mocked so unhandled
+  background network failures do not delay element stabilization or trigger error overlays.
 
 ## Layout
 
@@ -117,7 +159,8 @@ from a `<lane>/<issue#>-<slug>` branch.
 - **Summary**: markdown bullet points, one change per bullet — never a run-on paragraph.
 - **Test evidence**: paste the REAL runner output verbatim (the lines showing pass/fail and test counts), inside a ``` fence — never a description like "all tests passed". If the output has scrolled out of view, re-run the test command and paste what it prints.
 - **Test plan**: exact commands and concrete manual verification steps exercising the actual new behavior (start command, route/page, what to click, expected visible result) — a green test suite execution command (`npm test`) alone is not a plan.
-- **Attribution**: `--author` names the model actually doing the work. Antigravity/agy sessions use the exact `displayName` of the model running, as listed in `ALLOWED_AGY_MODELS` in web-jam-tools `hooks/lib/check_agy_model.ts` (for example `agy — Gemini 3.8 Flash (High)`) — never any other model name (models misremember their own identity; copy the exact string).
+- **Attribution**: `--author` names the model actually doing the work. Antigravity/agy sessions use the exact model roster entry (for example `agy — Gemini Flash` or `agy — Gemini Argon`) — never any unvetted model name (models misremember their own identity; verify against `create-draft-pr.sh --check-author`).
+- **PR Comments Attribution & Model Tag**: Every comment posted on a pull request (including review replies, verification receipts, and fix confirmations) MUST include a model footer tag identifying which model did the work (for example `🤖 Work by agy — Gemini Flash` or `🤖 Work by agy — Gemini Argon`). Never post unsigned comments that leave the executing model ambiguous.
 - **Version bump ⇒ snapshot update & lockfile sync**: every pull request MUST increment `version` in `package.json` strictly above the `dev` merge-base (even if the branch was cut from an earlier base that already carried that number). The AppTemplate footer renders the package.json version into a snapshot (`test/App/AppTemplate/__snapshots__/index.spec.tsx.snap`), and the version bump affects both `package.json` and `package-lock.json`. Running unit tests scoped only to modified files or affected suites (e.g. newly touched dialogs or utilities) omits `AppTemplate`, allowing snapshot mismatches (`AppTemplate > renders the component 1 mismatched`) to slip past local checks and fail CI. Whenever bumping the version (or rebasing a feature branch onto an updated `dev` base with a higher version), always synchronize `package-lock.json` (updating only the two root application `"version"` fields — root `"version"` and `packages[""].version` — or via `npm install --package-lock-only`; NEVER run a global search-and-replace across `package-lock.json`, which corrupts matching third-party dependency or peerDependency semver ranges like `^2.25.0`), update the `AppTemplate` snapshot with `npm run test:unit-u` (never bare `vitest -u` — the script sets `TZ=UTC`), update any version reference in the PR description, commit the updated snapshot in the same PR, and confirm with full `npm test` across all files before pushing.
 
 > **Moved to the Obsidian vault (2026-11-05):** Troubleshooting lessons (Vite, Playwright, Vitest, MUI, forms, polling) now live word for word in `~/Dropbox/web-jam-llms/rules-vault/JaMmusic-AGENTS.md`. Read it before working in that area.

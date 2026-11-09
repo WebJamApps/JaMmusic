@@ -99,6 +99,7 @@ export interface VenueFormFields {
   country?: string;
   website?: string;
   instagramUsername?: string;
+  facebookPageId?: string;
   [key: string]: unknown;
 }
 
@@ -112,6 +113,7 @@ export interface VenueValidationResult {
   error?: string;
   errors: Record<string, string>;
   formattedWebsite?: string;
+  formattedFacebookPageId?: string;
 }
 
 export function validateZipCode(zip?: string): boolean {
@@ -147,6 +149,33 @@ export function validateInstagramUsername(username?: string): boolean {
     return true;
   }
   return /^[A-Za-z0-9._]{1,30}$/.test(username);
+}
+
+export const FACEBOOK_PAGE_ID_ERROR =
+  'Facebook Page ID must be 1 to 20 digits or an Instagram location URL (instagram.com/explore/locations/<id>)';
+
+const IG_LOCATION_URL_REGEX =
+  /^(?:https?:\/\/)?(?:www\.)?instagram\.com\/explore\/locations\/(\d{1,20})(?:\/[^/?#]*\/?|\/)?(?:\?[^\s#]*)?(?:#[^\s]*)?$/i;
+
+export function normalizeFacebookPageId(
+  facebookPageId?: string,
+): { valid: boolean; facebookPageId: string; error?: string } {
+  const trimmed = facebookPageId ? facebookPageId.trim() : '';
+  if (!trimmed) {
+    return { valid: true, facebookPageId: '' };
+  }
+  if (/^\d{1,20}$/.test(trimmed)) {
+    return { valid: true, facebookPageId: trimmed };
+  }
+  const match = IG_LOCATION_URL_REGEX.exec(trimmed);
+  if (match) {
+    return { valid: true, facebookPageId: match[1] };
+  }
+  return {
+    valid: false,
+    facebookPageId: '',
+    error: FACEBOOK_PAGE_ID_ERROR,
+  };
 }
 
 export function validateVenueFields(
@@ -218,19 +247,32 @@ export function validateVenueFields(
     }
   }
 
+  // 8. Facebook Page ID: optional; 1-20 digits or pasted Instagram location address
+  let formattedFacebookPageId = '';
+  if (fields.facebookPageId !== undefined) {
+    const fbRes = normalizeFacebookPageId(String(fields.facebookPageId));
+    if (!fbRes.valid) {
+      errors.facebookPageId = fbRes.error || FACEBOOK_PAGE_ID_ERROR;
+    } else {
+      formattedFacebookPageId = fbRes.facebookPageId;
+    }
+  }
+
   const firstError = errors.name
     || errors.address
     || errors.city
     || errors.zipCode
     || errors.usState
     || errors.website
-    || errors.instagramUsername;
+    || errors.instagramUsername
+    || errors.facebookPageId;
 
   return {
     valid: Object.keys(errors).length === 0,
     error: firstError,
     errors,
     formattedWebsite,
+    formattedFacebookPageId,
   };
 }
 
