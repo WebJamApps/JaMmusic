@@ -54,6 +54,12 @@ Before changing anything under `src/providers/`, read `docs/rules/providers.md`.
 Before changing anything under `src/containers/Songs/`, read `docs/rules/songs.md`.
 Before changing anything under `src/containers/Music/Gigs/`, read `docs/rules/gigs.md`.
 Before changing anything under `test/`, read `docs/rules/tests.md`.
+Before changing anything under `src/containers/AdminVenues/`, read `docs/rules/admin-venues.md`.
+Before changing anything under `src/containers/AdminOutreach/`, read `docs/rules/admin-outreach.md`.
+Before changing anything under `src/styles/`, read `docs/rules/styles.md`.
+Before changing anything under `src/containers/AdminDatabase/`, read `docs/rules/admin-database.md`.
+Before changing anything under `src/containers/Homepage/Inquiry/`, read `docs/rules/inquiry.md`.
+Before changing anything under `src/containers/AdminTemplates/`, read `docs/rules/admin-templates.md`.
 
 ## Layout
 
@@ -87,12 +93,6 @@ from a `<lane>/<issue#>-<slug>` branch.
 - **PR Comments Attribution & Model Tag**: Every comment posted on a pull request (including review replies, verification receipts, and fix confirmations) MUST include a model footer tag identifying which model did the work (for example `🤖 Work by agy — Gemini Flash` or `🤖 Work by agy — Gemini Argon`). Never post unsigned comments that leave the executing model ambiguous.
 - **Version bump ⇒ snapshot update & lockfile sync**: every pull request MUST increment `version` in `package.json` strictly above the `dev` merge-base (even if the branch was cut from an earlier base that already carried that number). The AppTemplate footer renders the package.json version into a snapshot (`test/App/AppTemplate/__snapshots__/index.spec.tsx.snap`), and the version bump affects both `package.json` and `package-lock.json`. Running unit tests scoped only to modified files or affected suites (e.g. newly touched dialogs or utilities) omits `AppTemplate`, allowing snapshot mismatches (`AppTemplate > renders the component 1 mismatched`) to slip past local checks and fail CI. Whenever bumping the version (or rebasing a feature branch onto an updated `dev` base with a higher version), always synchronize `package-lock.json` (updating only the two root application `"version"` fields — root `"version"` and `packages[""].version` — or via `npm install --package-lock-only`; NEVER run a global search-and-replace across `package-lock.json`, which corrupts matching third-party dependency or peerDependency semver ranges like `^2.25.0`), update the `AppTemplate` snapshot with `npm run test:unit-u` (never bare `vitest -u` — the script sets `TZ=UTC`), update any version reference in the PR description, commit the updated snapshot in the same PR, and confirm with full `npm test` across all files before pushing.
 - **Draft PR Script Requirements**: The workspace `create-draft-pr.sh` script strictly requires the `--author`, `--summary`, `--test-plan`, and `--test-evidence` flags. Leaving any of these empty or as a default placeholder will cause the script to abort and refuse to open the draft PR.
-Before changing anything under `src/containers/AdminVenues/`, read `docs/rules/admin-venues.md`.
-Before changing anything under `src/containers/AdminOutreach/`, read `docs/rules/admin-outreach.md`.
-Before changing anything under `src/styles/`, read `docs/rules/styles.md`.
-Before changing anything under `src/containers/AdminDatabase/`, read `docs/rules/admin-database.md`.
-Before changing anything under `src/containers/Homepage/Inquiry/`, read `docs/rules/inquiry.md`.
-Before changing anything under `src/containers/AdminTemplates/`, read `docs/rules/admin-templates.md`.
 
 ## Branch & memory hygiene
 
