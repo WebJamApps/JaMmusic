@@ -50,86 +50,10 @@ JaMmusic itself does not deploy to Heroku directly.
   not after CI flags it.
 - **Tests** live in `test/`, mirroring `src/`; shared mocks in `__mocks__/`. Add
   or update specs alongside the file you change.
-- **Context provider action return contracts**: When context methods (like `getSongs`, `getGigs`,
-  `getPics`) are consumed by action handlers to obtain uncached data imperatively (e.g.
-  `const data = await getSongs()`), the provider function must actually return the underlying fetch
-  promise/result (e.g. `export const makeGetSongs = (setSongs) => async () => await fetchSongs.getSongs(setSongs)`),
-  rather than discarding the return value (`await fetch(...)` without `return`). Otherwise, local
-  callers receive `undefined` and fall back to error/static states because React's asynchronous state
-  setter does not update local variables in the caller's stack.
-- **Explicit MongoDB `$unset` on URL/optional field removal in PUT requests**: When updating existing
-  documents via `PUT` endpoints backed by Mongoose `findByIdAndUpdate`, omitting a field from the
-  payload leaves the existing document field untouched in the database. To clear an optional field
-  (such as removing a recording URL so an unrecorded song does not collide with a sparse unique index
-  or retain a stale URL), the update payload must explicitly pass `$unset: { <field>: '' }` while
-  deleting the key from the top-level payload (`delete payload.<field>`), rather than simply omitting it.
-- **Responsive Desktop Tables & Viewport Content Width**: When testing or designing desktop data tables
-  (e.g. MUI X DataGrid) to eliminate horizontal scrolling at desktop breakpoints (such as 960px or 1024px),
-  never sum column minimum widths against the viewport width alone. In layouts with persistent navigation
-  sidebars (e.g. `.main-panel` width `calc(100% - 180px)` for viewports >= 900px) and page content padding
-  (e.g. 16px left + 16px right in `.gigsDiv`), the actual available content width is significantly less than
-  the viewport (at 960px, available width is only `960 - 180 - 32 = 748px`; at 1024px,
-  `1024 - 180 - 32 = 812px`). Sizing strategies must ensure column minimum widths sum to less than or equal to
-  the actual available content width (using `box-sizing: border-box`), and responsive column widths should
-  leverage `flex` properties rather than fixed pixel widths to adapt cleanly across screen widths without
-  forcing horizontal scrollbars (`scrollWidth <= clientWidth`).
-- **Keyboard Activation and Event Scoping on Interactive Container Cards**: When interactive container
-  cards (e.g. `GigCard`) have click and keydown handlers (e.g. opening an edit modal on click/Enter/Space),
-  always scope keyboard activation strictly to `e.target === e.currentTarget` (and give the card accessible
-  semantics: `role="button"`, `tabIndex={0}`, and `aria-label`). Descendant buttons (like "Announce") and
-  links (venue/map/tickets) must not have their activation intercepted by the parent container: child buttons
-  must call `e.stopPropagation()` on both `click` and `keydown` for Enter and Space, and container click
-  handlers must ignore clicks originating from interactive child elements
-  (`a, button, input, select, textarea, img`).
-- **E2E Selector Migration for Responsive Layout Breakpoints**: When a desktop data table
-  (e.g. `.MuiDataGrid-root` / `.MuiDataGrid-row`) is responsively transformed into a card layout
-  (e.g. `.gig-card`) below a specific viewport breakpoint, shared E2E test helpers (such as `openGigDialog`)
-  and browser test suites must not unconditionally query removed desktop table selectors. Because Playwright
-  mobile projects (such as `Pixel 5`) run at narrow viewports (< 960px), helpers and assertions must detect
-  whether card elements or table elements are visible, exercising cards at narrow viewports while retaining
-  desktop table coverage when viewports are resized.
-- **Full-Spectrum HTML Entity Decoding & Non-Breaking Spaces in Caption Converters**: When converting
-  rich HTML captions (from rich-text editors like TinyMCE) to plain text for social platforms (such as
-  Facebook or Instagram), never rely solely on a manual allowlist of named HTML entities (`NAMED_ENTITIES`).
-  A small list leaves hundreds of valid named entities (such as `&copy;`, `&euro;`, `&trade;`, `&hellip;`)
-  unparsed. In browser and jsdom environments, decode entity tokens using native browser parsing
-  (`document.createElement('textarea')` with `textarea.innerHTML = entity; textarea.value` or `DOMParser`),
-  turning non-breaking space codes (`&nbsp;`, `\u{A0}`) into standard plain spaces (`' '`) per design
-  specifications, while falling back gracefully to numeric and named entity decoders in headless/non-browser
-  contexts. Test suites must cover entities outside common ASCII sets (e.g. `&copy;`, `&euro;`, `&trade;`,
-  `&hellip;`).
-- **Dialog Lifecycle Separation on Collection Updates vs. Opening/Switching**: When dialogs consume parent/global
-  collection lists (such as `gigs`) for auxiliary features (such as thumbnail strips or selection lists) while
-  maintaining form/submission states (`submittedSuccessfully`, `hasSubmittedRef`, status messages, input edits),
-  never tie form initialization to changes in the collection prop array. A post-submission refresh in the parent
-  (e.g. calling `getGigs()` on success) instantiates a new array reference, which reruns the initialization effect,
-  wiping out success confirmation banners, clearing clipboard/hand-off controls, and re-enabling submission buttons
-  to allow accidental duplicate posts. Instead, isolate dialog reset and form initialization strictly to opening
-  state transitions or entity ID changes (`open`, `gig?._id`), allowing auxiliary lists to update independently
-  without resetting the open dialog's submission lifecycle.
-- **Deterministic Strip Ordering with Fallback Photos & Deduplication**: When constructing ordered lists where a
-  fixed default item must strictly appear at the end (or beginning), never rely on naive uniqueness checks
-  (`!seen.has(defaultUrl)`) after looping through caller-provided items. If caller items contain the default URL
-  (e.g. an existing gig whose `promoImageUrl` equals `defaultUrl`), processing them first inserts the default
-  prematurely at an earlier index and suppresses the terminal append. Explicitly filter out or skip the fixed
-  terminal element during intermediate processing, then append it once at the end. In addition, Playwright E2E
-  suites testing image strips with `onError` filtering must mock valid binary image responses (e.g. 1x1 GIF) on
-  routes registered after navigation fixtures to prevent 404s from removing strip elements prematurely.
-- **Distinguishing Intentional Empty Field Edits from Uninitialized State**: When implementing automatic field selection
-  (such as deriving a recommended starting image or template URL), never treat an empty string (`!value` or
-  `value === ''`) as an uninitialized condition that triggers automatic re-population. Doing so causes intentional blank
-  edits (such as clearing a field to accept a backend default or leave an optional value blank) to be immediately
-  overwritten. Distinguish initial state from user edits by tracking an explicit dirty/touched ref (e.g.
-  `imageEditedRef.current = true` on `onChange`/selection), resetting it strictly on dialog open or entity switch.
-  Automatic fallback effects must guard on `!editedRef.current` and omit the field value from their dependency array
-  so intentional clearing is preserved through subsequent collection refreshes.
-- **Playwright E2E Mocking for External Auth & Background Transports**: When writing or extending Playwright browser test
-  suites for pages embedded in the root App (such as Admin pages under `AppTemplate`), external identity providers (such as
-  Google Identity Services at `https://accounts.google.com/gsi/client`) injected by providers like `GoogleOAuthProvider`
-  must be explicitly aborted (`await page.route(/accounts\.google\.com/, route => route.abort())`) to prevent unhandled
-  runtime script exceptions from breaking React root mounting in headless Chrome. Background poll/socket endpoints (e.g.
-  SocketCluster WebSocket connections and initial collection requests like `**/song*`) must also be mocked so unhandled
-  background network failures do not delay element stabilization or trigger error overlays.
+Before changing anything under `src/providers/`, read `docs/rules/providers.md`.
+Before changing anything under `src/containers/Songs/`, read `docs/rules/songs.md`.
+Before changing anything under `src/containers/Music/Gigs/`, read `docs/rules/gigs.md`.
+Before changing anything under `test/`, read `docs/rules/tests.md`.
 
 ## Layout
 
@@ -162,8 +86,13 @@ from a `<lane>/<issue#>-<slug>` branch.
 - **Attribution**: `--author` names the model actually doing the work. Antigravity/agy sessions use the exact model roster entry (for example `agy — Gemini Flash` or `agy — Gemini Argon`) — never any unvetted model name (models misremember their own identity; verify against `create-draft-pr.sh --check-author`).
 - **PR Comments Attribution & Model Tag**: Every comment posted on a pull request (including review replies, verification receipts, and fix confirmations) MUST include a model footer tag identifying which model did the work (for example `🤖 Work by agy — Gemini Flash` or `🤖 Work by agy — Gemini Argon`). Never post unsigned comments that leave the executing model ambiguous.
 - **Version bump ⇒ snapshot update & lockfile sync**: every pull request MUST increment `version` in `package.json` strictly above the `dev` merge-base (even if the branch was cut from an earlier base that already carried that number). The AppTemplate footer renders the package.json version into a snapshot (`test/App/AppTemplate/__snapshots__/index.spec.tsx.snap`), and the version bump affects both `package.json` and `package-lock.json`. Running unit tests scoped only to modified files or affected suites (e.g. newly touched dialogs or utilities) omits `AppTemplate`, allowing snapshot mismatches (`AppTemplate > renders the component 1 mismatched`) to slip past local checks and fail CI. Whenever bumping the version (or rebasing a feature branch onto an updated `dev` base with a higher version), always synchronize `package-lock.json` (updating only the two root application `"version"` fields — root `"version"` and `packages[""].version` — or via `npm install --package-lock-only`; NEVER run a global search-and-replace across `package-lock.json`, which corrupts matching third-party dependency or peerDependency semver ranges like `^2.25.0`), update the `AppTemplate` snapshot with `npm run test:unit-u` (never bare `vitest -u` — the script sets `TZ=UTC`), update any version reference in the PR description, commit the updated snapshot in the same PR, and confirm with full `npm test` across all files before pushing.
-
-> **Moved to the Obsidian vault (2026-11-05):** Troubleshooting lessons (Vite, Playwright, Vitest, MUI, forms, polling) now live word for word in `~/Dropbox/web-jam-llms/rules-vault/JaMmusic-AGENTS.md`. Read it before working in that area.
+- **Draft PR Script Requirements**: The workspace `create-draft-pr.sh` script strictly requires the `--author`, `--summary`, `--test-plan`, and `--test-evidence` flags. Leaving any of these empty or as a default placeholder will cause the script to abort and refuse to open the draft PR.
+Before changing anything under `src/containers/AdminVenues/`, read `docs/rules/admin-venues.md`.
+Before changing anything under `src/containers/AdminOutreach/`, read `docs/rules/admin-outreach.md`.
+Before changing anything under `src/styles/`, read `docs/rules/styles.md`.
+Before changing anything under `src/containers/AdminDatabase/`, read `docs/rules/admin-database.md`.
+Before changing anything under `src/containers/Homepage/Inquiry/`, read `docs/rules/inquiry.md`.
+Before changing anything under `src/containers/AdminTemplates/`, read `docs/rules/admin-templates.md`.
 
 ## Branch & memory hygiene
 
