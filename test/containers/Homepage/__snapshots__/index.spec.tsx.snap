@@ -1746,20 +1746,6 @@ exports[`Homepage > renders correctly 1`] = `
            
         </p>
       </div>
-      <h3
-        style="text-align: center;"
-      >
-        <a
-          href="https://www.facebook.com/WebJamLLC/"
-          rel="noreferrer"
-          target="_blank"
-        >
-          Find Us on Facebook
-        </a>
-      </h3>
-      <div
-        style="max-width: 500px; margin: 0px auto;"
-      />
       <p
         style="font-size: 6pt; margin-bottom: 0px;"
       >
