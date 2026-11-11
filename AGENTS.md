@@ -50,6 +50,8 @@ JaMmusic itself does not deploy to Heroku directly.
   not after CI flags it.
 - **Tests** live in `test/`, mirroring `src/`; shared mocks in `__mocks__/`. Add
   or update specs alongside the file you change.
+- **PR comment model signature**: When leaving a comment on a JaMmusic pull request,
+  you MUST include your model name, i.e. Flash (e.g. `Flash` or `🤖 Work by agy — Gemini Flash`).
 Before changing anything under `src/providers/`, read `docs/rules/providers.md`.
 Before changing anything under `src/containers/Songs/`, read `docs/rules/songs.md`.
 Before changing anything under `src/containers/Music/Gigs/`, read `docs/rules/gigs.md`.
