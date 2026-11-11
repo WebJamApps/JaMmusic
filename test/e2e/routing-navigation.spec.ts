@@ -114,10 +114,10 @@ test.describe('React Router 8 Routing and Navigation', () => {
   });
 
   test('navigates directly to main public routes', async ({ page }) => {
-    // 1. Homepage at / (in JaMmusic, default root renders Music container)
+    // 1. Homepage at / (renders Homepage with .wideHome on web-jam.com, or Music with .elevation3 on joshandmariamusic.com)
     await page.goto('/', { waitUntil: 'domcontentloaded' });
     await expect(page).toHaveURL(/\/$/);
-    await expect(page.locator('.elevation3')).toBeVisible();
+    await expect(page.locator('.wideHome, .elevation3')).toBeVisible();
 
     // 2. Music overview at /music
     await page.goto('/music', { waitUntil: 'domcontentloaded' });
@@ -173,7 +173,7 @@ test.describe('React Router 8 Routing and Navigation', () => {
     // Navigating to an unrecognized route should trigger <Route path="*" element={<Navigate to="/" replace />} />
     await page.goto('/unrecognized-subpath-test-404', { waitUntil: 'domcontentloaded' });
     await expect(page).toHaveURL(/\/$/);
-    await expect(page.locator('.elevation3')).toBeVisible();
+    await expect(page.locator('.wideHome, .elevation3')).toBeVisible();
   });
 
   test('supports browser back and forward history stack navigation', async ({ page }) => {
