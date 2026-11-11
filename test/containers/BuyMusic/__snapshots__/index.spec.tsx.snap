@@ -7,7 +7,7 @@ exports[`BuyMusic > renders correctly 1`] = `
     style="padding-right: 15px; max-width: 800px; margin: auto; border-right: medium;"
   >
     <h2
-      style="text-align: center; font-weight: bold; margin: 20px 20px 10px;"
+      style="text-align: center; margin: 20px 20px 10px; font-weight: bold;"
     >
       Buy from Amazon Music
     </h2>
@@ -102,7 +102,7 @@ exports[`BuyMusic > renders correctly 1`] = `
       style="flex-basis: 0px; flex-grow: 1; max-width: 100%;"
     >
       <div
-        style="text-align: center; margin: 50px auto auto;"
+        style="margin: 50px auto auto; text-align: center;"
       >
         <div
           class="spotify"
