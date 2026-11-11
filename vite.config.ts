@@ -77,7 +77,7 @@ export default defineConfig(async ({ mode, command }) => {
     plugins: [
       ...(isTest ? [] : [
         replaceProcessEnv(env),
-        checker({ typescript: { tsconfigPath: './tsconfig.prod.json' } }),
+        checker({ typescript: { tsconfigPath: './tsconfig.prod.json' }, enableBuild: false }),
       ]),
       react(),
     ],
