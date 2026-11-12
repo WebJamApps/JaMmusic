@@ -1,10 +1,26 @@
 import React from 'react';
 import {
-  render, screen, waitFor, act,
+  render, screen, waitFor, act, fireEvent,
 } from '@testing-library/react';
 import '@testing-library/jest-dom';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 import adminDatabaseUtils from 'src/containers/AdminDatabase/admin-database.utils';
 import { Diagrams, defaultLoadMermaid } from 'src/containers/AdminDatabase/Diagrams';
+
+const controls = vi.hoisted(() => ({
+  zoomIn: vi.fn(), zoomOut: vi.fn(), fitToView: vi.fn(), resetTransform: vi.fn(),
+}));
+const viewerLoaded = vi.hoisted(() => vi.fn());
+vi.mock('react-zoom-pan-pinch', () => {
+  viewerLoaded();
+  return {
+    TransformWrapper: ({ children, minScale, initialScale }: {
+      children: (actions: typeof controls) => React.ReactNode;
+      minScale: number; initialScale: number;
+    }) => <div data-testid="viewer" data-min-scale={minScale} data-initial-scale={initialScale}>{children(controls)}</div>,
+    TransformComponent: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  };
+});
 
 vi.mock('mermaid', () => ({
   default: {
@@ -72,6 +88,7 @@ describe('Diagrams component', () => {
       render(<Diagrams />);
 
       expect(getDbSpy).not.toHaveBeenCalled();
+      expect(viewerLoaded).not.toHaveBeenCalled();
       expect(getSysSpy).not.toHaveBeenCalled();
       expect(screen.queryByTestId('database-diagram-loading')).not.toBeInTheDocument();
       expect(screen.queryByTestId('system-map-loading')).not.toBeInTheDocument();
@@ -104,6 +121,15 @@ describe('Diagrams component', () => {
       expect(screen.getByText('Database SVG')).toBeInTheDocument();
       expect(screen.getByText('System SVG')).toBeInTheDocument();
       expect(mockMermaid.render).toHaveBeenCalledTimes(2);
+      const actions = { Plus: controls.zoomIn, Minus: controls.zoomOut, Fit: controls.fitToView, Reset: controls.resetTransform };
+      for (const [label, handler] of Object.entries(actions)) {
+        const buttons = screen.getAllByRole('button', { name: label });
+        expect(buttons).toHaveLength(2);
+        buttons.forEach((button) => fireEvent.click(button));
+        expect(handler).toHaveBeenCalledTimes(2);
+      }
+      expect(screen.getAllByTestId('viewer')[0]).toHaveAttribute('data-initial-scale', '1');
+      expect(screen.getAllByTestId('viewer')[0]).toHaveAttribute('data-min-scale', '0.001');
     });
 
     it('shows error messages in place of diagrams when diagram fetches fail', async () => {
@@ -175,10 +201,32 @@ describe('Diagrams component', () => {
       expect(screen.queryByTestId('database-diagram-svg')).not.toBeInTheDocument();
     });
 
+    it('redraws both diagrams when the page mode changes', async () => {
+      vi.spyOn(adminDatabaseUtils, 'getDatabaseDiagram').mockResolvedValue(mockDbText);
+      vi.spyOn(adminDatabaseUtils, 'getSystemDiagram').mockResolvedValue(mockSystemText);
+      const load = vi.fn().mockResolvedValue({ render: vi.fn().mockResolvedValue({ svg: '<svg>diagram</svg>' }) });
+      const { rerender } = render(
+        <ThemeProvider theme={createTheme({ palette: { mode: 'light' } })}><Diagrams token={token} loadMermaid={load} /></ThemeProvider>,
+      );
+      await screen.findByTestId('database-diagram-svg');
+      expect(load).toHaveBeenCalledWith('light');
+      rerender(<ThemeProvider theme={createTheme({ palette: { mode: 'dark' } })}><Diagrams token={token} loadMermaid={load} /></ThemeProvider>);
+      await waitFor(() => expect(load).toHaveBeenCalledWith('dark'));
+      await screen.findByTestId('system-map-svg');
+      expect(load).toHaveBeenCalledTimes(4);
+    });
+
     it('defaultLoadMermaid initializes and returns the mermaid instance', async () => {
       const mermaid = await defaultLoadMermaid();
       expect(mermaid).toBeDefined();
       expect(typeof mermaid.render).toBe('function');
+      const module = await import('mermaid');
+      expect(module.default.initialize).toHaveBeenLastCalledWith({
+        startOnLoad: false, securityLevel: 'loose', theme: 'default',
+        er: { useMaxWidth: false }, flowchart: { useMaxWidth: false },
+      });
+      await defaultLoadMermaid('dark');
+      expect(module.default.initialize).toHaveBeenLastCalledWith(expect.objectContaining({ theme: 'dark' }));
     });
   });
 });
