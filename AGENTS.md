@@ -63,6 +63,8 @@ Before changing anything under `src/containers/AdminDatabase/`, read `docs/rules
 Before changing anything under `src/containers/Homepage/Inquiry/`, read `docs/rules/inquiry.md`.
 Before changing anything under `src/containers/AdminTemplates/`, read `docs/rules/admin-templates.md`.
 - **Node 26 built-in `localStorage` in test environments**: Node 26 introduces an unconfigured global `localStorage` getter on `globalThis` returning `undefined` by default without `--localstorage-file`. In Vitest / jsdom unit tests, ensure an in-memory `Storage` mock is registered on both `window` and `globalThis` in `test/vitest.setup.ts` to prevent bare or window `localStorage` operations from throwing `TypeError: Cannot read properties of undefined`.
+- **Node Engine & Root Types Alignment**: When upgrading Node runtime/engine versions (e.g. to Node 26), explicitly specify `@types/node` at the matching major version in `devDependencies` in `package.json` (e.g. `"@types/node": "^26.0.0"`) so TypeScript compiler definitions match runtime Node APIs, preventing transitive dependencies from falling back to older major versions (e.g. `@types/node@22.x`) in `package-lock.json`.
+- **Declaration Files & No Raw `any` Guardrail**: In custom declaration files (`types/**/*.d.ts`), avoid raw `any` in matcher extensions (such as `TestingLibraryMatchers`). Use generic type parameters (`T`, `R`) or `unknown` (e.g., `TestingLibraryMatchers<T, R>`, `TestingLibraryMatchers<unknown, unknown>`) to satisfy both upstream library typings and no-raw-any guardrails.
 
 ## Layout
 

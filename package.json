@@ -99,6 +99,7 @@
     "@playwright/test": "^1.65.0",
     "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/react": "^16.3.3",
+    "@types/node": "^26.6.6",
     "@typescript/typescript6": "^6.0.2",
     "@vitest/coverage-v8": "^5.1.0",
     "@vitest/eslint-plugin": "^1.6.28",
