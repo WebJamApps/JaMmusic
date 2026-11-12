@@ -42,6 +42,26 @@ const AGENT_USER = {
 
 test.describe('React Router 8 Routing and Navigation', () => {
   test.beforeEach(async ({ context, page }) => {
+    // Handle socketcluster handshake and mock data messages so no connection-failure toast overlay is displayed
+    await page.routeWebSocket(/.*/, (ws) => {
+      ws.onMessage((message) => {
+        if (typeof message !== 'string' || !message.startsWith('{')) return;
+        try {
+          const packet = JSON.parse(message);
+          if (packet.event === '#handshake') {
+            ws.send(JSON.stringify({ rid: packet.cid, data: { id: 'fixture', pingTimeout: 20000, isAuthenticated: false } }));
+          } else if (packet.event === '#subscribe') {
+            ws.send(JSON.stringify({ rid: packet.cid }));
+          } else if (packet.event === 'initial message') {
+            ws.send(JSON.stringify({ event: 'allGigs', data: [] }));
+            ws.send(JSON.stringify({ event: 'allPics', data: [] }));
+          }
+        } catch { /* ignore */ }
+      });
+    });
+
+    await page.route(/^https:\/\/(accounts\.google\.com)/, (route) => route.abort());
+
     // Seed authenticated developer user in localStorage
     await context.addInitScript((auth) => {
       try {

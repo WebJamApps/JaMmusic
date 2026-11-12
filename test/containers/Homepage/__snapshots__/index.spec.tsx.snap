@@ -63,7 +63,7 @@ exports[`Homepage > renders correctly 1`] = `
                             >
                               <button
                                 aria-expanded="false"
-                                class="MuiButtonBase-root MuiAccordionSummary-root MuiAccordionSummary-gutters css-1f1pi2l-MuiButtonBase-root-MuiAccordionSummary-root"
+                                class="MuiButtonBase-root MuiAccordionSummary-root MuiAccordionSummary-gutters css-gkux1a-MuiButtonBase-root-MuiAccordionSummary-root"
                                 tabindex="0"
                                 type="button"
                               >
@@ -73,7 +73,7 @@ exports[`Homepage > renders correctly 1`] = `
                                   <p
                                     class="MuiTypography-root MuiTypography-body1 css-rizt0-MuiTypography-root"
                                     lang="en"
-                                    style="font-weight: bold; font-family: "Habibi", sans-serif;"
+                                    style="font-weight: bold; font-family: Habibi, sans-serif;"
                                     translate="no"
                                   >
                                     How can I contact you?
@@ -115,7 +115,7 @@ exports[`Homepage > renders correctly 1`] = `
                                     >
                                       <p
                                         class="MuiTypography-root MuiTypography-body1 css-rizt0-MuiTypography-root"
-                                        style="text-align: left; font-family: "Habibi", sans-serif;"
+                                        style="text-align: left; font-family: Habibi, sans-serif;"
                                       >
                                         Send an email to Josh and Maria Sherman  
                                         <a
@@ -150,7 +150,7 @@ exports[`Homepage > renders correctly 1`] = `
                             >
                               <button
                                 aria-expanded="false"
-                                class="MuiButtonBase-root MuiAccordionSummary-root MuiAccordionSummary-gutters css-1f1pi2l-MuiButtonBase-root-MuiAccordionSummary-root"
+                                class="MuiButtonBase-root MuiAccordionSummary-root MuiAccordionSummary-gutters css-gkux1a-MuiButtonBase-root-MuiAccordionSummary-root"
                                 tabindex="0"
                                 type="button"
                               >
@@ -160,7 +160,7 @@ exports[`Homepage > renders correctly 1`] = `
                                   <p
                                     class="MuiTypography-root MuiTypography-body1 css-rizt0-MuiTypography-root"
                                     lang="en"
-                                    style="font-weight: bold; font-family: "Habibi", sans-serif;"
+                                    style="font-weight: bold; font-family: Habibi, sans-serif;"
                                     translate="no"
                                   >
                                     What does Web Jam LLC do?
@@ -202,7 +202,7 @@ exports[`Homepage > renders correctly 1`] = `
                                     >
                                       <p
                                         class="MuiTypography-root MuiTypography-body1 css-rizt0-MuiTypography-root"
-                                        style="text-align: left; font-family: "Habibi", sans-serif;"
+                                        style="text-align: left; font-family: Habibi, sans-serif;"
                                       >
                                         We provide mobile-friendly web technologies and services.
                                       </p>
@@ -221,7 +221,7 @@ exports[`Homepage > renders correctly 1`] = `
                             >
                               <button
                                 aria-expanded="false"
-                                class="MuiButtonBase-root MuiAccordionSummary-root MuiAccordionSummary-gutters css-1f1pi2l-MuiButtonBase-root-MuiAccordionSummary-root"
+                                class="MuiButtonBase-root MuiAccordionSummary-root MuiAccordionSummary-gutters css-gkux1a-MuiButtonBase-root-MuiAccordionSummary-root"
                                 tabindex="0"
                                 type="button"
                               >
@@ -231,7 +231,7 @@ exports[`Homepage > renders correctly 1`] = `
                                   <p
                                     class="MuiTypography-root MuiTypography-body1 css-rizt0-MuiTypography-root"
                                     lang="en"
-                                    style="font-weight: bold; font-family: "Habibi", sans-serif;"
+                                    style="font-weight: bold; font-family: Habibi, sans-serif;"
                                     translate="no"
                                   >
                                     What is your mission statement?
@@ -273,7 +273,7 @@ exports[`Homepage > renders correctly 1`] = `
                                     >
                                       <p
                                         class="MuiTypography-root MuiTypography-body1 css-rizt0-MuiTypography-root"
-                                        style="text-align: left; font-family: "Habibi", sans-serif;"
+                                        style="text-align: left; font-family: Habibi, sans-serif;"
                                       >
                                         To assist small businesses by refactoring their existing websites to be mobile-friendly, providing new online services, empowering business owners, and training staff to use these new services effectively.
                                       </p>
@@ -304,7 +304,7 @@ exports[`Homepage > renders correctly 1`] = `
                         <img
                           alt="Web Jam Banner Large"
                           src="/imgs/banner1.jpg"
-                          style="margin-top: 0px; max-height: 450px; box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.4);"
+                          style="margin-top: 0px; max-height: 450px; box-shadow: rgba(0, 0, 0, 0.14) 0px 4px 5px, rgba(0, 0, 0, 0.12) 0px 1px 10px, rgba(0, 0, 0, 0.4) 0px 2px 4px -1px;"
                         />
                       </div>
                     </div>
@@ -345,7 +345,7 @@ exports[`Homepage > renders correctly 1`] = `
                     class="MuiBox-root css-otmogo"
                   >
                     <div
-                      style="box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.4); height: 500px;"
+                      style="box-shadow: rgba(0, 0, 0, 0.14) 0px 4px 5px, rgba(0, 0, 0, 0.12) 0px 1px 10px, rgba(0, 0, 0, 0.4) 0px 2px 4px -1px; height: 500px;"
                     >
                       <img
                         alt="College Lutheran Church Homepage"
@@ -370,7 +370,7 @@ exports[`Homepage > renders correctly 1`] = `
                     class="MuiBox-root css-otmogo"
                   >
                     <div
-                      style="box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.4); height: 500px;"
+                      style="box-shadow: rgba(0, 0, 0, 0.14) 0px 4px 5px, rgba(0, 0, 0, 0.12) 0px 1px 10px, rgba(0, 0, 0, 0.4) 0px 2px 4px -1px; height: 500px;"
                     >
                       <div>
                         <img
