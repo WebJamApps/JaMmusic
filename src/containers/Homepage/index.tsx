@@ -2,7 +2,6 @@ import commonUtils from 'src/lib/utils';
 import { useEffect } from 'react';
 import AboutUs from './About';
 import CurrentProjects from './CurrentProjects';
-import FacebookFeed from './FacebookFeed';
 
 export function About() {
   return (
@@ -13,12 +12,6 @@ export function About() {
       <br />
       <br />
       <CurrentProjects />
-      <h3 style={{ textAlign: 'center' }}>
-        <a href="https://www.facebook.com/WebJamLLC/" target="_blank" rel="noreferrer">Find Us on Facebook</a>
-      </h3>
-      <div style={{ maxWidth: '500px', margin: '0 auto' }}>
-        <FacebookFeed />
-      </div>
       <p style={{ fontSize: '6pt', marginBottom: '0' }}>&nbsp;</p>
     </div>
   );

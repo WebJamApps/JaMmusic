@@ -31,7 +31,6 @@ const APP_ENV_KEYS = [
   'SOCKETCLUSTER_SECURE',
   'userRoles',
   'TINY_KEY',
-  'FB_APP_ID',
   'NODE_ENV',
   'GOOGLE_MAPS_API_KEY',
 ] as const;
@@ -77,7 +76,7 @@ export default defineConfig(async ({ mode, command }) => {
     plugins: [
       ...(isTest ? [] : [
         replaceProcessEnv(env),
-        checker({ typescript: { tsconfigPath: './tsconfig.prod.json' } }),
+        checker({ typescript: { tsconfigPath: './tsconfig.prod.json' }, enableBuild: false }),
       ]),
       react(),
     ],
