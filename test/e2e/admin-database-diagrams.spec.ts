@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, type Locator, type Page } from '@playwright/test';
 
 const DEV_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyLTEyMyIsImV4cCI6OTk5OTk5OTk5OX0.signature';
 
@@ -37,6 +37,39 @@ flowchart TD
   end
   Backend --> Atlas[(MongoDB Atlas)]
 `;
+
+async function expectGentleWheelZoom(page: Page, viewport: Locator, content: Locator) {
+  const scale = () => content.evaluate((el) => new DOMMatrix(getComputedStyle(el).transform).a);
+  const settledScale = async () => {
+    let lastScale = 0;
+    let stableSamples = 0;
+    await expect.poll(async () => {
+      const currentScale = await scale();
+      stableSamples = currentScale === lastScale ? stableSamples + 1 : 0;
+      lastScale = currentScale;
+      return stableSamples;
+    }, { intervals: [100] }).toBeGreaterThanOrEqual(3);
+    return scale();
+  };
+  await viewport.scrollIntoViewIfNeeded();
+  await viewport.hover();
+  // Finish Fit/Reset before measuring; include gesture end to catch late jumps.
+  const openingScale = await settledScale();
+  for (const delta of [-120, 120]) {
+    const before = await scale();
+    await page.mouse.wheel(0, delta);
+    await expect.poll(scale).not.toBe(before);
+    const after = await settledScale();
+    if (delta < 0) {
+      expect(after).toBeGreaterThan(before);
+      expect(after / before).toBeLessThanOrEqual(1.15);
+    } else {
+      expect(after).toBeLessThan(before);
+      expect(after / before).toBeGreaterThanOrEqual(0.85);
+    }
+  }
+  expect((await scale()) / openingScale).toBeCloseTo(1, 1);
+}
 
 test.describe('AdminDatabase Diagrams E2E', () => {
   test.beforeEach(async ({ page }) => {
@@ -163,21 +196,10 @@ test.describe('AdminDatabase Diagrams E2E', () => {
       const viewport = panel.locator('.react-transform-wrapper');
       const viewportWidth = await viewport.evaluate((el) => el.clientWidth);
       await expect.poll(() => svg.evaluate((el) => el.getBoundingClientRect().width)).toBeLessThanOrEqual(viewportWidth + 1);
+      await expectGentleWheelZoom(page, viewport, content);
       await panel.getByRole('button', { name: 'Reset', exact: true }).click();
       await expect.poll(scale).toBe(1);
-      await viewport.scrollIntoViewIfNeeded();
-      await viewport.hover();
-      await page.mouse.wheel(0, -150);
-      await expect.poll(scale).toBeGreaterThan(1);
-      // Wait for the wheel's smooth zoom to finish before starting a new gesture.
-      let lastScale = 0;
-      let stableSamples = 0;
-      await expect.poll(async () => {
-        const currentScale = await scale();
-        stableSamples = currentScale === lastScale ? stableSamples + 1 : 0;
-        lastScale = currentScale;
-        return stableSamples;
-      }, { intervals: [100] }).toBeGreaterThanOrEqual(3);
+      await expectGentleWheelZoom(page, viewport, content);
       await panel.getByRole('button', { name: 'Reset', exact: true }).click();
       await expect.poll(scale).toBe(1);
       await viewport.scrollIntoViewIfNeeded();
