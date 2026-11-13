@@ -10,17 +10,13 @@ import { Diagrams, defaultLoadMermaid } from 'src/containers/AdminDatabase/Diagr
 const controls = vi.hoisted(() => ({
   zoomIn: vi.fn(), zoomOut: vi.fn(), fitToView: vi.fn(), resetTransform: vi.fn(),
 }));
-const viewerLoaded = vi.hoisted(() => vi.fn());
-vi.mock('react-zoom-pan-pinch', () => {
-  viewerLoaded();
-  return {
-    TransformWrapper: ({ children, minScale, initialScale }: {
-      children: (actions: typeof controls) => React.ReactNode;
-      minScale: number; initialScale: number;
-    }) => <div data-testid="viewer" data-min-scale={minScale} data-initial-scale={initialScale}>{children(controls)}</div>,
-    TransformComponent: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
-  };
-});
+vi.mock('react-zoom-pan-pinch', () => ({
+  TransformWrapper: ({ children, minScale, initialScale }: {
+    children: (actions: typeof controls) => React.ReactNode;
+    minScale: number; initialScale: number;
+  }) => <div data-testid="viewer" data-min-scale={minScale} data-initial-scale={initialScale}>{children(controls)}</div>,
+  TransformComponent: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+}));
 
 vi.mock('mermaid', () => ({
   default: {
@@ -88,7 +84,6 @@ describe('Diagrams component', () => {
       render(<Diagrams />);
 
       expect(getDbSpy).not.toHaveBeenCalled();
-      expect(viewerLoaded).not.toHaveBeenCalled();
       expect(getSysSpy).not.toHaveBeenCalled();
       expect(screen.queryByTestId('database-diagram-loading')).not.toBeInTheDocument();
       expect(screen.queryByTestId('system-map-loading')).not.toBeInTheDocument();
@@ -201,9 +196,9 @@ describe('Diagrams component', () => {
       expect(screen.queryByTestId('database-diagram-svg')).not.toBeInTheDocument();
     });
 
-    it('redraws both diagrams when the page mode changes', async () => {
-      vi.spyOn(adminDatabaseUtils, 'getDatabaseDiagram').mockResolvedValue(mockDbText);
-      vi.spyOn(adminDatabaseUtils, 'getSystemDiagram').mockResolvedValue(mockSystemText);
+    it('redraws both diagrams when the page mode changes without re-fetching diagram text', async () => {
+      const getDbSpy = vi.spyOn(adminDatabaseUtils, 'getDatabaseDiagram').mockResolvedValue(mockDbText);
+      const getSysSpy = vi.spyOn(adminDatabaseUtils, 'getSystemDiagram').mockResolvedValue(mockSystemText);
       const load = vi.fn().mockResolvedValue({ render: vi.fn().mockResolvedValue({ svg: '<svg>diagram</svg>' }) });
       const { rerender } = render(
         <ThemeProvider theme={createTheme({ palette: { mode: 'light' } })}><Diagrams token={token} loadMermaid={load} /></ThemeProvider>,
@@ -214,6 +209,8 @@ describe('Diagrams component', () => {
       await waitFor(() => expect(load).toHaveBeenCalledWith('dark'));
       await screen.findByTestId('system-map-svg');
       expect(load).toHaveBeenCalledTimes(4);
+      expect(getDbSpy).toHaveBeenCalledTimes(1);
+      expect(getSysSpy).toHaveBeenCalledTimes(1);
     });
 
     it('defaultLoadMermaid initializes and returns the mermaid instance', async () => {

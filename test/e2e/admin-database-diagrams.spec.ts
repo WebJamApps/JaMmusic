@@ -2,6 +2,11 @@ import { test, expect } from '@playwright/test';
 
 const DEV_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyLTEyMyIsImV4cCI6OTk5OTk5OTk5OX0.signature';
 
+const CORS_HEADERS = {
+  'access-control-allow-origin': '*',
+  'access-control-allow-headers': '*',
+};
+
 const DEVELOPER_AUTH = {
   isAuthenticated: true,
   error: '',
@@ -56,32 +61,32 @@ test.describe('AdminDatabase Diagrams E2E', () => {
     await page.route(/maps\.googleapis\.com/, (route) => route.abort());
     await page.route(/\/user\/user-123/, async (route) => {
       await route.fulfill({
-        headers: { 'access-control-allow-origin': '*', 'access-control-allow-headers': '*' },
+        headers: CORS_HEADERS,
         status: 200, contentType: 'application/json', body: JSON.stringify(DEVELOPER_AUTH.user) });
     });
     await page.route(/\/admin\/backup\/runs/, async (route) => {
       await route.fulfill({
-        headers: { 'access-control-allow-origin': '*', 'access-control-allow-headers': '*' },
+        headers: CORS_HEADERS,
         status: 200, contentType: 'application/json', body: JSON.stringify([]) });
     });
     await page.route(/\/tour/, async (route) => {
       await route.fulfill({
-        headers: { 'access-control-allow-origin': '*', 'access-control-allow-headers': '*' },
+        headers: CORS_HEADERS,
         status: 200, contentType: 'application/json', body: JSON.stringify([]) });
     });
     await page.route(/\/picture/, async (route) => {
       await route.fulfill({
-        headers: { 'access-control-allow-origin': '*', 'access-control-allow-headers': '*' },
+        headers: CORS_HEADERS,
         status: 200, contentType: 'application/json', body: JSON.stringify([]) });
     });
     await page.route(/\/song/, async (route) => {
       await route.fulfill({
-        headers: { 'access-control-allow-origin': '*', 'access-control-allow-headers': '*' },
+        headers: CORS_HEADERS,
         status: 200, contentType: 'application/json', body: JSON.stringify([]) });
     });
     await page.route(/\/venue/, async (route) => {
       await route.fulfill({
-        headers: { 'access-control-allow-origin': '*', 'access-control-allow-headers': '*' },
+        headers: CORS_HEADERS,
         status: 200, contentType: 'application/json', body: JSON.stringify([]) });
     });
   });
@@ -93,13 +98,13 @@ test.describe('AdminDatabase Diagrams E2E', () => {
 
     await page.route(/\/admin\/backup\/diagram\/database/, async (route) => {
       await route.fulfill({
-        headers: { 'access-control-allow-origin': '*', 'access-control-allow-headers': '*' },
+        headers: CORS_HEADERS,
         status: 200, contentType: 'text/plain', body: SAMPLE_DATABASE_DIAGRAM });
     });
 
     await page.route(/\/admin\/backup\/diagram\/system/, async (route) => {
       await route.fulfill({
-        headers: { 'access-control-allow-origin': '*', 'access-control-allow-headers': '*' },
+        headers: CORS_HEADERS,
         status: 200, contentType: 'text/plain', body: SAMPLE_SYSTEM_MAP });
     });
 
@@ -210,13 +215,13 @@ test.describe('AdminDatabase Diagrams E2E', () => {
 
     await page.route(/\/admin\/backup\/diagram\/database/, async (route) => {
       await route.fulfill({
-        headers: { 'access-control-allow-origin': '*', 'access-control-allow-headers': '*' },
+        headers: CORS_HEADERS,
         status: 500, contentType: 'application/json', body: JSON.stringify({ message: 'Internal Server Error' }) });
     });
 
     await page.route(/\/admin\/backup\/diagram\/system/, async (route) => {
       await route.fulfill({
-        headers: { 'access-control-allow-origin': '*', 'access-control-allow-headers': '*' },
+        headers: CORS_HEADERS,
         status: 500, contentType: 'application/json', body: JSON.stringify({ message: 'failed to read system map' }) });
     });
 

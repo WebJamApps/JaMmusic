@@ -33,27 +33,81 @@ export function Diagrams({ token, loadMermaid = defaultLoadMermaid }: DiagramsPr
   const { palette: { mode } } = useTheme();
   const [dbLoading, setDbLoading] = useState(false);
   const [dbError, setDbError] = useState<string | null>(null);
+  const [dbText, setDbText] = useState<string | null>(null);
   const [dbSvg, setDbSvg] = useState<string | null>(null);
 
   const [systemLoading, setSystemLoading] = useState(false);
   const [systemError, setSystemError] = useState<string | null>(null);
+  const [systemText, setSystemText] = useState<string | null>(null);
   const [systemSvg, setSystemSvg] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!token) return;
+    if (!token) {
+      setDbLoading(false);
+      setDbError(null);
+      setDbText(null);
+      setDbSvg(null);
+      setSystemLoading(false);
+      setSystemError(null);
+      setSystemText(null);
+      setSystemSvg(null);
+      return;
+    }
     let isMounted = true;
 
     const fetchDbDiagram = async () => {
       setDbLoading(true);
       setDbError(null);
       setDbSvg(null);
+      setDbText(null);
       try {
         const text = await adminDatabaseUtils.getDatabaseDiagram(token);
         if (!isMounted) return;
+        setDbText(text);
+      } catch (e) {
+        if (!isMounted) return;
+        const err = e as { message?: string };
+        setDbError(err.message || 'Failed to load database diagram');
+        setDbLoading(false);
+      }
+    };
+
+    const fetchSystemDiagram = async () => {
+      setSystemLoading(true);
+      setSystemError(null);
+      setSystemSvg(null);
+      setSystemText(null);
+      try {
+        const text = await adminDatabaseUtils.getSystemDiagram(token);
+        if (!isMounted) return;
+        setSystemText(text);
+      } catch (e) {
+        if (!isMounted) return;
+        const err = e as { message?: string };
+        setSystemError(err.message || 'Failed to load system map');
+        setSystemLoading(false);
+      }
+    };
+
+    void fetchDbDiagram();
+    void fetchSystemDiagram();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [token]);
+
+  useEffect(() => {
+    if (dbText === null) return;
+    let isMounted = true;
+
+    const renderDb = async () => {
+      try {
+        setDbError(null);
         const mermaid = await loadMermaid(mode);
         if (!isMounted) return;
         const renderId = `db-diagram-${Math.random().toString(36).slice(2, 9)}`;
-        const { svg } = await mermaid.render(renderId, text);
+        const { svg } = await mermaid.render(renderId, dbText);
         if (!isMounted) return;
         setDbSvg(svg);
       } catch (e) {
@@ -67,17 +121,24 @@ export function Diagrams({ token, loadMermaid = defaultLoadMermaid }: DiagramsPr
       }
     };
 
-    const fetchSystemDiagram = async () => {
-      setSystemLoading(true);
-      setSystemError(null);
-      setSystemSvg(null);
+    void renderDb();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [dbText, loadMermaid, mode]);
+
+  useEffect(() => {
+    if (systemText === null) return;
+    let isMounted = true;
+
+    const renderSystem = async () => {
       try {
-        const text = await adminDatabaseUtils.getSystemDiagram(token);
-        if (!isMounted) return;
+        setSystemError(null);
         const mermaid = await loadMermaid(mode);
         if (!isMounted) return;
         const renderId = `system-map-${Math.random().toString(36).slice(2, 9)}`;
-        const { svg } = await mermaid.render(renderId, text);
+        const { svg } = await mermaid.render(renderId, systemText);
         if (!isMounted) return;
         setSystemSvg(svg);
       } catch (e) {
@@ -91,13 +152,12 @@ export function Diagrams({ token, loadMermaid = defaultLoadMermaid }: DiagramsPr
       }
     };
 
-    void fetchDbDiagram();
-    void fetchSystemDiagram();
+    void renderSystem();
 
     return () => {
       isMounted = false;
     };
-  }, [token, loadMermaid, mode]);
+  }, [systemText, loadMermaid, mode]);
 
   return (
     <Box sx={{ marginTop: 4 }} data-testid="admin-database-diagrams">
