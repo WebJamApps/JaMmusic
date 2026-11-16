@@ -96,6 +96,22 @@ describe('AdminTemplates utils', () => {
       { type: 'Originals', stage: 'cold', subject: 'Subject, with comma', bodyHtml: 'Hello "World"\nLine 2', footerPhotoRef: 'ref-1', active: true },
       { type: 'MidRangeCafeBar', stage: 'returning', subject: 'Subject2', bodyHtml: 'Plain', footerPhotoRef: '', active: false },
       { type: 'PubFestivalBrewery', stage: 'second-pitch', subject: 'Subject3', bodyHtml: 'Second Pitch', footerPhotoRef: '', active: true },
+      {
+        type: 'Originals',
+        stage: 'second-pitch-returning',
+        subject: 'Subject4',
+        bodyHtml: 'Second Pitch Returning',
+        footerPhotoRef: '',
+        active: true,
+      },
+      {
+        type: 'MidRangeCafeBar',
+        stage: 'second-pitch-upcoming',
+        subject: 'Subject5',
+        bodyHtml: 'Second Pitch Upcoming',
+        footerPhotoRef: '',
+        active: true,
+      },
     ];
 
     it('roundtrips a CSV export and import successfully', () => {
@@ -104,9 +120,11 @@ describe('AdminTemplates utils', () => {
       expect(csv).toContain('"Subject, with comma"');
       expect(csv).toContain('Hello ""World""');
       expect(csv).toContain('second-pitch');
+      expect(csv).toContain('second-pitch-returning');
+      expect(csv).toContain('second-pitch-upcoming');
 
       const parsed = parseCSV(csv);
-      expect(parsed).toHaveLength(3);
+      expect(parsed).toHaveLength(5);
       expect(parsed[0].type).toBe('Originals');
       expect(parsed[0].stage).toBe('cold');
       expect(parsed[0].subject).toBe('Subject, with comma');
@@ -127,6 +145,20 @@ describe('AdminTemplates utils', () => {
       expect(parsed[2].bodyHtml).toBe('Second Pitch');
       expect(parsed[2].footerPhotoRef).toBe('');
       expect(parsed[2].active).toBe('true');
+
+      expect(parsed[3].type).toBe('Originals');
+      expect(parsed[3].stage).toBe('second-pitch-returning');
+      expect(parsed[3].subject).toBe('Subject4');
+      expect(parsed[3].bodyHtml).toBe('Second Pitch Returning');
+      expect(parsed[3].footerPhotoRef).toBe('');
+      expect(parsed[3].active).toBe('true');
+
+      expect(parsed[4].type).toBe('MidRangeCafeBar');
+      expect(parsed[4].stage).toBe('second-pitch-upcoming');
+      expect(parsed[4].subject).toBe('Subject5');
+      expect(parsed[4].bodyHtml).toBe('Second Pitch Upcoming');
+      expect(parsed[4].footerPhotoRef).toBe('');
+      expect(parsed[4].active).toBe('true');
     });
 
     it('returns empty array when CSV has no data rows', () => {

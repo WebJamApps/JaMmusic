@@ -20,7 +20,14 @@ import { AuthContext } from 'src/providers/Auth.provider';
 import adminTemplatesUtils, { type Itemplate, exportToCSV, parseCSV } from './admin-templates.utils';
 
 const TYPES = ['Originals', 'PubFestivalBrewery', 'MidRangeCafeBar', 'OnlineForm'] as const;
-const STAGES = ['cold', 'returning', 'upcoming', 'second-pitch'] as const;
+const STAGES = [
+  'cold',
+  'returning',
+  'upcoming',
+  'second-pitch',
+  'second-pitch-returning',
+  'second-pitch-upcoming',
+] as const;
 
 const TOKENS = [
   '[Contact Name]',
@@ -405,13 +412,25 @@ export function AdminTemplates() {
                 <Tabs
                   value={selectedStage}
                   onChange={(_, val: Itemplate['stage']) => setSelectedStage(val)}
-                  variant="fullWidth"
+                  variant="scrollable"
+                  scrollButtons="auto"
+                  allowScrollButtonsMobile
                   sx={{ marginBottom: 2, borderBottom: 1, borderColor: 'divider' }}
                 >
                   <Tab label="Cold" value="cold" data-testid="templates-tab-stage-cold" />
                   <Tab label="Returning" value="returning" data-testid="templates-tab-stage-returning" />
                   <Tab label="Upcoming" value="upcoming" data-testid="templates-tab-stage-upcoming" />
                   <Tab label="Second pitch" value="second-pitch" data-testid="templates-tab-stage-second-pitch" />
+                  <Tab
+                    label="Second pitch returning"
+                    value="second-pitch-returning"
+                    data-testid="templates-tab-stage-second-pitch-returning"
+                  />
+                  <Tab
+                    label="Second pitch upcoming"
+                    value="second-pitch-upcoming"
+                    data-testid="templates-tab-stage-second-pitch-upcoming"
+                  />
                 </Tabs>
 
                 <Typography variant="subtitle2" sx={{ marginBottom: 1, fontWeight: 'bold' }}>
