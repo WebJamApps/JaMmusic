@@ -49,6 +49,22 @@ const mockTemplates: Itemplate[] = [
     introHtml: 'Following up on our note from [First Pitch Date]',
     bodyHtml: 'Second Pitch Originals Body',
   },
+  {
+    _id: 'temp-5',
+    type: 'Originals',
+    stage: 'second-pitch-returning',
+    subject: 'Second Pitch Returning Originals Subject',
+    introHtml: 'Great playing for you before — following up on [First Pitch Date]',
+    bodyHtml: 'Second Pitch Returning Originals Body',
+  },
+  {
+    _id: 'temp-6',
+    type: 'Originals',
+    stage: 'second-pitch-upcoming',
+    subject: 'Second Pitch Upcoming Originals Subject',
+    introHtml: 'Looking forward to [Next Gig Date] — following up on [First Pitch Date]',
+    bodyHtml: 'Second Pitch Upcoming Originals Body',
+  },
 ];
 
 const wrap = (auth: Iauth) => (
@@ -147,7 +163,42 @@ describe('AdminTemplates page container', () => {
     expect(screen.getByTestId('template-body-textarea')).toHaveValue('');
   });
 
-  it.each(['cold', 'returning', 'upcoming', 'second-pitch'])('loads the intro or a blank value on the %s tab', async (stage) => {
+  it.each([
+    {
+      stage: 'second-pitch-returning',
+      subject: 'Second Pitch Returning Originals Subject',
+      intro: 'Great playing for you before — following up on [First Pitch Date]',
+      body: 'Second Pitch Returning Originals Body',
+    },
+    {
+      stage: 'second-pitch-upcoming',
+      subject: 'Second Pitch Upcoming Originals Subject',
+      intro: 'Looking forward to [Next Gig Date] — following up on [First Pitch Date]',
+      body: 'Second Pitch Upcoming Originals Body',
+    },
+  ] as const)('loads $stage content and shows blank fields for an unconfigured type', async ({
+    stage, subject, intro, body,
+  }) => {
+    await act(async () => { render(wrap(adminAuth)); });
+    fireEvent.click(screen.getByTestId(`templates-tab-stage-${stage}`));
+    expect(screen.getByTestId('template-subject-input')).toHaveValue(subject);
+    expect(screen.getByTestId('template-intro-textarea')).toHaveValue(intro);
+    expect(screen.getByTestId('template-body-textarea')).toHaveValue(body);
+
+    fireEvent.click(screen.getByTestId('template-type-MidRangeCafeBar'));
+    expect(screen.getByTestId('template-subject-input')).toHaveValue('');
+    expect(screen.getByTestId('template-intro-textarea')).toHaveValue('');
+    expect(screen.getByTestId('template-body-textarea')).toHaveValue('');
+  });
+
+  it.each([
+    'cold',
+    'returning',
+    'upcoming',
+    'second-pitch',
+    'second-pitch-returning',
+    'second-pitch-upcoming',
+  ])('loads the intro or a blank value on the %s tab', async (stage) => {
     await act(async () => { render(wrap(adminAuth)); });
     fireEvent.click(screen.getByTestId(`templates-tab-stage-${stage}`));
     const expectedIntro = mockTemplates.find(t => t.type === 'Originals' && t.stage === stage)?.introHtml || '';
@@ -156,6 +207,33 @@ describe('AdminTemplates page container', () => {
       fireEvent.click(screen.getByTestId('template-type-PubFestivalBrewery'));
       expect(screen.getByTestId('template-subject-input')).toHaveValue('Warm Pub Subject');
       expect(screen.getByTestId('template-intro-textarea')).toHaveValue('');
+    }
+  });
+
+  it.each([
+    { stage: 'second-pitch-returning', type: 'Originals', existingId: 'temp-5' },
+    { stage: 'second-pitch-returning', type: 'MidRangeCafeBar', existingId: null },
+    { stage: 'second-pitch-upcoming', type: 'Originals', existingId: 'temp-6' },
+    { stage: 'second-pitch-upcoming', type: 'MidRangeCafeBar', existingId: null },
+  ] as const)('saves and creates $stage templates from the tab for $type', async ({
+    stage, type, existingId,
+  }) => {
+    await act(async () => { render(wrap(adminAuth)); });
+    fireEvent.click(screen.getByTestId(`templates-tab-stage-${stage}`));
+    fireEvent.click(screen.getByTestId(`template-type-${type}`));
+    fireEvent.change(screen.getByTestId('template-subject-input'), { target: { value: `Edited ${stage}` } });
+    fireEvent.change(screen.getByTestId('template-body-textarea'), { target: { value: `Body for ${stage}` } });
+    await act(async () => { fireEvent.click(screen.getByTestId('template-save-btn')); });
+    const payload = expect.objectContaining({
+      type,
+      stage,
+      subject: `Edited ${stage}`,
+      bodyHtml: `Body for ${stage}`,
+    });
+    if (existingId) {
+      expect(adminTemplatesUtils.updateTemplate).toHaveBeenCalledWith('tk', existingId, payload);
+    } else {
+      expect(adminTemplatesUtils.createTemplate).toHaveBeenCalledWith('tk', payload);
     }
   });
 
@@ -262,6 +340,53 @@ describe('AdminTemplates page container', () => {
     expect(adminTemplatesUtils.createTemplate).toHaveBeenCalledWith('tk', expect.objectContaining({ stage: 'cold' }));
     expect(errorSpy).toHaveBeenCalledWith(
       'Import failed for item:', expect.objectContaining({ stage: 'warm' }), expect.objectContaining({ message: 'Invalid stage: warm' }),
+    );
+  });
+
+  it.each(['json', 'csv'] as const)(
+    'previews, imports second-pitch-returning and second-pitch-upcoming, and refuses second-pitch-other in %s',
+    async format => {
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    await act(async () => { render(wrap(adminAuth)); });
+    const rows = [
+      { type: 'Originals', stage: 'second-pitch-returning', subject: 'Second pitch returning import' },
+      { type: 'MidRangeCafeBar', stage: 'second-pitch-upcoming', subject: 'Second pitch upcoming import' },
+      { type: 'Originals', stage: 'second-pitch-other', subject: 'Invalid follow-up stage' },
+    ];
+    const content = format === 'json' ? JSON.stringify(rows)
+      : [
+        'type,stage,subject',
+        'Originals,second-pitch-returning,Second pitch returning import',
+        'MidRangeCafeBar,second-pitch-upcoming,Second pitch upcoming import',
+        'Originals,second-pitch-other,Invalid follow-up stage',
+      ].join('\n');
+
+    fireEvent.click(screen.getByTestId('import-btn'));
+    const file = new File([content], `followups.${format}`, { type: format === 'json' ? 'application/json' : 'text/csv' });
+    fireEvent.change(screen.getByTestId('import-file-input'), { target: { files: [file] } });
+    await waitFor(() => expect(screen.getByTestId('confirm-import-btn')).toBeEnabled());
+
+    expect(screen.getByText('second-pitch-returning')).toBeInTheDocument();
+    expect(screen.getByText('second-pitch-upcoming')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId('confirm-import-btn'));
+    await screen.findByText('Import complete. Success: 2, Failures: 1');
+
+    expect(adminTemplatesUtils.updateTemplate).toHaveBeenCalledTimes(1);
+    expect(adminTemplatesUtils.updateTemplate).toHaveBeenCalledWith(
+      'tk',
+      'temp-5',
+      expect.objectContaining({ stage: 'second-pitch-returning', subject: 'Second pitch returning import' }),
+    );
+    expect(adminTemplatesUtils.createTemplate).toHaveBeenCalledTimes(1);
+    expect(adminTemplatesUtils.createTemplate).toHaveBeenCalledWith(
+      'tk',
+      expect.objectContaining({ type: 'MidRangeCafeBar', stage: 'second-pitch-upcoming', subject: 'Second pitch upcoming import' }),
+    );
+    expect(errorSpy).toHaveBeenCalledWith(
+      'Import failed for item:',
+      expect.objectContaining({ stage: 'second-pitch-other' }),
+      expect.objectContaining({ message: 'Invalid stage: second-pitch-other' }),
     );
   });
 
