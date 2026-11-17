@@ -6,7 +6,7 @@ import {
   Divider, Card, CardContent, Chip, Select, MenuItem,
   FormControl, InputLabel, CircularProgress, Grid, Paper,
   InputAdornment, Accordion, AccordionSummary, AccordionDetails,
-  Dialog, DialogTitle, DialogContent, DialogActions, Alert,
+  Dialog, DialogTitle, DialogContent, DialogActions, Alert, IconButton,
 } from '@mui/material';
 import {
   Check, Undo, Warning, Info, ThumbUp, ThumbDown, Search,
@@ -21,7 +21,9 @@ import { customFetch } from 'src/lib/fetch.utils';
 import adminVenuesUtils, { type Ivenue } from 'src/containers/AdminVenues/admin-venues.utils';
 import outreachUtils, {
   type Icandidate, type IbatchResult, type IpitchPreview, type IpendingReply, type IreportSummary,
-  type IbatchPayload, type IvenueApproval, type IVenueCustomization, dispatchApprovedBatch, hasCompletePreviews,
+  type IbatchPayload, type IvenueApproval, type IVenueCustomization, type IcandidateRadius,
+  dispatchApprovedBatch, hasCompletePreviews, clampRadiusMiles, DEFAULT_RADIUS_MILES,
+  MIN_RADIUS_MILES, MAX_RADIUS_MILES,
 } from './outreach.utils';
 import { OutreachDialog } from './OutreachDialog';
 
@@ -186,6 +188,15 @@ export function AdminOutreach() {
   const [structuredDate, setStructuredDate] = useState('');
   const [targetDates, setTargetDates] = useState('');
   const [bookingPeriod, setBookingPeriod] = useState('');
+  const [nearPlace, setNearPlace] = useState('');
+  const [radiusInput, setRadiusInput] = useState(String(DEFAULT_RADIUS_MILES));
+  const [nearLocation, setNearLocation] = useState<{
+    query: string;
+    lat: number;
+    lng: number;
+    displayName?: string;
+  } | null>(null);
+  const [nearUnavailable, setNearUnavailable] = useState('');
   const [candidates, setCandidates] = useState<Icandidate[]>([]);
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [result, setResult] = useState<IbatchResult | null>(null);
@@ -428,6 +439,33 @@ export function AdminOutreach() {
     }
   };
 
+  const resolveNearFilter = async (
+    trimmedPlace: string,
+    effectiveRadius: number,
+  ): Promise<IcandidateRadius | undefined> => {
+    if (!trimmedPlace) return undefined;
+    if (nearLocation && nearLocation.query === trimmedPlace) {
+      return { lat: nearLocation.lat, lng: nearLocation.lng, radiusMiles: effectiveRadius };
+    }
+    try {
+      const found = await outreachUtils.discoverPlace(auth.token, trimmedPlace);
+      if (found) {
+        setNearLocation({ query: trimmedPlace, ...found });
+        return { lat: found.lat, lng: found.lng, radiusMiles: effectiveRadius };
+      }
+      setNearLocation(null);
+      setNearUnavailable(
+        `Near filter is unavailable: could not find "${trimmedPlace}". Showing unfiltered venues.`,
+      );
+      return undefined;
+    } catch (placeErr) {
+      setNearLocation(null);
+      const reason = (placeErr as { message?: string }).message || 'place lookup failed';
+      setNearUnavailable(`Near filter is unavailable (${reason}). Showing unfiltered venues.`);
+      return undefined;
+    }
+  };
+
   // Batch Outreach candidates
   const loadCandidates = async () => {
     if (!structuredDate.trim()) { setError('Select a weekend date first'); return; }
@@ -435,8 +473,18 @@ export function AdminOutreach() {
     setBatchLoading(true);
     setError('');
     setResult(null);
+    setNearUnavailable('');
     try {
-      const data = await outreachUtils.getCandidates(auth.token, targetDates.trim(), structuredDate);
+      const trimmedPlace = nearPlace.trim();
+      let geoFilter: IcandidateRadius | undefined;
+      if (trimmedPlace) {
+        const effectiveRadius = clampRadiusMiles(radiusInput);
+        setRadiusInput(String(effectiveRadius));
+        geoFilter = await resolveNearFilter(trimmedPlace, effectiveRadius);
+      }
+      const data = geoFilter
+        ? await outreachUtils.getCandidates(auth.token, targetDates.trim(), structuredDate, geoFilter)
+        : await outreachUtils.getCandidates(auth.token, targetDates.trim(), structuredDate);
       
       // Filter candidates using our gig overlap rules before offering them to Josh
       const availableCandidates = data.filter((cand) => {
@@ -1526,7 +1574,7 @@ export function AdminOutreach() {
             Prepare, customize, and preview outreach campaigns for target weekends.
           </Typography>
 
-          <Box sx={{ display: 'flex', gap: 3, flexWrap: 'wrap', alignItems: 'flex-end', mb: 4 }}>
+          <Box sx={{ display: 'flex', gap: 3, flexWrap: 'wrap', alignItems: 'flex-end', mb: 2 }}>
             <DatePicker
               label="Weekend (eligibility)"
               value={structuredDate ? new Date(`${structuredDate}T00:00:00`) : null}
@@ -1576,6 +1624,71 @@ export function AdminOutreach() {
               {batchLoading ? 'Scanning...' : 'Find Eligible Venues'}
             </Button>
           </Box>
+
+          <Box sx={{ display: 'flex', gap: 1.5, flexWrap: 'wrap', alignItems: 'center', mb: 3 }}>
+            <TextField
+              size="small"
+              label="Near"
+              value={nearPlace}
+              onChange={(e) => {
+                const next = e.target.value;
+                setNearPlace(next);
+                setNearUnavailable('');
+                if (!next.trim() || nearLocation?.query !== next.trim()) {
+                  setNearLocation(null);
+                }
+              }}
+              placeholder="City or address (e.g. Lynchburg, VA)"
+              data-testid="outreach-near-place"
+              sx={{ minWidth: 240 }}
+            />
+            {nearPlace && (
+              <IconButton
+                size="small"
+                aria-label="Clear near place"
+                data-testid="outreach-near-clear"
+                onClick={() => {
+                  setNearPlace('');
+                  setNearLocation(null);
+                  setNearUnavailable('');
+                }}
+              >
+                <Close fontSize="small" />
+              </IconButton>
+            )}
+            <Typography variant="body2" color="text.secondary" component="span">
+              within
+            </Typography>
+            <TextField
+              size="small"
+              type="number"
+              label="Miles"
+              value={radiusInput}
+              onChange={(e) => setRadiusInput(e.target.value)}
+              onBlur={() => setRadiusInput(String(clampRadiusMiles(radiusInput)))}
+              slotProps={{ htmlInput: { min: MIN_RADIUS_MILES, max: MAX_RADIUS_MILES, step: 1 } }}
+              data-testid="outreach-near-radius"
+              sx={{ width: 96 }}
+            />
+            <Typography variant="body2" color="text.secondary" component="span">
+              mi
+            </Typography>
+            <Typography variant="caption" color="text.secondary" data-testid="outreach-osm-credit">
+              © OpenStreetMap contributors
+            </Typography>
+          </Box>
+
+          {nearLocation && nearPlace.trim() === nearLocation.query && (
+            <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 2 }} data-testid="outreach-near-resolved">
+              Filtering within {clampRadiusMiles(radiusInput)} mi of {nearLocation.displayName || nearLocation.query}
+            </Typography>
+          )}
+
+          {nearUnavailable && (
+            <Alert severity="warning" sx={{ mb: 3 }} data-testid="outreach-near-unavailable">
+              {nearUnavailable}
+            </Alert>
+          )}
 
           {candidates.length > 0 && (
             <Box sx={{ mt: 3 }} data-testid="outreach-candidates">
