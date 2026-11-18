@@ -104,7 +104,31 @@ export interface IpendingReply {
   nextTouchDue?: string;
 }
 
+export interface IplacePosition {
+  lat: number;
+  lng: number;
+  displayName?: string;
+}
+
+export interface IcandidateRadius {
+  lat: number;
+  lng: number;
+  radiusMiles: number;
+}
+
+export const DEFAULT_RADIUS_MILES = 25;
+export const MIN_RADIUS_MILES = 5;
+export const MAX_RADIUS_MILES = 100;
+
+export function clampRadiusMiles(value: string | number): number {
+  if (typeof value === 'string' && !value.trim()) return DEFAULT_RADIUS_MILES;
+  const num = typeof value === 'number' ? value : Number(value);
+  if (!Number.isFinite(num)) return DEFAULT_RADIUS_MILES;
+  return Math.min(MAX_RADIUS_MILES, Math.max(MIN_RADIUS_MILES, num));
+}
+
 const outreachUrl = `${process.env.BackendUrl}/outreach`;
+const venueUrl = `${process.env.BackendUrl}/venue`;
 
 function headers(token: string, json = false): Record<string, string> {
   const h: Record<string, string> = { Accept: 'application/json', Authorization: `Bearer ${token}` };
@@ -112,10 +136,45 @@ function headers(token: string, json = false): Record<string, string> {
   return h;
 }
 
-async function getCandidates(token: string, targetDates?: string, eligibleFor?: string): Promise<Icandidate[]> {
+async function discoverPlace(token: string, q: string): Promise<IplacePosition | null> {
+  const trimmed = q.trim();
+  if (!trimmed) return null;
+  const res = await customFetch(`${venueUrl}/discover/place?q=${encodeURIComponent(trimmed)}`, {
+    headers: headers(token),
+  });
+  if (!res.ok) throw await responseError(res);
+  const data = await res.json() as Partial<IplacePosition> | null;
+  if (!data || typeof data.lat !== 'number' || typeof data.lng !== 'number'
+    || !Number.isFinite(data.lat) || !Number.isFinite(data.lng)) {
+    return null;
+  }
+  return {
+    lat: data.lat,
+    lng: data.lng,
+    ...(typeof data.displayName === 'string' && data.displayName ? { displayName: data.displayName } : {}),
+  };
+}
+
+async function getCandidates(
+  token: string,
+  targetDates?: string,
+  eligibleFor?: string,
+  radius?: IcandidateRadius,
+): Promise<Icandidate[]> {
   const qs = [];
   if (targetDates) qs.push(`targetDates=${encodeURIComponent(targetDates)}`);
   if (eligibleFor) qs.push(`eligibleFor=${encodeURIComponent(eligibleFor)}`);
+  if (
+    radius
+    && Number.isFinite(radius.lat)
+    && Number.isFinite(radius.lng)
+    && Number.isFinite(radius.radiusMiles)
+    && radius.radiusMiles > 0
+  ) {
+    qs.push(`lat=${encodeURIComponent(String(radius.lat))}`);
+    qs.push(`lng=${encodeURIComponent(String(radius.lng))}`);
+    qs.push(`radiusMiles=${encodeURIComponent(String(radius.radiusMiles))}`);
+  }
   const query = qs.length > 0 ? `?${qs.join('&')}` : '';
   const res = await customFetch(`${outreachUrl}/candidates${query}`, { headers: headers(token) });
   if (!res.ok) throw await responseError(res);
@@ -311,6 +370,7 @@ async function getReportIndex(token: string): Promise<IreportSummary[]> {
 }
 
 const outreachApi = {
+  discoverPlace,
   getCandidates,
   sendBatch,
   getVenueApproval,
