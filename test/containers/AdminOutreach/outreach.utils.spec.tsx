@@ -1,6 +1,7 @@
 import { webcrypto, createHash } from 'node:crypto';
-import outreachUtils from 'src/containers/AdminOutreach/outreach.utils';
-import { dispatchApprovedBatch, fingerprintDraft } from 'src/containers/AdminOutreach/outreach.utils';
+import outreachUtils, {
+  clampRadiusMiles, dispatchApprovedBatch, fingerprintDraft,
+} from 'src/containers/AdminOutreach/outreach.utils';
 
 const okJson = (data: unknown) => Promise.resolve({ ok: true, json: () => Promise.resolve(data) } as Response);
 const failed = () => Promise.resolve(new Response('', { status: 500, statusText: 'Server Error' }));
@@ -20,6 +21,72 @@ describe('Outreach utils', () => {
     fetchMock.mockReturnValue(okJson([]));
     await outreachUtils.getCandidates('tok');
     expect(fetchMock.mock.calls[0][0]).toMatch(/\/outreach\/candidates$/);
+  });
+
+  it('getCandidates appends lat, lng, and radiusMiles when valid radius is supplied', async () => {
+    fetchMock.mockReturnValue(okJson([{ _id: 'v1', name: 'A' }]));
+    await outreachUtils.getCandidates('tok', 'Aug 14-16', '2026-08-14', {
+      lat: 37.4138,
+      lng: -79.1422,
+      radiusMiles: 25,
+    });
+    const url = fetchMock.mock.calls[0][0] as string;
+    expect(url).toContain('targetDates=Aug%2014-16');
+    expect(url).toContain('eligibleFor=2026-08-14');
+    expect(url).toContain('lat=37.4138');
+    expect(url).toContain('lng=-79.1422');
+    expect(url).toContain('radiusMiles=25');
+  });
+
+  it('getCandidates omits geo params when radiusMiles is non-positive or non-finite', async () => {
+    fetchMock.mockReturnValue(okJson([]));
+    await outreachUtils.getCandidates('tok', 'Aug 14-16', '2026-08-14', {
+      lat: 37.4138,
+      lng: -79.1422,
+      radiusMiles: 0,
+    });
+    const url = fetchMock.mock.calls[0][0] as string;
+    expect(url).not.toContain('lat=');
+    expect(url).not.toContain('lng=');
+    expect(url).not.toContain('radiusMiles=');
+  });
+
+  it('clampRadiusMiles defaults to 25 and bounds to 5..100', () => {
+    expect(clampRadiusMiles('')).toBe(25);
+    expect(clampRadiusMiles('  ')).toBe(25);
+    expect(clampRadiusMiles('abc')).toBe(25);
+    expect(clampRadiusMiles(Number.NaN)).toBe(25);
+    expect(clampRadiusMiles(0)).toBe(5);
+    expect(clampRadiusMiles('2')).toBe(5);
+    expect(clampRadiusMiles(5)).toBe(5);
+    expect(clampRadiusMiles('40')).toBe(40);
+    expect(clampRadiusMiles(100)).toBe(100);
+    expect(clampRadiusMiles('200')).toBe(100);
+  });
+
+  it('discoverPlace returns null without fetching when query is empty', async () => {
+    expect(await outreachUtils.discoverPlace('tok', '   ')).toBeNull();
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it('discoverPlace GETs /venue/discover/place and returns position when found', async () => {
+    fetchMock.mockReturnValue(okJson({ lat: 37.4138, lng: -79.1422, displayName: 'Lynchburg, VA' }));
+    const pos = await outreachUtils.discoverPlace('tok', ' Lynchburg, VA ');
+    expect(pos).toEqual({ lat: 37.4138, lng: -79.1422, displayName: 'Lynchburg, VA' });
+    const url = fetchMock.mock.calls[0][0] as string;
+    expect(url).toContain('/venue/discover/place?q=Lynchburg%2C%20VA');
+    const opts = fetchMock.mock.calls[0][1] as RequestInit;
+    expect((opts.headers as Record<string, string>).Authorization).toBe('Bearer tok');
+  });
+
+  it('discoverPlace returns null when response has no coordinates', async () => {
+    fetchMock.mockReturnValue(okJson({}));
+    expect(await outreachUtils.discoverPlace('tok', 'Nowhere')).toBeNull();
+  });
+
+  it('discoverPlace throws backend error message on 502', async () => {
+    fetchMock.mockResolvedValue(Response.json({ message: 'Nominatim unavailable' }, { status: 502 }));
+    await expect(outreachUtils.discoverPlace('tok', 'Lynchburg, VA')).rejects.toThrow('Nominatim unavailable');
   });
 
   it('sendBatch POSTs only the checked dispatch id', async () => {
