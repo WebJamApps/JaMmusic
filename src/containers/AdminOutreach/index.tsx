@@ -196,6 +196,10 @@ export function AdminOutreach() {
     lng: number;
     displayName?: string;
   } | null>(null);
+  const [appliedNearFilter, setAppliedNearFilter] = useState<{
+    radiusMiles: number;
+    placeLabel: string;
+  } | null>(null);
   const [nearUnavailable, setNearUnavailable] = useState('');
   const [candidates, setCandidates] = useState<Icandidate[]>([]);
   const [selected, setSelected] = useState<Set<string>>(new Set());
@@ -442,16 +446,22 @@ export function AdminOutreach() {
   const resolveNearFilter = async (
     trimmedPlace: string,
     effectiveRadius: number,
-  ): Promise<IcandidateRadius | undefined> => {
+  ): Promise<{ radius: IcandidateRadius; placeLabel: string } | undefined> => {
     if (!trimmedPlace) return undefined;
     if (nearLocation && nearLocation.query === trimmedPlace) {
-      return { lat: nearLocation.lat, lng: nearLocation.lng, radiusMiles: effectiveRadius };
+      return {
+        radius: { lat: nearLocation.lat, lng: nearLocation.lng, radiusMiles: effectiveRadius },
+        placeLabel: nearLocation.displayName || nearLocation.query,
+      };
     }
     try {
       const found = await outreachUtils.discoverPlace(auth.token, trimmedPlace);
       if (found) {
         setNearLocation({ query: trimmedPlace, ...found });
-        return { lat: found.lat, lng: found.lng, radiusMiles: effectiveRadius };
+        return {
+          radius: { lat: found.lat, lng: found.lng, radiusMiles: effectiveRadius },
+          placeLabel: found.displayName || trimmedPlace,
+        };
       }
       setNearLocation(null);
       setNearUnavailable(
@@ -476,14 +486,14 @@ export function AdminOutreach() {
     setNearUnavailable('');
     try {
       const trimmedPlace = nearPlace.trim();
-      let geoFilter: IcandidateRadius | undefined;
+      let resolvedNear: { radius: IcandidateRadius; placeLabel: string } | undefined;
       if (trimmedPlace) {
         const effectiveRadius = clampRadiusMiles(radiusInput);
         setRadiusInput(String(effectiveRadius));
-        geoFilter = await resolveNearFilter(trimmedPlace, effectiveRadius);
+        resolvedNear = await resolveNearFilter(trimmedPlace, effectiveRadius);
       }
-      const data = geoFilter
-        ? await outreachUtils.getCandidates(auth.token, targetDates.trim(), structuredDate, geoFilter)
+      const data = resolvedNear
+        ? await outreachUtils.getCandidates(auth.token, targetDates.trim(), structuredDate, resolvedNear.radius)
         : await outreachUtils.getCandidates(auth.token, targetDates.trim(), structuredDate);
       
       // Filter candidates using our gig overlap rules before offering them to Josh
@@ -504,6 +514,11 @@ export function AdminOutreach() {
         (c) => checkWeekendGigs(c.name, structuredDate).length === 0,
       );
       setSelected(new Set(conflictFreeCandidates.map((c) => c._id)));
+      setAppliedNearFilter(
+        resolvedNear
+          ? { radiusMiles: resolvedNear.radius.radiusMiles, placeLabel: resolvedNear.placeLabel }
+          : null,
+      );
     } catch (e) {
       setError((e as { message?: string }).message || 'Failed to load candidates');
     } finally {
@@ -608,6 +623,7 @@ export function AdminOutreach() {
       setDispatchComplete(true);
       setCandidates([]);
       setSelected(new Set());
+      setAppliedNearFilter(null);
       setDialogOpen(false);
       await loadAllData();
     } catch (e) {
@@ -1678,9 +1694,9 @@ export function AdminOutreach() {
             </Typography>
           </Box>
 
-          {nearLocation && nearPlace.trim() === nearLocation.query && (
+          {appliedNearFilter && (
             <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 2 }} data-testid="outreach-near-resolved">
-              Filtering within {clampRadiusMiles(radiusInput)} mi of {nearLocation.displayName || nearLocation.query}
+              Filtering within {appliedNearFilter.radiusMiles} mi of {appliedNearFilter.placeLabel}
             </Typography>
           )}
 

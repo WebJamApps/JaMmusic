@@ -1694,10 +1694,13 @@ describe('AdminOutreach', () => {
       expect(screen.getByTestId('outreach-near-resolved')).toHaveTextContent('Filtering within 40 mi of Lynchburg, Virginia');
       expect(screen.getByTestId('outreach-candidates')).toHaveTextContent('1 of 1');
 
-      // Changing radius only reuses the kept coordinates without re-calling discoverPlace
+      // Typing a new radius does not update the caption until Find Eligible Venues runs again
       await act(async () => {
         fireEvent.change(radiusEl, { target: { value: '60' } });
       });
+      expect(screen.getByTestId('outreach-near-resolved')).toHaveTextContent('Filtering within 40 mi of Lynchburg, Virginia');
+
+      // Changing radius only reuses the kept coordinates without re-calling discoverPlace
       await act(async () => { fireEvent.click(screen.getByTestId('outreach-load')); });
       expect(outreachUtils.discoverPlace).toHaveBeenCalledTimes(1);
       expect(outreachUtils.getCandidates).toHaveBeenLastCalledWith('tk', 'Aug 15-17', '2026-08-15', {
@@ -1705,14 +1708,36 @@ describe('AdminOutreach', () => {
         lng: -79.1422,
         radiusMiles: 60,
       });
+      expect(screen.getByTestId('outreach-near-resolved')).toHaveTextContent('Filtering within 60 mi of Lynchburg, Virginia');
 
-      // Clearing the Near box removes geo params entirely
+      // Clearing the Near box leaves the caption up for the still-filtered list until the next unfiltered load succeeds
       await act(async () => { fireEvent.click(screen.getByTestId('outreach-near-clear')); });
       expect(nearInput).toHaveValue('');
-      expect(screen.queryByTestId('outreach-near-resolved')).toBeNull();
+      expect(screen.getByTestId('outreach-near-resolved')).toHaveTextContent('Filtering within 60 mi of Lynchburg, Virginia');
       await act(async () => { fireEvent.click(screen.getByTestId('outreach-load')); });
       expect(outreachUtils.getCandidates).toHaveBeenLastCalledWith('tk', 'Aug 15-17', '2026-08-15');
+      expect(screen.queryByTestId('outreach-near-resolved')).toBeNull();
       expect(screen.getByTestId('outreach-candidates')).toHaveTextContent('4 of 4');
+    });
+
+    it('does not show the Filtering within caption when getCandidates fails after discoverPlace succeeds', async () => {
+      outreachUtils.discoverPlace = vi.fn().mockResolvedValue({
+        lat: 37.4138,
+        lng: -79.1422,
+        displayName: 'Lynchburg, Virginia',
+      }) as unknown as typeof outreachUtils.discoverPlace;
+      outreachUtils.getCandidates = vi.fn().mockRejectedValue(new Error('Candidates unavailable')) as unknown as typeof outreachUtils.getCandidates;
+
+      await renderPage();
+      typeDates();
+
+      await act(async () => {
+        fireEvent.change(getInput('outreach-near-place'), { target: { value: 'Lynchburg, VA' } });
+      });
+      await act(async () => { fireEvent.click(screen.getByTestId('outreach-load')); });
+
+      expect(screen.queryByTestId('outreach-near-resolved')).toBeNull();
+      expect(screen.getByTestId('outreach-error')).toHaveTextContent('Candidates unavailable');
     });
 
     it('clamps out-of-range radius on submit even without blur', async () => {
