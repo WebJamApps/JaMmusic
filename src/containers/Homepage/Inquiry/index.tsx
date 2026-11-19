@@ -283,7 +283,7 @@ export function InquiryForm(props: IinquiryFormProps) {
   );
 }
 
-export const InquiryError = () => (
+export const InquiryError = ({ message }: { message?: string }) => (
   <p
     className="inquiryError"
     role="alert"
@@ -291,11 +291,15 @@ export const InquiryError = () => (
       color: '#b00020', textAlign: 'center', margin: '14px', paddingBottom: '4px', fontWeight: 'bold',
     }}
   >
-    Sorry &mdash; we couldn&rsquo;t deliver your inquiry. Please try again, or email
-    {' '}
-    <a href="mailto:joshua.v.sherman@gmail.com">joshua.v.sherman@gmail.com</a>
-    {' '}
-    directly.
+    {message || (
+      <>
+        Sorry &mdash; we couldn&rsquo;t deliver your inquiry. Please try again, or email
+        {' '}
+        <a href="mailto:joshua.v.sherman@gmail.com">joshua.v.sherman@gmail.com</a>
+        {' '}
+        directly.
+      </>
+    )}
   </p>
 );
 
@@ -344,7 +348,7 @@ export function ContactForm(props: IcontactFormProps) {
               Contact Us
             </h4>
           )}
-          {typeof submitError === 'string' ? <p className="inquiryError" role="alert">{submitError}</p> : submitError ? <InquiryError /> : null}
+          {submitError ? <InquiryError message={typeof submitError === 'string' ? submitError : undefined} /> : null}
           <InquiryForm
             staticCountry={country}
             showBookingFields={showBookingFields}
