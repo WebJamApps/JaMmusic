@@ -199,6 +199,16 @@ describe('Inquiry', () => {
     expect(screen.getByRole('alert')).toBeInTheDocument();
   });
 
+  it('shows a backend validation message', () => {
+    render(<ContactForm hasSubmitted={false} submitError="Phone is required" hideTitle
+      setHasSubmitted={vi.fn()} setSubmitError={vi.fn()} formData={formData} setFormData={vi.fn()} />);
+    expect(screen.getByRole('alert')).toHaveTextContent('Phone is required');
+    const alert = screen.getByRole('alert');
+    expect(alert.style.color).toBe('rgb(176, 0, 32)');
+    expect(alert.style.fontWeight).toBe('bold');
+    expect(alert.style.textAlign).toBe('center');
+  });
+
   it('ContactForm does NOT render InquiryError when submitError is false', () => {
     const props = {
       hasSubmitted: false,
