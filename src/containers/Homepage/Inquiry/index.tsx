@@ -47,7 +47,7 @@ export function CommentsSection(props: IcommentsSectionProps) {
 
 interface IformActionsProps {
   setHasSubmitted: (arg0: boolean) => void;
-  setSubmitError: (arg0: boolean) => void;
+  setSubmitError: (arg0: boolean | string) => void;
   formData: IinquiryFormData;
   showBookingFields?: boolean;
 }
@@ -147,7 +147,7 @@ export function TableSection(props: ItableSectionProps) {
 
 interface IinquiryFormProps {
   setHasSubmitted: (arg0: boolean) => void;
-  setSubmitError: (arg0: boolean) => void;
+  setSubmitError: (arg0: boolean | string) => void;
   setFormData: (arg0: IinquiryFormData) => void;
   formData: IinquiryFormData;
   staticCountry?: string;
@@ -310,12 +310,12 @@ export const ContactRequest = () => (
 );
 interface IcontactFormProps {
   hasSubmitted: boolean;
-  submitError: boolean;
+  submitError: boolean | string;
   hideTitle?: boolean;
   country?: string;
   showBookingFields?: boolean;
   setHasSubmitted: (arg0: boolean) => void;
-  setSubmitError: (arg0: boolean) => void;
+  setSubmitError: (arg0: boolean | string) => void;
   formData: IinquiryFormData;
   setFormData: (arg0: IinquiryFormData) => void;
 }
@@ -344,7 +344,7 @@ export function ContactForm(props: IcontactFormProps) {
               Contact Us
             </h4>
           )}
-          {submitError ? <InquiryError /> : null}
+          {typeof submitError === 'string' ? <p className="inquiryError" role="alert">{submitError}</p> : submitError ? <InquiryError /> : null}
           <InquiryForm
             staticCountry={country}
             showBookingFields={showBookingFields}
@@ -370,7 +370,7 @@ export interface IinquiryProps {
 
 export function Inquiry({ country, hideTitle, form, showBookingFields }: IinquiryProps) {
   const [hasSubmitted, setHasSubmitted] = useState(false);
-  const [submitError, setSubmitError] = useState(false);
+  const [submitError, setSubmitError] = useState<boolean | string>(false);
   const [formLoadedAt] = useState(() => Date.now());
   const isBooking = Boolean(showBookingFields || form === 'jam-bookus');
   const [formData, setFormData] = useState<IinquiryFormData>(() => ({
