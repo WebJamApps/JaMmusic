@@ -52,7 +52,7 @@ function handleCountryChange(
 async function createEmailApi(
   emailForm: IinquiryFormData,
   setHasSubmitted: (arg0: boolean) => void,
-  setSubmitError: (arg0: boolean) => void,
+  setSubmitError: (arg0: boolean | string) => void,
 ): Promise<void> {
   try {
     const res = await fetch(`${process.env.BackendUrl}/inquiry`, {
@@ -60,6 +60,13 @@ async function createEmailApi(
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(emailForm),
     });
+    if (res.status === 400) {
+      const body = await res.json().catch(() => null);
+      if (typeof body?.message === 'string' && body.message.trim()) {
+        setSubmitError(body.message);
+        return;
+      }
+    }
     if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
     setHasSubmitted(true);
   } catch (e) {
@@ -72,7 +79,7 @@ async function handleSubmit(
   evt: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   formData: IinquiryFormData,
   setHasSubmitted: (arg0: boolean) => void,
-  setSubmitError: (arg0: boolean) => void,
+  setSubmitError: (arg0: boolean | string) => void,
 ): Promise<void> {
   const {
     firstname, lastname, emailaddress, uSAstate, country, phonenumber, zipcode, comments,
@@ -135,6 +142,7 @@ function continueValidating(formData: IinquiryFormData, showBookingFields?: bool
 
   const isBooking = Boolean(showBookingFields || form === 'jam-bookus');
   if (isBooking) {
+    if (!formData.phonenumber?.trim()) return true;
     if (!isValidEventDate(eventDate)) return true;
     if (!isValidEventType(eventType)) return true;
     if (!isValidVenue(formData)) return true;

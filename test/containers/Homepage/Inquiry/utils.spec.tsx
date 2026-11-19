@@ -62,6 +62,23 @@ describe('Inquiry utils', () => {
     expect(setHasSubmitted).toHaveBeenCalledTimes(0);
     expect(setSubmitError).toHaveBeenCalledWith(true);
   });
+  it.each([
+    [400, "We couldn't verify that address — please check the street address, or choose it from the suggestions.",
+      "We couldn't verify that address — please check the street address, or choose it from the suggestions."],
+    [400, 'Phone is required', 'Phone is required'],
+    [400, '', true],
+    [429, 'Rate limit', true],
+    [500, 'Server error', true],
+  ])('handles HTTP %s response', async (status, message, expected) => {
+    const form = { firstname: 'A', lastname: 'B', emailaddress: 'a@b.com', uSAstate: 'VA',
+      country: 'United States', phonenumber: '', zipcode: '12345', comments: 'Hello' };
+    const submitted = vi.fn();
+    const error = vi.fn();
+    global.fetch = vi.fn().mockResolvedValue(new Response(JSON.stringify({ message }), { status }));
+    await utils.createEmailApi(form, submitted, error);
+    expect(error).toHaveBeenCalledWith(expected);
+    expect(submitted).not.toHaveBeenCalled();
+  });
   it('handleSubmit', async () => {
     const evt: any = { preventDefault: vi.fn(), target: { value: 'mouse' } };
     const emailForm = {
@@ -316,10 +333,14 @@ describe('Inquiry utils', () => {
         }),
       ).toBe(false);
 
+      expect(utils.validateForm({ ...baseValidStandard, phonenumber: ' ', eventDate: '2099-01-01',
+        eventType: 'wedding', venuePlaceId: 'place-xyz' })).toBe(true);
+
       // Homepage form without booking fields is valid
       const homepageForm = {
         ...baseValidStandard,
         form: 'webjam-homepage',
+        phonenumber: '',
       };
       expect(utils.validateForm(homepageForm)).toBe(false);
     });
