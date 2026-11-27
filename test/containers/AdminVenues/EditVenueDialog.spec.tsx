@@ -2,18 +2,19 @@
 import { render, screen, fireEvent, act, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { customFetch } from 'src/lib/fetch.utils';
-import type { AddressSuggestion, PlaceAddress } from 'src/containers/AdminVenues/venue-address-lookup';
+import type { VenueListingSuggestion } from 'src/containers/AdminVenues/venue-address-lookup';
+import { NO_MAP_POSITION_MESSAGE } from 'src/containers/AdminVenues/venue-shared.utils';
 import { EditVenueDialog } from 'src/containers/AdminVenues/EditVenueDialog';
 import adminVenuesUtils, { FACEBOOK_PAGE_ID_ERROR, type Ivenue } from 'src/containers/AdminVenues/admin-venues.utils';
 
 vi.mock('src/lib/fetch.utils', () => ({ customFetch: vi.fn() }));
 
 interface AutocompleteMockProps {
-  inputValue: string; options: AddressSuggestion[];
+  inputValue: string; options: VenueListingSuggestion[];
   onInputChange: (event: unknown, value: string, reason: string) => void;
-  onChange: (event: unknown, value: AddressSuggestion) => void;
+  onChange: (event: unknown, value: VenueListingSuggestion) => void;
   renderInput: (props: Record<string, unknown>) => React.ReactNode;
-  getOptionLabel: (option: AddressSuggestion) => string;
+  getOptionLabel: (option: VenueListingSuggestion) => string;
 }
 
 vi.mock('@mui/material', async () => {
@@ -39,11 +40,11 @@ vi.mock('@mui/material', async () => {
           })}
           {props.options && props.options.length > 0 && (
             <div data-testid="mock-autocomplete-options">
-              {props.options.map((option: AddressSuggestion) => {
-                const label = props.getOptionLabel ? props.getOptionLabel(option) : option.text;
+              {props.options.map((option: VenueListingSuggestion) => {
+                const label = props.getOptionLabel ? props.getOptionLabel(option) : option.name;
                 return (
                   <button
-                    key={option.placeId || label}
+                    key={option.listingId || label}
                     onClick={(e) => {
                       if (props.onChange) {
                         props.onChange(e, option);
@@ -69,8 +70,15 @@ const venue: Ivenue = {
 
 describe('EditVenueDialog', () => {
   beforeEach(() => {
-    vi.spyOn(adminVenuesUtils, 'createVenueWithOutcome').mockResolvedValue({ venue: {} as Ivenue, outcome: 'created', status: 201 });
-    vi.spyOn(adminVenuesUtils, 'updateVenue').mockResolvedValue({} as Ivenue);
+    vi.spyOn(adminVenuesUtils, 'createVenueWithOutcome').mockResolvedValue({
+      venue: { _id: 'new', name: 'New', location: { type: 'Point', coordinates: [-80.05, 37.29] } } as Ivenue,
+      outcome: 'created',
+      status: 201,
+    });
+    vi.spyOn(adminVenuesUtils, 'updateVenue').mockResolvedValue({
+      ...venue,
+      location: { type: 'Point', coordinates: [-80.05, 37.29] },
+    } as Ivenue);
     vi.spyOn(adminVenuesUtils, 'fetchWarningVenues').mockResolvedValue([]);
   });
 
@@ -820,7 +828,11 @@ describe('EditVenueDialog', () => {
     const onSaved = vi.fn();
     vi.spyOn(adminVenuesUtils, 'createVenueWithOutcome')
       .mockRejectedValueOnce(new Error('Ambiguous venue matches'))
-      .mockResolvedValueOnce({ venue, status: 200, outcome: 'updated' });
+      .mockResolvedValueOnce({
+        venue: { ...venue, location: { type: 'Point', coordinates: [-80.05, 37.29] } },
+        status: 200,
+        outcome: 'updated',
+      });
     await act(async () => { render(<EditVenueDialog open venue={null} token="tk" onClose={vi.fn()} onSaved={onSaved} />); });
     const fields = { name: 'New Cafe', address: '1 Main St', city: 'Salem', zip: '24153', state: 'VA', website: 'example.test' };
     for (const [field, value] of Object.entries(fields)) {
@@ -835,57 +847,107 @@ describe('EditVenueDialog', () => {
     expect(onSaved).toHaveBeenCalledWith('Existing venue updated');
   });
 
-  describe('backend address lookup', () => {
-    const details: PlaceAddress = {
-      street: '123 Campbell Ave', city: 'Roanoke', state: 'VA', country: 'US', zipCode: '24011-1234', lat: 37.27, lng: -79.94,
+  it('includes the no-position message when saved venue has no location on create', async () => {
+    const onSaved = vi.fn();
+    vi.spyOn(adminVenuesUtils, 'createVenueWithOutcome').mockResolvedValueOnce({
+      venue: { _id: 'no-loc', name: 'New Cafe' },
+      status: 201,
+      outcome: 'created',
+    });
+    await act(async () => { render(<EditVenueDialog open venue={null} token="tk" onClose={vi.fn()} onSaved={onSaved} />); });
+    fireEvent.change(screen.getByTestId('edit-venue-name'), { target: { value: 'New Cafe' } });
+    fireEvent.change(screen.getByTestId('edit-venue-address'), { target: { value: '1 Main St' } });
+    fireEvent.change(screen.getByTestId('edit-venue-city'), { target: { value: 'Salem' } });
+    fireEvent.change(screen.getByTestId('edit-venue-state'), { target: { value: 'VA' } });
+    fireEvent.change(screen.getByTestId('edit-venue-zip'), { target: { value: '24153' } });
+    await act(async () => { fireEvent.click(screen.getByTestId('edit-venue-save')); });
+    expect(onSaved).toHaveBeenCalledWith(`Venue created. ${NO_MAP_POSITION_MESSAGE}`);
+  });
+
+  it('includes the no-position message when saved venue has no location on edit', async () => {
+    const onUpdated = vi.fn();
+    vi.spyOn(adminVenuesUtils, 'updateVenue').mockResolvedValueOnce({ ...venue, location: undefined });
+    await act(async () => { render(<EditVenueDialog open venue={venue} token="tk" onClose={vi.fn()} onSaved={onUpdated} />); });
+    await act(async () => { fireEvent.click(screen.getByTestId('edit-venue-save')); });
+    expect(onUpdated).toHaveBeenCalledWith(`Existing venue updated. ${NO_MAP_POSITION_MESSAGE}`);
+  });
+
+  describe('backend venue listings lookup', () => {
+    const listing: VenueListingSuggestion = {
+      listingId: 'listing-1',
+      name: 'Durty Bull Brewing',
+      street: '123 Campbell Ave',
+      city: 'Roanoke',
+      state: 'VA',
+      zipCode: '24011-1234',
+      website: 'https://durtybull.example',
+      lat: 37.27,
+      lng: -79.94,
     };
+    const optionLabel = 'Durty Bull Brewing — 123 Campbell Ave, Roanoke';
     beforeEach(() => {
       vi.useRealTimers();
-      vi.mocked(customFetch).mockImplementation(async (url) => new Response(JSON.stringify(
-        String(url).includes('/suggest?') ? [{ placeId: 'p1', text: 'Campbell suggestion' }] : details,
-      )));
+      vi.mocked(customFetch).mockImplementation(async () => new Response(JSON.stringify([listing])));
     });
     const openDialog = async () => {
       await act(async () => { render(<EditVenueDialog open venue={null} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />); });
-      fireEvent.change(screen.getByTestId('edit-venue-address'), { target: { value: '123 Campbell' } });
-      await screen.findByText('Campbell suggestion');
+      fireEvent.change(screen.getByTestId('edit-venue-name'), { target: { value: 'Durty Bull' } });
+      await screen.findByText(optionLabel);
     };
-    it('maps the selected address and exact coordinates into the saved form', async () => {
+    it('maps the selected listing fields, empty website, and coordinates into the saved form', async () => {
       await openDialog();
-      fireEvent.click(screen.getByText('Campbell suggestion'));
+      fireEvent.click(screen.getByText(optionLabel));
       await waitFor(() => expect(screen.getByTestId('edit-venue-city')).toHaveValue('Roanoke'));
-      fireEvent.change(screen.getByTestId('edit-venue-name'), { target: { value: 'New venue' } });
+      expect(screen.getByTestId('edit-venue-name')).toHaveValue('Durty Bull Brewing');
+      expect(screen.getByTestId('edit-venue-address')).toHaveValue('123 Campbell Ave');
+      expect(screen.getByTestId('edit-venue-website')).toHaveValue('https://durtybull.example');
       fireEvent.click(screen.getByTestId('edit-venue-save'));
       await waitFor(() => expect(adminVenuesUtils.createVenueWithOutcome).toHaveBeenCalledWith('tk', expect.objectContaining({
-        address: '123 Campbell Ave', city: 'Roanoke', usState: 'VA', zipCode: '24011',
+        name: 'Durty Bull Brewing',
+        address: '123 Campbell Ave',
+        city: 'Roanoke',
+        usState: 'VA',
+        zipCode: '24011',
+        website: 'https://durtybull.example',
         location: { type: 'Point', coordinates: [-79.94, 37.27] },
       })));
     });
-    it('keeps manual fields when a detail response arrives late', async () => {
-      let finish: (response: Response) => void = () => { throw new Error('No pending details'); };
+    it('keeps an already typed website as typed when selecting a listing', async () => {
       await openDialog();
-      vi.mocked(customFetch).mockImplementationOnce(() => new Promise((resolve) => { finish = resolve; }));
-      fireEvent.click(screen.getByText('Campbell suggestion'));
-      fireEvent.change(screen.getByTestId('edit-venue-city'), { target: { value: 'My city' } });
-      await act(async () => { finish(new Response(JSON.stringify(details))); });
-      expect(screen.getByTestId('edit-venue-city')).toHaveValue('My city');
-      expect(screen.getByTestId('edit-venue-address')).toHaveValue('123 Campbell');
+      fireEvent.change(screen.getByTestId('edit-venue-website'), { target: { value: 'https://typed.example' } });
+      fireEvent.click(screen.getByText(optionLabel));
+      await waitFor(() => expect(screen.getByTestId('edit-venue-city')).toHaveValue('Roanoke'));
+      expect(screen.getByTestId('edit-venue-website')).toHaveValue('https://typed.example');
     });
-    it('retains typed input on detail failure and still enforces required fields', async () => {
-      await openDialog();
-      vi.mocked(customFetch).mockResolvedValueOnce(new Response('{}', { status: 502 }));
-      fireEvent.click(screen.getByText('Campbell suggestion'));
-      await screen.findByText(/Address lookup unavailable/);
-      expect(screen.getByTestId('edit-venue-address')).toHaveValue('123 Campbell');
+    it('discards an older search response when newer text is typed', async () => {
+      let finishOld: (response: Response) => void = () => { throw new Error('No pending search'); };
+      vi.mocked(customFetch)
+        .mockImplementationOnce(() => new Promise((resolve) => { finishOld = resolve; }))
+        .mockImplementationOnce(async () => new Response(JSON.stringify([listing])));
+      await act(async () => { render(<EditVenueDialog open venue={null} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />); });
+      fireEvent.change(screen.getByTestId('edit-venue-name'), { target: { value: 'Old' } });
+      await waitFor(() => expect(customFetch).toHaveBeenCalledTimes(1));
+      fireEvent.change(screen.getByTestId('edit-venue-name'), { target: { value: 'Durty Bull' } });
+      await act(async () => {
+        finishOld(new Response(JSON.stringify([{ ...listing, listingId: 'old', name: 'Old Cafe' }])));
+      });
+      await screen.findByText(optionLabel);
+      expect(screen.queryByText(/Old Cafe/)).not.toBeInTheDocument();
+    });
+    it('retains typed input when listings have not loaded (503) and still enforces required fields', async () => {
+      vi.mocked(customFetch).mockResolvedValueOnce(new Response(JSON.stringify({ message: 'Venue listings have not loaded yet' }), { status: 503 }));
+      await act(async () => { render(<EditVenueDialog open venue={null} token="tk" onClose={vi.fn()} onSaved={vi.fn()} />); });
+      fireEvent.change(screen.getByTestId('edit-venue-name'), { target: { value: 'Manual Venue' } });
+      await screen.findByText(/Venue listings have not loaded yet/);
+      expect(screen.getByTestId('edit-venue-name')).toHaveValue('Manual Venue');
       fireEvent.click(screen.getByTestId('edit-venue-save'));
       await screen.findByTestId('edit-venue-error');
       expect(adminVenuesUtils.createVenueWithOutcome).not.toHaveBeenCalled();
     });
     it('drops a selected coordinate when the address is manually changed', async () => {
       await openDialog();
-      fireEvent.click(screen.getByText('Campbell suggestion'));
+      fireEvent.click(screen.getByText(optionLabel));
       await waitFor(() => expect(screen.getByTestId('edit-venue-city')).toHaveValue('Roanoke'));
-      fireEvent.change(screen.getByTestId('edit-venue-name'), { target: { value: 'New venue' } });
       fireEvent.change(screen.getByTestId('edit-venue-address'), { target: { value: '999 Manual St' } });
       fireEvent.click(screen.getByTestId('edit-venue-save'));
       await waitFor(() => expect(adminVenuesUtils.createVenueWithOutcome).toHaveBeenCalledWith('tk', expect.objectContaining({

@@ -2,54 +2,102 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { customFetch } from 'src/lib/fetch.utils';
 import type { IvenueUpdate } from './admin-venues.utils';
 
-export interface AddressSuggestion { placeId: string; text: string }
-export interface PlaceAddress {
-  formattedAddress?: string; street?: string; city?: string; state?: string;
-  country?: string; zipCode?: string; lat?: number; lng?: number;
+export interface VenueListingSuggestion {
+  listingId: string;
+  name: string;
+  street: string;
+  city: string;
+  state: string;
+  zipCode: string;
+  website: string;
+  lat: number;
+  lng: number;
 }
 
-async function lookupRequest(path: string, token: string, signal: AbortSignal): Promise<unknown> {
-  const response = await customFetch(`${process.env.BackendUrl}/venue/places/${path}`, {
-    headers: { Accept: 'application/json', Authorization: `Bearer ${token}` }, signal,
+export function formatListingOption(listing: VenueListingSuggestion): string {
+  const locationPart = [listing.street, listing.city].filter(Boolean).join(', ');
+  return [listing.name, locationPart].filter(Boolean).join(' — ');
+}
+
+async function lookupListings(
+  query: string,
+  token: string,
+  signal: AbortSignal,
+): Promise<{ status: number; data: unknown }> {
+  const params = new URLSearchParams({ q: query });
+  const response = await customFetch(`${process.env.BackendUrl}/venue/listings/search?${params}`, {
+    headers: { Accept: 'application/json', Authorization: `Bearer ${token}` },
+    signal,
   });
-  if (!response.ok) throw new Error('Address lookup unavailable');
-  return response.json();
+  if (!response.ok) {
+    return { status: response.status, data: null };
+  }
+  return { status: response.status, data: await response.json() };
 }
 
-export function addressFields(place: PlaceAddress, current: IvenueUpdate): IvenueUpdate {
-  const country = place.country || current.country || 'US';
-  const location: IvenueUpdate['location'] = typeof place.lat === 'number' && Number.isFinite(place.lat)
-    && Math.abs(place.lat) <= 90 && typeof place.lng === 'number' && Number.isFinite(place.lng) && Math.abs(place.lng) <= 180
-    ? { type: 'Point', coordinates: [place.lng, place.lat] } : undefined;
+export function addressFields(
+  listing: Partial<VenueListingSuggestion>,
+  current: IvenueUpdate,
+): IvenueUpdate {
+  const country = current.country || 'US';
+  const hasCoords = typeof listing.lat === 'number'
+    && Number.isFinite(listing.lat)
+    && Math.abs(listing.lat) <= 90
+    && typeof listing.lng === 'number'
+    && Number.isFinite(listing.lng)
+    && Math.abs(listing.lng) <= 180
+    && !(listing.lat === 0 && listing.lng === 0);
+  const location: IvenueUpdate['location'] = hasCoords
+    ? { type: 'Point', coordinates: [listing.lng!, listing.lat!] }
+    : undefined;
+  const existingWebsite = (current.website || '').trim();
+  const zip = listing.zipCode ? listing.zipCode.split('-')[0] : '';
   return {
-    ...current, address: place.street || current.address, city: place.city || current.city,
-    country, usState: country === 'US' ? place.state || current.usState : '',
-    region: country === 'US' ? '' : place.state || current.region,
-    zipCode: place.zipCode?.split('-')[0] || current.zipCode, location,
+    ...current,
+    name: listing.name || current.name,
+    address: listing.street || current.address,
+    city: listing.city || current.city,
+    country,
+    usState: country === 'US' ? listing.state || current.usState : '',
+    region: country === 'US' ? '' : listing.state || current.region,
+    zipCode: zip || current.zipCode,
+    website: existingWebsite ? current.website : (listing.website || current.website || ''),
+    location,
   };
 }
 
-function isSuggestion(value: unknown): value is AddressSuggestion {
-  return typeof value === 'object' && value !== null && 'placeId' in value && typeof value.placeId === 'string'
-    && 'text' in value && typeof value.text === 'string';
-}
-
-function isPlace(value: unknown): value is PlaceAddress {
+function isListingSuggestion(value: unknown): value is VenueListingSuggestion {
   if (typeof value !== 'object' || value === null || Array.isArray(value)) return false;
-  const fields = ['formattedAddress', 'street', 'city', 'state', 'country', 'zipCode'] as const;
-  return fields.every((key) => !Object.hasOwn(value, key) || typeof (value as Record<string, unknown>)[key] === 'string');
+  const record = value as Record<string, unknown>;
+  if (
+    typeof record.listingId !== 'string'
+    || typeof record.name !== 'string'
+    || typeof record.street !== 'string'
+  ) {
+    return false;
+  }
+  const optionalStrings = ['city', 'state', 'zipCode', 'website'] as const;
+  const optionalNumbers = ['lat', 'lng'] as const;
+  return optionalStrings.every((key) => !Object.hasOwn(record, key) || typeof record[key] === 'string')
+    && optionalNumbers.every(
+      (key) => !Object.hasOwn(record, key)
+        || (typeof record[key] === 'number' && Number.isFinite(record[key])),
+    );
 }
 
 // All invalidations happen synchronously, before React renders or the debounce expires.
 // Even a transport that ignores abort cannot apply an obsolete result.
-export function useAddressLookup(open: boolean, token: string, onSelect: (place: PlaceAddress) => void) {
-  const [suggestions, setSuggestions] = useState<AddressSuggestion[]>([]);
+export function useAddressLookup(
+  open: boolean,
+  token: string,
+  onSelect: (listing: VenueListingSuggestion) => void,
+) {
+  const [suggestions, setSuggestions] = useState<VenueListingSuggestion[]>([]);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
   const pending = useRef<AbortController | null>(null);
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const revision = useRef(0);
-  const session = useRef<string | undefined>(undefined);
   const selectRef = useRef(onSelect);
   useEffect(() => { selectRef.current = onSelect; }, [onSelect]);
 
@@ -58,64 +106,58 @@ export function useAddressLookup(open: boolean, token: string, onSelect: (place:
     clearTimeout(timer.current);
     pending.current?.abort();
   }, []);
+
   const invalidate = useCallback(() => {
     cancel();
     setSuggestions([]);
     setLoading(false);
     setMessage('');
   }, [cancel]);
+
   useEffect(() => {
     invalidate();
-    session.current = undefined;
     return cancel;
   }, [open, token, invalidate, cancel]);
 
-  const search = useCallback((input: string, regionCode: string) => {
+  const search = useCallback((input: string) => {
     invalidate();
-    if (!open || !input.trim()) return;
-    session.current ??= crypto.randomUUID();
-    const sessionToken = session.current;
+    const trimmed = input.trim();
+    if (!open || trimmed.length < 2) return;
     const version = revision.current;
     timer.current = setTimeout(async () => {
       const controller = new AbortController();
       pending.current = controller;
       setLoading(true);
       try {
-        const params = new URLSearchParams({ input, sessionToken, regionCode: regionCode.toLowerCase() });
-        const result = await lookupRequest(`suggest?${params}`, token, controller.signal);
+        const { status, data } = await lookupListings(trimmed, token, controller.signal);
         if (version !== revision.current) return;
-        if (!Array.isArray(result) || !result.every(isSuggestion)) throw new Error('Invalid suggestions');
-        setSuggestions(result);
-        if (result.length === 0) setMessage('No address suggestions. You can enter the address manually.');
+        if (status === 503) {
+          setMessage('Venue listings have not loaded yet. You can enter the venue details manually.');
+          return;
+        }
+        if (status < 200 || status >= 300 || !Array.isArray(data) || !data.every(isListingSuggestion)) {
+          setMessage('Address lookup unavailable. You can enter the venue details manually.');
+          return;
+        }
+        setSuggestions(data);
+        if (data.length === 0) {
+          setMessage('No matching venues found. You can enter the venue details manually.');
+        }
       } catch {
-        if (version === revision.current) setMessage('Address lookup unavailable. You can enter the address manually.');
+        if (version === revision.current) {
+          setMessage('Address lookup unavailable. You can enter the venue details manually.');
+        }
       } finally {
         if (version === revision.current) setLoading(false);
       }
     }, 300);
   }, [open, token, invalidate]);
 
-  const select = useCallback(async (suggestion: AddressSuggestion) => {
-    const sessionToken = session.current;
+  const select = useCallback((listing: VenueListingSuggestion) => {
     invalidate();
-    session.current = undefined;
-    if (!open || !sessionToken) return;
-    const version = revision.current;
-    const controller = new AbortController();
-    pending.current = controller;
-    setLoading(true);
-    try {
-      const result = await lookupRequest(`${encodeURIComponent(suggestion.placeId)}?${new URLSearchParams({ sessionToken })}`,
-        token, controller.signal);
-      if (version !== revision.current) return;
-      if (!isPlace(result)) throw new Error('Invalid address');
-      selectRef.current(result);
-    } catch {
-      if (version === revision.current) setMessage('Address lookup unavailable. You can enter the address manually.');
-    } finally {
-      if (version === revision.current) setLoading(false);
-    }
-  }, [open, token, invalidate]);
+    if (!open) return;
+    selectRef.current(listing);
+  }, [open, invalidate]);
 
   return { suggestions, loading, message, search, select, invalidate };
 }

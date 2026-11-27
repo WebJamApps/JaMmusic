@@ -10,6 +10,7 @@ import { Editor } from '@tinymce/tinymce-react';
 import type { Iauth } from 'src/providers/Auth.provider';
 import { useContext, useState, useEffect, useRef } from 'react';
 import adminVenuesUtils, { type Ivenue } from 'src/containers/AdminVenues/admin-venues.utils';
+import { joinStatusSentences } from 'src/containers/AdminVenues/venue-shared.utils';
 import utils from './gigs.utils';
 import { GigVenueFields } from './GigVenueFields';
 import { useGigVenue } from './useGigVenue';
@@ -110,9 +111,9 @@ export function EditGigDialog(props: IeditGigDialogProps) {
 
       const result = await utils.updateGig(getGigs, setEditGig, setEditChanged, updatedGig, auth.token, setSaveError);
       if (result === 'success' || result === 'unconfirmed') {
-        onSaveMessage?.([
+        onSaveMessage?.(joinStatusSentences([
           venueMessage, result === 'success' ? 'Gig updated.' : "Couldn't confirm gig save — list refreshed.",
-        ].filter(Boolean).join('. '));
+        ]));
         setShowDialog(false);
       } else {
         setSaveError((message) => message || 'Unable to update gig. Please retry.');

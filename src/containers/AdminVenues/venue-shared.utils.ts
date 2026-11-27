@@ -440,6 +440,28 @@ export function getExistingVenueWarning(params: ExistingVenueWarningParams): Exi
   };
 }
 
+export const NO_MAP_POSITION_MESSAGE =
+  "Saved. No map position was found for this address, so this venue won't appear in Near searches.";
+
+export function hasVenueLocation(venue?: { location?: Ivenue['location'] } | null): boolean {
+  const coords = venue?.location?.coordinates;
+  return venue?.location?.type === 'Point'
+    && Array.isArray(coords)
+    && coords.length === 2
+    && typeof coords[0] === 'number'
+    && Number.isFinite(coords[0])
+    && typeof coords[1] === 'number'
+    && Number.isFinite(coords[1]);
+}
+
+export function joinStatusSentences(parts: Array<string | undefined | null>): string {
+  const nonEmpty = parts.map((p) => (p || '').trim()).filter(Boolean);
+  if (nonEmpty.length === 0) return '';
+  return nonEmpty
+    .map((part, idx) => (idx < nonEmpty.length - 1 ? part.replace(/\.+$/, '') : part))
+    .join('. ');
+}
+
 export function formatVenueSaveOutcomeMessage(
   outcome: 'created' | 'updated' | { outcome: 'created' | 'updated'; wasArchived?: boolean },
   wasArchived?: boolean,
@@ -456,4 +478,17 @@ export function formatVenueSaveOutcomeMessage(
     return 'Existing archived venue restored and updated';
   }
   return 'Existing venue updated';
+}
+
+export function formatVenueSaveResultMessage(params: {
+  outcome: 'created' | 'updated';
+  wasArchived?: boolean;
+  savedVenue?: Pick<Ivenue, 'location'> | null;
+  backendNotice?: string;
+}): string {
+  const outcomeText = formatVenueSaveOutcomeMessage(params.outcome, params.wasArchived);
+  const noPositionText = params.savedVenue && !hasVenueLocation(params.savedVenue)
+    ? NO_MAP_POSITION_MESSAGE
+    : '';
+  return joinStatusSentences([outcomeText, params.backendNotice, noPositionText]);
 }
