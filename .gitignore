@@ -77,6 +77,8 @@ yarn.lock
 
 # Playwright
 /test/test-results
+/test/test-results-stack
 /playwright-report
+/playwright-report-stack
 /blob-report
 /playwright/.cache
