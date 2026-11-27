@@ -10,6 +10,7 @@ import { useContext, useState, useEffect, useRef } from 'react';
 import { DataContext } from 'src/providers/Data.provider';
 import { AuthContext } from 'src/providers/Auth.provider';
 import adminVenuesUtils, { type Ivenue } from 'src/containers/AdminVenues/admin-venues.utils';
+import { joinStatusSentences } from 'src/containers/AdminVenues/venue-shared.utils';
 import utils from './gigs.utils';
 import { GigVenueFields } from './GigVenueFields';
 import { useGigVenue } from './useGigVenue';
@@ -83,9 +84,9 @@ export function CreateGigDialog({
         setSaveError,
       );
       if (result === 'success' || result === 'unconfirmed') {
-        onSaveMessage?.([
+        onSaveMessage?.(joinStatusSentences([
           venueMessage, result === 'success' ? 'Gig created.' : "Couldn't confirm gig save — list refreshed.",
-        ].filter(Boolean).join('. '));
+        ]));
         // Reset form states
         setVenue('');
         setSelectedVenue(null);

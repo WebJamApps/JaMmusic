@@ -1,4 +1,5 @@
 import {
+  NO_MAP_POSITION_MESSAGE,
   US_STATES,
   COUNTRIES,
   validateZipCode,
@@ -9,6 +10,9 @@ import {
   validateVenueFields,
   getExistingVenueWarning,
   formatVenueSaveOutcomeMessage,
+  formatVenueSaveResultMessage,
+  hasVenueLocation,
+  joinStatusSentences,
   BACKEND_SAVE_RULES,
 } from 'src/containers/AdminVenues/venue-shared.utils';
 import type { Ivenue } from 'src/containers/AdminVenues/admin-venues.utils';
@@ -657,6 +661,24 @@ describe('venue-shared.utils', () => {
     it('formats updated outcome message for restored archived venue', () => {
       expect(formatVenueSaveOutcomeMessage('updated', true)).toBe('Existing archived venue restored and updated');
       expect(formatVenueSaveOutcomeMessage({ outcome: 'updated', wasArchived: true })).toBe('Existing archived venue restored and updated');
+    });
+
+    it('detects valid venue GeoJSON locations and appends no-position notice only when missing', () => {
+      expect(hasVenueLocation({ location: { type: 'Point', coordinates: [-80.05, 37.29] } })).toBe(true);
+      expect(hasVenueLocation({})).toBe(false);
+      expect(hasVenueLocation(undefined)).toBe(false);
+      expect(joinStatusSentences(['Venue created', NO_MAP_POSITION_MESSAGE, 'Gig created.'])).toBe(
+        `Venue created. ${NO_MAP_POSITION_MESSAGE.replace(/\.$/, '')}. Gig created.`,
+      );
+      expect(formatVenueSaveResultMessage({
+        outcome: 'created',
+        savedVenue: { location: { type: 'Point', coordinates: [-80.05, 37.29] } },
+      })).toBe('Venue created');
+      expect(formatVenueSaveResultMessage({
+        outcome: 'created',
+        savedVenue: {},
+        backendNotice: 'email also used elsewhere',
+      })).toBe(`Venue created. email also used elsewhere. ${NO_MAP_POSITION_MESSAGE}`);
     });
   });
 });

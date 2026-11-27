@@ -5,6 +5,7 @@ interface SaveResponse { status: number; venue?: Ivenue; message?: string }
 const baseVenue: Ivenue = {
   _id: 'selected', name: 'Test Cafe', address: '1 Electric Road', city: 'Salem', usState: 'VA',
   zipCode: '24153', country: 'US', status: 'active',
+  location: { type: 'Point', coordinates: [-80.05, 37.29] },
 };
 
 async function setup(page: Page, inventory: Ivenue[], response: SaveResponse) {

@@ -10,8 +10,7 @@ import adminVenuesUtils, {
 } from './admin-venues.utils';
 
 import * as venueShared from './venue-shared.utils';
-import { addressFields, useAddressLookup } from './venue-address-lookup';
-import { AddressSuggestionsPaper } from './AddressSuggestionsPaper';
+import { addressFields, formatListingOption, useAddressLookup } from './venue-address-lookup';
 
 export { US_STATES, COUNTRIES } from './venue-shared.utils';
 
@@ -251,9 +250,11 @@ export function EditVenueDialog({
       const rawRes = savedVenue as Ivenue & { notice?: string; emailNotice?: string };
       const backendNotice = rawRes?.notice || rawRes?.emailNotice;
       if (backendNotice) setNotice(backendNotice);
-      const wasArchived = !venue && warningVenues.some((v) => v._id === savedVenue._id && v.status === 'archived');
-      const message = venueShared.formatVenueSaveOutcomeMessage(outcome, wasArchived);
-      onSaved(backendNotice ? `${message}. ${backendNotice}` : message);
+      const wasArchived = !venue && warningVenues.some((v) => v._id === savedVenue?._id && v.status === 'archived');
+      const message = venueShared.formatVenueSaveResultMessage({
+        outcome, wasArchived, savedVenue, backendNotice,
+      });
+      onSaved(message);
     } catch (e) {
       const err = e as { message?: string };
       setError(err.message || (venue ? 'Update failed' : 'Create failed'));
@@ -288,29 +289,41 @@ export function EditVenueDialog({
     >
       <DialogTitle data-testid="edit-venue-dialog-title">{venue ? `Edit Venue — ${venue.name}` : 'Add Venue'}</DialogTitle>
       <DialogContent>
-        <TextField label="Name" fullWidth value={form.name || ''} onChange={(e) => set('name', e.target.value)}
-          sx={{ marginTop: 1, marginBottom: 2 }} data-testid="edit-venue-name" />
         <Autocomplete
           freeSolo
           options={lookup.suggestions}
-          slots={{ paper: AddressSuggestionsPaper }}
-          getOptionLabel={(option) => typeof option === 'string' ? option : option.text}
+          getOptionLabel={(option) => typeof option === 'string' ? option : formatListingOption(option)}
+          getOptionKey={(option) => typeof option === 'string' ? option : option.listingId}
           filterOptions={(options) => options}
-          inputValue={form.address || ''}
+          inputValue={form.name || ''}
           loading={lookup.loading}
           onInputChange={(_, input, reason) => {
             if (reason !== 'input' && reason !== 'clear') return;
-            set('address', input);
-            lookup.search(input, form.country || 'US');
+            set('name', input);
+            lookup.search(input);
           }}
           onChange={(_, value) => {
-            if (value && typeof value !== 'string') void lookup.select(value);
+            if (value && typeof value !== 'string') lookup.select(value);
           }}
           renderInput={(params) => (
-            <TextField {...params} label="Address" fullWidth sx={{ marginBottom: 2 }} data-testid="edit-venue-address" />
+            <TextField
+              {...params}
+              label="Name"
+              fullWidth
+              sx={{ marginTop: 1, marginBottom: 2 }}
+              data-testid="edit-venue-name"
+            />
           )}
         />
         {lookup.message && <Typography role="status" data-testid="address-lookup-message">{lookup.message}</Typography>}
+        <TextField
+          label="Address"
+          fullWidth
+          value={form.address || ''}
+          onChange={(e) => set('address', e.target.value)}
+          sx={{ marginBottom: 2 }}
+          data-testid="edit-venue-address"
+        />
         <TextField label="City" fullWidth value={form.city || ''} onChange={(e) => set('city', e.target.value)}
           sx={{ marginBottom: 2 }} data-testid="edit-venue-city" />
         <FormControl fullWidth sx={{ marginBottom: 2 }}>
