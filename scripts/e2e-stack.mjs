@@ -226,6 +226,13 @@ async function waitForSocketClusterReady(port, proc, timeoutMs) {
   throw new Error(`Timed out waiting for ${proc.name} SocketCluster initial message on port ${port}. Log:\n${tailLog(proc.logPath)}`);
 }
 
+function buildMinimalEnv(overrides = {}) {
+  const base = {};
+  if (process.env.PATH) base.PATH = process.env.PATH;
+  if (process.env.HOME) base.HOME = process.env.HOME;
+  return { ...base, ...overrides };
+}
+
 async function prepareBackend({ name, repoUrl, ref, overrideDir, targetDir, buildCommands }) {
   if (overrideDir) {
     const resolved = path.resolve(overrideDir);
@@ -372,15 +379,14 @@ async function main() {
       {
         cwd: backendDir,
         logPath: path.join(runDir, 'web-jam-back.log'),
-        env: {
-          ...process.env,
+        env: buildMinimalEnv({
           NODE_ENV: 'test',
           TEST_DB: runMongoUri,
           PORT: String(backendPort),
           HashString: runHashString,
           AllowUrl: JSON.stringify({ urls: [previewOrigin, localhostPreviewOrigin] }),
           frontURL: previewOrigin,
-        },
+        }),
       },
     );
     processes.push(backendProc);
@@ -393,8 +399,7 @@ async function main() {
       {
         cwd: wjscDir,
         logPath: path.join(runDir, 'webjamsocketcluster.log'),
-        env: {
-          ...process.env,
+        env: buildMinimalEnv({
           NODE_ENV: 'test',
           TEST_DB: runMongoUri,
           PORT: String(wjscPort),
@@ -402,7 +407,7 @@ async function main() {
           BackendUrl: backendUrl,
           HashString: runHashString,
           userRoles: userRolesJson,
-        },
+        }),
       },
     );
     processes.push(wjscProc);
@@ -413,8 +418,7 @@ async function main() {
       ['vite', 'build', '--outDir', distDir, '--emptyOutDir'],
       {
         cwd: process.cwd(),
-        env: {
-          ...process.env,
+        env: buildMinimalEnv({
           BackendUrl: backendUrl,
           ALLOW_LOCALHOST_BACKEND: 'true',
           SCS_HOST: '127.0.0.1',
@@ -425,7 +429,7 @@ async function main() {
           userRoles: userRolesJson,
           APP_NAME: 'JaMmusic',
           NODE_ENV: 'production',
-        },
+        }),
       },
     );
 
@@ -437,7 +441,9 @@ async function main() {
       {
         cwd: process.cwd(),
         logPath: path.join(runDir, 'preview.log'),
-        env: process.env,
+        env: buildMinimalEnv({
+          NODE_ENV: 'production',
+        }),
       },
     );
     processes.push(previewProc);
