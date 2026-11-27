@@ -12,6 +12,30 @@ describe('App component', () => {
   it('is defined', () => {
     expect(App).toBeDefined();
   });
+  // The test setup replaces window.location, so the address is set on that stand-in.
+  it.each(['web-jam.com', 'joshandmariamusic.com'])(
+    'shows the privacy policy at /privacy to a signed-out visitor on %s',
+    (appName) => {
+      const originalAppName = process.env.APP_NAME;
+      const originalLocation = window.location;
+      process.env.APP_NAME = appName;
+      Object.defineProperty(window, 'location', {
+        configurable: true,
+        writable: true,
+        value: {
+          ...originalLocation, pathname: '/privacy', search: '', hash: '',
+        },
+      });
+      try {
+        const { getByRole, unmount } = render(<Provider store={store.store}><App /></Provider>);
+        expect(getByRole('heading', { name: 'Privacy Policy' })).toBeInTheDocument();
+        unmount();
+      } finally {
+        Object.defineProperty(window, 'location', { configurable: true, writable: true, value: originalLocation });
+        process.env.APP_NAME = originalAppName;
+      }
+    },
+  );
   it('renders', () => {
     Object.defineProperty(window, 'location', { value: { assign: () => { }, reload: () => { } }, writable: true });
     window.location = {

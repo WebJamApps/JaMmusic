@@ -16,6 +16,7 @@ import { Songs } from '../containers/Songs';
 import { BookUs } from '../containers/BookUs';
 import { Tipjar } from '../containers/Tipjar';
 import { Setlist } from '../containers/Setlist';
+import { PrivacyPolicy } from '../containers/PrivacyPolicy';
 
 const AdminApi = lazy(() => import('../containers/AdminApi'));
 
@@ -55,6 +56,7 @@ export function App() {
           <Route path="/music/tipjar" element={<Tipjar />} />
           <Route path="/music/setlist" element={<Setlist />} />
           <Route path="/setlist" element={<Setlist />} />
+          <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </AppTemplate>
