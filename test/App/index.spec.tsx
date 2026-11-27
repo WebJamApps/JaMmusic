@@ -26,11 +26,14 @@ describe('App component', () => {
           ...originalLocation, pathname: '/privacy', search: '', hash: '',
         },
       });
-      const { getByRole, unmount } = render(<Provider store={store.store}><App /></Provider>);
-      expect(getByRole('heading', { name: 'Privacy Policy' })).toBeInTheDocument();
-      unmount();
-      Object.defineProperty(window, 'location', { configurable: true, writable: true, value: originalLocation });
-      process.env.APP_NAME = originalAppName;
+      try {
+        const { getByRole, unmount } = render(<Provider store={store.store}><App /></Provider>);
+        expect(getByRole('heading', { name: 'Privacy Policy' })).toBeInTheDocument();
+        unmount();
+      } finally {
+        Object.defineProperty(window, 'location', { configurable: true, writable: true, value: originalLocation });
+        process.env.APP_NAME = originalAppName;
+      }
     },
   );
   it('renders', () => {
