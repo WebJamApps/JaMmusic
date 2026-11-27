@@ -1,9 +1,12 @@
 import { type Page, expect } from '@playwright/test';
 
 interface SocketPacket { event?: string; cid?: number; data?: { gig?: Record<string, unknown> } }
+
 export async function fixture(page: Page, lookup: {
-  suggestionStatus?: number; suggestions?: unknown; detailStatus?: number; details?: unknown;
-  holdOldSearch?: Promise<void>; holdDetails?: Promise<void>;
+  suggestionStatus?: number;
+  suggestions?: unknown;
+  holdOldSearch?: Promise<void>;
+  noLocation?: boolean;
 } = {}) {
   const appOrigin = new URL(process.env.BASE_URL || 'http://localhost:7878').origin;
   const reads: { url: URL; authorization?: string }[] = [];
@@ -23,6 +26,17 @@ export async function fixture(page: Page, lookup: {
     _id: 'existing', name: 'Existing Hall', address: '9 First St', city: 'Salem', usState: 'VA', status: 'active', facebookPageId: '378590115336095',
   };
   const archived = { _id: 'archivedHall', name: 'The Hall', address: '1 Electric Rd', city: 'Salem', usState: 'VA', status: 'archived' };
+  const defaultListing = {
+    listingId: 'listing-1',
+    name: 'Lookup Hall',
+    street: '123 Campbell Ave',
+    city: 'Roanoke',
+    state: 'NC',
+    zipCode: '24011',
+    website: 'https://listing.example.com',
+    lat: 37.27,
+    lng: -79.94,
+  };
   await page.route('**/*', async (route) => {
     const url = new URL(route.request().url());
     if (['maps.googleapis.com', 'places.googleapis.com'].includes(url.hostname)) googleRequests.push(url.href);
@@ -30,32 +44,33 @@ export async function fixture(page: Page, lookup: {
       let body: unknown = [];
       let status = 200;
       if (url.pathname.startsWith('/user/')) body = { userType: 'Developer', email: 'fixture@example.com' };
-      if (url.pathname.startsWith('/venue/places/')) {
+      else if (url.pathname === '/venue/listings/search') {
         reads.push({ url, authorization: route.request().headers().authorization });
-        if (url.pathname.endsWith('/suggest')) {
-          if (url.searchParams.get('input') === 'Old street') {
-            await lookup.holdOldSearch;
-            body = [{ placeId: 'old', text: 'Obsolete suggestion' }];
-          } else {
-            status = lookup.suggestionStatus || 200;
-            body = lookup.suggestions ?? [{ placeId: 'place-1', text: '123 Campbell Ave, Roanoke' }];
-          }
+        if (url.searchParams.get('q') === 'Old venue') {
+          await lookup.holdOldSearch;
+          body = [{ ...defaultListing, listingId: 'old', name: 'Obsolete Hall' }];
         } else {
-          await lookup.holdDetails;
-          status = lookup.detailStatus || 200;
-          body = lookup.details ?? {
-            street: '123 Campbell Ave', city: 'Roanoke', state: 'NC', country: 'US', zipCode: '24011', lat: 37.27, lng: -79.94,
-          };
+          status = lookup.suggestionStatus || 200;
+          body = lookup.suggestions ?? [defaultListing];
         }
-      }
-      if (url.pathname === '/venue') {
+      } else if (url.pathname === '/venue') {
         if (route.request().method() === 'POST') {
           const payload = route.request().postDataJSON() as Record<string, unknown>;
           venueWrites.push(payload);
           status = state.venueFailure ? 400 : state.venueStatus;
-          body = state.venueFailure ? { message: 'Several address-less venues match; choose an existing venue.' }
-            : { ...payload, _id: 'archivedHall' };
-        } else body = url.searchParams.get('status') === 'archived' ? [archived] : [active];
+          if (state.venueFailure) {
+            body = { message: 'Several address-less venues match; choose an existing venue.' };
+          } else {
+            const location = lookup.noLocation
+              ? undefined
+              : (payload.location ?? { type: 'Point', coordinates: [-80.05, 37.29] });
+            body = { ...payload, _id: 'archivedHall', ...(location ? { location } : {}) };
+          }
+        } else if (url.searchParams.get('status') === 'archived') {
+          body = [archived];
+        } else {
+          body = [active];
+        }
       }
       await route.fulfill({ status, json: body, headers: { 'access-control-allow-origin': '*' } });
     } else if (url.origin !== appOrigin) {

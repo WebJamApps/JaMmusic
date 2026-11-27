@@ -1,19 +1,25 @@
+import { Fragment } from 'react';
 import { Autocomplete, Box, Button, FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material';
 import { US_STATES } from 'src/containers/AdminVenues/venue-shared.utils';
-import { addressFields, useAddressLookup } from 'src/containers/AdminVenues/venue-address-lookup';
-import { AddressSuggestionsPaper } from 'src/containers/AdminVenues/AddressSuggestionsPaper';
+import { addressFields, formatListingOption, useAddressLookup } from 'src/containers/AdminVenues/venue-address-lookup';
 import type { useGigVenue } from './useGigVenue';
 
 export function GigVenueFields({ form, onChange, disabled, open, token }: {
   form: ReturnType<typeof useGigVenue>; onChange?: () => void; disabled: boolean; open: boolean; token: string;
 }) {
   const { fields, setFields, validation } = form;
-  const lookup = useAddressLookup(open && !disabled, token, (place) => {
+  const lookup = useAddressLookup(open && !disabled, token, (listing) => {
     setFields((previous) => {
-      const selected = addressFields(place, previous);
+      const selected = addressFields(listing, previous);
       return {
-        ...previous, address: selected.address || '', city: selected.city || '',
-        usState: selected.usState || '', zipCode: selected.zipCode || '', location: selected.location,
+        ...previous,
+        name: selected.name || '',
+        address: selected.address || '',
+        city: selected.city || '',
+        usState: selected.usState || '',
+        zipCode: selected.zipCode || '',
+        website: selected.website || '',
+        location: selected.location,
       };
     });
     onChange?.();
@@ -31,44 +37,47 @@ export function GigVenueFields({ form, onChange, disabled, open, token }: {
         // eslint-disable-next-line security/detect-object-injection
         const error = validation.errors[key];
         return (
-          key === 'address' ? (
-            <Autocomplete
+          key === 'name' ? (
+            <Fragment key={key}>
+              <Autocomplete
+                freeSolo
+                disabled={disabled}
+                options={lookup.suggestions}
+                getOptionLabel={(option) => typeof option === 'string' ? option : formatListingOption(option)}
+                getOptionKey={(option) => typeof option === 'string' ? option : option.listingId}
+                filterOptions={(options) => options}
+                inputValue={fields.name}
+                loading={lookup.loading}
+                onInputChange={(_, input, reason) => {
+                  if (reason !== 'input' && reason !== 'clear') return;
+                  change('name', input);
+                  lookup.search(input);
+                }}
+                onChange={(_, value) => {
+                  if (value && typeof value !== 'string') lookup.select(value);
+                }}
+                renderInput={(params) => (
+                  <TextField {...params} label="* Venue Name" fullWidth error={Boolean(error)} helperText={error || ''} />
+                )}
+              />
+              {lookup.message && <div role="status">{lookup.message}</div>}
+            </Fragment>
+          ) : (
+            <TextField
               key={key}
-              freeSolo
+              // eslint-disable-next-line security/detect-object-injection
+              label={labels[key]}
+              fullWidth
               disabled={disabled}
-              options={lookup.suggestions}
-              slots={{ paper: AddressSuggestionsPaper }}
-              getOptionLabel={(option) => typeof option === 'string' ? option : option.text}
-              filterOptions={(options) => options}
-              inputValue={fields.address}
-              loading={lookup.loading}
-              onInputChange={(_, input, reason) => {
-                if (reason !== 'input' && reason !== 'clear') return;
-                change('address', input);
-                lookup.search(input, 'US');
-              }}
-              onChange={(_, value) => {
-                if (value && typeof value !== 'string') void lookup.select(value);
-              }}
-              renderInput={(params) => (
-                <TextField {...params} label="* Street Address" fullWidth error={Boolean(error)} helperText={error || ''} />
-              )}
+              // eslint-disable-next-line security/detect-object-injection
+              value={fields[key]}
+              onChange={(event) => change(key, event.target.value)}
+              error={Boolean(error)}
+              helperText={error || (key === 'website' ? "This becomes the venue's link on the public gigs page." : '')}
             />
-          ) : <TextField
-            key={key}
-            // eslint-disable-next-line security/detect-object-injection
-            label={labels[key]}
-            fullWidth
-            disabled={disabled}
-            // eslint-disable-next-line security/detect-object-injection
-            value={fields[key]}
-            onChange={(event) => change(key, event.target.value)}
-            error={Boolean(error)}
-            helperText={error || (key === 'website' ? "This becomes the venue's link on the public gigs page." : '')}
-          />
+          )
         );
       })}
-      {lookup.message && <div role="status">{lookup.message}</div>}
       <FormControl fullWidth>
         <InputLabel id="gig-us-state-label">* State</InputLabel>
         <Select

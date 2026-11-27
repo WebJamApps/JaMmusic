@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import adminVenuesUtils, { type Ivenue, type IvenueUpdate } from 'src/containers/AdminVenues/admin-venues.utils';
-import { formatVenueSaveOutcomeMessage, getExistingVenueWarning, validateVenueFields } from 'src/containers/AdminVenues/venue-shared.utils';
+import { formatVenueSaveResultMessage, getExistingVenueWarning, validateVenueFields } from 'src/containers/AdminVenues/venue-shared.utils';
 
 const emptyFields = { name: '', address: '', city: '', usState: 'VA', zipCode: '', website: '', location: undefined as IvenueUpdate['location'] };
 export type GigVenueFieldsValue = typeof emptyFields;
@@ -50,7 +50,7 @@ export function useGigVenue(session: string | boolean | undefined, token: string
     const result = await adminVenuesUtils.createVenueWithOutcome(token, payload);
     if (!result.venue._id) throw new Error('Venue save did not return a venue ID.');
     const wasArchived = inventory.some((v) => v._id === result.venue._id && v.status === 'archived');
-    const message = formatVenueSaveOutcomeMessage(result.outcome, wasArchived);
+    const message = formatVenueSaveResultMessage({ outcome: result.outcome, wasArchived, savedVenue: result.venue });
     saved.current = { signature, id: result.venue._id, message };
     setOutcomeMessage(message);
     return saved.current;
