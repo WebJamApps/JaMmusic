@@ -403,7 +403,7 @@ describe('gigs.utils', () => {
       });
     });
 
-    it('rejects malformed or non-http(s) URLs and restricts /gig/promo-default.jpg to explicit opt-in', () => {
+    it('rejects malformed or non-http(s) URLs', () => {
       expect(utils.validatePromoImageUrl('not-a-url')).toEqual({
         valid: false,
         url: 'not-a-url',
@@ -411,11 +411,15 @@ describe('gigs.utils', () => {
       });
       expect(utils.validatePromoImageUrl('ftp://example.com/a.jpg').valid).toBe(false);
       expect(utils.validatePromoImageUrl('javascript:alert(1)').valid).toBe(false);
-      expect(utils.validatePromoImageUrl('/gig/promo-default.jpg').valid).toBe(false);
-      expect(utils.validatePromoImageUrl('/gig/promo-default.jpg', { allowDefaultRelative: true })).toEqual({
-        valid: true,
+    });
+
+    it('refuses the short default photo address and has no option that accepts it', () => {
+      expect(utils.validatePromoImageUrl('/gig/promo-default.jpg')).toEqual({
+        valid: false,
         url: '/gig/promo-default.jpg',
+        error: utils.PROMO_IMAGE_URL_ERROR,
       });
+      expect(utils.validatePromoImageUrl).toHaveLength(1);
     });
   });
   it('clickToEdit when isAdmin', () => {

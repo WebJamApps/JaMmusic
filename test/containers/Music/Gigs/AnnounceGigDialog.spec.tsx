@@ -1,4 +1,6 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import {
+  describe, it, expect, vi, beforeEach, afterEach,
+} from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import * as TinyMce from '@tinymce/tinymce-react';
@@ -119,6 +121,9 @@ describe('AnnounceGigDialog', () => {
 
     const venueInput = screen.getByLabelText(/Venue Instagram Tag/i) as HTMLInputElement;
     expect(venueInput.value).toBe('');
+    const imageInput = screen.getByLabelText(/Image URL/i) as HTMLInputElement;
+    expect(imageInput.value).toBe(getDefaultPromoUrl());
+    fireEvent.change(imageInput, { target: { value: '' } });
     expect(screen.getByText(/Default Josh & Maria photo will be used/i)).toBeInTheDocument();
   });
 
@@ -611,6 +616,45 @@ describe('AnnounceGigDialog', () => {
     expect(locInput.value).toBe('custom_page_id_123');
   });
 
+  describe('default photo address', () => {
+    afterEach(() => { vi.unstubAllEnvs(); });
+
+    it('is the page own address followed by the default photo path when BackendUrl is empty', () => {
+      vi.stubEnv('BackendUrl', '');
+      expect(getDefaultPromoUrl()).toBe(`${window.location.origin}/gig/promo-default.jpg`);
+    });
+
+    it('uses the configured BackendUrl when it is set', () => {
+      vi.stubEnv('BackendUrl', 'http://localhost:7000');
+      expect(getDefaultPromoUrl()).toBe('http://localhost:7000/gig/promo-default.jpg');
+    });
+
+    it('sends a full address as imageUrl when the Default photo is chosen and BackendUrl is empty', async () => {
+      vi.stubEnv('BackendUrl', '');
+      const announceSpy = vi.spyOn(utils, 'announceGig').mockResolvedValue({
+        ok: true,
+        instagram: { ok: true, id: 'ig-post-123' },
+      });
+      vi.spyOn(utils, 'fetchVenue').mockResolvedValue(null);
+
+      render(
+        <AnnounceGigDialog
+          gig={sampleGig}
+          open
+          onClose={vi.fn()}
+          auth={mockAuth}
+        />,
+      );
+
+      fireEvent.click(screen.getByRole('button', { name: 'Default photo' }));
+      fireEvent.click(screen.getByRole('button', { name: /Confirm/i }));
+
+      await waitFor(() => { expect(announceSpy).toHaveBeenCalled(); });
+      const { imageUrl } = announceSpy.mock.calls[0][2];
+      expect(imageUrl).toMatch(/^https?:\/\/[^/]+\/gig\/promo-default\.jpg$/);
+    });
+  });
+
   describe('picture strip in Announce preview', () => {
     it('formats posted date correctly', () => {
       expect(formatPostedDate(new Date('2026-11-08T18:00:00.000Z'))).toBe('posted Nov 8');
@@ -685,16 +729,17 @@ describe('AnnounceGigDialog', () => {
         },
       ];
 
-      const urls = buildPictureStripUrls(gigs, '/gig/promo-default.jpg');
+      const defaultUrl = 'https://api.example.com/gig/promo-default.jpg';
+      const urls = buildPictureStripUrls(gigs, defaultUrl);
       expect(urls).toEqual([
         'https://example.com/pic1.jpg',
         'https://example.com/pic2.jpg',
-        '/gig/promo-default.jpg',
+        defaultUrl,
       ]);
     });
 
     it('buildPictureStripUrls always places default photo strictly last, even when an existing gig promoImageUrl equals defaultUrl', () => {
-      const defaultUrl = '/gig/promo-default.jpg';
+      const defaultUrl = 'https://api.example.com/gig/promo-default.jpg';
       const gigs: Igig[] = [
         {
           _id: '1', venue: 'V1', datetime: new Date(), tickets: '', promoImageUrl: defaultUrl,
@@ -713,12 +758,12 @@ describe('AnnounceGigDialog', () => {
       // When choosing starting image with first unposted, the non-default gig photo is preferred ahead of default
       const starting = determineStartingImageUrl({
         _id: 'g3', venue: 'V3', datetime: new Date(), tickets: '',
-      }, urls, new Map(), defaultUrl);
+      }, urls, new Map());
       expect(starting).toBe('https://example.com/other.jpg');
     });
 
     it('determineStartingImageUrl chooses gig promo, else first unposted in strip, else longest ago', () => {
-      const defaultUrl = '/gig/promo-default.jpg';
+      const defaultUrl = 'https://api.example.com/gig/promo-default.jpg';
       const stripUrls = ['https://example.com/pic1.jpg', 'https://example.com/pic2.jpg', defaultUrl];
 
       // 1. Gig own picture unposted
@@ -729,7 +774,7 @@ describe('AnnounceGigDialog', () => {
         tickets: '',
         promoImageUrl: 'https://example.com/pic1.jpg',
       };
-      expect(determineStartingImageUrl(gigUnposted, stripUrls, new Map(), defaultUrl)).toBe('https://example.com/pic1.jpg');
+      expect(determineStartingImageUrl(gigUnposted, stripUrls, new Map())).toBe('https://example.com/pic1.jpg');
 
       // 2. Gig own picture posted -> choose first unposted in strip
       const postedMap = new Map([
@@ -738,7 +783,7 @@ describe('AnnounceGigDialog', () => {
           dateLabel: 'posted Nov 5',
         }],
       ]);
-      expect(determineStartingImageUrl(gigUnposted, stripUrls, postedMap, defaultUrl)).toBe('https://example.com/pic2.jpg');
+      expect(determineStartingImageUrl(gigUnposted, stripUrls, postedMap)).toBe('https://example.com/pic2.jpg');
 
       // 3. All pictures posted -> choose longest ago
       const allPostedMap = new Map([
@@ -755,12 +800,12 @@ describe('AnnounceGigDialog', () => {
           dateLabel: 'posted Nov 1',
         }],
       ]);
-      expect(determineStartingImageUrl(gigUnposted, stripUrls, allPostedMap, defaultUrl)).toBe('https://example.com/pic2.jpg');
+      expect(determineStartingImageUrl(gigUnposted, stripUrls, allPostedMap)).toBe('https://example.com/pic2.jpg');
 
-      // 4. Fallback when only default url exists and gig has no promoImageUrl
+      // 4. Only the default photo exists and the gig has no promoImageUrl
       expect(determineStartingImageUrl({
         _id: 'g2', venue: 'V', datetime: new Date(), tickets: '',
-      }, [defaultUrl], new Map(), defaultUrl)).toBe('');
+      }, [defaultUrl], new Map())).toBe(defaultUrl);
     });
 
     it('renders picture strip with loaded gigs, updates input and preview when a picture is clicked', () => {
