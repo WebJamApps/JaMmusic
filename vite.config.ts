@@ -69,11 +69,45 @@ const TINYMCE_MIME_TYPES: Record<string, string> = {
   '.txt': 'text/plain; charset=utf-8',
 };
 
-function selfHostTinyMce(isBuild: boolean): Plugin {
-  const tinymceRoot = path.resolve(process.cwd(), 'node_modules/tinymce');
-  const distTinyMce = path.resolve(process.cwd(), 'dist/tinymce');
+const TINYMCE_RUNTIME_FILES = ['tinymce.min.js', 'license.md'] as const;
+const TINYMCE_RUNTIME_DIRS = ['themes', 'skins', 'icons', 'models'] as const;
+
+// Copies TinyMCE's runtime into <outDir>/tinymce. Throws on any missing source so a build
+// can never ship an editor whose script or plugins return 404.
+export function copyTinyMceRuntime(tinymceRoot: string, outDir: string): void {
+  const sources = [
+    ...TINYMCE_RUNTIME_FILES.map((file) => ({ src: path.join(tinymceRoot, file), dest: file, isDir: false })),
+    ...TINYMCE_RUNTIME_DIRS.map((dir) => ({ src: path.join(tinymceRoot, dir), dest: dir, isDir: true })),
+    ...TINYMCE_USED_PLUGINS.map((plugin) => ({
+      src: path.join(tinymceRoot, 'plugins', plugin),
+      dest: path.join('plugins', plugin),
+      isDir: true,
+    })),
+  ];
+  const missing = sources.filter(({ src }) => !fs.existsSync(src)).map(({ src }) => src);
+  if (missing.length) {
+    throw new Error(`self-host-tinymce: missing TinyMCE runtime files, run npm install: ${missing.join(', ')}`);
+  }
+  const distTinyMce = path.join(outDir, 'tinymce');
+  for (const { src, dest, isDir } of sources) {
+    const target = path.join(distTinyMce, dest);
+    fs.mkdirSync(path.dirname(target), { recursive: true });
+    if (isDir) fs.cpSync(src, target, { recursive: true });
+    else fs.copyFileSync(src, target);
+  }
+}
+
+export function selfHostTinyMce(
+  isBuild: boolean,
+  tinymceRoot = path.resolve(process.cwd(), 'node_modules/tinymce'),
+): Plugin {
+  // The build's own output directory (honours --outDir), set once Vite resolves its config.
+  let outDir = path.resolve(process.cwd(), 'dist');
   return {
     name: 'self-host-tinymce',
+    configResolved(config) {
+      outDir = path.resolve(config.root, config.build.outDir);
+    },
     configureServer(server) {
       server.middlewares.use('/tinymce', (req, res, next) => {
         if (req.method !== 'GET' && req.method !== 'HEAD') {
@@ -105,22 +139,8 @@ function selfHostTinyMce(isBuild: boolean): Plugin {
       });
     },
     closeBundle() {
-      if (!isBuild || !fs.existsSync(tinymceRoot)) return;
-      fs.mkdirSync(distTinyMce, { recursive: true });
-      for (const file of ['tinymce.min.js', 'license.md']) {
-        const src = path.join(tinymceRoot, file);
-        if (fs.existsSync(src)) fs.copyFileSync(src, path.join(distTinyMce, file));
-      }
-      for (const dir of ['themes', 'skins', 'icons', 'models']) {
-        const src = path.join(tinymceRoot, dir);
-        if (fs.existsSync(src)) fs.cpSync(src, path.join(distTinyMce, dir), { recursive: true });
-      }
-      const pluginsDest = path.join(distTinyMce, 'plugins');
-      fs.mkdirSync(pluginsDest, { recursive: true });
-      for (const plugin of TINYMCE_USED_PLUGINS) {
-        const src = path.join(tinymceRoot, 'plugins', plugin);
-        if (fs.existsSync(src)) fs.cpSync(src, path.join(pluginsDest, plugin), { recursive: true });
-      }
+      if (!isBuild) return;
+      copyTinyMceRuntime(tinymceRoot, outDir);
     },
   };
 }
