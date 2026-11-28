@@ -30,10 +30,100 @@ const APP_ENV_KEYS = [
   'SCS_PORT',
   'SOCKETCLUSTER_SECURE',
   'userRoles',
-  'TINY_KEY',
   'NODE_ENV',
   'GOOGLE_MAPS_API_KEY',
 ] as const;
+
+const TINYMCE_USED_PLUGINS = [
+  'advlist',
+  'anchor',
+  'autolink',
+  'charmap',
+  'code',
+  'fullscreen',
+  'help',
+  'image',
+  'insertdatetime',
+  'link',
+  'lists',
+  'media',
+  'preview',
+  'searchreplace',
+  'table',
+  'visualblocks',
+  'wordcount',
+] as const;
+
+const TINYMCE_MIME_TYPES: Record<string, string> = {
+  '.js': 'application/javascript; charset=utf-8',
+  '.mjs': 'application/javascript; charset=utf-8',
+  '.css': 'text/css; charset=utf-8',
+  '.svg': 'image/svg+xml',
+  '.woff2': 'font/woff2',
+  '.woff': 'font/woff',
+  '.ttf': 'font/ttf',
+  '.png': 'image/png',
+  '.json': 'application/json; charset=utf-8',
+  '.html': 'text/html; charset=utf-8',
+  '.md': 'text/plain; charset=utf-8',
+  '.txt': 'text/plain; charset=utf-8',
+};
+
+function selfHostTinyMce(isBuild: boolean): Plugin {
+  const tinymceRoot = path.resolve(process.cwd(), 'node_modules/tinymce');
+  const distTinyMce = path.resolve(process.cwd(), 'dist/tinymce');
+  return {
+    name: 'self-host-tinymce',
+    configureServer(server) {
+      server.middlewares.use('/tinymce', (req, res, next) => {
+        if (req.method !== 'GET' && req.method !== 'HEAD') {
+          next();
+          return;
+        }
+        const rawPath = (req.url || '/').split('?')[0];
+        const relPath = path.posix.normalize(rawPath).replace(/^\/+/, '');
+        if (!relPath || relPath.startsWith('..')) {
+          next();
+          return;
+        }
+        const target = path.resolve(tinymceRoot, relPath);
+        if (!target.startsWith(`${tinymceRoot}${path.sep}`)) {
+          next();
+          return;
+        }
+        if (fs.existsSync(target) && fs.statSync(target).isFile()) {
+          const ext = path.extname(target).toLowerCase();
+          res.setHeader('Content-Type', TINYMCE_MIME_TYPES[ext] || 'application/octet-stream');
+          if (req.method === 'HEAD') {
+            res.end();
+            return;
+          }
+          res.end(fs.readFileSync(target));
+          return;
+        }
+        next();
+      });
+    },
+    closeBundle() {
+      if (!isBuild || !fs.existsSync(tinymceRoot)) return;
+      fs.mkdirSync(distTinyMce, { recursive: true });
+      for (const file of ['tinymce.min.js', 'license.md']) {
+        const src = path.join(tinymceRoot, file);
+        if (fs.existsSync(src)) fs.copyFileSync(src, path.join(distTinyMce, file));
+      }
+      for (const dir of ['themes', 'skins', 'icons', 'models']) {
+        const src = path.join(tinymceRoot, dir);
+        if (fs.existsSync(src)) fs.cpSync(src, path.join(distTinyMce, dir), { recursive: true });
+      }
+      const pluginsDest = path.join(distTinyMce, 'plugins');
+      fs.mkdirSync(pluginsDest, { recursive: true });
+      for (const plugin of TINYMCE_USED_PLUGINS) {
+        const src = path.join(tinymceRoot, 'plugins', plugin);
+        if (fs.existsSync(src)) fs.cpSync(src, path.join(pluginsDest, plugin), { recursive: true });
+      }
+    },
+  };
+}
 
 function replaceProcessEnv(env: Record<string, string>): Plugin {
   return {
@@ -75,6 +165,7 @@ export default defineConfig(async ({ mode, command }) => {
     ...(command === 'build' ? { oxc: { jsx: { development: false } } } : {}),
     plugins: [
       ...(isTest ? [] : [
+        selfHostTinyMce(command === 'build'),
         replaceProcessEnv(env),
         checker({ typescript: { tsconfigPath: './tsconfig.prod.json' }, enableBuild: false }),
       ]),

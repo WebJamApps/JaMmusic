@@ -300,6 +300,7 @@ exports[`/music > renders the component 1`] = `
             />
             <input
               aria-label="Promo image URL"
+              helpertext="Public image URL (optional — leave blank for default photo)"
               label="Promo image URL"
               sx="[object Object]"
               type="text"

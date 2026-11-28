@@ -4,10 +4,13 @@ import { gigLookupTests } from './gig-lookup.fixtures';
 vi.mock('src/lib/fetch.utils', () => ({ customFetch: vi.fn() }));
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
+import * as TinyMce from '@tinymce/tinymce-react';
 import { EditGigDialog, EditText } from 'src/containers/Music/Gigs/EditGigDialog';
 import utils from 'src/containers/Music/Gigs/gigs.utils';
 import adminVenuesUtils from 'src/containers/AdminVenues/admin-venues.utils';
 import { defaultGig } from 'src/providers/fetchGigs';
+import type { Igig } from 'src/providers/Data.provider';
+import type { Iauth } from 'src/providers/Auth.provider';
 
 vi.mock('@mui/material', async () => {
   const mockMui = await import('../../../../__mocks__/@mui/material');
@@ -453,6 +456,73 @@ describe('EditGigDialog', () => {
     render(<EditText {...props} />);
     fireEvent.change(screen.getByRole('textbox'), { target: { value: 'value' } });
     expect(props.setEditGig).toHaveBeenCalled();
+  });
+
+  it('configures self-hosted TinyMCE GPL props and validates/normalizes promoImageUrl', async () => {
+    const editorSpy = vi.spyOn(TinyMce, 'Editor');
+    vi.spyOn(adminVenuesUtils, 'listVenues').mockResolvedValue(activeVenues);
+    const updateSpy = vi.spyOn(utils, 'updateGig').mockResolvedValue('success');
+    const typedAuth: Iauth = {
+      isAuthenticated: true,
+      token: 'tk',
+      error: '',
+      user: { userType: 'JaM-admin', email: 'admin@example.com' },
+    };
+    const editGig: Igig = {
+      _id: 'gig123',
+      datetime: new Date('2025-01-01T12:00:00Z'),
+      venue: 'Test Venue',
+      tickets: '',
+      promoImageUrl: 'invalid-promo-url',
+    };
+
+    const { rerender } = render(
+      <EditGigDialog
+        editGig={editGig}
+        setEditGig={vi.fn()}
+        setShowDialog={vi.fn()}
+        setEditChanged={vi.fn()}
+        editChanged
+        getGigs={vi.fn()}
+        auth={typedAuth}
+      />,
+    );
+
+    const editorCallProps = editorSpy.mock.calls.at(-1)?.[0];
+    expect(editorCallProps?.tinymceScriptSrc).toBe('/tinymce/tinymce.min.js');
+    expect(editorCallProps?.licenseKey).toBe('gpl');
+    expect(editorCallProps?.apiKey).toBeUndefined();
+
+    const promoInput = screen.getByLabelText('Promo image URL');
+    const updateBtn = screen.getByRole('button', { name: /^update$/i });
+    expect(updateBtn).toBeDisabled();
+    expect(promoInput).toHaveAttribute('helperText', utils.PROMO_IMAGE_URL_ERROR);
+
+    rerender(
+      <EditGigDialog
+        editGig={{ ...editGig, promoImageUrl: 'https://dl.dropboxuser.com/scl/fi/xyz/pic.jpg?dl=0' }}
+        setEditGig={vi.fn()}
+        setShowDialog={vi.fn()}
+        setEditChanged={vi.fn()}
+        editChanged
+        getGigs={vi.fn()}
+        auth={typedAuth}
+      />,
+    );
+
+    expect(updateBtn).toBeEnabled();
+    fireEvent.click(updateBtn);
+
+    await waitFor(() => expect(updateSpy).toHaveBeenCalledWith(
+      expect.any(Function),
+      expect.any(Function),
+      expect.any(Function),
+      expect.objectContaining({
+        promoImageUrl: 'https://dl.dropboxusercontent.com/scl/fi/xyz/pic.jpg?dl=0',
+      }),
+      'tk',
+      expect.any(Function),
+    ));
   });
 });
 
