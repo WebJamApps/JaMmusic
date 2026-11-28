@@ -199,16 +199,10 @@ export interface PromoImageUrlValidation {
 
 export const PROMO_IMAGE_URL_ERROR = 'Enter a valid http:// or https:// image URL, or leave blank for the default photo.';
 
-export const validatePromoImageUrl = (
-  rawUrl?: string | null,
-  options: { allowDefaultRelative?: boolean } = {},
-): PromoImageUrlValidation => {
+export const validatePromoImageUrl = (rawUrl?: string | null): PromoImageUrlValidation => {
   const trimmed = (rawUrl ?? '').trim();
   if (!trimmed) {
     return { valid: true, url: '' };
-  }
-  if (options.allowDefaultRelative && trimmed === '/gig/promo-default.jpg') {
-    return { valid: true, url: trimmed };
   }
   let parsed: URL;
   try {

@@ -19,7 +19,8 @@ export interface PostedPictureInfo {
   dateLabel: string;
 }
 
-export const getDefaultPromoUrl = (): string => `${process.env.BackendUrl || ''}/gig/promo-default.jpg`;
+// An empty BackendUrl means same origin (production); the announce endpoint accepts only full addresses.
+export const getDefaultPromoUrl = (): string => `${process.env.BackendUrl || window.location.origin}/gig/promo-default.jpg`;
 
 export function formatPostedDate(date: Date | string): string {
   const d = typeof date === 'string' ? new Date(date) : date;
@@ -96,7 +97,7 @@ export function buildPictureStripUrls(
 
   for (const g of gigs) {
     if (!g || typeof g.promoImageUrl !== 'string' || !g.promoImageUrl.trim()) continue;
-    const validated = utils.validatePromoImageUrl(g.promoImageUrl, { allowDefaultRelative: true });
+    const validated = utils.validatePromoImageUrl(g.promoImageUrl);
     if (!validated.valid || !validated.url) continue;
     const url = validated.url;
     if (normalizedDefault && url === normalizedDefault) continue;
@@ -117,12 +118,11 @@ export function determineStartingImageUrl(
   gig: Igig | null,
   stripUrls: string[],
   postedMap: Map<string, PostedPictureInfo>,
-  defaultUrl: string = getDefaultPromoUrl(),
 ): string {
   if (!gig) return '';
 
   const rawGigPromo = gig.promoImageUrl?.trim();
-  const validatedPromo = rawGigPromo ? utils.validatePromoImageUrl(rawGigPromo, { allowDefaultRelative: true }) : null;
+  const validatedPromo = rawGigPromo ? utils.validatePromoImageUrl(rawGigPromo) : null;
   const gigPromo = validatedPromo?.valid ? validatedPromo.url : '';
 
   // 1. Gig's own picture when unposted
@@ -133,9 +133,6 @@ export function determineStartingImageUrl(
   // 2. First unposted picture in the strip
   const firstUnposted = stripUrls.find((url) => !isPicturePosted(url, postedMap));
   if (firstUnposted) {
-    if (stripUrls.length === 1 && stripUrls[0] === defaultUrl && !gigPromo) {
-      return '';
-    }
     return firstUnposted;
   }
 
@@ -233,7 +230,7 @@ export function AnnounceGigDialog({
       defaultPhoto,
     );
     const postedPictures = getGigPostedPictures(gig);
-    const initialImageUrl = determineStartingImageUrl(gig, candidateUrls, postedPictures, defaultPhoto);
+    const initialImageUrl = determineStartingImageUrl(gig, candidateUrls, postedPictures);
 
     setImageUrl(initialImageUrl);
     setMariaTag('chemmariasherman');
@@ -289,13 +286,13 @@ export function AnnounceGigDialog({
       defaultPhoto,
     );
     const postedPictures = getGigPostedPictures(activeGig);
-    const startingUrl = determineStartingImageUrl(activeGig, candidateUrls, postedPictures, defaultPhoto);
+    const startingUrl = determineStartingImageUrl(activeGig, candidateUrls, postedPictures);
     if (startingUrl) {
       setImageUrl(startingUrl);
     }
   }, [open, gig?._id, gigs]);
 
-  const imageValidation = utils.validatePromoImageUrl(imageUrl, { allowDefaultRelative: true });
+  const imageValidation = utils.validatePromoImageUrl(imageUrl);
 
   const handleConfirm = async () => {
     if (!gig?._id || !imageValidation.valid) return;
