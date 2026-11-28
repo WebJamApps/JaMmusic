@@ -357,6 +357,13 @@ describe('gigs.utils', () => {
     expect(utils.checkUpdateDisabled(validGig, true, 'none', 'venueId', '', '', '', '')).toBe(true);
     expect(utils.checkUpdateDisabled(validGig, true, 'none', 'venueId', '<p></p>', '', '', '')).toBe(true);
     expect(utils.checkUpdateDisabled(validGig, true, 'none', 'venueId', 'valid venue', '', '', '')).toBe(false);
+    expect(utils.checkUpdateDisabled(validGig, true, 'none', 'venueId', 'valid venue', '', '', '', '', '', '', 'not-a-url')).toBe(true);
+    expect(
+      utils.checkUpdateDisabled(
+        validGig, true, 'none', 'venueId', 'valid venue', '', '', '', '', '', '',
+        'https://dl.dropboxuser.com/scl/fi/abc/photo.jpg?dl=0',
+      ),
+    ).toBe(false);
     expect(utils.checkUpdateDisabled(validGig, true, 'invalid' as any, 'venueId', 'venue', '', '', '')).toBe(true);
   });
   it('checkNewDisabled branches', () => {
@@ -368,7 +375,48 @@ describe('gigs.utils', () => {
     expect(utils.checkNewDisabled(new Date(), 'none', 'venueId', '', '', '', '')).toBe(true);
     expect(utils.checkNewDisabled(new Date(), 'none', 'venueId', '<p></p>', '', '', '')).toBe(true);
     expect(utils.checkNewDisabled(new Date(), 'none', 'venueId', 'valid venue', '', '', '')).toBe(false);
+    expect(utils.checkNewDisabled(new Date(), 'none', 'venueId', 'valid venue', '', '', '', '', '', '', 'ftp://bad.com/a.jpg')).toBe(true);
+    expect(
+      utils.checkNewDisabled(new Date(), 'none', 'venueId', 'valid venue', '', '', '', '', '', '', 'https://example.com/a.jpg'),
+    ).toBe(false);
     expect(utils.checkNewDisabled(new Date(), 'invalid' as any, 'venueId', 'venue', '', '', '')).toBe(true);
+  });
+  describe('validatePromoImageUrl', () => {
+    it('allows blank and whitespace-only values for default photo', () => {
+      expect(utils.validatePromoImageUrl('')).toEqual({ valid: true, url: '' });
+      expect(utils.validatePromoImageUrl('   ')).toEqual({ valid: true, url: '' });
+      expect(utils.validatePromoImageUrl(undefined)).toEqual({ valid: true, url: '' });
+    });
+
+    it('trims valid http(s) URLs and rewrites dl.dropboxuser.com to dl.dropboxusercontent.com', () => {
+      expect(utils.validatePromoImageUrl('  https://example.com/promo.jpg  ')).toEqual({
+        valid: true,
+        url: 'https://example.com/promo.jpg',
+      });
+      expect(
+        utils.validatePromoImageUrl(
+          'https://dl.dropboxuser.com/scl/fi/b3ypimx4x0emrcdbqobeg/josh-maria-staveAndCork-footer.jpg?rlkey=lhz&dl=0',
+        ),
+      ).toEqual({
+        valid: true,
+        url: 'https://dl.dropboxusercontent.com/scl/fi/b3ypimx4x0emrcdbqobeg/josh-maria-staveAndCork-footer.jpg?rlkey=lhz&dl=0',
+      });
+    });
+
+    it('rejects malformed or non-http(s) URLs and restricts /gig/promo-default.jpg to explicit opt-in', () => {
+      expect(utils.validatePromoImageUrl('not-a-url')).toEqual({
+        valid: false,
+        url: 'not-a-url',
+        error: utils.PROMO_IMAGE_URL_ERROR,
+      });
+      expect(utils.validatePromoImageUrl('ftp://example.com/a.jpg').valid).toBe(false);
+      expect(utils.validatePromoImageUrl('javascript:alert(1)').valid).toBe(false);
+      expect(utils.validatePromoImageUrl('/gig/promo-default.jpg').valid).toBe(false);
+      expect(utils.validatePromoImageUrl('/gig/promo-default.jpg', { allowDefaultRelative: true })).toEqual({
+        valid: true,
+        url: '/gig/promo-default.jpg',
+      });
+    });
   });
   it('clickToEdit when isAdmin', () => {
     const setEditGig = vi.fn();

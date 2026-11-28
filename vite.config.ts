@@ -30,10 +30,120 @@ const APP_ENV_KEYS = [
   'SCS_PORT',
   'SOCKETCLUSTER_SECURE',
   'userRoles',
-  'TINY_KEY',
   'NODE_ENV',
   'GOOGLE_MAPS_API_KEY',
 ] as const;
+
+const TINYMCE_USED_PLUGINS = [
+  'advlist',
+  'anchor',
+  'autolink',
+  'charmap',
+  'code',
+  'fullscreen',
+  'help',
+  'image',
+  'insertdatetime',
+  'link',
+  'lists',
+  'media',
+  'preview',
+  'searchreplace',
+  'table',
+  'visualblocks',
+  'wordcount',
+] as const;
+
+const TINYMCE_MIME_TYPES: Record<string, string> = {
+  '.js': 'application/javascript; charset=utf-8',
+  '.mjs': 'application/javascript; charset=utf-8',
+  '.css': 'text/css; charset=utf-8',
+  '.svg': 'image/svg+xml',
+  '.woff2': 'font/woff2',
+  '.woff': 'font/woff',
+  '.ttf': 'font/ttf',
+  '.png': 'image/png',
+  '.json': 'application/json; charset=utf-8',
+  '.html': 'text/html; charset=utf-8',
+  '.md': 'text/plain; charset=utf-8',
+  '.txt': 'text/plain; charset=utf-8',
+};
+
+const TINYMCE_RUNTIME_FILES = ['tinymce.min.js', 'license.md'] as const;
+const TINYMCE_RUNTIME_DIRS = ['themes', 'skins', 'icons', 'models'] as const;
+
+// Copies TinyMCE's runtime into <outDir>/tinymce. Throws on any missing source so a build
+// can never ship an editor whose script or plugins return 404.
+export function copyTinyMceRuntime(tinymceRoot: string, outDir: string): void {
+  const sources = [
+    ...TINYMCE_RUNTIME_FILES.map((file) => ({ src: path.join(tinymceRoot, file), dest: file, isDir: false })),
+    ...TINYMCE_RUNTIME_DIRS.map((dir) => ({ src: path.join(tinymceRoot, dir), dest: dir, isDir: true })),
+    ...TINYMCE_USED_PLUGINS.map((plugin) => ({
+      src: path.join(tinymceRoot, 'plugins', plugin),
+      dest: path.join('plugins', plugin),
+      isDir: true,
+    })),
+  ];
+  const missing = sources.filter(({ src }) => !fs.existsSync(src)).map(({ src }) => src);
+  if (missing.length) {
+    throw new Error(`self-host-tinymce: missing TinyMCE runtime files, run npm install: ${missing.join(', ')}`);
+  }
+  const distTinyMce = path.join(outDir, 'tinymce');
+  for (const { src, dest, isDir } of sources) {
+    const target = path.join(distTinyMce, dest);
+    fs.mkdirSync(path.dirname(target), { recursive: true });
+    if (isDir) fs.cpSync(src, target, { recursive: true });
+    else fs.copyFileSync(src, target);
+  }
+}
+
+export function selfHostTinyMce(
+  isBuild: boolean,
+  tinymceRoot = path.resolve(process.cwd(), 'node_modules/tinymce'),
+): Plugin {
+  // The build's own output directory (honours --outDir), set once Vite resolves its config.
+  let outDir = path.resolve(process.cwd(), 'dist');
+  return {
+    name: 'self-host-tinymce',
+    configResolved(config) {
+      outDir = path.resolve(config.root, config.build.outDir);
+    },
+    configureServer(server) {
+      server.middlewares.use('/tinymce', (req, res, next) => {
+        if (req.method !== 'GET' && req.method !== 'HEAD') {
+          next();
+          return;
+        }
+        const rawPath = (req.url || '/').split('?')[0];
+        const relPath = path.posix.normalize(rawPath).replace(/^\/+/, '');
+        if (!relPath || relPath.startsWith('..')) {
+          next();
+          return;
+        }
+        const target = path.resolve(tinymceRoot, relPath);
+        if (!target.startsWith(`${tinymceRoot}${path.sep}`)) {
+          next();
+          return;
+        }
+        if (fs.existsSync(target) && fs.statSync(target).isFile()) {
+          const ext = path.extname(target).toLowerCase();
+          res.setHeader('Content-Type', TINYMCE_MIME_TYPES[ext] || 'application/octet-stream');
+          if (req.method === 'HEAD') {
+            res.end();
+            return;
+          }
+          res.end(fs.readFileSync(target));
+          return;
+        }
+        next();
+      });
+    },
+    closeBundle() {
+      if (!isBuild) return;
+      copyTinyMceRuntime(tinymceRoot, outDir);
+    },
+  };
+}
 
 function replaceProcessEnv(env: Record<string, string>): Plugin {
   return {
@@ -75,6 +185,7 @@ export default defineConfig(async ({ mode, command }) => {
     ...(command === 'build' ? { oxc: { jsx: { development: false } } } : {}),
     plugins: [
       ...(isTest ? [] : [
+        selfHostTinyMce(command === 'build'),
         replaceProcessEnv(env),
         checker({ typescript: { tsconfigPath: './tsconfig.prod.json' }, enableBuild: false }),
       ]),

@@ -1,11 +1,80 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, type Page } from '@playwright/test';
 import { fixture } from './helpers/gig-fixture';
 
+async function attachErrorCollectors(page: Page) {
+  const pageErrors: string[] = [];
+  const consoleErrors: string[] = [];
+  const tinyMceResponses: { url: string; status: number }[] = [];
+
+  await page.addInitScript(() => {
+    const win = window as unknown as { __cspViolations?: string[] };
+    win.__cspViolations = [];
+    document.addEventListener('securitypolicyviolation', (event) => {
+      win.__cspViolations?.push(`${event.violatedDirective}:${event.blockedURI}`);
+    });
+  });
+
+  page.on('pageerror', (err) => {
+    pageErrors.push(err.message);
+  });
+  page.on('console', (msg) => {
+    if (msg.type() === 'error') {
+      const locUrl = msg.location().url || '';
+      const isExpectedAbortedExternal = /^https:\/\/(fonts\.googleapis\.com|use\.fontawesome\.com|accounts\.google\.com)\//.test(locUrl);
+      if (!isExpectedAbortedExternal) {
+        consoleErrors.push(`${msg.text()} (${locUrl || 'unknown'})`);
+      }
+    }
+  });
+  page.on('response', (res) => {
+    if (res.url().includes('/tinymce/')) {
+      tinyMceResponses.push({ url: res.url(), status: res.status() });
+    }
+  });
+
+  return {
+    tinyMceResponses,
+    assertClean: async () => {
+      const cspViolations = await page.evaluate(() => (window as unknown as { __cspViolations?: string[] }).__cspViolations ?? []);
+      expect(cspViolations).toEqual([]);
+      expect(pageErrors).toEqual([]);
+      expect(consoleErrors).toEqual([]);
+      expect(tinyMceResponses.length).toBeGreaterThan(0);
+      expect(tinyMceResponses.some((r) => r.url.endsWith('/tinymce/tinymce.min.js'))).toBe(true);
+      for (const res of tinyMceResponses) {
+        expect(res.status).toBeLessThan(400);
+      }
+    },
+  };
+}
+
 test.describe('Gigs Announce interaction', () => {
-  test('opens Announce preview dialog, edits tags and image, confirms, and submits POST /gig/:id/announce', async ({ page }) => {
+  test(
+    'opens Announce preview dialog, edits caption in self-hosted TinyMCE, guards image URL, and submits POST /gig/:id/announce',
+    async ({ page }) => {
+    const collector = await attachErrorCollectors(page);
     await fixture(page);
 
     const announceWrites: Record<string, unknown>[] = [];
+    const tinyGif = Buffer.from('R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7', 'base64');
+
+    await page.route('**/gig/promo-default.jpg', async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'image/gif',
+        body: tinyGif,
+        headers: { 'access-control-allow-origin': '*' },
+      });
+    });
+
+    await page.route('**/custom-promo.png**', async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'image/gif',
+        body: tinyGif,
+        headers: { 'access-control-allow-origin': '*' },
+      });
+    });
 
     await page.route('**/venue/existing', async (route) => {
       await route.fulfill({
@@ -43,6 +112,15 @@ test.describe('Gigs Announce interaction', () => {
     const dialog = page.getByRole('dialog', { name: 'Announce Gig to Instagram' });
     await expect(dialog).toBeVisible();
 
+    // Verify self-hosted TinyMCE loads cleanly inside iframe with no license/disabled error banner
+    const editorBody = dialog.frameLocator('.tox-edit-area iframe').locator('body#tinymce');
+    await expect(editorBody).toBeVisible();
+    await expect(dialog.locator('.tox-notification--error')).toHaveCount(0);
+
+    await editorBody.click();
+    await editorBody.press('End');
+    await editorBody.pressSequentially(' Edited via TinyMCE!');
+
     const mariaTag = dialog.getByLabel('Maria Sherman Instagram Tag');
     await expect(mariaTag).toHaveValue('chemmariasherman');
 
@@ -58,12 +136,16 @@ test.describe('Gigs Announce interaction', () => {
     // Prior to Confirm, Facebook controls are not shown
     await expect(dialog.getByRole('button', { name: 'Copy caption', exact: true })).not.toBeVisible();
 
-    // Edit fields
+    // Edit fields and verify inline promoImageUrl validation + Dropbox normalization
     await venueTag.fill('custom_venue_tag');
     const imageUrl = dialog.getByLabel('Image URL');
-    await imageUrl.fill('https://example.com/custom-promo.png');
-
     const confirmButton = dialog.getByRole('button', { name: 'Confirm', exact: true });
+
+    await imageUrl.fill('not-a-valid-url');
+    await expect(confirmButton).toBeDisabled();
+    await expect(dialog.getByText('Enter a valid http:// or https:// image URL, or leave blank for the default photo.')).toBeVisible();
+
+    await imageUrl.fill('https://dl.dropboxuser.com/scl/fi/test/custom-promo.png?dl=0');
     await expect(confirmButton).toBeEnabled();
     await confirmButton.click();
 
@@ -78,11 +160,13 @@ test.describe('Gigs Announce interaction', () => {
 
     expect(announceWrites).toHaveLength(1);
     expect(announceWrites[0]).toMatchObject({
-      imageUrl: 'https://example.com/custom-promo.png',
+      imageUrl: 'https://dl.dropboxusercontent.com/scl/fi/test/custom-promo.png?dl=0',
       userTags: ['chemmariasherman', 'custom_venue_tag'],
       collaborators: ['chemmariasherman'],
       locationId: '378590115336095',
     });
+    expect(String(announceWrites[0].caption)).toContain('Edited via TinyMCE!');
+    await collector.assertClean();
   });
 
   test('picture strip thumbnail selection populates image URL and retains Facebook hand-off', async ({ page }) => {

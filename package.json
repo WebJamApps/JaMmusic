@@ -1,6 +1,6 @@
 {
   "name": "jammusic",
-  "version": "2.37.0",
+  "version": "2.37.1",
   "description": "joshandmariamusic.com",
   "main": "dist/index.html",
   "repository": {
@@ -90,6 +90,7 @@
     "socketcluster-client": "^21.0.0",
     "stream-browserify": "^3.0.0",
     "swagger-ui-react": "^5.34.1",
+    "tinymce": "^8.11.0",
     "typescript": "^7.0.2",
     "util": "^0.12.5",
     "vite": "^8.3.7",

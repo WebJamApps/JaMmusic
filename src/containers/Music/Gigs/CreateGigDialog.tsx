@@ -39,6 +39,7 @@ export function CreateGigDialog({
   const [saveError, setSaveError] = useState('');
   const [saving, setSaving] = useState(false);
   const savingRef = useRef(false);
+  const promoValidation = utils.validatePromoImageUrl(promoImageUrl);
   useEffect(() => { setSaveError(''); }, [showDialog]);
 
   useEffect(() => {
@@ -52,7 +53,7 @@ export function CreateGigDialog({
   }, [showDialog, auth.token]);
 
   const handleCreate = async () => {
-    if (savingRef.current) return;
+    if (savingRef.current || !promoValidation.valid) return;
     savingRef.current = true;
     setSaving(true);
     setSaveError('');
@@ -79,7 +80,7 @@ export function CreateGigDialog({
         tickets,
         auth,
         duration,
-        promoImageUrl,
+        promoValidation.url,
         finalVenueId,
         setSaveError,
       );
@@ -234,7 +235,8 @@ export function CreateGigDialog({
           disabled={saving}
           id="create-venue"
           value={venue}
-          apiKey={process.env.TINY_KEY}
+          tinymceScriptSrc="/tinymce/tinymce.min.js"
+          licenseKey="gpl"
           init={{
             height: 300,
             menubar: 'insert tools',
@@ -242,7 +244,7 @@ export function CreateGigDialog({
             plugins: [
               'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview', 'anchor',
               'searchreplace', 'visualblocks', 'code', 'fullscreen',
-              'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount',
+              'insertdatetime', 'media', 'table', 'help', 'wordcount',
             ],
             toolbar:
               'undo redo | formatselect | bold italic backcolor forecolor |'
@@ -277,6 +279,8 @@ export function CreateGigDialog({
           type="text"
           fullWidth
           value={promoImageUrl}
+          error={Boolean(promoValidation.error)}
+          helperText={promoValidation.error || 'Public image URL (optional — leave blank for default photo)'}
           onChange={(evt) => { setPromoImageUrl(evt.target.value); return evt.target.value; }}
         />
       </DialogContent>
@@ -293,6 +297,7 @@ export function CreateGigDialog({
             fields.address,
             fields.zipCode,
             fields.website,
+            promoImageUrl,
           )}
           size="small"
           variant="contained"

@@ -64,6 +64,7 @@ export function EditGigDialog(props: IeditGigDialogProps) {
   const [saveError, setSaveError] = useState('');
   const [saving, setSaving] = useState(false);
   const savingRef = useRef(false);
+  const promoValidation = utils.validatePromoImageUrl(editGig.promoImageUrl);
   useEffect(() => { setSaveError(''); }, [editGig._id]);
 
   useEffect(() => {
@@ -84,7 +85,7 @@ export function EditGigDialog(props: IeditGigDialogProps) {
   }, [editGig._id, auth.token]);
 
   const handleUpdate = async () => {
-    if (savingRef.current) return;
+    if (savingRef.current || !promoValidation.valid) return;
     savingRef.current = true;
     setSaving(true);
     setSaveError('');
@@ -106,6 +107,7 @@ export function EditGigDialog(props: IeditGigDialogProps) {
       const updatedGig = {
         ...editGig,
         venueId: finalVenueId,
+        ...(editGig.promoImageUrl !== undefined ? { promoImageUrl: promoValidation.url } : {}),
         ...(finalVenueId ? { city: '', usState: '' } : {}),
       };
 
@@ -273,7 +275,8 @@ export function EditGigDialog(props: IeditGigDialogProps) {
           disabled={saving}
           id="edit-venue"
           value={editGig.venue}
-          apiKey={process.env.TINY_KEY}
+          tinymceScriptSrc="/tinymce/tinymce.min.js"
+          licenseKey="gpl"
           init={{
             height: 300,
             menubar: 'insert tools',
@@ -281,7 +284,7 @@ export function EditGigDialog(props: IeditGigDialogProps) {
             plugins: [
               'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview', 'anchor',
               'searchreplace', 'visualblocks', 'code', 'fullscreen',
-              'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount',
+              'insertdatetime', 'media', 'table', 'help', 'wordcount',
             ],
             toolbar:
               'undo redo | formatselect | bold italic backcolor forecolor |'
@@ -313,6 +316,8 @@ export function EditGigDialog(props: IeditGigDialogProps) {
           fullWidth
           sx={{ marginTop: '20px' }}
           value={editGig.promoImageUrl ?? ''}
+          error={Boolean(promoValidation.error)}
+          helperText={promoValidation.error || 'Public image URL (optional — leave blank for default photo)'}
           onChange={(evt) => { setEditChanged(true); setEditGig({ ...editGig, promoImageUrl: evt.target.value }); }}
         />
       </DialogContent>
@@ -330,6 +335,7 @@ export function EditGigDialog(props: IeditGigDialogProps) {
             fields.address,
             fields.zipCode,
             fields.website,
+            editGig.promoImageUrl || '',
           )}
           size="small"
           variant="contained"

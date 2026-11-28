@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
+import * as TinyMce from '@tinymce/tinymce-react';
 import {
   AnnounceGigDialog,
   getDefaultPromoUrl,
@@ -1128,6 +1129,56 @@ describe('AnnounceGigDialog', () => {
       });
       const [, , payload] = announceSpy.mock.calls[0];
       expect(payload.imageUrl).toBeUndefined();
+    });
+
+    it('uses self-hosted TinyMCE GPL without dead plugins, validates Image URL, and normalizes dl.dropboxuser.com', async () => {
+      const editorSpy = vi.spyOn(TinyMce, 'Editor');
+      const announceSpy = vi.spyOn(utils, 'announceGig').mockResolvedValue({
+        ok: true,
+        instagram: { ok: true, id: 'ig-normalized' },
+      });
+
+      render(
+        <AnnounceGigDialog
+          gig={sampleGig}
+          open
+          onClose={vi.fn()}
+          auth={mockAuth}
+        />,
+      );
+
+      const editorCallProps = editorSpy.mock.calls.at(-1)?.[0];
+      expect(editorCallProps?.tinymceScriptSrc).toBe('/tinymce/tinymce.min.js');
+      expect(editorCallProps?.licenseKey).toBe('gpl');
+      expect(editorCallProps?.apiKey).toBeUndefined();
+      expect(editorCallProps?.init?.plugins).not.toContain('print');
+      expect(editorCallProps?.init?.plugins).not.toContain('paste');
+
+      const imageInput = screen.getByLabelText(/Image URL/i);
+      const confirmBtn = screen.getByRole('button', { name: /^Confirm$/i });
+
+      fireEvent.change(imageInput, { target: { value: 'notaurl' } });
+      expect(confirmBtn).toBeDisabled();
+      expect(imageInput).toHaveAttribute('helperText', utils.PROMO_IMAGE_URL_ERROR);
+      expect(screen.queryByAltText('Promo preview')).not.toBeInTheDocument();
+
+      fireEvent.change(imageInput, {
+        target: { value: 'https://dl.dropboxuser.com/scl/fi/test/photo.jpg?dl=0' },
+      });
+      expect(confirmBtn).toBeEnabled();
+      expect(screen.getByAltText('Promo preview')).toHaveAttribute(
+        'src',
+        'https://dl.dropboxusercontent.com/scl/fi/test/photo.jpg?dl=0',
+      );
+
+      fireEvent.click(confirmBtn);
+      await waitFor(() => expect(announceSpy).toHaveBeenCalledWith(
+        'test-token',
+        'gig-123',
+        expect.objectContaining({
+          imageUrl: 'https://dl.dropboxusercontent.com/scl/fi/test/photo.jpg?dl=0',
+        }),
+      ));
     });
   });
 });
