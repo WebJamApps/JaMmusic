@@ -96,7 +96,9 @@ export function buildPictureStripUrls(
 
   for (const g of gigs) {
     if (!g || typeof g.promoImageUrl !== 'string' || !g.promoImageUrl.trim()) continue;
-    const url = g.promoImageUrl.trim();
+    const validated = utils.validatePromoImageUrl(g.promoImageUrl, { allowDefaultRelative: true });
+    if (!validated.valid || !validated.url) continue;
+    const url = validated.url;
     if (normalizedDefault && url === normalizedDefault) continue;
     if (!seen.has(url)) {
       seen.add(url);
@@ -119,7 +121,9 @@ export function determineStartingImageUrl(
 ): string {
   if (!gig) return '';
 
-  const gigPromo = gig.promoImageUrl?.trim();
+  const rawGigPromo = gig.promoImageUrl?.trim();
+  const validatedPromo = rawGigPromo ? utils.validatePromoImageUrl(rawGigPromo, { allowDefaultRelative: true }) : null;
+  const gigPromo = validatedPromo?.valid ? validatedPromo.url : '';
 
   // 1. Gig's own picture when unposted
   if (gigPromo && !isPicturePosted(gigPromo, postedMap)) {
@@ -291,15 +295,17 @@ export function AnnounceGigDialog({
     }
   }, [open, gig?._id, gigs]);
 
+  const imageValidation = utils.validatePromoImageUrl(imageUrl, { allowDefaultRelative: true });
+
   const handleConfirm = async () => {
-    if (!gig?._id) return;
+    if (!gig?._id || !imageValidation.valid) return;
     setSubmitting(true);
     setStatusMessage('');
     setStatusSeverity(null);
 
     const payload: AnnouncePayload = {
       caption,
-      imageUrl: imageUrl.trim() || undefined,
+      imageUrl: imageValidation.url || undefined,
       userTags: [mariaTag.trim(), venueTag.trim()],
       collaborators: collaborator.trim() ? [collaborator.trim()] : [],
       locationId: location.trim() || undefined,
@@ -430,10 +436,10 @@ export function AnnounceGigDialog({
         )}
 
         <Box sx={{ mb: 2 }}>
-          {imageUrl.trim() ? (
+          {imageValidation.valid && imageValidation.url ? (
             <Box sx={{ textAlign: 'center', mb: 1 }}>
               <img
-                src={imageUrl.trim()}
+                src={imageValidation.url}
                 alt="Promo preview"
                 style={{
                   maxHeight: '140px',
@@ -443,7 +449,7 @@ export function AnnounceGigDialog({
                 }}
               />
             </Box>
-          ) : (
+          ) : !imageUrl.trim() ? (
             <Box
               sx={{
                 p: 2,
@@ -458,7 +464,7 @@ export function AnnounceGigDialog({
             >
               Default Josh &amp; Maria photo will be used
             </Box>
-          )}
+          ) : null}
 
           <TextField
             fullWidth
@@ -466,11 +472,12 @@ export function AnnounceGigDialog({
             label="Image URL"
             id="announce-image-url"
             value={imageUrl}
+            error={Boolean(imageValidation.error)}
             onChange={(e) => {
               imageEditedRef.current = true;
               setImageUrl(e.target.value);
             }}
-            helperText="Public image URL (optional — leave blank for default photo)"
+            helperText={imageValidation.error || 'Public image URL (optional — leave blank for default photo)'}
           />
 
           {stripItems.length > 0 && (
@@ -558,13 +565,14 @@ export function AnnounceGigDialog({
           <Editor
             id="announce-caption"
             value={caption}
-            apiKey={process.env.TINY_KEY}
+            tinymceScriptSrc="/tinymce/tinymce.min.js"
+            licenseKey="gpl"
             init={{
               menubar: false,
               plugins: [
-                'advlist autolink lists link charmap print preview anchor',
-                'searchreplace visualblocks code fullscreen',
-                'insertdatetime paste code help wordcount',
+                'advlist', 'autolink', 'lists', 'link', 'charmap', 'preview', 'anchor',
+                'searchreplace', 'visualblocks', 'code', 'fullscreen',
+                'insertdatetime', 'help', 'wordcount',
               ],
               toolbar:
                 'undo redo | formatselect | bold italic backcolor forecolor |'
@@ -634,7 +642,7 @@ export function AnnounceGigDialog({
           variant="contained"
           color="primary"
           id="announce-confirm-button"
-          disabled={submitting || !caption.trim() || submittedSuccessfully}
+          disabled={submitting || !caption.trim() || submittedSuccessfully || !imageValidation.valid}
           onClick={handleConfirm}
         >
           {submitting ? 'Confirming...' : 'Confirm'}

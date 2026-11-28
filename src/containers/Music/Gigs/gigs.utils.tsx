@@ -191,6 +191,41 @@ const clickToEdit = (
   if (isAdmin) { setEditGig(rowData); }
 };
 
+export interface PromoImageUrlValidation {
+  valid: boolean;
+  url: string;
+  error?: string;
+}
+
+export const PROMO_IMAGE_URL_ERROR = 'Enter a valid http:// or https:// image URL, or leave blank for the default photo.';
+
+export const validatePromoImageUrl = (
+  rawUrl?: string | null,
+  options: { allowDefaultRelative?: boolean } = {},
+): PromoImageUrlValidation => {
+  const trimmed = (rawUrl ?? '').trim();
+  if (!trimmed) {
+    return { valid: true, url: '' };
+  }
+  if (options.allowDefaultRelative && trimmed === '/gig/promo-default.jpg') {
+    return { valid: true, url: trimmed };
+  }
+  let parsed: URL;
+  try {
+    parsed = new URL(trimmed);
+  } catch {
+    return { valid: false, url: trimmed, error: PROMO_IMAGE_URL_ERROR };
+  }
+  if ((parsed.protocol !== 'http:' && parsed.protocol !== 'https:') || !parsed.hostname) {
+    return { valid: false, url: trimmed, error: PROMO_IMAGE_URL_ERROR };
+  }
+  if (parsed.hostname.toLowerCase() === 'dl.dropboxuser.com') {
+    parsed.hostname = 'dl.dropboxusercontent.com';
+    return { valid: true, url: parsed.href };
+  }
+  return { valid: true, url: trimmed };
+};
+
 const checkNewDisabled = (
   dateTime: Date | null,
   path: 'existing' | 'new' | 'none',
@@ -202,8 +237,10 @@ const checkNewDisabled = (
   inlineAddress = '',
   inlineZipCode = '',
   inlineWebsite = '',
+  promoImageUrl = '',
 ) => {
   if (!dateTime) return true;
+  if (!validatePromoImageUrl(promoImageUrl).valid) return true;
   if (path === 'existing') {
     return !venueId;
   }
@@ -231,9 +268,11 @@ const checkUpdateDisabled = (
   inlineAddress = '',
   inlineZipCode = '',
   inlineWebsite = '',
+  promoImageUrl = '',
 ) => {
   if (!editChanged) return true;
   if (!editGig.datetime) return true;
+  if (!validatePromoImageUrl(promoImageUrl).valid) return true;
   if (path === 'existing') {
     return !venueId;
   }
@@ -631,6 +670,8 @@ export default {
   orderGigs,
   usStateOptions,
   normalizeUrl,
+  validatePromoImageUrl,
+  PROMO_IMAGE_URL_ERROR,
   normalizeTextForComparison,
   isFreeTextRenderable,
   renderVenue,

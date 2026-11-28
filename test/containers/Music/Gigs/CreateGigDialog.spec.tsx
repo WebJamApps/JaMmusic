@@ -4,6 +4,7 @@ import { gigLookupTests } from './gig-lookup.fixtures';
 vi.mock('src/lib/fetch.utils', () => ({ customFetch: vi.fn() }));
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
+import * as TinyMce from '@tinymce/tinymce-react';
 import { CreateGigDialog } from 'src/containers/Music/Gigs/CreateGigDialog';
 import utils from 'src/containers/Music/Gigs/gigs.utils';
 import adminVenuesUtils from 'src/containers/AdminVenues/admin-venues.utils';
@@ -220,6 +221,55 @@ describe('CreateGigDialog', () => {
     const mapsLink = screen.getByRole('link', { name: 'Open City Hall in Google Maps' });
     expect(mapsLink).toBeInTheDocument();
     expect(mapsLink).toHaveTextContent('(123 Main St, London)');
+  });
+
+  it('configures self-hosted TinyMCE GPL props and enforces promoImageUrl validation and normalization', async () => {
+    const editorSpy = vi.spyOn(TinyMce, 'Editor');
+    vi.spyOn(adminVenuesUtils, 'listVenues').mockResolvedValue([
+      { _id: 'v1', name: 'Venue 1', status: 'active' },
+    ]);
+    const createGigSpy = vi.spyOn(utils, 'createGig').mockResolvedValue('success');
+
+    render(
+      <AuthContext.Provider value={{ auth, setAuth: vi.fn() }}>
+        <CreateGigDialog showDialog setShowDialog={vi.fn()} />
+      </AuthContext.Provider>,
+    );
+
+    const select = await screen.findByTestId('mock-autocomplete');
+    fireEvent.change(select, { target: { value: 'v1' } });
+
+    const editorCallProps = editorSpy.mock.calls.at(-1)?.[0];
+    expect(editorCallProps?.tinymceScriptSrc).toBe('/tinymce/tinymce.min.js');
+    expect(editorCallProps?.licenseKey).toBe('gpl');
+    expect(editorCallProps?.apiKey).toBeUndefined();
+
+    const promoInput = screen.getByLabelText('Promo image URL');
+    const createBtn = screen.getByRole('button', { name: /^create$/i });
+    expect(createBtn).toBeEnabled();
+
+    fireEvent.change(promoInput, { target: { value: 'bad-url' } });
+    expect(createBtn).toBeDisabled();
+    expect(promoInput).toHaveAttribute('helperText', utils.PROMO_IMAGE_URL_ERROR);
+
+    fireEvent.change(promoInput, { target: { value: '  https://dl.dropboxuser.com/scl/fi/abc/pic.jpg?dl=0  ' } });
+    expect(createBtn).toBeEnabled();
+    fireEvent.click(createBtn);
+
+    await waitFor(() => expect(createGigSpy).toHaveBeenCalledWith(
+      expect.any(Function),
+      expect.any(Function),
+      expect.any(Date),
+      '',
+      '',
+      '',
+      '',
+      auth,
+      0,
+      'https://dl.dropboxusercontent.com/scl/fi/abc/pic.jpg?dl=0',
+      'v1',
+      expect.any(Function),
+    ));
   });
 });
 
